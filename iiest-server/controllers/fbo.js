@@ -46,7 +46,7 @@ exports.fboPayment = async(req, res)=>{
     }
   }).then(function (response) {
     console.log(response.data.data.instrumentResponse.redirectInfo.url);
-    res.redirect(response.data.data.instrumentResponse.redirectInfo.url);
+    return res.status(200).json({message: response.data.data.instrumentResponse.redirectInfo.url});
   }).catch(function (error) {
     console.log(error);
   });
@@ -111,7 +111,7 @@ exports.fboRegister = async (req, res) => {
       return res.status(401).json({ success, addressErr: "This address is already in use." })
       }
 
-    let idNumber;
+     let idNumber;
 
       while (!isUnique) {
       idNumber = Math.floor(10000 + Math.random() * 90000);

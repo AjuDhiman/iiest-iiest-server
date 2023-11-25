@@ -4,6 +4,7 @@ import { waterTestFee, clientType, paymentMode, licenceType } from '../../utils/
 import { RegisterService } from '../../services/register.service';
 import { GetdataService } from '../../services/getdata.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -66,7 +67,8 @@ export class FboComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _getFboGeneralData: GetdataService,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService
+    private _toastrService: ToastrService,
+    private router: Router
   ) {
     this.getFboGeneralData();
   }
@@ -141,7 +143,7 @@ export class FboComponent implements OnInit {
       if(this.addFbo.payment_mode === 'Pay Page'){
         this._registerService.fboPayment(this.addFbo.total_amount).subscribe({
           next: (res)=>{
-            console.log(res)
+            window.location.href = res.message
           },
           error: (err)=>{
             console.log(err);
