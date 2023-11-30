@@ -28,9 +28,9 @@ export class RegisterService {
       ));
   }
 
-  public fboPayment(total_amount: number): Observable<any> {
+  public fboPayment(fboDetails: fbo): Observable<any> {
     const url = `${this.url}/fbopayment`;
-    return this.http.post<any>(url, {total_amount}).pipe(
+    return this.http.post<any>(url, fboDetails).pipe(
       catchError(
         this.handleError
       ));
@@ -45,7 +45,7 @@ export class RegisterService {
   }
 
   public addFboRecipent(objId: string, addFboRecipent: fboRecipient): Observable<any> {
-    const url = `${this.url}fbo/recipientDetails/${objId}`
+    const url = `${this.url}/fbo/recipientDetails/${objId}`
     return this.http.post<any>(url, addFboRecipent).pipe(
       catchError(
         this.handleError
@@ -53,7 +53,7 @@ export class RegisterService {
   }
 
   public addFboShop(objId: string, addFboShop: fboShop): Observable<any> {
-    const url = `${this.url}fbo/recipientDetails/${objId}`
+    const url = `${this.url}/fbo/recipientDetails/${objId}`
     return this.http.post<any>(url, addFboShop).pipe(
       catchError(
         this.handleError

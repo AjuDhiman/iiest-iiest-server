@@ -38,7 +38,7 @@ export class RecipientComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.addRecipient);
     console.log(this.fboData)
-    this.fboType = this.fboData.fbo_type;
+    this.fboType = this.fboData.product_name;
     this.fboRecipientCount = this.fboData.recipient_no;
     this.fboID = this.fboData._id;
     this.recipientData = this.fboData.recipientDetails;

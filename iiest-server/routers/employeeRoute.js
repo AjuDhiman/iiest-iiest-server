@@ -10,7 +10,7 @@ router.post('/empregister', authMiddleware, employeeFormValidation, employeeRegi
 router.post('/login', employeeLoginValidation, employeeLogin); //Router for staff login
 router.delete('/deleteEmployee/:id', authMiddleware, deleteEmployee); //Router for deleting  employee
 router.put('/editEmployee/:id', authMiddleware, editEmployee); //Router for editing employee data
-router.get('/empgeneraldata', authMiddleware, employeeFormData); //Router for general employee form data
+router.get('/empgeneraldata', employeeFormData); //Router for general employee form data
 router.get('/allemployees', authMiddleware, allEmployeesData); //Router for all employees data
 
 
