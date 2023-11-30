@@ -55,7 +55,7 @@ const invoiceHandler = async(fboName, address, idNum, date, recipientNo, product
       "country": "India"
     },
     "information": {
-      "date": `${date.getDate()}.${date.getMonth()}.${date.getYear()}`,
+      "date": `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
       "number": `${Date.now()}_${idNum}`
     },
     "products": [
@@ -243,6 +243,8 @@ exports.fboRegister = async (req, res) => {
       }
 
       const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
+
+      console.log(selectedModel);
 
       await selectedModel.create({
       id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, customer_id: generatedCustomerId, client_type, recipient_no, water_test_fee, createdAt: date, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode
