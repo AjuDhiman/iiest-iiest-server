@@ -33,7 +33,7 @@ const registrationHandler = async(productName)=>{
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
-const invoiceHandler = async(fboName, address, idNum, date, recipientNo, productName, processingAmount)=>{
+const invoiceHandler = async(fboName, address, idNum, date, recipientNo, productName, processingAmount, clientEmail)=>{
   const invoiceData = {
     "images": {
       "logo": fs.readFileSync('/Users/bhaveshdaipuria/Desktop/Web Development/iiest/iiest-server/assets/logo-side.png', 'base64')
@@ -81,7 +81,7 @@ const invoiceHandler = async(fboName, address, idNum, date, recipientNo, product
     }
   }
 
-  await generateInvoice(idNum, invoiceData);
+  await generateInvoice(idNum, invoiceData, clientEmail);
 }
 
 exports.fboPayment = async(req, res)=>{
@@ -185,7 +185,7 @@ exports.fboPayReturn = async(req, res)=>{
         console.log(buyerData);
 
         if(buyerData){
-          await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount);
+          await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount, email);
         }else{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
@@ -250,7 +250,7 @@ exports.fboRegister = async (req, res) => {
       id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, customer_id: generatedCustomerId, client_type, recipient_no, water_test_fee, createdAt: date, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode
       });
 
-      await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount);
+      await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount, email);
 
       success = true;
     return res.status(201).json({ success, message: "FBO Registration Successful" });

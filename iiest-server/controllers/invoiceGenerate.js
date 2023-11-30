@@ -1,8 +1,9 @@
 const easyinvoice = require('easyinvoice')
 const fs = require('fs');
 const { createInvoiceBucket } = require('../config/db');
+const { sendInvoiceMail } = require('./employeeMail')
 
-async function generateInvoice(idNumber ,data){
+async function generateInvoice(idNumber ,data, clientEmail){
     try {
         const result = await easyinvoice.createInvoice(data);
 
@@ -20,6 +21,7 @@ async function generateInvoice(idNumber ,data){
                 console.error(err);
             }
             console.log('Invoice stored successfully');
+            sendInvoiceMail(clientEmail, fileName, result.pdf);
             const invoiceDownloadStream = invoiceBucket.openDownloadStreamByName(fileName);
             const filePath = `${__dirname}/invoice/${fileName}`;
             const fileWriteStream = fs.createWriteStream(filePath);
