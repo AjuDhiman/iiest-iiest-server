@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const mailData = JSON.parse(process.env.NODE_MAILER);
-const fs = require('fs');
 
 //Function to send mail to employee
 function sendEmployeeInfo(username, password, empId, clientMail){

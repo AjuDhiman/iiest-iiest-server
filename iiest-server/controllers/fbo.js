@@ -170,8 +170,6 @@ exports.fboPayReturn = async(req, res)=>{
 
         const buyerId = new mongoose.Types.ObjectId(fboEntry.id);
 
-        console.log(buyerId, req.body.merchantId, req.body.transactionId, req.body.providerReferenceId);
-
         let buyerData;
 
         if(fboEntry){
@@ -181,8 +179,6 @@ exports.fboPayReturn = async(req, res)=>{
         }else{
           return res.status(401).json({success, message: "FBO entry not successful"})
         }
-
-        console.log(buyerData);
 
         if(buyerData){
           await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount, email);
@@ -244,15 +240,18 @@ exports.fboRegister = async (req, res) => {
 
       const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
 
-      console.log(selectedModel);
-
-      await selectedModel.create({
+      const fboEntry = await selectedModel.create({
       id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, customer_id: generatedCustomerId, client_type, recipient_no, water_test_fee, createdAt: date, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode
       });
 
-      await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount, email);
+      if(fboEntry){
+        await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, product_name, processing_amount, email);
+        success = true;
+      }else{
+        success = false; 
+        return res.status(401).json({success, message: "FBO entry not successful"});
+      }
 
-      success = true;
     return res.status(201).json({ success, message: "FBO Registration Successful" });
   } catch (error) {
     console.error(error);

@@ -1,5 +1,5 @@
 const easyinvoice = require('easyinvoice')
-const fs = require('fs');
+// const fs = require('fs');
 const { createInvoiceBucket } = require('../config/db');
 const { sendInvoiceMail } = require('./employeeMail')
 
@@ -22,17 +22,17 @@ async function generateInvoice(idNumber ,data, clientEmail){
             }
             console.log('Invoice stored successfully');
             sendInvoiceMail(clientEmail, fileName, result.pdf);
-            const invoiceDownloadStream = invoiceBucket.openDownloadStreamByName(fileName);
-            const filePath = `${__dirname}/invoice/${fileName}`;
-            const fileWriteStream = fs.createWriteStream(filePath);
+            // const invoiceDownloadStream = invoiceBucket.openDownloadStreamByName(fileName);
+            // const filePath = `${__dirname}/invoice/${fileName}`;
+            // const fileWriteStream = fs.createWriteStream(filePath);
 
-            invoiceDownloadStream.pipe(fileWriteStream);
-            fileWriteStream.on('finish', () => {
-                console.log('Invoice downloaded and saved successfully');
-            });
-            fileWriteStream.on('error', (err) => {
-                console.error('Error saving invoice to folder:', err);
-            });
+            // invoiceDownloadStream.pipe(fileWriteStream);
+            // fileWriteStream.on('finish', () => {
+            //     console.log('Invoice downloaded and saved successfully');
+            // });
+            // fileWriteStream.on('error', (err) => {
+            //     console.error('Error saving invoice to folder:', err);
+            // });
         })
     } catch (error) {
         console.error(error);

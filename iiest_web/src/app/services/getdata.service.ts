@@ -28,6 +28,11 @@ export class GetdataService {
   return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
+ public getUserRecord():Observable<any>{
+  const url = `${this.url}/employeeRecord`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
  public getAllFboData():Observable<any>{
   const url = `${this.url}/allfbodata`;
   return this.http.get<any>(url).pipe(catchError(this.handleError));

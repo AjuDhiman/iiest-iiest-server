@@ -6,7 +6,6 @@ import { GetEmployee } from 'src/app/store/actions/employee.action';
 import { Employee } from '../../utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
-import {UtilitiesService} from 'src/app/services/utilities.service'
 
 
 @Component({
@@ -19,6 +18,9 @@ export class HomeComponent implements OnInit, OnDestroy{
   genericData:any;
   data:any;
   empName:String;
+  userTotalSales: number;
+  userPendingSales: number;
+  userApprovedSales: number;
 
   @Select(EmployeeState.GetEmployeeList) employees$:Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$:Observable<boolean>
@@ -28,10 +30,11 @@ export class HomeComponent implements OnInit, OnDestroy{
   constructor(
     private _registerService: RegisterService,
     private store:Store,
-    private _utilitiesService:UtilitiesService
+    private getDataService: GetdataService
   ){ }
   ngOnInit(): void {
       this.getEmployees();
+      this.getUserRecord();
       this.employees$.subscribe(res => {
        this.data = res;
        console.log(this.data)
@@ -55,6 +58,17 @@ getEmployees(){
     }
   })
 }
+
+getUserRecord(){
+  this.getDataService.getUserRecord().subscribe({
+    next: (res)=>{
+      this.userTotalSales = res.overAllSales;
+      this.userPendingSales = res.pendingSales;
+      this.userApprovedSales = res.approvedSales;
+    }
+  })
+}
+
 ngOnDestroy(): void {
   this.empLoadedSub.unsubscribe();
 }

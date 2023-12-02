@@ -74,6 +74,12 @@ export class FboComponent implements OnInit {
   }
   ngOnInit(): void {
 
+    this._getFboGeneralData.getUserRecord().subscribe({
+      next: (res)=>{
+        console.log(res);
+      }
+    })
+
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
