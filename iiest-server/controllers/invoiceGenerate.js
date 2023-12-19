@@ -1,5 +1,4 @@
 const easyinvoice = require('easyinvoice')
-// const fs = require('fs');
 const { createInvoiceBucket } = require('../config/db');
 const { sendInvoiceMail } = require('./employeeMail')
 
