@@ -16,7 +16,6 @@ const employeeRecord = async(req, res)=>{
         const pendingSales = await fboModel.find({checkStatus: 'Pending', createdBy: `${userData.employee_name}(${userData.employee_id})`});
         
         let pendingSalesAmount = 0;
-    
         if(pendingSales){
             pendingSales.forEach((elem)=>{
                 pendingSalesAmount += elem.processing_amount;
@@ -26,7 +25,7 @@ const employeeRecord = async(req, res)=>{
         const approvedSales = await fboModel.find({checkStatus: 'Approved', createdBy: `${userData.employee_name}(${userData.employee_id})`});
     
         let approvedSalesAmount = 0;
-    
+        
         if(approvedSales){
             approvedSales.forEach((elem)=>{
                 approvedSalesAmount += elem.processing_amount

@@ -5,10 +5,8 @@ const { generateInvoice } = require('./invoiceGenerate')
 const axios = require('axios');
 const sha256 = require('sha256');
 const uniqid = require('uniqid');
-const fs = require('fs');
 const fboPaymentSchema = require('../models/fboPaymentSchema');
 const mongoose = require('mongoose');
-const assetsPath = process.env.ASSETS_PATH;
 
 const registrationHandler = async(productName)=>{
     let isUnique = false;
@@ -34,206 +32,21 @@ const registrationHandler = async(productName)=>{
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
-const invoiceHandler = async(fboName, address, idNum, date, recipientNo, processingAmount, clientEmail)=>{
+const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount)=>{
 
-  const invoiceHTML = `<!DOCTYPE html>
-  <html Lang="en">
-  
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Sales slip</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-      <style>
-          *{
-              margin: 0;
-              padding: 0;
-          }
-          .hindi-head{
-              border-bottom: 2px solid;
-          }
-          .head-sec{
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              gap: 20px;
-          }
-          .detail-field{
-              margin-top: 2px;
-              margin-bottom: 2px;
-          }
-          .certificate-heading{
-              font-size: 25px;
-              font-weight: 700;
-          }
-          .bank-details{
-              font-size: 14px;
-          }
-          .bank-details .online-payment-heading{
-              font-size: 18px !important;
-              text-decoration: underline;
-          }
-          table {
-              height: 150px;
-          }
-          table td, table th{
-              border: 1px solid;
-          }
-          table{
-              border: 2px;
-          }
-      </style>
-  </head>
-  
-  <body class="container">
-   <div class="head-sec my-3">
-          %logo%
-           <div class="head">
-        <div class="text-center">INDUSTRIAL INCUBATION OF ENTREPRENEURSHIP AND SKILL TRAINING FEDERATION</div>
-           </div>
-       </div>
-           <div class="row address-sec my-3">
-          <div class="col-6 corporate-office-address">
-              <div class="address col-12">
-                  Corporate Office No-55, Opposite Metro Pillor No.6,
-                  Panchkulan Marg, Connaught Place, Delhi-110001.
-             </div>
-              <div class="email col-12"><b>Email:</b> info@ilest.org, <b> Website: </b><a href="www.liest.org">www.liest.org</a></div>
-             <div class="numbers col-12"><b>Landline No:</b>
-                   011-43511788 <b>Mobile No:</b> +91-9910729809, 9289310979</div>
-         </div>
-         <div class="col-6 center-office-address">
-              <div class="address col-12">
-                  Center Office, Flat No. 102, 1st Floor, Plot 13,
-                  Cyber Heights, Huda Layout, Beside NTR Trust Line Road No.
-                  2, Banjara Hills, Hyderabad - 500034
-               </div>
-               <div class="numbers col-12"><b>Mobile No:</b> +91-9154150561, 9154150563</div>
-         </div>
-      </div>
-         <div class="certificate-heading row text-center text-large my-3 mt-4">
-           <div class="col-12">Food Safety Training and Certification (FoSTaC) TP ID - TPINT133</div>
-     </div>
-      <div class="rc_no-N_date_N_place row">
-          <div class="col rc_no">
-               <b>Recipt No: </b> %number%
-           </div>
-          <div class="col-6 date_n_place row">
-             <div class="date col-12 row">
-                  <b class="col-8 pr-1" style="text-align: right">Date: </b>
-                   <div class="col-4 px-0">%date%</div>
-               </div>
-             <div class="place col-12 row">
-                   <b class="col-8 pr-1" style="text-align: right">Place:</b>
-                   <div class="col-4 px-0"></div>
-               </div>
-           </div>
-      </div>
-           <div class="row details my-3">
-               <div class="detail-field col-12 name"><b>Name of the Candidate: </b> %company-to%</div>
-               <div class="detail-field col-8 sales-address"><b>Address: </b> %address-to%</div>
-             <div class="detail-field contact col-4"><b>Contact: </b>${clientEmail}</div>
-              <div class="detail-field col-4 fostac-type"><b>Fostac Program Type </b></div>
-              <div class="detail-field col-8 fostac-checkbox row">
-                  <div class="col-4">
-                      <input type="checkbox" name="basic_catering" id="basic_catering">
-                      <label for="basic_catering">Basic catering</label>
-                  </div>
-                   <div class="col-4">
-                       <input type="checkbox" name="basic_retail" id="basic_retail">
-                       <label for="basic_retail">Basic Retail</label>
-                  </div>
-               </div>
-              <div class="detail-field col-4 license-type"><b>License Program Type </b></div>
-               <div class="detail-field col-8 license-checkbox row">
-                   <div class="col-4">
-                       <input type="checkbox" name="registration" id="registration">
-                      <label for="registration">Regitration</label>
-                   </div>
-                  <div class="col-4">
-                       <input type="checkbox" name="state" id="state">
-                      <label for="state">State</label>
-                 </div>
-                  <div class="col-4">
-                      <input type="checkbox" name="membership" id="membership">
-                      <label for="membership">SFHP/EDP/membership</label>
-                  </div>
-              </div>
-             <div class="detail-field col-6 date-of-training"><b>Date of Training </b></div>
-             <div class="detail-field col-6 batch-code"><b>Batch Code </b></div>
-             <div class="detail-field col-7 payment-method"><b>By Cash/Check/Paytm/UPI </b></div>
-               <div class="detail-field col-5 payment-method"><b>Transaction ID </b></div>
-               <div class="detail-field col-12 total-amount-in-words"><b>Total Amount in Words</b></div>
-          </div>
-              <div class="row footer my-4">
-           <div class="bank-details col-4">
-               <div class="col-12 online-payment-heading" style="font-size: 18px; text-decoration: underline;"><b>Online Payment</b></div>
-               <div class="col-12 acc-no"><b>IIEST Account No.: </b>50200038814644</div>
-               <div class="col-12 ifsc-code"><b>IFSC Code : </b>HDFC0000313</div>
-               <div class="col-12 Bank-name"><b>Bank name : </b>HDFC Back</div>
-             <div class="col-12 acc-holder"><b>Account Holder: </b>IIEST Federation</div>
-              <div class="col-12 gst-no"><b>GST no. </b>07AADCI2920D1Z2</div>
-               <div class="col-12">Fee includes all above service charges</div>
-              <div class="col-12">Fee is non refundable</div>
-             <div class="col-12">Course fees details are avilable here <br/> <a target="_blank" href="https://fostac.fssai.gov.in/index">https://fostac.fssai.gov.in/index</a></div>
-         </div>
-           <table class="col-4 amount-calculations text-center mt-5">
-               <tr>
-                 <th class="col-6">FoStact Course Fee</th>
-                <th class="col-6">Amount</th>
-               </tr>
-               <tr>
-                 <td class="col-6">Amount</td>
-                  <td class="col-6">%subtotal%</td>
-               </tr>
-              <tr>
-                  <td class="col-6">CGST@9% <br>SGST@9%</td>
-                   <td class="col-6"><tax>%tax%</tax></td>
-               </tr>
-              <tr>
-                 <td class="col-6">Total</td>
-                  <td class="col-6">%total%</td>
-              </tr>
-          </table>
-          <div class="signature-n-qr col-4 row mt-5">
-              <div class="qr col-6"></div>
-               <div class="stamp col-6">
-                <img src="iiest-server\assets\stamp.jpg" height="150px" width="150px" alt="IIest Stamp"/>
-              </div>
-          </div>
-     </div>
-  </body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
-      </script>
-  </html>`
+  const tax = (18/100)*amount;
 
-  const invoiceData = {
-    customize: {
-      template: btoa(invoiceHTML)
-    },
-    "images": {
-      "logo": fs.readFileSync(assetsPath, 'base64')
-    },
-    "client": {
-      "company": fboName,
-      "address": address
-    },
-    "information": {
-      "date": `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`,
-      "number": `${Date.now()}_${idNum}`
-    },
-    "products": [
-      {
-        "quantity": recipientNo,
-        "tax-rate": 18,
-        "price": processingAmount
-      }
-    ]
+  const infoObj = {
+    receiptNo: idNum,
+    transactionId: idNum,
+    name: fboName, 
+    address: address, 
+    contact: contact, 
+    amount: amount,
+    taxAmount: tax,
+    totalAmount: totalAmount
   }
-
-  await generateInvoice(idNum, invoiceData, clientEmail);
+  generateInvoice(idNum, mail, infoObj);
 }
 
 exports.fboPayment = async(req, res)=>{
@@ -333,7 +146,7 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         if(buyerData){
-          await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, processing_amount, email);
+           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, processing_amount, total_amount);
         }else{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
@@ -397,7 +210,7 @@ exports.fboRegister = async (req, res) => {
       });
 
       if(fboEntry){
-        await invoiceHandler(fbo_name, address, idNumber, date, recipient_no, processing_amount, email);
+        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, processing_amount, total_amount);
         success = true;
       }else{
         success = false; 
