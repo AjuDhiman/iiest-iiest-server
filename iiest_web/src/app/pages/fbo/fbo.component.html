@@ -289,12 +289,12 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label for="recipient_no" class="form-label">No. of shops<sup>*</sup></label>
+                                <label for="shops_no" class="form-label">No. of shops<sup>*</sup></label>
                                 <input type="number" [attr.min]="minValue" step="1" group='foscos'
                                     placeholder="No. of {{recipientORshop}}" [readonly]="isReadOnly"
                                     (change)="recipientCount($event, '0')"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('shops_no')?.errors}"
-                                    formControlName="shops_no" class="form-control form-control-sm" id="recipient_no" />
+                                    formControlName="shops_no" class="form-control form-control-sm" id="shops_no" />
                                 <div *ngIf="submitted && foscos.get('shops_no')?.errors" class="invalid-feedback">
                                     <div *ngIf="foscos.get('shops_no')?.errors?.['required']">No. of Shops is required
                                     </div>

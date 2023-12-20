@@ -44,7 +44,8 @@ export class FboComponent implements OnInit {
   need_gst_number: boolean = false;
   business_type_array = []; // this array will contain business types like b2c or b2b 
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
-
+  fostac_processAmnt: any;
+  foscos_processAmnt: any;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   @ViewChildren('business_type_input') businessTypeInput: QueryList<ElementRef>;
 
@@ -335,16 +336,16 @@ export class FboComponent implements OnInit {
   //Water test Ammount + GST
   waterTestAdd(event: any) {
     if (event.target.value != 0) {
-      var processAmnt = (Number(this.fboForm.value.foscos_training.processing_amount * this.fboForm.value.foscos_training.shops_no));
+      var processAmnt = (Number(this.fboForm.value.foscos_training.foscos_processing_amount * this.fboForm.value.foscos_training.shops_no));
       var GST_amount = processAmnt * 18 / 100;
       var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
-      this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+      this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
     }
     else {
-      var processAmnt = (Number(this.fboForm.value.foscos_training.processing_amount * this.fboForm.value.foscos_training.shops_no));
+      var processAmnt = (Number(this.fboForm.value.foscos_training.foscos_processing_amount * this.fboForm.value.foscos_training.shops_no));
       var GST_amount = processAmnt * 18 / 100;
       var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
-      this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+      this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
     }
     this.getGrandTotalAmount();
   }
@@ -352,9 +353,11 @@ export class FboComponent implements OnInit {
   //Client Type + GST
   clienttypeFun(event: any) {
     let group = event.target.getAttribute('group');
+
     if (event.target.value === 'General Client') {
       if (group === 'fostac') {
         this.fboForm.get('fostac_training')?.patchValue({ 'recipient_no': 1 });
+        this.GSTandTotalAmnt(1, group);
       }
       if (group === 'foscos') {
         this.fboForm.get('foscos_training')?.patchValue({ 'shops_no': 1 });
@@ -424,14 +427,15 @@ export class FboComponent implements OnInit {
     this.isReadOnly = false;
     console.log(val);
     if (typeof (val) == 'number') {
-      var total_amount = this.GSTandTotalAmnt(val, group)
+      var total_amount = this.GSTandTotalAmnt(val, group);
+      console.log(total_amount)
       if (group === 'fostac') {
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
       }
       if (group === 'foscos') {
         if (this.fboForm.value.foscos_training.water_test_fee) {
-          let water_test_gst = Number(this.fboForm.value.foscos_training.water_test_fee) * 18 / 100;
-          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee) + water_test_gst;
+          //let water_test_gst = Number(this.fboForm.value.foscos_training.water_test_fee) * 18 / 100;
+          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee)
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
       }
@@ -441,10 +445,13 @@ export class FboComponent implements OnInit {
       let group1 = val.target.getAttribute('group');
       var total_amount = this.GSTandTotalAmnt(recipient, group1)
       if (group1 === 'fostac') {
-        this.fboForm.get('fostac_training')?.patchValue({ 'total_amount': total_amount });
+        this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
       }
       if (group1 === 'foscos') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+        if (this.fboForm.value.foscos_training.water_test_fee) {
+          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee)
+        }
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
       }
       this.getGrandTotalAmount();
     }
@@ -453,16 +460,22 @@ export class FboComponent implements OnInit {
 
   //GST Calculation and Add to Total Amount
   GSTandTotalAmnt(param: any, group: string) {
-    console.log(param)
-    var processAmnt = this.fboForm.value?.fostac_training?.processing_amount * param;
+    console.log(param, group)
+
     if (group === 'fostac') {
-      processAmnt = this.fboForm.value.fostac_training.processing_amount * param;
+      this.fostac_processAmnt = this.fboForm.value?.fostac_training?.fostac_processing_amount * param
+     // this.fostac_processAmnt = this.fboForm.value.fostac_training.processing_amount * param;
+      console.log(this.fostac_processAmnt);
+      var GST_amount = this.fostac_processAmnt * 18 / 100;
+      var total_amount = Number(GST_amount) + this.fostac_processAmnt;
     }
     if (group === 'foscos') {
-      processAmnt = this.fboForm.value.foscos_training.processing_amount * param;
+      this.foscos_processAmnt = this.fboForm.value?.foscos_training?.foscos_processing_amount * param
+      //this.foscos_processAmnt = this.fboForm.value.foscos_training.processing_amount * param;
+      var GST_amount = this.foscos_processAmnt * 18 / 100;
+      var total_amount = Number(GST_amount) + this.foscos_processAmnt;
     }
-    var GST_amount = processAmnt * 18 / 100;
-    var total_amount = Number(GST_amount) + processAmnt;
+    console.log(total_amount);
     return total_amount;
   }
 
@@ -489,7 +502,7 @@ export class FboComponent implements OnInit {
   }
 
   //This function is a custom validator form validating that a form control has a empty array or not
-  arrayNotEmptyValidator(control: FormControl) { 
+  arrayNotEmptyValidator(control: FormControl) {
     const value = control.value;
     return Array.isArray(value) && value.length > 0 ? null : { arrayNotEmpty: true };
   }
@@ -504,7 +517,7 @@ export class FboComponent implements OnInit {
     if (event.target.checked) {
       // Add the selected type to the array
       currentTypes.push(type);
-  
+
       // Conditionally add the GST Number FormControl
       if (type === 'b2b') {
         this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
@@ -516,7 +529,7 @@ export class FboComponent implements OnInit {
       if (index !== -1) {
         currentTypes.splice(index, 1);
       }
-  
+
       // Remove the GST Number FormControl if 'b2b' is unchecked
       if (type === 'b2b') {
         this.fboForm.removeControl('gst_number');
