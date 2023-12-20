@@ -17,7 +17,6 @@ exports.addRecipient = async (req, res) => {
         if (selectedFbo.product_name === 'Foscos Training') {
             const shopBody = req.body;
             const file = req.file;
-            console.log(file);
             const bucket = createFsBucket();
             const uploadStream = bucket.openUploadStream(`${Date.now()}_${file.originalname}`);
 

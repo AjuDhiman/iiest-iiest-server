@@ -11,7 +11,7 @@ async function generateInvoice(idNumber, clientEmail, fboObj){
         
         let file = { content: invoiceHTML };
 
-        let options = { format: 'A4' };
+        let options = { format: 'A3' };
 
         htmlToPdf.generatePdf(file, options).then(pdfBuffer =>{
             if(pdfBuffer){

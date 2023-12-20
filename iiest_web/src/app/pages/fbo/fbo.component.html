@@ -112,6 +112,42 @@
                         </div>
                     </div>
 
+                    <div class="col-md-3">
+                        <label class="form-label">Business Type<sup>*</sup></label>
+                        <div>
+                            <div class="d-flex gap-5 py-1">
+                                <label>
+                                    <input type="checkbox" #business_type_input
+                                        class="form-check-input form-check-input"
+                                        (change)="onBusinessTypeChange($event, 'b2c')" name="business_type">
+                                    B2C
+                                </label>
+                                <label>
+                                    <input type="checkbox" #business_type_input
+                                        class="form-check-input form-check-input"
+                                        (change)="onBusinessTypeChange($event, 'b2b')" name="business_type">
+                                    B2B
+                                </label>
+                            </div>
+                        </div>
+                        <div *ngIf="submitted && fbo['business_type'].errors" class="invalid-feedback"
+                            style="display: block;">
+                            <div *ngIf="fbo['business_type'].errors['arrayNotEmpty']">Business Type is required</div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="need_gst_number" class="col-md-3">
+                        <label for="gst_number" class="form-label">GST Number<sup>*</sup></label>
+                        <input type="text" placeholder="GST Number" formControlName="gst_number"
+                            class="form-control form-control-sm" id="gst_number"
+                            [ngClass]="{ 'is-invalid': submitted && fbo['gst_number'].errors }" />
+                        <div *ngIf="submitted && fbo['gst_number'].errors" class="invalid-feedback">
+                            <div *ngIf="fbo['gst_number'].errors['required']">GST Number is required</div>
+                        </div>
+                    </div>
+
+
+
                 </div>
                 <hr *ngIf="isFostac">
                 <div class="row">
@@ -122,7 +158,7 @@
 
                             <div class="col-md-3">
                                 <label for="processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                                <select id="processing_amount" formControlName="processing_amount" group = 'fostac'
+                                <select id="processing_amount" formControlName="processing_amount" group='fostac'
                                     [ngClass]="{ 'is-invalid': submitted && fostac.get('processing_amount')?.errors}"
                                     (change)="processAmount($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Processing Fee</option>

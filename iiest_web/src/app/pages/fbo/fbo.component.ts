@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { waterTestFee, clientType, paymentMode, licenceType } from '../../utils/config';
 import { RegisterService } from '../../services/register.service';
@@ -41,9 +41,13 @@ export class FboComponent implements OnInit {
   formType: string = "Registration";
   isReadOnly: boolean = false;
   resetMultiDrop: boolean;
+  need_gst_number: boolean = false;
+  business_type_array = []; // this array will contain business types like b2c or b2b 
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
 
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
+  @ViewChildren('business_type_input') businessTypeInput: QueryList<ElementRef>;
+
 
   fostac_training: FormGroup = new FormGroup({
     processing_amount: new FormControl(''),
@@ -54,12 +58,12 @@ export class FboComponent implements OnInit {
   });
 
   foscos_training: FormGroup = new FormGroup({
-    processing_amount:  new FormControl(''),
-    service_name:  new FormControl(''),
-    client_type:  new FormControl(''),
-    shops_no:  new FormControl(''),
-    water_test_fee:  new FormControl(''),
-    license_category:  new FormControl(''),
+    processing_amount: new FormControl(''),
+    service_name: new FormControl(''),
+    client_type: new FormControl(''),
+    shops_no: new FormControl(''),
+    water_test_fee: new FormControl(''),
+    license_category: new FormControl(''),
     license_duration: new FormControl(''),
     total_amount: new FormControl(''),
   });
@@ -76,9 +80,12 @@ export class FboComponent implements OnInit {
     address: new FormControl(''),
     pincode: new FormControl(''),
     product_name: new FormControl([]),
+    business_type: new FormControl([]),
+    // b2c: new FormControl(),
+    // b2b:new FormControl(),
     payment_mode: new FormControl(''),
     createdBy: new FormControl(''),
-    total_amount: new FormControl(''),
+    total_amount: new FormControl('')
   })
 
   constructor(
@@ -135,6 +142,9 @@ export class FboComponent implements OnInit {
           tehsil: [''],
           pincode: [''],
           product_name: [[], this.arrayNotEmptyValidator],
+          business_type: [[], this.arrayNotEmptyValidator],
+          // b2c: [''],
+          // b2b:[''],
           payment_mode: ['', Validators.required],
           createdBy: ['', Validators.required],
           total_amount: ['', Validators.required],
@@ -167,6 +177,7 @@ export class FboComponent implements OnInit {
       this.multiSelect.invalid = false;
     }
     this.submitted = true;
+    console.log(this.fboForm);
     this.fboForm.patchValue({ selectedOpt: this.selected })
     if (this.fboForm.invalid) {
       return;
@@ -247,8 +258,13 @@ export class FboComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.fboForm.reset();
+    this.businessTypeInput.forEach((item) => {
+      item.nativeElement.checked = false;
+    });
+    this.need_gst_number = false; // this will hide gst number on form reset 
     this.isFostac = false;
     this.isFoscos = false;
+    this.fboForm.removeControl('gst_number')// this will remove gst number form control on form reset 
     this.fboForm.removeControl('fostac_training');
     this.fboForm.removeControl('foscos_training');
     this.resetMultiDrop = true;
@@ -285,8 +301,8 @@ export class FboComponent implements OnInit {
       this.fboForm.removeControl('foscos_training');
     }
 
-    if(this.productName.length == 0){
-      if(this.submitted === true){
+    if (this.productName.length == 0) {
+      if (this.submitted === true) {
         this.multiSelect.invalid = true
       }
     }
@@ -469,7 +485,8 @@ export class FboComponent implements OnInit {
     this.fboForm.patchValue({ 'total_amount': grand_total_amount });
   }
 
-  arrayNotEmptyValidator(control: FormControl) {
+  //This function is a custom validator form validating that a form control has a empty array or not
+  arrayNotEmptyValidator(control: FormControl) { 
     const value = control.value;
     return Array.isArray(value) && value.length > 0 ? null : { arrayNotEmpty: true };
   }
@@ -477,4 +494,33 @@ export class FboComponent implements OnInit {
   closeDropDown() {
     this.multiSelect.isdropped = false;
   }
+
+  // This function conditionally add gst number filled in fbo form (condition: If checkox B2B is true in Business type field)
+  onBusinessTypeChange(event: any, type: string) {
+    const currentTypes = this.fboForm.get('business_type')?.value || [];
+    if (event.target.checked) {
+      // Add the selected type to the array
+      currentTypes.push(type);
+  
+      // Conditionally add the GST Number FormControl
+      if (type === 'b2b') {
+        this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
+        this.need_gst_number = true;
+      }
+    } else {
+      // If the checkbox is unchecked, remove the type from the array
+      const index = currentTypes.indexOf(type);
+      if (index !== -1) {
+        currentTypes.splice(index, 1);
+      }
+  
+      // Remove the GST Number FormControl if 'b2b' is unchecked
+      if (type === 'b2b') {
+        this.fboForm.removeControl('gst_number');
+        this.need_gst_number = false;
+      }
+    }
+    this.fboForm.get('business_type')?.setValue(currentTypes);
+  }
+
 }
