@@ -25,11 +25,7 @@
 						<h4 class="stats-type mb-1">My Total Sales</h4>
 						<div class="stats-figure">&#8377; {{userTotalSales}}</div>
 						<div class="stats-meta text-success">
-							<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor"
-								xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z" />
-							</svg> 20%
+							
 						</div>
 					</div><!--//app-card-body-->
 					<a class="app-card-link-mask" href="#"></a>
@@ -42,11 +38,7 @@
 						<h4 class="stats-type mb-1">My Pending Sales</h4>
 						<div class="stats-figure">&#8377; {{userPendingSales}}</div>
 						<div class="stats-meta text-success">
-							<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down"
-								fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z" />
-							</svg> 5%
+							
 						</div>
 					</div><!--//app-card-body-->
 					<a class="app-card-link-mask" href="#"></a>
@@ -104,14 +96,56 @@
 				</div>
 			</div>
 		</div><!--//container-fluid-->
+
+		<div class="row my-2">
+			<div class="col-md-6">
+				<h1 class="app-page-title">Product Price - FSSAI</h1>
+				<table class="rwd-table col-12">
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>Product Name</th>
+							<th>Price</th>
+							<th>Describtion</th>
+						</tr>
+						<tr *ngFor="let product of fssaiData;let i = index;">
+							<td data-th="#">{{i+1}}</td>
+							<td data-th="Product Name">{{product.name}}</td>
+							<td data-th="Price">{{product.price}}</td>
+							<td data-th="Describe">{{product.description}}</td>
+						</tr>
+						<!-- Add more rows as needed for FSSAI products -->
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h1 class="app-page-title">Product Price - DPIIT</h1>
+				<table class="rwd-table col-12">
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>Product Name</th>
+							<th>Price</th>
+							<th>Describtion</th>
+						</tr>
+						<tr *ngFor="let product of dpiitData;let i = index;">
+							<td data-th="#">{{i+1}}</td>
+							<td data-th="Product Name">{{product.name}}</td>
+							<td data-th="Price">{{product.price}}</td>
+							<td data-th="Describe">{{product.description}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div><!--//app-content-->
 
 	<footer class="app-footer">
 		<div class="container text-center py-3">
 			<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-			<small class="copyright">Designed with <span class="sr-only"></span><i class="fas fa-heart"
+			<!--<small class="copyright">Designed with <span class="sr-only"></span><i class="fas fa-heart"
 					style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
-					target="_blank">Xiaoying Riley</a> for developers</small>
+					target="_blank">Xiaoying Riley</a> for developers</small>-->
 		</div>
 	</footer><!--//app-footer-->
 </div>

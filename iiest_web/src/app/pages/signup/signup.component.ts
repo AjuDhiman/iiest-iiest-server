@@ -3,7 +3,7 @@ import { Employee } from '../../utils/registerinterface'
 import { DatePipe } from '@angular/common';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { RegisterService } from '../../services/register.service';
-import {GetdataService} from '../../services/getdata.service'
+import { GetdataService } from '../../services/getdata.service'
 import Validation from '../../utils/validation'
 import { NgbDate, NgbDateStruct, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -19,20 +19,20 @@ import { GetEmployee, UpdateEmployee } from 'src/app/store/actions/employee.acti
 })
 
 export class SignupComponent implements OnInit {
-  @Select(EmployeeState.GetEmployeeList) employees$:Observable<Employee>;
+  @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   userData: any;
   objId: string;
   editedData: any;
   userName: string = '';
   parsedUserData: any;
-  addemployee : Employee;
+  addemployee: Employee;
   dob: NgbDateStruct;
   getEmpGeneralData: any;
   getPortalType: any;
-  getProjectName : any;
-  getGradePay : any;
-  formType :string = "Registration";
-  isEditMode : boolean = false;
+  getProjectName: any;
+  getGradePay: any;
+  formType: string = "Registration";
+  isEditMode: boolean = false;
   form: FormGroup = new FormGroup({
     employee_name: new FormControl(''),
     gender: new FormControl(''),
@@ -63,12 +63,13 @@ export class SignupComponent implements OnInit {
   submitted = false;
   dobValue: Date;
   dojValue: Date;
+  signature_file: File;
   constructor(
     private formBuilder: FormBuilder,
     private calendar: NgbCalendar,
     private datePipe: DatePipe,
     private _registerService: RegisterService,
-    private _toastrService : ToastrService,
+    private _toastrService: ToastrService,
     private _getdataService: GetdataService,
     private store: Store) {
     this.empGeneralData();
@@ -112,6 +113,7 @@ export class SignupComponent implements OnInit {
             Validators.pattern(/^[0-9]{10}$/)
           ]
         ],
+        signature: [null, [Validators.required, this.validateFileType(['png'])]],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
@@ -130,18 +132,20 @@ export class SignupComponent implements OnInit {
       }
     );
 
-    this.form.patchValue({createdBy: `${this.userName}(${this.parsedUserData.employee_id})`});
+    this.form.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     console.log(this.calendar.getToday());
 
   }
 
-  get f(): { [key: string]: AbstractControl }
-   {
+  get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
   onSubmit(): void {
     this.submitted = true;
+
+    console.log(this.signature_file);
+    console.log(this.form);
     if (this.form.invalid) {
       return;
     }
@@ -149,117 +153,144 @@ export class SignupComponent implements OnInit {
     this.form.value.dob = this.datePipe.transform(this.form.value.dob, 'yyyy-MM-dd');
     this.form.value.doj = this.datePipe.transform(this.form.value.doj, 'yyyy-MM-dd');
 
-    if(this.isEditMode){
+    if (this.isEditMode) {
       this.editedData = this.form.value;
       this._registerService.updateEmployee(this.objId, this.editedData, `${this.userName}(${this.parsedUserData.employee_id})`).subscribe({
-        next: (response) =>{
-        if(response.success){
-          this.store.dispatch(new UpdateEmployee(this.objId, this.editedData));
-          this._toastrService.success('Record Edited Successfully', response.message);
-          this.backToRegister();
-        }else{
-          this._toastrService.error('Message Error!', response.message);
-        }
-      },
+        next: (response) => {
+          if (response.success) {
+            this.store.dispatch(new UpdateEmployee(this.objId, this.editedData));
+            this._toastrService.success('Record Edited Successfully', response.message);
+            this.backToRegister();
+          } else {
+            this._toastrService.error('Message Error!', response.message);
+          }
+        },
         error: (err) => {
-        let errorObj = err.error
-        if(errorObj.userError){
-          this._registerService.signout();
-        }else if(errorObj.emailErr){
-          this._toastrService.error('Message Error!', errorObj.emailErr);
-        }else if(errorObj.contactErr){
-          this._toastrService.error('Message Error!', errorObj.contactErr);
-        }else if(errorObj.alternateContactErr){
-          this._toastrService.error('Message Error!', errorObj.alternateContactErr);
-        }else if(errorObj.addressErr){
-          this._toastrService.error('Message Error!', errorObj.addressErr);
+          let errorObj = err.error
+          if (errorObj.userError) {
+            this._registerService.signout();
+          } else if (errorObj.emailErr) {
+            this._toastrService.error('Message Error!', errorObj.emailErr);
+          } else if (errorObj.contactErr) {
+            this._toastrService.error('Message Error!', errorObj.contactErr);
+          } else if (errorObj.alternateContactErr) {
+            this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+          } else if (errorObj.addressErr) {
+            this._toastrService.error('Message Error!', errorObj.addressErr);
+          }
         }
-    }})
-    }else{
+      })
+    } else {
       this.addemployee = this.form.value;
       this._registerService.addEmployee(this.addemployee).subscribe({
         next: (response) => {
-        if (response.success) {
-          this._toastrService.success('Record Added Successfully', response.message);
-          this.onReset();
-        } else {
-          this._toastrService.error('Message Error!', response.message);
-        }
-    },
+          if (response.success) {
+            this._toastrService.success('Record Added Successfully', response.message);
+            this.onReset();
+          } else {
+            this._toastrService.error('Message Error!', response.message);
+          }
+        },
         error: (err) => {
-        let errorObj = err.error
-        if(errorObj.userError){
-        this._registerService.signout();
-        }else if(errorObj.emailErr){
-        this._toastrService.error('Message Error!', errorObj.emailErr);
-        }else if(errorObj.contactErr){
-        this._toastrService.error('Message Error!', errorObj.contactErr);
-        }else if(errorObj.alternateContactErr){
-        this._toastrService.error('Message Error!', errorObj.alternateContactErr);
-        }else if(errorObj.addressErr){
-        this._toastrService.error('Message Error!', errorObj.addressErr);
-      }
-    }});
+          let errorObj = err.error
+          if (errorObj.userError) {
+            this._registerService.signout();
+          } else if (errorObj.emailErr) {
+            this._toastrService.error('Message Error!', errorObj.emailErr);
+          } else if (errorObj.contactErr) {
+            this._toastrService.error('Message Error!', errorObj.contactErr);
+          } else if (errorObj.alternateContactErr) {
+            this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+          } else if (errorObj.addressErr) {
+            this._toastrService.error('Message Error!', errorObj.addressErr);
+          }
+        }
+      });
     }
   }
 
-onReset(): void {
-  this.submitted = false;
-  this.form.reset();
-}
+  onReset(): void {
+    this.submitted = false;
+    this.form.reset();
+  }
 
 
-  empGeneralData(){
-    this._getdataService.getGeneralData().subscribe( {
-      next: (res) => { 
-       this.getPortalType = Object.values(res.portal_type);
-       this.getProjectName = Object.values(res.project_name);
-       this.getGradePay = Object.values(res.grade_pay);   
+  empGeneralData() {
+    this._getdataService.getGeneralData().subscribe({
+      next: (res) => {
+        this.getPortalType = Object.values(res.portal_type);
+        this.getProjectName = Object.values(res.project_name);
+        this.getGradePay = Object.values(res.grade_pay);
       },
       error: (err) => {
         let errorObj = err.error
-        if(errorObj.userError){
+        if (errorObj.userError) {
           this._registerService.signout();
         }
       }
-  }) 
-}
+    })
+  }
 
-backToRegister(){
-  this.submitted = false;
-  this.isEditMode = false;
-  this.form.reset();
-}
+  backToRegister() {
+    this.submitted = false;
+    this.isEditMode = false;
+    this.form.reset();
+  }
 
-isEditRecord(param:any){
-  console.log(param.Record);
-  this.isEditMode = param.isEditMode;
-  const record = param.Record;
-  this.objId = record._id
-  console.log(record);
-  this.formType = "Edit"
-  this.form.setValue({
-    'employee_name' : record.employee_name,
-    'gender': record.gender,
-    'dob': this.datePipe.transform(record.dob, 'yyyy-MM-dd'),
-    'email': record.email,
-    'company_name': record.company_name,
-    'portal_type': record.portal_type,
-    'project_name': record.project_name,
-    'doj': this.datePipe.transform(record.doj, 'yyyy-MM-dd'),
-    'department': record.department,
-    'designation': record.designation,
-    'salary': record.salary,
-    'grade_pay': record.grade_pay,
-    'contact_no': record.contact_no,
-    'alternate_contact': record.alternate_contact,
-    'address': record.address,
-    'city': record.city,
-    'state': record.state,
-    'country': record.country,
-    'zip_code': record.zip_code,
-    //'acceptTerms': record.,
-    'createdBy': record.createdBy
-  })
-}
+  isEditRecord(param: any) {
+    console.log(param.Record);
+    this.isEditMode = param.isEditMode;
+    const record = param.Record;
+    this.objId = record._id
+    console.log(record);
+    this.formType = "Edit"
+    this.form.setValue({
+      'employee_name': record.employee_name,
+      'gender': record.gender,
+      'dob': this.datePipe.transform(record.dob, 'yyyy-MM-dd'),
+      'email': record.email,
+      'company_name': record.company_name,
+      'portal_type': record.portal_type,
+      'project_name': record.project_name,
+      'doj': this.datePipe.transform(record.doj, 'yyyy-MM-dd'),
+      'department': record.department,
+      'designation': record.designation,
+      'salary': record.salary,
+      'grade_pay': record.grade_pay,
+      'contact_no': record.contact_no,
+      'alternate_contact': record.alternate_contact,
+      'address': record.address,
+      'city': record.city,
+      'state': record.state,
+      'country': record.country,
+      'zip_code': record.zip_code,
+      //'acceptTerms': record.,
+      'createdBy': record.createdBy
+    })
+  }
+
+  onSignatureEnter(event: any) {
+    this.signature_file = event.target.files[0];
+  }
+
+  validateFileType(allowedExtensions: string[]) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const file = control.value;
+        console.log(file);  
+        if (file) {
+          const fileExtension = file.split('.').pop()?.toLowerCase();
+          console.log(fileExtension)
+          if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
+            return null;
+          } else {
+            return { invalidFileType: true };
+          }
+        }
+  
+      return null;
+    };
+  }
+  
+  
+
 }

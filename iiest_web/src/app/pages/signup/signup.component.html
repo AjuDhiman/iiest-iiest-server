@@ -233,6 +233,7 @@
               <div *ngIf="f['zip_code'].errors['required']">Zip Code is required</div>
             </div>
           </div>
+          
           <div class="col-md-6">
             <label for="address" class="form-label">Address</label>
             <textarea type="text" placeholder="Address" rows="1" formControlName="address" autocomplete="off"
@@ -273,6 +274,16 @@
               [ngClass]="{ 'is-invalid': submitted && f['country'].errors }">
             <div *ngIf="submitted && f['country'].errors" class="invalid-feedback">
               <div *ngIf="f['country'].errors['required']">Country is required</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label for="signature" class="form-label">Signature</label>
+            <input type="file" id="signature" formControlName="signature" accept=".png"
+                   (change)="onSignatureEnter($event)"
+                   class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f['signature'].errors }">
+            <div *ngIf="submitted && f['signature'].errors" class="invalid-feedback">
+              <div *ngIf="f['signature'].errors['required']">Signature is required</div>
+              <div *ngIf="f['signature'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.</div>
             </div>
           </div>
           <div class="col-md-12">

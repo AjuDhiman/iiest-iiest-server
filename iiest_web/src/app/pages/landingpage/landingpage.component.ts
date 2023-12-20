@@ -5,7 +5,6 @@ import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInf
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-landingpage',
   templateUrl: './landingpage.component.html',
@@ -29,7 +28,9 @@ constructor(
   bodyElement.classList.remove('app');
   this.isToken = this._resiterService.isLoggedIn();
 }
-ngOnInit(): void {}
+ngOnInit(): void {
+
+}
 openModal(){
   if(!this.isToken){
    this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });

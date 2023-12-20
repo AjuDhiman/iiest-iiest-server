@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { waterTestFee, clientType, paymentMode, licenceType } from '../../utils/config';
 import { RegisterService } from '../../services/register.service';
 import { GetdataService } from '../../services/getdata.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 
 
 @Component({
@@ -30,13 +30,39 @@ export class FboComponent implements OnInit {
   productList: string[] = [];
   productName: any;
   processAmnt: any;
+  processAmnts: any = {};
   serviceName: any;
+  servicesNames: any = {};
   addFbo: any;
+  isFostac: boolean = false;
   isFoscos: boolean = false;
   recipientORshop: string = 'Recipients';
   isEditMode: boolean = false;
   formType: string = "Registration";
   isReadOnly: boolean = false;
+  resetMultiDrop: boolean;
+  selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
+
+  @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
+
+  fostac_training: FormGroup = new FormGroup({
+    processing_amount: new FormControl(''),
+    service_name: new FormControl(''),
+    client_type: new FormControl(''),
+    recipient_no: new FormControl(''),
+    total_amount: new FormControl('')
+  });
+
+  foscos_training: FormGroup = new FormGroup({
+    processing_amount:  new FormControl(''),
+    service_name:  new FormControl(''),
+    client_type:  new FormControl(''),
+    shops_no:  new FormControl(''),
+    water_test_fee:  new FormControl(''),
+    license_category:  new FormControl(''),
+    license_duration: new FormControl(''),
+    total_amount: new FormControl(''),
+  });
 
   fboForm: FormGroup = new FormGroup({
     fbo_name: new FormControl(''),
@@ -49,133 +75,146 @@ export class FboComponent implements OnInit {
     tehsil: new FormControl(''),
     address: new FormControl(''),
     pincode: new FormControl(''),
-    product_name: new FormControl(''),
-    processing_amount: new FormControl(''),
-    service_name: new FormControl(''),
-    client_type: new FormControl(''),
-    recipient_no: new FormControl(''),
-    water_test_fee: new FormControl(''),
+    product_name: new FormControl([]),
     payment_mode: new FormControl(''),
     createdBy: new FormControl(''),
-    license_category: new FormControl(''),
-    license_duration: new FormControl(''),
-    total_amount: new FormControl('')
+    total_amount: new FormControl(''),
   })
-
 
   constructor(
     private formBuilder: FormBuilder,
     private _getFboGeneralData: GetdataService,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService,
-    private router: Router
+    private _toastrService: ToastrService
   ) {
     this.getFboGeneralData();
   }
   ngOnInit(): void {
 
-    this._getFboGeneralData.getUserRecord().subscribe({
-      next: (res)=>{
-        console.log(res);
-      }
-    })
-
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
 
-    this.fboForm = this.formBuilder.group(
-      {
-        fbo_name: ['', Validators.required],
-        owner_name: ['', Validators.required],
-        owner_contact: ['',
-          [
-            Validators.required,
-            Validators.pattern(/^[0-9]{10}$/)
-          ]],
-        email: ['',
-          [
-            Validators.required,
-            Validators.email,
-          ]],
-        state: ['', Validators.required],
-        district: ['', Validators.required],
-        address: ['', Validators.required],
-        village: [''],
-        tehsil: [''],
-        pincode: [''],
-        product_name: ['', Validators.required],
-        processing_amount: ['', Validators.required],
-        service_name: ['', Validators.required],
-        client_type: ['', Validators.required],
-        recipient_no: ['', Validators.required],
-        water_test_fee: [''],
-        payment_mode: ['', Validators.required],
-        createdBy: ['', Validators.required],
-        license_category: [''],
-        license_duration: [''],
-        total_amount: ['', Validators.required]
-      });
+    this.fostac_training = this.formBuilder.group({
+      processing_amount: ['', Validators.required],
+      service_name: ['', Validators.required],
+      client_type: ['', Validators.required],
+      recipient_no: ['', Validators.required],
+      total_amount: ['', Validators.required]
+    })
 
-      this.fboForm.patchValue({createdBy : `${this.userName}(${this.parsedUserData.employee_id})`})
-      
+    this.foscos_training = this.formBuilder.group({
+      processing_amount: ['', Validators.required],
+      service_name: ['', Validators.required],
+      client_type: ['', Validators.required],
+      shops_no: ['', Validators.required],
+      water_test_fee: ['', Validators.required],
+      license_category: ['', Validators.required],
+      license_duration: ['', Validators.required],
+      total_amount: ['', Validators.required]
+    }),
+
+      this.fboForm = this.formBuilder.group(
+        {
+          fbo_name: ['', Validators.required],
+          owner_name: ['', Validators.required],
+          owner_contact: ['',
+            [
+              Validators.required,
+              Validators.pattern(/^[0-9]{10}$/)
+            ]],
+          email: ['',
+            [
+              Validators.required,
+              Validators.email,
+            ]],
+          state: ['', Validators.required],
+          district: ['', Validators.required],
+          address: ['', Validators.required],
+          village: [''],
+          tehsil: [''],
+          pincode: [''],
+          product_name: [[], this.arrayNotEmptyValidator],
+          payment_mode: ['', Validators.required],
+          createdBy: ['', Validators.required],
+          total_amount: ['', Validators.required],
+        });
+
+    this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
+
   }
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
   }
+
+  get fostac(): FormGroup {
+    return this.fboForm.get('fostac_training') as FormGroup;
+  }
+
+  get foscos(): FormGroup {
+    return this.fboForm.get('foscos_training') as FormGroup;
+  }
+
 
   setRequired() {
     return [Validators.required];
   }
   //Form Submit Method
   onSubmit() {
+    if (this.fbo['product_name'].errors) {
+      this.multiSelect.invalid = true;
+    } else {
+      this.multiSelect.invalid = false;
+    }
     this.submitted = true;
+    this.fboForm.patchValue({ selectedOpt: this.selected })
     if (this.fboForm.invalid) {
       return;
     }
 
-    if(this.isEditMode){
+    if (this.isEditMode) {
       this.editedData = this.fboForm.value;
       this._registerService.updateFbo(this.objId, this.editedData, `${this.userName}(${this.parsedUserData.employee_id})`).subscribe({
-        next: (res)=>{
-          if(res.success){
+        next: (res) => {
+          if (res.success) {
             this._toastrService.success('Record edited successfully', res.message);
             this.backToRegister();
           }
         }
       });
-    }else{
+    } else {
       this.addFbo = this.fboForm.value;
-      if(this.addFbo.payment_mode === 'Pay Page'){
-        this._registerService.fboPayment(this.addFbo).subscribe({
-          next: (res)=>{
-            window.location.href = res.message
+      if (this.addFbo.payment_mode === 'Pay Page') {
+        this._registerService.fboPayment(this.addFbo.total_amount).subscribe({
+          next: (res) => {
+            console.log(res)
           },
-          error: (err)=>{
+          error: (err) => {
             console.log(err);
           }
         })
-      }else{
+      } else {
+        console.log(this.addFbo)
         this._registerService.addFbo(this.addFbo).subscribe({
-        next: (res)=>{
-          if(res.success){
-            this._toastrService.success('Record edited successfully', res.message);
-            this.backToRegister();
+          next: (res) => {
+            if (res.success) {
+              this._toastrService.success('Record edited successfully', res.message);
+              this.backToRegister();
+            }
+          },
+          error: (err) => {
+            let errorObj = err.error;
+            if (errorObj.userError) {
+              this._registerService.signout();
+            } else if (errorObj.contactErr) {
+              this._toastrService.error('Message Error!', errorObj.contactErr);
+            } else if (errorObj.emailErr) {
+              this._toastrService.error('Message Error!', errorObj.emailErr);
+            } else if (errorObj.addressErr) {
+              this._toastrService.error('Message Error!', errorObj.addressErr);
+            }
           }
-        },
-        error: (err)=>{
-          let errorObj = err.error;
-          if(errorObj.userError){
-          this._registerService.signout();
-          }else if(errorObj.contactErr){
-          this._toastrService.error('Message Error!', errorObj.contactErr);
-          }else if(errorObj.emailErr){
-          this._toastrService.error('Message Error!', errorObj.emailErr);
-          }else if(errorObj.addressErr){
-          this._toastrService.error('Message Error!', errorObj.addressErr);
-          }
-        }
-      })
+        })
       }
     }
   }
@@ -186,13 +225,18 @@ export class FboComponent implements OnInit {
     this._getFboGeneralData.getFboGeneralData().subscribe({
       next: (res) => {
         this.fboGeneralData = res.product_name;
-        console.log(this.fboGeneralData);
         this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }));
+        console.log(this.fboGeneralData);
         this.productList = Object.keys(res.product_name);
+        for (let productName in res.product_name) {
+          let product = res.product_name[productName];
+          this.processAmnts[productName] = product['processing_amount'];
+          this.servicesNames[productName] = product['service_name'];
+        }
       },
       error: (err) => {
         let errorObj = err.error
-        if(errorObj.userError){
+        if (errorObj.userError) {
           this._registerService.signout();
         }
       }
@@ -202,70 +246,126 @@ export class FboComponent implements OnInit {
   //Reset the form
   onReset(): void {
     this.submitted = false;
-    
     this.fboForm.reset();
+    this.isFostac = false;
+    this.isFoscos = false;
+    this.fboForm.removeControl('fostac_training');
+    this.fboForm.removeControl('foscos_training');
+    this.resetMultiDrop = true;
+    this.multiSelect.onReset();
   }
 
   //Get Product List
   getProduct(event: any) {
     this.clearFunc();
     this.isQrCode = false;
-    this.productName = event.target.value;
-    var filtered = this.fboGeneralData.filter((a: any) => a.key == this.productName)
-    filtered = filtered[0].value;
-    this.processAmnt = Object.values(filtered.processing_amount);
-    this.serviceName = Object.values(filtered.service_name);
-
-    if (this.productName == 'Foscos Training') {
-      this.recipientORshop = 'Shops';
-      this.isFoscos = true;       
-      this.fboForm.controls['license_category'].setValidators(this.setRequired());   
-      this.fboForm.controls['license_duration'].setValidators(this.setRequired());  
-    }else {
-      this.recipientORshop = 'Recipients';
-      this.isFoscos = false;
-      this.fboForm.controls['license_category'].clearValidators();
-      this.fboForm.controls['license_duration'].clearValidators();
+    if (event.length > 0) {
+      this.multiSelect.invalid = false;
     }
+    this.productName = event;
+    this.fboForm.patchValue({ product_name: this.productName })
+    var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key))
+    console.log(filtered);
+
+    this.isFostac = false;
+    this.isFoscos = false;
+    if (this.productName.find((item: any) => item === 'Fostac Training')) {
+      this.isFostac = true;
+      this.fboForm.addControl('fostac_training', this.fostac_training);
+    }
+    else {
+      this.fboForm.removeControl('fostac_training');
+    }
+    if (this.productName.find((item: any) => item === 'Foscos Training')) {
+      this.recipientORshop = 'Shops';
+      this.isFoscos = true;
+      this.fboForm.addControl('foscos_training', this.foscos_training);
+    }
+    else {
+      this.fboForm.removeControl('foscos_training');
+    }
+
+    if(this.productName.length == 0){
+      if(this.submitted === true){
+        this.multiSelect.invalid = true
+      }
+    }
+    this.getGrandTotalAmount();
   }
   //Processing Amount + GST
   processAmount(event: any) {
-    if(this.fboForm.value.client_type != '' || this.fboForm.value.recipient_no != '' || this.fboForm.value.total_amount != ''){
-      var GST_amount = (Number(this.fboForm.value.processing_amount) ) * 18 / 100;
-      var total_amount = (Number(GST_amount) + Number(this.fboForm.value.processing_amount * this.fboForm.value.recipient_no));
-      this.fboForm.patchValue({ 'total_amount': total_amount });
+    let group = event.target.getAttribute('group');
+    if (group === 'fostac') {
+      if (this.fboForm.value.fostac_training.client_type != '' || this.fboForm.value.fostac_training.recipient_no != '' || this.fboForm.value.fostac_training.total_amount != '') {
+        var GST_amount = (Number(this.fboForm.value.fostac_training.processing_amount)) * 18 / 100;
+        var total_amount = (Number(GST_amount) + Number(this.fboForm.value.fostac_training.processing_amount)) * this.fboForm.value.fostac_training.recipient_no;
+        this.fboForm.get('fostac_training')?.patchValue({ 'total_amount': total_amount });
+      }
     }
+    if (group === 'foscos') {
+      if (this.fboForm.value.foscos_training.client_type != '' || this.fboForm.value.foscos_training.shops_no != '' || this.fboForm.value.foscos_training.total_amount != '') {
+        var GST_amount = (Number(this.fboForm.value.foscos_training.processing_amount)) * 18 / 100;
+        var total_amount = (Number(GST_amount) + Number(this.fboForm.value.foscos_training.processing_amount)) * this.fboForm.value.foscos_training.shops_no;
+        if (Number(this.fboForm.value.foscos_training.water_test_fee)) {
+          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
+        }
+        this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+      }
+    }
+    this.getGrandTotalAmount();
   }
   //Water test Ammount + GST
-  waterTestAdd(event:any){
-    if(event.target.value != 0){
-    var processAmnt = (Number(this.fboForm.value.processing_amount * this.fboForm.value.recipient_no)) + Number(this.fboForm.value.water_test_fee);
-    var GST_amount = processAmnt * 18 / 100;
-    var total_amount = (Number(GST_amount) + processAmnt);
-    this.fboForm.patchValue({ 'total_amount': total_amount });
-    }
-    else{
-      var processAmnt = (Number(this.fboForm.value.processing_amount * this.fboForm.value.recipient_no));
+  waterTestAdd(event: any) {
+    if (event.target.value != 0) {
+      var processAmnt = (Number(this.fboForm.value.foscos_training.processing_amount * this.fboForm.value.foscos_training.shops_no));
       var GST_amount = processAmnt * 18 / 100;
-      var total_amount = (Number(GST_amount) + processAmnt);
-      this.fboForm.patchValue({ 'total_amount': total_amount });
+      var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
+      this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
     }
+    else {
+      var processAmnt = (Number(this.fboForm.value.foscos_training.processing_amount * this.fboForm.value.foscos_training.shops_no));
+      var GST_amount = processAmnt * 18 / 100;
+      var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
+      this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+    }
+    this.getGrandTotalAmount();
   }
 
   //Client Type + GST
   clienttypeFun(event: any) {
+    let group = event.target.getAttribute('group');
     if (event.target.value === 'General Client') {
-      this.fboForm.patchValue({ 'recipient_no': 1 })
+      if (group === 'fostac') {
+        this.fboForm.get('fostac_training')?.patchValue({ 'recipient_no': 1 });
+      }
+      if (group === 'foscos') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'shops_no': 1 });
+      }
       this.isReadOnly = true;
-      var total_amount = this.GSTandTotalAmnt(1)
-      this.fboForm.patchValue({ 'total_amount': total_amount });
+      var total_amount = this.GSTandTotalAmnt(1, group)
+      if (group === 'fostac') {
+        this.fboForm.get('fostac_training')?.patchValue({ 'total_amount': total_amount });
+      }
+      if (group === 'foscos') {
+        if (this.fboForm.value.foscos_training.water_test_fee) {
+          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
+        }
+        this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+      }
+      this.getGrandTotalAmount();
     }
     if (event.target.value === 'Corporate Client') {
       this.minValue = 2;
       var val = 2;
-      this.fboForm.patchValue({ 'recipient_no': val });
-      this.recipientCount(val);
+      if (group === 'fostac') {
+        this.fboForm.get('fostac_training')?.patchValue({ 'recipient_no': val });
+      }
+      if (group === 'foscos') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'shops_no': val });
+      }
+      this.recipientCount(val, group);
     }
+    this.getGrandTotalAmount();
   }
   backToRegister() {
     this.submitted = false;
@@ -302,31 +402,55 @@ export class FboComponent implements OnInit {
   }
 
   //Recipient Count based Total Amount calulation
-  recipientCount(val: any) {
+  recipientCount(val: any, group: string) {
     this.isReadOnly = false;
     if (typeof (val) == 'number') {
-      var total_amount = this.GSTandTotalAmnt(val)
-      this.fboForm.patchValue({ 'total_amount': total_amount });
+      var total_amount = this.GSTandTotalAmnt(val, group)
+      if (group === 'fostac') {
+        this.fboForm.get('fostac_training')?.patchValue({ 'total_amount': total_amount });
+      }
+      if (group === 'foscos') {
+        if (this.fboForm.value.foscos_training.water_test_fee) {
+          let water_test_gst = Number(this.fboForm.value.foscos_training.water_test_fee) * 18 / 100;
+          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee) + water_test_gst;
+        }
+        this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+      }
+      this.getGrandTotalAmount();
     } else {
       var recipient = val.target.value;
-      var total_amount = this.GSTandTotalAmnt(recipient)
-      this.fboForm.patchValue({ 'total_amount': total_amount });
+      let group1 = val.target.getAttribute('group');
+      var total_amount = this.GSTandTotalAmnt(recipient, group1)
+      if (group1 === 'fostac') {
+        this.fboForm.get('fostac_training')?.patchValue({ 'total_amount': total_amount });
+      }
+      if (group1 === 'foscos') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'total_amount': total_amount });
+      }
+      this.getGrandTotalAmount();
     }
+    this.getGrandTotalAmount();
   }
 
   //GST Calculation and Add to Total Amount
-  GSTandTotalAmnt(param: any) {
+  GSTandTotalAmnt(param: any, group: string) {
     console.log(param)
-    var processAmnt = this.fboForm.value.processing_amount * param;
+    var processAmnt = this.fboForm.value?.fostac_training?.processing_amount * param;
+    if (group === 'fostac') {
+      processAmnt = this.fboForm.value.fostac_training.processing_amount * param;
+    }
+    if (group === 'foscos') {
+      processAmnt = this.fboForm.value.foscos_training.processing_amount * param;
+    }
     var GST_amount = processAmnt * 18 / 100;
     var total_amount = Number(GST_amount) + processAmnt;
     return total_amount;
   }
 
-  ModeofPayment(event: any){
-    if(this.fboForm.value.total_amount !== '' && event.target.value == 'Pay Page'){
+  ModeofPayment(event: any) {
+    if (this.fboForm.value.total_amount !== '' && event.target.value == 'Pay Page') {
       this.isQrCode = true;
-    }else{
+    } else {
       this.isQrCode = false;
     }
   }
@@ -339,5 +463,18 @@ export class FboComponent implements OnInit {
     this.fboForm.patchValue({ 'total_amount': '' })
     this.fboForm.patchValue({ 'service_name': '' })
   }
-}
 
+  getGrandTotalAmount() {
+    let grand_total_amount = (this.fboForm.value?.fostac_training?.total_amount || 0) + (this.fboForm.value?.foscos_training?.total_amount || 0);
+    this.fboForm.patchValue({ 'total_amount': grand_total_amount });
+  }
+
+  arrayNotEmptyValidator(control: FormControl) {
+    const value = control.value;
+    return Array.isArray(value) && value.length > 0 ? null : { arrayNotEmpty: true };
+  }
+
+  closeDropDown() {
+    this.multiSelect.isdropped = false;
+  }
+}

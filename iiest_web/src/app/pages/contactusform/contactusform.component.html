@@ -1,0 +1,204 @@
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <h2 class="heading-section">Contact Us</h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="wrapper">
+                    <div class="row no-gutters">
+                        <div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
+                            <div class="contact-wrap w-100 p-md-5 p-4">
+                                <div *ngIf="error" [ngClass]="{'hide-response': hidden}" style="display: flex; justify-content: space-between;" id="form-message-warning" class="mb-4">
+                                    {{error.message}}
+                                    <fa-icon class="fa-1x" [icon]="faClose" (click) = "hideResponse()"></fa-icon>
+                                </div>
+                                <div *ngIf="success" [ngClass]="{'hide-response': hidden}" id="form-message-success" style="display: flex; justify-content: space-between;" class="mb-4">
+                                     Submission successfull
+                                     <fa-icon class="fa-1x" [icon]="faClose" (click) = "hideResponse()"></fa-icon>
+                                </div>
+                                <form [formGroup]="ContactUsForm" id="contactForm" name="contactForm"
+                                    class="contactForm" (ngSubmit)="onSubmit()">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_ft_name">First Name
+                                                    <sup>*</sup></label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="contact_ft_name" 
+                                                    id="contact_ft_name" placeholder="First name" />
+                                                <div *ngIf="submitted && contactusform['contact_ft_name'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_ft_name'].errors['required']">
+                                                        First name is required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_lt_name">Last Name<sup>*</sup></label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="contact_lt_name" name="contact_ft_name"
+                                                    id="contact_lt_name" placeholder="Last Name" />
+                                                <div *ngIf="submitted && contactusform['contact_lt_name'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_lt_name'].errors['required']">
+                                                        Last name is required
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_phone">Phone<sup>*</sup></label>
+                                                <input type="tel" class="form-control" formControlName="contact_phone"
+                                                    name="contact_phone" id="contact_phone" placeholder="Phone" />
+                                                <div *ngIf="submitted && contactusform['contact_phone'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_phone'].errors['required']">
+                                                        Phone number is required
+                                                    </div>
+                                                    <div *ngIf="contactusform['contact_phone'].errors['pattern']">
+                                                        Please enter a valid phone number
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_email">Email<sup>*</sup></label>
+                                                <input type="email" class="form-control" formControlName="contact_email"
+                                                    name="contact_email" id="contact_email" placeholder="Email" />
+                                                <div *ngIf="submitted && contactusform['contact_email'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_email'].errors['required']">
+                                                        Email is required
+                                                    </div>
+                                                    <div *ngIf="contactusform['contact_email'].errors['email']">
+                                                        Please enter a valid email ID
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_state">State</label>
+                                                <select type="text" class="form-control "
+                                                    formControlName="contact_state" name="contact_state"
+                                                    id="contact_state" placeholder="State">
+                                                    <option value="delhi">Delhi</option>
+                                                    <option value="mumbai">Mumbai</option>
+                                                </select>
+                                                <div *ngIf="submitted && contactusform['contact_state'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_state'].errors['required']">
+                                                        State name is required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_zipcode">Zipcode<sup>*</sup></label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="contact_zipcode" name="contact_zipcode"
+                                                    id="contact_zipcode" placeholder="Zipcode" />
+                                                <div *ngIf="submitted && contactusform['contact_zipcode'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_zipcode'].errors['required']">
+                                                        Zipcode is required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="contact_subject">Subject<sup>*</sup></label>
+                                                <input type="text" class="form-control"
+                                                    formControlName="contact_subject" name="contact_subject"
+                                                    id="contact_subject" placeholder="Subject" />
+                                                <div *ngIf="submitted && contactusform['contact_subject'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_subject'].errors['required']">
+                                                        Subject is required
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group mb-2">
+                                                <label class="label" for="#">Message<sup>*</sup></label>
+                                                <textarea name="contact_message" formControlName="contact_message"
+                                                    class="form-control" id="contact_message" cols="30" rows="4"
+                                                    placeholder="Message"></textarea>
+                                                <div *ngIf="submitted && contactusform['contact_message'].errors"
+                                                    class="text-danger text-small">
+                                                    <div *ngIf="contactusform['contact_message'].errors['required']">
+                                                        message shouldn't be empty
+                                                    </div>
+                                                    <div *ngIf="contactusform['contact_message'].errors['minlength']">
+                                                        Message should be minimum 15 char long
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <input type="submit" value="Send Message" class="btn btn-primary">
+                                                <div class="submitting"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-5 d-flex align-items-stretch">
+                            <div class="info-wrap w-100 p-md-5 p-4">
+                                <h3>Let's get in touch</h3>
+                                <p class="mb-4">We're open for any suggestion or just to have a chat</p>
+                                <div class="dbox w-100 d-flex align-items-start">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <fa-icon class="fa-1x" [icon]="faLocationDot"></fa-icon>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Address:</span> IIEST, Building, 55, Panchkuian Marg, near Ramakrishna Ashram Metro Station, Bharat Nagar, Connaught Place, New Delhi</p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <fa-icon class="fa-1x" [icon]="faPhone"></fa-icon>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Phone:</span> <span> 9289310977</span></p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <fa-icon class="fa-1x" [icon]="faPaperPlane"></fa-icon>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Email:</span> <span> iiest.org</span></p>
+                                    </div>
+                                </div>
+                                <div class="dbox w-100 d-flex align-items-center">
+                                    <div class="icon d-flex align-items-center justify-content-center">
+                                        <fa-icon class="fa-1x" [icon]="faGlobe"></fa-icon>
+                                    </div>
+                                    <div class="text pl-3">
+                                        <p><span>Website:</span> <span href="#"> iiest.org</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -15,10 +15,12 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { SettingPanelComponent } from './shared/setting-panel/setting-panel.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { HeaderComponent } from './shared/header/header.component';
+import { MultiSelectComponent } from './shared/multi-select/multi-select.component';
 import { HomeComponent } from './pages/home/home.component';
 import { EmployeelistComponent } from './pages/employeelist/employeelist.component';
 import { DatePipe } from '@angular/common';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
+import { ContactusformComponent } from './pages/contactusform/contactusform.component';
 import { AuthInterceptor} from './interceptors/auth.interceptor';
 import { ExportAsModule } from 'ngx-export-as'
 //services
@@ -54,7 +56,9 @@ import { ViewFboComponent } from './pages/view-fbo/view-fbo.component';
     FbolistComponent,
     EditrecordComponent,
     RecipientComponent,
-    ViewFboComponent
+    ViewFboComponent,
+    ContactusformComponent,
+    MultiSelectComponent
   ],
   imports: [
     BrowserModule,
