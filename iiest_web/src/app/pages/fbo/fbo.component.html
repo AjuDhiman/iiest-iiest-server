@@ -157,49 +157,49 @@
                             <hr>
 
                             <div class="col-md-3">
-                                <label for="processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                                <select id="processing_amount" formControlName="processing_amount" group='fostac'
-                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('processing_amount')?.errors}"
+                                <label for="fostac_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+                                <select id="fostac_processing_amount" formControlName="fostac_processing_amount" group='fostac'
+                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_processing_amount')?.errors}"
                                     (change)="processAmount($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Processing Fee</option>
                                     <option *ngFor="let processamnt of processAmnts['Fostac Training'] | keyvalue"
                                         [value]="processamnt.value">{{ processamnt.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && fostac.get('processing_amount')?.errors"
+                                <div *ngIf="submitted && fostac.get('fostac_processing_amount')?.errors"
                                     class="invalid-feedback">
-                                    <div *ngIf="fostac.get('processing_amount')?.errors?.['required']">Processing amount
+                                    <div *ngIf="fostac.get('fostac_processing_amount')?.errors?.['required']">Processing amount
                                         is required
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-3">
-                                <label for="service_name" class="form-label">Service Name<sup>*</sup></label>
-                                <select id="service_name" formControlName="service_name"
-                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('service_name')?.errors}"
+                                <label for="fostac_service_name" class="form-label">Service Name<sup>*</sup></label>
+                                <select id="fostac_service_name" formControlName="fostac_service_name"
+                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_service_name')?.errors}"
                                     class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Service</option>
                                     <option *ngFor="let servicename of servicesNames['Fostac Training'] | keyvalue"
                                         [value]="servicename.value">{{ servicename.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && fostac.get('service_name')?.errors" class="invalid-feedback">
-                                    <div *ngIf="fostac.get('service_name')?.errors?.['required']">Service is required
+                                <div *ngIf="submitted && fostac.get('fostac_service_name')?.errors" class="invalid-feedback">
+                                    <div *ngIf="fostac.get('fostac_service_name')?.errors?.['required']">Service is required
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label for="client_type" class="form-label">Client Type<sup>*</sup></label>
-                                <select id="client_type" formControlName="client_type" group='fostac'
-                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('client_type')?.errors}"
+                                <label for="fostac_client_type" class="form-label">Client Type<sup>*</sup></label>
+                                <select id="fostac_client_type" formControlName="fostac_client_type" group='fostac'
+                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_client_type')?.errors}"
                                     (change)="clienttypeFun($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Client Type</option>
                                     <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && fostac.get('client_type')?.errors" class="invalid-feedback">
-                                    <div *ngIf="fostac.get('client_type')?.errors?.['required']">Client type is required
+                                <div *ngIf="submitted && fostac.get('fostac_client_type')?.errors" class="invalid-feedback">
+                                    <div *ngIf="fostac.get('fostac_client_type')?.errors?.['required']">Client type is required
                                     </div>
                                 </div>
                             </div>
@@ -219,13 +219,13 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label for="total_amount" class=" form-label">Fostac Total Amount<sup>*</sup>
+                                <label for="fostac_total" class=" form-label">Fostac Total Amount<sup>*</sup>
                                     <span style="font-size: x-small;">(18% GST Included)</span></label>
-                                <input type="number" placeholder="Total Amount" formControlName="total_amount"
-                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('total_amount')?.errors}"
-                                    class="form-control form-control-sm" id="total_amount" readonly />
-                                <div *ngIf="submitted && fostac.get('total_amount')?.errors" class="invalid-feedback">
-                                    <div *ngIf="fostac.get('total_amount')?.errors?.['required']">Total Amount Required
+                                <input type="number" placeholder="Fostac Total Amount" formControlName="fostac_total"
+                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_total')?.errors}"
+                                    class="form-control form-control-sm" id="fostac_total" readonly />
+                                <div *ngIf="submitted && fostac.get('fostac_total')?.errors" class="invalid-feedback">
+                                    <div *ngIf="fostac.get('fostac_total')?.errors?.['required']">Fostac Total Amount Required
                                     </div>
                                 </div>
                             </div>
@@ -242,49 +242,49 @@
                             <h6 class="pull-left">Foscos Training</h6>
                             <hr>
                             <div class="col-md-3">
-                                <label for="processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                                <select id="processing_amount" formControlName="processing_amount" group='foscos'
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('processing_amount')?.errors}"
+                                <label for="foscos_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+                                <select id="foscos_processing_amount" formControlName="foscos_processing_amount" group='foscos'
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_processing_amount')?.errors}"
                                     (change)="processAmount($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Processing Fee</option>
                                     <option *ngFor="let processamnt of processAmnts['Foscos Training'] | keyvalue"
                                         [value]="processamnt.value">{{ processamnt.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('processing_amount')?.errors"
+                                <div *ngIf="submitted && foscos.get('foscos_processing_amount')?.errors"
                                     class="invalid-feedback">
-                                    <div *ngIf="foscos.get('processing_amount')?.errors?.['required']">Processing amount
+                                    <div *ngIf="foscos.get('foscos_processing_amount')?.errors?.['required']">Processing amount
                                         is required
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label for="service_name" class="form-label">Service Name<sup>*</sup></label>
-                                <select id="service_name" class="form-select form-select-sm"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('service_name')?.errors}"
-                                    formControlName="service_name">
+                                <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
+                                <select id="foscos_service_name" class="form-select form-select-sm"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
+                                    formControlName="foscos_service_name">
                                     <option value="" disabled selected>Select the Service</option>
                                     <option *ngFor="let servicename of servicesNames['Foscos Training'] | keyvalue"
                                         [value]="servicename.value">{{ servicename.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('service_name')?.errors" class="invalid-feedback">
-                                    <div *ngIf="foscos.get('service_name')?.errors?.['required']">Service is required
+                                <div *ngIf="submitted && foscos.get('foscos_service_name')?.errors" class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_service_name')?.errors?.['required']">Service is required
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-3">
-                                <label for="client_type" class="form-label">Client Type<sup>*</sup></label>
-                                <select id="client_type" formControlName="client_type" group='foscos'
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('client_type')?.errors}"
+                                <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
+                                <select id="foscos_client_type" formControlName="foscos_client_type" group='foscos'
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_client_type')?.errors}"
                                     (change)="clienttypeFun($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Client Type</option>
                                     <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('client_type')?.errors" class="invalid-feedback">
-                                    <div *ngIf="foscos.get('client_type')?.errors?.['required']">Client type is required
+                                <div *ngIf="submitted && foscos.get('foscos_client_type')?.errors" class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_client_type')?.errors?.['required']">Client type is required
                                     </div>
                                 </div>
                             </div>
@@ -343,13 +343,13 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label for="total_amount" class=" form-label">Foscos Total Amount<sup>*</sup>
+                                <label for="foscos_total" class=" form-label">Foscos Total Amount<sup>*</sup>
                                     <span style="font-size: x-small;">(18% GST Included)</span></label>
-                                <input type="number" placeholder="Total Amount" formControlName="total_amount"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('total_amount')?.errors}"
-                                    class="form-control form-control-sm" id="total_amount" readonly />
-                                <div *ngIf="submitted && foscos.get('total_amount')?.errors" class="invalid-feedback">
-                                    <div *ngIf="foscos.get('total_amount')?.errors?.['required']">Total Amount Required
+                                <input type="number" placeholder="Foscos Total Amount" formControlName="foscos_total"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_total')?.errors}"
+                                    class="form-control form-control-sm" id="foscos_total" readonly />
+                                <div *ngIf="submitted && foscos.get('foscos_total')?.errors" class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_total')?.errors?.['required']">Foscos Total Amount Required
                                     </div>
                                 </div>
                             </div>
@@ -358,13 +358,13 @@
                         <div class="row" *ngIf="isFoscos || isFostac">
 
                             <div class="col-md-3">
-                                <label for="total_amount" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
+                                <label for="grand_total" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
                                     <span style="font-size: x-small;">(18% GST Included)</span></label>
-                                <input type="number" placeholder="Total Amount" formControlName="total_amount"
-                                    class="form-control form-control-sm" id="total_amount"
-                                    [ngClass]="{ 'is-invalid': submitted && fbo['total_amount'].errors }" readonly />
-                                <div *ngIf="submitted && fbo['total_amount'].errors" class="invalid-feedback">
-                                    <div *ngIf="fbo['total_amount'].errors['required']">Total Amount Required</div>
+                                <input type="number" placeholder="Total Amount" formControlName="grand_total"
+                                    class="form-control form-control-sm" id="grand_total"
+                                    [ngClass]="{ 'is-invalid': submitted && fbo['grand_total'].errors }" readonly />
+                                <div *ngIf="submitted && fbo['grand_total'].errors" class="invalid-feedback">
+                                    <div *ngIf="fbo['grand_total'].errors['required']">Total Amount Required</div>
                                 </div>
                             </div>
 

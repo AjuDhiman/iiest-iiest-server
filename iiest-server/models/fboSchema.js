@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const baseFboSchema = {
+const fboSchema = new Schema({
     id_num: {
         type: Number,
         unique: true,
@@ -41,15 +41,11 @@ const baseFboSchema = {
         unique: true
     },
     product_name: {
-        type: String, 
+        type: [String], 
         required: true
     },
-    processing_amount: {
-        type: Number, 
-        required: true
-    },
-    service_name: {
-        type: String, 
+    business_type:{
+        type: [String],
         required: true
     },
     customer_id: {
@@ -57,32 +53,12 @@ const baseFboSchema = {
         required: true,
         unique: true
     },
-    client_type: {
-        type: String,
-        required: true
-    },
-    recipient_no: {
-        type: Number,
-        required: true
-    },
-    water_test_fee: {
-        type: Number
-    },
     createdAt: {
         type: Date,
         required: true
     },
-    recipientDetails: {
-        type: [Object],
-        required: true,
-        default: []
-    },
     payment_mode: {
         type: String, 
-        required: true
-    },
-    total_amount: {
-        type: Number,
         required: true
     },
     createdBy: {
@@ -108,32 +84,62 @@ const baseFboSchema = {
     pincode: {
         type: Number,
         required: true
-    }
-}
-
-const fboModel = mongoose.model('fbo_registers', new Schema({}, { discriminatorKey: 'fbo_type' }));
-
-const fostacSchema = new Schema({
-    ...baseFboSchema
-});
-
-const foscosSchema = new Schema({
-    ...baseFboSchema,
-    license_category: {
-        type: String,
-        required: true
     },
-    license_duration: {
+    fostacInfo: {
+        type: {
+            fostac_processing_amount: {
+                type: Number
+            },
+            fostac_service_name: {
+                type: String
+            },
+            fostac_client_type: {
+                type: String
+            },
+            recipient_no: {
+                type: Number
+            },
+            fostac_total: {
+                type: Number
+            }
+        },
+      default: null
+    },
+    foscosInfo: {
+        type: {
+            foscos_processing_amount: {
+                type: Number
+            },
+            foscos_service_name: {
+                type: String
+            },
+            foscos_client_type: {
+                type: String
+            },
+            shop_no: {
+                type: Number
+            },
+            water_test_fee: {
+                type: Number
+            },
+            license_category: {
+                type: String
+            },
+            license_duration: {
+                type: String
+            },
+            foscos_total: {
+                type: Number
+            }
+        },
+        default: null
+    },
+    total_amount: {
         type: Number,
         required: true
     }
-});
+})
 
-const fostacModel = fboModel.discriminator('Fostac Training', fostacSchema);
-const foscosModel = fboModel.discriminator('Foscos Training', foscosSchema);
+const fboModel = mongoose.model('fbo_registers', fboSchema);
+module.exports = fboModel;
 
-module.exports = {
-    fboModel,
-    fostacModel,
-    foscosModel
-};

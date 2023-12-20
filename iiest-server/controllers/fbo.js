@@ -1,4 +1,3 @@
-const { foscosModel, fostacModel, fboModel } = require('../models/fboSchema');
 const pastFboSchema = require('../models/pastFboSchema');
 const { generateCustomerId } = require('./empGenerator');
 const { generateInvoice } = require('./invoiceGenerate')
@@ -7,8 +6,9 @@ const sha256 = require('sha256');
 const uniqid = require('uniqid');
 const fboPaymentSchema = require('../models/fboPaymentSchema');
 const mongoose = require('mongoose');
+const fboModel = require('../models/fboSchema');
 
-const registrationHandler = async(productName)=>{
+const registrationHandler = async()=>{
     let isUnique = false;
     let idNumber;
 
@@ -23,12 +23,8 @@ const registrationHandler = async(productName)=>{
     const generatedCustomerId = generateCustomerId(idNumber);
     let date = new Date();
 
-    let selectedModel;
-    if (productName === 'Foscos Training') {
-      selectedModel = foscosModel;
-    } else {
-      selectedModel = fostacModel;
-    }
+    let selectedModel = fboModel
+
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
@@ -127,7 +123,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, client_type, recipient_no, water_test_fee, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode } = fetchedFormData
 
-        const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name)
+        const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler()
 
         const fboEntry = await selectedModel.create({
         id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, customer_id: generatedCustomerId, client_type, recipient_no, water_test_fee, createdAt: date, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode
@@ -183,6 +179,9 @@ exports.fboPayReturn = async(req, res)=>{
 
 exports.fboRegister = async (req, res) => {
   try {
+
+    console.log(req.body);
+
       let success = false;
 
       const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, client_type, recipient_no, water_test_fee, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode } = req.body;
