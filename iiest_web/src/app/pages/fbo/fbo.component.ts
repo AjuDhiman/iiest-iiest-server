@@ -319,6 +319,7 @@ export class FboComponent implements OnInit {
         var total_amount = (Number(GST_amount) + Number(this.fboForm.value.fostac_training.fostac_processing_amount)) * this.fboForm.value.fostac_training.recipient_no;
         console.log(this.fboForm.value.fostac_training.recipient_no);
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
     }
     if (group === 'foscos') {
@@ -329,6 +330,7 @@ export class FboComponent implements OnInit {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
     }
     this.getGrandTotalAmount();
@@ -340,12 +342,14 @@ export class FboComponent implements OnInit {
       var GST_amount = processAmnt * 18 / 100;
       var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
       this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
+      this.fboForm.patchValue({ 'grand_total': total_amount });
     }
     else {
       var processAmnt = (Number(this.fboForm.value.foscos_training.foscos_processing_amount * this.fboForm.value.foscos_training.shops_no));
       var GST_amount = processAmnt * 18 / 100;
       var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
       this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
+      this.fboForm.patchValue({ 'grand_total': total_amount });
     }
     this.getGrandTotalAmount();
   }
@@ -366,12 +370,14 @@ export class FboComponent implements OnInit {
       var total_amount = this.GSTandTotalAmnt(1, group)
       if (group === 'fostac') {
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
       if (group === 'foscos') {
         if (this.fboForm.value.foscos_training.water_test_fee) {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
       this.getGrandTotalAmount();
     }
@@ -431,6 +437,7 @@ export class FboComponent implements OnInit {
       console.log(total_amount)
       if (group === 'fostac') {
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
       if (group === 'foscos') {
         if (this.fboForm.value.foscos_training.water_test_fee) {
@@ -438,6 +445,7 @@ export class FboComponent implements OnInit {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee)
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
       this.getGrandTotalAmount();
     } else {
@@ -446,12 +454,14 @@ export class FboComponent implements OnInit {
       var total_amount = this.GSTandTotalAmnt(recipient, group1)
       if (group1 === 'fostac') {
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
       if (group1 === 'foscos') {
         if (this.fboForm.value.foscos_training.water_test_fee) {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee)
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
       }
       this.getGrandTotalAmount();
     }
@@ -497,8 +507,8 @@ export class FboComponent implements OnInit {
   }
 
   getGrandTotalAmount() {
-    let grand_total_amount = (this.fboForm.value?.fostac_training?.total_amount || 0) + (this.fboForm.value?.foscos_training?.total_amount || 0);
-    this.fboForm.patchValue({ 'total_amount': grand_total_amount });
+    let grand_total_amount = (this.fboForm.value?.fostac_training?.fostac_total || 0) + (this.fboForm.value?.foscos_training?.foscos_total|| 0);
+    this.fboForm.patchValue({ 'grand_total': grand_total_amount });
   }
 
   //This function is a custom validator form validating that a form control has a empty array or not
