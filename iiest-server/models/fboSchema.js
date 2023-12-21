@@ -86,57 +86,20 @@ const fboSchema = new Schema({
         required: true
     },
     fostacInfo: {
-        type: {
-            fostac_processing_amount: {
-                type: Number
-            },
-            fostac_service_name: {
-                type: String
-            },
-            fostac_client_type: {
-                type: String
-            },
-            recipient_no: {
-                type: Number
-            },
-            fostac_total: {
-                type: Number
-            }
-        },
-      default: null
-    },
-    foscosInfo: {
-        type: {
-            foscos_processing_amount: {
-                type: Number
-            },
-            foscos_service_name: {
-                type: String
-            },
-            foscos_client_type: {
-                type: String
-            },
-            shop_no: {
-                type: Number
-            },
-            water_test_fee: {
-                type: Number
-            },
-            license_category: {
-                type: String
-            },
-            license_duration: {
-                type: String
-            },
-            foscos_total: {
-                type: Number
-            }
-        },
+        type: Object,
         default: null
     },
-    total_amount: {
-        type: Number,
+    foscosInfo: {
+        type: Object,
+        default: null
+    },
+    grand_total: {
+        type: Number, 
         required: true
+    },
+    gst_number: {
+        type: String, 
+        default: 'Not Required'
     }
 })
 

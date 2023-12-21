@@ -180,12 +180,9 @@ exports.fboPayReturn = async(req, res)=>{
 exports.fboRegister = async (req, res) => {
   try {
 
-    console.log(req.body);
-
       let success = false;
 
-      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, client_type, recipient_no, water_test_fee, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode } = req.body;
-
+      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training } = req.body;
       
       const existing_owner_contact = await fboModel.findOne({ owner_contact });
       if (existing_owner_contact) {
@@ -204,12 +201,28 @@ exports.fboRegister = async (req, res) => {
 
       const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
 
+      let total_processing_amount;
+
+      if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
+        total_processing_amount = Number(foscos_training.foscos_processing_amount) + Number(fostac_training.fostac_processing_amount);
+        if(foscos_training.water_test_fee !== null){
+          total_processing_amount += foscos_training.water_test_fee
+        }
+      }else if(product_name.includes('Fostac Training')){
+        total_processing_amount = Number(fostac_training.fostac_processing_amount);
+      }else if(product_name.includes('Foscos Training')){
+        total_processing_amount = Number(foscos_training.foscos_processing_amount);
+        if(foscos_training.water_test_fee !== null){
+          total_processing_amount += foscos_training.water_test_fee
+        }
+      }
+
       const fboEntry = await selectedModel.create({
-      id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, customer_id: generatedCustomerId, client_type, recipient_no, water_test_fee, createdAt: date, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode
+      id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training
       });
 
       if(fboEntry){
-        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, processing_amount, total_amount);
+        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total);
         success = true;
       }else{
         success = false; 

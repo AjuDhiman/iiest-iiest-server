@@ -55,17 +55,12 @@
                 <th class="cell">Owner</th>
                 <th class="cell">Customer ID</th>
                 <th class="cell">Contact</th>
-                <!--<th class="cell">Email</th>
-                 <th class="cell">State</th> -->
                 <th class="cell">District</th>
-                <!-- <th class="cell">Processing Fee</th> -->
                 <th class="cell">Product</th>
-                <th class="cell">Client Type</th>
-                <th class="cell">Recipient/Shop No</th>
+                <th class="cell">Recipient No</th>
+                <th class="cell">Shop No</th>
                 <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
-                <!-- <th class="cell">Water Test</th> -->
                 <th class="cell">Created At</th>
-                <!-- <th class="cell">Created By</th> -->
                 <th class="cell text-center">Action</th>
               </tr>
             </thead>
@@ -76,19 +71,12 @@
                 <td class="cell"><span class="truncate">{{fbo.owner_name}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.customer_id}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.owner_contact}}</span></td>
-                <!--<td class="cell"><span class="truncate">
-                    <fa-icon class="fa-l" style="margin-right: 5px;" [icon]="faEnvelope"></fa-icon>{{fbo.email}}</span>
-                </td>
-                 <td class="cell"><span class="truncate">{{fbo.state}}</span></td> -->
                 <td class="cell"><span class="truncate">{{fbo.district}}</span></td>
-                <!-- <td class="cell"><span class="truncate">{{fbo.processing_amount}}</span></td> -->
                 <td class="cell"><span class="truncate">{{fbo.product_name}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.client_type}}</span></td>
-                <td class="cell text-center"><span class="truncate selector" (click)="recipient(fbo)">{{fbo.recipient_no}}</span></td>
-                <td class="cell text-center"><span class="truncate">{{fbo.total_amount}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
-               <!--  <td class="cell"><span class="truncate">{{fbo.water_test_fee}}</span></td> -->
+                <td class="cell text-center" *ngIf="fbo.fostacInfo"><span class="truncate selector" (click)="recipient(fbo)">{{fbo.fostacInfo.recipient_no}}</span></td>
+                <td class="cell text-center" *ngIf="fbo.foscosInfo"><span class="truncate selector" (click)="recipient(fbo)">{{fbo.foscosInfo.shops_no}}</span></td>
+                <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
                 <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
-                <!-- <td class="cell"><span class="truncate">{{fbo.createdBy}}</span></td> -->
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;" 
                   (click)="viewFboDetails(fbo)" [icon]="faEye"></fa-icon>
