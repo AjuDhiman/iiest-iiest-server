@@ -42,10 +42,22 @@ const fboSchema = new Schema({
     },
     product_name: {
         type: [String], 
+        validate: {
+            validator: function(arr){
+                return arr.length > 0;
+            },
+            message: 'Product name cannot be empty'
+        },
         required: true
     },
     business_type:{
         type: [String],
+        validate: {
+            validator: function(arr){
+                return arr.length > 0;
+            },
+            message: 'Business type cannot be empty'
+        },
         required: true
     },
     customer_id: {
@@ -87,11 +99,15 @@ const fboSchema = new Schema({
     },
     fostacInfo: {
         type: Object,
-        default: null
+        required: function(){
+            return this.product_name.includes('Fostac Training')
+        }
     },
     foscosInfo: {
         type: Object,
-        default: null
+        required: function(){
+            return this.product_name.includes('Foscos Training')
+        }
     },
     grand_total: {
         type: Number, 
@@ -99,7 +115,9 @@ const fboSchema = new Schema({
     },
     gst_number: {
         type: String, 
-        default: 'Not Required'
+        required: function(){
+            return this.business_type.includes('b2b')
+        }
     }
 })
 

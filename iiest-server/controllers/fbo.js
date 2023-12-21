@@ -182,7 +182,7 @@ exports.fboRegister = async (req, res) => {
 
       let success = false;
 
-      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training } = req.body;
+      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = req.body;
       
       const existing_owner_contact = await fboModel.findOne({ owner_contact });
       if (existing_owner_contact) {
@@ -206,19 +206,19 @@ exports.fboRegister = async (req, res) => {
       if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
         total_processing_amount = Number(foscos_training.foscos_processing_amount) + Number(fostac_training.fostac_processing_amount);
         if(foscos_training.water_test_fee !== null){
-          total_processing_amount += foscos_training.water_test_fee
+          total_processing_amount += Number(foscos_training.water_test_fee)
         }
       }else if(product_name.includes('Fostac Training')){
         total_processing_amount = Number(fostac_training.fostac_processing_amount);
       }else if(product_name.includes('Foscos Training')){
         total_processing_amount = Number(foscos_training.foscos_processing_amount);
         if(foscos_training.water_test_fee !== null){
-          total_processing_amount += foscos_training.water_test_fee
+          total_processing_amount += Number(foscos_training.water_test_fee)
         }
       }
 
       const fboEntry = await selectedModel.create({
-      id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training
+      id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
       });
 
       if(fboEntry){
