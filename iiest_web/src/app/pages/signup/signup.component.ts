@@ -58,7 +58,8 @@ export class SignupComponent implements OnInit {
     country: new FormControl(''),
     zip_code: new FormControl(''),
     //acceptTerms: new FormControl(false),
-    createdBy: new FormControl('')
+    createdBy: new FormControl(''),
+    signature: new FormControl('')
   });
   submitted = false;
   dobValue: Date;
@@ -144,8 +145,11 @@ export class SignupComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    console.log(this.signature_file);
-    console.log(this.form);
+    console.log(typeof(this.signature_file));
+const formData = new FormData();
+formData.append('signatureFile', this.signature_file)
+    console.log(formData)
+    //return;
     if (this.form.invalid) {
       return;
     }
@@ -181,9 +185,12 @@ export class SignupComponent implements OnInit {
         }
       })
     } else {
-      this.addemployee = this.form.value;
+      this.addemployee = {...this.form.value, ...formData};
+      console.log(this.addemployee);
       this._registerService.addEmployee(this.addemployee).subscribe({
         next: (response) => {
+          console.log(response);
+          return
           if (response.success) {
             this._toastrService.success('Record Added Successfully', response.message);
             this.onReset();

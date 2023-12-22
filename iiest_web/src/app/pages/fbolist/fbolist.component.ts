@@ -135,12 +135,16 @@ export class FbolistComponent implements OnInit {
   }
 
   //Recipient Add
-  recipient(res:any){
-    if(res !== ''){
+  recipient(res:any, serviceType:string){
+    console.log(serviceType);
+    if(res !== '' && serviceType === 'fostac'){
       const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.fboData = res;
+      modalRef.componentInstance.serviceType = serviceType;
     }else{
-        //this.router.navigateByUrl('/home')
+      const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.fboData = res;
+      modalRef.componentInstance.serviceType = serviceType;
     }
   }
 

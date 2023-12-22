@@ -73,8 +73,8 @@
                 <td class="cell"><span class="truncate">{{fbo.owner_contact}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.district}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.product_name}}</span></td>
-                <td class="cell text-center" *ngIf="fbo.fostacInfo"><span class="truncate selector" (click)="recipient(fbo)">{{fbo.fostacInfo.recipient_no}}</span></td>
-                <td class="cell text-center" *ngIf="fbo.foscosInfo"><span class="truncate selector" (click)="recipient(fbo)">{{fbo.foscosInfo.shops_no}}</span></td>
+                <td class="cell text-center" *ngIf="fbo.fostacInfo"><span class="truncate selector" (click)="recipient(fbo.fostacInfo,'fostac')">{{fbo.fostacInfo.recipient_no}}</span></td>
+                <td class="cell text-center" *ngIf="fbo.foscosInfo"><span class="truncate selector" (click)="recipient(fbo.foscosInfo,'foscos')">{{fbo.foscosInfo.shops_no}}</span></td>
                 <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
                 <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
                 <td class="cell text-center">

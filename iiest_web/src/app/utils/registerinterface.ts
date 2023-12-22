@@ -24,7 +24,7 @@ export interface Employee {
   zip: number;
   acceptTerms: boolean;
   createdBy: string;
-  signature: File;
+  signatureFile: File;
 }
 
 export interface AddConsumer {

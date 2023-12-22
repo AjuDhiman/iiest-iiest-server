@@ -2,9 +2,10 @@
   <h6 class="modal-title text-white" id="modal-basic-title">Recipients</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
-<form *ngIf="recipientData?.length==0" [formGroup]="recipientform" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+<!-- *ngIf="recipientData?.length==0" -->
+<form  [formGroup]="recipientform" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
   <!--Foscos FORM Start-->
-  <div class="modal-body" *ngIf="this.fboType == 'Foscos Training'">
+  <div class="modal-body" *ngIf="this.serviceType === 'foscos'">
     <div class="row">
       <div class="col-md-4">
         <label for="operatorName" class="form-label">Operator Name<sup>*</sup></label>
@@ -37,7 +38,7 @@
   </div>
 
   <!--Fostac FORM Start-->
-  <div class="modal-body" *ngIf="this.fboType == 'Fostac Training'">
+  <div class="modal-body" *ngIf="this.serviceType === 'fostac'">
     <div class="row">
       <div class="col-md-4">
         <label for="name" class="form-label">Recipient Name<sup>*</sup></label>
