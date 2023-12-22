@@ -154,7 +154,7 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td>
               </tr>
             </tbody>
-            <tbody *ngIf="recipientData?.length === 0 || shopData?.length === 0">
+            <tbody *ngIf="(recipientData?.length === 0 && serviceType === 'fostac') || (shopData?.length === 0 && serviceType === 'foscos')">
               <tr>
                 <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
               </tr>
