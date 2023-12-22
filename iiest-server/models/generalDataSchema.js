@@ -9,6 +9,14 @@ const generalData = new Schema({
     fbo_data: {
         type: Object,
         required: true
+    },
+    products: {
+        type: Object,
+        required: true
+    },
+    posts: {
+        type: Array, 
+        required: true
     }
 })
 
