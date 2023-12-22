@@ -28,7 +28,7 @@ const registrationHandler = async()=>{
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
-const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount)=>{
+const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray)=>{
 
   const tax = (18/100)*amount;
 
@@ -46,7 +46,8 @@ const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmo
     contact: contact, 
     amount: amount,
     taxAmount: tax,
-    totalAmount: totalAmount
+    totalAmount: totalAmount,
+    chosenServices: serviceArray
   }
   generateInvoice(idNum, mail, infoObj);
 }
@@ -214,6 +215,16 @@ exports.fboRegister = async (req, res) => {
 
       const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
 
+      let serviceArr = [];
+
+      if(fostac_training){
+        serviceArr.push(fostac_training.fostac_service_name)
+      }
+
+      if(foscos_training){
+        serviceArr.push(foscos_training.foscos_service_name)
+      }
+
       let total_processing_amount;
 
       if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
@@ -235,7 +246,7 @@ exports.fboRegister = async (req, res) => {
       });
 
       if(fboEntry){
-        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total);
+        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr);
         success = true;
       }else{
         success = false; 

@@ -4,6 +4,10 @@ const { ToWords } = require('to-words')
 
 const invoiceTemplate = (fboInfo)=>{
 
+    const servicesChosen = fboInfo.chosenServices;
+
+    console.log(servicesChosen);
+
     const toWords = new ToWords({
         localeCode: 'en-IN',
         converterOptions: {
@@ -128,11 +132,11 @@ const invoiceTemplate = (fboInfo)=>{
                     <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Fostac Program Type</strong></p>
                 </div>
                 <div>
-                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="basicCatering" name="basicCatering">
+                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="basicCatering" name="basicCatering" ${servicesChosen.includes('Catering') ? 'checked' : ''}>
                     <label style="padding: 0; margin: 0; box-sizing: border-box;" for="basicCatering">Basic Catering</label>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="basicRetail" name="basicRetail">
+                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="basicRetail" name="basicRetail" ${servicesChosen.includes('Retail') ? 'checked' : ''}>
                     <label style="padding: 0; margin: 0; box-sizing: border-box;" for="basicRetail">Basic Retail</label>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;"></div>
@@ -142,11 +146,11 @@ const invoiceTemplate = (fboInfo)=>{
                     <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">License Program Type</strong></p>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="registration" name="registration">
-                    <label style="padding: 0; margin: 0; box-sizing: border-box;" for="registration">Registration</label>
+                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="registration" name="registration" ${servicesChosen.includes('Registration') ? 'checked' : ''}>
+                    <label style="padding: 0; margin: 0; box-sizing: border-box;" for="registration" >Registration</label>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="state" name="state">
+                    <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="state" name="state" ${servicesChosen.includes('State') ? 'checked' : ''}>
                     <label style="padding: 0; margin: 0; box-sizing: border-box;" for="state">State</label>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;">
