@@ -6,46 +6,46 @@
     <div class="row">
         <div class="container">
             <div class="row border border-1 p-1">
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">ID</div>
-                        <div class="col-sm-6 data">
-                            {{fboData.fssai_id}}
+                        <div class="col-md-4 title">ID</div>
+                        <div class="col-md-8 data">
+                            {{fboData.customer_id}}
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">FBO Name</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-4 title">FBO Name</div>
+                        <div class="col-md-8 data">
                             {{fboData.fbo_name}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row border border-1 p-1">
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Owner Name</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-4 title">Owner Name</div>
+                        <div class="col-md-8 data">
                             {{fboData.owner_name}}
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Contact No.</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-4 title">Contact No.</div>
+                        <div class="col-md-8 data">
                             {{fboData.owner_contact}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row border border-1 p-1">
-                <div class="col-sm-6">
+                <!-- <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Processing Amount</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-6 title">Processing Amount</div>
+                        <div class="col-md-6 data">
                             {{fboData.processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
                                 [icon]="faIndianRupeeSign"></fa-icon>
                             <span *ngIf="fboData.fbo_type == 'Foscos Training'"> 
@@ -53,117 +53,245 @@
                                 [icon]="faIndianRupeeSign"></fa-icon><span style="font-size: x-small;">(Water test Fee)</span></span>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6">
+                </div> -->
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Email</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-4 title">Payment Mode</div>
+                        <div class="col-md-8 data">
+                            {{fboData.payment_mode}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Email</div>
+                        <div class="col-md-8 data">
                             {{fboData.email}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row border border-1 p-1">
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Client Type</div>
-                        <div class="col-sm-6 data">
-                            {{fboData.client_type}}
+                        <div class="col-md-4 title">Business Type</div>
+                        <div class="col-md-8 data text-uppercase">
+                            {{fboData.business_type}}
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Service Name</div>
-                        <div class="col-sm-6 data">
-                            {{fboData.service_name}}
+                        <div class="col-md-4 title">GST Number</div>
+                        <div class="col-md-8 data">
+                            {{fboData.gst_number}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row border border-1 p-1">
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Address</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-4 title">Address</div>
+                        <div class="col-md-8 data">
                             {{fulladdress}}
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">Payment Mode</div>
-                        <div class="col-sm-6 data">
-                            {{fboData.payment_mode}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row border border-1 p-1">
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-6 title">Total Amount <br><span
+                        <div class="col-md-4 title">Total Amount <br><span
                                 style="font-size: x-small; font-weight: normal;">(18%
                                 GST Included)</span></div>
-                        <div class="col-sm-6 data">
-                            {{fboData.total_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
+                        <div class="col-md-8 data">
+                            {{fboData.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;"
                                 [icon]="faIndianRupeeSign"></fa-icon>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+            </div>
+            <!-- <div class="row border border-1 p-1">
+                
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-sm-6 title">FBO Type</div>
-                        <div class="col-sm-6 data">
+                        <div class="col-md-6 title"> Type</div>
+                        <div class="col-md-6 data">
                             {{fboData.fbo_type}}
                         </div>
                     </div>
                 </div>
-            </div>
-            <div *ngIf="fboData.fbo_type == 'Foscos Training'" class="row border border-1 p-1">
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-6 title">License Duration</div>
-                        <div class="col-sm-6 data">
-                            {{fboData.license_duration}} Year
+            </div> -->
+            <div *ngIf="fboData.foscosInfo" class="row border border-1 p-1">
+                <div class="col-md title" style="color: #1957a9;">Foscos Details</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Client Type</div>
+                            <div class="col-md-6 data">
+                                {{fboData.foscosInfo.foscos_client_type}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Processing Amount </div>
+                            <div class="col-md-6 data">
+                                {{fboData.foscosInfo.foscos_processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Service Name</div>
+                            <div class="col-md-6 data">
+                                {{fboData.foscosInfo.foscos_service_name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Licence Category</div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.license_category}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Licence Duration</div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.license_duration}} Year</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">No. of Shops </div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.shops_no}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Water Test Fee</div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.water_test_fee}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                [icon]="faIndianRupeeSign"></fa-icon></div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3 title">Foscos Total <br><span
+                                style="font-size: x-small; font-weight: normal;">(18%
+                                GST Included)</span></div>
+                        <div class="col-md-9 data">
+                            {{fboData.foscosInfo.foscos_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                [icon]="faIndianRupeeSign"></fa-icon>
+                        </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-6 title">License Category</div>
-                        <div class="col-sm-6 data">
-                            {{fboData.license_category}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row border border-1 p-1">
-                <div class="col-sm title">Recipients</div>
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
                             <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
-                                    <tr *ngIf="fboData.fbo_type == 'Fostac Training'">
-                                        <th class="cell">S.No</th>
-                                        <th class="cell">Recipient Name</th>
-                                        <th class="cell">Phone</th>
-                                        <th class="cell">Aadhar No.</th>
-                                    </tr>
-                                    <tr *ngIf="fboData.fbo_type == 'Foscos Training'">
+                                    <tr>
                                         <th class="cell">S.No</th>
                                         <th class="cell">Operator Name</th>
                                         <th class="cell">Address</th>
                                         <th class="cell">Electricity Bill</th>
                                     </tr>
                                 </thead>
+                                <tbody *ngIf="shopDetails?.length>0">
+                                    <tr *ngFor="let shops of shopDetails let sr = index">
+                                        <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
+                                        <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
+                                        <td *ngIf="!isfostac" class="cell"><span
+                                                class="truncate">{{shops.operatorName}}</span></td>
+                                        <td *ngIf="!isfostac" class="cell"><span
+                                                class="truncate">{{shops.address}}</span></td>
+                                        <td *ngIf="!isfostac" class="cell"><span
+                                                class="truncate">{{shops.eBill}}</span></td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="shopDetails == undefined">
+                                <!-- <tbody *ngIf="shopDetails?.length == 0"> -->
+                                    <tr>
+                                        <td colspan="15" class="cell text-center fw-bold">----------------- No Data Found
+                                            ----------------</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="fboData.fostacInfo" class="row border border-1 p-1">
+                <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Client Type</div>
+                            <div class="col-md-6 data">
+                                {{fboData.fostacInfo.fostac_client_type}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Processing Amount </div>
+                            <div class="col-md-6 data">
+                                {{fboData.fostacInfo.fostac_processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Service Name</div>
+                            <div class="col-md-6 data">
+                                {{fboData.fostacInfo.fostac_service_name}}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">No. of Recipient </div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.shops_no}}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3 title">Fostac Total <br><span
+                                style="font-size: x-small; font-weight: normal;">(18%
+                                GST Included)</span></div>
+                        <div class="col-md-9 data">
+                            {{fboData.fostacInfo.fostac_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                [icon]="faIndianRupeeSign"></fa-icon>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive">
+                            <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">S.No</th>
+                                        <th class="cell">Recipient Name</th>
+                                        <th class="cell">Phone</th>
+                                        <th class="cell">Aadhar No.</th>
+                                    </tr>
+                                    
+                                </thead>
+                               
                                 <tbody *ngIf="recipientData?.length>0">
                                     <tr *ngFor="let recipients of recipientData let sr = index">
                                         <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                                         <td *ngIf="isfostac" class="cell"><span
-                                                class="truncate">{{recipients.name}}</span></td>
+                                                class="truncate">{{recipients.name}}</span>
+                                        </td>
                                         <td *ngIf="isfostac" class="cell"><span
                                                 class="truncate">{{recipients.phoneNo}}</span></td>
                                         <td *ngIf="isfostac" class="cell"><span
@@ -178,9 +306,10 @@
                                                 class="truncate">{{recipients.eBill}}</span></td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf="recipientData?.length == 0">
+                                <tbody *ngIf="recipientData== undefined">
+                                <!-- <tbody *ngIf="recipientData?.length == 0"> -->
                                     <tr>
-                                        <td colspan="15" class="text-center fw-bold">----------------- No Data Found
+                                        <td colspan="15" class="cell text-center fw-bold">----------------- No Data Found
                                             ----------------</td>
                                     </tr>
                                 </tbody>
@@ -191,3 +320,4 @@
             </div>
         </div>
     </div>
+</div>

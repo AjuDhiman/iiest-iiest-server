@@ -10,7 +10,7 @@
       </div><!--//row-->
       <div class="row gy-4 mb-3">
         <form [formGroup]="form" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off"
-          (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+          (ngSubmit)="onSubmit()">
           <div class="col-md-6">
             <label for="employee_name" class="form-label">Employee Name</label>
             <input type="text" placeholder="Employee Name" formControlName="employee_name"
