@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
       this.getEmployees();
       this.getProductData();
+      this.getUserRecord();
       this.employees$.subscribe(res => {
        this.data = res;
        console.log(this.data)

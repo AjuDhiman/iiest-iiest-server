@@ -1,4 +1,4 @@
-const { fboModel } = require('../models/fboSchema');
+const fboModel = require('../models/fboSchema');
 const { recipientValidationSchema, shopValidationSchema } = require('../models/recipientSchema');
 const { createFsBucket } = require('../config/db')
 
@@ -14,7 +14,7 @@ exports.addRecipient = async (req, res) => {
             return res.status(404).json({ success, message: 'FBO not found' });
         }
 
-        if (selectedFbo.product_name === 'Foscos Training') {
+        if (req.file) {
             const shopBody = req.body;
             const file = req.file;
             const bucket = createFsBucket();
@@ -31,7 +31,7 @@ exports.addRecipient = async (req, res) => {
             const shopDataValid = await shopValidationSchema.validateAsync(shopBody);
             recipientData = shopDataValid;
 
-            await selectedFbo.recipientDetails.push(recipientData);
+            selectedFbo.shopDetails.push(recipientData);
         
             const updatedFboData = await selectedFbo.save();
     
@@ -47,7 +47,7 @@ exports.addRecipient = async (req, res) => {
             const recipientDataValid = await recipientValidationSchema.validateAsync(recipientBody);
             recipientData = recipientDataValid;
 
-            await selectedFbo.recipientDetails.push(recipientData);
+            selectedFbo.recipientDetails.push(recipientData);
         
             const updatedFboData = await selectedFbo.save();
     

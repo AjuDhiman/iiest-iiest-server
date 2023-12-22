@@ -1,15 +1,16 @@
-const { fboModel } = require('../models/fboSchema');
+const fboModel = require('../models/fboSchema');
 
 const employeeRecord = async(req, res)=>{
     try {
         const userData = req.user;
+
         const overAllRecord = await fboModel.find({createdBy: `${userData.employee_name}(${userData.employee_id})`});
     
         let totalSaleAmount = 0;
     
         if(overAllRecord){
             overAllRecord.forEach((elem)=>{
-                totalSaleAmount += elem.processing_amount;
+                totalSaleAmount += elem.grand_total;
             })
         }
         
@@ -18,7 +19,7 @@ const employeeRecord = async(req, res)=>{
         let pendingSalesAmount = 0;
         if(pendingSales){
             pendingSales.forEach((elem)=>{
-                pendingSalesAmount += elem.processing_amount;
+                pendingSalesAmount += elem.grand_total;
             })
         }
     
@@ -28,7 +29,7 @@ const employeeRecord = async(req, res)=>{
         
         if(approvedSales){
             approvedSales.forEach((elem)=>{
-                approvedSalesAmount += elem.processing_amount
+                approvedSalesAmount += elem.grand_total
             })
         }
 

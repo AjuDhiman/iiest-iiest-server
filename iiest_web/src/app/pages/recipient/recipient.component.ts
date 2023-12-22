@@ -13,9 +13,8 @@ export class RecipientComponent implements OnInit {
   @Input() public serviceType :string;
   selectedFile: File | null = null;
   fboID: any;
-  fboType: string;
-  fboRecipientCount : number;
   recipientData: any;
+  shopData: any;
   addRecipient: any;
   submitted = false;
   isfostac:boolean = false;
@@ -37,16 +36,12 @@ export class RecipientComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    console.log(this.addRecipient);
     console.log(this.fboData);
-    console.log(this.serviceType)
-    this.fboType = this.fboData.product_name;
-    this.fboRecipientCount = this.fboData.recipient_no;
-    this.fboID = this.fboData._id;
-    this.recipientData = this.fboData.recipientDetails;
-   // console.log(this.fboID, this.recipientData);
-    switch (this.fboType) {
-      case "Fostac Training":
+    this.recipientData = this.fboData.recipientDetails; 
+    this.shopData = this.fboData.shopDetails;
+
+    switch (this.serviceType) {
+      case "fostac":
         this.isfostac = true;
         this.recipientform = this.formBuilder.group(
           {
@@ -63,7 +58,7 @@ export class RecipientComponent implements OnInit {
               ]]
           });
         break;
-      case "Foscos Training":
+      case "foscos":
         this.isfostac = false;
         this.recipientform = this.formBuilder.group(
           {
@@ -93,9 +88,13 @@ export class RecipientComponent implements OnInit {
       return;
     }
 
+    this.fboID = this.fboData._id
+    console.log(this.fboID);
+    console.log()
+
     let formData = new FormData()
 
-    if(this.fboType === 'Fostac Training'){
+    if(this.serviceType === 'fostac'){
 
       console.log(this.recipientform.get('name')?.value)
       console.log(this.recipientform.get('aadharNo')?.value)
@@ -126,7 +125,7 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
-    }else if(this.fboType === 'Foscos Training'){
+    }else if(this.serviceType === 'foscos'){
       formData.append('operatorName', this.recipientform.get('operatorName')?.value)
       formData.append('address', this.recipientform.get('address')?.value)
       if (this.selectedFile) {

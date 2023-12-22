@@ -28,9 +28,9 @@ export class RegisterService {
       ));
   }
 
-  public fboPayment(fboDetails: fbo): Observable<any> {
+  public fboPayment(addFbo: fbo): Observable<any> {
     const url = `${this.url}/fbopayment`;
-    return this.http.post<any>(url, fboDetails).pipe(
+    return this.http.post<any>(url, addFbo).pipe(
       catchError(
         this.handleError
       ));

@@ -124,37 +124,39 @@
         <div class="table-responsive">
           <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
             <thead>
-              <tr *ngIf="this.fboType == 'Fostac Training'">
+              <tr *ngIf="this.serviceType == 'fostac'">
                 <th class="cell">S.No</th>
                 <th class="cell">Recipient Name</th>
                 <th class="cell">Phone</th>
                 <th class="cell">Aadhar No.</th>
               </tr>
-              <tr *ngIf="this.fboType == 'Foscos Training'">
+              <tr *ngIf="this.serviceType == 'foscos'">
                 <th class="cell">S.No</th>
                 <th class="cell">Operator Name</th>
                 <th class="cell">Address</th>
                 <th class="cell">Electricity Bill</th>
               </tr>
             </thead>
-            <tbody *ngIf="recipientData?.length>0">
-
+            <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
               <tr  *ngFor="let recipients of recipientData let sr = index">
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.phoneNo}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.aadharNo}}</span></td>
-              
+              </tr>
+              </tbody>
+              <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
+                <tr *ngFor="let shops of shopData let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{recipients.operatorName}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{recipients.address}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{recipients.eBill}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td>
               </tr>
             </tbody>
-            <tbody *ngIf="recipientData?.length == 0">
+            <tbody *ngIf="recipientData?.length === 0 || shopData?.length === 0">
               <tr>
-                <td colspan="15" class="text-center fw-bold">----------------- No Data Found ----------------</td>
+                <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
               </tr>
             </tbody>
           </table>

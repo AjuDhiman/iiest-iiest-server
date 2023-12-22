@@ -57,6 +57,7 @@ exports.fboPayment = async(req, res)=>{
 
   const formBody = req.body;
   req.session.fboFormData = formBody;
+  console.log(formBody);
 
   const existing_owner_contact = await fboModel.findOne({ owner_contact: formBody.owner_contact });
       if (existing_owner_contact) {
@@ -67,11 +68,6 @@ exports.fboPayment = async(req, res)=>{
       if (existing_email) {
       return res.status(401).json({ success, emailErr: "This email is already in use." });
     }
-      
-  const existing_address = await fboModel.findOne({ address: formBody.address });
-      if(existing_address){
-      return res.status(401).json({ success, addressErr: "This address is already in use." })
-  }
   
   let tx_uuid = uniqid();
 
@@ -127,7 +123,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = fetchedFormData        
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = fetchedFormData    
 
         const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler()
 
@@ -157,14 +153,14 @@ exports.fboPayReturn = async(req, res)=>{
 
         if(fboEntry){
           buyerData = await fboPaymentSchema.create({
-            buyerId, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: total_amount
+            buyerId, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: grand_total
           })
         }else{
           return res.status(401).json({success, message: "FBO entry not successful"})
         }
 
         if(buyerData){
-           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, processing_amount, total_amount);
+           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total);
         }else{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
@@ -214,11 +210,6 @@ exports.fboRegister = async (req, res) => {
       const existing_email = await fboModel.findOne({ email });
       if (existing_email) {
       return res.status(401).json({ success, emailErr: "This email is already in use." });
-      }
-      
-      const existing_address = await fboModel.findOne({ address });
-      if(existing_address){
-      return res.status(401).json({ success, addressErr: "This address is already in use." })
       }
 
       const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
