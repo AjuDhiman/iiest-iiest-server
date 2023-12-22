@@ -128,6 +128,16 @@ exports.fboPayReturn = async(req, res)=>{
 
         const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler()
 
+        let serviceArr = [];
+
+        if(fostac_training){
+        serviceArr.push(fostac_training.fostac_service_name)
+        }
+
+        if(foscos_training){
+        serviceArr.push(foscos_training.foscos_service_name)
+        }
+
         let total_processing_amount;
 
         if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
@@ -161,7 +171,7 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         if(buyerData){
-           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total);
+           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr);
         }else{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }

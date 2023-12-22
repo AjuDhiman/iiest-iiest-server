@@ -102,11 +102,11 @@ const invoiceTemplate = (fboInfo)=>{
             style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px;">
             <div class="padding: 0; margin: 0; box-sizing: border-box; recipt-no">
                 <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong
-                        style="padding: 0; margin: 0; box-sizing: border-box;">Receipt No: ${fboInfo.receiptNo}</strong></p>
+                        style="padding: 0; margin: 0; box-sizing: border-box;">Receipt No: </strong>${fboInfo.receiptNo}</p>
             </div>
             <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-rows: repeat(2, auto); gap: 10px;">
                 <div class="date" style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; text-align: right;"><strong>Date: ${fboInfo.date}</strong></div>
+                    <div style="padding: 0; margin: 0; box-sizing: border-box; text-align: right;"><strong>Date: </strong>${fboInfo.date}</div>
                     <div style="padding: 0; margin: 0; box-sizing: border-box;"></div>
                 </div>
                 <div class="place" style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
@@ -117,14 +117,14 @@ const invoiceTemplate = (fboInfo)=>{
         </div>
         <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-rows: repeat(7, auto); gap: 10px; padding: 20px;">
             <div style="padding: 0; margin: 0; box-sizing: border-box;" class="name">
-                <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Name of the Candidate: ${fboInfo.name} </strong> </p>
+                <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Name of the Candidate: </strong>${fboInfo.name}</p>
             </div>
             <div style="display: grid; grid-template-columns: 8fr 4fr; gap: 10px;">
                 <div style="padding: 0; margin: 0; box-sizing: border-box;" class="address">
-                    <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Address: ${fboInfo.address} </strong></p>
+                    <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Address: </strong>${fboInfo.address}</p>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;" class="contact">
-                    <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Contact: ${fboInfo.contact} </strong></p>
+                    <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Contact: </strong>${fboInfo.contact}</p>
                 </div>
             </div>
             <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
@@ -171,11 +171,11 @@ const invoiceTemplate = (fboInfo)=>{
                     <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">By Cash/Check/Paytm/UPI </strong> </p>
                 </div>
                 <div style="padding: 0; margin: 0; box-sizing: border-box;" class="transaction-id">
-                    <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Transaction ID: ${fboInfo.transactionId} </strong></p>
+                    <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Transaction ID: </strong>${fboInfo.transactionId}</p>
                 </div>
             </div>
             <div class="total-amount-in-words" style="padding: 0; margin: 0; box-sizing: border-box;">
-                <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Total Amount in Words: ${amountInWords} </strong></p>
+                <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Total Amount in Words: </strong>${amountInWords}</p>
             </div>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; box-sizing: border-box;">
