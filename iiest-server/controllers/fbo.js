@@ -32,7 +32,13 @@ const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmo
 
   const tax = (18/100)*amount;
 
+  const date = new Date();
+  const dateVal = date.getDate();
+  const monthVal = date.getMonth() + 1;
+  const yearVal = date.getFullYear();
+
   const infoObj = {
+    date: `${dateVal}-${monthVal}-${yearVal}`,
     receiptNo: idNum,
     transactionId: idNum,
     name: fboName, 
@@ -73,7 +79,7 @@ exports.fboPayment = async(req, res)=>{
     "merchantId": "PGTESTPAYUAT93",
     "merchantTransactionId": tx_uuid,
     "merchantUserId": "MUID123",
-    "amount": formBody.total_amount * 100,
+    "amount": formBody.grand_total * 100,
     "redirectUrl": "http://localhost:3000/iiest/fbo-pay-return",
     "redirectMode": "POST",
     "callbackUrl": "http://localhost:3000/iiest/fbo-pay-return",
@@ -121,12 +127,28 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, client_type, recipient_no, water_test_fee, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode } = fetchedFormData
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = fetchedFormData        
 
         const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler()
 
+        let total_processing_amount;
+
+        if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
+        total_processing_amount = Number(foscos_training.foscos_processing_amount) + Number(fostac_training.fostac_processing_amount);
+        if(foscos_training.water_test_fee !== null){
+          total_processing_amount += Number(foscos_training.water_test_fee)
+          }
+        }else if(product_name.includes('Fostac Training')){
+        total_processing_amount = Number(fostac_training.fostac_processing_amount);
+        }else if(product_name.includes('Foscos Training')){
+        total_processing_amount = Number(foscos_training.foscos_processing_amount);
+        if(foscos_training.water_test_fee !== null){
+          total_processing_amount += Number(foscos_training.water_test_fee)
+          }
+        }
+
         const fboEntry = await selectedModel.create({
-        id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, processing_amount, service_name, customer_id: generatedCustomerId, client_type, recipient_no, water_test_fee, createdAt: date, payment_mode, createdBy, license_category, license_duration, total_amount, village, tehsil, pincode
+        id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
         });
 
         const buyerId = new mongoose.Types.ObjectId(fboEntry.id);

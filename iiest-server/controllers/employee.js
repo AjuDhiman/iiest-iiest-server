@@ -12,6 +12,10 @@ const JWT_SECRET = auth.JWT_TOKEN;
 exports.employeeRegister = async(req, res)=>{
     try {
 
+        console.log(req.body);
+        console.log(req.file);
+        return;
+
         let success = false;
         let isUnique = false; //To check if id number generated is unique 
     

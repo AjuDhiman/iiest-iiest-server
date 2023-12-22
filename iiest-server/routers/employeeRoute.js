@@ -4,10 +4,13 @@ const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editE
 const { employeeFormData } = require('../controllers/generalData');
 const { employeeRecord } = require('../controllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
+const multer = require('multer')
 
 const router = express.Router();
+const signatureStorage = multer.memoryStorage();
+const signatureUpload = multer({storage: signatureStorage})
 
-router.post('/empregister', authMiddleware, employeeFormValidation, employeeRegister); //Router for staff registration
+router.post('/empregister', authMiddleware, employeeFormValidation, signatureUpload.single('signature'), employeeRegister); //Router for staff registration
 router.post('/login', employeeLoginValidation, employeeLogin); //Router for staff login
 router.delete('/deleteEmployee/:id', authMiddleware, deleteEmployee); //Router for deleting  employee
 router.put('/editEmployee/:id', authMiddleware, editEmployee); //Router for editing employee data

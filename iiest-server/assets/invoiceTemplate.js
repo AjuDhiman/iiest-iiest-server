@@ -1,11 +1,34 @@
 const fboLogo = require("./iiestLogo");
 const fboStamp = require('./stamp');
+const { ToWords } = require('to-words')
 
 const invoiceTemplate = (fboInfo)=>{
+
+    const toWords = new ToWords({
+        localeCode: 'en-IN',
+        converterOptions: {
+          currency: true,
+          ignoreDecimal: false,
+          ignoreZeroCurrency: false,
+          doNotAddOnly: false,
+          currencyOptions: {
+            name: 'Rupee',
+            plural: 'Rupees',
+            symbol: '₹',
+            fractionalUnit: {
+              name: 'Paisa',
+              plural: 'Paise',
+              symbol: '',
+            },
+          }
+        }
+      });
 
     const logoImg = fboLogo();
 
     const stampImg = fboStamp();
+
+    const amountInWords = toWords.convert(fboInfo.totalAmount, {currency: true, ignoreZeroCurrency: true})
 
     return `<!DOCTYPE html>
     <html lang="en">
@@ -79,7 +102,7 @@ const invoiceTemplate = (fboInfo)=>{
             </div>
             <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-rows: repeat(2, auto); gap: 10px;">
                 <div class="date" style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; text-align: right;"><strong>Date:</strong></div>
+                    <div style="padding: 0; margin: 0; box-sizing: border-box; text-align: right;"><strong>Date: ${fboInfo.date}</strong></div>
                     <div style="padding: 0; margin: 0; box-sizing: border-box;"></div>
                 </div>
                 <div class="place" style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
@@ -148,7 +171,7 @@ const invoiceTemplate = (fboInfo)=>{
                 </div>
             </div>
             <div class="total-amount-in-words" style="padding: 0; margin: 0; box-sizing: border-box;">
-                <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Total Amount in Words </strong></p>
+                <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Total Amount in Words: ${amountInWords} </strong></p>
             </div>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; box-sizing: border-box;">

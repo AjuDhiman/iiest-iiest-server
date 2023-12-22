@@ -10,7 +10,7 @@
       </div><!--//row-->
       <div class="row gy-4 mb-3">
         <form [formGroup]="form" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off"
-          (ngSubmit)="onSubmit()">
+          (ngSubmit)="onSubmit()" enctype="multipart/form-data">
           <div class="col-md-6">
             <label for="employee_name" class="form-label">Employee Name</label>
             <input type="text" placeholder="Employee Name" formControlName="employee_name"
@@ -278,12 +278,11 @@
           </div>
           <div class="col-md-3">
             <label for="signature" class="form-label">Signature</label>
-            <input type="file" id="signature" formControlName="signature" accept=".png"
+            <input type="file" id="signature" formControlName="signature"
                    (change)="onSignatureEnter($event)"
                    class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f['signature'].errors }">
             <div *ngIf="submitted && f['signature'].errors" class="invalid-feedback">
               <div *ngIf="f['signature'].errors['required']">Signature is required</div>
-              <div *ngIf="f['signature'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.</div>
             </div>
           </div>
           <div class="col-md-12">
