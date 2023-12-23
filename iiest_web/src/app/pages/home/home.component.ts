@@ -7,6 +7,7 @@ import { Employee } from '../../utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import {UtilitiesService} from 'src/app/services/utilities.service';
+import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';  
 
 
 @Component({
@@ -25,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy{
   userTotalSales: number;
   userPendingSales: number;
   userApprovedSales: number;
-
+  faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$:Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$:Observable<boolean>
   empLoadedSub:Subscription;
