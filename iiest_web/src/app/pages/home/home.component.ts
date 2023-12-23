@@ -68,6 +68,7 @@ getEmployees(){
 getProductData(){
   this._getDataService.getProductData().subscribe({
     next: (res) => {
+      console.log(res)
       this.product = res;
       this.fssaiData = res.FSSAI;
       this.dpiitData = res.DPIIT;

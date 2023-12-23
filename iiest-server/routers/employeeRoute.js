@@ -1,7 +1,7 @@
 const express = require('express');
 const { employeeFormValidation, employeeLoginValidation } = require('../validation/employeeValidation');
 const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee } = require('../controllers/employee');
-const { employeeFormData } = require('../controllers/generalData');
+const { employeeFormData, getPostData } = require('../controllers/generalData');
 const { employeeRecord } = require('../controllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer')
@@ -16,6 +16,7 @@ router.delete('/deleteEmployee/:id', authMiddleware, deleteEmployee); //Router f
 router.put('/editEmployee/:id', authMiddleware, editEmployee); //Router for editing employee data
 router.get('/empgeneraldata', authMiddleware, employeeFormData); //Router for general employee form data
 router.get('/allemployees', authMiddleware, allEmployeesData); //Router for all employees data
+router.get('/getpostdata', authMiddleware, getPostData); //Router for all post with their departments and data
 router.get('/employeeRecord', authMiddleware, employeeRecord);
 
 
