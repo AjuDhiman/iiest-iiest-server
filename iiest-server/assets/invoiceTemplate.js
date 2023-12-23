@@ -1,6 +1,7 @@
 const fboLogo = require("./iiestLogo");
 const fboStamp = require('./stamp');
-const { ToWords } = require('to-words')
+const { ToWords } = require('to-words');
+const empSignature = require("./vansh");
 
 const invoiceTemplate = (fboInfo)=>{
 
@@ -31,6 +32,8 @@ const invoiceTemplate = (fboInfo)=>{
     const logoImg = fboLogo();
 
     const stampImg = fboStamp();
+
+    const empSign = empSignature();
 
     const amountInWords = toWords.convert(fboInfo.totalAmount, {currency: true, ignoreZeroCurrency: true})
 
@@ -207,6 +210,7 @@ const invoiceTemplate = (fboInfo)=>{
             </div>
             <div style="padding-right: 40px; margin-top: 20px; position: relative; box-sizing: border-box; display: flex; justify-content: flex-end;">
                 <img src="${stampImg}" alt="Stamp" style="width: 150px; height: 150px; object-fit: cover; margin: 0; padding: 0; box-sizing: border-box;">
+                <img src="${empSign}" height="150px" width="150px" alt="IIest Stamp">
             </div>
         </div>
     </body>
