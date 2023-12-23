@@ -66,7 +66,7 @@
 				</div><!--//app-card-->
 			</div><!--//col-->
 		</div><!--//row-->
-		 <div class="row g-4 mb-4">
+		 <!-- <div class="row g-4 mb-4">
 			<div class="col-12 col-lg-6">
 				<div class="app-card app-card-chart h-100 shadow-sm">
 					<div class="app-card-header p-3">
@@ -103,14 +103,14 @@
 					<div class="row justify-content-between align-items-center">
 						<div class="col-auto">
 							<h4 class="app-card-title">Product Price - FSSAI</h4>
-						</div><!--//col-->
+						</div>
 						<div class="col-auto">
 							<div class="card-header-action">
-								<!-- <a href="#">View report</a> -->
-							</div><!--//card-header-actions-->
-						</div><!--//col-->
-					</div><!--//row-->
-				</div><!--//app-card-header-->
+								 <a href="#">View report</a> 
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="app-card-body p-3 p-lg-4">
 					<div class="table-responsive">
 						<table class="table table-border mb-0">
@@ -133,11 +133,11 @@
 								
 							</tbody>
 						</table>
-					</div><!--//table-responsive-->
-				</div><!--//app-card-body-->
-			</div><!--//app-card-->
+					</div>
+				</div>
+			</div>
 		</div>
-		</div>
+		</div> -->
 		<div class="row my-2">
 			<div class="col-md-6">
 				<h1 class="app-page-title">Product Price - FSSAI</h1>
@@ -152,7 +152,8 @@
 						<tr *ngFor="let product of fssaiData;let i = index;">
 							<td data-th="#">{{i+1}}</td>
 							<td data-th="Product Name">{{product.name}}</td>
-							<td data-th="Price">{{product.price}}</td>
+							<td data-th="Price"> <fa-icon class="fa-xs" style="color: #5d6778;"
+								[icon]="faIndianRupeeSign"></fa-icon> {{product.price}} </td>
 							<td data-th="Describe">{{product.description}}</td>
 						</tr>
 						<!-- Add more rows as needed for FSSAI products -->
@@ -172,7 +173,8 @@
 						<tr *ngFor="let product of dpiitData;let i = index;">
 							<td data-th="#">{{i+1}}</td>
 							<td data-th="Product Name">{{product.name}}</td>
-							<td data-th="Price">{{product.price}}</td>
+							<td data-th="Price"> <fa-icon class="fa-xs" style="color: #5d6778;"
+								[icon]="faIndianRupeeSign"></fa-icon> {{product.price}}</td>
 							<td data-th="Describe">{{product.description}}</td>
 						</tr>
 					</tbody>
