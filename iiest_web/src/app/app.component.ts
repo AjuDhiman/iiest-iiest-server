@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { RegisterService } from './services/register.service';
+import { HeaderComponent } from './shared/header/header.component';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,10 @@ export class AppComponent implements OnInit {
   empName: string;
   loggedInUserData: any;
   isToken:boolean;
+  isSidebarVisible = false;
+  largeDisplay= false;
+
+  @ViewChild(HeaderComponent) header : HeaderComponent;
 
   constructor(
     private router: Router,
@@ -42,9 +47,15 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.loggedInUserData = this._registerService.LoggedInUserData();
     this.loggedInUserData = JSON.parse(this.loggedInUserData)
+    console.log(this.showHeader)
     if(this.loggedInUserData){
     this.empName = this.loggedInUserData.employee_name;
     }
+  }
+
+  onSidebarToggle(obj:any){
+    this.isSidebarVisible = obj.isSidebarVisible;
+    this.largeDisplay = obj.largeDisplay;
   }
 
 }

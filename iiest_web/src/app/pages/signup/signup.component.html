@@ -1,6 +1,6 @@
 <div>
   <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xl">
+    <div class="container-xxl">
       <div class="row g-3 mb-4 align-items-center justify-content-between">
         <div class="col-auto">
           <h1 class="app-page-title mb-2">Employee {{formType}} Form</h1>
@@ -169,19 +169,39 @@
             </div>
           </div>
           <div class="col-md-3">
+            <label class="form-label">Post Type</label>
+            <div class="d-flex gap-5">
+              <div class="form-check form-check-sm" *ngFor="let post of post_types">
+                <input (change)="onPostTypeSelect()" type="radio" [id]="post" formControlName="post_type"
+                 class="form-check-input form-check-input-sm" [value]="post" 
+                 [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                <label class="form-label form-label-sm" [for]="post">{{post}}</label>
+              </div>
+            </div>
+            <div *ngIf="submitted && f['post_type'].errors" class="invalid-feedback" style="display: block;">
+              <div *ngIf="f['post_type'].errors['required']">Post Type is required</div>
+            </div>
+          </div>
+          <div class="col-md-3">
             <label for="department" class="form-label">Department</label>
-            <input type="text" placeholder="Department" formControlName="department"
-              class="form-control form-control-sm" id="department"
-              [ngClass]="{ 'is-invalid': submitted && f['department'].errors }">
+            <select (change)="onDepartmentSelect()" id="department"
+              [ngClass]="{ 'is-invalid': submitted && f['department'].errors }" formControlName="department"
+              class="form-select form-select-sm">
+              <option value="" disabled selected>Select the Department</option>
+              <option *ngFor="let department of departments" [ngValue]="department">{{ department }}</option>
+            </select>
             <div *ngIf="submitted && f['department'].errors" class="invalid-feedback">
-              <div *ngIf="f['department'].errors['required']">Department is required</div>
+              <div *ngIf="f['department'].errors['required']">Department Name is required</div>
             </div>
           </div>
           <div class="col-md-3">
             <label for="designation" class="form-label">Designation</label>
-            <input type="text" placeholder="Designation" formControlName="designation"
-              class="form-control form-control-sm" id="designation"
-              [ngClass]="{ 'is-invalid': submitted && f['designation'].errors }">
+            <select id="designation"
+              [ngClass]="{ 'is-invalid': submitted && f['designation'].errors }" formControlName="designation"
+              class="form-select form-select-sm">
+              <option value="" disabled selected>Select the Designation</option>
+              <option *ngFor="let designation of designations" [ngValue]="designation">{{ designation }}</option>
+            </select>
             <div *ngIf="submitted && f['designation'].errors" class="invalid-feedback">
               <div *ngIf="f['designation'].errors['required']">Designation is required</div>
             </div>
@@ -318,7 +338,7 @@
   </div>
 
   <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xl border border-1 rounded-3">
+    <div class="container-xxl border border-1 rounded-3">
       <app-employeelist (isEditRecord)="isEditRecord($event)" class="border"></app-employeelist>
     </div>
   </div>

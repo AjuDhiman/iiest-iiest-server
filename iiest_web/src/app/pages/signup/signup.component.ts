@@ -33,6 +33,12 @@ export class SignupComponent implements OnInit {
   getGradePay: any;
   formType: string = "Registration";
   isEditMode: boolean = false;
+  postsData: any;
+  post_type: string;
+  department: string;
+  post_types:string[] = []
+  departments:string[] = [];
+  designations: string[] = [];
   form: FormGroup = new FormGroup({
     employee_name: new FormControl(''),
     gender: new FormControl(''),
@@ -46,6 +52,7 @@ export class SignupComponent implements OnInit {
     portal_type: new FormControl(''),
     project_name: new FormControl(''),
     doj: new FormControl(''),
+    post_type: new FormControl(''),
     department: new FormControl(''),
     designation: new FormControl(''),
     salary: new FormControl(''),
@@ -74,6 +81,7 @@ export class SignupComponent implements OnInit {
     private _getdataService: GetdataService,
     private store: Store) {
     this.empGeneralData();
+    this.getPostsData()
   }
 
   ngOnInit(): void {
@@ -98,6 +106,7 @@ export class SignupComponent implements OnInit {
         portal_type: ['', Validators.required],
         doj: ['', Validators.required],
         project_name: ['', Validators.required],
+        post_type:['', Validators.required],
         department: ['', Validators.required],
         designation: ['', Validators.required],
         salary: ['', Validators.required], // Set a default value
@@ -291,6 +300,41 @@ export class SignupComponent implements OnInit {
       //'acceptTerms': record.,
       'createdBy': record.createdBy
     })
+  }
+
+  getPostsData() {  // this function retrives post data and save into variable by the help of getdataservice
+    this._getdataService.getPostData().subscribe({
+      next: (res) => {
+        this.postsData = res;
+        this.postsData.forEach((post: any) => {
+          if (post.departments) {
+            this.post_types.push(post.name);
+          }
+        });
+      },
+      error: (err) => {
+      }
+    }
+    )
+  }
+
+  onPostTypeSelect() { // this function runs when post type changes employee register form and it sets the deparments array
+    this.post_type = this.f['post_type'].value;
+    console.log(this.post_types)
+    this.departments = [];
+    this.designations = [];
+    this.f['department'].patchValue(''); //every time when this onPostSelect() run we want department to be unset 
+    this.f['designation'].patchValue(''); //every time when this onPostSelect() run we want designation to be unset 
+    this.departments = this.postsData.find((post:any) => post.name === this.post_type).departments
+    .map((department:any) => department.name);
+  }
+
+  onDepartmentSelect() {
+    this.department = this.f['department'].value;
+    this.f['designation'].patchValue(''); //every time when this onPostSelect() run we want designation to be unset 
+    this.designations = this.postsData.find((post:any) => post.name === this.post_type).departments
+    .find((department:any) => department.name === this.department).designations
+    .map((designation:any) => designation.name);
   }
 
   onSignatureEnter($event: any) {

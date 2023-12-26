@@ -11753,9 +11753,13 @@
    border-bottom: 1px solid #e7e9ed;
    height: 56px;
    background: #fff;
+   transition: all 0.4s ease-in-out;
+   /* this transitiois included in portal css for giving transition effect on sidebar toggle in desktop size full screen */
  }
  .app-header-inner {
    position: relative;
+   transition: all 0.4s ease-in-out;
+  /* this transitiois included in portal css for giving transition effect on sidebar toggle in desktop size full screen */
  }
  .app-search-form {
    position: relative;
@@ -11910,7 +11914,7 @@
      width: 400px;
    }
  }
- @media (min-width: 1200px) {
+ @media (min-width: 1920px) {
    .app-header-inner {
      margin-left: 250px;
    }
@@ -11965,6 +11969,8 @@
    top: 0;
    font-size: 0.875rem;
    border-right: 1px solid #e7e9ed;
+   transition: all 0.4s ease-in-out;
+   /* this transitiois included in portal css for giving transition effect on sidebar toggle in desktop size full screen */
  }
  .app-sidepanel .panel-drop {
    display: none;
@@ -12165,7 +12171,8 @@
      background: rgba(0, 0, 0, 0.35);
    }
  }
- @media (min-width: 1200px) {
+ @media (min-width: 1920px) {
+  /* min-width foe this media quey changed for UI need orignal was 1200px */
    .app-wrapper {
      margin-left: 250px;
    }
@@ -12737,4 +12744,9 @@
      width: 100%;
    }
  }
+
+ /*left-margin-250 class is used in header and app component for giving 250px right margin if we are in full screen on desktop and side pannel in opened*/
+.left-margin-250 {
+  margin-left: 250px !important;
+}
  

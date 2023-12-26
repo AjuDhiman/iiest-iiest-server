@@ -15,16 +15,20 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   checksTop = 0;
   isdropped = false;
   faAngleDown = faAngleDown;
-  faCircleExclamation = faCircleExclamation ;
+  faCircleExclamation = faCircleExclamation;
   value: any;
   selectedItemIndex: string;
-  invalid:boolean = false;
+  invalid: boolean = false;
+  isDisplayEmpty: boolean = true;
 
   @Input()
   options: any;
 
   @Input()
   formReset: any;
+
+  @Input()
+  placeHolder: string = '';
 
   @Output()
   selectedArrayChange: EventEmitter<any> = new EventEmitter<any>;
@@ -46,7 +50,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       console.log(this.options)
       this.initializeAll();
     }
-  } 
+  }
 
   initializeAll() {
     for (let option of this.options) {
@@ -70,6 +74,13 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       }
     }
     this.selectedArrayChange.emit(this.selected);
+    if (this.selected.length === 0) {
+      console.log(this.selected.length);
+      this.isDisplayEmpty = true;
+    }
+    else {
+      this.isDisplayEmpty = false;
+    }
     event.stopPropagation();
   }
 
@@ -78,12 +89,13 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     event.stopPropagation();
   }
 
-  onCheckClick(event: Event){
+  onCheckClick(event: Event) {
     event.stopPropagation();
   }
 
-  onReset(){
+  onReset() {
     this.selected = [];
+    this.isDisplayEmpty = true;
     this.isdropped = false;
     this.invalid = false;
     this.all.forEach(item => item.checked = false);

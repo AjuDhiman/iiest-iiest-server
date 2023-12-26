@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
@@ -11,8 +11,28 @@ import { RegisterService } from 'src/app/services/register.service';
 })
 export class HeaderComponent implements OnInit {
   toggelShow: boolean = false;
+  toggelSettings: boolean = false;
   toggelNotification: boolean = false;
   width: number = window.innerWidth;
+  isSidebarVisible = false;
+  largeDisplay: boolean = false;
+  notifications: Array<{ image: string, description: string, time: any }> = [{
+    image: 'assets/images/profiles/profile-1.png',
+    description: 'Amy shared a file with you. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    time: '2 hours ago'
+  }, {
+    image: 'assets/images/profiles/profile-1.png',
+    description: 'You have a new invoice. Proin venenatis interdum est.',
+    time: ' 1 day ago'
+  }, {
+    image: 'assets/images/profiles/profile-1.png',
+    description: 'Your report is ready. Proin venenatis interdum est.',
+    time: '3 days ago'
+  }, {
+    image: 'assets/images/profiles/profile-2.png',
+    description: 'James sent you a new message.',
+    time: '7 days ago'
+  }];
   toggelStyle: object = {
     'position': 'absolute',
     'inset': '0px 0px auto auto',
@@ -23,6 +43,8 @@ export class HeaderComponent implements OnInit {
   @Input() item: boolean;
   @Input() userdata: any;
   @Input() isSideBar: boolean;
+  @Output() toogleSideBarEvent = new EventEmitter<any>();
+  
  
   blockMsg: boolean = true;
   empName: any;
@@ -35,25 +57,61 @@ export class HeaderComponent implements OnInit {
       this.empName = loggedInUserData.employee_name;
       //console.log(this.empName);
     }
-    if(this.width >= 1200){
+    if (this.width >= 1920) {
       this.isSideBar = true;
+      this.isSidebarVisible = true;
+      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true});
     }
-   
+    else if (this.width >= 1200) {
+      this.largeDisplay = true;
+    }
   }
-  ngOnInit() {  }
+  ngOnInit() { 
+    console.log(this.isSidebarVisible);
+   }
 
 //Window size
   onWindowResize(event: any) {
     this.width = event.target.innerWidth;
-    if(this.width >= 1200){
+    if(this.width >= 1920){
       this.isSideBar = true;
-    }else{
+      this.isSidebarVisible = true;
+      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true})
+    }
+    else if (this.width >= 1200) {
+      this.largeDisplay = true;
+    }
+    else {
       this.isSideBar = false;
+      this.isSidebarVisible = false;
+      this.largeDisplay = false;
+      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: false})
     }
   }
   toggleClass = (event: any) => {
-    this.toggelShow = !this.toggelShow;
-    event.target.classList.toggle('show');
+    let title = event.target.getAttribute('title');
+    if (title === 'dropdown-menu') {
+      console.log(title)
+      this.toggelSettings = false;
+      this.toggelNotification = false;
+      this.toggelShow = !this.toggelShow;
+      event.target.classList.toggle('show');
+    }
+    else if (title === 'Settings') {
+      console.log(title)
+      this.toggelShow = false;
+      this.toggelNotification = false;
+      this.toggelSettings = !this.toggelSettings;
+      event.target.classList.toggle('show');
+    }
+    else if (title === 'Notifications') {
+      console.log(title)
+      this.toggelShow = false;
+      this.toggelSettings = false;
+      this.toggelNotification = !this.toggelNotification;
+      event.target.classList.toggle('show');
+    }
+    console.log(title)
   }
   logout() {
     this._registerService.signout();
@@ -61,8 +119,12 @@ export class HeaderComponent implements OnInit {
 
   sideBarToggle(event: any) {
     this.isSideBar = !this.isSideBar;
+    this.isSidebarVisible = !this.isSidebarVisible; //this variable is changing the right-margin in header on toggle 
+    this.toogleSideBarEvent.emit({isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay});// this event used in changing the right-margin in app content on toggle 
   }
   sideBarToggleUpdate(val: any) {
     this.isSideBar = val;
+    this.isSidebarVisible = !this.isSidebarVisible; //this variable is changing the right-margin in header on toggle 
+    this.toogleSideBarEvent.emit({isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay});// this event used in changing the right-margin in app content on toggle 
   }
 }

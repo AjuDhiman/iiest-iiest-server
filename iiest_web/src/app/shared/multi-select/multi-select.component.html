@@ -1,6 +1,7 @@
 <div class="" id="msdd">
     <div class="display py-1 px-0 form-control form-control-sm" [ngClass]="{'display-focus': isdropped, 'invalid-display': invalid, 'invalid-display-focus':invalid && isdropped}"
         (click)="onDisplayClick($event) ">
+        <div *ngIf="isDisplayEmpty" class="placeHolder px-2">{{placeHolder}}</div>
         <div *ngIf="selected.length > 0" class="tags mx-1 px-2">
             {{selected[0]}}
         </div>
@@ -14,8 +15,9 @@
           </svg>
         <fa-icon class="fa-1x down-icon" [ngClass]="{'rotateUp':isdropped}" [icon]="faAngleDown"></fa-icon>
     </div>
-    <div class="checks form-control px-0 pb-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}"
+    <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}"
         [ngStyle]="{'bottom': -checksTop + 'px'}">
+        <div class="check px-3 disabled" style="height: 25px; font-size: 14px;">-- {{placeHolder}} --</div>
         <div class="check px-3" [ngClass]="{'disabled': obj.count > 2}" *ngFor="let obj of all" style="height: 25px;">
             <input type="checkbox" [(ngModel)]="obj.checked" (click)="onclicked($event)" class="myCheckbox"
                 [value]="obj.count" [id]="obj.name" [disabled]="obj.count > 2"/>

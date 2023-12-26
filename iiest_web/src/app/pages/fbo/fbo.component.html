@@ -1,5 +1,5 @@
 <div class="app-content pt-3 p-md-3 p-lg-4" (click)="closeDropDown()">
-    <div class="container-xl">
+    <div class="container-xxl">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
                 <h1 class="app-page-title mb-2">FBO {{formType}} Form</h1>
@@ -106,7 +106,7 @@
                     <div class="col-md-3">
                         <label for="" class=" form-label">Product Name<sup>*</sup></label>
                         <app-multi-select #multi_select #multiSelect (selectedArrayChange)="getProduct($event)"
-                            [options]="productList" [formReset]="resetMultiDrop"></app-multi-select>
+                            [options]="productList" [formReset]="resetMultiDrop" [placeHolder]="'Select Products'"></app-multi-select>
                         <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['product_name'].errors['arrayNotEmpty']">Product Name is required</div>
                         </div>
@@ -409,7 +409,7 @@
     </div>
 </div>
 <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xl border border-1 rounded-3">
+    <div class="container-xxl border border-1 rounded-3">
         <app-fbolist (isEditRecord)="isEditRecord($event)" class="border"></app-fbolist>
 
     </div>
