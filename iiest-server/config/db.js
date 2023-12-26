@@ -13,6 +13,7 @@ const connectToMongo = async() => {
         console.log('Now we are connected to the DB');
         createFsBucket();
         createInvoiceBucket();
+        empSignBucket();
     }).catch((error) => {
         console.log(error);
     })
@@ -26,6 +27,14 @@ const createFsBucket = ()=>{
     return new GridFSBucket(mongoose.connection.db, { bucketName: 'eBills'});
 }
 
+const empSignBucket = ()=>{
+    if(!mongoose.connection.db){
+        throw new Error('MongoDB connection not established');
+    }
+    console.log('Creating Signature Bucket for employee');
+    return new GridFSBucket(mongoose.connection.db, { bucketName: 'empSignature' });
+}
+
 const createInvoiceBucket = ()=>{
     if(!mongoose.connection.db){
         throw new Error('MongoDB Connection not established');
@@ -34,4 +43,4 @@ const createInvoiceBucket = ()=>{
     return new GridFSBucket(mongoose.connection.db, {bucketName: 'fboInvoices'});
 }
 
-module.exports = {connectToMongo, createFsBucket, createInvoiceBucket};
+module.exports = {connectToMongo, createFsBucket, createInvoiceBucket, empSignBucket};

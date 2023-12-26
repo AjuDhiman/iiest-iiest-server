@@ -25,7 +25,7 @@ export class SignupComponent implements OnInit {
   editedData: any;
   userName: string = '';
   parsedUserData: any;
-  addemployee: Employee;
+  addemployee: any;
   dob: NgbDateStruct;
   getEmpGeneralData: any;
   getPortalType: any;
@@ -59,12 +59,12 @@ export class SignupComponent implements OnInit {
     zip_code: new FormControl(''),
     //acceptTerms: new FormControl(false),
     createdBy: new FormControl(''),
-    signature: new FormControl('')
+    empSignature: new FormControl('')
   });
   submitted = false;
   dobValue: Date;
   dojValue: Date;
-  signature_file: File;
+  signatureFile: File;
   constructor(
     private formBuilder: FormBuilder,
     private calendar: NgbCalendar,
@@ -114,7 +114,7 @@ export class SignupComponent implements OnInit {
             Validators.pattern(/^[0-9]{10}$/)
           ]
         ],
-        signature: [null, [Validators.required, this.validateFileType(['png'])]],
+        empSignature: ['', Validators.required],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
@@ -144,11 +144,6 @@ export class SignupComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-
-    console.log(typeof(this.signature_file));
-const formData = new FormData();
-formData.append('signatureFile', this.signature_file)
-    console.log(formData)
     //return;
     if (this.form.invalid) {
       return;
@@ -156,6 +151,29 @@ formData.append('signatureFile', this.signature_file)
 
     this.form.value.dob = this.datePipe.transform(this.form.value.dob, 'yyyy-MM-dd');
     this.form.value.doj = this.datePipe.transform(this.form.value.doj, 'yyyy-MM-dd');
+
+    const formData = new FormData();
+    formData.append('employee_name', this.form.get('employee_name')?.value);
+    formData.append('gender', this.form.get('gender')?.value);
+    formData.append('dob', this.form.get('dob')?.value);
+    formData.append('email', this.form.get('email')?.value);
+    formData.append('company_name', this.form.get('company_name')?.value);
+    formData.append('portal_type', this.form.get('portal_type')?.value);
+    formData.append('doj', this.form.get('doj')?.value);
+    formData.append('project_name', this.form.get('project_name')?.value);
+    formData.append('department', this.form.get('department')?.value);
+    formData.append('designation', this.form.get('designation')?.value);
+    formData.append('salary', this.form.get('salary')?.value);
+    formData.append('grade_pay', this.form.get('grade_pay')?.value);
+    formData.append('contact_no', this.form.get('contact_no')?.value);
+    formData.append('alternate_contact', this.form.get('alternate_contact')?.value);
+    formData.append('empSignature', this.signatureFile);
+    formData.append('address', this.form.get('address')?.value);
+    formData.append('city', this.form.get('city')?.value);
+    formData.append('state', this.form.get('state')?.value);
+    formData.append('country', this.form.get('country')?.value);
+    formData.append('zip_code', this.form.get('zip_code')?.value);
+    formData.append('createdBy', this.form.get('createdBy')?.value);
 
     if (this.isEditMode) {
       this.editedData = this.form.value;
@@ -185,12 +203,11 @@ formData.append('signatureFile', this.signature_file)
         }
       })
     } else {
-      this.addemployee = {...this.form.value, ...formData};
+      this.addemployee = formData
       console.log(this.addemployee);
       this._registerService.addEmployee(this.addemployee).subscribe({
         next: (response) => {
           console.log(response);
-          return
           if (response.success) {
             this._toastrService.success('Record Added Successfully', response.message);
             this.onReset();
@@ -276,28 +293,20 @@ formData.append('signatureFile', this.signature_file)
     })
   }
 
-  onSignatureEnter(event: any) {
-    this.signature_file = event.target.files[0];
-  }
-
-  validateFileType(allowedExtensions: string[]) {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const file = control.value;
-        console.log(file);  
-        if (file) {
-          const fileExtension = file.split('.').pop()?.toLowerCase();
-          console.log(fileExtension)
-          if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
-            return null;
-          } else {
-            return { invalidFileType: true };
-          }
+  onSignatureEnter($event: any) {
+    if ($event.target.files && $event.target.files[0]) {
+      let file = $event.target.files[0];
+      console.log(file);
+        if(file.type == "image/png") {
+          console.log("correct");
+          this.signatureFile = file;
+          console.log(this.signatureFile);
         }
-  
-      return null;
-    };
+        else {
+          //call validation
+          this.form.reset();
+          this.form.controls["empSiganture"].setValidators([Validators.required]);
+        }
+    }
   }
-  
-  
-
 }

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { generateUsername, generatePassword, generateEmployeeID } = require('./empGenerator');
 const { sendEmployeeInfo } = require('./employeeMail');
+const { empSignBucket } = require('../config/db');
 const auth = JSON.parse(process.env.AUTH);
 
 const JWT_SECRET = auth.JWT_TOKEN;
@@ -13,8 +14,7 @@ exports.employeeRegister = async(req, res)=>{
     try {
 
         console.log(req.body);
-        console.log(req.file);
-        return;
+        const signature = req.file;
 
         let success = false;
         let isUnique = false; //To check if id number generated is unique 
@@ -22,7 +22,6 @@ exports.employeeRegister = async(req, res)=>{
         //Fields being used for staff entry
         const { employee_name, gender, email, alternate_contact, contact_no, dob, country, state, city, address, zip_code, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
 
-    
         //To check if employee with same email exists 
         const existing_email = await employeeSchema.findOne({email});
         if(existing_email){
@@ -70,10 +69,27 @@ exports.employeeRegister = async(req, res)=>{
         const secPass = await bcrypt.hash(generatedPassword, salt);
 
         let date = new Date();
-    
-        await employeeSchema.create({
-            id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date
-        });
+        
+        if(signature){
+            await employeeSchema.create({
+                id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date
+            });
+
+            const sigatureBuckcet = empSignBucket();
+
+            const uploadSignStream = sigatureBuckcet.openUploadStream(`${Date.now()}_${signature.originalname}`);
+
+            uploadSignStream.write(signature.buffer);
+
+            uploadSignStream.end((err) => {
+            if (err) {
+                console.error(err);
+            } 
+                console.log(`File ${signature.originalname} uploaded successfully.`);
+            });
+        }else{
+            return res.status(401).json({message: "Some error occured with signature file. Please try again"});
+        }
 
         sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
     
