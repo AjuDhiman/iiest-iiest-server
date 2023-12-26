@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
       if (val instanceof NavigationEnd) {
         if (val.url == '/' || val.url == '/main' || route == "#about" || route == "#contact") {
           this.showHeader = false;
+          this.largeDisplay = false;
         } else {
           this.showHeader = true;
         }
