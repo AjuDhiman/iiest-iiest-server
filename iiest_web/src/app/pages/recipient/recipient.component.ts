@@ -3,6 +3,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { RegisterService } from 'src/app/services/register.service';
 import { ToastrService } from 'ngx-toastr';
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons';  
 @Component({
   selector: 'app-recipient',
   templateUrl: './recipient.component.html',
@@ -18,6 +19,7 @@ export class RecipientComponent implements OnInit {
   addRecipient: any;
   submitted = false;
   isfostac:boolean = false;
+  faFileExcel = faFileExcel;
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
