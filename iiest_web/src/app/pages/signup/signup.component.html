@@ -171,11 +171,18 @@
           <div class="col-md-3">
             <label class="form-label">Post Type</label>
             <div class="d-flex gap-5">
-              <div class="form-check form-check-sm" *ngFor="let post of post_types">
-                <input (change)="onPostTypeSelect()" type="radio" [id]="post" formControlName="post_type"
-                 class="form-check-input form-check-input-sm" [value]="post" 
+              <div class="form-check form-check-sm">
+                <input (change)="onPostTypeSelect(post_type_enum.Value1)" type="checkbox" [checked]="currentlyCheckedPost === post_type_enum.Value1" [id]="post_types[0]" 
+                 class="form-check-input form-check-input-sm" [value]="post_types[0]"  
                  [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
-                <label class="form-label form-label-sm" [for]="post">{{post}}</label>
+                <label class="form-label form-label-sm" [for]="post_types[0]">{{post_types[0]}}</label>
+              </div>
+              <div class="form-check form-check-sm">
+                
+                <input (change)="onPostTypeSelect(post_type_enum.Value2)" type="checkbox" [checked]="currentlyCheckedPost === post_type_enum.Value2" [id]="post_types[1]" 
+                 class="form-check-input form-check-input-sm" [value]="post_types[1]"  
+                 [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                <label class="form-label form-label-sm" [for]="post_types[1]">{{post_types[1]}}</label>
               </div>
             </div>
             <div *ngIf="submitted && f['post_type'].errors" class="invalid-feedback" style="display: block;">

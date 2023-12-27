@@ -42,7 +42,7 @@ export class FboComponent implements OnInit {
   isReadOnly: boolean = false;
   resetMultiDrop: boolean;
   need_gst_number: boolean = false;
-  business_type_array = []; // this array will contain business types like b2c or b2b 
+  isBusinessTypeB2B: boolean = false;
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
   fostac_processAmnt: any;
   foscos_processAmnt: any;
@@ -81,7 +81,7 @@ export class FboComponent implements OnInit {
     address: new FormControl(''),
     pincode: new FormControl(''),
     product_name: new FormControl([]),
-    business_type: new FormControl([]),
+    business_type: new FormControl('b2c'),
     // b2c: new FormControl(),
     // b2b:new FormControl(),
     payment_mode: new FormControl(''),
@@ -143,9 +143,7 @@ export class FboComponent implements OnInit {
           tehsil: [''],
           pincode: [''],
           product_name: [[], this.arrayNotEmptyValidator],
-          business_type: [[], this.arrayNotEmptyValidator],
-          // b2c: [''],
-          // b2b:[''],
+          business_type: ['b2c', Validators.required],
           payment_mode: ['', Validators.required],
           createdBy: ['', Validators.required],
           grand_total: ['', Validators.required],
@@ -524,30 +522,16 @@ export class FboComponent implements OnInit {
 
   // This function conditionally add gst number filled in fbo form (condition: If checkox B2B is true in Business type field)
   onBusinessTypeChange(event: any, type: string) {
-    const currentTypes = this.fboForm.get('business_type')?.value || [];
-    if (event.target.checked) {
-      // Add the selected type to the array
-      currentTypes.push(type);
-
-      // Conditionally add the GST Number FormControl
-      if (type === 'b2b') {
-        this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
+      this.isBusinessTypeB2B = !this.isBusinessTypeB2B
+      if(type === 'b2b'){
         this.need_gst_number = true;
+        this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
       }
-    } else {
-      // If the checkbox is unchecked, remove the type from the array
-      const index = currentTypes.indexOf(type);
-      if (index !== -1) {
-        currentTypes.splice(index, 1);
-      }
-
-      // Remove the GST Number FormControl if 'b2b' is unchecked
-      if (type === 'b2b') {
-        this.fboForm.removeControl('gst_number');
+      else{
         this.need_gst_number = false;
+        this.fboForm.removeControl('gst_number');
       }
-    }
-    this.fboForm.get('business_type')?.setValue(currentTypes);
+      this.fbo['business_type'].patchValue(type);
   }
 
 }

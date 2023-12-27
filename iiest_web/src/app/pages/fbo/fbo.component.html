@@ -117,18 +117,20 @@
                         <div>
                             <div class="d-flex gap-5 py-1">
                                 <label>
-                                    <input type="checkbox" #business_type_input
-                                        class="form-check-input form-check-input"
-                                        (change)="onBusinessTypeChange($event, 'b2c')" name="business_type">
-                                    B2C
+                                  <input type="checkbox" #business_type_input_b2c
+                                         class="form-check-input form-check-input"
+                                         [checked]="!isBusinessTypeB2B"
+                                         (change)="onBusinessTypeChange($event, 'b2c')" name="business_type">
+                                  B2C
                                 </label>
                                 <label>
-                                    <input type="checkbox" #business_type_input
-                                        class="form-check-input form-check-input"
-                                        (change)="onBusinessTypeChange($event, 'b2b')" name="business_type">
-                                    B2B
+                                  <input type="checkbox" #business_type_input_b2b
+                                         class="form-check-input form-check-input"
+                                         [checked]="isBusinessTypeB2B"
+                                         (change)="onBusinessTypeChange($event, 'b2b')" name="business_type">
+                                  B2B
                                 </label>
-                            </div>
+                              </div>
                         </div>
                         <div *ngIf="submitted && fbo['business_type'].errors" class="invalid-feedback"
                             style="display: block;">

@@ -12,6 +12,12 @@ import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { GetEmployee, UpdateEmployee } from 'src/app/store/actions/employee.action';
 
+enum CheckBoxType { // this emnum is used in one time one select check box
+  Value1,
+  Value2,
+  NONE,
+}
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -36,7 +42,9 @@ export class SignupComponent implements OnInit {
   postsData: any;
   post_type: string;
   department: string;
-  post_types:string[] = []
+  post_types:string[] = [];
+  post_type_enum = CheckBoxType; // this variable is used in one time one select check box
+  currentlyCheckedPost: CheckBoxType = CheckBoxType.NONE; // This variable is used in one time one select checkbox 
   departments:string[] = [];
   designations: string[] = [];
   form: FormGroup = new FormGroup({
@@ -318,9 +326,18 @@ export class SignupComponent implements OnInit {
     )
   }
 
-  onPostTypeSelect() { // this function runs when post type changes employee register form and it sets the deparments array
-    this.post_type = this.f['post_type'].value;
-    console.log(this.post_types)
+  onPostTypeSelect(targetType: CheckBoxType) { // this function runs when post type changes employee register form and it sets the deparments array
+    if (this.currentlyCheckedPost === targetType) {
+      this.currentlyCheckedPost = CheckBoxType.NONE;
+      this.post_type = this.post_types[CheckBoxType.NONE];
+      this.f['post_type'].patchValue(this.post_type);
+      return;
+    }
+    this.currentlyCheckedPost = targetType; 
+    this.post_type = this.post_types[this.currentlyCheckedPost];
+
+    
+    this.f['post_type'].patchValue(this.post_type);
     this.departments = [];
     this.designations = [];
     this.f['department'].patchValue(''); //every time when this onPostSelect() run we want department to be unset 
