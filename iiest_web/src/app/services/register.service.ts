@@ -28,24 +28,24 @@ export class RegisterService {
       ));
   }
 
-  public fboPayment(addFbo: fbo): Observable<any> {
-    const url = `${this.url}/fbopayment`;
+  public fboPayment(objId: string, addFbo: fbo): Observable<any> {
+    const url = `${this.url}/fbopayment/${objId}`;
     return this.http.post<any>(url, addFbo).pipe(
       catchError(
         this.handleError
       ));
   }
   
-  public addFbo(addFbo: fbo): Observable<any> {
-    const url = `${this.url}/fboregister`
+  public addFbo(obdjId: string,addFbo: fbo): Observable<any> {
+    const url = `${this.url}/fboregister/${obdjId}`
     return this.http.post<any>(url, addFbo).pipe(
       catchError(
         this.handleError
       ));
   }
 
-  public addFboRecipent(objId: string, addFboRecipent: fboRecipient): Observable<any> {
-    const url = `${this.url}/fbo/recipientDetails/${objId}`
+  public addFboRecipent(objId: string, addFboRecipent: fboShop): Observable<any> {
+    const url = `${this.url}/fbo/addrecipient/${objId}`
     return this.http.post<any>(url, addFboRecipent).pipe(
       catchError(
         this.handleError
@@ -53,7 +53,7 @@ export class RegisterService {
   }
 
   public addFboShop(objId: string, addFboShop: fboShop): Observable<any> {
-    const url = `${this.url}/fbo/recipientDetails/${objId}`
+    const url = `${this.url}/fbo/addshop/${objId}`
     return this.http.post<any>(url, addFboShop).pipe(
       catchError(
         this.handleError

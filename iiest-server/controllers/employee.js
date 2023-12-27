@@ -20,7 +20,7 @@ exports.employeeRegister = async(req, res)=>{
         let isUnique = false; //To check if id number generated is unique 
     
         //Fields being used for staff entry
-        const { employee_name, gender, email, alternate_contact, contact_no, dob, country, state, city, address, zip_code, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
+        const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
 
         //To check if employee with same email exists 
         const existing_email = await employeeSchema.findOne({email});
@@ -71,13 +71,16 @@ exports.employeeRegister = async(req, res)=>{
         let date = new Date();
         
         if(signature){
+
+            const signatureFileName = `${Date.now()}_${signature.originalname}`;
+
             await employeeSchema.create({
-                id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date
+                id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureFile: signatureFileName, status: true
             });
 
             const sigatureBuckcet = empSignBucket();
 
-            const uploadSignStream = sigatureBuckcet.openUploadStream(`${Date.now()}_${signature.originalname}`);
+            const uploadSignStream = sigatureBuckcet.openUploadStream(signatureFileName);
 
             uploadSignStream.write(signature.buffer);
 
@@ -85,7 +88,7 @@ exports.employeeRegister = async(req, res)=>{
             if (err) {
                 console.error(err);
             } 
-                console.log(`File ${signature.originalname} uploaded successfully.`);
+                console.log(`File ${signatureFileName} uploaded successfully.`);
             });
         }else{
             return res.status(401).json({message: "Some error occured with signature file. Please try again"});

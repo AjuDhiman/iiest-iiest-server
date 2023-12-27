@@ -7,7 +7,7 @@ async function generateInvoice(idNumber, clientEmail, fboObj){
     try {
         const fileName = `${Date.now()}_${idNumber}.pdf`;
 
-        const invoiceHTML = invoiceTemplate(fboObj);
+        const invoiceHTML = await invoiceTemplate(fboObj);
         
         let file = { content: invoiceHTML };
 

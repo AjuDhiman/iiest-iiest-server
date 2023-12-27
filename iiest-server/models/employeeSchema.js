@@ -40,6 +40,10 @@ const employeeRegister = new Schema({
         type: String, 
         required: true
     },
+    post_type: {
+        type: String, 
+        required: true
+    },
     state: {
         type: String, 
         required: true
@@ -114,6 +118,15 @@ const employeeRegister = new Schema({
     lastEdit: {
         type: String,
         default: 'Not edited yet'
+    },
+    signatureFile: {
+        type: String, 
+        required: true,
+        unique: true
+    },
+    status: {
+        type: Boolean, 
+        required: true
     }
 })
 

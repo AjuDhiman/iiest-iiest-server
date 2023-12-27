@@ -92,22 +92,10 @@ export class RecipientComponent implements OnInit {
 
     this.fboID = this.fboData._id
     console.log(this.fboID);
-    console.log()
-
-    let formData = new FormData()
 
     if(this.serviceType === 'fostac'){
 
-      console.log(this.recipientform.get('name')?.value)
-      console.log(this.recipientform.get('aadharNo')?.value)
-
-      formData.append('name', this.recipientform.get('name')?.value)
-      formData.append('phoneNo', this.recipientform.get('phoneNo')?.value)
-      formData.append('aadharNo', this.recipientform.get('aadharNo')?.value)
-
-      this.addRecipient = formData
-
-      this._registerService.addFboRecipent(this.fboID, this.addRecipient).subscribe({
+      this._registerService.addFboRecipent(this.fboID, this.recipientform.value).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('Record Added successfully', res.message);
@@ -118,16 +106,15 @@ export class RecipientComponent implements OnInit {
           let errorObj = err.error;
           if (errorObj.userError) {
             this._registerService.signout();
-          } else if (errorObj.contactErr) {
-            this._toastrService.error('Message Error!', errorObj.contactErr);
-          } else if (errorObj.emailErr) {
-            this._toastrService.error('Message Error!', errorObj.emailErr);
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', errorObj.addressErr);
+          } else if (errorObj.aadharErr) {
+            this._toastrService.error('Message Error!', 'This aadhar number already exists');
           }
         }
       })
     }else if(this.serviceType === 'foscos'){
+
+      let formData: any = new FormData()
+
       formData.append('operatorName', this.recipientform.get('operatorName')?.value)
       formData.append('address', this.recipientform.get('address')?.value)
       if (this.selectedFile) {
@@ -136,11 +123,9 @@ export class RecipientComponent implements OnInit {
 
       console.log(this.recipientform.get('eBill')?.value)
 
-      this.addRecipient = formData;
-
       console.log(this.addRecipient)
 
-      this._registerService.addFboShop(this.fboID, this.addRecipient).subscribe({
+      this._registerService.addFboShop(this.fboID, formData).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('Record Added successfully', res.message);
@@ -151,12 +136,8 @@ export class RecipientComponent implements OnInit {
           let errorObj = err.error;
           if (errorObj.userError) {
             this._registerService.signout();
-          } else if (errorObj.contactErr) {
-            this._toastrService.error('Message Error!', errorObj.contactErr);
-          } else if (errorObj.emailErr) {
-            this._toastrService.error('Message Error!', errorObj.emailErr);
           } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', errorObj.addressErr);
+            this._toastrService.error('Message Error!', 'This address already exists');
           }
         }
       })

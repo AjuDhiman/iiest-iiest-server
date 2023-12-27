@@ -142,8 +142,9 @@ export class SignupComponent implements OnInit {
       }
     );
 
-    this.form.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     console.log(this.calendar.getToday());
+
+    this.form.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
 
   }
 
@@ -157,6 +158,7 @@ export class SignupComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+
 
     this.form.value.dob = this.datePipe.transform(this.form.value.dob, 'yyyy-MM-dd');
     this.form.value.doj = this.datePipe.transform(this.form.value.doj, 'yyyy-MM-dd');
@@ -172,6 +174,7 @@ export class SignupComponent implements OnInit {
     formData.append('project_name', this.form.get('project_name')?.value);
     formData.append('department', this.form.get('department')?.value);
     formData.append('designation', this.form.get('designation')?.value);
+    formData.append('post_type', this.form.get('post_type')?.value)
     formData.append('salary', this.form.get('salary')?.value);
     formData.append('grade_pay', this.form.get('grade_pay')?.value);
     formData.append('contact_no', this.form.get('contact_no')?.value);
@@ -313,6 +316,10 @@ export class SignupComponent implements OnInit {
         });
       },
       error: (err) => {
+        let errorObj = err.error
+        if (errorObj.userError) {
+          this._registerService.signout();
+        }
       }
     }
     )

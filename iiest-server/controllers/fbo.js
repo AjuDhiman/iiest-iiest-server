@@ -7,6 +7,7 @@ const uniqid = require('uniqid');
 const fboPaymentSchema = require('../models/fboPaymentSchema');
 const mongoose = require('mongoose');
 const fboModel = require('../models/fboSchema');
+const employeeSchema = require('../models/employeeSchema');
 
 const registrationHandler = async()=>{
     let isUnique = false;
@@ -28,7 +29,7 @@ const registrationHandler = async()=>{
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
-const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray)=>{
+const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
 
   const tax = (18/100)*amount;
 
@@ -47,7 +48,8 @@ const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmo
     amount: amount,
     taxAmount: tax,
     totalAmount: totalAmount,
-    chosenServices: serviceArray
+    chosenServices: serviceArray,
+    signatureName: signatureName
   }
   generateInvoice(idNum, mail, infoObj);
 }
@@ -57,13 +59,14 @@ exports.fboPayment = async(req, res)=>{
   let success = false;
 
   const formBody = req.body;
-  req.session.fboFormData = formBody;
-  console.log(formBody);
+  const createrId = req.params.id
+  req.session.fboFormData = {...formBody, createrObjId: createrId};
+  console.log(req.session.fboFormData);
 
   const existing_owner_contact = await fboModel.findOne({ owner_contact: formBody.owner_contact });
       if (existing_owner_contact) {
         return res.status(401).json({ success, contactErr: "This owner contact is already in use." });
-    }
+  }
       
   const existing_email = await fboModel.findOne({ email: formBody.email });
       if (existing_email) {
@@ -124,7 +127,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = fetchedFormData    
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId } = fetchedFormData    
 
         const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler()
 
@@ -155,7 +158,7 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         const fboEntry = await selectedModel.create({
-        id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
+        createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
         });
 
         const buyerId = new mongoose.Types.ObjectId(fboEntry.id);
@@ -209,7 +212,12 @@ exports.fboPayReturn = async(req, res)=>{
 exports.fboRegister = async (req, res) => {
   try {
 
+      const createrObjId = req.params.id;
+
       let success = false;
+
+      const userInfo = await employeeSchema.findById(createrObjId);
+      const signatureFile = userInfo.signatureFile;
 
       const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = req.body;
       
@@ -252,11 +260,11 @@ exports.fboRegister = async (req, res) => {
       }
 
       const fboEntry = await selectedModel.create({
-      id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
+      createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
       });
 
       if(fboEntry){
-        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr);
+        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
         success = true;
       }else{
         success = false; 
