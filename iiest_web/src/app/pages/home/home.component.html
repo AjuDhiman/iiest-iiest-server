@@ -138,49 +138,7 @@
 			</div>
 		</div>
 		</div> -->
-		<div class="row my-2" *ngIf="projectType=== 'FSSAI'">
-			<div class="col-md-6">
-				<h1 class="app-page-title">Product Price - FSSAI</h1>
-				<table class="rwd-table col-12">
-					<tbody>
-						<tr>
-							<th>#</th>
-							<th>Product Name</th>
-							<th>Price</th>
-							<th>Describtion</th>
-						</tr>
-						<tr *ngFor="let product of fssaiData;let i = index;">
-							<td data-th="#">{{i+1}}</td>
-							<td data-th="Product Name">{{product.name}}</td>
-							<td data-th="Price"> <fa-icon class="fa-xs" style="color: #5d6778;"
-								[icon]="faIndianRupeeSign"></fa-icon> {{product.price}} </td>
-							<td data-th="Describe">{{product.description}}</td>
-						</tr>
-						<!-- Add more rows as needed for FSSAI products -->
-					</tbody>
-				</table>
-			</div>
-			<div class="col-md-6" *ngIf="projectType=== 'DPIIT'">
-				<h1 class="app-page-title">Product Price - DPIIT</h1>
-				<table class="rwd-table col-12">
-					<tbody>
-						<tr>
-							<th>#</th>
-							<th>Product Name</th>
-							<th>Price</th>
-							<th>Describtion</th>
-						</tr>
-						<tr *ngFor="let product of dpiitData;let i = index;">
-							<td data-th="#">{{i+1}}</td>
-							<td data-th="Product Name">{{product.name}}</td>
-							<td data-th="Price"> <fa-icon class="fa-xs" style="color: #5d6778;"
-								[icon]="faIndianRupeeSign"></fa-icon> {{product.price}}</td>
-							<td data-th="Describe">{{product.description}}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+		
 		<div class="row g-4 mb-4">
 			<div class="col-12 col-lg-6">
 				<div class="app-card app-card-chart h-100 shadow-sm">
@@ -243,6 +201,49 @@
 			</div><!--//col-->
 			
 		</div><!--//row-->
+		<div class="row my-2">
+			<div class="col-md-6" *ngIf="projectType=== 'FSSAI'">
+				<h1 class="app-page-title">Product Price - FSSAI</h1>
+				<table class="rwd-table col-12">
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>Product Name</th>
+							<th>Price</th>
+							<th>Describtion</th>
+						</tr>
+						<tr *ngFor="let product of fssaiData;let i = index;">
+							<td data-th="#">{{i+1}}</td>
+							<td data-th="Product Name">{{product.name}}</td>
+							<td data-th="Price"> <fa-icon class="fa-xs" style="color: #5d6778;"
+								[icon]="faIndianRupeeSign"></fa-icon> {{product.price}} </td>
+							<td data-th="Describe">{{product.description}}</td>
+						</tr>
+						<!-- Add more rows as needed for FSSAI products -->
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6" *ngIf="projectType=== 'DPIIT'">
+				<h1 class="app-page-title">Product Price - DPIIT</h1>
+				<table class="rwd-table col-12">
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>Product Name</th>
+							<th>Price</th>
+							<th>Describtion</th>
+						</tr>
+						<tr *ngFor="let product of dpiitData;let i = index;">
+							<td data-th="#">{{i+1}}</td>
+							<td data-th="Product Name">{{product.name}}</td>
+							<td data-th="Price"> <fa-icon class="fa-xs" style="color: #5d6778;"
+								[icon]="faIndianRupeeSign"></fa-icon> {{product.price}}</td>
+							<td data-th="Describe">{{product.description}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div><!--//app-content-->
 
 	<footer class="app-footer">
