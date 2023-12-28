@@ -190,6 +190,7 @@ export class SignupComponent implements OnInit {
 
     if (this.isEditMode) {
       this.editedData = this.form.value;
+      console.log(this.editedData);
       this._registerService.updateEmployee(this.objId, this.editedData, `${this.userName}(${this.parsedUserData.employee_id})`).subscribe({
         next: (response) => {
           if (response.success) {
@@ -304,9 +305,19 @@ export class SignupComponent implements OnInit {
       'state': record.state,
       'country': record.country,
       'zip_code': record.zip_code,
-      //'acceptTerms': record.,
-      'createdBy': record.createdBy
+      'createdBy': record.createdBy,
+      'post_type': record.post_type
     })
+  }
+
+  onPostSelect(postVal: string) { // this function runs when post type changes employee register form and it sets the deparments array
+    this.form.get('department')?.setValue('');
+    this.form.get('designation')?.setValue('');
+    this.post_type = postVal;
+    this.departments = [];
+    this.designations = [];
+    this.departments = this.postsData.find((post:any) => post.name === this.post_type).departments
+    .map((department:any) => department.name);
   }
 
   getPostsData() {  // this function retrives post data and save into variable by the help of getdataservice
@@ -329,6 +340,7 @@ export class SignupComponent implements OnInit {
     )
   }
 
+<<<<<<< HEAD
   onPostTypeSelect(type:string) { // this function runs when post type changes employee register form and it sets the deparments array
     if(type===this.post_types[0]){
       this.isFirstPostChecked = true;
@@ -341,6 +353,8 @@ export class SignupComponent implements OnInit {
     this.fetchSelectedPostData(this.post_type);
   }
 
+=======
+>>>>>>> a5072c94166906d7251083f92e12f66d92f8da57
   fetchSelectedPostData(type:string){
     this.f['post_type'].patchValue(type);
     this.departments = [];

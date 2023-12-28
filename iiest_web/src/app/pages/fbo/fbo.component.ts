@@ -47,7 +47,6 @@ export class FboComponent implements OnInit {
   fostac_processAmnt: any;
   foscos_processAmnt: any;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
-  @ViewChildren('business_type_input') businessTypeInput: QueryList<ElementRef>;
 
 
   fostac_training: FormGroup = new FormGroup({
@@ -262,9 +261,6 @@ export class FboComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.fboForm.reset();
-    this.businessTypeInput.forEach((item) => {
-      item.nativeElement.checked = false;
-    });
     this.need_gst_number = false; // this will hide gst number on form reset 
     this.isFostac = false;
     this.isFoscos = false;
@@ -525,29 +521,28 @@ export class FboComponent implements OnInit {
   }
 
   // This function conditionally add gst number filled in fbo form (condition: If checkox B2B is true in Business type field)
-  onBusinessTypeChange(event: any, type: string) {
-    this.isBusinessTypeB2B = !this.isBusinessTypeB2B
-    let checked = event.target.checked;
-    if (checked) {
-      if (type === 'b2b') { // If we have business type b2b then we want to add gst number form control
+  onBusinessTypeChange($event: any) {
+    let businessType: string = $event.target.value
+    console.log(businessType);
+    if (businessType) {
+      if (businessType === 'b2b') { // If we have business type b2b then we want to add gst number form control
         this.need_gst_number = true;
         this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
       }
-      else if (type === 'b2c') { // If we have business type b2b then we want to remove gst number form control
+      else if (businessType === 'b2c') { // If we have business type b2b then we want to remove gst number form control
         this.need_gst_number = false;
         this.fboForm.removeControl('gst_number');
       }
     } else{ //if the check box is not checked then logic will work oppositely
-      if (type === 'b2b') {
+      if (businessType === 'b2b') {
         this.need_gst_number = false;
         this.fboForm.removeControl('gst_number');
       }
-      else if (type === 'b2c') {
+      else if (businessType === 'b2c') {
         this.need_gst_number = true;
         this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
       }
     }
-    this.fbo['business_type'].patchValue(type);
   }
 
 }

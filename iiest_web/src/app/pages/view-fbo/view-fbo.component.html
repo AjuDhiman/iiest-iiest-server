@@ -42,18 +42,6 @@
                 </div>
             </div>
             <div class="row border border-1 p-1">
-                <!-- <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6 title">Processing Amount</div>
-                        <div class="col-md-6 data">
-                            {{fboData.processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                [icon]="faIndianRupeeSign"></fa-icon>
-                            <span *ngIf="fboData.fbo_type == 'Foscos Training'"> 
-                                + {{fboData.water_test_fee}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                [icon]="faIndianRupeeSign"></fa-icon><span style="font-size: x-small;">(Water test Fee)</span></span>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Payment Mode</div>
@@ -186,10 +174,10 @@
                         </div>
                     </div>
                 </div>
-
                 <hr>
+            </div>
 
-            <div *ngIf="fboData.fostacInfo" class="row ">
+            <div *ngIf="fboData.fostacInfo" class="row">
                 <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -221,13 +209,13 @@
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">No. of Recipient </div>
-                            <div class="col-md-6 data">{{fboData.foscosInfo.shops_no}}</div>
+                            <div class="col-md-6 data">{{fboData.fostacInfo.recipient_no}}</div>
                         </div>
                     </div>
                     
                     <div class="col-md-8">
                         <div class="row">
-                            <div class="col-md-3 title">Fostac Total <br><span
+                            <div class="col-md-3 title">Fostac Total<br><span
                                 style="font-size: x-small; font-weight: normal;">(18%
                                 GST Inc.)</span></div>
                         <div class="col-md-9 data">
