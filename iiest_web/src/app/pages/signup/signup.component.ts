@@ -144,12 +144,9 @@ export class SignupComponent implements OnInit {
     );
 
     console.log(this.calendar.getToday());
-<<<<<<< HEAD
-=======
 
     this.form.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
 
->>>>>>> 4074db22fa7109f55c7b34d73a6f568ce0bbc1c6
   }
 
   get f(): { [key: string]: AbstractControl } {
