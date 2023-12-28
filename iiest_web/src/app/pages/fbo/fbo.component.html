@@ -117,20 +117,18 @@
                         <label class="form-label">Business Type<sup>*</sup></label>
                         <div>
                             <div class="form-check form-check-inline">
-                                    <input type="radio"
-                                        class="form-check-input" [checked]="!isBusinessTypeB2B"
-                                        value="b2c" (change)="onBusinessTypeChange($event)" formControlName="business_type"
-                                        name="business_type" id="b2c">
-                                    <label class="form-label" for="b2c">B2C</label>
-                                </div>
+                                <input type="radio" class="form-check-input" [checked]="!isBusinessTypeB2B" value="b2c"
+                                    (change)="onBusinessTypeChange($event)" formControlName="business_type"
+                                    name="business_type" id="b2c">
+                                <label class="form-label" for="b2c">B2C</label>
+                            </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio"
-                                        class="form-check-input" [checked]="isBusinessTypeB2B"
-                                         value="b2b" id="b2b" formControlName="business_type"
-                                        (change)="onBusinessTypeChange($event)" name="business_type">
-                                    <label class="form-label" for="b2b">B2B</label>
-                            </div>        
-                        
+                                <input type="radio" class="form-check-input" [checked]="isBusinessTypeB2B" value="b2b"
+                                    id="b2b" formControlName="business_type" (change)="onBusinessTypeChange($event)"
+                                    name="business_type">
+                                <label class="form-label" for="b2b">B2B</label>
+                            </div>
+
                         </div>
                         <div *ngIf="submitted && fbo['business_type'].errors" class="invalid-feedback"
                             style="display: block;">
@@ -250,6 +248,22 @@
                             <h6 class="pull-left">Foscos Training</h6>
                             <hr>
                             <div class="col-md-3">
+                                <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
+                                <select id="license_category" formControlName="license_category"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_category')?.errors}"
+                                    class="form-select form-select-sm">
+                                    <option value="" disabled selected>Select the Licence Category</option>
+                                    <option *ngFor="let category of licenceType.licenceCategory" [ngValue]="category">{{
+                                        category }}</option>
+                                </select>
+                                <div *ngIf="submitted && foscos.get('license_category')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('license_category')?.errors?.['required']">Licence Category
+                                        is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
                                 <select id="foscos_service_name" class="form-select form-select-sm"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
@@ -268,21 +282,23 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
-                                <select id="license_category" formControlName="license_category"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_category')?.errors}"
+                                <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
+                                <select id="license_duration" formControlName="license_duration"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_duration')?.errors}"
                                     class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Licence Category</option>
-                                    <option *ngFor="let category of licenceType.licenceCategory" [ngValue]="category">{{
-                                        category }}</option>
+                                    <option value="" disabled selected>Select the Licence Duration</option>
+                                    <option *ngFor="let duration of licenceType.Duration" [ngValue]="duration">{{
+                                        duration
+                                        }} Year</option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('license_category')?.errors"
+                                <div *ngIf="submitted && foscos.get('license_duration')?.errors"
                                     class="invalid-feedback">
-                                    <div *ngIf="foscos.get('license_category')?.errors?.['required']">Licence Category
+                                    <div *ngIf="foscos.get('license_duration')?.errors?.['required']">Licence Duration
                                         is required
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-3">
                                 <label for="foscos_processing_amount" class="form-label">Processing
                                     Amount<sup>*</sup></label>
@@ -303,23 +319,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
-                                <select id="license_duration" formControlName="license_duration"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_duration')?.errors}"
-                                    class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Licence Duration</option>
-                                    <option *ngFor="let duration of licenceType.Duration" [ngValue]="duration">{{
-                                        duration
-                                        }} Year</option>
-                                </select>
-                                <div *ngIf="submitted && foscos.get('license_duration')?.errors"
-                                    class="invalid-feedback">
-                                    <div *ngIf="foscos.get('license_duration')?.errors?.['required']">Licence Duration
-                                        is required
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <div class="col-md-3">
                                 <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
