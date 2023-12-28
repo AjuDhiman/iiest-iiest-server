@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const fboSchema = new Schema({
+    createrId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
+        required: true
+    },
     id_num: {
         type: Number,
         unique: true,

@@ -16,6 +16,7 @@ export class FboComponent implements OnInit {
   userName: string = '';
   userData: any;
   minValue: number = 1;
+  loggedUser: any;
   objId: string;
   editedData: any;
   parsedUserData: any;
@@ -148,8 +149,7 @@ export class FboComponent implements OnInit {
           grand_total: ['', Validators.required],
         });
 
-    this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
-
+        this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
   }
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
@@ -169,6 +169,8 @@ export class FboComponent implements OnInit {
   }
   //Form Submit Method
   onSubmit() {
+    this.loggedUser = this._registerService.LoggedInUserData();
+    this.objId = JSON.parse(this.loggedUser)._id;
     if (this.fbo['product_name'].errors) {
       this.multiSelect.invalid = true;
     } else {
@@ -176,7 +178,6 @@ export class FboComponent implements OnInit {
     }
     this.submitted = true;
     console.log(this.fboForm);
-    this.fboForm.patchValue({ selectedOpt: this.selected })
     if (this.fboForm.invalid) {
       return;
     }
@@ -194,18 +195,24 @@ export class FboComponent implements OnInit {
     } else {
       this.addFbo = this.fboForm.value;
       if (this.addFbo.payment_mode === 'Pay Page') {
-        this._registerService.fboPayment(this.addFbo).subscribe({
+        this._registerService.fboPayment(this.objId, this.addFbo).subscribe({
           next: (res) => {
-            console.log(res)
             window.location.href = res.message;
           },
           error: (err) => {
-            console.log(err);
+            let errorObj = err.error;
+            if (errorObj.userError) {
+              this._registerService.signout();
+            } else if (errorObj.contactErr) {
+              this._toastrService.error('Message Error!', errorObj.contactErr);
+            } else if (errorObj.emailErr) {
+              this._toastrService.error('Message Error!', errorObj.emailErr);
+            }
           }
         })
       } else {
         console.log(this.addFbo)
-        this._registerService.addFbo(this.addFbo).subscribe({
+        this._registerService.addFbo(this.objId, this.addFbo).subscribe({
           next: (res) => {
             if (res.success) {
               this._toastrService.success('Record edited successfully', res.message);
@@ -220,8 +227,6 @@ export class FboComponent implements OnInit {
               this._toastrService.error('Message Error!', errorObj.contactErr);
             } else if (errorObj.emailErr) {
               this._toastrService.error('Message Error!', errorObj.emailErr);
-            } else if (errorObj.addressErr) {
-              this._toastrService.error('Message Error!', errorObj.addressErr);
             }
           }
         })

@@ -10,6 +10,7 @@ export interface Employee {
   portal_type: string;
   project_name: string;
   doj: Date;
+  post_type: string;
   department: string;
   designation: string;
   grade_pay: string
@@ -23,7 +24,7 @@ export interface Employee {
   zip: number;
   acceptTerms: boolean;
   createdBy: string;
-  signatureFile: File;
+  empSignature: File;
 }
 
 export interface AddConsumer {
@@ -36,6 +37,7 @@ export interface loginEmployee {
   username: string;
   password: string;
 }
+
 export interface forgotPassword {
   email: string;
 }
@@ -48,8 +50,8 @@ export interface fbo {
   state: string,
   district: string,
   address: string,
-  product_name: [string],
-  business_type: [string],
+  product_name: string[],
+  business_type: string[],
   gst_number: string,
   fostacInfo: object,
   foscosInfo: object,

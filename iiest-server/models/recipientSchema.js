@@ -33,12 +33,18 @@ const shopSchema = new Schema({
         type: String, 
         required: true,
         unique: true
+    },
+    eBillName: {
+        type: String, 
+        required: true,
+        unique: true
     }
 })
 
 const shopValidationSchema = Joi.object({
     operatorName: Joi.string().required(),
-    address: Joi.string().required()
+    address: Joi.string().required(),
+    eBillName: Joi.string().required()
 })
 
 module.exports = { recipientSchema, shopSchema, recipientValidationSchema, shopValidationSchema }
