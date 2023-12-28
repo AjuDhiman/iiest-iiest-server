@@ -3,6 +3,7 @@ import { config } from '../utils/config';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, throwError } from 'rxjs';
+import { saveAs} from 'file-saver'
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,14 @@ public getData() { // call this method from the component to get the already set
 public contactiiest(data: Object): Observable<any>{
   const url = `${this.url}/contact-us`;
   return this.http.post<any>(url, {...data}).pipe(catchError(this.handleError));
+}
+
+public downloadFile(fileType:String): void {
+  const fileURL = `../assets/${fileType}.xlsx`;
+  this.http.get(fileURL, {responseType: 'blob'}).subscribe((res:Blob) => {
+    const blob = new Blob([res],{type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    saveAs(blob, `${fileType}.xlsx`);
+  });
 }
 
 private handleError(err: HttpErrorResponse): Observable<never> {

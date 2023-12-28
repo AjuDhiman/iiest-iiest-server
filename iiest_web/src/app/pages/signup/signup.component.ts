@@ -12,12 +12,6 @@ import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { GetEmployee, UpdateEmployee } from 'src/app/store/actions/employee.action';
 
-enum CheckBoxType { // this emnum is used in one time one select check box
-  Value1,
-  Value2,
-  NONE,
-}
-
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -40,11 +34,10 @@ export class SignupComponent implements OnInit {
   formType: string = "Registration";
   isEditMode: boolean = false;
   postsData: any;
+  isFirstPostChecked:boolean|undefined = undefined; // initially we want post type to be unselected so we assigen it niether true nor false
   post_type: string;
   department: string;
   post_types:string[] = [];
-  post_type_enum = CheckBoxType; // this variable is used in one time one select check box
-  currentlyCheckedPost: CheckBoxType = CheckBoxType.NONE; // This variable is used in one time one select checkbox 
   departments:string[] = [];
   designations: string[] = [];
   form: FormGroup = new FormGroup({
@@ -89,7 +82,7 @@ export class SignupComponent implements OnInit {
     private _getdataService: GetdataService,
     private store: Store) {
     this.empGeneralData();
-    this.getPostsData()
+    this.getPostsData();
   }
 
   ngOnInit(): void {
@@ -152,7 +145,6 @@ export class SignupComponent implements OnInit {
 
     this.form.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     console.log(this.calendar.getToday());
-
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -251,7 +243,10 @@ export class SignupComponent implements OnInit {
   }
 
   onReset(): void {
-    this.submitted = false;
+    this.submitted=false;
+    this.isFirstPostChecked=undefined;
+    this.departments=[];
+    this.designations=[];
     this.form.reset();
   }
 
@@ -326,18 +321,19 @@ export class SignupComponent implements OnInit {
     )
   }
 
-  onPostTypeSelect(targetType: CheckBoxType) { // this function runs when post type changes employee register form and it sets the deparments array
-    if (this.currentlyCheckedPost === targetType) {
-      this.currentlyCheckedPost = CheckBoxType.NONE;
-      this.post_type = this.post_types[CheckBoxType.NONE];
-      this.f['post_type'].patchValue(this.post_type);
-      return;
+  onPostTypeSelect(type:string) { // this function runs when post type changes employee register form and it sets the deparments array
+    if(type===this.post_types[0]){
+      this.isFirstPostChecked = true;
     }
-    this.currentlyCheckedPost = targetType; 
-    this.post_type = this.post_types[this.currentlyCheckedPost];
+    else if(type===this.post_types[1]){
+      this.isFirstPostChecked = false
+    }
+    this.post_type = type;
+    this.fetchSelectedPostData(this.post_type);
+  }
 
-    
-    this.f['post_type'].patchValue(this.post_type);
+  fetchSelectedPostData(type:string){
+    this.f['post_type'].patchValue(type);
     this.departments = [];
     this.designations = [];
     this.f['department'].patchValue(''); //every time when this onPostSelect() run we want department to be unset 
