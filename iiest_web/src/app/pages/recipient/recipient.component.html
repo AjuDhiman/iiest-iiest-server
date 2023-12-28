@@ -4,20 +4,16 @@
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  
-    <fa-icon class="fa-lg" style="color: #1d8b6a;"
-    [icon]="faFileExcel"></fa-icon>
-
+  <fa-icon class="fa-lg" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel" (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')"></fa-icon>
 </div>
-<form  [formGroup]="recipientform" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+<form [formGroup]="recipientform" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
   <!--Foscos FORM Start-->
   <div class="modal-body" *ngIf="this.serviceType === 'foscos'">
     <div class="row">
       <div class="col-md-4">
         <label for="operatorName" class="form-label">Operator Name<sup>*</sup></label>
         <input type="text" id="operatorName" class="form-control form-control-sm" placeholder="Operator Name"
-          formControlName="operatorName"
-          [ngClass]="{ 'is-invalid': submitted && recipient['operatorName'].errors }" />
+          formControlName="operatorName" [ngClass]="{ 'is-invalid': submitted && recipient['operatorName'].errors }" />
         <div *ngIf="submitted && recipient['operatorName'].errors" class="invalid-feedback">
           <div *ngIf="recipient['operatorName'].errors['required']">Operator Name is required</div>
         </div>
@@ -74,6 +70,10 @@
     </div>
   </div>
   <div class="modal-footer text-left">
+    <div>
+      <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" />
+      <a class="btn btn-sm btn-outline-dark" (click)="ExcelInput.click()">Upload Excel File</a>
+    </div>
     <button type="submit" class="btn btn-sm btn-outline-dark">Add Recipient</button>
   </div>
 </form>
@@ -151,9 +151,9 @@
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.phoneNo}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.aadharNo}}</span></td>
               </tr>
-              </tbody>
-              <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
-                <tr *ngFor="let shops of shopData let sr = index">
+            </tbody>
+            <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
+              <tr *ngFor="let shops of shopData let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>

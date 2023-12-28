@@ -80,12 +80,13 @@ export class HeaderComponent implements OnInit {
     }
     else if (this.width >= 1200) {
       this.largeDisplay = true;
+      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true});
     }
     else {
       this.isSideBar = false;
       this.isSidebarVisible = false;
       this.largeDisplay = false;
-      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: false})
+      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false})
     }
   }
   toggleClass = (event: any) => {

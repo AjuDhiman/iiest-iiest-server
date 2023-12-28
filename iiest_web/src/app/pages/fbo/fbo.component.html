@@ -106,7 +106,8 @@
                     <div class="col-md-3">
                         <label for="" class=" form-label">Product Name<sup>*</sup></label>
                         <app-multi-select #multi_select #multiSelect (selectedArrayChange)="getProduct($event)"
-                            [options]="productList" [formReset]="resetMultiDrop" [placeHolder]="'Select Products'"></app-multi-select>
+                            [options]="productList" [formReset]="resetMultiDrop"
+                            [placeHolder]="'Select Products'"></app-multi-select>
                         <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['product_name'].errors['arrayNotEmpty']">Product Name is required</div>
                         </div>
@@ -116,15 +117,17 @@
                         <label class="form-label">Business Type<sup>*</sup></label>
                         <div>
                             <div class="d-flex gap-5 py-1">
-                                <label>
-                                    <input type="checkbox" #business_type_input
-                                        class="form-check-input form-check-input"
+                                <label style="font-size: 18px;">
+                                    <input type="checkbox" #business_type_input_b2c
+                                        class="form-check-input form-check-input" [checked]="!isBusinessTypeB2B"
+                                        style="height: 20px; width: 20px;"
                                         (change)="onBusinessTypeChange($event, 'b2c')" name="business_type">
                                     B2C
                                 </label>
-                                <label>
-                                    <input type="checkbox" #business_type_input
-                                        class="form-check-input form-check-input"
+                                <label style="font-size: 18px;">
+                                    <input type="checkbox" #business_type_input_b2b
+                                        class="form-check-input form-check-input" [checked]="isBusinessTypeB2B"
+                                        style="height: 20px; width: 20px;"
                                         (change)="onBusinessTypeChange($event, 'b2b')" name="business_type">
                                     B2B
                                 </label>
@@ -155,25 +158,6 @@
                         <div class="row" *ngIf="isFostac" formGroupName="fostac_training">
                             <h6 class=" pull-left">Fostac Training</h6>
                             <hr>
-
-                            <div class="col-md-3">
-                                <label for="fostac_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                                <select id="fostac_processing_amount" formControlName="fostac_processing_amount" group='fostac'
-                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_processing_amount')?.errors}"
-                                    (change)="processAmount($event)" class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Processing Fee</option>
-                                    <option *ngFor="let processamnt of processAmnts['Fostac Training'] | keyvalue"
-                                        [value]="processamnt.value">{{ processamnt.value }}
-                                    </option>
-                                </select>
-                                <div *ngIf="submitted && fostac.get('fostac_processing_amount')?.errors"
-                                    class="invalid-feedback">
-                                    <div *ngIf="fostac.get('fostac_processing_amount')?.errors?.['required']">Processing amount
-                                        is required
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-3">
                                 <label for="fostac_service_name" class="form-label">Service Name<sup>*</sup></label>
                                 <select id="fostac_service_name" formControlName="fostac_service_name"
@@ -184,8 +168,30 @@
                                         [value]="servicename.value">{{ servicename.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && fostac.get('fostac_service_name')?.errors" class="invalid-feedback">
-                                    <div *ngIf="fostac.get('fostac_service_name')?.errors?.['required']">Service is required
+                                <div *ngIf="submitted && fostac.get('fostac_service_name')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="fostac.get('fostac_service_name')?.errors?.['required']">Service is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="fostac_processing_amount" class="form-label">Processing
+                                    Amount<sup>*</sup></label>
+                                <select id="fostac_processing_amount" formControlName="fostac_processing_amount"
+                                    group='fostac'
+                                    [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_processing_amount')?.errors}"
+                                    (change)="processAmount($event)" class="form-select form-select-sm">
+                                    <option value="" disabled selected>Select the Processing Fee</option>
+                                    <option *ngFor="let processamnt of processAmnts['Fostac Training'] | keyvalue"
+                                        [value]="processamnt.value">{{ processamnt.value }}
+                                    </option>
+                                </select>
+                                <div *ngIf="submitted && fostac.get('fostac_processing_amount')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="fostac.get('fostac_processing_amount')?.errors?.['required']">Processing
+                                        amount
+                                        is required
                                     </div>
                                 </div>
                             </div>
@@ -198,8 +204,10 @@
                                     <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && fostac.get('fostac_client_type')?.errors" class="invalid-feedback">
-                                    <div *ngIf="fostac.get('fostac_client_type')?.errors?.['required']">Client type is required
+                                <div *ngIf="submitted && fostac.get('fostac_client_type')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="fostac.get('fostac_client_type')?.errors?.['required']">Client type is
+                                        required
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +233,8 @@
                                     [ngClass]="{ 'is-invalid': submitted && fostac.get('fostac_total')?.errors}"
                                     class="form-control form-control-sm" id="fostac_total" readonly />
                                 <div *ngIf="submitted && fostac.get('fostac_total')?.errors" class="invalid-feedback">
-                                    <div *ngIf="fostac.get('fostac_total')?.errors?.['required']">Fostac Total Amount Required
+                                    <div *ngIf="fostac.get('fostac_total')?.errors?.['required']">Fostac Total Amount
+                                        Required
                                     </div>
                                 </div>
                             </div>
@@ -242,23 +251,6 @@
                             <h6 class="pull-left">Foscos Training</h6>
                             <hr>
                             <div class="col-md-3">
-                                <label for="foscos_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                                <select id="foscos_processing_amount" formControlName="foscos_processing_amount" group='foscos'
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_processing_amount')?.errors}"
-                                    (change)="processAmount($event)" class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Processing Fee</option>
-                                    <option *ngFor="let processamnt of processAmnts['Foscos Training'] | keyvalue"
-                                        [value]="processamnt.value">{{ processamnt.value }}
-                                    </option>
-                                </select>
-                                <div *ngIf="submitted && foscos.get('foscos_processing_amount')?.errors"
-                                    class="invalid-feedback">
-                                    <div *ngIf="foscos.get('foscos_processing_amount')?.errors?.['required']">Processing amount
-                                        is required
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
                                 <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
                                 <select id="foscos_service_name" class="form-select form-select-sm"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
@@ -268,8 +260,64 @@
                                         [value]="servicename.value">{{ servicename.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('foscos_service_name')?.errors" class="invalid-feedback">
-                                    <div *ngIf="foscos.get('foscos_service_name')?.errors?.['required']">Service is required
+                                <div *ngIf="submitted && foscos.get('foscos_service_name')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_service_name')?.errors?.['required']">Service is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
+                                <select id="license_category" formControlName="license_category"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_category')?.errors}"
+                                    class="form-select form-select-sm">
+                                    <option value="" disabled selected>Select the Licence Category</option>
+                                    <option *ngFor="let category of licenceType.licenceCategory" [ngValue]="category">{{
+                                        category }}</option>
+                                </select>
+                                <div *ngIf="submitted && foscos.get('license_category')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('license_category')?.errors?.['required']">Licence Category
+                                        is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="foscos_processing_amount" class="form-label">Processing
+                                    Amount<sup>*</sup></label>
+                                <select id="foscos_processing_amount" formControlName="foscos_processing_amount"
+                                    group='foscos'
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_processing_amount')?.errors}"
+                                    (change)="processAmount($event)" class="form-select form-select-sm">
+                                    <option value="" disabled selected>Select the Processing Fee</option>
+                                    <option *ngFor="let processamnt of processAmnts['Foscos Training'] | keyvalue"
+                                        [value]="processamnt.value">{{ processamnt.value }}
+                                    </option>
+                                </select>
+                                <div *ngIf="submitted && foscos.get('foscos_processing_amount')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_processing_amount')?.errors?.['required']">Processing
+                                        amount
+                                        is required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
+                                <select id="license_duration" formControlName="license_duration"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_duration')?.errors}"
+                                    class="form-select form-select-sm">
+                                    <option value="" disabled selected>Select the Licence Duration</option>
+                                    <option *ngFor="let duration of licenceType.Duration" [ngValue]="duration">{{
+                                        duration
+                                        }} Year</option>
+                                </select>
+                                <div *ngIf="submitted && foscos.get('license_duration')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('license_duration')?.errors?.['required']">Licence Duration
+                                        is required
                                     </div>
                                 </div>
                             </div>
@@ -283,8 +331,10 @@
                                     <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('foscos_client_type')?.errors" class="invalid-feedback">
-                                    <div *ngIf="foscos.get('foscos_client_type')?.errors?.['required']">Client type is required
+                                <div *ngIf="submitted && foscos.get('foscos_client_type')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_client_type')?.errors?.['required']">Client type is
+                                        required
                                     </div>
                                 </div>
                             </div>
@@ -310,46 +360,14 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
-                                <select id="license_category" formControlName="license_category"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_category')?.errors}"
-                                    class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Licence Category</option>
-                                    <option *ngFor="let category of licenceType.licenceCategory" [ngValue]="category">{{
-                                        category }}</option>
-                                </select>
-                                <div *ngIf="submitted && foscos.get('license_category')?.errors"
-                                    class="invalid-feedback">
-                                    <div *ngIf="foscos.get('license_category')?.errors?.['required']">Licence Category
-                                        is required
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
-                                <select id="license_duration" formControlName="license_duration"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('license_duration')?.errors}"
-                                    class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Licence Duration</option>
-                                    <option *ngFor="let duration of licenceType.Duration" [ngValue]="duration">{{
-                                        duration
-                                        }} Year</option>
-                                </select>
-                                <div *ngIf="submitted && foscos.get('license_duration')?.errors"
-                                    class="invalid-feedback">
-                                    <div *ngIf="foscos.get('license_duration')?.errors?.['required']">Licence Duration
-                                        is required
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
                                 <label for="foscos_total" class=" form-label">Foscos Total Amount<sup>*</sup>
                                     <span style="font-size: x-small;">(18% GST Inc.)</span></label>
                                 <input type="number" placeholder="Foscos Total Amount" formControlName="foscos_total"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_total')?.errors}"
                                     class="form-control form-control-sm" id="foscos_total" readonly />
                                 <div *ngIf="submitted && foscos.get('foscos_total')?.errors" class="invalid-feedback">
-                                    <div *ngIf="foscos.get('foscos_total')?.errors?.['required']">Foscos Total Amount Required
+                                    <div *ngIf="foscos.get('foscos_total')?.errors?.['required']">Foscos Total Amount
+                                        Required
                                     </div>
                                 </div>
                             </div>

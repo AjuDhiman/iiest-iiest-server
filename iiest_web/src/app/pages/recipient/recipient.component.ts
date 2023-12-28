@@ -2,8 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { RegisterService } from 'src/app/services/register.service';
+import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons';  
+import * as XLSX from 'xlsx'
 @Component({
   selector: 'app-recipient',
   templateUrl: './recipient.component.html',
@@ -34,7 +36,8 @@ export class RecipientComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService) {
+    private _toastrService: ToastrService,
+    private _utilService: UtilitiesService) {
 
   }
   ngOnInit(): void {
@@ -164,5 +167,22 @@ export class RecipientComponent implements OnInit {
             this.recipientform.controls["eBill"].setValidators([Validators.required]);
           }
       }
+  }
+//by the help  of this function we can upload data as anexcel sheet, we used XLSX npm package in it
+  onExcelUpload(event:any){
+    let file = event.target.files[0];
+    let fileReader: FileReader = new FileReader();
+    fileReader.readAsBinaryString(file);
+
+    fileReader.onload = (e:any) => {
+      let workbook = XLSX.read(fileReader.result, {type: 'binary'});
+      let sheetNames = workbook.SheetNames;
+      let data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
+      console.log(data);
+    }
+  }
+
+  downloadCSV(fileType:String){
+    this._utilService.downloadFile(fileType);
   }
 }

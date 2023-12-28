@@ -4,48 +4,48 @@
       <div class="row g-3 mb-4 align-items-center justify-content-between">
         <div class="col-auto">
           <h1 class="app-page-title mb-2">Employee {{formType}} Form</h1>
-        <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
-          <button type="submit" class="btn btn-sm btn-primary" (click)="backToRegister()">Register Form</button>
-        </div>
-      </div><!--//row-->
-      <div class="row gy-4 mb-3">
-        <form [formGroup]="form" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off"
-          (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-          <div class="col-md-6">
-            <label for="employee_name" class="form-label">Employee Name</label>
-            <input type="text" placeholder="Employee Name" formControlName="employee_name"
-              class="form-control form-control-sm" id="employee_name"
-              [ngClass]="{ 'is-invalid': submitted && f['employee_name'].errors }">
-            <div *ngIf="submitted && f['employee_name'].errors" class="invalid-feedback">
-              <div *ngIf="f['employee_name'].errors['required']">Employee name is required</div>
-            </div>
+          <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
+            <button type="submit" class="btn btn-sm btn-primary" (click)="backToRegister()">Register Form</button>
           </div>
-          <div class="col-md-3">
-            <label for="gender" class="form-label select-label">Gender</label>
-            <select id="gender" [ngClass]="{ 'is-invalid': submitted && f['gender'].errors }" formControlName="gender"
-              class="form-select form-select-sm">
-              <option value="" disabled selected>Select the Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-            <div *ngIf="submitted && f['gender'].errors" class="invalid-feedback">
-              <div *ngIf="f['gender'].errors['required']">Gender is required</div>
+        </div><!--//row-->
+        <div class="row gy-4 mb-3">
+          <form [formGroup]="form" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off"
+            (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+            <div class="col-md-3">
+              <label for="employee_name" class="form-label">Employee Name</label>
+              <input type="text" placeholder="Employee Name" formControlName="employee_name"
+                class="form-control form-control-sm" id="employee_name"
+                [ngClass]="{ 'is-invalid': submitted && f['employee_name'].errors }">
+              <div *ngIf="submitted && f['employee_name'].errors" class="invalid-feedback">
+                <div *ngIf="f['employee_name'].errors['required']">Employee name is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <label for="dob" class="form-label">Date of Birth</label>
-            <input type="date" placeholder="Date of Birth" formControlName="dob" class="form-control form-control-sm"
-              id="dob" [ngClass]="{ 'is-invalid': submitted && f['dob'].errors }" />
-            <!--bsDatepicker [(bsValue)]="dobValue"/>-->
+            <div class="col-md-3">
+              <label for="gender" class="form-label select-label">Gender</label>
+              <select id="gender" [ngClass]="{ 'is-invalid': submitted && f['gender'].errors }" formControlName="gender"
+                class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              <div *ngIf="submitted && f['gender'].errors" class="invalid-feedback">
+                <div *ngIf="f['gender'].errors['required']">Gender is required</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label for="dob" class="form-label">Date of Birth</label>
+              <input type="date" placeholder="Date of Birth" formControlName="dob" class="form-control form-control-sm"
+                id="dob" [ngClass]="{ 'is-invalid': submitted && f['dob'].errors }" />
+              <!--bsDatepicker [(bsValue)]="dobValue"/>-->
 
-            <div *ngIf="submitted && f['dob'].errors" class="invalid-feedback">
-              <div *ngIf="f['dob'].errors['required']">Date of Birth is required</div>
+              <div *ngIf="submitted && f['dob'].errors" class="invalid-feedback">
+                <div *ngIf="f['dob'].errors['required']">Date of Birth is required</div>
+              </div>
+
             </div>
 
-          </div>
-
-          <!-- <div class="col-md-3">
+            <!-- <div class="col-md-3">
             <label for="username" class="form-label">Username</label>
             <input
               type="text"
@@ -67,18 +67,18 @@
             </div>
           </div> -->
 
-          <div class="col-md-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="text" placeholder="Email" formControlName="email" id="email"
-              class="form-control form-control-sm" autocomplete="off"
-              [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
-            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-              <div *ngIf="f['email'].errors['required']">Email is required</div>
-              <div *ngIf="f['email'].errors['email']">Email is invalid</div>
+            <div class="col-md-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" placeholder="Email" formControlName="email" id="email"
+                class="form-control form-control-sm" autocomplete="off"
+                [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
+              <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                <div *ngIf="f['email'].errors['required']">Email is required</div>
+                <div *ngIf="f['email'].errors['email']">Email is invalid</div>
+              </div>
             </div>
-          </div>
 
-          <!-- <div class="col-md-3">
+            <!-- <div class="col-md-3">
             <label for="password" class="form-label">Password</label>
             <input
               type="password"
@@ -114,20 +114,20 @@
               </div>
             </div>
           </div> -->
-          <!--FD - federation  BC - Business Center-->
-          <div class="col-md-3">
-            <label for="company_name" class="form-label">Company Name</label>
-            <select id="company_name" [ngClass]="{ 'is-invalid': submitted && f['company_name'].errors }"
-              formControlName="company_name" class="form-select form-select-sm">
-              <option value="" disabled selected>Select the Company</option>
-              <option value="Federation">Federation</option>
-              <option value="Business Center">Business Center</option>
-            </select>
-            <div *ngIf="submitted && f['company_name'].errors" class="invalid-feedback">
-              <div *ngIf="f['company_name'].errors['required']">Company Name is required</div>
+            <!--FD - federation  BC - Business Center-->
+            <div class="col-md-3">
+              <label for="company_name" class="form-label">Company Name</label>
+              <select id="company_name" [ngClass]="{ 'is-invalid': submitted && f['company_name'].errors }"
+                formControlName="company_name" class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Company</option>
+                <option value="Federation">Federation</option>
+                <option value="Business Center">Business Center</option>
+              </select>
+              <div *ngIf="submitted && f['company_name'].errors" class="invalid-feedback">
+                <div *ngIf="f['company_name'].errors['required']">Company Name is required</div>
+              </div>
             </div>
-          </div>
-          <!-- <div class="col-md-3">
+            <!-- <div class="col-md-3">
             <label for="employee_id" class="form-label">Employee ID</label>
             <input type="text" placeholder="Employee ID" 
             formControlName="employee_id" 
@@ -137,176 +137,184 @@
               <div *ngIf="f['employee_id'].errors['required']">Employee ID is required</div>
             </div>
           </div>-->
-          <div class="col-md-3">
-            <label for="portal_type" class="form-label">Select Portal Type:</label>
-            <select class="form-select form-select-sm" id="portal_type"
-              [ngClass]="{ 'is-invalid': submitted && f['portal_type'].errors }" formControlName="portal_type">
-              <option value="" disabled selected>Select the Portal</option>
-              <option *ngFor="let portalType of getPortalType" [ngValue]="portalType">{{ portalType }}</option>
-            </select>
-            <div *ngIf="submitted && f['portal_type'].errors" class="invalid-feedback">
-              <div *ngIf="f['portal_type'].errors['required']">Portal type is required</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <label for="project_name" class="form-label">Project Name</label>
-            <select id="project_name" [ngClass]="{ 'is-invalid': submitted && f['project_name'].errors }"
-              formControlName="project_name" class="form-select form-select-sm">
-              <option value="" disabled selected>Select the Project</option>
-              <option *ngFor="let projectName of getProjectName" [ngValue]="projectName">{{ projectName }}</option>
-            </select>
-            <div *ngIf="submitted && f['project_name'].errors" class="invalid-feedback">
-              <div *ngIf="f['project_name'].errors['required']">Project Name is required</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <label for="doj" class="form-label">Date of Joining</label>
-            <input type="date" placeholder="Date of Joining" formControlName="doj" class="form-control form-control-sm"
-              id="doj" [ngClass]="{ 'is-invalid': submitted && f['doj'].errors }" />
-            <!--bsDatepicker [(bsValue)]="dojValue"/>-->
-            <div *ngIf="submitted && f['doj'].errors" class="invalid-feedback">
-              <div *ngIf="f['doj'].errors['required']">Date of Joining is required</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Post Type</label>
-            <div class="d-flex gap-5">
-              <div class="form-check form-check-sm" *ngFor="let post of post_types">
-                <input (change)="onPostTypeSelect()" type="radio" [id]="post" formControlName="post_type"
-                 class="form-check-input form-check-input-sm" [value]="post" 
-                 [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
-                <label class="form-label form-label-sm" [for]="post">{{post}}</label>
+            <div class="col-md-3">
+              <label for="portal_type" class="form-label">Select Portal Type:</label>
+              <select class="form-select form-select-sm" id="portal_type"
+                [ngClass]="{ 'is-invalid': submitted && f['portal_type'].errors }" formControlName="portal_type">
+                <option value="" disabled selected>Select the Portal</option>
+                <option *ngFor="let portalType of getPortalType" [ngValue]="portalType">{{ portalType }}</option>
+              </select>
+              <div *ngIf="submitted && f['portal_type'].errors" class="invalid-feedback">
+                <div *ngIf="f['portal_type'].errors['required']">Portal type is required</div>
               </div>
             </div>
-            <div *ngIf="submitted && f['post_type'].errors" class="invalid-feedback" style="display: block;">
-              <div *ngIf="f['post_type'].errors['required']">Post Type is required</div>
+            <div class="col-md-3">
+              <label for="project_name" class="form-label">Project Name</label>
+              <select id="project_name" [ngClass]="{ 'is-invalid': submitted && f['project_name'].errors }"
+                formControlName="project_name" class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Project</option>
+                <option *ngFor="let projectName of getProjectName" [ngValue]="projectName">{{ projectName }}</option>
+              </select>
+              <div *ngIf="submitted && f['project_name'].errors" class="invalid-feedback">
+                <div *ngIf="f['project_name'].errors['required']">Project Name is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <label for="department" class="form-label">Department</label>
-            <select (change)="onDepartmentSelect()" id="department"
-              [ngClass]="{ 'is-invalid': submitted && f['department'].errors }" formControlName="department"
-              class="form-select form-select-sm">
-              <option value="" disabled selected>Select the Department</option>
-              <option *ngFor="let department of departments" [ngValue]="department">{{ department }}</option>
-            </select>
-            <div *ngIf="submitted && f['department'].errors" class="invalid-feedback">
-              <div *ngIf="f['department'].errors['required']">Department Name is required</div>
+            <div class="col-md-3">
+              <label for="doj" class="form-label">Date of Joining</label>
+              <input type="date" placeholder="Date of Joining" formControlName="doj"
+                class="form-control form-control-sm" id="doj"
+                [ngClass]="{ 'is-invalid': submitted && f['doj'].errors }" />
+              <!--bsDatepicker [(bsValue)]="dojValue"/>-->
+              <div *ngIf="submitted && f['doj'].errors" class="invalid-feedback">
+                <div *ngIf="f['doj'].errors['required']">Date of Joining is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <label for="designation" class="form-label">Designation</label>
-            <select id="designation"
-              [ngClass]="{ 'is-invalid': submitted && f['designation'].errors }" formControlName="designation"
-              class="form-select form-select-sm">
-              <option value="" disabled selected>Select the Designation</option>
-              <option *ngFor="let designation of designations" [ngValue]="designation">{{ designation }}</option>
-            </select>
-            <div *ngIf="submitted && f['designation'].errors" class="invalid-feedback">
-              <div *ngIf="f['designation'].errors['required']">Designation is required</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <label for="grade_pay" class="form-label">Grade Pay</label>
-            <select id="grade_pay" [ngClass]="{ 'is-invalid': submitted && f['grade_pay'].errors }"
-              formControlName="grade_pay" class="form-select form-select-sm">
-              <option value="" disabled selected>Select the Grade Pay</option>
-              <option *ngFor="let gradePay of getGradePay" [ngValue]="gradePay">{{ gradePay }}</option>
-            </select>
-            <div *ngIf="submitted && f['grade_pay'].errors" class="invalid-feedback">
-              <div *ngIf="f['grade_pay'].errors['required']">Grade Pay is required</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <label for="salary" class="form-label">Salary</label>
-            <input type="text" placeholder="Salary" formControlName="salary" class="form-control form-control-sm"
-              id="salary" [ngClass]="{ 'is-invalid': submitted && f['salary'].errors }">
-            <div *ngIf="submitted && f['salary'].errors" class="invalid-feedback">
-              <div *ngIf="f['salary'].errors['required']">Salary is required</div>
-            </div>
-          </div>
+            <div class="col-md-3">
+              <label class="form-label">Post Type</label>
+              <div class="d-flex gap-5">
+                <div class="form-check form-check-sm">
+                  <input (change)="onPostTypeSelect(post_types[0])" type="checkbox" style="height: 20px; width: 20px;"
+                    [checked]="isFirstPostChecked === true" class="form-check-input form-check-input-sm"
+                    [id]="post_types[0]" [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                  <label class="form-label form-label-sm" [for]="post_types[0]" style="font-size: 14px;">{{post_types[0]}}</label>
+                </div>
+                <div class="form-check form-check-sm">
 
-          <div class="col-md-3">
-            <label for="contact_no" class="form-label">Contact No.</label>
-            <input type="number" placeholder="Contact No." formControlName="contact_no" autocomplete="off"
-              class="form-control form-control-sm" id="contact_no"
-              [ngClass]="{ 'is-invalid': submitted && f['contact_no'].errors }">
-            <div *ngIf="submitted && f['contact_no'].errors" class="invalid-feedback">
-              <div *ngIf="f['contact_no'].errors['required']">Contact is required</div>
+                  <input (change)="onPostTypeSelect(post_types[1])" type="checkbox" style="height: 20px; width: 20px;"
+                    [checked]="isFirstPostChecked === false" [id]="post_types[1]"
+                    class="form-check-input form-check-input-sm"
+                    [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                  <label class="form-label form-label-sm" [for]="post_types[1]" style="font-size: 14px;;">{{post_types[1]}}</label>
+                </div>
+              </div>
+              <div *ngIf="submitted && f['post_type'].errors" class="invalid-feedback" style="display: block;">
+                <div *ngIf="f['post_type'].errors['required']">Post Type is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <label for="alternate_contact" class="form-label">Alternate Contact No.</label>
-            <input type="number" placeholder="Alternate Contact No." formControlName="alternate_contact"
-              autocomplete="off" class="form-control form-control-sm" id="alternate_contact"
-              [ngClass]="{ 'is-invalid': submitted && f['alternate_contact'].errors }">
-            <div *ngIf="submitted && f['alternate_contact'].errors" class="invalid-feedback">
-              <div *ngIf="f['alternate_contact'].errors['required']">Address is required</div>
+            <div class="col-md-3">
+              <label for="department" class="form-label">Department</label>
+              <select (change)="onDepartmentSelect()" id="department"
+                [ngClass]="{ 'is-invalid': submitted && f['department'].errors }" formControlName="department"
+                class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Department</option>
+                <option *ngFor="let department of departments" [ngValue]="department">{{ department }}</option>
+              </select>
+              <div *ngIf="submitted && f['department'].errors" class="invalid-feedback">
+                <div *ngIf="f['department'].errors['required']">Department Name is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <label for="zip_code" class="form-label">Zip</label>
-            <input type="number" placeholder="Zip" formControlName="zip_code" autocomplete="off"
-              class="form-control form-control-sm" id="zip_code"
-              [ngClass]="{ 'is-invalid': submitted && f['zip_code'].errors }">
-            <div *ngIf="submitted && f['zip_code'].errors" class="invalid-feedback">
-              <div *ngIf="f['zip_code'].errors['required']">Zip Code is required</div>
+            <div class="col-md-3">
+              <label for="designation" class="form-label">Designation</label>
+              <select id="designation" [ngClass]="{ 'is-invalid': submitted && f['designation'].errors }"
+                formControlName="designation" class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Designation</option>
+                <option *ngFor="let designation of designations" [ngValue]="designation">{{ designation }}</option>
+              </select>
+              <div *ngIf="submitted && f['designation'].errors" class="invalid-feedback">
+                <div *ngIf="f['designation'].errors['required']">Designation is required</div>
+              </div>
             </div>
-          </div>
-          
-          <div class="col-md-6">
-            <label for="address" class="form-label">Address</label>
-            <textarea type="text" placeholder="Address" rows="1" formControlName="address" autocomplete="off"
-              class="form-control form-control-sm" id="address"
-              [ngClass]="{ 'is-invalid': submitted && f['address'].errors }"></textarea>
-            <div *ngIf="submitted && f['address'].errors" class="invalid-feedback">
-              <div *ngIf="f['address'].errors['required']">Address is required</div>
+            <div class="col-md-3">
+              <label for="grade_pay" class="form-label">Grade Pay</label>
+              <select id="grade_pay" [ngClass]="{ 'is-invalid': submitted && f['grade_pay'].errors }"
+                formControlName="grade_pay" class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Grade Pay</option>
+                <option *ngFor="let gradePay of getGradePay" [ngValue]="gradePay">{{ gradePay }}</option>
+              </select>
+              <div *ngIf="submitted && f['grade_pay'].errors" class="invalid-feedback">
+                <div *ngIf="f['grade_pay'].errors['required']">Grade Pay is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-2">
-            <label for="state" class="form-label">State</label>
-            <select id="state" [ngClass]="{ 'is-invalid': submitted && f['state'].errors }" formControlName="state"
-              class="form-select form-select-sm">
-              <option value="" disabled selected>Select the State</option>
-              <option value="Delhi">Delhi</option>
-              <option value="UP">UP</option>
-              <option value="HP">HP</option>
-              <option value="Haryana">Haryana</option>
-            </select>
-            <div *ngIf="submitted && f['state'].errors" class="invalid-feedback">
-              <div *ngIf="f['state'].errors['required']">State is required</div>
+            <div class="col-md-3">
+              <label for="salary" class="form-label">Salary</label>
+              <input type="text" placeholder="Salary" formControlName="salary" class="form-control form-control-sm"
+                id="salary" [ngClass]="{ 'is-invalid': submitted && f['salary'].errors }">
+              <div *ngIf="submitted && f['salary'].errors" class="invalid-feedback">
+                <div *ngIf="f['salary'].errors['required']">Salary is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-2">
-            <label for="city" class="form-label">City</label>
-            <input type="text" placeholder="City" formControlName="city" class="form-control form-control-sm" id="city"
-              [ngClass]="{ 'is-invalid': submitted && f['city'].errors }">
-            <div *ngIf="submitted && f['city'].errors" class="invalid-feedback">
-              <div *ngIf="f['city'].errors['required']">
-                City is required</div>
-            </div>
-          </div>
 
-          <div class="col-md-2">
-            <label for="country" class="form-label">Country</label>
-            <input type="text" placeholder="Country" formControlName="country" autocomplete="off"
-              class="form-control form-control-sm" id="country"
-              [ngClass]="{ 'is-invalid': submitted && f['country'].errors }">
-            <div *ngIf="submitted && f['country'].errors" class="invalid-feedback">
-              <div *ngIf="f['country'].errors['required']">Country is required</div>
+            <div class="col-md-3">
+              <label for="contact_no" class="form-label">Contact No.</label>
+              <input type="number" placeholder="Contact No." formControlName="contact_no" autocomplete="off"
+                class="form-control form-control-sm" id="contact_no"
+                [ngClass]="{ 'is-invalid': submitted && f['contact_no'].errors }">
+              <div *ngIf="submitted && f['contact_no'].errors" class="invalid-feedback">
+                <div *ngIf="f['contact_no'].errors['required']">Contact is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <label for="empSignature" class="form-label">Signature</label>
-            <input type="file" id="empSignature" formControlName="empSignature"
-                   (change)="onSignatureEnter($event)"
-                   class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f['empSignature'].errors }">
-            <div *ngIf="submitted && f['empSignature'].errors" class="invalid-feedback">
-              <div *ngIf="f['empSignature'].errors['required']">Signature is required</div>
+            <div class="col-md-3">
+              <label for="alternate_contact" class="form-label">Alternate Contact No.</label>
+              <input type="number" placeholder="Alternate Contact No." formControlName="alternate_contact"
+                autocomplete="off" class="form-control form-control-sm" id="alternate_contact"
+                [ngClass]="{ 'is-invalid': submitted && f['alternate_contact'].errors }">
+              <div *ngIf="submitted && f['alternate_contact'].errors" class="invalid-feedback">
+                <div *ngIf="f['alternate_contact'].errors['required']">Address is required</div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-12">
-            <!-- <div class="form-group form-check">
+            <div class="col-md-3">
+              <label for="zip_code" class="form-label">Zip</label>
+              <input type="number" placeholder="Zip" formControlName="zip_code" autocomplete="off"
+                class="form-control form-control-sm" id="zip_code"
+                [ngClass]="{ 'is-invalid': submitted && f['zip_code'].errors }">
+              <div *ngIf="submitted && f['zip_code'].errors" class="invalid-feedback">
+                <div *ngIf="f['zip_code'].errors['required']">Zip Code is required</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="address" class="form-label">Address</label>
+              <textarea type="text" placeholder="Address" rows="1" formControlName="address" autocomplete="off"
+                class="form-control form-control-sm" id="address"
+                [ngClass]="{ 'is-invalid': submitted && f['address'].errors }"></textarea>
+              <div *ngIf="submitted && f['address'].errors" class="invalid-feedback">
+                <div *ngIf="f['address'].errors['required']">Address is required</div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="state" class="form-label">State</label>
+              <select id="state" [ngClass]="{ 'is-invalid': submitted && f['state'].errors }" formControlName="state"
+                class="form-select form-select-sm">
+                <option value="" disabled selected>Select the State</option>
+                <option value="Delhi">Delhi</option>
+                <option value="UP">UP</option>
+                <option value="HP">HP</option>
+                <option value="Haryana">Haryana</option>
+              </select>
+              <div *ngIf="submitted && f['state'].errors" class="invalid-feedback">
+                <div *ngIf="f['state'].errors['required']">State is required</div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="city" class="form-label">City</label>
+              <input type="text" placeholder="City" formControlName="city" class="form-control form-control-sm"
+                id="city" [ngClass]="{ 'is-invalid': submitted && f['city'].errors }">
+              <div *ngIf="submitted && f['city'].errors" class="invalid-feedback">
+                <div *ngIf="f['city'].errors['required']">
+                  City is required</div>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <label for="country" class="form-label">Country</label>
+              <input type="text" placeholder="Country" formControlName="country" autocomplete="off"
+                class="form-control form-control-sm" id="country"
+                [ngClass]="{ 'is-invalid': submitted && f['country'].errors }">
+              <div *ngIf="submitted && f['country'].errors" class="invalid-feedback">
+                <div *ngIf="f['country'].errors['required']">Country is required</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label for="empSignature" class="form-label">Signature</label>
+              <input type="file" id="empSignature" formControlName="empSignature" (change)="onSignatureEnter($event)"
+                class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && f['empSignature'].errors }">
+              <div *ngIf="submitted && f['empSignature'].errors" class="invalid-feedback">
+                <div *ngIf="f['empSignature'].errors['required']">Signature is required</div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <!-- <div class="form-group form-check">
             <input
               type="checkbox"
               id="acceptTerms"
@@ -318,41 +326,41 @@
               Accept Terms is required
             </div>
           </div> -->
-          </div>
-          <div class="col-6">
-            <button *ngIf="isEditMode; else otherContent" type="submit" class="btn btn-sm btn-primary">Update</button>
+            </div>
+            <div class="col-6">
+              <button *ngIf="isEditMode; else otherContent" type="submit" class="btn btn-sm btn-primary">Update</button>
 
-            <ng-template #otherContent>
-              <button type="submit" class="btn btn-sm btn-primary">Register</button>
-            </ng-template>
+              <ng-template #otherContent>
+                <button type="submit" class="btn btn-sm btn-primary">Register</button>
+              </ng-template>
 
-          </div>
-          <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="button" (click)="onReset()" class="btn btn-sm btn-warning">Reset</button>
-          </div>
-        </form>
+            </div>
+            <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="button" (click)="onReset()" class="btn btn-sm btn-warning">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <!--Employee List Component-->
       </div>
-
-      <!--Employee List Component-->
     </div>
-  </div>
 
-  <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xxl border border-1 rounded-3">
-      <app-employeelist (isEditRecord)="isEditRecord($event)" class="border"></app-employeelist>
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+      <div class="container-xxl border border-1 rounded-3">
+        <app-employeelist (isEditRecord)="isEditRecord($event)" class="border"></app-employeelist>
+      </div>
     </div>
-  </div>
 
 
-  <footer class="app-footer">
-    <div class="container text-center py-3">
-      <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-      <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
-          style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
-          target="_blank">Xiaoying Riley</a> for developers</small>
+    <footer class="app-footer">
+      <div class="container text-center py-3">
+        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+        <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
+            style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
+            target="_blank">Xiaoying Riley</a> for developers</small>
 
-    </div>
-  </footer><!--//app-footer-->
+      </div>
+    </footer><!--//app-footer-->
 
-</div><!--//app-wrapper-->
-<!--<app-employeelist></app-employeelist>-->
+  </div><!--//app-wrapper-->
+  <!--<app-employeelist></app-employeelist>-->
