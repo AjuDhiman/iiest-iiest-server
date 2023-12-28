@@ -22,7 +22,8 @@ import { DatePipe } from '@angular/common';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component';
 import { ContactusformComponent } from './pages/contactusform/contactusform.component';
 import { AuthInterceptor} from './interceptors/auth.interceptor';
-import { ExportAsModule } from 'ngx-export-as'
+import { ExportAsModule } from 'ngx-export-as';
+import { HighchartsChartModule } from 'highcharts-angular';
 //services
 import {GetdataService} from './services/getdata.service'
 //Toastr
@@ -74,6 +75,7 @@ import { ViewFboComponent } from './pages/view-fbo/view-fbo.component';
     ExportAsModule,
     QrCodeModule,
     FileSaverModule,
+    HighchartsChartModule,
     //ngxs Modlues
     NgxsModule.forRoot([EmployeeState]),
     NgxsLoggerPluginModule.forRoot(),
