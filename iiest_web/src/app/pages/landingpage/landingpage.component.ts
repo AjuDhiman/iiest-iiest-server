@@ -27,6 +27,7 @@ constructor(
   const bodyElement = document.body;
   bodyElement.classList.remove('app');
   this.isToken = this._resiterService.isLoggedIn();
+  
 }
 ngOnInit(): void {
 
@@ -38,4 +39,5 @@ openModal(){
       this.router.navigateByUrl('/home')
   }
 }
+
 }

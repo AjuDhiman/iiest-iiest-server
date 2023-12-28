@@ -8,7 +8,7 @@ import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
-
+import * as Highcharts from 'highcharts';
 
 @Component({
   selector: 'app-home',
@@ -33,11 +33,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   msg: Subscription;
   dnone: boolean = true;
   projectType: any;
+  Highcharts: typeof Highcharts = Highcharts;
+  datas:any = [1, 2, 3, 4];
   constructor(
     private _registerService: RegisterService,
     private store: Store,
     private _utilitiesService: UtilitiesService,
-    private _getDataService: GetdataService
+    private _getDataService: GetdataService,
+   
   ) { }
   ngOnInit(): void {
     this.getEmployees();
@@ -60,6 +63,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+//High charts
+  chartOptions: Highcharts.Options = {
+    credits: {
+      enabled: false
+    },
+    series: [
+      {
+        type: 'line',
+        data: this.datas,
+      },
+    ],
+  };
   getEmployees() {
     this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
       if (!loadedEmployee) {
@@ -93,6 +108,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     })
   }
+  
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
   }

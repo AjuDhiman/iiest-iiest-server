@@ -4,10 +4,10 @@
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <a href="../../../assets/fostac.csv" target="_blank" style="margin-right: 10px;" download="sample-file.csv">
+  
     <fa-icon class="fa-lg" style="color: #1d8b6a;"
     [icon]="faFileExcel"></fa-icon>
-	</a>
+
 </div>
 <form  [formGroup]="recipientform" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
   <!--Foscos FORM Start-->
