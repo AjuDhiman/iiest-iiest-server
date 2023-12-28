@@ -11752,6 +11752,7 @@
    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
    border-bottom: 1px solid #e7e9ed;
    height: 56px;
+   margin-left: 60px;
    background: #fff;
    transition: all 0.4s ease-in-out;
    /* this transitiois included in portal css for giving transition effect on sidebar toggle in desktop size full screen */
@@ -11980,8 +11981,9 @@
    z-index: 10;
    background: #fff;
    box-shadow: rgba(0, 0, 0, 0.05) 0px 8px 15px;
-   width: 250px;
+   width: 60px;
    height: 100%;
+   transition: all 0.4s ease-in-out;
  }
  .app-sidepanel .sidepanel-close {
    display: none;
@@ -11993,11 +11995,17 @@
    font-size: 2rem;
  }
  .app-sidepanel.sidepanel-hidden {
-   left: -400px;
+   width: 60px;
  }
- .app-sidepanel.sidepanel-visible {
-   left: 0;
+ .sidepanel-inner.sidepanel-inner-visible {
+   width: 250px;
  }
+ .sidepanel-inner.sidepanel-inner-hidden {
+  width: 60px;
+}
+.app-sidepanel.sidepanel-visible {
+  width: 250px;
+}
  .app-sidepanel .app-nav-main {
    overflow-y: auto;
    scrollbar-color: rgba(0, 0, 0, 0.1) #e7e9ed;
@@ -12189,6 +12197,7 @@
    font-size: 0.8125rem;
  }
  .app-wrapper {
+  margin-left: 60px;
    transition: all 0.4s ease-in-out;
  }
  @media (prefers-reduced-motion: reduce) {
@@ -12749,4 +12758,11 @@
 .left-margin-250 {
   margin-left: 250px !important;
 }
- 
+
+.left-margin-190 {
+  margin-left: 190px !important;
+}
+
+.sidepanel-inner-hidden .nav-link > *:not(.nav-icon), .sidepanel-inner-hidden .app-branding .logo-text {
+ visibility: hidden;
+}
