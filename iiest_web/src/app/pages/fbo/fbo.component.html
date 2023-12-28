@@ -244,30 +244,12 @@
                         </div> -->
 
                         </div>
-                        <hr *ngIf="isFoscos">
 
                         <div class="row" *ngIf="isFoscos" formGroupName="foscos_training">
+                            <hr >
 
                             <h6 class="pull-left">Foscos Training</h6>
                             <hr>
-                            <div class="col-md-3">
-                                <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
-                                <select id="foscos_service_name" class="form-select form-select-sm"
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
-                                    formControlName="foscos_service_name">
-                                    <option value="" disabled selected>Select the Service</option>
-                                    <option *ngFor="let servicename of servicesNames['Foscos Training'] | keyvalue"
-                                        [value]="servicename.value">{{ servicename.value }}
-                                    </option>
-                                </select>
-                                <div *ngIf="submitted && foscos.get('foscos_service_name')?.errors"
-                                    class="invalid-feedback">
-                                    <div *ngIf="foscos.get('foscos_service_name')?.errors?.['required']">Service is
-                                        required
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-3">
                                 <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
                                 <select id="license_category" formControlName="license_category"
@@ -285,22 +267,19 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label for="foscos_processing_amount" class="form-label">Processing
-                                    Amount<sup>*</sup></label>
-                                <select id="foscos_processing_amount" formControlName="foscos_processing_amount"
-                                    group='foscos'
-                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_processing_amount')?.errors}"
-                                    (change)="processAmount($event)" class="form-select form-select-sm">
-                                    <option value="" disabled selected>Select the Processing Fee</option>
-                                    <option *ngFor="let processamnt of processAmnts['Foscos Training'] | keyvalue"
-                                        [value]="processamnt.value">{{ processamnt.value }}
+                                <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
+                                <select id="foscos_service_name" class="form-select form-select-sm"
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
+                                    formControlName="foscos_service_name">
+                                    <option value="" disabled selected>Select the Service</option>
+                                    <option *ngFor="let servicename of servicesNames['Foscos Training'] | keyvalue"
+                                        [value]="servicename.value">{{ servicename.value }}
                                     </option>
                                 </select>
-                                <div *ngIf="submitted && foscos.get('foscos_processing_amount')?.errors"
+                                <div *ngIf="submitted && foscos.get('foscos_service_name')?.errors"
                                     class="invalid-feedback">
-                                    <div *ngIf="foscos.get('foscos_processing_amount')?.errors?.['required']">Processing
-                                        amount
-                                        is required
+                                    <div *ngIf="foscos.get('foscos_service_name')?.errors?.['required']">Service is
+                                        required
                                     </div>
                                 </div>
                             </div>
@@ -317,6 +296,27 @@
                                 <div *ngIf="submitted && foscos.get('license_duration')?.errors"
                                     class="invalid-feedback">
                                     <div *ngIf="foscos.get('license_duration')?.errors?.['required']">Licence Duration
+                                        is required
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="foscos_processing_amount" class="form-label">Processing
+                                    Amount<sup>*</sup></label>
+                                <select id="foscos_processing_amount" formControlName="foscos_processing_amount"
+                                    group='foscos'
+                                    [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_processing_amount')?.errors}"
+                                    (change)="processAmount($event)" class="form-select form-select-sm">
+                                    <option value="" disabled selected>Select the Processing Fee</option>
+                                    <option *ngFor="let processamnt of processAmnts['Foscos Training'] | keyvalue"
+                                        [value]="processamnt.value">{{ processamnt.value }}
+                                    </option>
+                                </select>
+                                <div *ngIf="submitted && foscos.get('foscos_processing_amount')?.errors"
+                                    class="invalid-feedback">
+                                    <div *ngIf="foscos.get('foscos_processing_amount')?.errors?.['required']">Processing
+                                        amount
                                         is required
                                     </div>
                                 </div>

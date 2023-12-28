@@ -12024,6 +12024,7 @@
    padding-top: 1rem;
    padding-left: 1rem;
    margin-bottom: 1rem;
+   overflow: hidden;
  }
  .app-branding .logo-icon {
    width: 36px;
@@ -12152,7 +12153,7 @@
  @media (max-width: 1199.98px) {
    .app-sidepanel {
      transition: all 0.4s ease-in-out;
-     left: -400px;
+     /* left: -400px; */
    }
  }
  @media (max-width: 1199.98px) and (prefers-reduced-motion: reduce) {
@@ -12763,6 +12764,23 @@
   margin-left: 190px !important;
 }
 
+@keyframes hideVisibility {
+  from {
+    visibility: hidden;
+  }
+  to {
+    visibility: visible;
+  }
+}
+
 .sidepanel-inner-hidden .nav-link > *:not(.nav-icon), .sidepanel-inner-hidden .app-branding .logo-text {
- visibility: hidden;
+  opacity: 0;
+  /* visibility: hidden; Set initial visibility */
+  transition: all 0.4s ease-out;
+}
+
+.sidepanel-inner-visible .nav-link > *:not(.nav-icon), .sidepanel-inner-visible .app-branding .logo-text {
+  opacity: 1;
+  /* visibility: visible; Set initial visibility */
+  transition: all 0.4s ease-out;
 }

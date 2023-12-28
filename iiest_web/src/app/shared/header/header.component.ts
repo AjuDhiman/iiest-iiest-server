@@ -60,10 +60,12 @@ export class HeaderComponent implements OnInit {
     if (this.width >= 1920) {
       this.isSideBar = true;
       this.isSidebarVisible = true;
-      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true});
+      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: false});
     }
     else if (this.width >= 1200) {
       this.largeDisplay = true;
+      this.isSidebarVisible = false;
+      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false});
     }
   }
   ngOnInit() { 
@@ -76,11 +78,12 @@ export class HeaderComponent implements OnInit {
     if(this.width >= 1920){
       this.isSideBar = true;
       this.isSidebarVisible = true;
-      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true})
+      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false})
     }
     else if (this.width >= 1200) {
       this.largeDisplay = true;
-      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true});
+      this.isSidebarVisible = false;
+      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false});
     }
     else {
       this.isSideBar = false;

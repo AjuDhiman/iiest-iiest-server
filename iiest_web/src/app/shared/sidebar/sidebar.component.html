@@ -1,6 +1,6 @@
-<div id="app-sidepanel" class="app-sidepanel" [ngClass]="sideBarToggle == true ? 'sidepanel-visible' : 'sidepanel-hidden'">
+<div id="app-sidepanel" class="app-sidepanel" [ngClass]="sideBarToggle == true && isSidebarVisible? 'sidepanel-visible' : 'sidepanel-hidden'">
     <div id="sidepanel-drop" class="sidepanel-drop"></div>
-    <div class="sidepanel-inner d-flex flex-column" [ngClass]="sideBarToggle == true ? 'sidepanel-inner-visible' : 'sidepanel-inner-hidden'">
+    <div class="sidepanel-inner d-flex flex-column" [ngClass]="sideBarToggle == true &&isSidebarVisible? 'sidepanel-inner-visible' : 'sidepanel-inner-hidden'">
         <a id="sidepanel-close" (click)="sideBarToggleValue()" class="sidepanel-close d-xl-none">&times;</a>
         <div class="app-branding">
             <a class="app-logo" [routerLink]="['/home']">

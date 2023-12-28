@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 export class SidebarComponent {
   @Input() userData:any;
   @Input() sideBarToggle:boolean;
+  @Input() isSidebarVisible: boolean;
+  @Input() largeDisplay:boolean
   @Output() sideBarToggleUpdate = new EventEmitter();
   constructor(private router :Router){
 

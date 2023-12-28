@@ -332,6 +332,7 @@ export class SignupComponent implements OnInit {
   onPostTypeSelect(type:string) { // this function runs when post type changes employee register form and it sets the deparments array
     if(type===this.post_types[0]){
       this.isFirstPostChecked = true;
+      this.f['post_type'].patchValue(this.post_types[0]);
     }
     else if(type===this.post_types[1]){
       this.isFirstPostChecked = false
