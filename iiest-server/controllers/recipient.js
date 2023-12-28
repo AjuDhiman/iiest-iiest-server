@@ -28,10 +28,15 @@ exports.addRecipient = async (req, res) => {
             return res.status(401).json({aadharErr, message: 'This aadhar number already exits'});
         }
 
-        await fboModel.findByIdAndUpdate(objId, {$push: {"recipientDetails": recipientBodyValid}});
+       const addedRecipient =  await fboModel.findByIdAndUpdate(objId, {$push: {"recipientDetails": recipientBodyValid}}, {new: true});
     
-        success = true;
-        return res.status(200).json({ success, message: 'Recipients added successfully' });
+       if(!addedRecipient){
+        success = false;
+        return res.status(404).json({ success, message: 'Some error occured' });
+       }
+        
+       success = true;
+       return res.status(200).json({ success, message: 'Recipients added successfully' });
 
     } catch (error) {
         console.error(error);
@@ -80,10 +85,15 @@ exports.addShop = async(req, res)=>{
             return res.status(401).json({addressErr, messsage: 'This address already exists'});
         }
 
-        await fboModel.findByIdAndUpdate(objId, {$push: {"shopDetails": shopDataValid}});
+        const addedShopDetails = await fboModel.findByIdAndUpdate(objId, {$push: {"shopDetails": shopDataValid}}, {new: true});
+
+        if(!addedShopDetails){
+            success = false;
+            return res.status(404).json({ success, message: 'Some error occured' });
+        }
 
         success = true;
-        return res.status(200).json({ success, message: 'Recipients added successfully' });
+        return res.status(200).json({ success, message: 'Shop details added successfully' });
 
     } catch (error) {
         console.error(error)
