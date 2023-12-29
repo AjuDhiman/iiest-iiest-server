@@ -18,7 +18,7 @@ router.delete('/deleteFbo/:id', authMiddleware, deleteFbo); //Router for deletin
 router.put('/editFbo/:id', authMiddleware, editFbo); //Router for editing FBO data
 router.get('/fbogeneraldata', authMiddleware, fboFormData); //Router for general FBO form data
 router.get('/getproductdata', authMiddleware, getProductData); //Router for product data
-router.post('/fbo/addshop/:id', eBillUpload.single('eBill'), addShop); //Router for adding shop data
-router.post('/fbo/addrecipient/:id', addRecipient); //Router for adding recipient data
+router.post('/fbo/addshop/:id', authMiddleware, eBillUpload.single('eBill'), addShop); //Router for adding shop data
+router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 
 module.exports = router;

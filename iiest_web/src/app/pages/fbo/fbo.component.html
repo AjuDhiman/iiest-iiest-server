@@ -251,7 +251,7 @@
                                 <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
                                 <select id="foscos_service_name" class="form-select form-select-sm"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
-                                    formControlName="foscos_service_name" group='foscos'>
+                                    formControlName="foscos_service_name" group='foscos' (change)="onFoscosServiceName($event)">
                                     <option value="" disabled selected>Select the Service</option>
                                     <option *ngFor="let servicename of servicesNames['Foscos Training'] | keyvalue"
                                         [value]="servicename.value">{{ servicename.value }}
@@ -268,9 +268,9 @@
                                 <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
                                 <select id="license_category" formControlName="license_category"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('license_category')?.errors}"
-                                    class="form-select form-select-sm" (change)="processAmount($event)" group='foscos'>
+                                    class="form-select form-select-sm" (change)="onFoscosLicenceCategory($event)" group='foscos'>
                                     <option value="" disabled selected>Select the Licence Category</option>
-                                    <option *ngFor="let category of licenceType.licenceCategory" [ngValue]="category">{{
+                                    <option *ngFor="let category of licenceType.licenceCategory" [value]="category">{{
                                         category }}</option>
                                 </select>
                                 <div *ngIf="submitted && foscos.get('license_category')?.errors"
@@ -284,11 +284,11 @@
 
                             <div class="col-md-3">
                                 <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
-                                <select id="license_duration" formControlName="license_duration"
+                                <select id="license_duration" formControlName="license_duration" (change)="onFoscosDuration($event)"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('license_duration')?.errors}"
                                     class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Licence Duration</option>
-                                    <option *ngFor="let duration of licenceType.Duration" [ngValue]="duration">{{
+                                    <option *ngFor="let duration of licenceType.Duration" [value]="duration">{{
                                         duration
                                         }} Year</option>
                                 </select>
