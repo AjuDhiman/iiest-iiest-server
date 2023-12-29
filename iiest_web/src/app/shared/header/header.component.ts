@@ -122,6 +122,8 @@ export class HeaderComponent implements OnInit {
   }
 
   sideBarToggle(event: any) {
+    this.toggelNotification = false; // we want notifications and show to be closed on 
+    this.toggelShow = false;
     this.isSideBar = !this.isSideBar;
     this.isSidebarVisible = !this.isSidebarVisible; //this variable is changing the right-margin in header on toggle 
     this.toogleSideBarEvent.emit({isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay});// this event used in changing the right-margin in app content on toggle 

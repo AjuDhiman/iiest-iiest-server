@@ -130,14 +130,15 @@
                         </a>
                     </div><!--//app-utility-item-->
                     
-                    <div class="app-utility-item app-user-dropdown dropdown" (click)="toggleClass($event)">
+                    <div class="app-utility-item app-user-dropdown dropdown" title="dropdown-menu" (click)="toggleClass($event)">
                         <a class="dropdown-toggle"
                         id="user-dropdown-toggle" 
                         data-bs-toggle="dropdown"
+                        title = "dropdown-menu"
                         role="button" 
                         [ngClass]="toggelShow === true ? 'show' : '' "
                         [attr.aria-expanded]="!toggelShow">
-                        <img src="assets/images/logo-side.png" alt="user profile"></a>
+                        <img title="dropdown-menu" src="assets/images/logo-side.png" alt="user profile"></a>
                         <ul class="dropdown-menu" 
                         [ngClass]="toggelShow === true ? 'show' : '' " 
                         [ngStyle]="toggelShow?toggelStyle: {}"
@@ -147,7 +148,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" (click)="logout()">Log Out</a></li>
                         </ul>
-                    </div><!--//app-user-dropdown--> 
+                    </div><!--//app-user-dropdown--> <!--//app-user-dropdown--> 
                 </div><!--//app-utilities-->
             </div><!--//row-->
             </div><!--//app-header-content-->
@@ -156,7 +157,7 @@
 
 
     <!--Side Bar Component-->
-   <app-sidebar [sideBarToggle] = "isSideBar" [userData]="userdata" [largeDisplay]="largeDisplay" [isSidebarVisible]="isSidebarVisible" (sideBarToggleUpdate)='sideBarToggleUpdate($event)'></app-sidebar>
+   <app-sidebar [sideBarToggle] = "isSideBar" [userData]="userdata" [isSidebarVisible]="isSidebarVisible" (sideBarToggleUpdate)='sideBarToggleUpdate($event)'></app-sidebar>
 
    
 </header><!--//app-header-->
