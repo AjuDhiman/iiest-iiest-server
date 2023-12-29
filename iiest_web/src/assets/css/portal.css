@@ -3503,6 +3503,7 @@
    color: var(--bs-dropdown-link-hover-color);
    background-color: var(--bs-dropdown-link-hover-bg);
  }
+ 
  .dropdown-item.active,
  .dropdown-item:active {
    color: var(--bs-dropdown-link-active-color);
@@ -11752,6 +11753,7 @@
    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
    border-bottom: 1px solid #e7e9ed;
    height: 56px;
+   margin-left: 0;
    background: #fff;
    transition: all 0.4s ease-in-out;
    /* this transitiois included in portal css for giving transition effect on sidebar toggle in desktop size full screen */
@@ -11970,6 +11972,7 @@
    font-size: 0.875rem;
    border-right: 1px solid #e7e9ed;
    transition: all 0.4s ease-in-out;
+   overflow: hidden;
    /* this transitiois included in portal css for giving transition effect on sidebar toggle in desktop size full screen */
  }
  .app-sidepanel .panel-drop {
@@ -11980,28 +11983,38 @@
    z-index: 10;
    background: #fff;
    box-shadow: rgba(0, 0, 0, 0.05) 0px 8px 15px;
-   width: 250px;
+   /* width: 60px; */
    height: 100%;
+   transition: all 0.4s ease-in-out;
+   overflow: hidden;
  }
  .app-sidepanel .sidepanel-close {
    display: none;
    position: absolute;
    z-index: 20;
-   right: -2rem;
+   right: 1rem;
    top: 0;
-   color: #fff;
+   color: #15a362;
    font-size: 2rem;
  }
  .app-sidepanel.sidepanel-hidden {
-   left: -400px;
+   width: 0px;
  }
  .app-sidepanel.sidepanel-visible {
-   left: 0;
+  width: 250px;
+}
+ .sidepanel-inner.sidepanel-inner-visible {
+   width: 250px;
  }
+ .sidepanel-inner.sidepanel-inner-hidden {
+  width: 0px;
+}
+
  .app-sidepanel .app-nav-main {
    overflow-y: auto;
    scrollbar-color: rgba(0, 0, 0, 0.1) #e7e9ed;
    scrollbar-width: thin;
+   overflow: hidden;
  }
  .app-sidepanel .app-nav-main::-webkit-scrollbar {
    width: 6px;
@@ -12016,6 +12029,7 @@
    padding-top: 1rem;
    padding-left: 1rem;
    margin-bottom: 1rem;
+   overflow: hidden;
  }
  .app-branding .logo-icon {
    width: 36px;
@@ -12144,7 +12158,7 @@
  @media (max-width: 1199.98px) {
    .app-sidepanel {
      transition: all 0.4s ease-in-out;
-     left: -400px;
+     /* left: -400px; */
    }
  }
  @media (max-width: 1199.98px) and (prefers-reduced-motion: reduce) {
@@ -12156,7 +12170,7 @@
    .app-sidepanel.sidepanel-visible {
      display: block;
    }
-   .sidepanel-visible .sidepanel-close {
+   .sidepanel-inner-visible .sidepanel-close {
      display: inline-block;
    }
    .sidepanel-visible .sidepanel-drop {
@@ -12170,6 +12184,9 @@
      top: 0;
      background: rgba(0, 0, 0, 0.35);
    }
+   .sidepanel-inner.sidepanel-inner-hidden {
+    width: 0px;
+  }
  }
  @media (min-width: 1920px) {
   /* min-width foe this media quey changed for UI need orignal was 1200px */
@@ -12189,6 +12206,7 @@
    font-size: 0.8125rem;
  }
  .app-wrapper {
+  margin-left: 0;
    transition: all 0.4s ease-in-out;
  }
  @media (prefers-reduced-motion: reduce) {
@@ -12749,4 +12767,50 @@
 .left-margin-250 {
   margin-left: 250px !important;
 }
- 
+
+.left-margin-190 {
+  margin-left: 190px !important;
+}
+
+@keyframes hideVisibility {
+  from {
+    visibility: hidden;
+  }
+  to {
+    visibility: visible;
+  }
+}
+
+.sidepanel-inner-hidden .nav-link > *:not(.nav-icon),
+ .sidepanel-inner-hidden .app-branding .logo-text,
+ .sidepanel-hidden .sidepanel-close {
+  opacity: 0;
+  /* visibility: hidden; Set initial visibility */
+  transition: all 0.4s ease-out;
+}
+
+.sidepanel-inner-visible .nav-link > *:not(.nav-icon),
+ .sidepanel-inner-visible .app-branding .logo-text,
+ .sidepanel-visible .sidepanel-close{
+  opacity: 1;
+  /* visibility: visible; Set initial visibility */
+  transition: all 0.4s ease-out;
+}
+
+@media (min-width: 1200px) {
+  /* min-width foe this media quey changed for UI need orignal was 1200px */
+   .app-wrapper {
+     margin-left: 60px;
+   }
+
+   .app-header{
+    margin-left: 60px;
+   }
+
+   .app-sidepanel.sidepanel-hidden {
+    width: 60px;
+  }
+  .sidepanel-inner.sidepanel-inner-hidden {
+   width: 60px;
+ }
+ }

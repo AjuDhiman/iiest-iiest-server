@@ -241,9 +241,9 @@
                         </div> -->
 
                         </div>
-                        <hr *ngIf="isFoscos">
 
                         <div class="row" *ngIf="isFoscos" formGroupName="foscos_training">
+                            <hr >
 
                             <h6 class="pull-left">Foscos Training</h6>
                             <hr>
@@ -280,8 +280,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
-
                             <div class="col-md-3">
                                 <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
                                 <select id="license_duration" formControlName="license_duration" (change)="onFoscosDuration($event)"
@@ -324,7 +322,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="col-md-3">
                                 <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
