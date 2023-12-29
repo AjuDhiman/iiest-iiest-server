@@ -97,7 +97,7 @@ export class FboComponent implements OnInit {
     this.getFboGeneralData();
   }
   ngOnInit(): void {
-
+    console.log(this.fboForm.get('foscos_service_name')?.value());
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
@@ -148,7 +148,7 @@ export class FboComponent implements OnInit {
           grand_total: ['', Validators.required],
         });
 
-        this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
+    this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
   }
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
@@ -310,9 +310,10 @@ export class FboComponent implements OnInit {
   }
   //Processing Amount + GST
   processAmount(event: any) {
+
     let group = event.target.getAttribute('group');
+
     if (group === 'fostac') {
-      console.log(group)
       if (this.fboForm.value.fostac_training.fostac_client_type != '' || this.fboForm.value.fostac_training.recipient_no != '' || this.fboForm.value.fostac_training.fostac_processing_amount != '') {
         var GST_amount = (Number(this.fboForm.value.fostac_training.fostac_processing_amount)) * 18 / 100;
         var total_amount = (Number(GST_amount) + Number(this.fboForm.value.fostac_training.fostac_processing_amount)) * this.fboForm.value.fostac_training.recipient_no;
@@ -322,12 +323,21 @@ export class FboComponent implements OnInit {
       }
     }
     if (group === 'foscos') {
-      if (this.fboForm.value.foscos_training.foscos_client_type != '' || this.fboForm.value.foscos_training.shops_no != '' || this.fboForm.value.foscos_training.foscos_processing_amount != '') {
+      let licenceCat = this.fboForm.value.foscos_training.license_category;
+      let licenceDur = this.fboForm.value.foscos_training.license_duration;
+      let serviceType = this.fboForm.value.foscos_training.foscos_service_name;
+
+      var total_amoun = this.calculation(licenceCat, serviceType, licenceDur);
+
+      if (licenceDur != '' || this.fboForm.value.foscos_training.foscos_client_type != '' || this.fboForm.value.foscos_training.shops_no != '' || this.fboForm.value.foscos_training.foscos_processing_amount != '') {
         var GST_amount = (Number(this.fboForm.value.foscos_training.foscos_processing_amount)) * 18 / 100;
         var total_amount = (Number(GST_amount) + Number(this.fboForm.value.foscos_training.foscos_processing_amount)) * this.fboForm.value.foscos_training.shops_no;
         if (Number(this.fboForm.value.foscos_training.water_test_fee)) {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
         }
+        
+        console.log(total_amount + Number(total_amoun));
+        total_amount +=  Number(total_amoun) ; 
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
       }
@@ -358,28 +368,37 @@ export class FboComponent implements OnInit {
     let group = event.target.getAttribute('group');
 
     if (event.target.value === 'General Client') {
-      if (group === 'fostac') {
-        this.fboForm.get('fostac_training')?.patchValue({ 'recipient_no': 1 });
-        this.GSTandTotalAmnt(1, group);
-      }
-      if (group === 'foscos') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'shops_no': 1 });
-      }
       this.isReadOnly = true;
       var total_amount = this.GSTandTotalAmnt(1, group)
       if (group === 'fostac') {
+        this.fboForm.get('fostac_training')?.patchValue({ 'recipient_no': 1 });
+        this.GSTandTotalAmnt(1, group);
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
+
       }
       if (group === 'foscos') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'shops_no': 1 });
+        let serviceType = this.fboForm.value.foscos_training.foscos_service_name;
+        let licenceCat = this.fboForm.value.foscos_training.license_category;
+        let licenceDur = this.fboForm.value.foscos_training.license_duration;
+        console.log(serviceType, licenceCat, licenceDur);
+
+        let total_amoun  = this.calculation(licenceCat, serviceType, licenceDur);
+        console.log(total_amoun);
+        total_amount = total_amount + total_amoun
+        console.log(total_amount);
+       
         if (this.fboForm.value.foscos_training.water_test_fee) {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
       }
+
       this.getGrandTotalAmount();
     }
+
     if (event.target.value === 'Corporate Client') {
       this.minValue = 2;
       var val = 2;
@@ -473,14 +492,11 @@ export class FboComponent implements OnInit {
 
     if (group === 'fostac') {
       this.fostac_processAmnt = this.fboForm.value?.fostac_training?.fostac_processing_amount * param
-      // this.fostac_processAmnt = this.fboForm.value.fostac_training.processing_amount * param;
-      console.log(this.fostac_processAmnt);
       var GST_amount = this.fostac_processAmnt * 18 / 100;
       var total_amount = Number(GST_amount) + this.fostac_processAmnt;
     }
     if (group === 'foscos') {
       this.foscos_processAmnt = this.fboForm.value?.foscos_training?.foscos_processing_amount * param
-      //this.foscos_processAmnt = this.fboForm.value.foscos_training.processing_amount * param;
       var GST_amount = this.foscos_processAmnt * 18 / 100;
       var total_amount = Number(GST_amount) + this.foscos_processAmnt;
     }
@@ -533,7 +549,7 @@ export class FboComponent implements OnInit {
         this.need_gst_number = false;
         this.fboForm.removeControl('gst_number');
       }
-    } else{ //if the check box is not checked then logic will work oppositely
+    } else { //if the check box is not checked then logic will work oppositely
       if (businessType === 'b2b') {
         this.need_gst_number = false;
         this.fboForm.removeControl('gst_number');
@@ -545,4 +561,42 @@ export class FboComponent implements OnInit {
     }
   }
 
+  calculation(licenceCat: String, serviceType: String, licenceDur: String ) {
+    if (serviceType === 'Registration') {
+      //Registraion + Newlicence
+      var Amnt;
+      if (licenceCat === 'New Licence') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1700 });
+              Amnt = Number(licenceDur) * 100
+            }
+      //Registraion + Renewal
+      if (licenceCat === 'Renewal') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1300 });
+        Amnt = Number(licenceDur) * 100
+      }
+      //Registraion + modified
+      if (licenceCat === 'Modified') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1500 });
+        Amnt =  100
+      }
+    }
+    if (serviceType === 'State') {
+      //State + Newlicence
+      if (licenceCat === 'New Licence') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 3000 });
+        Amnt = Number(licenceDur) * 2000
+      }
+      //State + Renewal
+      if (licenceCat === 'Renewal') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 2000 });
+        Amnt = Number(licenceDur) * 2000
+      }
+      //State + modified
+      if (licenceCat === 'Modified') {
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 2500 });
+        Amnt = 1000
+      }
+    }
+    return Amnt;
+  }
 }

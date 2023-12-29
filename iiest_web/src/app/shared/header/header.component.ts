@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-header',
@@ -44,6 +45,8 @@ export class HeaderComponent implements OnInit {
   @Input() userdata: any;
   @Input() isSideBar: boolean;
   @Output() toogleSideBarEvent = new EventEmitter<any>();
+  //the purpose of this sidebar is to close drop menu of functions in sidebar component by falsing toggleshow var in sidebar component
+  @ViewChild(SidebarComponent) sideBar: SidebarComponent; 
   
  
   blockMsg: boolean = true;
@@ -67,6 +70,9 @@ export class HeaderComponent implements OnInit {
       this.isSidebarVisible = false;
       this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false});
     }
+    else{
+      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: true});
+    }
   }
   ngOnInit() { 
     console.log(this.isSidebarVisible);
@@ -75,15 +81,16 @@ export class HeaderComponent implements OnInit {
 //Window size
   onWindowResize(event: any) {
     this.width = event.target.innerWidth;
+    this.sideBar.toggelShow = false; // on window resize deop menu will close in sidebar component
     if(this.width >= 1920){
       this.isSideBar = true;
       this.isSidebarVisible = true;
-      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false})
+      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true})
     }
     else if (this.width >= 1200) {
       this.largeDisplay = true;
       this.isSidebarVisible = false;
-      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false});
+      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: true});
     }
     else {
       this.isSideBar = false;
@@ -122,6 +129,7 @@ export class HeaderComponent implements OnInit {
   }
 
   sideBarToggle(event: any) {
+    this.sideBar.toggelShow = false;
     this.toggelNotification = false; // we want notifications and show to be closed on 
     this.toggelShow = false;
     this.isSideBar = !this.isSideBar;
