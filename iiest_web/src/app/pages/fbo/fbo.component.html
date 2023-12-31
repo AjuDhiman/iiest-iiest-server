@@ -330,7 +330,7 @@
                                 <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
                                 <select id="foscos_client_type" formControlName="foscos_client_type" group='foscos'
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_client_type')?.errors}"
-                                    (change)="clienttypeFun($event)" class="form-select form-select-sm">
+                                    (change)="onFoscosClientType($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Client Type</option>
                                     <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
                                     </option>
