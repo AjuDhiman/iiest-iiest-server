@@ -11,6 +11,7 @@ import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.c
   templateUrl: './fbo.component.html',
   styleUrls: ['./fbo.component.scss']
 })
+
 export class FboComponent implements OnInit {
   isQrCode = false;
   userName: string = '';
@@ -554,7 +555,6 @@ export class FboComponent implements OnInit {
       this.foscosTotalAmountCal()
     }
   }
-
   foscosProcessAmountChange(serviceName: string, licenceCategory: string){
     console.log(serviceName, licenceCategory);
     if(serviceName === 'State'){
