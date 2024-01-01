@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subscriber, Subscription, interval } from 'rxjs';
+import { Observable, Subscriber, Subscription, interval, skipLast } from 'rxjs';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { GetEmployee } from 'src/app/store/actions/employee.action';
 import { Employee } from '../../utils/registerinterface';
@@ -36,7 +36,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   datas: any = [1, 2, 3, 4];
   //New Variables
-  intervals: any = ['Today'];
+  intervals: any =  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  cateringSale: any[] = [88,78,98,120,140,123,111];
+  retailSale: any[] = [34,88,55,33,55,32,90];
   constructor(
     private _registerService: RegisterService,
     private store: Store,
@@ -82,13 +84,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       {
         name: 'Retail',
         type: 'column',
-        data: [65, 59, 80, 81, 56],
+        data: this.retailSale,
         color: '#128c54',
       },
       {
         name: 'Catering',
         type: 'column',
-        data: [40, 51, 32, 46, 39],
+        data: this.cateringSale,
         color: '#20c997',
       },
     ],
@@ -96,28 +98,28 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   // barxher 1
-  barChart1: Highcharts.Options = {
-    title: {
-      text: 'Sales Chart',
-    },
-    xAxis: {
-      categories: ['Fostac(Retail)', 'Fostac(Catering)', 'Foscos(Registration)', 'Foscos(State)', 'Hygine Audit', 'Membership', 'Events'],
-    },
-    yAxis: {
-      title: {
-        text: 'Values',
-      },
-    },
-    series: [
-      {
-        name: 'Retail',
-        type: 'column',
-        data: [65, 59, 80, 81, 56],
-        color: '#128c54',
-      }
-    ],
-    // colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
-  };
+  // barChart1: Highcharts.Options = {
+  //   title: {
+  //     text: 'Sales Chart',
+  //   },
+  //   xAxis: {
+  //     categories: ['Fostac(Retail)', 'Fostac(Catering)', 'Foscos(Registration)', 'Foscos(State)', 'Hygine Audit', 'Membership', 'Events'],
+  //   },
+  //   yAxis: {
+  //     title: {
+  //       text: 'Values',
+  //     },
+  //   },
+  //   series: [
+  //     {
+  //       name: 'Retail',
+  //       type: 'column',
+  //       data: [65, 59, 80, 81, 56],
+  //       color: '#128c54',
+  //     }
+  //   ],
+  //   // colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
+  // };
 
 
   //High charts
@@ -172,29 +174,42 @@ export class HomeComponent implements OnInit, OnDestroy {
     switch (event.target.value) {
       case '1':
         this.intervals = ['Today'];
+        this.retailSale = [34];
+        this.cateringSale = [88];
         break;
       case '2':
         this.intervals = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        console.log(this.intervals);
+        this.retailSale = [34,88,55,33,55,32,90];
+        this.cateringSale = [88,78,98,120,140,123,111];
         break;
       case '3':
         this.intervals = ['January','February','March','April','May','June',
         'July','August','September','October','November','December'];
-        console.log(this.intervals);
+        this.retailSale = [34,88,55,33,55,32,90,88,0,8,23,45];
+        this.cateringSale = [88,78,98,120,140,123,111,34,56,78,90,123];
         break;
     }
-    if (this.barChart.xAxis) {
-      // Update the categories property of xAxis
-      (this.barChart.xAxis as Highcharts.AxisOptions).categories = this.intervals;
 
-      // Redraw the chart
-      Highcharts.chart('chart-container', this.barChart);
-    }
+    // Update the xAxis categories
+    const xAxisOptions = this.barChart.xAxis as Highcharts.XAxisOptions;
+    xAxisOptions.categories = this.intervals;
+    this.barChart.series = [
+      {
+        name: 'Retail',
+        type: 'column',
+        data: this.retailSale, // Replace with the actual data for 'Retail'
+        color: '#128c54',
+      },
+      {
+        name: 'Catering',
+        type: 'column',
+        data: this.cateringSale, // Replace with the actual data for 'Catering'
+        color: '#20c997',
+      },
+    ];
+    this.Highcharts.charts[1]?.update(this.barChart, true);
   }
-
-  updateCatagort(intervals:any){
-    
-  }
+  
 
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
