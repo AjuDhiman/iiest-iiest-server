@@ -21,7 +21,7 @@ export class FostacComponent implements OnInit {
   ngOnInit(): void {
     this.fostac_training = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
   }
-  
+
   // Processing Amount function for Calculating Fostac total amount on basis of Processing Amount.
   processAmount() {
     if (this.fostac_training.value.fostac_client_type != '' && this.fostac_training.value.recipient_no != '' &&
@@ -37,13 +37,13 @@ export class FostacComponent implements OnInit {
       this.minValue = 1;
       let TotalAmnt = this.GSTandTotalAmnt(this.minValue)
       this.fostac_training.patchValue({ 'recipient_no': this.minValue });
-      this.foctacTotalAmount(TotalAmnt);
+      this.fostacTotalAmount(TotalAmnt);
     } else {
       this.isReadOnly = false;
       this.minValue = 2
       let TotalAmnt = this.GSTandTotalAmnt(this.minValue)
       this.fostac_training.patchValue({ 'recipient_no': this.minValue });
-      this.foctacTotalAmount(TotalAmnt);
+      this.fostacTotalAmount(TotalAmnt);
     }
   }
 
@@ -58,13 +58,26 @@ export class FostacComponent implements OnInit {
     let fostac_processAmnt = this.fostac_training.value.fostac_processing_amount * param
     let GST_amount = fostac_processAmnt * 18 / 100;
     this.fostacTotalAmnt = Number(GST_amount) + fostac_processAmnt;
-    this.foctacTotalAmount(this.fostacTotalAmnt);
+    this.fostacTotalAmount(this.fostacTotalAmnt);
     return this.fostacTotalAmnt;
   }
 
   //Set Fostac Total and Emit Fostac Total to Parent Component FBO. 
-  foctacTotalAmount(amnt: number) {
+  fostacTotalAmount(amnt: number) {
     this.fostac_training.patchValue({ 'fostac_total': amnt });
     this.fostacTotal.emit(amnt);
+  }
+
+  resetForm() {
+    this.fostac_training.reset({
+      'fostac_service_name': '',
+      'fostac_processing_amount': '',
+      'fostac_client_type': '', 
+    }); // Resetting the form values
+    // Additionally, you might want to mark the form as pristine and untouched
+    let amnt=0;
+    this.fostacTotalAmount(amnt);
+    this.fostac_training.markAsPristine();
+    this.fostac_training.markAsUntouched();
   }
 }
