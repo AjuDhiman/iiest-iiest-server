@@ -241,9 +241,9 @@
                         </div> -->
 
                         </div>
+                        <hr *ngIf="isFoscos">
 
                         <div class="row" *ngIf="isFoscos" formGroupName="foscos_training">
-                            <hr >
 
                             <h6 class="pull-left">Foscos Training</h6>
                             <hr>
@@ -251,7 +251,7 @@
                                 <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
                                 <select id="foscos_service_name" class="form-select form-select-sm"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_service_name')?.errors}"
-                                    formControlName="foscos_service_name" group='foscos' (change)="onFoscosServiceName($event)">
+                                    formControlName="foscos_service_name" group='foscos'>
                                     <option value="" disabled selected>Select the Service</option>
                                     <option *ngFor="let servicename of servicesNames['Foscos Training'] | keyvalue"
                                         [value]="servicename.value">{{ servicename.value }}
@@ -268,9 +268,9 @@
                                 <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
                                 <select id="license_category" formControlName="license_category"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('license_category')?.errors}"
-                                    class="form-select form-select-sm" (change)="onFoscosLicenceCategory($event)" group='foscos'>
+                                    class="form-select form-select-sm" (change)="processAmount($event)" group='foscos'>
                                     <option value="" disabled selected>Select the Licence Category</option>
-                                    <option *ngFor="let category of licenceType.licenceCategory" [value]="category">{{
+                                    <option *ngFor="let category of licenceType.licenceCategory" [ngValue]="category">{{
                                         category }}</option>
                                 </select>
                                 <div *ngIf="submitted && foscos.get('license_category')?.errors"
@@ -280,13 +280,15 @@
                                     </div>
                                 </div>
                             </div>
+                            
+
                             <div class="col-md-3">
                                 <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
-                                <select id="license_duration" formControlName="license_duration" (change)="onFoscosDuration($event)"
+                                <select id="license_duration" formControlName="license_duration"
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('license_duration')?.errors}"
                                     class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Licence Duration</option>
-                                    <option *ngFor="let duration of licenceType.Duration" [value]="duration">{{
+                                    <option *ngFor="let duration of licenceType.Duration" [ngValue]="duration">{{
                                         duration
                                         }} Year</option>
                                 </select>
@@ -323,11 +325,12 @@
                                 </div>
                             </div>
 
+
                             <div class="col-md-3">
                                 <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
                                 <select id="foscos_client_type" formControlName="foscos_client_type" group='foscos'
                                     [ngClass]="{ 'is-invalid': submitted && foscos.get('foscos_client_type')?.errors}"
-                                    (change)="clienttypeFun($event)" class="form-select form-select-sm">
+                                    (change)="onFoscosClientType($event)" class="form-select form-select-sm">
                                     <option value="" disabled selected>Select the Client Type</option>
                                     <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
                                     </option>

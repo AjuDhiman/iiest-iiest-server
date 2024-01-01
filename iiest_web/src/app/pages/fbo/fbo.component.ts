@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { waterTestFee, clientType, paymentMode, licenceType } from '../../utils/config';
 import { RegisterService } from '../../services/register.service';
@@ -11,6 +11,7 @@ import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.c
   templateUrl: './fbo.component.html',
   styleUrls: ['./fbo.component.scss']
 })
+
 export class FboComponent implements OnInit {
   isQrCode = false;
   userName: string = '';
@@ -47,13 +48,7 @@ export class FboComponent implements OnInit {
   fostac_processAmnt: any;
   foscos_processAmnt: any;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
-  //New Variables for foscos
-  selectedService: string;
-  selectedCategory: string;
-  selectedDuration: number;
-  foscosProcessingAmount: number;
-  foscosTotalAmount: number;
-  foscosFixedCharge: number;
+  foscosFixedCharge: number = 0;
 
 
   fostac_training: FormGroup = new FormGroup({
@@ -319,12 +314,32 @@ export class FboComponent implements OnInit {
   processAmount(event: any) {
 
     let group = event.target.getAttribute('group');
+
     if (group === 'fostac') {
       if (this.fboForm.value.fostac_training.fostac_client_type != '' || this.fboForm.value.fostac_training.recipient_no != '' || this.fboForm.value.fostac_training.fostac_processing_amount != '') {
         var GST_amount = (Number(this.fboForm.value.fostac_training.fostac_processing_amount)) * 18 / 100;
         var total_amount = (Number(GST_amount) + Number(this.fboForm.value.fostac_training.fostac_processing_amount)) * this.fboForm.value.fostac_training.recipient_no;
         console.log(this.fboForm.value.fostac_training.recipient_no);
         this.fboForm.get('fostac_training')?.patchValue({ 'fostac_total': total_amount });
+        this.fboForm.patchValue({ 'grand_total': total_amount });
+      }
+    }
+    if (group === 'foscos') {
+      let licenceCat = this.fboForm.value.foscos_training.license_category;
+      let licenceDur = this.fboForm.value.foscos_training.license_duration;
+      let serviceType = this.fboForm.value.foscos_training.foscos_service_name;
+
+      
+
+      if (licenceDur != '' || this.fboForm.value.foscos_training.foscos_client_type != '' || this.fboForm.value.foscos_training.shops_no != '' || this.fboForm.value.foscos_training.foscos_processing_amount != '') {
+        var GST_amount = (Number(this.fboForm.value.foscos_training.foscos_processing_amount)) * 18 / 100;
+        var total_amount = (Number(GST_amount) + Number(this.fboForm.value.foscos_training.foscos_processing_amount)) * this.fboForm.value.foscos_training.shops_no;
+        if (Number(this.fboForm.value.foscos_training.water_test_fee)) {
+          total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
+        }
+        
+         
+        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
       }
     }
@@ -336,9 +351,6 @@ export class FboComponent implements OnInit {
       var processAmnt = (Number(this.fboForm.value.foscos_training.foscos_processing_amount * this.fboForm.value.foscos_training.shops_no));
       var GST_amount = processAmnt * 18 / 100;
       var total_amount = (Number(GST_amount) + processAmnt) + Number(this.fboForm.value.foscos_training.water_test_fee);
-      if(this.foscosFixedCharge){
-        total_amount += this.foscosFixedCharge;
-      }
       this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
       this.fboForm.patchValue({ 'grand_total': total_amount });
     }
@@ -367,12 +379,11 @@ export class FboComponent implements OnInit {
 
       }
       if (group === 'foscos') {
-        
         this.fboForm.get('foscos_training')?.patchValue({ 'shops_no': 1 });
-
-        if(this.foscosFixedCharge){
-          total_amount += this.foscosFixedCharge;
-        }
+        let serviceType = this.fboForm.value.foscos_training.foscos_service_name;
+        let licenceCat = this.fboForm.value.foscos_training.license_category;
+        let licenceDur = this.fboForm.value.foscos_training.license_duration;
+        console.log(serviceType, licenceCat, licenceDur);
 
         if (this.fboForm.value.foscos_training.water_test_fee) {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee);
@@ -380,8 +391,11 @@ export class FboComponent implements OnInit {
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
       }
+
       this.getGrandTotalAmount();
-    } else if (event.target.value === 'Corporate Client') {
+    }
+
+    if (event.target.value === 'Corporate Client') {
       this.minValue = 2;
       var val = 2;
       if (group === 'fostac') {
@@ -444,9 +458,6 @@ export class FboComponent implements OnInit {
           //let water_test_gst = Number(this.fboForm.value.foscos_training.water_test_fee) * 18 / 100;
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee)
         }
-        if(this.foscosFixedCharge){
-          console.log(this.foscosFixedCharge);
-        }
         console.log(total_amount);
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
@@ -463,9 +474,6 @@ export class FboComponent implements OnInit {
       if (group1 === 'foscos') {
         if (this.fboForm.value.foscos_training.water_test_fee) {
           total_amount = total_amount + Number(this.fboForm.value.foscos_training.water_test_fee)
-        }
-        if(this.foscosFixedCharge){
-          console.log(this.foscosFixedCharge);
         }
         this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': total_amount });
         this.fboForm.patchValue({ 'grand_total': total_amount });
@@ -550,125 +558,106 @@ export class FboComponent implements OnInit {
     }
   }
 
-  calculation(licenceCat: String, serviceType: String, licenceDur: String ) {
-    if (serviceType === 'Registration') {
-      //Registraion + Newlicence
-      var Amnt;
-      if (licenceCat === 'New Licence') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1700 });
-              Amnt = Number(licenceDur) * 100
-            }
-      //Registraion + Renewal
-      if (licenceCat === 'Renewal') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1300 });
-        Amnt = Number(licenceDur) * 100
-      }
-      //Registraion + modified
-      if (licenceCat === 'Modified') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1500 });
-        Amnt =  100
-      }
-    }
-    if (serviceType === 'State') {
-      //State + Newlicence
-      if (licenceCat === 'New Licence') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 3000 });
-        Amnt = Number(licenceDur) * 2000
-      }
-      //State + Renewal
-      if (licenceCat === 'Renewal') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 2000 });
-        Amnt = Number(licenceDur) * 2000
-      }
-      //State + modified
-      if (licenceCat === 'Modified') {
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 2500 });
-        Amnt = 1000
-      }
-    }
-    return Amnt;
-  }
   onFoscosServiceName($event: any){
-    this.selectedService = $event.target.value;
-    if(this.selectedService && this.selectedCategory){
-      this.foscosProcessAmntCal();
+    let foscosSection: any = this.fboForm.get('foscos_training')?.value;
+    if($event.target.value && foscosSection.license_category){
+      this.foscosProcessAmountChange($event.target.value, foscosSection.license_category)
     }
-    if(this.selectedCategory && this.selectedDuration && this.selectedService && this.fboForm.value.foscos_training.foscos_client_type && this.fboForm.value.foscos_training.shops_no && this.fboForm.value.foscos_training.water_test_fee){
-      let newTotalAmount = this.foscosTotalAmountChange();
-      console.log(newTotalAmount);
-      this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': newTotalAmount });
-      this.fboForm.patchValue({ 'grand_total': newTotalAmount});
-    }
-  }
-  onFoscosLicenceCategory($event: any){
-    this.selectedCategory = $event.target.value;
-    console.log(this.selectedCategory, this.selectedService);
-    if(this.selectedService && this.selectedCategory){
-      this.foscosProcessAmntCal();
-    }
-    if(this.selectedCategory && this.selectedDuration && this.selectedService && this.fboForm.value.foscos_training.foscos_client_type && this.fboForm.value.foscos_training.shops_no && this.fboForm.value.foscos_training.water_test_fee){
-      let newTotalAmount = this.foscosTotalAmountChange();
-      console.log(newTotalAmount);
-      this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': newTotalAmount });
-      this.fboForm.patchValue({ 'grand_total': newTotalAmount});
+    if($event.target.value && foscosSection.license_category && foscosSection.license_duration && foscosSection.foscos_processing_amount && foscosSection.foscos_client_type && foscosSection.shops_no){
+      this.foscosProcessAmountChange($event.target.value, foscosSection.license_category)
+      this.fixedChargeFunction(foscosSection.license_duration)
+      this.foscosTotalAmountCal()
     }
   }
 
-  foscosProcessAmntCal(){
-    if(this.selectedService === 'State'){
-      if(this.selectedCategory === 'New Licence'){
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 3000 });
-      }else if(this.selectedCategory === 'Renewal'){
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 2000 });
-      }else if(this.selectedCategory === 'Modified'){
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 2500 });
+  onFoscosLicenceCategory($event: any){
+    let foscosSection: any = this.fboForm.get('foscos_training')?.value;
+    if(foscosSection.foscos_service_name && $event.target.value){
+      this.foscosProcessAmountChange(foscosSection.foscos_service_name, $event.target.value)
+    }
+    if(foscosSection.foscos_service_name && $event.target.value && foscosSection.license_duration && foscosSection.foscos_processing_amount && foscosSection.foscos_client_type && foscosSection.shops_no){
+      this.foscosProcessAmountChange(foscosSection.foscos_processing_amount, $event.target.value)
+      this.fixedChargeFunction(foscosSection.license_duration)
+      this.foscosTotalAmountCal()
+    }
+  }
+  foscosProcessAmountChange(serviceName: string, licenceCategory: string){
+    console.log(serviceName, licenceCategory);
+    if(serviceName === 'State'){
+      if(licenceCategory === 'New Licence'){
+        this.fboForm.get('foscos_training')?.patchValue({'foscos_processing_amount': 3000})
+      }else if(licenceCategory === 'Renewal'){
+        this.fboForm.get('foscos_training')?.patchValue({'foscos_processing_amount': 2000})
+      }else if(licenceCategory === 'Modified'){
+        this.fboForm.get('foscos_training')?.patchValue({'foscos_processing_amount': 2500})
       }
-    }else if(this.selectedService === 'Registration'){
-      if(this.selectedCategory === 'New Licence'){
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1700 });
-      }else if(this.selectedCategory === 'Renewal'){
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1300 });
-      }else if(this.selectedCategory === 'Modified'){
-        this.fboForm.get('foscos_training')?.patchValue({ 'foscos_processing_amount': 1500 });
+    }else if(serviceName === 'Registration'){
+      if(licenceCategory === 'New Licence'){
+        this.fboForm.get('foscos_training')?.patchValue({'foscos_processing_amount': 1700})
+      }else if(licenceCategory === 'Renewal'){
+        this.fboForm.get('foscos_training')?.patchValue({'foscos_processing_amount': 1300})
+      }else if(licenceCategory === 'Modified'){
+        this.fboForm.get('foscos_training')?.patchValue({'foscos_processing_amount': 1500})
+      }
+    }
+  }
+
+  fixedChargeFunction(durationVal: number){
+    let foscosSection: any = this.fboForm.get('foscos_training')?.value;
+    if(foscosSection.foscos_service_name === 'Registration'){
+      if(foscosSection.license_category === 'New Licence' || foscosSection.license_category === 'Renewal'){
+        this.foscosFixedCharge = 100 * durationVal
+      }else if(foscosSection.license_category === 'Modified'){
+        this.foscosFixedCharge = 100
+      }
+    }else if(foscosSection.foscos_service_name === 'State'){
+      if(foscosSection.license_category === 'New Licence' || foscosSection.license_category === 'Renewal'){
+        this.foscosFixedCharge = 2000 * durationVal
+      }else if(foscosSection.license_category === 'Modified'){
+        this.foscosFixedCharge = 1000
       }
     }
   }
 
   onFoscosDuration($event: any){
-    this.selectedDuration = $event.target.value;
-    if(this.selectedDuration && this.selectedService && this.selectedCategory){
-      this.foscosFixedCharges();
-    }
-    if(this.selectedCategory && this.selectedDuration && this.selectedService && this.fboForm.value.foscos_training.foscos_client_type && this.fboForm.value.foscos_training.shops_no && this.fboForm.value.foscos_training.water_test_fee){
-      let newTotalAmount = this.foscosTotalAmountChange();
-      console.log(newTotalAmount);
-      this.fboForm.get('foscos_training')?.patchValue({ 'foscos_total': newTotalAmount });
-      this.fboForm.patchValue({ 'grand_total': newTotalAmount});
+    let foscosSection: any = this.fboForm.get('foscos_training')?.value;
+    if(foscosSection.foscos_service_name && foscosSection.license_category && $event.target.value){
+      this.fixedChargeFunction($event.target.value)
+      if(foscosSection.foscos_service_name && foscosSection.license_category && $event.target.value && foscosSection.foscos_processing_amount && foscosSection.foscos_client_type && foscosSection.shops_no){
+        this.fixedChargeFunction($event.target.value)
+        this.foscosTotalAmountCal()
+      }
     }
   }
 
+  onFoscosClientType($event: any){
 
-  foscosFixedCharges(){
-    if(this.selectedService === 'State'){
-      if(this.selectedCategory === 'New Licence' || this.selectedCategory === 'Renewal'){
-        this.foscosFixedCharge = 2000 * this.selectedDuration
-      }else if(this.selectedCategory === 'Modified'){
-        this.foscosFixedCharge = 1000
-      }
-    }else if(this.selectedService === 'Registration'){
-      if(this.selectedCategory === 'New Licence' || this.selectedCategory === 'Renewal'){
-        this.foscosFixedCharge = 100 * this.selectedDuration
-      }else if(this.selectedCategory === 'Modified'){
-        this.foscosFixedCharge = 100
+    let foscosSection: any = this.fboForm.get('foscos_training')?.value;
+    
+    if(foscosSection.foscos_service_name && foscosSection.license_category && $event.target.value && foscosSection.foscos_processing_amount && foscosSection.license_duration){
+      if($event.target.value === 'General Client'){
+        this.isReadOnly = true;
+        this.fboForm.get('foscos_training')?.patchValue({'shops_no': 1})
+        this.foscosTotalAmountCal()
+      }else if($event.target.value === 'Corporate Client'){
+        this.isReadOnly = false;
+        this.fboForm.get('foscos_training')?.patchValue({'shops_no': 2})
+        this.foscosTotalAmountCal()
       }
     }
-    return this.foscosFixedCharge
+    if(foscosSection.foscos_service_name && foscosSection.license_category && foscosSection.license_duration && foscosSection.foscos_processing_amount && $event.target.value && foscosSection.shops_no){
+      this.foscosTotalAmountCal()
+    }
   }
 
-  foscosTotalAmountChange(){
-      return this.GSTandTotalAmnt(this.fboForm.value.foscos_training.shops_no, 'foscos') + this.foscosFixedCharge + Number(this.fboForm.value.foscos_training.water_test_fee) 
+  foscosTotalAmountCal(){
+    let foscosSection:  any = this.fboForm.get('foscos_training')?.value;
+    this.fboForm.get('foscos_training')?.patchValue({'shops_no': foscosSection.shops_no})
+    let totalProcessingAmount = foscosSection.foscos_processing_amount * foscosSection.shops_no;
+    let GST_amount = totalProcessingAmount * 18 / 100;
+    let total_amount: number = Number(GST_amount) + totalProcessingAmount;
+    console.log(total_amount)
+    this.fboForm.get('foscos_training')?.patchValue({'foscos_total': total_amount + this.foscosFixedCharge})
   }
 
 }
-
-

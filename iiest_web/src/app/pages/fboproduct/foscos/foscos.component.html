@@ -1,0 +1,119 @@
+<form [formGroup]="foscos_training">
+    <div class="row">
+            <h6 class="">Foscos Training</h6>
+            <div class="col-md-3">
+                <label for="foscos_service_name" class="form-label">Service Name<sup>*</sup></label>
+                <select id="foscos_service_name" class="form-select form-select-sm"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_service_name')?.errors}"
+                    formControlName="foscos_service_name" (change)="onServiceChange($event)">
+                    <option value="" disabled selected>Select the Service</option>
+                    <option *ngFor="let servicename of serviceNames.foscos" [value]="servicename">{{ servicename}}
+                    </option>
+                </select>
+                <div *ngIf="submitted && foscos_training.get('foscos_service_name')?.errors" class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('foscos_service_name')?.errors?.['required']">Service is
+                        required
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="license_category" class=" form-label">Licence Category<sup>*</sup></label>
+                <select id="license_category" formControlName="license_category"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('license_category')?.errors}"
+                    class="form-select form-select-sm" (change)="onlicenceCategory($event)">
+                    <option value="" disabled selected>Select the Licence Category</option>
+                    <option *ngFor="let category of licenceType.licenceCategory" [value]="category">{{
+                        category }}</option>
+                </select>
+                <div *ngIf="submitted && foscos_training.get('license_category')?.errors" class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('license_category')?.errors?.['required']">Licence Category
+                        is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="license_duration" class=" form-label">Licence Duration<sup>*</sup></label>
+                <select id="license_duration" formControlName="license_duration"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('license_duration')?.errors}"
+                    class="form-select form-select-sm" (change)="onlicenceDuration($event)">
+                    <option value="" disabled selected>Select the Licence Duration</option>
+                    <option *ngFor="let duration of licenceType.Duration" [value]="duration">{{duration}} Year</option>
+                </select>
+                <div *ngIf="submitted && foscos_training.get('license_duration')?.errors" class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('license_duration')?.errors?.['required']">Licence Duration
+                        is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="foscos_processing_amount" class="form-label">Processing
+                    Amount<sup>*</sup></label>
+                <input type="text" id="foscos_processing_amount" formControlName="foscos_processing_amount"
+                    placeholder="Processing Amount" readonly="readonly"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_processing_amount')?.errors}"
+                    class="form-control form-control-sm">
+                <div *ngIf="submitted && foscos_training.get('foscos_processing_amount')?.errors"
+                    class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('foscos_processing_amount')?.errors?.['required']">Processing
+                        amount
+                        is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
+                <select id="foscos_client_type" formControlName="foscos_client_type" group='foscos'
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_client_type')?.errors}"
+                    (change)="clienttypeFun($event)" class="form-select form-select-sm">
+                    <option value="" disabled selected>Select the Client Type</option>
+                    <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
+                    </option>
+                </select>
+                <div *ngIf="submitted && foscos_training.get('foscos_client_type')?.errors" class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('foscos_client_type')?.errors?.['required']">Client type is
+                        required
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="shops_no" class="form-label">No. of shops<sup>*</sup></label>
+                <input type="number" [attr.min]="minValue" step="1" group='foscos' placeholder="No. of shops"
+                    [readonly]="isReadOnly" (change)="recipientCount($event)"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('shops_no')?.errors}"
+                    formControlName="shops_no" class="form-control form-control-sm" id="shops_no" />
+                <div *ngIf="submitted && foscos_training.get('shops_no')?.errors" class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('shops_no')?.errors?.['required']">No. of Shops is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="water_test_fee" class=" form-label">Water Test fee</label>
+                <select id="water_test_fee" formControlName="water_test_fee"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('water_test_fee')?.errors}"
+                    (change)="waterTestAdd($event)" class="form-select form-select-sm">
+                    <option value="" disabled selected>Select the Water Test Fee</option>
+                    <option *ngFor="let fee of waterTestFee" [value]="fee">{{ fee }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="foscos_total" class=" form-label">Foscos Total Amount<sup>*</sup>
+                    <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+                <input type="number" placeholder="Foscos Total Amount" formControlName="foscos_total"
+                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_total')?.errors}"
+                    class="form-control form-control-sm" id="foscos_total" readonly />
+                <div *ngIf="submitted && foscos_training.get('foscos_total')?.errors" class="invalid-feedback">
+                    <div *ngIf="foscos_training.get('foscos_total')?.errors?.['required']">Foscos Total Amount
+                        Required
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</form>

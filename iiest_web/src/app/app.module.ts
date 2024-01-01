@@ -40,6 +40,10 @@ import { Papa } from 'ngx-papaparse';
 import { FileSaverModule } from 'ngx-filesaver';
 import { RecipientComponent } from './pages/recipient/recipient.component';
 import { ViewFboComponent } from './pages/view-fbo/view-fbo.component';
+import { FostacComponent } from './pages/fboproduct/fostac/fostac.component';
+import { FoscosComponent } from './pages/fboproduct/foscos/foscos.component';
+import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -59,7 +63,10 @@ import { ViewFboComponent } from './pages/view-fbo/view-fbo.component';
     RecipientComponent,
     ViewFboComponent,
     ContactusformComponent,
-    MultiSelectComponent
+    MultiSelectComponent,
+    FostacComponent,
+    FoscosComponent,
+    FbonewComponent
   ],
   imports: [
     BrowserModule,
@@ -85,6 +92,7 @@ import { ViewFboComponent } from './pages/view-fbo/view-fbo.component';
       timeOut: 15000, // 15 seconds
       progressBar: true,
     }),
+    NgSelectModule
   ],
   providers: [
     DatePipe,
