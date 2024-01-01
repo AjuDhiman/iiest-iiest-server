@@ -563,9 +563,9 @@ export class FboComponent implements OnInit {
     if($event.target.value && foscosSection.license_category){
       this.foscosProcessAmountChange($event.target.value, foscosSection.license_category)
     }
-    if($event.target.value && foscosSection.license_category && foscosSection.license_duration && foscosSection.foscos_processing_amount && foscosSection.foscos_client_type && foscosSection.shops_no){
+    if($event.target.value && foscosSection.license_category && foscosSection.license_duration){
       this.foscosProcessAmountChange($event.target.value, foscosSection.license_category)
-      this.fixedChargeFunction(foscosSection.license_duration)
+      this.fixedChargeFunction($event.target.value, foscosSection.license_category, foscosSection.license_duration)
       this.foscosTotalAmountCal()
     }
   }
@@ -575,9 +575,9 @@ export class FboComponent implements OnInit {
     if(foscosSection.foscos_service_name && $event.target.value){
       this.foscosProcessAmountChange(foscosSection.foscos_service_name, $event.target.value)
     }
-    if(foscosSection.foscos_service_name && $event.target.value && foscosSection.license_duration && foscosSection.foscos_processing_amount && foscosSection.foscos_client_type && foscosSection.shops_no){
+    if(foscosSection.foscos_service_name && $event.target.value && foscosSection.license_duration){
       this.foscosProcessAmountChange(foscosSection.foscos_processing_amount, $event.target.value)
-      this.fixedChargeFunction(foscosSection.license_duration)
+      this.fixedChargeFunction(foscosSection.foscos_service_name, $event.target.value, foscosSection.license_duration)
       this.foscosTotalAmountCal()
     }
   }
@@ -602,18 +602,17 @@ export class FboComponent implements OnInit {
     }
   }
 
-  fixedChargeFunction(durationVal: number){
-    let foscosSection: any = this.fboForm.get('foscos_training')?.value;
-    if(foscosSection.foscos_service_name === 'Registration'){
-      if(foscosSection.license_category === 'New Licence' || foscosSection.license_category === 'Renewal'){
+  fixedChargeFunction(serviceName: string, licenceCategory: string, durationVal: number){
+    if(serviceName === 'Registration'){
+      if(licenceCategory === 'New Licence' || licenceCategory === 'Renewal'){
         this.foscosFixedCharge = 100 * durationVal
-      }else if(foscosSection.license_category === 'Modified'){
+      }else if(licenceCategory === 'Modified'){
         this.foscosFixedCharge = 100
       }
-    }else if(foscosSection.foscos_service_name === 'State'){
-      if(foscosSection.license_category === 'New Licence' || foscosSection.license_category === 'Renewal'){
+    }else if(serviceName === 'State'){
+      if(licenceCategory === 'New Licence' || licenceCategory === 'Renewal'){
         this.foscosFixedCharge = 2000 * durationVal
-      }else if(foscosSection.license_category === 'Modified'){
+      }else if(licenceCategory === 'Modified'){
         this.foscosFixedCharge = 1000
       }
     }
@@ -622,9 +621,9 @@ export class FboComponent implements OnInit {
   onFoscosDuration($event: any){
     let foscosSection: any = this.fboForm.get('foscos_training')?.value;
     if(foscosSection.foscos_service_name && foscosSection.license_category && $event.target.value){
-      this.fixedChargeFunction($event.target.value)
-      if(foscosSection.foscos_service_name && foscosSection.license_category && $event.target.value && foscosSection.foscos_processing_amount && foscosSection.foscos_client_type && foscosSection.shops_no){
-        this.fixedChargeFunction($event.target.value)
+      this.fixedChargeFunction(foscosSection.foscos_service_name, foscosSection.license_category, $event.target.value)
+      if(foscosSection.foscos_service_name && foscosSection.license_category && $event.target.value && foscosSection.foscos_client_type){
+        this.fixedChargeFunction(foscosSection.foscos_service_name, foscosSection.license_category, $event.target.value)
         this.foscosTotalAmountCal()
       }
     }
@@ -645,7 +644,7 @@ export class FboComponent implements OnInit {
         this.foscosTotalAmountCal()
       }
     }
-    if(foscosSection.foscos_service_name && foscosSection.license_category && foscosSection.license_duration && foscosSection.foscos_processing_amount && $event.target.value && foscosSection.shops_no){
+    if(foscosSection.foscos_service_name && foscosSection.license_category && foscosSection.license_duration && $event.target.value){
       this.foscosTotalAmountCal()
     }
   }

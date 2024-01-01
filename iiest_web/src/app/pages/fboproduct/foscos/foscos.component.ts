@@ -50,7 +50,6 @@ export class FoscosComponent implements OnInit {
       this.foscosTotalAmount(this.foscosTotalAmnt);
       
       if (waterTestAmnt) {
-        alert()
           let foscosAmntWithWaterFee = this.foscosTotalAmnt + Number(waterTestAmnt)
           this.foscosTotalAmount(foscosAmntWithWaterFee);
       }
@@ -78,7 +77,6 @@ export class FoscosComponent implements OnInit {
       this.foscosTotalAmount(this.foscosTotalAmnt);
       
       if (waterTestAmnt) {
-        alert()
           let foscosAmntWithWaterFee = this.foscosTotalAmnt + Number(waterTestAmnt)
           this.foscosTotalAmount(foscosAmntWithWaterFee);
       }
@@ -204,8 +202,8 @@ export class FoscosComponent implements OnInit {
   //Water Test fee Function add the water Test fee to GST Calculation function.
   waterTestAdd($event: any) {
     this.waterTestAmnt = Number($event.target.value);
-    let totalAmntwithWaterFee = this.foscosTotalAmnt + this.waterTestAmnt;
-    this.foscosTotalAmount(totalAmntwithWaterFee);
+    let totalAmntwithWaterFee = this.foscosTotalAmnt + this.waterTestAmnt + this.fixedChargeWithDuration;
+    this.foscos_training.patchValue({ 'foscos_total': totalAmntwithWaterFee });
   }
 
   // GST Calculation on Processing Amount and No. of Shops basis.
