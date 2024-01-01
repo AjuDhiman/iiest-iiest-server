@@ -50,7 +50,6 @@ export class FoscosComponent implements OnInit {
       this.foscosTotalAmount(this.foscosTotalAmnt);
       
       if (waterTestAmnt) {
-        alert()
           let foscosAmntWithWaterFee = this.foscosTotalAmnt + Number(waterTestAmnt)
           this.foscosTotalAmount(foscosAmntWithWaterFee);
       }
@@ -78,7 +77,6 @@ export class FoscosComponent implements OnInit {
       this.foscosTotalAmount(this.foscosTotalAmnt);
       
       if (waterTestAmnt) {
-        alert()
           let foscosAmntWithWaterFee = this.foscosTotalAmnt + Number(waterTestAmnt)
           this.foscosTotalAmount(foscosAmntWithWaterFee);
       }
@@ -204,7 +202,7 @@ export class FoscosComponent implements OnInit {
   //Water Test fee Function add the water Test fee to GST Calculation function.
   waterTestAdd($event: any) {
     this.waterTestAmnt = Number($event.target.value);
-    let totalAmntwithWaterFee = this.foscosTotalAmnt + this.waterTestAmnt;
+    let totalAmntwithWaterFee = this.foscosTotalAmnt + this.totalFixedCharge + this.waterTestAmnt;
     this.foscosTotalAmount(totalAmntwithWaterFee);
   }
 
@@ -224,4 +222,21 @@ export class FoscosComponent implements OnInit {
     this.foscosTotal.emit(amnt);
   }
 
+  
+  resetForms() {
+    this.foscos_training.reset({
+      'foscos_service_name': '',
+      'license_category':'',
+      'license_duration':'',
+      'foscos_processing_amount': '',
+      'foscos_client_type': '', 
+      'water_test_fee':'',
+      'foscos_total': ''
+    }); // Resetting the form values
+    // Additionally, you might want to mark the form as pristine and untouched
+    let amnt=0;
+    this.foscosTotalAmount(amnt);
+    this.foscos_training.markAsPristine();
+    this.foscos_training.markAsUntouched();
+  }
 }
