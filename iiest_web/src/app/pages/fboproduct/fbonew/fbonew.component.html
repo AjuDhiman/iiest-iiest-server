@@ -1,4 +1,4 @@
-<div class="app-content pt-3 p-md-3 p-lg-4" ff  (click)="closeDropDown()">
+<div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xxl">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
@@ -146,7 +146,7 @@
                 
                 <!--Fostac Component -->
                 <app-fostac *ngIf="isFostac" formGroupName="fostac_training" [submitted] = "submitted"
-                (fostacTotal)="foctacTotalAmount($event)"></app-fostac>
+                (fostacTotal)="fostacTotalAmount($event)"></app-fostac>
 
                 <!--Foscos Component -->
                 <app-foscos *ngIf="isFoscos" formGroupName="foscos_training" [submitted] = "submitted" 

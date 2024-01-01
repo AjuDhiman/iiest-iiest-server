@@ -29,9 +29,8 @@
         </select>
         <div *ngIf="submitted && fostac_training.get('fostac_processing_amount')?.errors"
             class="invalid-feedback">
-            <div *ngIf="fostac_training.get('fostac_processing_amount')?.errors?.['required']">Processing
-                amount
-                is required
+            <div *ngIf="fostac_training.get('fostac_processing_amount')?.errors?.['required']">
+                Processing amount is required
             </div>
         </div>
     </div>
