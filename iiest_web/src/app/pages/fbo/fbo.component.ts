@@ -121,7 +121,7 @@ export class FboComponent implements OnInit {
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required]
-    }),
+    })
 
       this.fboForm = this.formBuilder.group(
         {

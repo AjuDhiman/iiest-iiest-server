@@ -6,6 +6,9 @@ import { GetdataService } from '../../../services/getdata.service';
 import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
+import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+
+
 @Component({
   selector: 'app-fbonew',
   templateUrl: './fbonew.component.html',
@@ -17,6 +20,8 @@ export class FbonewComponent implements OnInit {
   isQrCode = false;
   userName: string = '';
   userData: any;
+  processAmnts: any = {};
+  servicesNames: any = {};
   minValue: number = 1;
   loggedUser: any;
   objId: string;
@@ -43,8 +48,46 @@ export class FbonewComponent implements OnInit {
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
   fostac_processAmnt: number = 0;
   foscos_processAmnt: number = 0;
-  fboForm: FormGroup;
   maxSelectedItems: number = 2;
+  @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
+
+  fostac_training: FormGroup = new FormGroup({
+    fostac_processing_amount: new FormControl(''),
+    fostac_service_name: new FormControl(''),
+    fostac_client_type: new FormControl(''),
+    recipient_no: new FormControl(''),
+    fostac_total: new FormControl('')
+  });
+
+  foscos_training: FormGroup = new FormGroup({
+    foscos_processing_amount: new FormControl(''),
+    foscos_service_name: new FormControl(''),
+    foscos_client_type: new FormControl(''),
+    shops_no: new FormControl(''),
+    water_test_fee: new FormControl(''),
+    license_category: new FormControl(''),
+    license_duration: new FormControl(''),
+    foscos_total: new FormControl(''),
+  });
+
+  fboForm: FormGroup = new FormGroup({
+    fbo_name: new FormControl(''),
+    owner_name: new FormControl(''),
+    owner_contact: new FormControl(''),
+    email: new FormControl(''),
+    state: new FormControl(''),
+    district: new FormControl(''),
+    village: new FormControl(''),
+    tehsil: new FormControl(''),
+    address: new FormControl(''),
+    pincode: new FormControl(''),
+    product_name: new FormControl([]),
+    business_type: new FormControl('b2c'),
+    payment_mode: new FormControl(''),
+    createdBy: new FormControl(''),
+    grand_total: new FormControl('')
+  })
+
   constructor(
     private formBuilder: FormBuilder,
     private _getFboGeneralData: GetdataService,
@@ -57,6 +100,26 @@ export class FbonewComponent implements OnInit {
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
+
+    this.fostac_training = this.formBuilder.group({
+      fostac_processing_amount: ['', Validators.required],
+      fostac_service_name: ['', Validators.required],
+      fostac_client_type: ['', Validators.required],
+      recipient_no: ['', Validators.required],
+      fostac_total: ['', Validators.required]
+    });
+
+    this.foscos_training = this.formBuilder.group({
+      foscos_processing_amount: ['', Validators.required],
+      foscos_service_name: ['', Validators.required],
+      foscos_client_type: ['', Validators.required],
+      shops_no: ['', Validators.required],
+      water_test_fee: ['', Validators.required],
+      license_category: ['', Validators.required],
+      license_duration: ['', Validators.required],
+      foscos_total: ['', Validators.required]
+    });
+
     this.fboForm = this.formBuilder.group(
       {
         fbo_name: ['', Validators.required],
@@ -82,37 +145,12 @@ export class FbonewComponent implements OnInit {
         payment_mode: ['', Validators.required],
         createdBy: ['', Validators.required],
         grand_total: ['', Validators.required],
-        fostac_training: this.formBuilder.group({
-          fostac_processing_amount: ['', Validators.required],
-          fostac_service_name: ['', Validators.required],
-          fostac_client_type: ['', Validators.required],
-          recipient_no: ['', Validators.required],
-          fostac_total: ['', Validators.required]
-        }),
-        foscos_training: this.formBuilder.group({
-          foscos_processing_amount: ['', Validators.required],
-          foscos_service_name: ['', Validators.required],
-          foscos_client_type: ['', Validators.required],
-          shops_no: ['', Validators.required],
-          water_test_fee: ['', Validators.required],
-          license_category: ['', Validators.required],
-          license_duration: ['', Validators.required],
-          foscos_total: ['', Validators.required]
-        })
       });
 
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
   }
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
-  }
-
-  get fostac(): FormGroup {
-    return this.fboForm.get('fostac_training') as FormGroup;
-  }
-
-  get foscos(): FormGroup {
-    return this.fboForm.get('foscos_training') as FormGroup;
   }
 
 
@@ -124,12 +162,6 @@ export class FbonewComponent implements OnInit {
 
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
-    if (this.fbo['product_name'].errors) {
-      alert();
-      //   //this.multiSelect.invalid = true;
-    } else {
-      //   //this.multiSelect.invalid = false;
-    }
     this.submitted = true;
     console.log(this.fboForm.value);
     if (this.fboForm.invalid) {
@@ -195,13 +227,12 @@ export class FbonewComponent implements OnInit {
         this.fboGeneralData = res.product_name;
         this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }));
         console.log(this.fboGeneralData);
-        let productList = Object.keys(res.product_name);
-        //console.log(this.productList)
-        this.productList = productList.map((name, index) => ({
-          id: index + 1,
-          name,
-          disabled: (name !== 'Fostac Training' && name != 'Foscos Training')// Set 'disabled' property based on condition
-        }));
+        this.productList = Object.keys(res.product_name);
+        for (let productName in res.product_name) {
+          let product = res.product_name[productName];
+          this.processAmnts[productName] = product['processing_amount'];
+          this.servicesNames[productName] = product['service_name'];
+        }
       },
       error: (err) => {
         let errorObj = err.error
@@ -225,31 +256,12 @@ export class FbonewComponent implements OnInit {
   }
 
   getSelectedProduct($event: any) {
-    console.log($event)
-    const fostacExists = $event.some((item: { name: string; }) => item.name === 'Fostac Training');
-    const foscosExists = $event.some((item: { name: string; }) => item.name === 'Foscos Training');
-    this.isFostac = fostacExists ? true : false;
-    this.isFoscos = foscosExists ? true : false;
-    console.log(this.isFostac, this.isFoscos )
-    if (this.isFostac === false) {
-      //alert(this.isFostac)
-      this.clearChildForm('fostac')
-      //this.fostacChildComponent.resetForm();
-    }
-    if (this.isFoscos === false) {
-      this.clearChildForm('foscos')
-     // this.foscosChildComponent.resetForms();
-    }
 
-  }
-  //Get Product List
-  getProduct(event: any) {
-    //this.clearFunc();
-    this.isQrCode = false;
-    this.productName = event;
+    this.productName = $event;
     this.fboForm.patchValue({ product_name: this.productName })
     var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key))
     console.log(filtered);
+
     this.isFostac = false;
     this.isFoscos = false;
     if (this.productName.find((item: any) => item === 'Fostac Training')) {
@@ -267,12 +279,6 @@ export class FbonewComponent implements OnInit {
       this.fboForm.removeControl('foscos_training');
     }
 
-  }
-  foscos_training(arg0: string, foscos_training: any) {
-    throw new Error('Method not implemented.');
-  }
-  fostac_training(arg0: string, fostac_training: any) {
-    throw new Error('Method not implemented.');
   }
 
   backToRegister() {
@@ -321,11 +327,9 @@ export class FbonewComponent implements OnInit {
   // Method to clear the child component's form
   clearChildForm(val:string) {
     if (val === 'fostac') {
-      alert('1')
       this.fostacChildComponent.resetForm();
     }
     if (val === 'foscos') {
-      alert('2')
       this.foscosChildComponent.resetForms();
     }
   }
