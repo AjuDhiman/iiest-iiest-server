@@ -1,0 +1,13 @@
+.green-drop-down{
+    transition: all 0.4s ease-in-out;
+    font-size: 14px;
+    padding: 5px !important;
+}
+
+.green-drop-down a{
+   padding: 5px auto;
+}
+
+.green-drop-down a:hover{
+    opacity: 0.8;
+}
