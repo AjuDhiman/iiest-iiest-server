@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit {
     time: '7 days ago'
   }];
   toggelStyle: object = {
-    'position': 'absolute',
+    'position': 'fixed',
     'inset': '0px 0px auto auto',
     'margin': '0px; transform: translate3d(0.666667px, 28px, 0px)'
   }
