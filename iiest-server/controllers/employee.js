@@ -117,11 +117,12 @@ exports.employeeRegister = async(req, res)=>{
         }
     
         success = true;
-        return res.status(201).json({success, message: "Staff Entry Successfully"});
+        return res.status(201).json({success, successMsg: "Staff Entry Successfully"});
         
         } catch (error) {
             console.error(error);
-            return res.status(500).json({message: "Internal Server Error"})
+            success = false;
+            return res.status(500).json({success, message: "Internal Server Error"})
         }
 }
 

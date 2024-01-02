@@ -227,10 +227,10 @@ export class SignupComponent implements OnInit {
         next: (response) => {
           console.log(response);
           if (response.success) {
-            this._toastrService.success('Record Added Successfully', response.message);
+            this._toastrService.success('', 'Record Added Successfully.');
             this.onReset();
           } else {
-            this._toastrService.error('Message Error!', response.message);
+            this._toastrService.error('', 'Some Error Occured');
           }
         },
         error: (err) => {
@@ -238,13 +238,19 @@ export class SignupComponent implements OnInit {
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.emailErr) {
-            this._toastrService.error('Message Error!', errorObj.emailErr);
+            this._toastrService.error('', 'This Email Already Exists.');
           } else if (errorObj.contactErr) {
-            this._toastrService.error('Message Error!', errorObj.contactErr);
+            this._toastrService.error('', 'This Contact Number Already Exists.');
           } else if (errorObj.alternateContactErr) {
-            this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+            this._toastrService.error('', 'This Alternate Contact Already Exists.');
           } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', errorObj.addressErr);
+            this._toastrService.error('', 'This Address Already Exists.');
+          } else if (errorObj.imageErr) {
+            this._toastrService.error('', 'Could Not Upload Image.');
+          } else if (errorObj.signatureErr){
+            this._toastrService.error('', 'Could Not Upload Signature.');
+          } else if(errorObj.filesErr){
+            this._toastrService.error('', 'Some Error Occured With Uploading Files.');
           }
         }
       });
