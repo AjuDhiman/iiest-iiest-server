@@ -7,7 +7,7 @@
           <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
             <button type="submit" class="btn btn-sm btn-primary" (click)="backToRegister()">Register Form</button>
           </div>
-        </div><!--//row-->
+        </div>
         <div class="row gy-4 mb-3">
           <form [formGroup]="form" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off"
             (ngSubmit)="onSubmit()" enctype="multipart/form-data">
@@ -37,35 +37,11 @@
               <label for="dob" class="form-label">Date of Birth</label>
               <input type="date" placeholder="Date of Birth" formControlName="dob" class="form-control form-control-sm"
                 id="dob" [ngClass]="{ 'is-invalid': submitted && f['dob'].errors }" />
-              <!--bsDatepicker [(bsValue)]="dobValue"/>-->
-
               <div *ngIf="submitted && f['dob'].errors" class="invalid-feedback">
                 <div *ngIf="f['dob'].errors['required']">Date of Birth is required</div>
               </div>
 
             </div>
-
-            <!-- <div class="col-md-3">
-            <label for="username" class="form-label">Username</label>
-            <input
-              type="text"
-              placeholder="Username"
-              formControlName="username"
-              id="username"
-              class="form-control form-control-sm"
-              autocomplete="off"
-              [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
-            />
-            <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
-              <div *ngIf="f['username'].errors['required']">Username is required</div>
-              <div *ngIf="f['username'].errors['minlength']">
-                Username must be at least 6 characters
-              </div>
-              <div *ngIf="f['username'].errors['maxlength']">
-                Username must not exceed 20 characters
-              </div>
-            </div>
-          </div> -->
 
             <div class="col-md-3">
               <label for="email" class="form-label">Email</label>
@@ -78,43 +54,7 @@
               </div>
             </div>
 
-            <!-- <div class="col-md-3">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              placeholder="Password"
-              formControlName="password"
-              id="password"
-              class="form-control form-control-sm"
-              autocomplete="off"
-              [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
-            />
-            <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-              <div *ngIf="f['password'].errors['required']">Password is required</div>
-              <div *ngIf="f['password'].errors['minlength']">
-                Password must be at least 6 characters
-              </div>
-              <div *ngIf="f['password'].errors['maxlength']">
-                Username must not exceed 40 characters
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <label for="confirmPassword" class="form-label">Confirm Password</label>
-            <input type="password" formControlName="confirmPassword" placeholder="Confirm Password"
-              id="confirmPassword" class="form-control form-control-sm" autocomplete="off"
-              [ngClass]="{ 'is-invalid': submitted && f['confirmPassword'].errors }"/>
-              <div *ngIf="submitted && f['confirmPassword'].errors"
-              class="invalid-feedback"> 
-              <div *ngIf="f['confirmPassword'].errors['required']">
-                Confirm Password is required
-              </div>
-              <div *ngIf="f['confirmPassword'].errors['matching']">
-                Confirm Password does not match
-              </div>
-            </div>
-          </div> -->
-            <!--FD - federation  BC - Business Center-->
+       
             <div class="col-md-3">
               <label for="company_name" class="form-label">Company Name</label>
               <select id="company_name" [ngClass]="{ 'is-invalid': submitted && f['company_name'].errors }"
@@ -127,16 +67,7 @@
                 <div *ngIf="f['company_name'].errors['required']">Company Name is required</div>
               </div>
             </div>
-            <!-- <div class="col-md-3">
-            <label for="employee_id" class="form-label">Employee ID</label>
-            <input type="text" placeholder="Employee ID" 
-            formControlName="employee_id" 
-            class="form-control form-control-sm" id="employee_id"
-            [ngClass]="{ 'is-invalid': submitted && f['employee_id'].errors }">
-            <div *ngIf="submitted && f['employee_id'].errors" class="invalid-feedback">
-              <div *ngIf="f['employee_id'].errors['required']">Employee ID is required</div>
-            </div>
-          </div>-->
+            
             <div class="col-md-3">
               <label for="portal_type" class="form-label">Select Portal Type:</label>
               <select class="form-select form-select-sm" id="portal_type"
@@ -164,7 +95,6 @@
               <input type="date" placeholder="Date of Joining" formControlName="doj"
                 class="form-control form-control-sm" id="doj"
                 [ngClass]="{ 'is-invalid': submitted && f['doj'].errors }" />
-              <!--bsDatepicker [(bsValue)]="dojValue"/>-->
               <div *ngIf="submitted && f['doj'].errors" class="invalid-feedback">
                 <div *ngIf="f['doj'].errors['required']">Date of Joining is required</div>
               </div>
@@ -311,19 +241,16 @@
                 <div *ngIf="f['empSignature'].errors['required']">Signature is required</div>
               </div>
             </div>
-            <div class="col-md-12">
-              <!-- <div class="form-group form-check">
-            <input
-              type="checkbox"
-              id="acceptTerms"
-              formControlName="acceptTerms"
-              class="form-check-input"
-              [ngClass]="{ 'is-invalid': submitted && f['acceptTerms'].errors }"/>
-            <label for="acceptTerms" class="form-check-label">I have read and agree to the Terms</label>
-            <div *ngIf="submitted && f['acceptTerms'].errors" class="invalid-feedback">
-              Accept Terms is required
+            <div class="col-md-3">
+              <label for="employeeImage" class="form-label">Employee Image</label>
+              <input type="file" id="employeeImage" formControlName="employeeImage" (change)="onEmpImageChange($event)"
+                class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && f['employeeImage'].errors }">
+              <div *ngIf="submitted && f['employeeImage'].errors" class="invalid-feedback">
+                <div *ngIf="f['employeeImage'].errors['required']">Employee Image is required</div>
+              </div>
             </div>
-          </div> -->
+            <div class="col-md-12">
             </div>
             <div class="col-6">
               <button *ngIf="isEditMode; else otherContent" type="submit" class="btn btn-sm btn-primary">Update</button>
@@ -339,7 +266,6 @@
           </form>
         </div>
 
-        <!--Employee List Component-->
       </div>
     </div>
 
@@ -352,13 +278,11 @@
 
     <footer class="app-footer">
       <div class="container text-center py-3">
-        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
         <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
             style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
             target="_blank">Xiaoying Riley</a> for developers</small>
 
       </div>
-    </footer><!--//app-footer-->
+    </footer>
 
-  </div><!--//app-wrapper-->
-  <!--<app-employeelist></app-employeelist>-->
+  </div>

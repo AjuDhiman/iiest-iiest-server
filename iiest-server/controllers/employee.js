@@ -4,37 +4,31 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { generateUsername, generatePassword, generateEmployeeID } = require('./empGenerator');
 const { sendEmployeeInfo } = require('./employeeMail');
-const { empSignBucket } = require('../config/db');
+const { empSignBucket, empImageBucket } = require('../config/db');
 const auth = JSON.parse(process.env.AUTH);
 
 const JWT_SECRET = auth.JWT_TOKEN;
 
-//Controller for staff registration
 exports.employeeRegister = async(req, res)=>{
     try {
-
-        console.log(req.body);
-        const signature = req.file;
+        const signature = req.files['empSignature'];
+        const image = req.files['employeeImage'];
 
         let success = false;
-        let isUnique = false; //To check if id number generated is unique 
+        let isUnique = false;
     
-        //Fields being used for staff entry
         const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
 
-        //To check if employee with same email exists 
         const existing_email = await employeeSchema.findOne({email});
         if(existing_email){
             return res.status(401).json({success, emailErr: "Employee with this email already exists"});
         }
     
-        //To check if employye with same phone number exists
         const existing_contact = await employeeSchema.findOne({contact_no});
         if(existing_contact){
             return res.status(401).json({success, contactErr: "Employee with this phone number already exists"});
         }
-    
-        //To check if employye with same alternate phone number exists
+ 
         const existing_alternate_no = await employeeSchema.findOne({alternate_contact});
         if(existing_alternate_no){
             return res.status(401).json({success, alternateContactErr: "Employee with this alternate phone number already exists"});
@@ -45,9 +39,8 @@ exports.employeeRegister = async(req, res)=>{
             return res.status(401).json({success, addressErr: "Employee with this address already exists"});
         }
 
-        let idNumber; //Variable being used for id number
+        let idNumber;
 
-        //Keeps generating a 4-digit number for id number unless it's value is unique
         while(!isUnique){
             idNumber = Math.floor(1000 + Math.random() * 9000);
             const existingNumber = await employeeSchema.findOne({id_num: idNumber});
@@ -56,45 +49,72 @@ exports.employeeRegister = async(req, res)=>{
             }
         }
 
-        const generatedUsername = generateUsername(employee_name, idNumber); //Calling function to generate employee username
+        const generatedUsername = generateUsername(employee_name, idNumber);
 
-        const generatedId = generateEmployeeID(company_name, idNumber); //Calling function to generate employee id
+        const generatedId = generateEmployeeID(company_name, idNumber);
 
-        let generatedPassword = generatePassword(10); //Calling function to generate employee password
+        let generatedPassword = generatePassword(10);
 
         console.log(generatedUsername, generatedPassword);
 
-        //Password Hashing
         const salt = await bcrypt.genSalt(10);
         const secPass = await bcrypt.hash(generatedPassword, salt);
 
         let date = new Date();
+
+        const signatureFileName = `${Date.now()}_${signature[0].originalname}`;
+        const imageFileName = `${Date.now()}_employeeimage_${image[0].originalname}`;
+
+        let imageSaved = false;
+        let signatureSaved = false;
+
+        console.log(imageSaved, signatureSaved)
         
         if(signature){
-
-            const signatureFileName = `${Date.now()}_${signature.originalname}`;
-
-            await employeeSchema.create({
-                id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureFile: signatureFileName, status: true
-            });
-
             const sigatureBuckcet = empSignBucket();
 
             const uploadSignStream = sigatureBuckcet.openUploadStream(signatureFileName);
 
-            uploadSignStream.write(signature.buffer);
+            uploadSignStream.write(signature[0].buffer);
 
             uploadSignStream.end((err) => {
             if (err) {
-                console.error(err);
+                success = false;
+                return res.status(401).json({success, signatureErr: 'Could not upload the signature file'})
             } 
                 console.log(`File ${signatureFileName} uploaded successfully.`);
             });
-        }else{
-            return res.status(401).json({message: "Some error occured with signature file. Please try again"});
+            signatureSaved = true
+        }
+        
+        if(image){
+            const imageBucket = empImageBucket();
+            const uploadImageStream = imageBucket.openUploadStream(imageFileName)
+
+            uploadImageStream.write(image[0].buffer);
+
+            uploadImageStream.end((err)=>{
+                if (err) {
+                    success = false;
+                    return res.status(401).json({success, imageErr: 'Could not upload the image file'})
+                }
+                    console.log(`File ${imageFileName} uploaded successfully.`);
+                    imageSaved = true
+            })
+            imageSaved = true
         }
 
-        sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
+        if(imageSaved && signatureSaved){
+                const employeeRegisterd = await employeeSchema.create({
+                id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureFile: signatureFileName, status: true, employeeImage: imageFileName
+                });
+                if(employeeRegisterd){
+                    sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
+                }
+        }else{
+            success = false;
+            return res.status(401).json({success, filesErr: 'Some error occured with uploading files'})
+        }
     
         success = true;
         return res.status(201).json({success, message: "Staff Entry Successfully"});
@@ -105,14 +125,12 @@ exports.employeeRegister = async(req, res)=>{
         }
 }
 
-//Controller for employee login
 exports.employeeLogin = async(req, res)=>{
     try {
         let success = false;
     
-        const { username, password } = req.body; //Fields to be used for staff login
+        const { username, password } = req.body;
         
-        //To check if username is available for login
         const employee_user = await employeeSchema.findOne({username});
         if(!employee_user){
             return res.status(401).json({success, message: "Please try to login with correct credentials"});
@@ -135,11 +153,11 @@ exports.employeeLogin = async(req, res)=>{
     
         } catch (error) {
             console.error(error);
-            return res.status(500).json({message: "Internal Server Error"});
+            success = false;
+            return res.status(500).json({success, message: "Internal Server Error"});
         }
 }
 
-//Controller for deleting employee
 exports.deleteEmployee = async(req, res)=>{
     const objId =  req.params.id;
     const {deletedBy} = req.body;
@@ -167,7 +185,6 @@ exports.deleteEmployee = async(req, res)=>{
     }
 }
 
-//Controller for editing employee data
 exports.editEmployee = async(req, res)=>{
 
     try {
@@ -216,7 +233,6 @@ exports.editEmployee = async(req, res)=>{
     }
 }
 
-//Controller to get all employees data
 exports.allEmployeesData = async(req, res)=>{
     const employeesData = await employeeSchema.find();
     try {

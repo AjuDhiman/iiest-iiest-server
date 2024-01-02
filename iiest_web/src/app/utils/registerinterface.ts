@@ -25,6 +25,7 @@ export interface Employee {
   acceptTerms: boolean;
   createdBy: string;
   empSignature: File;
+  employeeImage: File;
 }
 
 export interface AddConsumer {
