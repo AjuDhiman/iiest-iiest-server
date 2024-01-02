@@ -235,7 +235,8 @@ exports.editEmployee = async(req, res)=>{
 }
 
 exports.allEmployeesData = async(req, res)=>{
-    const employeesData = await employeeSchema.find();
+    const employeesData = await employeeSchema.find({_id: {$ne: req.user.id}});
+    console.log(req.user.id)
     try {
         return res.status(200).json({employeesData})
     } catch (error) {
