@@ -1,5 +1,3 @@
-
-//Establishing mongodb database connection
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const { GridFSBucket } = require('mongodb');
@@ -14,6 +12,7 @@ const connectToMongo = async() => {
         createFsBucket();
         createInvoiceBucket();
         empSignBucket();
+        empImageBucket();
     }).catch((error) => {
         console.log(error);
     })
@@ -35,6 +34,14 @@ const empSignBucket = ()=>{
     return new GridFSBucket(mongoose.connection.db, { bucketName: 'empSignature' });
 }
 
+const empImageBucket = ()=>{
+    if(!mongoose.connection.db){
+        throw new Error('MongoDB connection not established');
+    }
+    console.log('Creating Image Bucket for employee');
+    return new GridFSBucket(mongoose.connection.db, { bucketName: 'empImage' });
+}
+
 const createInvoiceBucket = ()=>{
     if(!mongoose.connection.db){
         throw new Error('MongoDB Connection not established');
@@ -43,4 +50,4 @@ const createInvoiceBucket = ()=>{
     return new GridFSBucket(mongoose.connection.db, {bucketName: 'fboInvoices'});
 }
 
-module.exports = {connectToMongo, createFsBucket, createInvoiceBucket, empSignBucket};
+module.exports = {connectToMongo, createFsBucket, createInvoiceBucket, empSignBucket, empImageBucket};

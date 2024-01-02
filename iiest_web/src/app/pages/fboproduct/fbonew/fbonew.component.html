@@ -103,15 +103,9 @@
                     </div>
                     <div class="col-md-6">
                         <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
-                        <ng-select id="product_name" formControlName="product_name"
-                                    [multiple]="true"
-                                    [items]="productList"
-                                    bindLabel="name"
-                                    [maxSelectedItems]= "maxSelectedItems"
-                                    placeholder="Select Products"
-                                    (change)="getSelectedProduct($event)"
-                                    [ngClass]="{ 'ng-select-error is-invalid': submitted && fbo['product_name'].errors }">
-                       </ng-select>
+                        <app-multi-select #multi_select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
+                            [options]="productList" [formReset]="resetMultiDrop"
+                            [placeHolder]="'Select Products'"></app-multi-select>
                         <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
                         </div>

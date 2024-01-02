@@ -5,12 +5,12 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from '../../services/register.service';
 import { GetdataService } from '../../services/getdata.service'
 import Validation from '../../utils/validation'
-import { NgbDate, NgbDateStruct, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import {  NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { GetEmployee, UpdateEmployee } from 'src/app/store/actions/employee.action';
+import { UpdateEmployee } from 'src/app/store/actions/employee.action';
 
 @Component({
   selector: 'app-signup',
@@ -67,12 +67,14 @@ export class SignupComponent implements OnInit {
     zip_code: new FormControl(''),
     //acceptTerms: new FormControl(false),
     createdBy: new FormControl(''),
-    empSignature: new FormControl('')
+    empSignature: new FormControl(''),
+    employeeImage: new FormControl('')
   });
   submitted = false;
   dobValue: Date;
   dojValue: Date;
   signatureFile: File;
+  empImageFile: File;
   constructor(
     private formBuilder: FormBuilder,
     private calendar: NgbCalendar,
@@ -125,6 +127,7 @@ export class SignupComponent implements OnInit {
           ]
         ],
         empSignature: ['', Validators.required],
+        employeeImage: ['', Validators.required],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
@@ -181,6 +184,7 @@ export class SignupComponent implements OnInit {
     formData.append('contact_no', this.form.get('contact_no')?.value);
     formData.append('alternate_contact', this.form.get('alternate_contact')?.value);
     formData.append('empSignature', this.signatureFile);
+    formData.append('employeeImage', this.empImageFile);
     formData.append('address', this.form.get('address')?.value);
     formData.append('city', this.form.get('city')?.value);
     formData.append('state', this.form.get('state')?.value);
@@ -223,10 +227,10 @@ export class SignupComponent implements OnInit {
         next: (response) => {
           console.log(response);
           if (response.success) {
-            this._toastrService.success('Record Added Successfully', response.message);
+            this._toastrService.success('', 'Record Added Successfully.');
             this.onReset();
           } else {
-            this._toastrService.error('Message Error!', response.message);
+            this._toastrService.error('', 'Some Error Occured');
           }
         },
         error: (err) => {
@@ -234,13 +238,19 @@ export class SignupComponent implements OnInit {
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.emailErr) {
-            this._toastrService.error('Message Error!', errorObj.emailErr);
+            this._toastrService.error('', 'This Email Already Exists.');
           } else if (errorObj.contactErr) {
-            this._toastrService.error('Message Error!', errorObj.contactErr);
+            this._toastrService.error('', 'This Contact Number Already Exists.');
           } else if (errorObj.alternateContactErr) {
-            this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+            this._toastrService.error('', 'This Alternate Contact Already Exists.');
           } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', errorObj.addressErr);
+            this._toastrService.error('', 'This Address Already Exists.');
+          } else if (errorObj.imageErr) {
+            this._toastrService.error('', 'Could Not Upload Image.');
+          } else if (errorObj.signatureErr){
+            this._toastrService.error('', 'Could Not Upload Signature.');
+          } else if(errorObj.filesErr){
+            this._toastrService.error('', 'Some Error Occured With Uploading Files.');
           }
         }
       });
@@ -371,6 +381,23 @@ export class SignupComponent implements OnInit {
           //call validation
           this.form.reset();
           this.form.controls["empSiganture"].setValidators([Validators.required]);
+        }
+    }
+  }
+
+  onEmpImageChange($event: any){
+    if ($event.target.files && $event.target.files[0]) {
+      let file = $event.target.files[0];
+      console.log(file);
+        if(file.type == "image/png" || file.type == "image/jpg") {
+          console.log("correct");
+          this.empImageFile = file;
+          console.log(this.empImageFile);
+        }
+        else {
+          //call validation
+          this.form.reset();
+          this.form.controls["employeeImage"].setValidators([Validators.required]);
         }
     }
   }

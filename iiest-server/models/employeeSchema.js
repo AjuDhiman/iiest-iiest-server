@@ -127,6 +127,10 @@ const employeeRegister = new Schema({
     status: {
         type: Boolean, 
         required: true
+    },
+    employeeImage: {
+        type: 'String',
+        required: true
     }
 })
 
