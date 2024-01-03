@@ -173,7 +173,7 @@ export class FbonewComponent implements OnInit {
       this._registerService.updateFbo(this.objId, this.editedData, `${this.userName}(${this.parsedUserData.employee_id})`).subscribe({
         next: (res) => {
           if (res.success) {
-            this._toastrService.success('Record edited successfully', res.message);
+            this._toastrService.success('Record Edited Successfully');
             this.backToRegister();
           }
         }
@@ -189,10 +189,14 @@ export class FbonewComponent implements OnInit {
             let errorObj = err.error;
             if (errorObj.userError) {
               this._registerService.signout();
-            } else if (errorObj.contactErr) {
-              this._toastrService.error('Message Error!', errorObj.contactErr);
-            } else if (errorObj.emailErr) {
-              this._toastrService.error('Message Error!', errorObj.emailErr);
+            } else if(errorObj.contactErr){
+              this._toastrService.error('', 'This Contact Already Exists.');
+            } else if(errorObj.emailErr){
+              this._toastrService.error('', 'This Email Already Existis');
+            } else if(errorObj.signatureErr){
+              this._toastrService.error('', 'Signature Not Found');
+            } else if(errorObj.registerErr){
+              this._toastrService.error('', 'Some Error Occured. Please Try Again');
             }
           }
         })
@@ -201,7 +205,7 @@ export class FbonewComponent implements OnInit {
         this._registerService.addFbo(this.objId, this.addFbo).subscribe({
           next: (res) => {
             if (res.success) {
-              this._toastrService.success('Record edited successfully', res.message);
+              this._toastrService.success('', 'Record Added Successfully');
               this.backToRegister();
             }
           },
@@ -210,9 +214,9 @@ export class FbonewComponent implements OnInit {
             if (errorObj.userError) {
               this._registerService.signout();
             } else if (errorObj.contactErr) {
-              this._toastrService.error('Message Error!', errorObj.contactErr);
+              this._toastrService.error('', 'This Contact Already Exists.');
             } else if (errorObj.emailErr) {
-              this._toastrService.error('Message Error!', errorObj.emailErr);
+              this._toastrService.error('', 'This Email Already Exists.');
             }
           }
         })
