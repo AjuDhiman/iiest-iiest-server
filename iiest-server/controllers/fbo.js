@@ -133,8 +133,6 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        console.log('Testing' + fetchedFormData);
-
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile } = fetchedFormData;  
         
         const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler();
@@ -243,7 +241,7 @@ exports.fboRegister = async (req, res) => {
       return res.status(401).json({ success, emailErr: true });
       }
 
-      const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
+      const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler();
 
       let serviceArr = [];
 
