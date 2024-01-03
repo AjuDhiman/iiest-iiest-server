@@ -1,7 +1,12 @@
-const { Schema } = require('mongoose')
-const Joi = require('joi');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const recipientSchema = new Schema({
+    fboObjId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'fbo_registers',
+        required: true
+    },
     name: {
         type: String, 
         required: true
@@ -18,13 +23,12 @@ const recipientSchema = new Schema({
     }
 })
 
-const recipientValidationSchema = Joi.object({
-    name: Joi.string().required(),
-    phoneNo: Joi.number().required(),
-    aadharNo: Joi.number().required()
-})
-
 const shopSchema = new Schema({
+    fboObjId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'fbo_registers',
+        required: true
+    },
     operatorName: {
         type: String, 
         required: true
@@ -41,10 +45,7 @@ const shopSchema = new Schema({
     }
 })
 
-const shopValidationSchema = Joi.object({
-    operatorName: Joi.string().required(),
-    address: Joi.string().required(),
-    eBillName: Joi.string().required()
-})
+const recipientModel = mongoose.model('recipientDetails', recipientSchema);
+const shopModel = mongoose.model('shopDetails', shopSchema);
 
-module.exports = { recipientSchema, shopSchema, recipientValidationSchema, shopValidationSchema }
+module.exports = { recipientModel, shopModel }

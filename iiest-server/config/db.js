@@ -9,7 +9,7 @@ const mongoURL = config.MONGO_URL;
 const connectToMongo = async() => {
      await mongoose.connect(mongoURL).then(() => {
         console.log('Now we are connected to the DB');
-        createFsBucket();
+        fboEbillBucket();
         createInvoiceBucket();
         empSignBucket();
         empImageBucket();
@@ -18,12 +18,12 @@ const connectToMongo = async() => {
     })
 }
 
-const createFsBucket = ()=>{
+const fboEbillBucket = ()=>{
     if(!mongoose.connection.db){
         throw new Error('MongoDB connection not established');
     }
-    console.log('Creating Gridfs Bucket');
-    return new GridFSBucket(mongoose.connection.db, { bucketName: 'eBills'});
+    console.log('Creating Bucket for fbo ebill');
+    return new GridFSBucket(mongoose.connection.db, { bucketName: 'fboEbills'});
 }
 
 const empSignBucket = ()=>{
@@ -50,4 +50,4 @@ const createInvoiceBucket = ()=>{
     return new GridFSBucket(mongoose.connection.db, {bucketName: 'fboInvoices'});
 }
 
-module.exports = {connectToMongo, createFsBucket, createInvoiceBucket, empSignBucket, empImageBucket};
+module.exports = {connectToMongo, fboEbillBucket, createInvoiceBucket, empSignBucket, empImageBucket};

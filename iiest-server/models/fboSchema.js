@@ -122,14 +122,6 @@ const fboSchema = new Schema({
         required: function(){
             return this.business_type.includes('b2b')
         }
-    },
-    recipientDetails: {
-        type: [Object],
-        default: []
-    },
-    shopDetails: {
-        type: [Object],
-        default: []
     }
 })
 

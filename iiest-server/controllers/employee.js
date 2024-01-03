@@ -21,22 +21,22 @@ exports.employeeRegister = async(req, res)=>{
 
         const existing_email = await employeeSchema.findOne({email});
         if(existing_email){
-            return res.status(401).json({success, emailErr: "Employee with this email already exists"});
+            return res.status(401).json({success, emailErr: true});
         }
     
         const existing_contact = await employeeSchema.findOne({contact_no});
         if(existing_contact){
-            return res.status(401).json({success, contactErr: "Employee with this phone number already exists"});
+            return res.status(401).json({success, contactErr: true});
         }
  
         const existing_alternate_no = await employeeSchema.findOne({alternate_contact});
         if(existing_alternate_no){
-            return res.status(401).json({success, alternateContactErr: "Employee with this alternate phone number already exists"});
+            return res.status(401).json({success, alternateContactErr: true});
         }
 
         const existing_address = await employeeSchema.findOne({address});
         if(existing_address){
-            return res.status(401).json({success, addressErr: "Employee with this address already exists"});
+            return res.status(401).json({success, addressErr: true});
         }
 
         let idNumber;
@@ -80,7 +80,7 @@ exports.employeeRegister = async(req, res)=>{
             uploadSignStream.end((err) => {
             if (err) {
                 success = false;
-                return res.status(401).json({success, signatureErr: 'Could not upload the signature file'})
+                return res.status(401).json({success, signatureErr: true})
             } 
                 console.log(`File ${signatureFileName} uploaded successfully.`);
             });
@@ -96,7 +96,7 @@ exports.employeeRegister = async(req, res)=>{
             uploadImageStream.end((err)=>{
                 if (err) {
                     success = false;
-                    return res.status(401).json({success, imageErr: 'Could not upload the image file'})
+                    return res.status(401).json({success, imageErr: true})
                 }
                     console.log(`File ${imageFileName} uploaded successfully.`);
                     imageSaved = true
@@ -113,7 +113,7 @@ exports.employeeRegister = async(req, res)=>{
                 }
         }else{
             success = false;
-            return res.status(401).json({success, filesErr: 'Some error occured with uploading files'})
+            return res.status(401).json({success, filesErr: true})
         }
     
         success = true;
