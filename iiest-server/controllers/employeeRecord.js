@@ -33,7 +33,11 @@ const employeeRecord = async(req, res)=>{
             })
         }
 
-        return res.status(200).json({overAllSales: totalSaleAmount, pendingSales: pendingSalesAmount, approvedSales: approvedSalesAmount});
+        const pendingSalesCount = await fboModel.countDocuments({checkStatus: 'Pending'});
+        const approvedSalesCount = await fboModel.countDocuments({checkStatus: 'Approved'});
+        const overallSalesCount = await fboModel.countDocuments();
+
+        return res.status(200).json({overAllSales: totalSaleAmount, pendingSales: pendingSalesAmount, approvedSales: approvedSalesAmount, pendingSalesCount, approvedSalesCount, overallSalesCount});
     } catch (error) {
         console.error(error)
     }

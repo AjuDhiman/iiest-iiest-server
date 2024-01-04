@@ -180,7 +180,7 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         if(buyerData){
-           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
+           await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
         }else{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
@@ -273,15 +273,14 @@ exports.fboRegister = async (req, res) => {
       createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
       });
 
+      if(!fboEntry){
+        success = false;
+        return res.status(401).json({ success, randomErr: true })
+      }
 
-      if(fboEntry){
       await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
       success = true;
       return res.status(200).json({ success })
-      }
-
-      success = false;
-      return res.status(200).json({ success, randomErr: true })
       
   } catch (error) {
     console.error(error);

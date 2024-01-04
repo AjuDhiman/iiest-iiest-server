@@ -121,7 +121,6 @@ const employeeRegister = new Schema({
     },
     signatureImage: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'empSignature.files',
         required: true,
         unique: true
     },
@@ -131,7 +130,6 @@ const employeeRegister = new Schema({
     },
     employeeImage: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'empImage.files',
         required: true,
         unique: true
     }

@@ -42,7 +42,6 @@ const shopSchema = new Schema({
     },
     eBillImage: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'fboEbills.files',
     required: true,
     unique: true
     }

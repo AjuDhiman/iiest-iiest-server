@@ -68,9 +68,10 @@ exports.employeeRegister = async(req, res)=>{
         console.log(generatedUsername, generatedPassword);
 
         const salt = await bcrypt.genSalt(10);
+
         const secPass = await bcrypt.hash(generatedPassword, salt);
 
-        let date = new Date();
+        const date = new Date();
 
         const signatureFileName = `${Date.now()}_${signature[0].originalname}`;
         const imageFileName = `${Date.now()}_employeeimage_${image[0].originalname}`;        
@@ -93,28 +94,28 @@ exports.employeeRegister = async(req, res)=>{
                 return res.status(401).json({success, signatureErr: true})
             } 
                 console.log(`File ${uploadSignStream.id} uploaded successfully.`);
-            });
+        });
+
         uploadImageStream.end((err)=>{
             if (err) {
                 success = false;
                 return res.status(401).json({success, imageErr: true})
             }
-                console.log(`File ${uploadImageStream.id} uploaded successfully.`);
-                
-            })
+                console.log(`File ${uploadImageStream.id} uploaded successfully.`); 
+        })
       
         const employeeRegisterd = await employeeSchema.create({
         id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
         });
 
-        if(employeeRegisterd){
-            sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
-            success = true;
-            return res.status(200).json({success, successMsg: true});
+        if(!employeeRegisterd){
+            success = false;
+            return res.status(404).json({success, randomErr: true})
         }
-        
-        success = false;
-        return res.status(404).json({success, randomErr: true})
+
+        sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
+        success = true;
+        return res.status(200).json({success, successMsg: true});
         
         } catch (error) {
             console.error(error);
@@ -134,7 +135,7 @@ exports.employeeLogin = async(req, res)=>{
             return res.status(401).json({success, message: "Please try to login with correct credentials"});
         }
     
-        const passwordCompare = await bcrypt.compare(password, employee_user.password); //Comparing hashed password
+        const passwordCompare = await bcrypt.compare(password, employee_user.password);
         if(!passwordCompare){
             return res.status(401).json({success, message: "Please try to login with correct credentials"});
         }
@@ -145,7 +146,7 @@ exports.employeeLogin = async(req, res)=>{
             }
         }    
     
-        const authToken = jwt.sign(data, JWT_SECRET); // Generating a JWT Token for further authentication and authorization
+        const authToken = jwt.sign(data, JWT_SECRET);
         success = true;
         return res.status(200).json({success, authToken, employee_user});
     
@@ -161,7 +162,7 @@ exports.deleteEmployee = async(req, res)=>{
     const {deletedBy} = req.body;
     let success = false;
 
-    let date = new Date();
+    const date = new Date();
 
     try {
         const deletedEmployee = await employeeSchema.findByIdAndDelete(objId);
