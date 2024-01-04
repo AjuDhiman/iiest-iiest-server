@@ -43,8 +43,7 @@ const invoiceTemplate = async(fboInfo)=>{
 
     const amountInWords = toWords.convert(fboInfo.totalAmount, {currency: true, ignoreZeroCurrency: true});
     const signatureBucket = empSignBucket();
-    const signatureDownloadStream = signatureBucket.openDownloadStreamByName(signatureName);
-
+    const signatureDownloadStream = signatureBucket.openDownloadStream(signatureName);
 
     return new Promise((resolve, reject) => {
         signatureDownloadStream.on('data', (chunk) => {

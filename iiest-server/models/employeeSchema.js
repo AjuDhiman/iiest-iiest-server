@@ -119,8 +119,9 @@ const employeeRegister = new Schema({
         type: String,
         default: 'Not edited yet'
     },
-    signatureFile: {
-        type: String, 
+    signatureImage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'empSignature.files',
         required: true,
         unique: true
     },
@@ -129,8 +130,10 @@ const employeeRegister = new Schema({
         required: true
     },
     employeeImage: {
-        type: 'String',
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'empImage.files',
+        required: true,
+        unique: true
     }
 })
 

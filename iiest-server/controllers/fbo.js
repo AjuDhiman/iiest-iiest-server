@@ -29,7 +29,7 @@ const registrationHandler = async()=>{
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
-const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
+const invoiceHandler = async(idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
 
   const tax = (18/100)*amount;
 
@@ -51,7 +51,7 @@ const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmo
     chosenServices: serviceArray,
     signatureName: signatureName
   }
-  generateInvoice(idNum, mail, infoObj);
+  await generateInvoice(idNum, mail, infoObj);
 }
 
 exports.fboPayment = async(req, res)=>{
@@ -59,7 +59,7 @@ exports.fboPayment = async(req, res)=>{
   let success = false;
 
   const userInfo = await employeeSchema.findById(req.params.id);
-  const signatureFile = userInfo.signatureFile;
+  const signatureFile = userInfo.signatureImage;
 
   if(!signatureFile){
     success = false;
@@ -223,7 +223,7 @@ exports.fboRegister = async (req, res) => {
       let success = false;
 
       const userInfo = await employeeSchema.findById(createrObjId);
-      const signatureFile = userInfo.signatureFile;
+      const signatureFile = userInfo.signatureImage;
 
       if(!signatureFile){
         return res.status(404).json({success, signatureErr: true})
@@ -273,15 +273,16 @@ exports.fboRegister = async (req, res) => {
       createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
       });
 
+
       if(fboEntry){
-      invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
+      await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
       success = true;
-      return res.status(201).json({ success });
+      return res.status(200).json({ success })
       }
 
-      success = false; 
-      return res.status(401).json({success, registerErr: true});
-
+      success = false;
+      return res.status(200).json({ success, randomErr: true })
+      
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });

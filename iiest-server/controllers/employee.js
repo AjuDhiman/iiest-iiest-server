@@ -16,6 +16,16 @@ exports.employeeRegister = async(req, res)=>{
 
         let success = false;
         let isUnique = false;
+
+        if(!signature){
+            success = false
+            return res.status(401).json({success, signatureErr: true})
+        }
+
+        if(!image){
+            success = false
+            return res.status(401).json({success, imageErr: true})
+        }
     
         const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
 
@@ -63,61 +73,48 @@ exports.employeeRegister = async(req, res)=>{
         let date = new Date();
 
         const signatureFileName = `${Date.now()}_${signature[0].originalname}`;
-        const imageFileName = `${Date.now()}_employeeimage_${image[0].originalname}`;
+        const imageFileName = `${Date.now()}_employeeimage_${image[0].originalname}`;        
 
-        let imageSaved = false;
-        let signatureSaved = false;
+        const sigatureBuckcet = empSignBucket();
 
-        console.log(imageSaved, signatureSaved)
-        
-        if(signature){
-            const sigatureBuckcet = empSignBucket();
+        const uploadSignStream = sigatureBuckcet.openUploadStream(signatureFileName);
 
-            const uploadSignStream = sigatureBuckcet.openUploadStream(signatureFileName);
+        uploadSignStream.write(signature[0].buffer);
 
-            uploadSignStream.write(signature[0].buffer);
+        const imageBucket = empImageBucket();
 
-            uploadSignStream.end((err) => {
+        const uploadImageStream = imageBucket.openUploadStream(imageFileName);
+
+        uploadImageStream.write(image[0].buffer);
+
+        uploadSignStream.end((err) => {
             if (err) {
                 success = false;
                 return res.status(401).json({success, signatureErr: true})
             } 
-                console.log(`File ${signatureFileName} uploaded successfully.`);
+                console.log(`File ${uploadSignStream.id} uploaded successfully.`);
             });
-            signatureSaved = true
+        uploadImageStream.end((err)=>{
+            if (err) {
+                success = false;
+                return res.status(401).json({success, imageErr: true})
+            }
+                console.log(`File ${uploadImageStream.id} uploaded successfully.`);
+                
+            })
+      
+        const employeeRegisterd = await employeeSchema.create({
+        id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
+        });
+
+        if(employeeRegisterd){
+            sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
+            success = true;
+            return res.status(200).json({success, successMsg: true});
         }
         
-        if(image){
-            const imageBucket = empImageBucket();
-            const uploadImageStream = imageBucket.openUploadStream(imageFileName)
-
-            uploadImageStream.write(image[0].buffer);
-
-            uploadImageStream.end((err)=>{
-                if (err) {
-                    success = false;
-                    return res.status(401).json({success, imageErr: true})
-                }
-                    console.log(`File ${imageFileName} uploaded successfully.`);
-                    imageSaved = true
-            })
-            imageSaved = true
-        }
-
-        if(imageSaved && signatureSaved){
-                const employeeRegisterd = await employeeSchema.create({
-                id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureFile: signatureFileName, status: true, employeeImage: imageFileName
-                });
-                if(employeeRegisterd){
-                    sendEmployeeInfo(generatedUsername, generatedPassword, generatedId, email)
-                }
-        }else{
-            success = false;
-            return res.status(401).json({success, filesErr: true})
-        }
-    
-        success = true;
-        return res.status(201).json({success, successMsg: "Staff Entry Successfully"});
+        success = false;
+        return res.status(404).json({success, randomErr: true})
         
         } catch (error) {
             console.error(error);
@@ -226,7 +223,7 @@ exports.editEmployee = async(req, res)=>{
         }
 
         success = true;
-        return res.status(201).json({success, updatedEmployee})
+        return res.status(200).json({success, updatedEmployee})
 
     } catch (error) {
         console.error(error);
