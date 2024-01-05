@@ -29,7 +29,7 @@ const registrationHandler = async()=>{
     return { idNumber, generatedCustomerId, date, selectedModel }
 }
 
-const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
+const invoiceHandler = async(idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
 
   const tax = (18/100)*amount;
 
@@ -51,27 +51,34 @@ const invoiceHandler = (idNum, mail, fboName, address, contact, amount, totalAmo
     chosenServices: serviceArray,
     signatureName: signatureName
   }
-  generateInvoice(idNum, mail, infoObj);
+  await generateInvoice(idNum, mail, infoObj);
 }
 
 exports.fboPayment = async(req, res)=>{
   try {
   let success = false;
 
+  const userInfo = await employeeSchema.findById(req.params.id);
+  const signatureFile = userInfo.signatureImage;
+
+  if(!signatureFile){
+    success = false;
+    return res.status(404).json({success, signatureErr: true});
+  }
+
   const formBody = req.body;
   const createrId = req.params.id
-  req.session.fboFormData = {...formBody, createrObjId: createrId};
-  console.log(req.session.fboFormData);
+  req.session.fboFormData = {...formBody, createrObjId: createrId, signatureFile};
 
   const existing_owner_contact = await fboModel.findOne({ owner_contact: formBody.owner_contact });
       if (existing_owner_contact) {
-        return res.status(401).json({ success, contactErr: "This owner contact is already in use." });
+        return res.status(401).json({ success, contactErr: true });
   }
       
   const existing_email = await fboModel.findOne({ email: formBody.email });
-      if (existing_email) {
-      return res.status(401).json({ success, emailErr: "This email is already in use." });
-    }
+      if(existing_email){
+      return res.status(401).json({ success, emailErr: true });
+  }
   
   let tx_uuid = uniqid();
 
@@ -108,7 +115,6 @@ exports.fboPayment = async(req, res)=>{
     }
   }).then(function (response) {
     return res.status(200).json({message: response.data.data.instrumentResponse.redirectInfo.url});
-    // return res.redirect(response.data.data.instrumentResponse.redirectInfo.url)
   }).catch(function (error) {
     console.log(error);
   });
@@ -127,9 +133,9 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId } = fetchedFormData    
-
-        const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler()
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile } = fetchedFormData;  
+        
+        const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler();
 
         let serviceArr = [];
 
@@ -153,7 +159,7 @@ exports.fboPayReturn = async(req, res)=>{
         }else if(product_name.includes('Foscos Training')){
         total_processing_amount = Number(foscos_training.foscos_processing_amount);
         if(foscos_training.water_test_fee !== null){
-          total_processing_amount += Number(foscos_training.water_test_fee)
+          total_processing_amount += Number(foscos_training.water_test_fee);
           }
         }
 
@@ -168,13 +174,13 @@ exports.fboPayReturn = async(req, res)=>{
         if(fboEntry){
           buyerData = await fboPaymentSchema.create({
             buyerId, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: grand_total
-          })
+          });
         }else{
           return res.status(401).json({success, message: "FBO entry not successful"})
         }
 
         if(buyerData){
-           invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr);
+           await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
         }else{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
@@ -217,21 +223,25 @@ exports.fboRegister = async (req, res) => {
       let success = false;
 
       const userInfo = await employeeSchema.findById(createrObjId);
-      const signatureFile = userInfo.signatureFile;
+      const signatureFile = userInfo.signatureImage;
+
+      if(!signatureFile){
+        return res.status(404).json({success, signatureErr: true})
+      }
 
       const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = req.body;
       
       const existing_owner_contact = await fboModel.findOne({ owner_contact });
       if (existing_owner_contact) {
-        return res.status(401).json({ success, contactErr: "This owner contact is already in use." });
+        return res.status(401).json({ success, contactErr: true });
       }
       
       const existing_email = await fboModel.findOne({ email });
       if (existing_email) {
-      return res.status(401).json({ success, emailErr: "This email is already in use." });
+      return res.status(401).json({ success, emailErr: true });
       }
 
-      const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler(product_name);
+      const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler();
 
       let serviceArr = [];
 
@@ -263,15 +273,15 @@ exports.fboRegister = async (req, res) => {
       createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
       });
 
-      if(fboEntry){
-        invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
-        success = true;
-      }else{
-        success = false; 
-        return res.status(401).json({success, message: "FBO entry not successful"});
+      if(!fboEntry){
+        success = false;
+        return res.status(401).json({ success, randomErr: true })
       }
 
-    return res.status(201).json({ success, message: "FBO Registration Successful" });
+      await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
+      success = true;
+      return res.status(200).json({ success })
+      
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });

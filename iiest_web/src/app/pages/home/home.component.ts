@@ -24,8 +24,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   fssaiData: any;
   dpiitData: any;
   userTotalSales: number;
+  overallSalesCount: number;
   userPendingSales: number;
   userApprovedSales: number;
+  pendingSalesCount: number;
+  approvedSalesCount: number;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
@@ -165,6 +168,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.userTotalSales = res.overAllSales;
         this.userPendingSales = res.pendingSales;
         this.userApprovedSales = res.approvedSales;
+        this.pendingSalesCount = res.pendingSalesCount;
+        this.approvedSalesCount = res.approvedSalesCount;
+        this.overallSalesCount = res.overallSalesCount;
       }
     })
   }

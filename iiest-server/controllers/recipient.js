@@ -78,7 +78,7 @@ exports.addShop = async(req, res)=>{
     billSaved = true;
 
     if(billSaved){
-        const addShop = await shopModel.create({fboObjId: req.params.id, operatorName, address, eBillName: eBillName});
+        const addShop = await shopModel.create({fboObjId: req.params.id, operatorName, address, eBillImage: billUploadStream.id});
         if(addShop){
         success = true
         return res.status(200).json({ success })

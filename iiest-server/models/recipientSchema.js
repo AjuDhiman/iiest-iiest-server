@@ -5,7 +5,8 @@ const recipientSchema = new Schema({
     fboObjId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
-        required: true
+        required: true,
+        unique: true
     },
     name: {
         type: String, 
@@ -25,9 +26,10 @@ const recipientSchema = new Schema({
 
 const shopSchema = new Schema({
     fboObjId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'fbo_registers',
-        required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'fbo_registers',
+    required: true,
+    unique: true
     },
     operatorName: {
         type: String, 
@@ -38,10 +40,10 @@ const shopSchema = new Schema({
         required: true,
         unique: true
     },
-    eBillName: {
-        type: String, 
-        required: true,
-        unique: true
+    eBillImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    unique: true
     }
 })
 
