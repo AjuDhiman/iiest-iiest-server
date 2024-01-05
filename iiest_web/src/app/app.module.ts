@@ -9,7 +9,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
-import { FboComponent } from './pages/fbo/fbo.component';
+import { FboComponent } from './pages/fboTest/fbo.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { SettingPanelComponent } from './shared/setting-panel/setting-panel.component';

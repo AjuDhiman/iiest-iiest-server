@@ -5,7 +5,8 @@ const fboSchema = new Schema({
     createrId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
-        required: true
+        required: true,
+        unique: true
     },
     id_num: {
         type: Number,
@@ -122,14 +123,6 @@ const fboSchema = new Schema({
         required: function(){
             return this.business_type.includes('b2b')
         }
-    },
-    recipientDetails: {
-        type: [Object],
-        default: []
-    },
-    shopDetails: {
-        type: [Object],
-        default: []
     }
 })
 

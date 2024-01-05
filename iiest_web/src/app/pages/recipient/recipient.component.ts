@@ -101,7 +101,7 @@ export class RecipientComponent implements OnInit {
       this._registerService.addFboRecipent(this.fboID, this.recipientform.value).subscribe({
         next: (res) => {
           if (res.success) {
-            this._toastrService.success('Record Added successfully', res.message);
+            this._toastrService.success('', 'Record Added Successfully.');
             this.closeModal();
           }
         },
@@ -110,7 +110,7 @@ export class RecipientComponent implements OnInit {
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
-            this._toastrService.error('Message Error!', 'This aadhar number already exists');
+            this._toastrService.error('', 'This Aadhar Number Already Exists');
           }
         }
       })
@@ -131,7 +131,7 @@ export class RecipientComponent implements OnInit {
       this._registerService.addFboShop(this.fboID, formData).subscribe({
         next: (res) => {
           if (res.success) {
-            this._toastrService.success('Record Added successfully', res.message);
+            this._toastrService.success('', 'Record Added Successfully.');
             this.closeModal();
           }
         },
@@ -140,7 +140,7 @@ export class RecipientComponent implements OnInit {
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', 'This address already exists');
+            this._toastrService.error('', 'This Address Already Exists.');
           }
         }
       })

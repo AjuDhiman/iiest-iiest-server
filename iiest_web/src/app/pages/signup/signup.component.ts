@@ -249,8 +249,8 @@ export class SignupComponent implements OnInit {
             this._toastrService.error('', 'Could Not Upload Image.');
           } else if (errorObj.signatureErr){
             this._toastrService.error('', 'Could Not Upload Signature.');
-          } else if(errorObj.filesErr){
-            this._toastrService.error('', 'Some Error Occured With Uploading Files.');
+          } else if(errorObj.randomErr){
+            this._toastrService.error('', 'Some Error Occured. Please Try Again.');
           }
         }
       });
