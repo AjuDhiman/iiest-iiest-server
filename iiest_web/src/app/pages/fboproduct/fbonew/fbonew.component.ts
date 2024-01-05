@@ -50,7 +50,9 @@ export class FbonewComponent implements OnInit {
   foscos_processAmnt: number = 0;
   maxSelectedItems: number = 2;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
-
+  isExisting: boolean;
+  existingUserForm : FormGroup;
+  
   fostac_training: FormGroup = new FormGroup({
     fostac_processing_amount: new FormControl(''),
     fostac_service_name: new FormControl(''),
@@ -87,12 +89,15 @@ export class FbonewComponent implements OnInit {
     createdBy: new FormControl(''),
     grand_total: new FormControl('')
   })
+  
+
 
   constructor(
     private formBuilder: FormBuilder,
     private _getFboGeneralData: GetdataService,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService
+    private _toastrService: ToastrService,
+    private existingFrom :FormBuilder
   ) {
     this.getFboGeneralData();
   }
@@ -119,6 +124,10 @@ export class FbonewComponent implements OnInit {
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required]
     });
+    this.existingUserForm = this.existingFrom.group({
+      existingUser:[''],
+      searchUser: ['', Validators.required]
+    })
 
     this.fboForm = this.formBuilder.group(
       {
@@ -156,6 +165,11 @@ export class FbonewComponent implements OnInit {
 
   setRequired() {
     return [Validators.required];
+  }
+
+  existingUser($event:any){
+    this.isExisting = $event.target.checked
+    
   }
   //Form Submit Method
   onSubmit() {
