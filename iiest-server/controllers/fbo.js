@@ -5,9 +5,10 @@ const axios = require('axios');
 const sha256 = require('sha256');
 const uniqid = require('uniqid');
 const fboPaymentSchema = require('../models/fboPaymentSchema');
-const mongoose = require('mongoose');
 const fboModel = require('../models/fboSchema');
+const salesModel = require('../models/employeeSalesSchema');
 const employeeSchema = require('../models/employeeSchema');
+const { ObjectId } = require('mongodb');
 
 const registrationHandler = async()=>{
     let isUnique = false;
@@ -24,9 +25,7 @@ const registrationHandler = async()=>{
     const generatedCustomerId = generateCustomerId(idNumber);
     let date = new Date();
 
-    let selectedModel = fboModel
-
-    return { idNumber, generatedCustomerId, date, selectedModel }
+    return { idNumber, generatedCustomerId, date}
 }
 
 const invoiceHandler = async(idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
@@ -135,7 +134,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile } = fetchedFormData;  
         
-        const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler();
+        const { idNumber, generatedCustomerId, date } = await registrationHandler();
 
         let serviceArr = [];
 
@@ -163,28 +162,29 @@ exports.fboPayReturn = async(req, res)=>{
           }
         }
 
-        const fboEntry = await selectedModel.create({
-        createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
+        const fboEntry = await fboModel.create({
+        employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, createdAt: date, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
         });
 
-        const buyerId = new mongoose.Types.ObjectId(fboEntry.id);
-
-        let buyerData;
-
-        if(fboEntry){
-          buyerData = await fboPaymentSchema.create({
-            buyerId, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: grand_total
-          });
-        }else{
+        if(!fboEntry){
           return res.status(401).json({success, message: "FBO entry not successful"})
         }
 
-        if(buyerData){
-           await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
-        }else{
+        const buyerData = await fboPaymentSchema.create({
+        buyerId: fboEntry._id, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: grand_total});
+      
+        if(!buyerData){
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
 
+        const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total});
+
+        if(!selectedProductInfo){
+          return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
+        }
+
+        await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, new ObjectId(signatureFile));
+        
         res.redirect('http://localhost:4200/fbo');
 
         // let saltKey = '875126e4-5a13-4dae-ad60-5b8c8b629035';
@@ -241,7 +241,7 @@ exports.fboRegister = async (req, res) => {
       return res.status(401).json({ success, emailErr: true });
       }
 
-      const { idNumber, generatedCustomerId, date, selectedModel } = await registrationHandler();
+      const { idNumber, generatedCustomerId, date } = await registrationHandler();
 
       let serviceArr = [];
 
@@ -269,11 +269,18 @@ exports.fboRegister = async (req, res) => {
         }
       }
 
-      const fboEntry = await selectedModel.create({
-      createrId: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId,   createdAt: date, payment_mode, createdBy, village, tehsil, pincode, grand_total, business_type, foscosInfo: foscos_training, fostacInfo: fostac_training, gst_number
+      const fboEntry = await fboModel.create({
+      employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, createdAt: date, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
       });
 
       if(!fboEntry){
+        success = false;
+        return res.status(401).json({ success, randomErr: true })
+      }
+
+      const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total});
+
+      if(!selectedProductInfo){
         success = false;
         return res.status(401).json({ success, randomErr: true })
       }
@@ -346,8 +353,8 @@ exports.editFbo = async(req, res)=>{
 //Controller to get all FBO Data
 exports.allFBOData  = async(req, res)=>{
     try {
-        const fboData = await fboModel.find({createdBy: `${req.user.employee_name}(${req.user.employee_id})`});
-        return res.status(200).json({fboData});
+        const salesInfo =  await salesModel.find({employeeInfo: req.user.id}).populate('fboInfo').select('-employeeInfo');
+        return res.status(200).json({salesInfo});
     } catch (error) {
         console.error(error);
         return res.status(500).json({message: "Internal Server Error"});

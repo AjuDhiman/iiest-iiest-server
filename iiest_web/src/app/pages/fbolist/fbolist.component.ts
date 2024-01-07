@@ -29,7 +29,7 @@ export class FbolistComponent implements OnInit {
   faXmark = faXmark;
   faFileCsv = faFileCsv;
   faFilePdf = faFilePdf;
-  faIndianRupeeSign =faIndianRupeeSign;
+  faIndianRupeeSign = faIndianRupeeSign;
   faMagnifyingGlass = faMagnifyingGlass;
   pageNumber: number = 1;
  
@@ -47,7 +47,7 @@ export class FbolistComponent implements OnInit {
   fetchAllFboData(): void {
     this.getDataService.getAllFboData().subscribe({
       next: (res)=> {
-      this.allFBOEntries = res.fboData.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+      this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.fboInfo.createdAt).getTime() - new Date(a.fboInfo.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
       //console.log('data',this.allFBOEntries);
       this.filter();
     },
@@ -63,15 +63,16 @@ export class FbolistComponent implements OnInit {
     //console.log(this.filteredData)
     if (!this.searchQuery) {
       this.filteredData = this.allFBOEntries;
+      console.log(this.searchQuery)
     } else {
       if (this.selectedFilter === 'byOwner') {
-        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      } else if (this.selectedFilter === 'byEmail') {
-        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.email.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      } else if (this.selectedFilter === 'byName') {
-        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
       } else if (this.selectedFilter === 'byDistrict') {
-        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      } else if (this.selectedFilter === 'byName') {
+        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      } else if (this.selectedFilter === 'byCustomerID') {
+        this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery));
       }
     }
   }

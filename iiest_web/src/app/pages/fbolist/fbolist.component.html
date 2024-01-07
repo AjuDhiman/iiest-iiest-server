@@ -17,10 +17,10 @@
         </div>
         <div class="col-auto">
           <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
-            <option value="byOwner">Search by owner</option>
-            <option value="byName">Search by name</option>
-            <option value="byContact">Search by contact</option>
-            <option value="byDistrict">Search by district</option>
+            <option value="byOwner">Search by Owner</option>
+            <option value="byName">Search by Name</option>
+            <option value="byCustomerID">Search by Customer ID</option>
+            <option value="byDistrict">Search by District</option>
 
           </select>
         </div>
@@ -67,16 +67,16 @@
             <tbody *ngIf="filteredData?.length>0">
               <tr *ngFor="let fbo of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }">
                 <td class="cell"><span class="truncate">{{fbo.serialNumber}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.fbo_name}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.owner_name}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.customer_id}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.owner_contact}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.district}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.fbo_name}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_name}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_contact}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.product_name}}</span></td>
                 <td class="cell text-center"><span class="truncate selector" (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')">{{!fbo.fostacInfo ? '-' : fbo.fostacInfo.recipient_no}}</span></td>
                 <td class="cell text-center"><span class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')">{{!fbo.foscosInfo ? '-' : fbo.foscosInfo.shops_no}}</span></td>
                 <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
-                <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.createdAt | date: 'shortDate'}}</span></td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;" 
                   (click)="viewFboDetails(fbo)" [icon]="faEye"></fa-icon>

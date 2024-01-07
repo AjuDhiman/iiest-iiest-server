@@ -2,11 +2,23 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const recipientSchema = new Schema({
-    fboObjId: {
+    fboInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
         required: true,
         unique: true
+    },
+    productInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'employee_sales',
+        required: true, 
+        unique: true
+    },
+    employeeInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
+        unique: true, 
+        required: true
     },
     name: {
         type: String, 
@@ -25,11 +37,23 @@ const recipientSchema = new Schema({
 })
 
 const shopSchema = new Schema({
-    fboObjId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'fbo_registers',
-    required: true,
-    unique: true
+    fboInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'fbo_registers',
+        required: true,
+        unique: true
+    },
+    productInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'product_info',
+        required: true, 
+        unique: true
+    },
+    employeeInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
+        unique: true, 
+        required: true
     },
     operatorName: {
         type: String, 
