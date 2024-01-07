@@ -1,5 +1,5 @@
 const express = require('express');
-const { fboRegister, allFBOData, deleteFbo, editFbo, fboPayment, fboPayReturn } = require('../controllers/fbo');
+const { fboRegister, employeeSalesData, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList } = require('../controllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalData');
 const { addRecipient, addShop } = require('../controllers/recipient');
 const authMiddleware = require('../middleware/auth');
@@ -10,7 +10,8 @@ const eBillUpload = multer({storage: eBillStorage});
 
 const router = express.Router();
 
-router.get('/allfbodata', authMiddleware, allFBOData); // Router for registered FBO Data
+router.get('/employeesaleslist', authMiddleware, employeeSalesData); // Router for employee sales list
+router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
 router.post('/fbo-pay-return', fboPayReturn); //To check payment status
 router.post('/fbopayment/:id', authMiddleware, fboPayment); //Router for FBO registration (pay page)

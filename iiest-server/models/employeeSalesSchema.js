@@ -5,14 +5,12 @@ const salesSchema = new Schema({
     employeeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
-        required: true,
-        unique: true
+        required: true
     },
     fboInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
-        required: true,
-        unique: true
+        required: true
     },
     product_name: {
         type: [String],

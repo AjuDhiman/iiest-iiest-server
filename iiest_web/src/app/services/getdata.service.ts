@@ -28,8 +28,8 @@ export class GetdataService {
   return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
- public getAllFboData():Observable<any>{
-  const url = `${this.url}/allfbodata`;
+ public getSalesList():Observable<any>{
+  const url = `${this.url}/employeesaleslist`;
   return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
@@ -42,6 +42,11 @@ export class GetdataService {
  public getPostData():Observable<any>{
   const url = `${this.url}/getpostdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
+ public getFbolist():Observable<any>{
+  const url = `${this.url}/allfbolist`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
  public getUserRecord():Observable<any>{

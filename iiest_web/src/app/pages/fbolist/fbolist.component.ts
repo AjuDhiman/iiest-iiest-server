@@ -45,7 +45,7 @@ export class FbolistComponent implements OnInit {
   }
 
   fetchAllFboData(): void {
-    this.getDataService.getAllFboData().subscribe({
+    this.getDataService.getSalesList().subscribe({
       next: (res)=> {
       this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.fboInfo.createdAt).getTime() - new Date(a.fboInfo.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
       //console.log('data',this.allFBOEntries);

@@ -5,19 +5,16 @@ const recipientSchema = new Schema({
     fboInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
-        required: true,
-        unique: true
+        required: true
     },
     productInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'employee_sales',
-        required: true, 
-        unique: true
+        required: true
     },
     employeeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
-        unique: true, 
         required: true
     },
     name: {
@@ -40,19 +37,16 @@ const shopSchema = new Schema({
     fboInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
-        required: true,
-        unique: true
+        required: true
     },
     productInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'product_info',
-        required: true, 
-        unique: true
+        required: true
     },
     employeeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
-        unique: true, 
         required: true
     },
     operatorName: {

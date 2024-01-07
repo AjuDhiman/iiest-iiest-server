@@ -350,8 +350,8 @@ exports.editFbo = async(req, res)=>{
     }
 }
 
-//Controller to get all FBO Data
-exports.allFBOData  = async(req, res)=>{
+//Controller to get employee sales
+exports.employeeSalesData = async(req, res)=>{
     try {
         const salesInfo =  await salesModel.find({employeeInfo: req.user.id}).populate('fboInfo').select('-employeeInfo');
         return res.status(200).json({salesInfo});
@@ -359,5 +359,16 @@ exports.allFBOData  = async(req, res)=>{
         console.error(error);
         return res.status(500).json({message: "Internal Server Error"});
     }
+}
+
+//Controller to get all FBO List
+exports.registerdFBOList = async(req, res)=>{
+  try {
+    const fboList = await fboModel.find();
+    return res.status(200).json({fboList});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({message: "Internal Server Error"});
+  }
 }
 
