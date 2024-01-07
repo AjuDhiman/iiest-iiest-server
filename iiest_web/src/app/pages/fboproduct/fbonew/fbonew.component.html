@@ -1,8 +1,16 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xxl">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
-            <div class="col-auto">
+            <div class="col-md-6">
                 <h1 class="app-page-title mb-2">FBO {{formType}} Form</h1>
+               
+            </div>
+            <div class="col-md-6 text-end">
+                <form [formGroup]="existingUserForm">
+                    <label for="fbo_name" class="form-label p-1"> Existing User:</label><input type="checkbox" formControlName="existingUser" id="existing" class="align-middle" 
+                    (change)="existingUser($event)"> &nbsp;
+                    <input *ngIf="isExisting" type="search" name="search" formControlName="searchUser" placeholder="Search"> 
+                </form>
             </div>
             <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
                 <button type="submit" class="btn btn-sm btn-primary" (click)="backToRegister()">Register Form</button>
@@ -11,6 +19,7 @@
         <ng-container>
             <form [formGroup]="fboForm" class="row g-3 border border-1 rounded-3 pb-3" autocomplete="off"
                 (ngSubmit)="onSubmit()">
+
                 <div class="row">
                     <div class="col-md-3">
                         <label for="fbo_name" class="form-label">FBO Name<sup>*</sup></label>
