@@ -46,13 +46,13 @@ const fboSchema = new Schema({
         required: true
     },
     business_type:{
-        type: [String],
-        validate: {
-            validator: function(arr){
-                return arr.length > 0;
-            },
-            message: 'Business type cannot be empty'
-        },
+        type: String,
+        // validate: {
+        //     validator: function(arr){
+        //         return arr.length > 0;
+        //     },
+        //     message: 'Business type cannot be empty'
+        // },
         required: true
     },
     customer_id: {

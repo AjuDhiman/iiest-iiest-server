@@ -53,11 +53,11 @@ export class FbonewComponent implements OnInit {
   isExisting: boolean;
   existingUserForm : FormGroup;
   //New Variables by vansh on 5-01-23 for exsisting 
-  searchSuggestions: Array<{ fbo_name: string; customer_id: string }>;
-  isSearchFocused=true;
-  @ViewChild('myInput') searchElem: any;
+  searchSuggestions: any;
+  isSearchEmpty=true;
+  @ViewChild('searchElem') searchElem: any;
 
-  existingFbos: Array<{ fbo_name: string; customer_id: string }> = [
+  existingFbos: Object[]= [
     {
       fbo_name: "Vansh",
       customer_id: "IIEST/90876",
@@ -258,20 +258,47 @@ export class FbonewComponent implements OnInit {
 
   existingUser($event:any){
     this.isExisting = $event.target.checked
-    
+    console.log(this.isExisting);
   }
 
   filterSearch(event:any){
-    console.log(event.target.value);
-    let regex = new RegExp(event.target.value, "i") // i means case insesitive
+    let value = event.target.value
+    console.log(value);
+    if(value !== ''){
+      this.isSearchEmpty = false;
+    }
+    else{
+      this.isSearchEmpty = true;
+      return
+    }
+    let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
     this.searchSuggestions = this.existingFbos.filter((obj:any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
-    this.searchSuggestions = this.searchSuggestions.slice(0,5);
     console.log(this.searchSuggestions);
   }
 
-  showExistingUser(){
-    console.log(11);
+  fetchExistingUser(fboObj:any){
+    this.searchElem.nativeElement.value = ''
+    this.isSearchEmpty = true;
+    let value = this.searchElem.nativeElement.value;
+    this.fbo['fbo_name'];
+    console.log(fboObj);
+    this.fbo['fbo_name'].setValue(fboObj.fbo_name);
+    this.fbo['owner_name'].setValue(fboObj.owner_name);
+    this.fbo['owner_contact'].setValue(fboObj.owner_contact);
+    this.fbo['email'].setValue(fboObj.email);
+    this.fbo['address'].setValue(fboObj.address);
+    this.fbo['village'].setValue(fboObj.village);
+    this.fbo['tehsil'].setValue(fboObj.tehsil);
+    this.fbo['district'].setValue(fboObj.district);
+    this.fbo['state'].setValue(fboObj.state);
+    this.fbo['pincode'].setValue(fboObj.pincode);
+    this.fbo['business_type'].setValue(fboObj.business_type);
+    console.log(this.fbo);
+    if(fboObj.business_type === 'b2b'){
+      this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
+      this.need_gst_number = true;
+    }
   }
   //Form Submit Method
   onSubmit() {
@@ -363,6 +390,15 @@ export class FbonewComponent implements OnInit {
         if (errorObj.userError) {
           this._registerService.signout();
         }
+      }
+    })
+    // for getting fbo lists
+    this._getFboGeneralData.getFbolist().subscribe({
+      next: (res) => {
+        console.log(res);
+        this.existingFbos = res.fboList;
+      },
+      error: (err) => {  
       }
     })
   }

@@ -2,9 +2,12 @@
     position: absolute;
     top: 25px;
     left: 0; 
-    width:190px; 
+    width:189px; 
     background-color: white;
     border: 0.5px solid grey;
     border-radius: 5px;
     z-index: 100;
+    font-size: 14px;
+    max-height: 150px;
+    overflow-y: scroll;
 }

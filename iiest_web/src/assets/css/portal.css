@@ -12202,6 +12202,10 @@
    padding-top: 56px;
    overflow-x: hidden;
  }
+ .app-footer{
+  transition: all 0.4s ease-in-out;
+   margin-left: 0;
+ }
  .app-footer .copyright {
    font-size: 0.8125rem;
  }
@@ -12813,4 +12817,10 @@
   .sidepanel-inner.sidepanel-inner-hidden {
    width: 60px;
  }
+ }
+
+ @media (min-width: 1200px){
+  .app-footer{
+    margin-left: 60px;
+  }
  }
