@@ -4,7 +4,9 @@ const { Schema } = mongoose;
 const fboPaymentModel = new Schema({
     buyerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'fbo_registers'
+        ref: 'fbo_registers',
+        unique: true,
+        required: true
     },
     merchantId: {
         type: String, 

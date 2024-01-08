@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const fboSchema = new Schema({
-    createrId: {
+    employeeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
         required: true,
@@ -45,16 +45,6 @@ const fboSchema = new Schema({
         type: String,
         required: true
     },
-    product_name: {
-        type: [String], 
-        validate: {
-            validator: function(arr){
-                return arr.length > 0;
-            },
-            message: 'Product name cannot be empty'
-        },
-        required: true
-    },
     business_type:{
         type: [String],
         validate: {
@@ -74,10 +64,6 @@ const fboSchema = new Schema({
         type: Date,
         required: true
     },
-    payment_mode: {
-        type: String, 
-        required: true
-    },
     createdBy: {
         type: String, 
         required: true
@@ -87,11 +73,6 @@ const fboSchema = new Schema({
         required: true,
         default: 'Not edited yet'
     },
-    checkStatus: {
-        type: String, 
-        required: true,
-        default: 'Pending'
-    },
     village: {
         type: String
     },
@@ -100,22 +81,6 @@ const fboSchema = new Schema({
     },
     pincode: {
         type: Number,
-        required: true
-    },
-    fostacInfo: {
-        type: Object,
-        required: function(){
-            return this.product_name.includes('Fostac Training')
-        }
-    },
-    foscosInfo: {
-        type: Object,
-        required: function(){
-            return this.product_name.includes('Foscos Training')
-        }
-    },
-    grand_total: {
-        type: Number, 
         required: true
     },
     gst_number: {
