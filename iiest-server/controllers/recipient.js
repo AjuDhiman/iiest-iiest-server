@@ -22,14 +22,14 @@ try {
         return res.status(401).json({success, aadharErr: true})
     }
 
-    const addRecipient = await recipientModel.create({ fboObjId: req.params.id, name, phoneNo, aadharNo });
+    const addRecipient = await recipientModel.create({ salesInfo: req.params.id, name, phoneNo, aadharNo });
 
     if(addRecipient){
         success = true;
         return res.status(200).json({ success })
     }
 
-    return res.status(404).json({success, randomErr: 'Some error Occured. Please Try Again.'});
+    return res.status(404).json({success, randomErr: true});
 
 } catch (error) {
     console.log(error);
@@ -78,7 +78,7 @@ exports.addShop = async(req, res)=>{
     billSaved = true;
 
     if(billSaved){
-        const addShop = await shopModel.create({fboObjId: req.params.id, operatorName, address, eBillImage: billUploadStream.id});
+        const addShop = await shopModel.create({salesInfo: req.params.id, operatorName, address, eBillImage: billUploadStream.id});
         if(addShop){
         success = true
         return res.status(200).json({ success })
@@ -86,7 +86,7 @@ exports.addShop = async(req, res)=>{
     }  
 
     success = false;
-    res.status(404).json({success, randomErr: 'Some error occured. Please try again'});
+    res.status(404).json({success, randomErr: true});
 
     } catch (error) {
     console.log(error);
@@ -94,4 +94,24 @@ exports.addShop = async(req, res)=>{
     }
     
 };
+
+exports.recipientsList = async(req, res)=>{
+    try {
+    const recipientsList = await recipientModel.find({salesInfo: req.params.id});
+    return res.status(200).json({recipientsList});
+    } catch (error) {
+    console.error(error);
+    return res.status(500).json({message: "Internal Server Error"});
+    }
+}
+
+exports.shopsList = async(req, res)=>{
+    try {
+    const shopsList = await shopModel.find({salesInfo: req.params.id});
+    return res.status(200).json({shopsList});
+    } catch (error) {
+    console.error(error);
+    return res.status(500).json({message: "Internal Server Error"});
+    }
+}
 
