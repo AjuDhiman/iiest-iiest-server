@@ -3,13 +3,24 @@
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-md-6">
                 <h1 class="app-page-title mb-2">FBO {{formType}} Form</h1>
-               
+
             </div>
             <div class="col-md-6 text-end">
                 <form [formGroup]="existingUserForm">
-                    <label for="fbo_name" class="form-label p-1"> Existing User:</label><input type="checkbox" formControlName="existingUser" id="existing" class="align-middle" 
-                    (change)="existingUser($event)"> &nbsp;
-                    <input *ngIf="isExisting" type="search" name="search" formControlName="searchUser" placeholder="Search"> 
+                    <label for="fbo_name" class="form-label p-1"> Existing User:</label><input type="checkbox"
+                        formControlName="existingUser" id="existing" class="align-middle"
+                        (change)="existingUser($event)"> &nbsp;
+                    <div class="d-inline m-0 p-0" style="position: relative;">
+                        <input #searchElem *ngIf="isExisting" type="search" (input)="filterSearch($event)" name="search"
+                            formControlName="searchUser" placeholder="Search" (keyup.enter)="showExistingUser()"
+                            (blur)="isSearchFocused = false" (focus)="isSearchFocused = true"
+                            class="search-input" autocomplete="off" />
+                        <ul *ngIf="isExisting && isSearchFocused" class="search-suggestions">
+                            <li style="text-decoration: none;" class="d-flex justify-content-center gap-4" *ngFor="let searchSuggestion of searchSuggestions">
+                               {{searchSuggestion.fbo_name}}({{searchSuggestion.customer_id}})
+                            </li>
+                        </ul>
+                    </div>
                 </form>
             </div>
             <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
@@ -146,14 +157,14 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!--Fostac Component -->
-                <app-fostac *ngIf="isFostac" formGroupName="fostac_training" [submitted] = "submitted"
-                (fostacTotal)="fostacTotalAmount($event)"></app-fostac>
+                <app-fostac *ngIf="isFostac" formGroupName="fostac_training" [submitted]="submitted"
+                    (fostacTotal)="fostacTotalAmount($event)"></app-fostac>
 
                 <!--Foscos Component -->
-                <app-foscos *ngIf="isFoscos" formGroupName="foscos_training" [submitted] = "submitted" 
-                (foscosTotal)="foscosTotalAmount($event)"></app-foscos>
+                <app-foscos *ngIf="isFoscos" formGroupName="foscos_training" [submitted]="submitted"
+                    (foscosTotal)="foscosTotalAmount($event)"></app-foscos>
 
                 <div class="row mt-3" *ngIf="isFoscos || isFostac">
                     <div class="col-md-3">
@@ -190,9 +201,9 @@
                             <button type="submit" class="btn btn-sm btn-primary">Pay Now</button>
                         </ng-template>
                     </div>
-                    <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                    <!-- <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="button" (click)="onReset()" class="btn btn-sm btn-warning">Reset</button>
-                    </div>
+                    </div> -->
                 </div>
             </form>
 

@@ -52,6 +52,95 @@ export class FbonewComponent implements OnInit {
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
   existingUserForm : FormGroup;
+  //New Variables by vansh on 5-01-23 for exsisting 
+  searchSuggestions: Array<{ fbo_name: string; customer_id: string }>;
+  isSearchFocused=true;
+  @ViewChild('myInput') searchElem: any;
+
+  existingFbos: Array<{ fbo_name: string; customer_id: string }> = [
+    {
+      fbo_name: "Vansh",
+      customer_id: "IIEST/90876",
+    },
+    {
+      fbo_name: "Aarav",
+      customer_id: "IIEST/90877",
+    },
+    {
+      fbo_name: "Ishaan",
+      customer_id: "IIEST/90878",
+    },
+    {
+      fbo_name: "Riya",
+      customer_id: "IIEST/90879",
+    },
+    {
+      fbo_name: "Anaya",
+      customer_id: "IIEST/90880",
+    },
+    {
+      fbo_name: "Arjun",
+      customer_id: "IIEST/90881",
+    },
+    {
+      fbo_name: "Aanya",
+      customer_id: "IIEST/90882",
+    },
+    {
+      fbo_name: "Vihaan",
+      customer_id: "IIEST/90883",
+    },
+    {
+      fbo_name: "Advait",
+      customer_id: "IIEST/90884",
+    },
+    {
+      fbo_name: "Avni",
+      customer_id: "IIEST/90885",
+    },
+    {
+      fbo_name: "Aarush",
+      customer_id: "IIEST/90886",
+    },
+    {
+      fbo_name: "Anika",
+      customer_id: "IIEST/90887",
+    },
+    {
+      fbo_name: "Kabir",
+      customer_id: "IIEST/90888",
+    },
+    {
+      fbo_name: "Siya",
+      customer_id: "IIEST/90889",
+    },
+    {
+      fbo_name: "Aryan",
+      customer_id: "IIEST/90890",
+    },
+    {
+      fbo_name: "Sara",
+      customer_id: "IIEST/90891",
+    },
+    {
+      fbo_name: "Aadhya",
+      customer_id: "IIEST/90892",
+    },
+    {
+      fbo_name: "Rehan",
+      customer_id: "IIEST/90893",
+    },
+    {
+      fbo_name: "Anaya",
+      customer_id: "IIEST/90894",
+    },
+    {
+      fbo_name: "Ishanvi",
+      customer_id: "IIEST/90895",
+    },
+    // Add more objects as needed
+  ];
+  
   
   fostac_training: FormGroup = new FormGroup({
     fostac_processing_amount: new FormControl(''),
@@ -170,6 +259,19 @@ export class FbonewComponent implements OnInit {
   existingUser($event:any){
     this.isExisting = $event.target.checked
     
+  }
+
+  filterSearch(event:any){
+    console.log(event.target.value);
+    let regex = new RegExp(event.target.value, "i") // i means case insesitive
+    //using regex for comparing fbo names and customer ids
+    this.searchSuggestions = this.existingFbos.filter((obj:any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
+    this.searchSuggestions = this.searchSuggestions.slice(0,5);
+    console.log(this.searchSuggestions);
+  }
+
+  showExistingUser(){
+    console.log(11);
   }
   //Form Submit Method
   onSubmit() {
