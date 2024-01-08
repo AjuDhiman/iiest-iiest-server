@@ -10,6 +10,7 @@ const eBillUpload = multer({storage: eBillStorage});
 
 const router = express.Router();
 
+
 router.get('/employeesaleslist', authMiddleware, employeeSalesData); // Router for employee sales list
 router.get('/salerecipients/:id', authMiddleware, recipientsList); //Router for recipients list for sale
 router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list for sale
