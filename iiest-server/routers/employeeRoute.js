@@ -1,6 +1,6 @@
 const express = require('express');
 const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee } = require('../controllers/employee');
-const { employeeFormData, getPostData } = require('../controllers/generalData');
+const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalData');
 const { employeeRecord } = require('../controllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer')
@@ -17,6 +17,7 @@ router.get('/empgeneraldata', authMiddleware, employeeFormData);
 router.get('/allemployees', authMiddleware, allEmployeesData);
 router.get('/getpostdata', authMiddleware, getPostData); 
 router.get('/employeeRecord', authMiddleware, employeeRecord);
+router.get('/getPincodesData/:stateName',authMiddleware, getPincodesData); // for geeting data related to pincodes, and their districs and states
 
 
 

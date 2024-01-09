@@ -12749,9 +12749,8 @@
  }
  .selector:hover{
   cursor: pointer;
-  color: blue;
-  text-decoration: underline;
-  font-weight: bold;
+  color: #087990;
+  transition: all 0.4s ease;
  }
  sup{
   color:rgb(237, 28, 13);

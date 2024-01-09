@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
     this.isToken = this._registerService.isLoggedIn();
     if(!this.isToken){
     sessionStorage.setItem('issLoggedIn','false');
-    sessionStorage
   
     sessionStorage.setItem('token','')
     }

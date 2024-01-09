@@ -40,6 +40,8 @@ export class SignupComponent implements OnInit {
   post_types:string[] = [];
   departments:string[] = [];
   designations: string[] = [];
+  //New Variables for pincode data
+  pincodesData: Array<Object>;
   form: FormGroup = new FormGroup({
     employee_name: new FormControl(''),
     gender: new FormControl(''),
@@ -85,6 +87,7 @@ export class SignupComponent implements OnInit {
     private store: Store) {
     this.empGeneralData();
     this.getPostsData();
+    // this.getPincodesData();
   }
 
   ngOnInit(): void {
@@ -349,6 +352,27 @@ export class SignupComponent implements OnInit {
     }
     )
   }
+
+  // getPincodesData() {  // this function retrives post data and save into variable by the help of getdataservice
+  //   this._getdataService.getPincodesData().subscribe({
+  //     next: (res) => {
+  //       console.log(res);
+  //       this.pincodesData = res;
+  //       // this.postsData.forEach((post: any) => {
+  //       //   if (post.departments) {
+  //       //     this.post_types.push(post.name);
+  //       //   }
+  //       // });
+  //     },
+  //     error: (err) => {
+  //       let errorObj = err.error
+  //       if (errorObj.userError) {
+  //         this._registerService.signout();
+  //       }
+  //     }
+  //   }
+  //   )
+  // }
 
   fetchSelectedPostData(type:string){
     this.f['post_type'].patchValue(type);

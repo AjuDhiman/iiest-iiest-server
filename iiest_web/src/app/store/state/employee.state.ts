@@ -71,6 +71,19 @@ export class EmployeeState {
               //console.info('complete')
             } 
         }) */
+        // this._getDataService.getPincodesData().subscribe( {
+        //     next: (res) => { 
+        //       console.log(res)
+        //     },
+        //     error: (err) => {
+        //       let errorObj = err.error
+        //     //   this.error = true;
+        //     //   this.errorMgs = errorObj.message
+        //     },
+        //     complete: () =>{ 
+        //       //console.info('complete')
+        //     } 
+        // }) 
     }
     @Action(UpdateEmployee)
     updateEmployee({getState, setState}:StateContext<EmployeeStateModel>, {objId, payload}: UpdateEmployee){

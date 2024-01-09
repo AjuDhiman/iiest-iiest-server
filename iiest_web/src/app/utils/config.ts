@@ -22,6 +22,45 @@ export let serviceNames = {
    "foscos": ["Registration", "State"]
 }
 
+export let stateName = [
+   "West Bengal",
+   "Uttarakhand",
+   "Uttar Pradesh",
+   "Tripura",
+   "Telangana",
+   "Tamil Nadu",
+   "Sikkim",
+   "Rajasthan",
+   "Punjab",
+   "Pondicherry",
+   "Odisha",
+   "Nagaland",
+   "Mizoram",
+   "Megalaya",
+   "Manipur",
+   "Maharashtra",
+   "Madhya Pradesh",
+   "Lakshadweep",
+   "Kerala",
+   "Karnataka",
+   "Jharkhand",
+   "Jammu and Kashmir",
+   "Himachal Pradesh",
+   "Haryana",
+   "Gujarat",
+   "Goa",
+   "Delhi",
+   "Daman and Diu",
+   "Dadra and Nagar Hav.",
+   "Chattisgarh",
+   "Chandigarh",
+   "Bihar",
+   "Assam",
+   "Arunachal Pradesh",
+   "Andhra Pradesh",
+   "Andaman and Nico.In."
+ ]
+
 
 
 

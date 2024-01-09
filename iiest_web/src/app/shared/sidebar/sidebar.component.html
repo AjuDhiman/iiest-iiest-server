@@ -50,9 +50,9 @@
                     <div id="submenu-1" [ngClass]="toggelShow === true && isSidebarVisible? 'show' : '' "
                         class="collapse submenu submenu-1" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
-                            <li class="submenu-item"><a class="submenu-link" [routerLink]="['/empregister']">Employee
+                            <li *ngIf="userData.department==='HR Department'" class="submenu-item"><a class="submenu-link" [routerLink]="['/empregister']">Employee
                                     Register</a></li>
-                            <li class="submenu-item"><a class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
+                            <li *ngIf="userData.department==='Sales Department'" class="submenu-item"><a class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
                             </li>
                         </ul>
                     </div>
@@ -68,6 +68,7 @@
 [ngClass]="toggelShow === true && !isSidebarVisible && largeDisplay? 'show' : '' " 
 [ngStyle]="toggelShow?toggelStyle: {}"
 aria-labelledby="user-dropdown-toggle">
-    <li><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/empregister']">Employee Register</a></li>
-    <li><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/fbo']">Fbo Register</a></li>
+    <li *ngIf="userData.department==='HR Department'" ><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/empregister']">Employee Register</a></li>
+    <li *ngIf="userData.department==='Sales Department'"><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/fbo']">Fbo Register</a></li>
+    <li *ngIf="userData.department==='HR Department'" ><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/allocatearea']">Allocate Area</a></li>
 </ul>

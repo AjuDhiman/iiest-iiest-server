@@ -1,4 +1,5 @@
 const generalDataSchema = require('../models/generalDataSchema');
+const pincodesDataSchema = require('../models/pincodesDataSchema');
 
 exports.employeeFormData = async(req, res)=>{
     try {
@@ -37,3 +38,13 @@ exports.getPostData = async(req, res)=>{
     }
 }
 
+exports.getPincodesData = async(req, res)=>{ //for getting pincodes and their sates and districts
+    try {
+        const jsonData = require('../assets/pincodes.json')
+        const filteredData=jsonData.filter((item) => item.StateName===req.params.stateName)
+        res.setHeader('Content-Type','application/json');
+        return res.status(200).json(filteredData);
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}

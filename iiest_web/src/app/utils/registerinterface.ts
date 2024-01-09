@@ -75,3 +75,10 @@ export interface fboShop {
   address : string;
   eBill: File;
 }
+
+export interface pincodeData {
+  pincode:number,
+  tehsil:string,
+  state:string,
+  district:string
+}

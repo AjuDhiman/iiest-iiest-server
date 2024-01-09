@@ -1,4 +1,4 @@
-import { Employee } from "src/app/utils/registerinterface";
+import { Employee, pincodeData } from "src/app/utils/registerinterface";
 
 export class AddEmployee {
     static readonly type = '[Employee] Add';
@@ -22,3 +22,7 @@ export class GetEmployee {
 export class GeneralData {
     static readonly type = '[Employee] General Data';
 }
+
+// export class PincodesData {
+//     static readonly type = '[pincodes] General Data';
+// }

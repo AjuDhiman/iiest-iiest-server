@@ -79,7 +79,7 @@
                 <td class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
-                <td class="cell"><span class="truncate">{{employee.username}}</span></td>
+                <td class="cell"><span class="truncate selector" (click)="allocate(employee, 'manager')">{{employee.username}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.company_name}}</span></td>
                 <td class="cell"><span class="truncate">
@@ -93,6 +93,7 @@
                 </td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l" style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
+                  <fa-icon class="fa-l" (click)="allocate(employee, 'area')" style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
                   <fa-icon class="fa-l" (click)="editRecord(employee)" style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
                   <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)"style="color: #c64115; cursor: pointer;" [icon]="faTrash" ></fa-icon>
                 </td>

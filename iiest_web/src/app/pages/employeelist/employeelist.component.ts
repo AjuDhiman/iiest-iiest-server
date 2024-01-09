@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { faEye, faPencil, faTrash, faEnvelope, faXmark, faCheck, faFileCsv, faFilePdf, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPencil, faTrash, faEnvelope, faXmark, faCheck, faFileCsv, faFilePdf, faMagnifyingGlass, faLocationPin } from '@fortawesome/free-solid-svg-icons';
 import { UtilitiesService } from 'src/app/services/utilities.service'
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Select, Store } from '@ngxs/store';
@@ -10,6 +10,8 @@ import { RegisterService } from 'src/app/services/register.service';
 import { ToastrService } from 'ngx-toastr';
 import { Papa } from 'ngx-papaparse';
 import { FileSaverService } from 'ngx-filesaver'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmploymentComponent } from '../employment/employment.component';
 
 @Component({
   selector: 'app-employeelist',
@@ -36,6 +38,7 @@ export class EmployeelistComponent implements OnInit {
   faFileCsv = faFileCsv;
   faFilePdf = faFilePdf;
   faMagnifyingGlass = faMagnifyingGlass;
+  faLocationPin = faLocationPin;
  
   
   constructor( 
@@ -44,7 +47,8 @@ export class EmployeelistComponent implements OnInit {
     private store:Store,
     private _toastrService : ToastrService,
     private papa: Papa,
-    private fileSaverService: FileSaverService) {
+    private fileSaverService: FileSaverService,
+    private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -137,4 +141,10 @@ export class EmployeelistComponent implements OnInit {
         }
       }})
    }
+
+   allocate(res:any, type:string){
+    const modalRef = this.modalService.open(EmploymentComponent, { size: type==='manager'?'md':'lg', backdrop: 'static' });
+      modalRef.componentInstance.employee = res;
+      modalRef.componentInstance.type = type;
+  }
 }

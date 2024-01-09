@@ -58,6 +58,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       // this.val = !isNaN(option[1])?option[1]:this.iterable
       this.all.push({ count: this.iterable, name: option, value: option, checked: false })
     }
+    console.log(this.options)
   }
 
   onclicked(event: Event) {
