@@ -33,7 +33,7 @@ const employeeRecord = async(req, res)=>{
 
         const pendingSalesCount = await salesModel.countDocuments({checkStatus: 'Pending', employeeInfo: req.user.id});
         const approvedSalesCount = await salesModel.countDocuments({checkStatus: 'Approved', employeeInfo: req.user.id});
-        const overallSalesCount = await salesModel.countDocuments();
+        const overallSalesCount = await salesModel.countDocuments({employeeInfo: req.user.id});
 
         return res.status(200).json({overAllSales: totalSaleAmount, pendingSales: pendingSalesAmount, approvedSales: approvedSalesAmount, pendingSalesCount, approvedSalesCount, overallSalesCount});
     } catch (error) {

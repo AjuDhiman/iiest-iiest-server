@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,14 +7,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  @Input() userData:any;
+  userData: any;
   @Input() sideBarToggle:boolean;
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
   @Output() sideBarToggleUpdate = new EventEmitter();
-  constructor(private router :Router){
-
+  constructor(private registerService: RegisterService){
   }
+
+  ngOnInit(): void{
+    this.getUserData();
+  }
+
   toggelStyle: object = {
     'position': 'absolute',
     'z-index': 1021,
@@ -25,7 +29,11 @@ export class SidebarComponent {
 toggelShow:boolean= false;
 toggleClass(event:any){
   this.toggelShow = !this.toggelShow ;
-    event.target.classList.toggle('show');
+  event.target.classList.toggle('show');
+}
+getUserData(){
+  const rawUserData: any = this.registerService.LoggedInUserData()
+  this.userData = JSON.parse(rawUserData);
 }
 sideBarToggleValue(){
   this.sideBarToggleUpdate.emit(false);
