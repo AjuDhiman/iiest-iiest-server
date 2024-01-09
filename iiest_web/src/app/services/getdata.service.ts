@@ -35,9 +35,18 @@ export class GetdataService {
 
  public getProductData():Observable<any>{
   const url = `${this.url}/getproductdata`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
+ public getSaleRecipients(salesId: String): Observable<any>{
+  const url = `${this.url}/salerecipients/${salesId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
+ public getSaleShops(salesId: String): Observable<any>{
+  const url = `${this.url}/saleshops/${salesId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
  
  public getPostData():Observable<any>{
   const url = `${this.url}/getpostdata`;

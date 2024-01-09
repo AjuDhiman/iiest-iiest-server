@@ -5,8 +5,7 @@ const fboSchema = new Schema({
     employeeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
-        required: true,
-        unique: true
+        required: true
     },
     id_num: {
         type: Number,

@@ -6,6 +6,7 @@ import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons';  
 import * as XLSX from 'xlsx'
+import { GetdataService } from 'src/app/services/getdata.service';
 @Component({
   selector: 'app-recipient',
   templateUrl: './recipient.component.html',
@@ -36,14 +37,21 @@ export class RecipientComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _registerService: RegisterService,
+    private getDataServices: GetdataService,
     private _toastrService: ToastrService,
     private _utilService: UtilitiesService) {
 
   }
   ngOnInit(): void {
-    console.log(this.fboData);
-    this.recipientData = this.fboData.recipientDetails; 
-    this.shopData = this.fboData.shopDetails;
+    if(this.serviceType === 'fostac'){
+      this.getSaleRecipientsList(this.fboData._id);
+    }
+
+    if(this.serviceType === 'foscos'){
+      this.getSaleShopsList(this.fboData._id);
+    }
+    // this.recipientData = this.fboData.recipientDetails; 
+    // this.shopData = this.fboData.shopDetails;
 
     switch (this.serviceType) {
       case "fostac":
@@ -89,6 +97,7 @@ export class RecipientComponent implements OnInit {
   //Form Submit Methode
   onSubmit() {
     this.submitted = true;
+
     if (this.recipientform.invalid) {
       return;
     }
@@ -167,6 +176,23 @@ export class RecipientComponent implements OnInit {
             this.recipientform.controls["eBill"].setValidators([Validators.required]);
           }
       }
+  }
+
+  getSaleRecipientsList(saleId: string){
+    this.getDataServices.getSaleRecipients(saleId).subscribe({
+      next: (res)=>{
+        this.recipientData = res.recipientsList;
+      }
+    })
+  }
+
+  getSaleShopsList(saleId: string){
+    this.getDataServices.getSaleShops(saleId).subscribe({
+      next: (res)=>{
+        this.shopData = res.shopsList
+      }
+    })
+
   }
 //by the help  of this function we can upload data as anexcel sheet, we used XLSX npm package in it
   onExcelUpload(event:any){
