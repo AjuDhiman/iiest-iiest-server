@@ -57,12 +57,6 @@
                             <li *ngIf="userData.department==='Sales Department'|| userData.department==='IT Department'" class="submenu-item"><a
                                     class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
                             </li>
-                            <li *ngIf="userData.department==='HR Department'|| userData.department==='IT Department'" class="submenu-item"><a
-                                    class="submenu-link" (click)="navigateToEmployment('area')">Area Allocation</a>
-                            </li>
-                            <li *ngIf="userData.department==='HR Department'|| userData.department==='IT Department'" class="submenu-item"><a
-                                    class="submenu-link" (click)="navigateToEmployment('manager')">Reporting Manager</a>
-                            </li>
                         </ul>
                     </div>
                 </li>
@@ -80,8 +74,4 @@
             [routerLink]="['/empregister']">Employee Register</a></li>
     <li *ngIf="userData.department==='Sales Department' || userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
             [routerLink]="['/fbo']">Fbo Register</a></li>
-    <li *ngIf="userData.department==='HR Department' || userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
-        (click)="navigateToEmployment('area')">Allocate Area</a></li>
-    <li *ngIf="userData.department==='HR Department' ||  userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
-            (click)="navigateToEmployment('manager')">Reporting Manager</a></li>
 </ul>
