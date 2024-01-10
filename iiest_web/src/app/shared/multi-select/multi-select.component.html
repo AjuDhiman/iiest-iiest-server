@@ -15,8 +15,7 @@
           </svg>
         <fa-icon class="fa-1x down-icon" [ngClass]="{'rotateUp':isdropped}" [icon]="faAngleDown"></fa-icon>
     </div>
-    <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}"
-        [ngStyle]="{'bottom': -checksTop + 'px'}">
+    <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}">
         <div class="check px-3 disabled" style="height: 25px; font-size: 14px;">-- {{placeHolder}} --</div>
         <div class="check px-3" *ngFor="let obj of all" style="height: 25px;">
             <input type="checkbox" [(ngModel)]="obj.checked" (click)="onclicked($event)" class="myCheckbox"
