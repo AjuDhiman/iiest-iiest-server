@@ -18,9 +18,9 @@
     <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}"
         [ngStyle]="{'bottom': -checksTop + 'px'}">
         <div class="check px-3 disabled" style="height: 25px; font-size: 14px;">-- {{placeHolder}} --</div>
-        <div class="check px-3" [ngClass]="{'disabled': obj.count > 2}" *ngFor="let obj of all" style="height: 25px;">
+        <div class="check px-3" *ngFor="let obj of all" style="height: 25px;">
             <input type="checkbox" [(ngModel)]="obj.checked" (click)="onclicked($event)" class="myCheckbox"
-                [value]="obj.count" [id]="obj.name" [disabled]="obj.count > 2"/>
+                [value]="obj.count" [id]="obj.name" />
             <label [for]="obj.name"> {{obj.name}}</label>
         </div>
     </div>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,7 +13,8 @@ export class SidebarComponent {
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
   @Output() sideBarToggleUpdate = new EventEmitter();
-  constructor(private registerService: RegisterService){
+  constructor(private registerService: RegisterService,
+    private router:Router){
   }
 
   ngOnInit(): void{
@@ -42,5 +44,9 @@ sideBarToggleValue(){
 
 closeDropMenu(){
   this.toggelShow=false;
+}
+
+navigateToEmployment(type: string) {
+  this.router.navigate(['/employment', type]);
 }
 }

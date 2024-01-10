@@ -1,6 +1,7 @@
 <div id="app-sidepanel" class="app-sidepanel" [ngClass]="isSidebarVisible? 'sidepanel-visible' : 'sidepanel-hidden'">
     <div id="sidepanel-drop" class="sidepanel-drop"></div>
-    <div class="sidepanel-inner d-flex flex-column" [ngClass]="isSidebarVisible? 'sidepanel-inner-visible' : 'sidepanel-inner-hidden'">
+    <div class="sidepanel-inner d-flex flex-column"
+        [ngClass]="isSidebarVisible? 'sidepanel-inner-visible' : 'sidepanel-inner-hidden'">
         <a id="sidepanel-close" (click)="sideBarToggleValue()" class="sidepanel-close d-xl-none">&times;</a>
         <div class="app-branding">
             <a class="app-logo" [routerLink]="['/home']">
@@ -25,7 +26,7 @@
                     </a>
                 </li>
                 <li class="nav-item has-submenu">
-                        
+
                     <a class="nav-link submenu-toggle" (click)="toggleClass($event)" data-bs-toggle="collapse"
                         data-bs-target="#submenu-1" aria-expanded="false" aria-controls="submenu-1">
                         <span class="nav-icon">
@@ -50,25 +51,37 @@
                     <div id="submenu-1" [ngClass]="toggelShow === true && isSidebarVisible? 'show' : '' "
                         class="collapse submenu submenu-1" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
-                            <li *ngIf="userData.department==='HR Department'" class="submenu-item"><a class="submenu-link" [routerLink]="['/empregister']">Employee
-                                    Register</a></li>
-                            <li *ngIf="userData.department==='Sales Department'" class="submenu-item"><a class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
+                            <li *ngIf="userData.department==='HR Department'" class="submenu-item">
+                                <a class="submenu-link" [routerLink]="['/empregister']">EmployeeRegister</a>
+                            </li>
+                            <li *ngIf="userData.department==='Sales Department'" class="submenu-item"><a
+                                    class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
+                            </li>
+                            <li *ngIf="userData.department==='HR Department'" class="submenu-item"><a
+                                    class="submenu-link" (click)="navigateToEmployment('area')">Area Allocation</a>
+                            </li>
+                            <li *ngIf="userData.department==='HR Department'" class="submenu-item"><a
+                                    class="submenu-link" (click)="navigateToEmployment('manager')">Reporting Manager</a>
                             </li>
                         </ul>
                     </div>
                 </li>
-               
+
             </ul>
         </nav>
 
     </div><!--//sidepanel-inner-->
-   
+
 </div><!--//app-sidepanel-->
-<ul class="dropdown-menu green-drop-down" 
-[ngClass]="toggelShow === true && !isSidebarVisible && largeDisplay? 'show' : '' " 
-[ngStyle]="toggelShow?toggelStyle: {}"
-aria-labelledby="user-dropdown-toggle">
-    <li *ngIf="userData.department==='HR Department'" ><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/empregister']">Employee Register</a></li>
-    <li *ngIf="userData.department==='Sales Department'"><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/fbo']">Fbo Register</a></li>
-    <li *ngIf="userData.department==='HR Department'" ><a class="dropdown-item" (click)="closeDropMenu()" [routerLink]="['/allocatearea']">Allocate Area</a></li>
+<ul class="dropdown-menu green-drop-down"
+    [ngClass]="toggelShow === true && !isSidebarVisible && largeDisplay? 'show' : '' "
+    [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
+    <li *ngIf="userData.department==='HR Department'" (click)="closeDropMenu()"><a class="dropdown-item"
+            [routerLink]="['/empregister']">Employee Register</a></li>
+    <li *ngIf="userData.department==='Sales Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+            [routerLink]="['/fbo']">Fbo Register</a></li>
+    <li *ngIf="userData.department==='HR Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+        (click)="navigateToEmployment('area')">Allocate Area</a></li>
+    <li *ngIf="userData.department==='HR Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+            (click)="navigateToEmployment('manager')">Reporting Manager</a></li>
 </ul>

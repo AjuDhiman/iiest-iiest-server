@@ -1,64 +1,77 @@
-<div class="modal-header bg-secondary">
-    <h6 class="modal-title text-white" *ngIf="type==='area'" id="modal-basic-title">Area Allocation</h6>
-    <h6 class="modal-title text-white" *ngIf="type==='manager'" id="modal-basic-title">Reporting Manager</h6>
-    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
-</div>
-<!-- *ngIf="recipientData?.length==0" -->
-<form [formGroup]="allocationForm" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-    <!--Foscos FORM Start-->
-    <div class="modal-body">
-        <div class="row">
-            <div class="col-md-6 col-6" *ngIf="type === 'manager'">
-                <label for="reportingManager" class="form-label">Reporting Manager<sup>*</sup></label>
-                <select id="reportingManager"  [ngClass]="{ 'is-invalid': submitted && form['reportingManager'].errors }"
-                    formControlName="reportingManager" class="form-select form-select-sm">
-                    <option value="" disabled selected>Select the Reporting Manager</option>
-                    <option value="New Delhi">HR manager</option>
-                </select>
-                <div *ngIf="submitted && form['reportingManager'].errors" class="invalid-feedback">
-                    <div *ngIf="form['reportingManager'].errors['required']">Reporting Manager is required</div>
-                </div>
-            </div>
+<div>
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xxl">
+            <div class="row g-3 mb-4 align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 *ngIf="type==='area'" class="app-page-title mb-2">Area Allocation Form</h1>
+                    <h1 *ngIf="type==='manager'" class="app-page-title mb-2">Reporting Manager Form</h1>
+                  </div>
+                <div class="row gy-4 mb-3">
+                    <form *ngIf="type=='area'" [formGroup]="areaAllocationForm" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off" (ngSubmit)="onSubmit()">
+                       
+                        <div class="col-md-4">
+                            <label for="state" class="form-label">State<sup>*</sup></label>
+                            <select id="state" [ngClass]="{ 'is-invalid': submitted && form['state'].errors }"
+                                formControlName="state" class="form-select form-select-sm"
+                                (change)="onStateSelect($event)">
+                                <option value="" disabled selected>Select the State</option>
+                                <option *ngFor="let state of statesList" [value]="state">{{state}}</option>
+                                <!-- <option value="New Delhi">New Delhi</option> -->
 
-            <div class="col-md-4" *ngIf="type === 'area'">
-                <label for="state" class="form-label">State<sup>*</sup></label>
-                <select id="state" [ngClass]="{ 'is-invalid': submitted && form['state'].errors }"
-                    formControlName="state" class="form-select form-select-sm" (change)="onStateSelect($event)">
-                    <option value="" disabled selected>Select the State</option>
-                    <option *ngFor="let state of statesList" [value]="state">{{state}}</option>
-                    <!-- <option value="New Delhi">New Delhi</option> -->
+                            </select>
+                            <div *ngIf="submitted && form['state'].errors" class="invalid-feedback">
+                                <div *ngIf="form['state'].errors['required']">State is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" *ngIf="type === 'area'">
+                            <label for="district" class="form-label">District<sup>*</sup></label>
+                            <select id="district" [ngClass]="{ 'is-invalid': submitted && form['district'].errors }"
+                                formControlName="district" class="form-select form-select-sm"
+                                (click)="onDistrictSelect($event)">
+                                <option value="" disabled selected>Select the District</option>
+                                <option *ngFor="let district of districts" [value]="district">{{district}}</option>
 
-                </select>
-                <div *ngIf="submitted && form['state'].errors" class="invalid-feedback">
-                    <div *ngIf="form['state'].errors['required']">State is required</div>
-                </div>
-            </div>
-            <div class="col-md-4" *ngIf="type === 'area'">
-                <label for="district" class="form-label">District<sup>*</sup></label>
-                <select id="district" [ngClass]="{ 'is-invalid': submitted && form['district'].errors }"
-                    formControlName="district" class="form-select form-select-sm" (click)="onDistrictSelect($event)">
-                    <option value="" disabled selected>Select the District</option>
-                    <option *ngFor="let district of districts" [value]="district">{{district}}</option>
+                            </select>
+                            <div *ngIf="submitted && form['district'].errors" class="invalid-feedback">
+                                <div *ngIf="form['district'].errors['required']">District is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4" *ngIf="type === 'area'">
+                            <label for="pincodes" class="form-label">Pincodes<sup>*</sup></label>
+                            <app-multi-select #multiSelect (selectedArrayChange)="getPincodes($event)"
+                                [options]="pincodes" [placeHolder]="'Pincodes'"></app-multi-select>
+                            <div *ngIf="submitted && form['pincodes'].errors" class="invalid-feedback">
+                                <div *ngIf="form['pincodes'].errors">Product Name is required</div>
+                            </div>
+                        </div>
 
-                </select>
-                <div *ngIf="submitted && form['district'].errors" class="invalid-feedback">
-                    <div *ngIf="form['district'].errors['required']">District is required</div>
-                </div>
-            </div>
-            <div class="col-md-4" *ngIf="type === 'area'">
-                <label for="pincodes" class="form-label">Pincodes<sup>*</sup></label>
-                <app-multi-select #multiSelect (selectedArrayChange)="getPincodes($event)"
-                    [options]="pincodes" 
-                    [placeHolder]="'Pincodes'"></app-multi-select>
-                <div *ngIf="submitted && form['pincodes'].errors" class="invalid-feedback">
-                    <div *ngIf="form['pincodes'].errors">Product Name is required</div>
+                        <div class="modal-footer text-left">
+                            <button *ngIf="type==='area'" type="submit" class="btn btn-sm btn-primary">Allocate
+                                Area</button>
+                        </div>
+                    </form>
+                    <form *ngIf="type=='manager'" [formGroup]="reportingManagerForm" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off" (ngSubmit)="onSubmit()">
+                        <div class="col-auto">
+                          </div>
+                        <div class="col-md-4" *ngIf="type==='manager'">
+                            <label for="reportingManager" class="form-label">Reporting Manager<sup>*</sup></label>
+                            <select id="reportingManager"
+                                [ngClass]="{ 'is-invalid': submitted && form['reportingManager'].errors }"
+                                formControlName="reportingManager" class="form-select form-select-sm">
+                                <option value="" disabled selected>Select the Reporting Manager</option>
+                                <option value="New Delhi">HR manager</option>
+                            </select>
+                            <div *ngIf="submitted && form['reportingManager'].errors" class="invalid-feedback">
+                                <div *ngIf="form['reportingManager'].errors['required']">Reporting Manager is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer text-left">
+                            <button *ngIf="type==='area'" type="submit" class="btn btn-sm btn-primary">Reporting Manager                             Area</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal-footer text-left">
-        <button *ngIf="type==='area'" type="submit" class="btn btn-sm btn-outline-dark">Allocate Area</button>
-        <button *ngIf="type==='manager'" type="submit" class="btn btn-sm btn-outline-dark">Reporting Manger</button>
-    </div>
-</form>
+</div>

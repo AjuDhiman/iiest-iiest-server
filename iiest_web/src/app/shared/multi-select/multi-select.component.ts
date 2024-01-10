@@ -30,6 +30,9 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Input()
   placeHolder: string = '';
 
+  @Input()
+  ForProducts:boolean = false;
+
   @Output()
   selectedArrayChange: EventEmitter<any> = new EventEmitter<any>;
   // async consoleopt(data:any){
@@ -53,8 +56,11 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   }
 
   initializeAll() {
+    this.all=[];
+    this.iterable=0;
     for (let option of this.options) {
       this.iterable++;
+
       // this.val = !isNaN(option[1])?option[1]:this.iterable
       this.all.push({ count: this.iterable, name: option, value: option, checked: false })
     }

@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { stateName } from 'src/app/utils/config'
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-employment',
@@ -21,35 +22,41 @@ export class EmploymentComponent implements OnInit {
   allocationType: string;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
 
-  @Input() public employee: any;
-  @Input() public type: string;
+  employee: any;
+  type: any;
 
-  allocationForm: FormGroup = new FormGroup({
-    underManager: new FormControl('', Validators.required),
-    state: new FormControl('', Validators.required),
-    district: new FormControl('', Validators.required),
-    pincodes: new FormControl([], Validators.required)
+  areaAllocationForm: FormGroup = new FormGroup({
+    state: new FormControl(''),
+    district: new FormControl(''),
+    pincodes: new FormControl([])
   });
 
+  reportingManagerForm: FormGroup = new FormGroup({
+     reportingManager: new FormControl('')
+  });
 
-
-  constructor(public activeModal: NgbActiveModal,
+  constructor(
+    // public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
-    private _getdataService: GetdataService) {
-    // this.getPincodesData();
+    private _getdataService: GetdataService,
+    private route: ActivatedRoute) {
+      this.route.params.subscribe(params => {
+        this.type= params['type']; 
+      });
+      console.log(this.type);
   }
 
   ngOnInit(): void {
     if (this.type === 'area') {
-      this.allocationForm = this.formBuilder.group(
+      this.areaAllocationForm = this.formBuilder.group(
         {
           state: ['', Validators.required],
           district: ['', Validators.required],
-          pincodes: ['', Validators.required],
+          pincodes: [[], Validators.required],
         });
     }
     else if(this.type === 'manager') {
-      this.allocationForm = this.formBuilder.group(
+      this.reportingManagerForm = this.formBuilder.group(
         {
           reportingManager: ['', Validators.required],
         });
@@ -57,56 +64,22 @@ export class EmploymentComponent implements OnInit {
   }
 
   get form(): { [key: string]: AbstractControl } {
-    return this.allocationForm.controls;
+    return this.areaAllocationForm.controls;
   }
 
   onSubmit() {
     this.submitted = true;
-    console.log(this.allocationForm);
+    console.log(this.areaAllocationForm);
+    console.log(this.reportingManagerForm);
   }
 
-  // getPincodesData() {  // this function retrives post data and save into variable by the help of getdataservice
-    // this._getdataService.getPincodesData().subscribe({
-    //   next: (res) => {
-    //     console.log(res);
-    //     this.pincodesData = res;
-    //     this.pincodesData.forEach((obj: any) => {
-    //       if (!this.states.find((item: any) => item === obj.state)) {
-    //         this.states.push(obj.state);
-    //       }
-    //     })
-    //     console.log(this.states);
-    //   },
-    //   error: (err) => {
-    //     let errorObj = err.error
-    //     // if (errorObj.userError) {
-    //     //   this._registerService.signout();
-    //     // }
-    //   }
-    // }
-    // )
-  // }
-
-
   onStateSelect($event: any) { // this function will fetch the array of distinct districsts onbased of state select
-    // this.districts=[];
-    // this.pincodes=[];
-    // this.form['district'].setValue('');
-    // this.form['pincodes'].setValue([]);
-    // this.multiSelect.onReset();
-    // //preceeding 5 lines will empty and reset the form fielsd on state reselect
-    // this.state = event.target.value;
-    // this.pincodesData.forEach((obj: any) => {
-    //   if (!this.districts.find((item: any) => item === obj.district) && obj.state === this.state) {
-    //     this.districts.push(obj.district);
-    //   }
-    // })
-    console.log($event.target.value);
     this.state = $event.target.value;
     this.districts=[];
+    this.pincodes=[];
+    this.multiSelect.onReset();
     this._getdataService.getPincodesData(this.state).subscribe({
       next: (res) => {
-        console.log(res);
         this.pincodesData = res;
         this.pincodesData.forEach((obj:any)=>{
           if(!this.districts.find((item:any)=>item.toLowerCase()===obj.District.toLowerCase())){
@@ -124,11 +97,12 @@ export class EmploymentComponent implements OnInit {
     )
   }
   onDistrictSelect(event: any) {
+    this.pincodes=[];
+    this.multiSelect.onReset();
     this.district = event.target.value;
     this.pincodes = this.pincodesData
-      .filter((item: any) => item.state === this.state && item.district === this.district)
-      .map((item: any) => item.pincode);
-    console.log(this.pincodes);
+      .filter((item: any) => item.State === this.state && item.District === this.district)
+      .map((item: any) => item.Pincode);
   }
 
   getPincodes(event: any) {
