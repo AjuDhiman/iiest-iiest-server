@@ -16,14 +16,39 @@ export class EmploymentComponent implements OnInit {
   pincodesData: Object[];
   state: string;
   district: string;
-  statesList=stateName;
+  statesList = stateName;
   districts: string[] = [];
-  pincodes: number[] = [] ;
+  pincodes: number[] = [];
   allocationType: string;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
 
   employee: any;
   type: any;
+  //New variables for search box still in testing
+  // isSearchEmpty: boolean;
+  // searchSuggestions: any;
+  allManagers = [
+    {
+      name: 'vansh',
+      emp_id: 'IIEST/7809'
+    },
+    {
+      name: 'harsh',
+      emp_id: 'IIEST/9090'
+    },
+    {
+      name: 'bhavesh',
+      emp_id: 'IIEST/9900'
+    },
+    {
+      name: 'rndheer',
+      emp_id: 'IIEST/7890'
+    },
+    {
+      name: 'Abhishake',
+      emp_id: 'IIEST/8908'
+    }
+  ] 
 
   areaAllocationForm: FormGroup = new FormGroup({
     state: new FormControl(''),
@@ -32,7 +57,7 @@ export class EmploymentComponent implements OnInit {
   });
 
   reportingManagerForm: FormGroup = new FormGroup({
-     reportingManager: new FormControl('')
+    reportingManager: new FormControl('')
   });
 
   constructor(
@@ -40,10 +65,10 @@ export class EmploymentComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _getdataService: GetdataService,
     private route: ActivatedRoute) {
-      this.route.params.subscribe(params => {
-        this.type= params['type']; 
-      });
-      console.log(this.type);
+    this.route.params.subscribe(params => {
+      this.type = params['type'];
+    });
+    console.log(this.type);
   }
 
   ngOnInit(): void {
@@ -55,7 +80,7 @@ export class EmploymentComponent implements OnInit {
           pincodes: [[], Validators.required],
         });
     }
-    else if(this.type === 'manager') {
+    else if (this.type === 'manager') {
       this.reportingManagerForm = this.formBuilder.group(
         {
           reportingManager: ['', Validators.required],
@@ -63,8 +88,12 @@ export class EmploymentComponent implements OnInit {
     }
   }
 
-  get form(): { [key: string]: AbstractControl } {
+  get areaForm(): { [key: string]: AbstractControl } {
     return this.areaAllocationForm.controls;
+  }
+
+  get managerForm(): { [key: string]: AbstractControl } {
+    return this.reportingManagerForm.controls;
   }
 
   onSubmit() {
@@ -73,17 +102,17 @@ export class EmploymentComponent implements OnInit {
     console.log(this.reportingManagerForm);
   }
 
-// this function will fetch the array of distinct districsts onbased of state select
-  onStateSelect($event: any) { 
+  // this function will fetch the array of distinct districsts onbased of state select
+  onStateSelect($event: any) {
     this.state = $event.target.value;
-    this.districts=[];
-    this.pincodes=[];
+    this.districts = [];
+    this.pincodes = [];
     this.multiSelect.onReset();
     this._getdataService.getPincodesData(this.state).subscribe({
       next: (res) => {
         this.pincodesData = res;
-        this.pincodesData.forEach((obj:any)=>{
-          if(!this.districts.find((item:any)=>item.toLowerCase()===obj.District.toLowerCase())){
+        this.pincodesData.forEach((obj: any) => {
+          if (!this.districts.find((item: any) => item.toLowerCase() === obj.District.toLowerCase())) {
             this.districts.push(obj.District);
           }
         })
@@ -98,7 +127,7 @@ export class EmploymentComponent implements OnInit {
     )
   }
   onDistrictSelect($event: any) {
-    this.pincodes=[];
+    this.pincodes = [];
     this.multiSelect.onReset();
     this.district = $event.target.value;
     this.pincodes = this.pincodesData
@@ -106,7 +135,23 @@ export class EmploymentComponent implements OnInit {
       .map((item: any) => item.Pincode);
   }
 
-  getPincodes(event: any) {
-    this.form['pincodes'].setValue(event)
+  getPincodes(event: any) { //used for multi select
+    this.areaForm['pincodes'].setValue(event)
   }
+
+  // filterSearch(event: any) {
+  //   let value = event.target.value
+  //   console.log(value);
+  //   if (value !== '') {
+  //     this.isSearchEmpty = false;
+  //   }
+  //   else {
+  //     this.isSearchEmpty = true;
+  //     return
+  //   }
+  //   let regex = new RegExp(value, "i") // i means case insesitive
+  //   //using regex for comparing fbo names and customer ids
+  //   this.searchSuggestions = this.allManagers.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
+  //   console.log(this.searchSuggestions);
+  // }
 }

@@ -8,36 +8,35 @@
             <div class="row">
                 <div class="col-md-4">
                     <label for="state" class="form-label">State<sup>*</sup></label>
-                    <select id="state" [ngClass]="{ 'is-invalid': submitted && form['state'].errors }"
+                    <select id="state" [ngClass]="{ 'is-invalid': submitted && areaForm['state'].errors }"
                         formControlName="state" class="form-select form-select-sm" (change)="onStateSelect($event)">
                         <option value="" disabled selected>Select the State</option>
                         <option *ngFor="let state of statesList" [value]="state">{{state}}</option>
                         <!-- <option value="New Delhi">New Delhi</option> -->
 
                     </select>
-                    <div *ngIf="submitted && form['state'].errors" class="invalid-feedback">
-                        <div *ngIf="form['state'].errors['required']">State is required</div>
+                    <div *ngIf="submitted && areaForm['state'].errors" class="invalid-feedback">
+                        <div *ngIf="areaForm['state'].errors['required']">State is required</div>
                     </div>
                 </div>
                 <div class="col-md-4" *ngIf="type === 'area'">
                     <label for="district" class="form-label">District<sup>*</sup></label>
-                    <select id="district" [ngClass]="{ 'is-invalid': submitted && form['district'].errors }"
+                    <select id="district" [ngClass]="{ 'is-invalid': submitted && areaForm['district'].errors }"
                         formControlName="district" class="form-select form-select-sm"
                         (change)="onDistrictSelect($event)">
                         <option value="" disabled selected>Select the District</option>
                         <option *ngFor="let district of districts" [value]="district">{{district}}</option>
-
                     </select>
-                    <div *ngIf="submitted && form['district'].errors" class="invalid-feedback">
-                        <div *ngIf="form['district'].errors['required']">District is required</div>
+                    <div *ngIf="submitted && areaForm['district'].errors" class="invalid-feedback">
+                        <div *ngIf="areaForm['district'].errors['required']">District is required</div>
                     </div>
                 </div>
                 <div class="col-md-4" *ngIf="type === 'area'">
                     <label for="pincodes" class="form-label">Pincodes<sup>*</sup></label>
                     <app-multi-select #multiSelect (selectedArrayChange)="getPincodes($event)" [options]="pincodes"
                         [placeHolder]="'Pincodes'"></app-multi-select>
-                    <div *ngIf="submitted && form['pincodes'].errors" class="invalid-feedback">
-                        <div *ngIf="form['pincodes'].errors">Product Name is required</div>
+                    <div *ngIf="submitted && areaForm['pincodes'].errors" class="invalid-feedback">
+                        <div *ngIf="areaForm['pincodes'].errors">Product Name is required</div>
                     </div>
                 </div>
             </div>
@@ -52,16 +51,39 @@
                 <div class="col-md-6">
                     <label for="reportingManager" class="form-label">Reporting Manager<sup>*</sup></label>
                     <select id="reportingManager"
-                        [ngClass]="{ 'is-invalid': submitted && form['reportingManager'].errors }"
+                        [ngClass]="{ 'is-invalid': submitted && managerForm['reportingManager'].errors }"
                         formControlName="reportingManager" class="form-select form-select-sm">
                         <option value="" disabled selected>Select the Reporting Manager</option>
-                        <option value="New Delhi">HR manager</option>
+                        <option *ngFor="let reportingManager of allManagers" [value]="reportingManager.name">
+                            {{reportingManager.name}}({{reportingManager.emp_id}})
+                        </option>
                     </select>
-                    <div *ngIf="submitted && form['reportingManager'].errors" class="invalid-feedback">
-                        <div *ngIf="form['reportingManager'].errors['required']">Reporting Manager is required
+                    <div *ngIf="submitted && managerForm['reportingManager'].errors" class="invalid-feedback">
+                        <div *ngIf="managerForm['reportingManager'].errors['required']">Reporting Manager is required
                         </div>
                     </div>
                 </div>
+                <!-- <div class="col-md-6">
+                    <label for="" class="form-label">Email</label>
+                    <input type="text" placeholder="" id="email"
+                      class="form-control form-control-sm" autocomplete="off"
+                      [ngClass]="{ 'is-invalid': submitted && reportingManagerForm['reportingManager'].errors }" />
+                    <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                      <div *ngIf="f['email'].errors['required']">Email is required</div>
+                      <div *ngIf="f['email'].errors['email']">Email is invalid</div>
+                    </div>
+                  </div> -->
+                <!-- <div class="d-inline m-0 p-0" style="position: relative;">
+                    <input #searchElem type="search" (input)="filterSearch($event)" name="search"
+                        formControlName="searchUser" placeholder="Search"
+                        class="search-input" autocomplete="off" />
+                    <ul *ngIf="!isSearchEmpty" class="search-suggestions">
+                        <li style="text-decoration: none;" class="d-flex" *ngFor="let searchSuggestion of searchSuggestions"
+                            (click)="fetchExistingUser(searchSuggestion)">
+                           {{searchSuggestion.fbo_name}}({{searchSuggestion.customer_id}})
+                        </li>
+                    </ul>
+                </div> -->
             </div>
         </div>
         <div class="modal-footer text-left">
