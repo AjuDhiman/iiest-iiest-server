@@ -217,6 +217,10 @@ export class FbonewComponent implements OnInit {
       this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
       this.need_gst_number = true;
     }
+    if(fboObj.business_type === 'b2c'){
+      this.fboForm.removeControl('gst_number');
+      this.need_gst_number;
+    }
   }
   //Form Submit Method
   onSubmit() {

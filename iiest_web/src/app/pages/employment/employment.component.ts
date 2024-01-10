@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-// import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { stateName } from 'src/app/utils/config'
@@ -36,7 +36,7 @@ export class EmploymentComponent implements OnInit {
   });
 
   constructor(
-    // public activeModal: NgbActiveModal,
+    public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _getdataService: GetdataService,
     private route: ActivatedRoute) {
