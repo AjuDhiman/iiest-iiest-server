@@ -51,16 +51,16 @@
                     <div id="submenu-1" [ngClass]="toggelShow === true && isSidebarVisible? 'show' : '' "
                         class="collapse submenu submenu-1" data-bs-parent="#menu-accordion">
                         <ul class="submenu-list list-unstyled">
-                            <li *ngIf="userData.department==='HR Department'" class="submenu-item">
+                            <li *ngIf="userData.department==='HR Department' || userData.department==='IT Department'" class="submenu-item">
                                 <a class="submenu-link" [routerLink]="['/empregister']">EmployeeRegister</a>
                             </li>
-                            <li *ngIf="userData.department==='Sales Department'" class="submenu-item"><a
+                            <li *ngIf="userData.department==='Sales Department'|| userData.department==='IT Department'" class="submenu-item"><a
                                     class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
                             </li>
-                            <li *ngIf="userData.department==='HR Department'" class="submenu-item"><a
+                            <li *ngIf="userData.department==='HR Department'|| userData.department==='IT Department'" class="submenu-item"><a
                                     class="submenu-link" (click)="navigateToEmployment('area')">Area Allocation</a>
                             </li>
-                            <li *ngIf="userData.department==='HR Department'" class="submenu-item"><a
+                            <li *ngIf="userData.department==='HR Department'|| userData.department==='IT Department'" class="submenu-item"><a
                                     class="submenu-link" (click)="navigateToEmployment('manager')">Reporting Manager</a>
                             </li>
                         </ul>
@@ -76,12 +76,12 @@
 <ul class="dropdown-menu green-drop-down"
     [ngClass]="toggelShow === true && !isSidebarVisible && largeDisplay? 'show' : '' "
     [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
-    <li *ngIf="userData.department==='HR Department'" (click)="closeDropMenu()"><a class="dropdown-item"
+    <li *ngIf="userData.department==='HR Department'|| userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/empregister']">Employee Register</a></li>
-    <li *ngIf="userData.department==='Sales Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="userData.department==='Sales Department' || userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
             [routerLink]="['/fbo']">Fbo Register</a></li>
-    <li *ngIf="userData.department==='HR Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="userData.department==='HR Department' || userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
         (click)="navigateToEmployment('area')">Allocate Area</a></li>
-    <li *ngIf="userData.department==='HR Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="userData.department==='HR Department' ||  userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
             (click)="navigateToEmployment('manager')">Reporting Manager</a></li>
 </ul>
