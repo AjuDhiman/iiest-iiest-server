@@ -16,9 +16,7 @@ const routes: Routes = [
   // { path: 'fbo', component: FboComponent, canActivate:[authGuard] },
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard]},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard]}, 
-  { path: 'employment/:type', component: EmploymentComponent, canActivate:[authGuard], data:{
-     role:'Deputy HR Manager'
-  }}
+  { path: 'employment/:type', component: EmploymentComponent, canActivate:[authGuard]}
 ];
 
 @NgModule({
