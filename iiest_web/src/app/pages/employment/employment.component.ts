@@ -73,7 +73,8 @@ export class EmploymentComponent implements OnInit {
     console.log(this.reportingManagerForm);
   }
 
-  onStateSelect($event: any) { // this function will fetch the array of distinct districsts onbased of state select
+// this function will fetch the array of distinct districsts onbased of state select
+  onStateSelect($event: any) { 
     this.state = $event.target.value;
     this.districts=[];
     this.pincodes=[];
@@ -96,10 +97,10 @@ export class EmploymentComponent implements OnInit {
     }
     )
   }
-  onDistrictSelect(event: any) {
+  onDistrictSelect($event: any) {
     this.pincodes=[];
     this.multiSelect.onReset();
-    this.district = event.target.value;
+    this.district = $event.target.value;
     this.pincodes = this.pincodesData
       .filter((item: any) => item.State === this.state && item.District === this.district)
       .map((item: any) => item.Pincode);

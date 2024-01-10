@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AreaallocationComponent } from './areaallocation.component';
+import {  EmploymentComponent} from './employment.component';
 
-describe('AreaallocationComponent', () => {
-  let component: AreaallocationComponent;
-  let fixture: ComponentFixture<AreaallocationComponent>;
+describe('EmploymentComponent', () => {
+  let component: EmploymentComponent;
+  let fixture: ComponentFixture<EmploymentComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AreaallocationComponent]
+      declarations: [EmploymentComponent]
     });
-    fixture = TestBed.createComponent(AreaallocationComponent);
+    fixture = TestBed.createComponent(EmploymentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
