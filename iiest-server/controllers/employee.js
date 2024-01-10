@@ -2,11 +2,10 @@ const employeeSchema = require('../models/employeeSchema');
 const pastEmployeeSchema = require('../models/pastEmployeeSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { generateUsername, generatePassword, generateEmployeeID } = require('./empGenerator');
-const { sendEmployeeInfo } = require('./employeeMail');
-const { empSignBucket, empImageBucket } = require('../config/db');
+const { generateUsername, generatePassword, generateEmployeeID } = require('../employee/generateCredentials');
+const sendEmployeeInfo = require('../employee/sendMail');
+const { empSignBucket, empImageBucket } = require('../config/buckets');
 const auth = JSON.parse(process.env.AUTH);
-
 const JWT_SECRET = auth.JWT_TOKEN;
 
 exports.employeeRegister = async(req, res)=>{

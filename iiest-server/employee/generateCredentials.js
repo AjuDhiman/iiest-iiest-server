@@ -1,11 +1,9 @@
-//Function to generate username
-function generateUsername(name, idNumber){ 
+const generateUsername = (name, idNumber)=>{ 
     const sanitizedName = name.replace(/\s/g, '').toLowerCase();
     return `${sanitizedName}_iiest_${idNumber}`;
 }
 
-//Function to generate password
-function generatePassword(length){
+const generatePassword = (length)=>{
     let charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let password = "";
     for (let i = 0; i < length; i++) {
@@ -16,8 +14,7 @@ function generatePassword(length){
     return password;
 }
 
-//Function to generate employee ID
-function generateEmployeeID (companyName, employeeCount){
+const generateEmployeeID = (companyName, employeeCount)=>{
     let employeeId = ''
     if(companyName === 'Federation'){
         employeeId = `IIEST/FD/${employeeCount}`;
@@ -27,11 +24,4 @@ function generateEmployeeID (companyName, employeeCount){
     return employeeId;
 }
 
-//Function to generate customer ID for FBO Registration
-function generateCustomerId(randonNum){
-    let customerId = '';
-    customerId = `IIEST/${randonNum}`;
-    return customerId
-}
-
-module.exports = { generateUsername, generatePassword, generateEmployeeID, generateCustomerId }
+module.exports = { generateUsername, generatePassword, generateEmployeeID }

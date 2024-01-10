@@ -1,5 +1,5 @@
 const { recipientModel, shopModel } = require('../models/recipientSchema')
-const { fboEbillBucket } = require('../config/db');
+const { fboEbillBucket } = require('../config/buckets');
 
 exports.addRecipient = async (req, res) => {
 

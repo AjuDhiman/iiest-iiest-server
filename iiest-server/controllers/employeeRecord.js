@@ -1,6 +1,6 @@
 const salesModel = require('../models/employeeSalesSchema');
 
-const employeeRecord = async(req, res)=>{
+exports.employeeRecord = async(req, res)=>{
     try {
         const overAllRecord = await salesModel.find({employeeInfo: req.user.id});
     
@@ -38,7 +38,16 @@ const employeeRecord = async(req, res)=>{
         return res.status(200).json({overAllSales: totalSaleAmount, pendingSales: pendingSalesAmount, approvedSales: approvedSalesAmount, pendingSalesCount, approvedSalesCount, overallSalesCount});
     } catch (error) {
         console.error(error)
+        return res.status(500).json({message: "Internal Server Error"})
     }
 }
 
-module.exports = { employeeRecord }
+exports.employeeSalesData = async(req, res)=>{
+    try {
+        const salesInfo =  await salesModel.find({employeeInfo: req.user.id}).populate('fboInfo').select('-employeeInfo');
+        return res.status(200).json({salesInfo});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+}

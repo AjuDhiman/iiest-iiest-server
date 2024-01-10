@@ -1,5 +1,4 @@
 const generalDataSchema = require('../models/generalDataSchema');
-const pincodesDataSchema = require('../models/pincodesDataSchema');
 
 exports.employeeFormData = async(req, res)=>{
     try {
@@ -18,7 +17,6 @@ exports.fboFormData = async(req, res)=>{
         return res.status(500).json({message: "Internal Server Error"})
     }
 }
-// general data for product list and there price
  
 exports.getProductData = async(req, res)=>{
     try {

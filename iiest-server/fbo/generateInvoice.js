@@ -1,10 +1,10 @@
-const { createInvoiceBucket } = require('../config/db');
-const { sendInvoiceMail } = require('./employeeMail');
+const { createInvoiceBucket } = require('../config/buckets');
+const sendInvoiceMail = require('./sendMail');
 const htmlToPdf = require('html-pdf-node');
 const invoiceTemplate = require('../assets/invoiceTemplate');
 
-async function generateInvoice(idNumber, clientEmail, fboObj){
-    try {
+const generateInvoice = async(idNumber, clientEmail, fboObj)=>{
+    
         const fileName = `${Date.now()}_${idNumber}.pdf`;
 
         const invoiceHTML = await invoiceTemplate(fboObj);
@@ -39,9 +39,31 @@ async function generateInvoice(idNumber, clientEmail, fboObj){
                 })                
             }
         })
-    } catch (error) {
-        console.error(error);
-    }
 }
 
-module.exports = { generateInvoice }
+const invoiceDataHandler = async(idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
+
+    const tax = (18/100)*amount;
+  
+    const date = new Date();
+    const dateVal = date.getDate();
+    const monthVal = date.getMonth() + 1;
+    const yearVal = date.getFullYear();
+  
+    const infoObj = {
+      date: `${dateVal}-${monthVal}-${yearVal}`,
+      receiptNo: idNum,
+      transactionId: idNum,
+      name: fboName, 
+      address: address, 
+      contact: contact, 
+      amount: amount,
+      taxAmount: tax,
+      totalAmount: totalAmount,
+      chosenServices: serviceArray,
+      signatureName: signatureName
+    }
+    await generateInvoice(idNum, mail, infoObj);
+  }
+
+module.exports = invoiceDataHandler;

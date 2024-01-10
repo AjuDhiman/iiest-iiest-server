@@ -1,6 +1,6 @@
 const pastFboSchema = require('../models/pastFboSchema');
-const { generateCustomerId } = require('./empGenerator');
-const { generateInvoice } = require('./invoiceGenerate')
+const generatedInfo = require('../fbo/generateCredentials');
+const invoiceDataHandler = require('../fbo/generateInvoice');
 const axios = require('axios');
 const sha256 = require('sha256');
 const uniqid = require('uniqid');
@@ -9,49 +9,6 @@ const fboModel = require('../models/fboSchema');
 const salesModel = require('../models/employeeSalesSchema');
 const employeeSchema = require('../models/employeeSchema');
 const { ObjectId } = require('mongodb');
-
-const registrationHandler = async()=>{
-    let isUnique = false;
-    let idNumber;
-
-    while (!isUnique) {
-      idNumber = Math.floor(10000 + Math.random() * 90000);
-      const existingNumber = await fboModel.findOne({ id_num: idNumber });
-      if (!existingNumber) {
-        isUnique = true;
-      }
-    }
-
-    const generatedCustomerId = generateCustomerId(idNumber);
-    let date = new Date();
-
-    return { idNumber, generatedCustomerId, date}
-}
-
-const invoiceHandler = async(idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
-
-  const tax = (18/100)*amount;
-
-  const date = new Date();
-  const dateVal = date.getDate();
-  const monthVal = date.getMonth() + 1;
-  const yearVal = date.getFullYear();
-
-  const infoObj = {
-    date: `${dateVal}-${monthVal}-${yearVal}`,
-    receiptNo: idNum,
-    transactionId: idNum,
-    name: fboName, 
-    address: address, 
-    contact: contact, 
-    amount: amount,
-    taxAmount: tax,
-    totalAmount: totalAmount,
-    chosenServices: serviceArray,
-    signatureName: signatureName
-  }
-  await generateInvoice(idNum, mail, infoObj);
-}
 
 exports.fboPayment = async(req, res)=>{
   try {
@@ -134,7 +91,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile } = fetchedFormData;  
         
-        const { idNumber, generatedCustomerId, date } = await registrationHandler();
+        const { idNumber, generatedCustomerId, date } = await generatedInfo();
 
         let serviceArr = [];
 
@@ -183,7 +140,7 @@ exports.fboPayReturn = async(req, res)=>{
           return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
         }
 
-        await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, new ObjectId(signatureFile));
+        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, new ObjectId(signatureFile));
         
         res.redirect('http://localhost:4200/fbo');
 
@@ -241,7 +198,7 @@ exports.fboRegister = async (req, res) => {
       return res.status(401).json({ success, emailErr: true });
       }
 
-      const { idNumber, generatedCustomerId, date } = await registrationHandler();
+      const { idNumber, generatedCustomerId, date } = await generatedInfo();
 
       let serviceArr = [];
 
@@ -285,7 +242,7 @@ exports.fboRegister = async (req, res) => {
         return res.status(401).json({ success, randomErr: true })
       }
 
-      await invoiceHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
+      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
       success = true;
       return res.status(200).json({ success })
       
@@ -344,17 +301,6 @@ exports.editFbo = async(req, res)=>{
         success = true;
         return res.status(201).json({success, updatedFbo})
 
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({message: "Internal Server Error"});
-    }
-}
-
-//Controller to get employee sales
-exports.employeeSalesData = async(req, res)=>{
-    try {
-        const salesInfo =  await salesModel.find({employeeInfo: req.user.id}).populate('fboInfo').select('-employeeInfo');
-        return res.status(200).json({salesInfo});
     } catch (error) {
         console.error(error);
         return res.status(500).json({message: "Internal Server Error"});

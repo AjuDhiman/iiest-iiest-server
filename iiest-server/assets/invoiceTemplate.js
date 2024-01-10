@@ -1,7 +1,7 @@
 const fboLogo = require("./iiestLogo");
 const fboStamp = require('./stamp');
 const { ToWords } = require('to-words');
-const { empSignBucket } = require("../config/db");
+const { empSignBucket } = require("../config/buckets");
 
 const invoiceTemplate = async(fboInfo)=>{
 
