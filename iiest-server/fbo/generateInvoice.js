@@ -41,9 +41,7 @@ const generateInvoice = async(idNumber, clientEmail, fboObj)=>{
         })
 }
 
-const invoiceDataHandler = async(idNum, mail, fboName, address, contact, amount, totalAmount, serviceArray, signatureName)=>{
-
-    const tax = (18/100)*amount;
+const invoiceDataHandler = async(idNum, mail, fboName, address, contact, processingAmount, extraFee, taxAmount, totalAmount, serviceArray, waterTestFee, signatureName)=>{
   
     const date = new Date();
     const dateVal = date.getDate();
@@ -56,12 +54,14 @@ const invoiceDataHandler = async(idNum, mail, fboName, address, contact, amount,
       transactionId: idNum,
       name: fboName, 
       address: address, 
-      contact: contact, 
-      amount: amount,
-      taxAmount: tax,
+      contact: contact,
+      extraFee: extraFee, 
+      amount: processingAmount,
+      taxAmount: taxAmount,
       totalAmount: totalAmount,
       chosenServices: serviceArray,
-      signatureName: signatureName
+      signatureName: signatureName,
+      waterTestFee: waterTestFee
     }
     await generateInvoice(idNum, mail, infoObj);
   }

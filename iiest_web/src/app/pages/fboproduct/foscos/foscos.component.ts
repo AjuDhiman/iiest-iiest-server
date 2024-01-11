@@ -10,6 +10,8 @@ export class FoscosComponent implements OnInit {
   @Input() formGroupName: string;
   @Input() submitted: boolean;
   @Output() foscosTotal = new EventEmitter<number>();
+  @Output() foscosFixedCharge = new EventEmitter<number>();
+  @Output() foscosGSTAmount = new EventEmitter<number>();
   waterTestFee = waterTestFee;
   clientType = clientType;
   paymentMode = paymentMode;
@@ -172,6 +174,7 @@ export class FoscosComponent implements OnInit {
         this.fixedChargeWithDuration = this.fixedCharge;
       }
     }
+    this.foscosFixedCharge.emit(this.fixedChargeWithDuration);
     return this.fixedChargeWithDuration;
   }
 
@@ -210,6 +213,7 @@ export class FoscosComponent implements OnInit {
   GSTandTotalAmnt(param: number) {
     let foscos_processAmnt = this.foscos_training.value.foscos_processing_amount * param
     let GST_amount = foscos_processAmnt * 18 / 100;
+    this.foscosGSTAmount.emit(GST_amount)
     this.foscosTotalAmnt = Number(GST_amount) + foscos_processAmnt;
     this.foscosTotalAmount(this.foscosTotalAmnt);
     console.log(this.foscosTotalAmnt);

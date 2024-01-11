@@ -28,20 +28,20 @@ export class RegisterService {
       ));
   }
 
-  public fboPayment(objId: string, addFbo: fbo): Observable<any> {
+  public fboPayment(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number): Observable<any> {
     const url = `${this.url}/fbopayment/${objId}`;
-    return this.http.post<any>(url, addFbo).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge}).pipe(
       catchError(
         this.handleError
       ));
   }
   
-  public addFbo(obdjId: string,addFbo: fbo): Observable<any> {
-    const url = `${this.url}/fboregister/${obdjId}`
-    return this.http.post<any>(url, addFbo).pipe(
+  public addFbo(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number): Observable<any> {
+    const url = `${this.url}/fboregister/${objId}`
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge}).pipe(
       catchError(
         this.handleError
-      ));
+    ));
   }
 
   public addFboRecipent(objId: string, addFboRecipent: fboShop): Observable<any> {
