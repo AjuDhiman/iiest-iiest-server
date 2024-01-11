@@ -1,5 +1,6 @@
 const employeeSchema = require('../models/employeeSchema');
 const pastEmployeeSchema = require('../models/pastEmployeeSchema');
+const areaAllocationModel = require('../models/employeeAreaSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { generateUsername, generatePassword, generateEmployeeID } = require('../employee/generateCredentials');
@@ -239,4 +240,32 @@ exports.allEmployeesData = async(req, res)=>{
     } catch (error) {
         return res.status(500).json({message: "Internal Server Error"});
     }
+}
+
+exports.areaAllocation = async(req, res)=>{
+    try {
+
+    let success = false;
+
+    const employeeId = req.params.id;
+
+    const existingAreas = await areaAllocationModel.find({employeeInfo: employeeId});
+
+    if(existingAreas){
+        return res.status(404).json({success, existingAreaErr: true})
+    }
+
+    const areaAllocated = await areaAllocationModel.create({employeeInfo: employeeId, state: req.body.state, district: req.body.district, pincodes: req.body.pincodes});
+    if(!areaAllocated){
+        success = false;
+        return res.status(200).json({success, randomErr: true})
+    }
+
+    success = true;
+    res.status(200).json({success})
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+
 }

@@ -135,7 +135,7 @@ export class EmployeelistComponent implements OnInit {
         }
       },
         error: (err) =>{
-        let errorObj = err;
+        let errorObj = err.error;
         if(errorObj.userError){
           this.registerService.signout();
         }
