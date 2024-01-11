@@ -10,6 +10,7 @@ export class FostacComponent implements OnInit {
   @Input() formGroupName: string;
   @Input() submitted: boolean;
   @Output() fostacTotal = new EventEmitter<number>();
+  @Output() fostacGSTAmount = new EventEmitter<number>();
   serviceNames = serviceNames
   processAmnts = processAmnt;
   clientType = clientType;
@@ -57,6 +58,7 @@ export class FostacComponent implements OnInit {
   GSTandTotalAmnt(param: number) {
     let fostac_processAmnt = this.fostac_training.value.fostac_processing_amount * param
     let GST_amount = fostac_processAmnt * 18 / 100;
+    this.fostacGSTAmount.emit(GST_amount);
     this.fostacTotalAmnt = Number(GST_amount) + fostac_processAmnt;
     this.fostacTotalAmount(this.fostacTotalAmnt);
     return this.fostacTotalAmnt;

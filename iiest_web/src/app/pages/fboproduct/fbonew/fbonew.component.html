@@ -164,11 +164,11 @@
 
                 <!--Fostac Component -->
                 <app-fostac *ngIf="isFostac" formGroupName="fostac_training" [submitted]="submitted"
-                    (fostacTotal)="fostacTotalAmount($event)"></app-fostac>
+                    (fostacTotal)="fostacTotalAmount($event)" (fostacGSTAmount)="fostacGSTAmount($event)"></app-fostac>
 
                 <!--Foscos Component -->
                 <app-foscos *ngIf="isFoscos" formGroupName="foscos_training" [submitted]="submitted"
-                    (foscosTotal)="foscosTotalAmount($event)"></app-foscos>
+                    (foscosTotal)="foscosTotalAmount($event)" (foscosFixedCharge)="foscosCharges($event)" (foscosGSTAmount)="foscosGSTAmount($event)"></app-foscos>
 
                 <div class="row mt-3" *ngIf="isFoscos || isFostac">
                     <div class="col-md-3">

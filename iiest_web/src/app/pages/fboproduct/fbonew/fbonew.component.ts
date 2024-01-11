@@ -25,6 +25,9 @@ export class FbonewComponent implements OnInit {
   minValue: number = 1;
   loggedUser: any;
   objId: string;
+  foscosFixedCharges: number
+  foscosGST: number;
+  fostacGST: number;
   editedData: any;
   parsedUserData: any;
   submitted = false;
@@ -246,7 +249,7 @@ export class FbonewComponent implements OnInit {
     } else {
       this.addFbo = this.fboForm.value;
       if (this.addFbo.payment_mode === 'Pay Page') {
-        this._registerService.fboPayment(this.objId, this.addFbo).subscribe({
+        this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
           next: (res) => {
             window.location.href = res.message;
           },
@@ -267,7 +270,7 @@ export class FbonewComponent implements OnInit {
         })
       } else {
         console.log(this.addFbo)
-        this._registerService.addFbo(this.objId, this.addFbo).subscribe({
+        this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
           next: (res) => {
             if (res.success) {
               this._toastrService.success('', 'Record Added Successfully');
@@ -442,7 +445,6 @@ export class FbonewComponent implements OnInit {
     }
   }
 
-
   fostacTotalAmount(TotalAmnt: any) {
     this.fostac_processAmnt = TotalAmnt;
     this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt });
@@ -450,5 +452,17 @@ export class FbonewComponent implements OnInit {
   foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = TotalAmnt;
     this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt });
+  }
+  foscosCharges(charges: any){
+    this.foscosFixedCharges = charges;
+    console.log(this.foscosFixedCharges);
+  }
+  foscosGSTAmount(gstAmount: number){
+    this.foscosGST = gstAmount
+    console.log(this.foscosGST);
+  }
+  fostacGSTAmount(gstAmount: any){
+    this.fostacGST = gstAmount
+    console.log(this.fostacGST);
   }
 }

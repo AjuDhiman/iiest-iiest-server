@@ -89,7 +89,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile } = fetchedFormData;  
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, foscosFixedCharge } = fetchedFormData;  
         
         const { idNumber, generatedCustomerId, date } = await generatedInfo();
 
@@ -103,19 +103,22 @@ exports.fboPayReturn = async(req, res)=>{
         serviceArr.push(foscos_training.foscos_service_name)
         }
 
-        let total_processing_amount;
+        let total_processing_amount = 0;
+        let totalGST = 0;
+        let waterTestFee = 0;
+        let extraFee = 0;
 
-        if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
-        total_processing_amount = Number(foscos_training.foscos_processing_amount) + Number(fostac_training.fostac_processing_amount);
+        if(product_name.includes('Fostac Training')){
+        total_processing_amount += Number(fostac_training.fostac_processing_amount);
+        totalGST += fostacGST
+        }
+
+        if(product_name.includes('Foscos Training')){
+        total_processing_amount += Number(foscos_training.foscos_processing_amount);
+        totalGST += foscosGST;
+        extraFee += foscosFixedCharge
         if(foscos_training.water_test_fee !== null){
-          total_processing_amount += Number(foscos_training.water_test_fee)
-          }
-        }else if(product_name.includes('Fostac Training')){
-        total_processing_amount = Number(fostac_training.fostac_processing_amount);
-        }else if(product_name.includes('Foscos Training')){
-        total_processing_amount = Number(foscos_training.foscos_processing_amount);
-        if(foscos_training.water_test_fee !== null){
-          total_processing_amount += Number(foscos_training.water_test_fee);
+          waterTestFee += Number(foscos_training.water_test_fee)
           }
         }
 
@@ -140,7 +143,7 @@ exports.fboPayReturn = async(req, res)=>{
           return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
         }
 
-        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, new ObjectId(signatureFile));
+        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile));
         
         res.redirect('http://localhost:4200/fbo');
 
@@ -186,7 +189,7 @@ exports.fboRegister = async (req, res) => {
         return res.status(404).json({success, signatureErr: true})
       }
 
-      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number } = req.body;
+      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, fostacGST, foscosGST, foscosFixedCharge } = req.body;
       
       const existing_owner_contact = await fboModel.findOne({ owner_contact });
       if (existing_owner_contact) {
@@ -210,19 +213,22 @@ exports.fboRegister = async (req, res) => {
         serviceArr.push(foscos_training.foscos_service_name)
       }
 
-      let total_processing_amount;
+      let total_processing_amount = 0;
+      let totalGST = 0;
+      let waterTestFee = 0;
+      let extraFee = 0;
 
-      if(product_name.includes('Fostac Training') && product_name.includes('Foscos Training')){
-        total_processing_amount = Number(foscos_training.foscos_processing_amount) + Number(fostac_training.fostac_processing_amount);
+      if(product_name.includes('Fostac Training')){
+        total_processing_amount += Number(fostac_training.fostac_processing_amount);
+        totalGST += fostacGST
+      }
+
+      if(product_name.includes('Foscos Training')){
+        total_processing_amount += Number(foscos_training.foscos_processing_amount);
+        totalGST += foscosGST;
+        extraFee += foscosFixedCharge
         if(foscos_training.water_test_fee !== null){
-          total_processing_amount += Number(foscos_training.water_test_fee)
-        }
-      }else if(product_name.includes('Fostac Training')){
-        total_processing_amount = Number(fostac_training.fostac_processing_amount);
-      }else if(product_name.includes('Foscos Training')){
-        total_processing_amount = Number(foscos_training.foscos_processing_amount);
-        if(foscos_training.water_test_fee !== null){
-          total_processing_amount += Number(foscos_training.water_test_fee)
+          waterTestFee += Number(foscos_training.water_test_fee)
         }
       }
 
@@ -242,7 +248,7 @@ exports.fboRegister = async (req, res) => {
         return res.status(401).json({ success, randomErr: true })
       }
 
-      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, grand_total, serviceArr, signatureFile);
+      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, signatureFile);
       success = true;
       return res.status(200).json({ success })
       
