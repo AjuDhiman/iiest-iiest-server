@@ -145,7 +145,7 @@
                     <div class="col-md-6">
                         <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
                         <app-multi-select #multi_select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
-                            [options]="productList" [formReset]="resetMultiDrop"
+                            [options]="productList" [formReset]="resetMultiDrop" [forProducts]="true"
                             [placeHolder]="'Select Products'"></app-multi-select>
                         <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
