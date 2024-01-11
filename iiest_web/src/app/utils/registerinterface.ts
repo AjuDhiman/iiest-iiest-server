@@ -82,3 +82,9 @@ export interface pincodeData {
   state:string,
   district:string
 }
+
+export interface areaAllocation {
+    state: string, 
+    district: string, 
+    pincodes: string[]
+}

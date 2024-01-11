@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation} from '../utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
-import { map} from 'rxjs/operators';
 import { catchError} from 'rxjs/operators'
 import { config } from '../utils/config'
 import { Router } from '@angular/router';
@@ -14,11 +13,6 @@ export class RegisterService {
   msg: string = "Hello Welcome";
   url = config.API_URL
   constructor(private http: HttpClient, private router:Router) { }
-
-  /*public saveUser(user: User): Observable<any> {
-    const url = 'https://reqres.in/api/users';
-    return this.http.post<any>(url, user);
-  }*/
 
   public addEmployee(addemployee: Employee): Observable<any> {
     const url = `${this.url}/empregister`
@@ -44,7 +38,7 @@ export class RegisterService {
     ));
   }
 
-  public addFboRecipent(objId: string, addFboRecipent: fboShop): Observable<any> {
+  public addFboRecipent(objId: string, addFboRecipent: fboRecipient): Observable<any> {
     const url = `${this.url}/fbo/addrecipient/${objId}`
     return this.http.post<any>(url, addFboRecipent).pipe(
       catchError(
@@ -83,6 +77,11 @@ export class RegisterService {
   public updateFbo(objId: string, editedData: Object, editedBy: string): Observable<any>{
     const url = `${this.url}/editFbo/${objId}`;
     return this.http.put<any>(url, {...editedData, editedBy}).pipe(catchError(this.handleError));
+  }
+
+  public registerArea(objId: string, areaAllocation: areaAllocation){
+    const url = `${this.url}/registerarea/${objId}`;
+    return this.http.post<any>(url, areaAllocation).pipe(catchError(this.handleError));
   }
 
 

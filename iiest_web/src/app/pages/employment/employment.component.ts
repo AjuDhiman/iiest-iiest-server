@@ -5,6 +5,8 @@ import { GetdataService } from 'src/app/services/getdata.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { stateName } from 'src/app/utils/config'
 import { ActivatedRoute } from '@angular/router';
+import { RegisterService } from 'src/app/services/register.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employment',
@@ -17,6 +19,7 @@ export class EmploymentComponent implements OnInit {
   state: string;
   district: string;
   statesList = stateName;
+  employeeId: string;
   districts: string[] = [];
   pincodes: number[] = [];
   allocationType: string;
@@ -64,6 +67,8 @@ export class EmploymentComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _getdataService: GetdataService,
+    private registerService: RegisterService,
+    private toasterService: ToastrService,
     private route: ActivatedRoute) {
     this.route.params.subscribe(params => {
       this.type = params['type'];
@@ -72,6 +77,7 @@ export class EmploymentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     if (this.type === 'area') {
       this.areaAllocationForm = this.formBuilder.group(
         {
@@ -98,8 +104,24 @@ export class EmploymentComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    console.log(this.areaAllocationForm);
+    console.log(this.areaAllocationForm.value);
     console.log(this.reportingManagerForm);
+    this.registerService.registerArea(this.employee._id, this.areaAllocationForm.value).subscribe({
+      next: (res)=>{
+        if(res.success){
+          this.toasterService.success('', 'Area Allocated Successfully');
+        }
+      },
+      error: (err)=>{
+        let errorObj = err.error;
+        console.log(errorObj)
+        if(errorObj.userError){
+          this.registerService.signout();
+        }else if(errorObj.existingAreaErr){
+          this.toasterService.error('', 'Area Already Allocated');
+        }
+      }
+    });
   }
 
   // this function will fetch the array of distinct districsts onbased of state select

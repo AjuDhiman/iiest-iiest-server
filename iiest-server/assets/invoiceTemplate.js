@@ -223,7 +223,7 @@ const invoiceTemplate = async(fboInfo)=>{
                             <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.amount}</div>
                             <div style="border: 1px solid #000;  text-align: center;  padding: 10px;">CGST@9% <br> SGST@9%</div>
                             <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.taxAmount}</div>
-                            ${fboInfo.extraFee !== 0 ? `<div style="border: 1px solid #000;  text-align: center;  padding: 10px;">Extra Charges</div>
+                            ${fboInfo.extraFee !== 0 ? `<div style="border: 1px solid #000;  text-align: center;  padding: 10px;">Govt. Fee</div>
                             <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.extraFee}</div> `: ''}
                             <div style="border: 1px solid #000;  text-align: center;  padding: 10px;">Water Test Fee</div>
                             <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.waterTestFee !== 0 ? fboInfo.waterTestFee : 'Not Chosen'}</div>
