@@ -1,5 +1,5 @@
-import { Component, Input, Output, OnInit, EventEmitter, OnChanges, SimpleChanges} from '@angular/core';
-import { faAngleDown, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -7,17 +7,11 @@ import { faAngleDown, faCircleExclamation } from '@fortawesome/free-solid-svg-ic
   templateUrl: './multi-select.component.html',
   styleUrls: ['./multi-select.component.scss']
 })
-export class MultiSelectComponent implements OnInit, OnChanges {
-  all: Array<{ count: number, name: string, value: any, checked: boolean }> = [];
-  selected: Array<any> = [];
-  val: number;
-  iterable = 0;
-  checksTop = 0;
-  isdropped = false;
+export class MultiSelectComponent implements OnChanges {
   faAngleDown = faAngleDown;
-  faCircleExclamation = faCircleExclamation;
-  value: any;
-  selectedItemIndex: string;
+  all: Array<{ value: string | number, checked: boolean }> = [];
+  selected: Array<string | number> = [];
+  isdropped = false;
   invalid: boolean = false;
   isDisplayEmpty: boolean = true;
 
@@ -30,57 +24,38 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Input()
   placeHolder: string = '';
 
-  @Input()
-  ForProducts:boolean = false;
+  @Input() forProducts:boolean=false
 
   @Output()
   selectedArrayChange: EventEmitter<any> = new EventEmitter<any>;
-  // async consoleopt(data:any){
-  //   await console.log(data)
-  // }
-
-  ngOnInit() {
-
-    // console.log(this.options);
-    // this.initializeAll();
-    this.checksTop = 100;
-    this.iterable = 0;
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options'] && changes['options'].currentValue) {
-      // 'options' has changed, and it has a value
+      // 'options' has changed
       this.initializeAll();
     }
   }
 
   initializeAll() {
-    this.all=[];
-    this.iterable=0;
+    this.all = [];
     for (let option of this.options) {
-      this.iterable++;
-
-      // this.val = !isNaN(option[1])?option[1]:this.iterable
-      this.all.push({ count: this.iterable, name: option, value: option, checked: false })
+      this.all.push({ value: option, checked: false })
     }
   }
 
-  onclicked(event: Event) {
-    if (event.target instanceof HTMLInputElement) {
-      this.selectedItemIndex = event.target.value;
-      this.all[+this.selectedItemIndex - 1].checked = !this.all[+event.target.value - 1].checked;
-      this.value = this.all.find(item => item.count === +this.selectedItemIndex)?.value
-      if (this.all[+this.selectedItemIndex - 1].checked) {
-        console.log(this.value);
-        this.selected.push(this.value);
-      }
-      else {
-        this.selected.splice(this.selected.indexOf(this.value), 1);
-      }
+  onclicked(event: any, index: number) {
+    this.all[index].checked = !this.all[index].checked;
+    // this.value = this.all.find((item, ItemIndex) => ItemIndex === index)?.value
+    let value = this.all[index].value
+    if (this.all[index].checked) {
+      console.log(value);
+      this.selected.push(value);
+    }
+    else {
+      this.selected.splice(this.selected.indexOf(value), 1);
     }
     this.selectedArrayChange.emit(this.selected);
     if (this.selected.length === 0) {
-      console.log(this.selected.length);
       this.isDisplayEmpty = true;
     }
     else {
@@ -89,7 +64,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     event.stopPropagation();
   }
 
-  onDisplayClick(event: Event) {
+  onDisplayClick(event: Event) {//this function will close if display is unfocused
     this.isdropped = !this.isdropped;
     event.stopPropagation();
   }
