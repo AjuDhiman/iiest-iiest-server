@@ -16,7 +16,8 @@ let sales_arr = [
   'Area Officer(District Head)',
   'Senior Area Officer',
   'Area Associate Officer',
-  'Area Officer'
+  'Area Officer',
+  'Regional HR Manager'
 ];
 
 let fbo_roles = [
@@ -28,6 +29,7 @@ let fbo_roles = [
   'Senior Area Officer',
   'Area Associate Officer',
   'Area Officer',
+  'Regional HR Manager'
 ];
 
 let empRegister_roles = [
