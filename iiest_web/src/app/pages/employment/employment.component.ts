@@ -77,7 +77,7 @@ export class EmploymentComponent implements OnInit {
         {
           state: ['', Validators.required],
           district: ['', Validators.required],
-          pincodes: [[], Validators.required],
+          pincodes: ['', Validators.required],
         });
     }
     else if (this.type === 'manager') {
@@ -105,6 +105,8 @@ export class EmploymentComponent implements OnInit {
   // this function will fetch the array of distinct districsts onbased of state select
   onStateSelect($event: any) {
     this.state = $event.target.value;
+    this.areaForm['district'].setValue('');
+    this.areaForm['pincodes'].setValue('');
     this.districts = [];
     this.pincodes = [];
     this.multiSelect.onReset();
@@ -127,6 +129,7 @@ export class EmploymentComponent implements OnInit {
     )
   }
   onDistrictSelect($event: any) {
+    this.areaForm['pincodes'].setValue('')
     this.pincodes = [];
     this.multiSelect.onReset();
     this.district = $event.target.value;
@@ -137,6 +140,10 @@ export class EmploymentComponent implements OnInit {
 
   getPincodes(event: any) { //used for multi select
     this.areaForm['pincodes'].setValue(event)
+  }
+
+  selectManager(){
+
   }
 
   // filterSearch(event: any) {

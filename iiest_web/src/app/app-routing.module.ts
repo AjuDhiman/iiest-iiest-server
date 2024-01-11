@@ -8,6 +8,16 @@ import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { authGuard } from './shared/gaurds/auth.guard';
 import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
 import { EmploymentComponent } from './pages/employment/employment.component';
+let sales_arr = [
+  'General Manager(Sales)',
+  'Regional Deputy Manager(Sales)',
+  'Area Manager(Sales)',
+  'Assistant Area Manager',
+  'Area Officer(District Head)',
+  'Senior Area Officer',
+  'Area Associate Officer',
+  'Area Officer'
+];
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
@@ -15,7 +25,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   // { path: 'fbo', component: FboComponent, canActivate:[authGuard] },
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard]},
-  { path: 'fbo', component: FbonewComponent, canActivate:[authGuard]}, 
+  { path: 'fbo', component: FbonewComponent, canActivate:[authGuard], data:sales_arr}, 
   { path: 'employment/:type', component: EmploymentComponent, canActivate:[authGuard]}
 ];
 

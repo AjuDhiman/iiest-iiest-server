@@ -12749,7 +12749,7 @@
  }
  .selector:hover{
   cursor: pointer;
-  color: #087990;
+  color: #15a362 !important;
   transition: all 0.4s ease;
  }
  sup{

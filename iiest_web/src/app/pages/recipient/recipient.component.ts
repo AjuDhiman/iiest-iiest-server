@@ -5,6 +5,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons';  
+
 import * as XLSX from 'xlsx'
 import { GetdataService } from 'src/app/services/getdata.service';
 @Component({
@@ -23,6 +24,7 @@ export class RecipientComponent implements OnInit {
   submitted = false;
   isfostac:boolean = false;
   faFileExcel = faFileExcel;
+  uploadExcel: boolean = false;
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
@@ -31,8 +33,12 @@ export class RecipientComponent implements OnInit {
     address: new FormControl(''),
     eBill: new FormControl('')
   });
+  excelSubmited:boolean=false;
   recipientform1: FormGroup = new FormGroup({
    
+  });
+  excelForm: FormGroup = new FormGroup({
+   excel:new FormControl(''),
   });
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
@@ -90,9 +96,15 @@ export class RecipientComponent implements OnInit {
         console.log("Invalid operator");
         break; */
     }
+  this.excelForm = this.formBuilder.group({
+      excel:['',[Validators.required, this.validateFileType(['csv','xlsx'])]],
+     });
   }
   get recipient(): { [key: string]: AbstractControl } {
     return this.recipientform.controls;
+  }
+  get excelform(): { [key: string]: AbstractControl } {
+    return this.excelForm.controls;
   }
   //Form Submit Methode
   onSubmit() {
@@ -196,6 +208,7 @@ export class RecipientComponent implements OnInit {
   }
 //by the help  of this function we can upload data as anexcel sheet, we used XLSX npm package in it
   onExcelUpload(event:any){
+    this.excelSubmited=true;
     let file = event.target.files[0];
     let fileReader: FileReader = new FileReader();
     fileReader.readAsBinaryString(file);
@@ -206,9 +219,36 @@ export class RecipientComponent implements OnInit {
       let data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
       console.log(data);
     }
+    console.log(this.excelForm);
   }
 
   downloadCSV(fileType:String){
     this._utilService.downloadFile(fileType);
+  }
+  ChangeFormType($event:any){
+    // console.log($event.target.value);
+    this.uploadExcel=!this.uploadExcel
+    if(this.uploadExcel===true){
+      console.log(true)
+    } else{
+      console.log(false);
+    }
+  }
+  validateFileType(allowedExtensions: string[]) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const file = control.value;
+      console.log(file);
+      if (file) {
+        const fileExtension = file.split('.').pop()?.toLowerCase();
+        console.log(fileExtension)
+        if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
+          return null;
+        } else {
+          return { invalidFileType: true };
+        }
+      }
+
+      return null;
+    };
   }
 }
