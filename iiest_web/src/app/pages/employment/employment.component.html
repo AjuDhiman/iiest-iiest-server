@@ -55,7 +55,7 @@
                         formControlName="reportingManager" class="form-select form-select-sm">
                         <option value="" disabled selected>Select the Reporting Manager</option>
                         <option *ngFor="let reportingManager of allManagers" [value]="reportingManager.name">
-                            {{reportingManager.name}}({{reportingManager.emp_id}})
+                            {{reportingManager.name}}
                         </option>
                     </select>
                     <div *ngIf="submitted && managerForm['reportingManager'].errors" class="invalid-feedback">
@@ -63,16 +63,15 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-md-6">
-                    <label for="" class="form-label">Email</label>
-                    <input type="text" placeholder="" id="email"
-                      class="form-control form-control-sm" autocomplete="off"
-                      [ngClass]="{ 'is-invalid': submitted && reportingManagerForm['reportingManager'].errors }" />
-                    <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-                      <div *ngIf="f['email'].errors['required']">Email is required</div>
-                      <div *ngIf="f['email'].errors['email']">Email is invalid</div>
+                <div class="col-md-6">
+                    <label for="manager_name" class="form-label"> </label>
+                    <input type="text" placeholder="" id="manager_name"
+                      class="form-control form-control-sm mt-2" autocomplete="off" [value]="managerForm['reportingManager'].value"
+                      [ngClass]="{ 'is-invalid': submitted && managerForm['reportingManager'].errors }" disabled="true" />
+                    <div *ngIf="submitted && managerForm['reportingManager'].errors" class="invalid-feedback">
+                      <div *ngIf="managerForm['reportingManager'].errors['required']">Email is required</div>
                     </div>
-                  </div> -->
+                  </div>
                 <!-- <div class="d-inline m-0 p-0" style="position: relative;">
                     <input #searchElem type="search" (input)="filterSearch($event)" name="search"
                         formControlName="searchUser" placeholder="Search"

@@ -3,10 +3,17 @@
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <fa-icon class="fa-lg" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel" (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')"></fa-icon>
+<div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" (change)="ChangeFormType($event)"
+      id="flexSwitchCheckDefault" [value]="uploadExcel">
+    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+  </div>
+  <fa-icon class="fa-lg" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel"
+    (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')"></fa-icon>
 </div>
-<form [formGroup]="recipientform" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+<form [formGroup]="recipientform" autocomplete="off" [ngClass]="uploadExcel?'d-none':''" (ngSubmit)="onSubmit()"
+  enctype="multipart/form-data">
   <!--Foscos FORM Start-->
   <div class="modal-body" *ngIf="this.serviceType === 'foscos'">
     <div class="row">
@@ -67,14 +74,34 @@
           <div *ngIf="recipient['aadharNo'].errors['required']">Aadhar No. is required</div>
         </div>
       </div>
+
     </div>
   </div>
   <div class="modal-footer text-left">
     <div>
-      <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" />
-      <a class="btn btn-sm btn-outline-dark" (click)="ExcelInput.click()">Upload Excel File</a>
+      <!-- <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" /> -->
     </div>
     <button type="submit" class="btn btn-sm btn-outline-dark">Add Recipient</button>
+  </div>
+</form>
+<form [ngClass]="uploadExcel===false?'d-none':''" (submit)="onExcelUpload($event)" [formGroup]="excelForm">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="Excel" class="form-label">Upload Excel</label>
+        <input type="file" id="Excel" formControlName="excel" 
+          class="form-control form-control-sm"
+          [ngClass]="{ 'is-invalid': excelSubmited && excelform['excel'].errors }">
+      </div>
+    </div>
+    <div *ngIf="excelSubmited && excelform['excel'].errors" class="invalid-feedback">
+      <div *ngIf="excelform['excel'].errors['required']">Employee Image is required</div>
+      <div *ngIf="excelform['excel'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left">
+    <button type="submit" class="btn btn-sm btn-outline-dark">Upload Excel</button>
   </div>
 </form>
 
@@ -87,14 +114,6 @@
     <div class="page-utilities">
       <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
         <div class="col-auto">
-          <!-- <form class="form">
-              <div class="input-group">
-                <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
-                  [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
-              </div>
-              <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
-                class="form-control form-control-sm search-orders" (input)="onSearchChange()">
-            </form> -->
         </div>
         <div class="col-auto">
           <!-- <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
@@ -145,7 +164,7 @@
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
-              <tr  *ngFor="let recipients of recipientData let sr = index">
+              <tr *ngFor="let recipients of recipientData let sr = index">
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.phoneNo}}</span></td>
@@ -160,7 +179,8 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td>
               </tr>
             </tbody>
-            <tbody *ngIf="(recipientData?.length === 0 && serviceType === 'fostac') || (shopData?.length === 0 && serviceType === 'foscos')">
+            <tbody
+              *ngIf="(recipientData?.length === 0 && serviceType === 'fostac') || (shopData?.length === 0 && serviceType === 'foscos')">
               <tr>
                 <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
               </tr>

@@ -129,8 +129,8 @@ export class SignupComponent implements OnInit {
             Validators.pattern(/^[0-9]{10}$/)
           ]
         ],
-        empSignature: ['', Validators.required],
-        employeeImage: ['', Validators.required],
+        empSignature: ['', [Validators.required, this.validateFileType(['png'])]],
+        employeeImage: ['', [Validators.required, this.validateFileType(['png','jpg'])]],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
@@ -403,8 +403,7 @@ export class SignupComponent implements OnInit {
         }
         else {
           //call validation
-          this.form.reset();
-          this.form.controls["empSiganture"].setValidators([Validators.required]);
+          // this.f['empSignature'].setValue('');
         }
     }
   }
@@ -420,9 +419,25 @@ export class SignupComponent implements OnInit {
         }
         else {
           //call validation
-          this.form.reset();
-          this.form.controls["employeeImage"].setValidators([Validators.required]);
         }
     }
+  }
+
+  validateFileType(allowedExtensions: string[]) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const file = control.value;
+      console.log(file);
+      if (file) {
+        const fileExtension = file.split('.').pop()?.toLowerCase();
+        console.log(fileExtension)
+        if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
+          return null;
+        } else {
+          return { invalidFileType: true };
+        }
+      }
+
+      return null;
+    };
   }
 }
