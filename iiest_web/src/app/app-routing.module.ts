@@ -47,13 +47,8 @@ const routes: Routes = [
   { path: 'main', component: LandingpageComponent},
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   // { path: 'fbo', component: FboComponent, canActivate:[authGuard] },
-<<<<<<< HEAD
-  { path: 'empregister', component: SignupComponent, canActivate:[authGuard]},
-  { path: 'fbo', component: FbonewComponent, canActivate:[authGuard], data:sales_arr}, 
-=======
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data:{allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data:{allowedRoles:fbo_roles}}, 
->>>>>>> 887ba8b5b680ff78522b8b9f620017b0fa30a551
   { path: 'employment/:type', component: EmploymentComponent, canActivate:[authGuard]}
 ];
 
