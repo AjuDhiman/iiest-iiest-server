@@ -6,8 +6,8 @@
 <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
   <div class="form-check form-switch">
     <input class="form-check-input" type="checkbox" role="switch" (change)="ChangeFormType($event)"
-      id="flexSwitchCheckDefault" [value]="uploadExcel">
-    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+      id="flexSwitchCheckDefault"/>
+    <label class="form-check-label" for="flexSwitchCheckDefault">Upload Excel</label>
   </div>
   <fa-icon class="fa-lg" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel"
     (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')"></fa-icon>
@@ -95,8 +95,8 @@
       </div>
     </div>
     <div *ngIf="excelSubmited && excelform['excel'].errors" class="invalid-feedback">
-      <div *ngIf="excelform['excel'].errors['required']">Employee Image is required</div>
-      <div *ngIf="excelform['excel'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.
+      <div *ngIf="excelSubmited && excelform['excel'].errors['required']">Employee Image is required</div>
+      <div *ngIf="excelSubmited && excelform['excel'].errors['invalidFileType']">Invalid file type Only .csv, .xlsx files are allowed.
       </div>
     </div>
   </div>

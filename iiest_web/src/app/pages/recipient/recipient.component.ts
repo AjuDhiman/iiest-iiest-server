@@ -4,10 +4,11 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
-import { faFileExcel } from '@fortawesome/free-solid-svg-icons';  
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
 import * as XLSX from 'xlsx'
 import { GetdataService } from 'src/app/services/getdata.service';
+import { fboRecipient } from 'src/app/utils/registerinterface';
 @Component({
   selector: 'app-recipient',
   templateUrl: './recipient.component.html',
@@ -15,16 +16,17 @@ import { GetdataService } from 'src/app/services/getdata.service';
 })
 export class RecipientComponent implements OnInit {
   @Input() public fboData: any;
-  @Input() public serviceType :string;
+  @Input() public serviceType: string;
   selectedFile: File | null = null;
   fboID: any;
   recipientData: any;
   shopData: any;
   addRecipient: any;
   submitted = false;
-  isfostac:boolean = false;
+  isfostac: boolean = false;
   faFileExcel = faFileExcel;
   uploadExcel: boolean = false;
+  excelData: any;
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
@@ -33,12 +35,12 @@ export class RecipientComponent implements OnInit {
     address: new FormControl(''),
     eBill: new FormControl('')
   });
-  excelSubmited:boolean=false;
+  excelSubmited: boolean = false;
   recipientform1: FormGroup = new FormGroup({
-   
+
   });
   excelForm: FormGroup = new FormGroup({
-   excel:new FormControl(''),
+    excel: new FormControl(''),
   });
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
@@ -49,11 +51,11 @@ export class RecipientComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    if(this.serviceType === 'fostac'){
+    if (this.serviceType === 'fostac') {
       this.getSaleRecipientsList(this.fboData._id);
     }
 
-    if(this.serviceType === 'foscos'){
+    if (this.serviceType === 'foscos') {
       this.getSaleShopsList(this.fboData._id);
     }
     // this.recipientData = this.fboData.recipientDetails; 
@@ -96,9 +98,9 @@ export class RecipientComponent implements OnInit {
         console.log("Invalid operator");
         break; */
     }
-  this.excelForm = this.formBuilder.group({
-      excel:['',[Validators.required, this.validateFileType(['csv','xlsx'])]],
-     });
+    this.excelForm = this.formBuilder.group({
+      excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
+    });
   }
   get recipient(): { [key: string]: AbstractControl } {
     return this.recipientform.controls;
@@ -117,9 +119,9 @@ export class RecipientComponent implements OnInit {
     this.fboID = this.fboData._id
     console.log(this.fboID);
 
-    if(this.serviceType === 'fostac'){
+    if (this.serviceType === 'fostac') {
 
-      this._registerService.addFboRecipent(this.fboID, this.recipientform.value).subscribe({
+      this._registerService.addFboRecipent(this.fboID, [this.recipientform.value]).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');
@@ -135,7 +137,7 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
-    }else if(this.serviceType === 'foscos'){
+    } else if (this.serviceType === 'foscos') {
 
       let formData: any = new FormData()
 
@@ -149,7 +151,7 @@ export class RecipientComponent implements OnInit {
 
       console.log(this.addRecipient)
 
-      this._registerService.addFboShop(this.fboID, formData).subscribe({
+      this._registerService.addFboShop(this.fboID, [formData]).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');
@@ -169,71 +171,102 @@ export class RecipientComponent implements OnInit {
   }
   closeModal() {
     this.activeModal.close();
-  } 
-
-  //file type validation
-  onImageChangeFromFile($event:any)
-  {
-      if ($event.target.files && $event.target.files[0]) {
-        let file = $event.target.files[0];
-        console.log(file);
-          if(file.type == "image/jpeg" || file.type == "image/png") {
-            console.log("correct");
-            this.selectedFile = file;
-            console.log(this.selectedFile);
-          }
-          else {
-            //call validation
-            this.recipientform.reset();
-            this.recipientform.controls["eBill"].setValidators([Validators.required]);
-          }
-      }
   }
 
-  getSaleRecipientsList(saleId: string){
+  //file type validation
+  onImageChangeFromFile($event: any) {
+    if ($event.target.files && $event.target.files[0]) {
+      let file = $event.target.files[0];
+      console.log(file);
+      if (file.type == "image/jpeg" || file.type == "image/png") {
+        console.log("correct");
+        this.selectedFile = file;
+        console.log(this.selectedFile);
+      }
+      else {
+        //call validation
+        this.recipientform.reset();
+        this.recipientform.controls["eBill"].setValidators([Validators.required]);
+      }
+    }
+  }
+
+  getSaleRecipientsList(saleId: string) {
     this.getDataServices.getSaleRecipients(saleId).subscribe({
-      next: (res)=>{
+      next: (res) => {
         this.recipientData = res.recipientsList;
       }
     })
   }
 
-  getSaleShopsList(saleId: string){
+  getSaleShopsList(saleId: string) {
     this.getDataServices.getSaleShops(saleId).subscribe({
-      next: (res)=>{
+      next: (res) => {
         this.shopData = res.shopsList
       }
     })
 
   }
-//by the help  of this function we can upload data as anexcel sheet, we used XLSX npm package in it
-  onExcelUpload(event:any){
-    this.excelSubmited=true;
+  //by the help  of this function we can upload data as anexcel sheet, we used XLSX npm package in it
+  onExcelUpload(event: any) {
+    this.excelSubmited = true;
     let file = event.target.files[0];
     let fileReader: FileReader = new FileReader();
     fileReader.readAsBinaryString(file);
 
-    fileReader.onload = (e:any) => {
-      let workbook = XLSX.read(fileReader.result, {type: 'binary'});
+    fileReader.onload = (e: any) => {
+      let workbook = XLSX.read(fileReader.result, { type: 'binary' });
       let sheetNames = workbook.SheetNames;
       let data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
       console.log(data);
+      this.excelData = data;
     }
-    console.log(this.excelForm);
+
+    if (this.serviceType === 'fostac') {
+      this._registerService.addFboRecipent(this.fboID, this.excelData).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this._toastrService.success('', 'Records Added Successfully.');
+            this.closeModal();
+          }
+        },
+        error: (err) => {
+          let errorObj = err.error;
+          if (errorObj.userError) {
+            this._registerService.signout();
+          } else if (errorObj.aadharErr) {
+            this._toastrService.error('', 'This Aadhar Number Already Exists');
+          }
+        }
+      })
+    } else if(this.serviceType==='foscos'){
+      this._registerService.addFboShop(this.fboID, this.fboData).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this._toastrService.success('', 'Record Added Successfully.');
+            this.closeModal();
+          }
+        },
+        error: (err) => {
+          let errorObj = err.error;
+          if (errorObj.userError) {
+            this._registerService.signout();
+          } else if (errorObj.addressErr) {
+            this._toastrService.error('', 'This Address Already Exists.');
+          }
+        }
+      })
+    }
   }
 
-  downloadCSV(fileType:String){
+  downloadCSV(fileType: String) {
     this._utilService.downloadFile(fileType);
   }
-  ChangeFormType($event:any){
-    // console.log($event.target.value);
-    this.uploadExcel=!this.uploadExcel
-    if(this.uploadExcel===true){
-      console.log(true)
-    } else{
-      console.log(false);
-    }
+
+  ChangeFormType($event: any) {
+    this.uploadExcel = !this.uploadExcel
   }
+
   validateFileType(allowedExtensions: string[]) {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const file = control.value;

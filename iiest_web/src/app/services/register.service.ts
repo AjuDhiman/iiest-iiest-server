@@ -38,7 +38,7 @@ export class RegisterService {
     ));
   }
 
-  public addFboRecipent(objId: string, addFboRecipent: fboRecipient): Observable<any> {
+  public addFboRecipent(objId: string, addFboRecipent: fboRecipient[]): Observable<any> {
     const url = `${this.url}/fbo/addrecipient/${objId}`
     return this.http.post<any>(url, addFboRecipent).pipe(
       catchError(
@@ -46,7 +46,7 @@ export class RegisterService {
       ));
   }
 
-  public addFboShop(objId: string, addFboShop: fboShop): Observable<any> {
+  public addFboShop(objId: string, addFboShop: fboShop[]): Observable<any> {
     const url = `${this.url}/fbo/addshop/${objId}`
     return this.http.post<any>(url, addFboShop).pipe(
       catchError(

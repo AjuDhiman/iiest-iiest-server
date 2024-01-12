@@ -7,7 +7,7 @@ try {
 
     let success = false;
 
-    const { name, phoneNo, aadharNo }  = req.body;
+    const { name, phoneNo, aadharNo }  = req.body[0];
 
     const existingPhone = await recipientModel.findOne({phoneNo});
     const existingAadhar = await recipientModel.findOne({aadharNo});
@@ -46,7 +46,7 @@ exports.addShop = async(req, res)=>{
     let billSaved = false;
 
     const eBill = req.file;
-    const { operatorName, address } = req.body;
+    const { operatorName, address } = req.body[0];
 
     if(!eBill){
         success = false;
