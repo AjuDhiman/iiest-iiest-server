@@ -51,7 +51,7 @@
             <div class="col-md-3">
                 <label for="foscos_processing_amount" class="form-label">Processing
                     Amount<sup>*</sup></label>
-                <input type="text" id="foscos_processing_amount" formControlName="foscos_processing_amount"
+                <input type="number" id="foscos_processing_amount" formControlName="foscos_processing_amount"
                     placeholder="Processing Amount" readonly="readonly"
                     [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_processing_amount')?.errors}"
                     class="form-control form-control-sm">

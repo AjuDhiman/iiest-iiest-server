@@ -60,7 +60,7 @@
 
       <div class="col-md-4">
         <label for="phoneNo" class="form-label">Mobile No.<sup>*</sup></label>
-        <input type="text" placeholder="Mobile No." formControlName="phoneNo" class="form-control form-control-sm"
+        <input type="number" placeholder="Mobile No." formControlName="phoneNo" class="form-control form-control-sm"
           id="phoneNo" [ngClass]="{ 'is-invalid': submitted && recipient['phoneNo'].errors }" />
         <div *ngIf="submitted && recipient['phoneNo'].errors" class="invalid-feedback">
           <div *ngIf="recipient['phoneNo'].errors['required']">Mobile No. is required</div>
@@ -68,7 +68,7 @@
       </div>
       <div class="col-md-4">
         <label for="aadharNo" class="form-label">Aadhar No.<sup>*</sup></label>
-        <input type="text" placeholder="Aadhar No." formControlName="aadharNo" class="form-control form-control-sm"
+        <input type="number" placeholder="Aadhar No." formControlName="aadharNo" class="form-control form-control-sm"
           id="aadharNo" [ngClass]="{ 'is-invalid': submitted && recipient['aadharNo'].errors }" />
         <div *ngIf="submitted && recipient['aadharNo'].errors" class="invalid-feedback">
           <div *ngIf="recipient['aadharNo'].errors['required']">Aadhar No. is required</div>
