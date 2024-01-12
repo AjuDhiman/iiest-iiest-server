@@ -112,7 +112,7 @@
 
                     <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
-                        <input type="number" placeholder="Pincode" formControlName="Pincode"
+                        <input type="number" placeholder="Pincode" formControlName="pincode"
                             class="form-control form-control-sm" id="pincode" [readOnly]="isExisting"
                             [ngClass]="{ 'is-invalid': submitted && fbo['pincode'].errors }"
                             min="100000" max="999999"/>
