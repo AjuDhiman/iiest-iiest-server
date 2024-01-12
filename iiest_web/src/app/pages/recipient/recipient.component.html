@@ -84,13 +84,13 @@
     <button type="submit" class="btn btn-sm btn-outline-dark">Add Recipient</button>
   </div>
 </form>
-<form [ngClass]="uploadExcel===false?'d-none':''" (submit)="onExcelUpload($event)" [formGroup]="excelForm">
+<form [ngClass]="uploadExcel===false?'d-none':''" (submit)="submitExcel()" [formGroup]="excelForm">
   <div class="modal-body">
     <div class="row">
       <div class="col-md-4">
-        <label for="Excel" class="form-label">Upload Excel</label>
+        <label for="Excel" class="form-label" >Upload Excel</label>
         <input type="file" id="Excel" formControlName="excel" 
-          class="form-control form-control-sm"
+          class="form-control form-control-sm" (change)="onExcelUpload($event)"
           [ngClass]="{ 'is-invalid': excelSubmited && excelform['excel'].errors }">
       </div>
     </div>

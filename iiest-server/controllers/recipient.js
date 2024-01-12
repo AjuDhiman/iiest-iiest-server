@@ -6,6 +6,7 @@ exports.addRecipient = async (req, res) => {
 try {
 
     let success = false;
+    console.log(req.body[0]);
 
     const { name, phoneNo, aadharNo }  = req.body[0];
 

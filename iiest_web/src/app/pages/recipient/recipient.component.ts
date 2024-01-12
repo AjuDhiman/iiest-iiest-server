@@ -221,7 +221,9 @@ export class RecipientComponent implements OnInit {
       console.log(data);
       this.excelData = data;
     }
+  }
 
+  submitExcel(){
     if (this.serviceType === 'fostac') {
       this._registerService.addFboRecipent(this.fboID, this.excelData).subscribe({
         next: (res) => {
@@ -240,7 +242,7 @@ export class RecipientComponent implements OnInit {
         }
       })
     } else if(this.serviceType==='foscos'){
-      this._registerService.addFboShop(this.fboID, this.fboData).subscribe({
+      this._registerService.addFboShop(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');
