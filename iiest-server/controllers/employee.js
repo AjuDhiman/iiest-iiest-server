@@ -251,7 +251,7 @@ exports.areaAllocation = async(req, res)=>{
 
     const existingAreas = await areaAllocationModel.find({employeeInfo: employeeId});
 
-    if(existingAreas){
+    if(existingAreas.length > 0){
         return res.status(404).json({success, existingAreaErr: true})
     }
 
