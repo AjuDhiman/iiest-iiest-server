@@ -8,17 +8,6 @@ import { authGuard } from './shared/gaurds/auth.guard';
 import { routeGuard } from './shared/gaurds/route.guard';
 import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
 import { EmploymentComponent } from './pages/employment/employment.component';
-let sales_arr = [
-  'General Manager(Sales)',
-  'Regional Deputy Manager(Sales)',
-  'Area Manager(Sales)',
-  'Assistant Area Manager',
-  'Area Officer(District Head)',
-  'Senior Area Officer',
-  'Area Associate Officer',
-  'Area Officer',
-  'Regional HR Manager'
-];
 
 let fbo_roles = [
   'General Manager(Sales)',
