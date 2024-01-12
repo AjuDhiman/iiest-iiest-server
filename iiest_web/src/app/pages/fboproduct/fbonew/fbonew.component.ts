@@ -59,6 +59,10 @@ export class FbonewComponent implements OnInit {
   searchSuggestions: any;
   isSearchEmpty=true;
   @ViewChild('searchElem') searchElem: any;
+   //New Variables by vansh on 12-01-2023 for allocted area detection for a employee
+  allocated_district:string = '';
+  allocated_state:string = '';
+  allocated_pincodes:number[];
 
   existingFbos: Object[];
   
@@ -115,6 +119,9 @@ export class FbonewComponent implements OnInit {
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
+    // this.allocated_district=this.parsedUserData.allocated_areas.district;
+    // this.allocated_state=this.parsedUserData.allocated_areas.state;
+    // this.allocated_pincodes=this.parsedUserData.allocated_areas.pincodes;
 
     this.fostac_training = this.formBuilder.group({
       fostac_processing_amount: ['', Validators.required],
@@ -153,8 +160,8 @@ export class FbonewComponent implements OnInit {
             Validators.required,
             Validators.email,
           ]],
-        state: ['', Validators.required],
-        district: ['', Validators.required],
+        state: [this.allocated_state, Validators.required],
+        district: [this.allocated_district, Validators.required],
         address: ['', Validators.required],
         village: [''],
         tehsil: [''],
