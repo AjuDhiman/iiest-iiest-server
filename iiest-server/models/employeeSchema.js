@@ -122,7 +122,7 @@ const employeeRegister = new Schema({
     signatureImage: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true
+        // unique: true
     },
     status: {
         type: Boolean, 
@@ -131,7 +131,7 @@ const employeeRegister = new Schema({
     employeeImage: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true
+        // unique: true
     }
 })
 
