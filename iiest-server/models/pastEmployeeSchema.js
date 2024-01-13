@@ -61,7 +61,7 @@ const pastEmp = new Schema({
         required: true,
         unique: true
     },
-    portal_type: {
+    panel_type: {
         type: String,
         required: true
     },

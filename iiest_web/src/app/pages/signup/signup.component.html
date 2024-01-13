@@ -67,14 +67,14 @@
             </div>
             
             <div class="col-md-3">
-              <label for="portal_type" class="form-label">Select Portal Type:</label><sup>*</sup>
-              <select class="form-select form-select-sm" id="portal_type"
-                [ngClass]="{ 'is-invalid': submitted && f['portal_type'].errors }" formControlName="portal_type">
-                <option value="" disabled selected>Select the Portal</option>
-                <option *ngFor="let portalType of getPortalType" [ngValue]="portalType">{{ portalType }}</option>
+              <label for="panel_type" class="form-label">Select Panel Type:</label><sup>*</sup>
+              <select class="form-select form-select-sm" id="panel_type"
+                [ngClass]="{ 'is-invalid': submitted && f['panel_type'].errors }" formControlName="panel_type">
+                <option value="" disabled selected>Select the Panel</option>
+                <option *ngFor="let panelType of getPanelType" [ngValue]="panelType">{{ panelType }}</option>
               </select>
-              <div *ngIf="submitted && f['portal_type'].errors" class="invalid-feedback">
-                <div *ngIf="f['portal_type'].errors['required']">Portal type is required</div>
+              <div *ngIf="submitted && f['panel_type'].errors" class="invalid-feedback">
+                <div *ngIf="f['panel_type'].errors['required']">Panel type is required</div>
               </div>
             </div>
             <div class="col-md-3">

@@ -27,7 +27,7 @@ exports.employeeRegister = async(req, res)=>{
             return res.status(401).json({success, imageErr: true})
         }
     
-        const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
+        const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, panel_type, department, designation, salary, grade_pay, doj, company_name, project_name, createdBy } = req.body;
 
         const existing_email = await employeeSchema.findOne({email});
         if(existing_email){
@@ -105,7 +105,7 @@ exports.employeeRegister = async(req, res)=>{
         })
       
         const employeeRegisterd = await employeeSchema.create({
-        id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, portal_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
+        id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, grade_pay, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
         });
 
         if(!employeeRegisterd){
