@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
+import { fbo_roles, empRegister_roles } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class SidebarComponent {
   userData: any;
+  fbo_roles=[]
   @Input() sideBarToggle:boolean;
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
@@ -51,6 +53,6 @@ navigateToEmployment(type: string) {
 }
 
 getAllowedRoles(){
-  
+  fbo_roles
 }
 }

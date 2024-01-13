@@ -70,8 +70,8 @@
 <ul class="dropdown-menu green-drop-down"
     [ngClass]="toggelShow === true && !isSidebarVisible && largeDisplay? 'show' : '' "
     [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
-    <li *ngIf="userData.department==='HR Department'|| userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item"
+    <li *ngIf="fbo_roles" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/empregister']">Employee Register</a></li>
-    <li *ngIf="userData.department==='HR Department' || userData.department==='Sales Department' || userData.department==='IT Department'" (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="" (click)="closeDropMenu()"><a class="dropdown-item" 
             [routerLink]="['/fbo']">Fbo Register</a></li>
 </ul>

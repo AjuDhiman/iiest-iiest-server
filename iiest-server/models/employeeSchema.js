@@ -66,7 +66,7 @@ const employeeRegister = new Schema({
         required: true,
         unique: true
     },
-    portal_type: {
+    pannel_type: {
         type: String,
         required: true
     },

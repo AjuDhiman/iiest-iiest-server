@@ -7,7 +7,7 @@ export interface Employee {
   password: string;
   company_name: string;
   employee_id: string;
-  portal_type: string;
+  pannel_type: string;
   project_name: string;
   doj: Date;
   post_type: string;

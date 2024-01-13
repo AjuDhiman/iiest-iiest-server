@@ -77,7 +77,7 @@ export let empRegister_roles = [
    'Deputy Human Resource Manager(HR)',
    'Senior HR Associate',
    'HR Associate',
-   'HR Coordiator',
+   'HR Coordinator',
    'Junior Executive(Admin & HR)',
    ...master_roles
  ];

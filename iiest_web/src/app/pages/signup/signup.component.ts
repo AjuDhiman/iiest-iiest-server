@@ -28,7 +28,7 @@ export class SignupComponent implements OnInit {
   addemployee: any;
   dob: NgbDateStruct;
   getEmpGeneralData: any;
-  getPortalType: any;
+  getPannelType: any;
   getProjectName: any;
   getGradePay: any;
   formType: string = "Registration";
@@ -52,7 +52,7 @@ export class SignupComponent implements OnInit {
     //confirmPassword: new FormControl(''),
     company_name: new FormControl(''),
     //employee_id: new FormControl(''),
-    portal_type: new FormControl(''),
+    pannel_type: new FormControl(''),
     project_name: new FormControl(''),
     doj: new FormControl(''),
     post_type: new FormControl(''),
@@ -109,7 +109,7 @@ export class SignupComponent implements OnInit {
           ],
         ],
         company_name: ['', Validators.required],
-        portal_type: ['', Validators.required],
+        pannel_type: ['', Validators.required],
         doj: ['', Validators.required],
         project_name: ['', Validators.required],
         post_type:['', Validators.required],
@@ -176,7 +176,7 @@ export class SignupComponent implements OnInit {
     formData.append('dob', this.form.get('dob')?.value);
     formData.append('email', this.form.get('email')?.value);
     formData.append('company_name', this.form.get('company_name')?.value);
-    formData.append('portal_type', this.form.get('portal_type')?.value);
+    formData.append('pannel_type', this.form.get('pannel_type')?.value);
     formData.append('doj', this.form.get('doj')?.value);
     formData.append('project_name', this.form.get('project_name')?.value);
     formData.append('department', this.form.get('department')?.value);
@@ -272,7 +272,7 @@ export class SignupComponent implements OnInit {
   empGeneralData() {
     this._getdataService.getGeneralData().subscribe({
       next: (res) => {
-        this.getPortalType = Object.values(res.portal_type);
+        this.getPannelType = Object.values(res.pannel_type);
         this.getProjectName = Object.values(res.project_name);
         this.getGradePay = Object.values(res.grade_pay);
       },
@@ -304,7 +304,7 @@ export class SignupComponent implements OnInit {
       'dob': this.datePipe.transform(record.dob, 'yyyy-MM-dd'),
       'email': record.email,
       'company_name': record.company_name,
-      'portal_type': record.portal_type,
+      'pannel_type': record.pannel_type,
       'project_name': record.project_name,
       'doj': this.datePipe.transform(record.doj, 'yyyy-MM-dd'),
       'department': record.department,
