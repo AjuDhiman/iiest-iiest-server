@@ -1,5 +1,6 @@
 <div class="modal-header bg-secondary">
-    <h6 class="modal-title text-white" id="modal-basic-title">Area Allocation</h6>
+    <h6 *ngIf="type==='area'" class="modal-title text-white" id="modal-basic-title">Area Allocation</h6>
+    <h6 *ngIf="type==='manager'" class="modal-title text-white" id="modal-basic-title">Reporting Manager</h6>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div>
@@ -66,11 +67,8 @@
                 <div class="col-md-6">
                     <label for="manager_name" class="form-label"> </label>
                     <input type="text" placeholder="" id="manager_name"
-                      class="form-control form-control-sm mt-2" autocomplete="off" [value]="managerForm['reportingManager'].value"
+                      class="form-control form-control-sm" style="margin-top: 6.4px;" autocomplete="off" [value]="getNameWithID()"
                       [ngClass]="{ 'is-invalid': submitted && managerForm['reportingManager'].errors }" disabled="true" />
-                    <div *ngIf="submitted && managerForm['reportingManager'].errors" class="invalid-feedback">
-                      <div *ngIf="managerForm['reportingManager'].errors['required']">Email is required</div>
-                    </div>
                   </div>
                 <!-- <div class="d-inline m-0 p-0" style="position: relative;">
                     <input #searchElem type="search" (input)="filterSearch($event)" name="search"

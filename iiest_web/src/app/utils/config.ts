@@ -43,6 +43,19 @@ export let stateName = [
    'West Bengal'
 ]
 
+
+ // these roles are only ment for development purpose because these can any access route 
+let master_roles = [   
+   'Regional IT Manager',
+   'Deputy Regional Manager(IT)',
+   'IT Manager',
+   'Deputy IT Manager',
+   'Senior IT Associate',
+   'IT Associate',
+   'IT Developer',
+   'Design Executive'
+ ]
+
 export let fbo_roles = [
    'General Manager(Sales)',
    'Regional Deputy Manager(Sales)',
@@ -52,7 +65,8 @@ export let fbo_roles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
-   'Regional HR Manager'
+   'Regional HR Manager',
+   ...master_roles
 ];
 
 
@@ -65,7 +79,5 @@ export let empRegister_roles = [
    'HR Associate',
    'HR Coordiator',
    'Junior Executive(Admin & HR)',
-   'Internship'
+   ...master_roles
  ];
-
-

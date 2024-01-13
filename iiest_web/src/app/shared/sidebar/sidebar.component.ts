@@ -49,4 +49,8 @@ closeDropMenu(){
 navigateToEmployment(type: string) {
   this.router.navigate(['/employment', type]);
 }
+
+getAllowedRoles(){
+  
+}
 }
