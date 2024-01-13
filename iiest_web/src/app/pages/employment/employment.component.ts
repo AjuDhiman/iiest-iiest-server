@@ -33,23 +33,23 @@ export class EmploymentComponent implements OnInit {
   allManagers = [
     {
       name: 'vansh',
-      emp_id: 'IIEST/7809'
+      emp_id: 'IIEST/FD/7809'
     },
     {
       name: 'harsh',
-      emp_id: 'IIEST/9090'
+      emp_id: 'IIEST/FD/9090'
     },
     {
       name: 'bhavesh',
-      emp_id: 'IIEST/9900'
+      emp_id: 'IIEST/FD/9900'
     },
     {
       name: 'rndheer',
-      emp_id: 'IIEST/7890'
+      emp_id: 'IIEST/FD/7890'
     },
     {
       name: 'Abhishake',
-      emp_id: 'IIEST/8908'
+      emp_id: 'IIEST/FD/8908'
     }
   ] 
 
@@ -166,6 +166,15 @@ export class EmploymentComponent implements OnInit {
 
   selectManager(){
 
+  }
+
+  getNameWithID():string{
+    let manager = this.allManagers
+    .find(item => item.name===this.managerForm['reportingManager'].value);
+    if(!manager){
+      return '';
+    }
+    return `${manager?.name}(${manager?.emp_id})`
   }
 
   // filterSearch(event: any) {

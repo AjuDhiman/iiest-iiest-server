@@ -22,6 +22,8 @@ export const serviceNames = {
    "foscos": ["Registration", "State"]
 }
 
+
+
 export const stateName = [
    'Andaman Nicobar', 'Andhra Pradesh',
    'Arunachal Pradesh', 'Assam',
@@ -43,7 +45,18 @@ export const stateName = [
    'West Bengal'
 ]
 
-export const fbo_roles = [
+const master_roles = [   
+   'Regional IT Manager',
+   'Deputy Regional Manager(IT)',
+   'IT Manager',
+   'Deputy IT Manager',
+   'Senior IT Associate',
+   'IT Associate',
+   'IT Developer',
+   'Design Executive'
+]
+
+export let fbo_roles = [
    'General Manager(Sales)',
    'Regional Deputy Manager(Sales)',
    'Area Manager(Sales)',
@@ -52,7 +65,7 @@ export const fbo_roles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
-   'Regional HR Manager'
+   ...master_roles
 ];
 
 
@@ -65,7 +78,5 @@ export const empRegister_roles = [
    'HR Associate',
    'HR Coordinator',
    'Junior Executive(Admin & HR)',
-   'Internship'
+   ...master_roles
  ];
-
-

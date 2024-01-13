@@ -38,14 +38,15 @@ export class MultiSelectComponent implements OnChanges {
 
   initializeAll() {
     this.all = [];
+    //we are associating a checked boolean with every value for keepig track of check boxes 
+    //associated with them
     for (let option of this.options) {
-      this.all.push({ value: option, checked: false })
+      this.all.push({ value: option, checked: false }); 
     }
   }
 
   onclicked(event: any, index: number) {
     this.all[index].checked = !this.all[index].checked;
-    // this.value = this.all.find((item, ItemIndex) => ItemIndex === index)?.value
     let value = this.all[index].value
     if (this.all[index].checked) {
       console.log(value);
@@ -55,6 +56,7 @@ export class MultiSelectComponent implements OnChanges {
       this.selected.splice(this.selected.indexOf(value), 1);
     }
     this.selectedArrayChange.emit(this.selected);
+    
     if (this.selected.length === 0) {
       this.isDisplayEmpty = true;
     }

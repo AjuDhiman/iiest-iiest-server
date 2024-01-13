@@ -12211,6 +12211,7 @@
  }
  .app-wrapper {
   margin-left: 0;
+   min-height: 89vh;
    transition: all 0.4s ease-in-out;
  }
  @media (prefers-reduced-motion: reduce) {
