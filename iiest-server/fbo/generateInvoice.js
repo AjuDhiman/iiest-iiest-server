@@ -1,4 +1,3 @@
-const { createInvoiceBucket } = require('../config/buckets');
 const sendInvoiceMail = require('./sendMail');
 const htmlToPdf = require('html-pdf-node');
 const invoiceTemplate = require('../assets/invoiceTemplate');
@@ -15,11 +14,9 @@ const generateInvoice = async(idNumber, clientEmail, fboObj)=>{
 
         htmlToPdf.generatePdf(file, options).then(pdfBuffer =>{
             if(pdfBuffer){
-                const invoiceBucket = createInvoiceBucket();
-                const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
-                invoiceUploadStream.write(pdfBuffer);
+                fboObj.invoiceUploadStream.write(pdfBuffer);
 
-                invoiceUploadStream.end((err)=>{
+                fboObj.invoiceUploadStream.end((err)=>{
                     if(err){
                         console.error(err);
                     }
@@ -41,7 +38,7 @@ const generateInvoice = async(idNumber, clientEmail, fboObj)=>{
         })
 }
 
-const invoiceDataHandler = async(idNum, mail, fboName, address, contact, processingAmount, extraFee, taxAmount, totalAmount, serviceArray, waterTestFee, signatureName)=>{
+const invoiceDataHandler = async(idNum, mail, fboName, address, contact, processingAmount, extraFee, taxAmount, totalAmount, serviceArray, waterTestFee, signatureName, uploadStream)=>{
   
     const date = new Date();
     const dateVal = date.getDate();
@@ -61,7 +58,8 @@ const invoiceDataHandler = async(idNum, mail, fboName, address, contact, process
       totalAmount: totalAmount,
       chosenServices: serviceArray,
       signatureName: signatureName,
-      waterTestFee: waterTestFee
+      waterTestFee: waterTestFee,
+      invoiceUploadStream: uploadStream
     }
     await generateInvoice(idNum, mail, infoObj);
   }
