@@ -272,6 +272,10 @@ export class FbonewComponent implements OnInit {
               this._toastrService.error('', 'Signature Not Found');
             } else if(errorObj.registerErr){
               this._toastrService.error('', 'Some Error Occured. Please Try Again');
+            } else if(errorObj.areaAllocationErr){
+              this._toastrService.error('', 'Area has not been allocated to this employee.')
+            } else if(errorObj.wrongPincode){
+              this._toastrService.error('', 'You cannot make sale outside your allocated area');
             }
           }
         })
@@ -296,6 +300,10 @@ export class FbonewComponent implements OnInit {
               this._toastrService.error('', 'Signature Not Found');
             } else if(errorObj.registerErr){
               this._toastrService.error('', 'Some Error Occured. Please Try Again');
+            } else if(errorObj.areaAllocationErr){
+              this._toastrService.error('', 'Area has not been allocated to this employee.')
+            }  else if(errorObj.wrongPincode){
+              this._toastrService.error('', 'You cannot make sale outside your allocated area');
             }
           }
         })

@@ -212,17 +212,29 @@ export class SignupComponent implements OnInit {
         },
         error: (err) => {
           let errorObj = err.error
-          if (errorObj.userError) {
-            this._registerService.signout();
-          } else if (errorObj.emailErr) {
-            this._toastrService.error('Message Error!', errorObj.emailErr);
-          } else if (errorObj.contactErr) {
-            this._toastrService.error('Message Error!', errorObj.contactErr);
-          } else if (errorObj.alternateContactErr) {
-            this._toastrService.error('Message Error!', errorObj.alternateContactErr);
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', errorObj.addressErr);
+          switch (true) {
+            case (errorObj.userError): this._registerService.signout();
+              break;
+            case (errorObj.emailErr): this._toastrService.error('Message Error!', errorObj.emailErr);
+              break;
+            case (errorObj.contactErr): this._toastrService.error('Message Error!', errorObj.contactErr);
+              break;
+            case (errorObj.alternateContactErr): this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+              break;
+            case (errorObj.addressErr): this._toastrService.error('Message Error!', errorObj.addressErr);
+              break;
           }
+          // if (errorObj.userError) {
+          //   this._registerService.signout();
+          // } else if (errorObj.emailErr) {
+          //   this._toastrService.error('Message Error!', errorObj.emailErr);
+          // } else if (errorObj.contactErr) {
+          //   this._toastrService.error('Message Error!', errorObj.contactErr);
+          // } else if (errorObj.alternateContactErr) {
+          //   this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+          // } else if (errorObj.addressErr) {
+          //   this._toastrService.error('Message Error!', errorObj.addressErr);
+          // }
         }
       })
     } else {
@@ -240,22 +252,23 @@ export class SignupComponent implements OnInit {
         },
         error: (err) => {
           let errorObj = err.error
-          if (errorObj.userError) {
-            this._registerService.signout();
-          } else if (errorObj.emailErr) {
-            this._toastrService.error('', 'This Email Already Exists.');
-          } else if (errorObj.contactErr) {
-            this._toastrService.error('', 'This Contact Number Already Exists.');
-          } else if (errorObj.alternateContactErr) {
-            this._toastrService.error('', 'This Alternate Contact Already Exists.');
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('', 'This Address Already Exists.');
-          } else if (errorObj.imageErr) {
-            this._toastrService.error('', 'Could Not Upload Image.');
-          } else if (errorObj.signatureErr) {
-            this._toastrService.error('', 'Could Not Upload Signature.');
-          } else if (errorObj.randomErr) {
-            this._toastrService.error('', 'Some Error Occured. Please Try Again.');
+          switch (true) {
+            case errorObj.userError: this._registerService.signout();
+              break;
+            case errorObj.emailErr: this._toastrService.error('', 'This Email Already Exists.');
+              break;
+            case errorObj.contactErr: this._toastrService.error('', 'This Contact Number Already Exists.');
+              break;
+            case errorObj.alternateContactErr: this._toastrService.error('', 'This Alternate Contact Already Exists.');
+              break;
+            case errorObj.addressErr: this._toastrService.error('', 'This Address Already Exists.');
+              break;
+            case errorObj.imageErr: this._toastrService.error('', 'Could Not Upload Image.');
+              break;
+            case errorObj.signatureErr: this._toastrService.error('', 'Could Not Upload Signature.');
+              break;
+            case errorObj.randomErr: this._toastrService.error('', 'Some Error Occurred. Please Try Again.');
+              break;
           }
         }
       });

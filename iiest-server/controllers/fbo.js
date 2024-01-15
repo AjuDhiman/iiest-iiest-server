@@ -8,6 +8,7 @@ const employeeSchema = require('../models/employeeSchema');
 const { ObjectId } = require('mongodb');
 const { createInvoiceBucket } = require('../config/buckets');
 const payRequest = require('../fbo/phonePay');
+const areaAllocationModel = require('../models/employeeAreaSchema');
 
 exports.fboPayment = async(req, res)=>{
   try {
@@ -19,6 +20,13 @@ exports.fboPayment = async(req, res)=>{
   if(!signatureFile){
     success = false;
     return res.status(404).json({success, signatureErr: true});
+  } 
+
+  const areaAlloted = await areaAllocationModel.findOne({employeeInfo: req.params.id});
+
+  if(!areaAlloted){
+    success = false;
+    return res.status(404).json({success, areaAllocationErr: true})
   }
 
   const formBody = req.body;
@@ -33,6 +41,13 @@ exports.fboPayment = async(req, res)=>{
   const existing_email = await fboModel.findOne({ email: formBody.email });
       if(existing_email){
       return res.status(401).json({ success, emailErr: true });
+  }
+
+  const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
+
+  if(!pincodeCheck){
+    success = false;
+    return res.status(404).json({success, wrongPincode: true});
   }
   
   payRequest(formBody.grand_total, res);
@@ -158,6 +173,12 @@ exports.fboRegister = async (req, res) => {
         return res.status(404).json({success, signatureErr: true})
       }
 
+      const areaAlloted = await areaAllocationModel.findOne({employeeInfo: createrObjId});
+      if(!areaAlloted){
+        success = false;
+        return res.status(404).json({success, areaAllocationErr: true})
+      }
+
       const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, fostacGST, foscosGST, foscosFixedCharge } = req.body;
       
       const existing_owner_contact = await fboModel.findOne({ owner_contact });
@@ -168,6 +189,13 @@ exports.fboRegister = async (req, res) => {
       const existing_email = await fboModel.findOne({ email });
       if (existing_email) {
       return res.status(401).json({ success, emailErr: true });
+      }
+
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+
+      if(!pincodeCheck){
+      success = false;
+      return res.status(404).json({success, wrongPincode: true});
       }
 
       const { idNumber, generatedCustomerId, date } = await generatedInfo();
