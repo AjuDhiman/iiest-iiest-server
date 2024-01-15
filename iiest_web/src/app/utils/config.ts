@@ -56,7 +56,7 @@ const master_roles = [
    'Design Executive'
 ]
 
-export let fbo_roles = [
+export const fbo_roles = [
    'General Manager(Sales)',
    'Regional Deputy Manager(Sales)',
    'Area Manager(Sales)',

@@ -45,6 +45,7 @@ import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsComponent } from './pages/highcharts/highcharts.component';
 import { EmploymentComponent } from './pages/employment/employment.component';
+import { ViewEmployeeComponent } from './pages/view-employee/view-employee.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { EmploymentComponent } from './pages/employment/employment.component';
     FoscosComponent,
     FbonewComponent,
     HighchartsComponent,
-    EmploymentComponent
+    EmploymentComponent,
+    ViewEmployeeComponent
   ],
   imports: [
     BrowserModule,

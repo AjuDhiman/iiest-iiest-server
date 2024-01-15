@@ -1,0 +1,262 @@
+<div class="modal-header bg-secondary">
+    <h6 class="modal-title text-white" id="modal-basic-title">Employee Details</h6>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="container">
+            <div class="col-md title" style="color: #1957a9;">Personal Info</div>
+            <div class="row  p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">ID</div>
+                        <div class="col-md-8 data">
+                            {{employee.employee_id}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Employee Name</div>
+                        <div class="col-md-8 data">
+                            {{employee.employee_name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Gender</div>
+                        <div class="col-md-8 data">
+                            {{employee.gender}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">DOB</div>
+                        <div class="col-md-8 data">
+                            {{employee.dob}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Email</div>
+                        <div class="col-md-8 data">
+                            {{employee.email}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Contact</div>
+                        <div class="col-md-8 data">
+                            {{employee.contact_no}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Alternate Contact</div>
+                        <div class="col-md-8 data">
+                            {{employee.alternate_contact}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">State</div>
+                        <div class="col-md-8 data">
+                            {{employee.state}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Address</div>
+                        <div class="col-md-8 data">
+                            {{employee.address}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container pt-2">
+            <div class="col-md title" style="color: #1957a9;">Employment Details</div>
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Company Name</div>
+                        <div class="col-md-8 data">
+                            {{employee.company_name}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Post Type</div>
+                        <div class="col-md-8 data">
+                            {{employee.post_type}}
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Total Amount <br><span
+                                style="font-size: x-small; font-weight: normal;">(18%
+                                GST Inc.)</span></div>
+                        <div class="col-md-8 data">
+                            {{employee.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                [icon]="faIndianRupeeSign"></fa-icon>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Department</div>
+                        <div class="col-md-8 data">
+                            {{employee.department}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Designation</div>
+                        <div class="col-md-8 data">
+                            {{employee.designation}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Under Project</div>
+                        <div class="col-md-8 data">
+                            {{employee.project_name}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Panel Assigned</div>
+                        <div class="col-md-8 data">
+                            {{employee.panel_type}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Pay Band</div>
+                        <div class="col-md-8 data">
+                            {{employee.grade_pay}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Gross Salary</div>
+                        <div class="col-md-8 data">
+                            {{employee.salary}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Onboard By</div>
+                        <div class="col-md-8 data">
+                            {{employee.createdBy}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">DOJ</div>
+                        <div class="col-md-8 data">
+                           {{employee.doj}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Reporting Manager</div>
+                        <div class="col-md-8 data">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Allocated State</div>
+                        <div class="col-md-8 data test-danger">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Allocated District</div>
+                        <div class="col-md-8 data">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Allocated Pincodes</div>
+                        <div class="col-md-8 data test-danger">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row   p-1">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Status</div>
+                        <div class="col-md-8 data">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="row   p-1">
+                
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6 title"> Type</div>
+                        <div class="col-md-6 data">
+                            {{employee.fbo_type}}
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>

@@ -5,7 +5,7 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from '../../services/register.service';
 import { GetdataService } from '../../services/getdata.service'
 import Validation from '../../utils/validation'
-import {  NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Store, Select } from '@ngxs/store';
@@ -28,17 +28,18 @@ export class SignupComponent implements OnInit {
   addemployee: any;
   dob: NgbDateStruct;
   getEmpGeneralData: any;
-  getPanelType: any;
-  getProjectName: any;
-  getGradePay: any;
+  panelTypes: string[] = [];
+  projects: string[] = [];
+  getProjectData: any;
+  getGradePay: string[];
   formType: string = "Registration";
   isEditMode: boolean = false;
   postsData: any;
-  isFirstPostChecked:boolean|undefined = undefined; // initially we want post type to be unselected so we assigen it niether true nor false
+  isFirstPostChecked: boolean | undefined = undefined; // initially we want post type to be unselected so we assigen it niether true nor false
   post_type: string;
   department: string;
-  post_types:string[] = [];
-  departments:string[] = [];
+  post_types: string[] = [];
+  departments: string[] = [];
   designations: string[] = [];
   //New Variables for pincode data
   pincodesData: Array<Object>;
@@ -85,8 +86,8 @@ export class SignupComponent implements OnInit {
     private _toastrService: ToastrService,
     private _getdataService: GetdataService,
     private store: Store) {
-    this.empGeneralData();
     this.getPostsData();
+    this.empGeneralData();
     // this.getPincodesData();
   }
 
@@ -112,7 +113,7 @@ export class SignupComponent implements OnInit {
         panel_type: ['', Validators.required],
         doj: ['', Validators.required],
         project_name: ['', Validators.required],
-        post_type:['', Validators.required],
+        post_type: ['', Validators.required],
         department: ['', Validators.required],
         designation: ['', Validators.required],
         salary: ['', Validators.required], // Set a default value
@@ -130,11 +131,11 @@ export class SignupComponent implements OnInit {
           ]
         ],
         empSignature: ['', [Validators.required, this.validateFileType(['png'])]],
-        employeeImage: ['', [Validators.required, this.validateFileType(['png','jpg'])]],
+        employeeImage: ['', [Validators.required, this.validateFileType(['png', 'jpg'])]],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
-        country: ['', Validators.required],
+        country: ['India', Validators.required],
         zip_code: ['',
           [
             Validators.required,
@@ -250,9 +251,9 @@ export class SignupComponent implements OnInit {
             this._toastrService.error('', 'This Address Already Exists.');
           } else if (errorObj.imageErr) {
             this._toastrService.error('', 'Could Not Upload Image.');
-          } else if (errorObj.signatureErr){
+          } else if (errorObj.signatureErr) {
             this._toastrService.error('', 'Could Not Upload Signature.');
-          } else if(errorObj.randomErr){
+          } else if (errorObj.randomErr) {
             this._toastrService.error('', 'Some Error Occured. Please Try Again.');
           }
         }
@@ -261,20 +262,20 @@ export class SignupComponent implements OnInit {
   }
 
   onReset(): void {
-    this.submitted=false;
-    this.isFirstPostChecked=undefined;
-    this.departments=[];
-    this.designations=[];
+    this.submitted = false;
+    this.isFirstPostChecked = undefined;
+    this.departments = [];
+    this.designations = [];
     this.form.reset();
+    this.f['country'].setValue('India'); // We want default value of country be India even after form reset 
   }
 
 
   empGeneralData() {
     this._getdataService.getGeneralData().subscribe({
       next: (res) => {
-        this.getPanelType = Object.values(res.panel_type);
-        this.getProjectName = Object.values(res.project_name);
-        this.getGradePay = Object.values(res.grade_pay);
+        this.getProjectData = Object.values(res.project_name);
+        this.projects = this.getProjectData.map((item: any) => item.name);
       },
       error: (err) => {
         let errorObj = err.error
@@ -326,11 +327,14 @@ export class SignupComponent implements OnInit {
   onPostSelect(postVal: string) { // this function runs when post type changes employee register form and it sets the deparments array
     this.form.get('department')?.setValue('');
     this.form.get('designation')?.setValue('');
+    this.form.get('grade_pay')?.setValue('');
     this.post_type = postVal;
     this.departments = [];
     this.designations = [];
-    this.departments = this.postsData.find((post:any) => post.name === this.post_type).departments
-    .map((department:any) => department.name);
+    this.getGradePay = [];
+    this.departments = this.postsData.find((post: any) => post.name === this.post_type).departments
+      .map((department: any) => department.name);
+    this.getGradePay=this.postsData.find((post: any) => post.name === this.post_type).pay_bands;
   }
 
   getPostsData() {  // this function retrives post data and save into variable by the help of getdataservice
@@ -353,73 +357,60 @@ export class SignupComponent implements OnInit {
     )
   }
 
-  // getPincodesData() {  // this function retrives post data and save into variable by the help of getdataservice
-  //   this._getdataService.getPincodesData().subscribe({
-  //     next: (res) => {
-  //       console.log(res);
-  //       this.pincodesData = res;
-  //       // this.postsData.forEach((post: any) => {
-  //       //   if (post.departments) {
-  //       //     this.post_types.push(post.name);
-  //       //   }
-  //       // });
-  //     },
-  //     error: (err) => {
-  //       let errorObj = err.error
-  //       if (errorObj.userError) {
-  //         this._registerService.signout();
-  //       }
-  //     }
-  //   }
-  //   )
-  // }
-
-  fetchSelectedPostData(type:string){
+  fetchSelectedPostData(type: string) {
     this.f['post_type'].patchValue(type);
     this.departments = [];
     this.designations = [];
     this.f['department'].patchValue(''); //every time when this onPostSelect() run we want department to be unset 
     this.f['designation'].patchValue(''); //every time when this onPostSelect() run we want designation to be unset 
-    this.departments = this.postsData.find((post:any) => post.name === this.post_type).departments
-    .map((department:any) => department.name);
+    this.departments = this.postsData.find((post: any) => post.name === this.post_type).departments
+      .map((department: any) => department.name);
   }
 
   onDepartmentSelect() {
     this.department = this.f['department'].value;
     this.f['designation'].patchValue(''); //every time when this onPostSelect() run we want designation to be unset 
-    this.designations = this.postsData.find((post:any) => post.name === this.post_type).departments
-    .find((department:any) => department.name === this.department).designations
-    .map((designation:any) => designation.name);
+    this.designations = this.postsData.find((post: any) => post.name === this.post_type).departments
+      .find((department: any) => department.name === this.department).designations
+      .map((designation: any) => designation.name);
+  }
+
+  onProjectSelect() { //we want panel types to be filtered on the basis of project type
+    this.panelTypes=[];
+    this.f['panel_type'].setValue(''); // we want to reset panels on selection of projects
+    let project_name = this.f['project_name'].value;
+    this.panelTypes = this.getProjectData
+      .find((project: any) => project.name === project_name).panel_type;
   }
 
   onSignatureEnter($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
       console.log(file);
-        if(file.type == "image/png") {
-          console.log("correct");
-          this.signatureFile = file;
-          console.log(this.signatureFile);
-        }
-        else {
-          //call validation
-          // this.f['empSignature'].setValue('');
-        }
+      if (file.type == "image/png") {
+        console.log("correct");
+        this.signatureFile = file;
+        console.log(this.signatureFile);
+      }
+      else {
+        //call validation
+        // this.f['empSignature'].setValue('');
+      }
     }
   }
 
-  onEmpImageChange($event: any){
+  onEmpImageChange($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
       console.log(file);
-        if(file.type == "image/png" || file.type == "image/jpg") {
-          console.log("correct");
-          this.empImageFile = file;
-          console.log(this.empImageFile);
-        }
-        else {
-          //call validation
-        }
+      if (file.type == "image/png" || file.type == "image/jpg") {
+        console.log("correct");
+        this.empImageFile = file;
+        console.log(this.empImageFile);
+      }
+      else {
+        //call validation
+      }
     }
   }
 

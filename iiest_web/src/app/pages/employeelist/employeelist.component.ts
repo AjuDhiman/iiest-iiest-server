@@ -12,6 +12,7 @@ import { Papa } from 'ngx-papaparse';
 import { FileSaverService } from 'ngx-filesaver'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmploymentComponent } from '../employment/employment.component';
+import { ViewEmployeeComponent } from '../view-employee/view-employee.component';
 
 @Component({
   selector: 'app-employeelist',
@@ -81,6 +82,8 @@ export class EmployeelistComponent implements OnInit {
         this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
       } else if (this.selectedFilter === 'byContact') {
         this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.contact_no.toString().includes(this.searchQuery.toString()))
+      } else if (this.selectedFilter === 'byLocation'){
+        this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.state.toLowerCase().includes(this.searchQuery.toString())) 
       }
     }
   }
@@ -147,4 +150,11 @@ export class EmployeelistComponent implements OnInit {
       modalRef.componentInstance.employee = res;
       modalRef.componentInstance.type = type;
   }
+
+    //View Employee Details
+    viewEmployeeDetails(res:any){
+      const modalRef = this.modalService.open(ViewEmployeeComponent, { size: 'lg', backdrop: 'static' });
+      console.log(res);
+        modalRef.componentInstance.employee = res;
+    }
 }

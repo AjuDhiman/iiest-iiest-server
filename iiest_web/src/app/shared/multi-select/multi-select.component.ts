@@ -46,7 +46,9 @@ export class MultiSelectComponent implements OnChanges {
   }
 
   onclicked(event: any, index: number) {
+    //initially we will toggle the check of clicked element tracking by index cames from templet
     this.all[index].checked = !this.all[index].checked;
+
     let value = this.all[index].value
     if (this.all[index].checked) {
       console.log(value);
@@ -55,6 +57,8 @@ export class MultiSelectComponent implements OnChanges {
     else {
       this.selected.splice(this.selected.indexOf(value), 1);
     }
+
+    //we want to emit the array of all selected elements
     this.selectedArrayChange.emit(this.selected);
     
     if (this.selected.length === 0) {
