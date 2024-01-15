@@ -46,6 +46,10 @@ const salesSchema = new Schema({
     grand_total: {
         type: String,
         required: true
+    },
+    invoiceId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     }
 })
 

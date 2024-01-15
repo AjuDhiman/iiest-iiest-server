@@ -1,14 +1,13 @@
 const pastFboSchema = require('../models/pastFboSchema');
 const generatedInfo = require('../fbo/generateCredentials');
 const invoiceDataHandler = require('../fbo/generateInvoice');
-const axios = require('axios');
-const sha256 = require('sha256');
-const uniqid = require('uniqid');
 const fboPaymentSchema = require('../models/fboPaymentSchema');
 const fboModel = require('../models/fboSchema');
 const salesModel = require('../models/employeeSalesSchema');
 const employeeSchema = require('../models/employeeSchema');
 const { ObjectId } = require('mongodb');
+const { createInvoiceBucket } = require('../config/buckets');
+const payRequest = require('../fbo/phonePay');
 
 exports.fboPayment = async(req, res)=>{
   try {
@@ -36,44 +35,8 @@ exports.fboPayment = async(req, res)=>{
       return res.status(401).json({ success, emailErr: true });
   }
   
-  let tx_uuid = uniqid();
-
-  let normalPayLoad = {
-    "merchantId": "PGTESTPAYUAT93",
-    "merchantTransactionId": tx_uuid,
-    "merchantUserId": "MUID123",
-    "amount": formBody.grand_total * 100,
-    "redirectUrl": "http://localhost:3000/iiest/fbo-pay-return",
-    "redirectMode": "POST",
-    "callbackUrl": "http://localhost:3000/iiest/fbo-pay-return",
-    "paymentInstrument": {
-      "type": "PAY_PAGE"
-    }
-  }
-
-  let saltKey = '875126e4-5a13-4dae-ad60-5b8c8b629035';
-  let saltIndex = 1
-  let bufferObj = Buffer.from(JSON.stringify(normalPayLoad), "utf8");
-  let base64String = bufferObj.toString("base64");
+  payRequest(formBody.grand_total, res);
   
-  let string = base64String + '/pg/v1/pay' + saltKey;
-  
-  let sha256_val = sha256(string);
-  let checksum = sha256_val + '###' + saltIndex;
-
-  axios.post('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', {
-    'request': base64String
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-VERIFY': checksum,
-      'accept': 'application/json'
-    }
-  }).then(function (response) {
-    return res.status(200).json({message: response.data.data.instrumentResponse.redirectInfo.url});
-  }).catch(function (error) {
-    console.log(error);
-  });
   } catch (error) {
     return res.status(500).json({message: 'Internal Server Error'});
   }
@@ -130,6 +93,12 @@ exports.fboPayReturn = async(req, res)=>{
           return res.status(401).json({success, message: "FBO entry not successful"})
         }
 
+        const invoiceBucket = createInvoiceBucket();
+
+        const fileName = `${Date.now()}_${idNumber}.pdf`;
+
+        const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
         const buyerData = await fboPaymentSchema.create({
         buyerId: fboEntry._id, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: grand_total});
       
@@ -137,13 +106,13 @@ exports.fboPayReturn = async(req, res)=>{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
 
-        const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total});
+        const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total, invoiceId: invoiceUploadStream.id});
 
         if(!selectedProductInfo){
           return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
         }
 
-        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile));
+        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
         
         res.redirect('http://localhost:4200/fbo');
 
@@ -232,6 +201,12 @@ exports.fboRegister = async (req, res) => {
         }
       }
 
+      const invoiceBucket = createInvoiceBucket();
+
+      const fileName = `${Date.now()}_${idNumber}.pdf`;
+
+      const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
       const fboEntry = await fboModel.create({
       employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, createdAt: date, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
       });
@@ -241,14 +216,14 @@ exports.fboRegister = async (req, res) => {
         return res.status(401).json({ success, randomErr: true })
       }
 
-      const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total});
+      const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total, invoiceId: invoiceUploadStream.id});
 
       if(!selectedProductInfo){
         success = false;
         return res.status(401).json({ success, randomErr: true })
       }
 
-      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, signatureFile);
+      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, signatureFile, invoiceUploadStream);
       success = true;
       return res.status(200).json({ success })
       
