@@ -61,16 +61,16 @@
               <tr>
                 <th class="cell">S.No</th>
                 <th class="cell">Name</th>
-                <th class="cell">Contact</th>
-                <th class="cell">Username</th>
                 <th class="cell">Employee ID</th>
-                <th class="cell">Company</th>
+                <th class="cell">Username</th>
+                <th class="cell">Contact</th>
                 <th class="cell">Email</th>
+                <th class="cell">Location</th>
                 <th class="cell">Created By</th>
                 <th class="cell text-center">Status</th>
                 <th class="cell text-center">Action</th>
                 <!-- <th class="cell">Last Edit</th> -->
-                
+
               </tr>
             </thead>
             <tbody *ngIf="filteredEmployees?.length>0">
@@ -79,24 +79,29 @@
                 *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
                 <td class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
-                <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
-                <td class="cell"><span class="truncate selector" (click)="allocate(employee, 'manager')">{{employee.username}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
-                <td class="cell"><span class="truncate">{{employee.company_name}}</span></td>
+                <td class="cell"><span class="truncate selector"
+                    (click)="allocate(employee, 'manager')">{{employee.username}}</span></td>
+                <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
                 <td class="cell"><span class="truncate">
                     <fa-icon class="fa-l" style="margin-right: 5px;"
                       [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
                 </td>
+                <td class="cell"><span class="truncate">{{employee.state}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
                 <td class="cell text-center">
                   <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
                   <fa-icon class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
                 </td>
                 <td class="cell text-center">
-                  <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)" style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
-                  <fa-icon class="fa-l selector" (click)="allocate(employee, 'area')" style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
-                  <fa-icon class="fa-l selector" (click)="editRecord(employee)" style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
-                  <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)"style="color: #c64115; cursor: pointer;" [icon]="faTrash" ></fa-icon>
+                  <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
+                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
+                  <fa-icon class="fa-l selector" (click)="allocate(employee, 'area')"
+                    style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
+                  <fa-icon class="fa-l selector" (click)="editRecord(employee)"
+                    style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
+                  <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
+                    [icon]="faTrash"></fa-icon>
                 </td>
                 <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
               </tr>
@@ -108,7 +113,6 @@
     </div><!--//app-card-->
 
     <div class="d-flex justify-content-end">
-      <pagination-controls previousLabel="Prev" nextLabel="Next"
-        (pageChange)="onTableDataChange($event)">
+      <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
       </pagination-controls>
     </div>
