@@ -5,7 +5,7 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from '../../services/register.service';
 import { GetdataService } from '../../services/getdata.service'
 import Validation from '../../utils/validation'
-import {  NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Store, Select } from '@ngxs/store';
@@ -34,11 +34,11 @@ export class SignupComponent implements OnInit {
   formType: string = "Registration";
   isEditMode: boolean = false;
   postsData: any;
-  isFirstPostChecked:boolean|undefined = undefined; // initially we want post type to be unselected so we assigen it niether true nor false
+  isFirstPostChecked: boolean | undefined = undefined; // initially we want post type to be unselected so we assigen it niether true nor false
   post_type: string;
   department: string;
-  post_types:string[] = [];
-  departments:string[] = [];
+  post_types: string[] = [];
+  departments: string[] = [];
   designations: string[] = [];
   //New Variables for pincode data
   pincodesData: Array<Object>;
@@ -112,7 +112,7 @@ export class SignupComponent implements OnInit {
         panel_type: ['', Validators.required],
         doj: ['', Validators.required],
         project_name: ['', Validators.required],
-        post_type:['', Validators.required],
+        post_type: ['', Validators.required],
         department: ['', Validators.required],
         designation: ['', Validators.required],
         salary: ['', Validators.required], // Set a default value
@@ -130,7 +130,7 @@ export class SignupComponent implements OnInit {
           ]
         ],
         empSignature: ['', [Validators.required, this.validateFileType(['png'])]],
-        employeeImage: ['', [Validators.required, this.validateFileType(['png','jpg'])]],
+        employeeImage: ['', [Validators.required, this.validateFileType(['png', 'jpg'])]],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
@@ -210,17 +210,29 @@ export class SignupComponent implements OnInit {
         },
         error: (err) => {
           let errorObj = err.error
-          if (errorObj.userError) {
-            this._registerService.signout();
-          } else if (errorObj.emailErr) {
-            this._toastrService.error('Message Error!', errorObj.emailErr);
-          } else if (errorObj.contactErr) {
-            this._toastrService.error('Message Error!', errorObj.contactErr);
-          } else if (errorObj.alternateContactErr) {
-            this._toastrService.error('Message Error!', errorObj.alternateContactErr);
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('Message Error!', errorObj.addressErr);
+          switch (true) {
+            case (errorObj.userError): this._registerService.signout();
+              break;
+            case (errorObj.emailErr): this._toastrService.error('Message Error!', errorObj.emailErr);
+              break;
+            case (errorObj.contactErr): this._toastrService.error('Message Error!', errorObj.contactErr);
+              break;
+            case (errorObj.alternateContactErr): this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+              break;
+            case (errorObj.addressErr): this._toastrService.error('Message Error!', errorObj.addressErr);
+              break;
           }
+          // if (errorObj.userError) {
+          //   this._registerService.signout();
+          // } else if (errorObj.emailErr) {
+          //   this._toastrService.error('Message Error!', errorObj.emailErr);
+          // } else if (errorObj.contactErr) {
+          //   this._toastrService.error('Message Error!', errorObj.contactErr);
+          // } else if (errorObj.alternateContactErr) {
+          //   this._toastrService.error('Message Error!', errorObj.alternateContactErr);
+          // } else if (errorObj.addressErr) {
+          //   this._toastrService.error('Message Error!', errorObj.addressErr);
+          // }
         }
       })
     } else {
@@ -238,33 +250,52 @@ export class SignupComponent implements OnInit {
         },
         error: (err) => {
           let errorObj = err.error
-          if (errorObj.userError) {
-            this._registerService.signout();
-          } else if (errorObj.emailErr) {
-            this._toastrService.error('', 'This Email Already Exists.');
-          } else if (errorObj.contactErr) {
-            this._toastrService.error('', 'This Contact Number Already Exists.');
-          } else if (errorObj.alternateContactErr) {
-            this._toastrService.error('', 'This Alternate Contact Already Exists.');
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('', 'This Address Already Exists.');
-          } else if (errorObj.imageErr) {
-            this._toastrService.error('', 'Could Not Upload Image.');
-          } else if (errorObj.signatureErr){
-            this._toastrService.error('', 'Could Not Upload Signature.');
-          } else if(errorObj.randomErr){
-            this._toastrService.error('', 'Some Error Occured. Please Try Again.');
+          switch (true) {
+            case errorObj.userError: this._registerService.signout();
+              break;
+            case errorObj.emailErr: this._toastrService.error('', 'This Email Already Exists.');
+              break;
+            case errorObj.contactErr: this._toastrService.error('', 'This Contact Number Already Exists.');
+              break;
+            case errorObj.alternateContactErr: this._toastrService.error('', 'This Alternate Contact Already Exists.');
+              break;
+            case errorObj.addressErr: this._toastrService.error('', 'This Address Already Exists.');
+              break;
+            case errorObj.imageErr: this._toastrService.error('', 'Could Not Upload Image.');
+              break;
+            case errorObj.signatureErr: this._toastrService.error('', 'Could Not Upload Signature.');
+              break;
+            case errorObj.randomErr: this._toastrService.error('', 'Some Error Occurred. Please Try Again.');
+              break;
           }
+
+          // if (errorObj.userError) {
+          //   this._registerService.signout();
+          // } else if (errorObj.emailErr) {
+          //   this._toastrService.error('', 'This Email Already Exists.');
+          // } else if (errorObj.contactErr) {
+          //   this._toastrService.error('', 'This Contact Number Already Exists.');
+          // } else if (errorObj.alternateContactErr) {
+          //   this._toastrService.error('', 'This Alternate Contact Already Exists.');
+          // } else if (errorObj.addressErr) {
+          //   this._toastrService.error('', 'This Address Already Exists.');
+          // } else if (errorObj.imageErr) {
+          //   this._toastrService.error('', 'Could Not Upload Image.');
+          // } else if (errorObj.signatureErr) {
+          //   this._toastrService.error('', 'Could Not Upload Signature.');
+          // } else if (errorObj.randomErr) {
+          //   this._toastrService.error('', 'Some Error Occured. Please Try Again.');
+          // }
         }
       });
     }
   }
 
   onReset(): void {
-    this.submitted=false;
-    this.isFirstPostChecked=undefined;
-    this.departments=[];
-    this.designations=[];
+    this.submitted = false;
+    this.isFirstPostChecked = undefined;
+    this.departments = [];
+    this.designations = [];
     this.form.reset();
   }
 
@@ -329,8 +360,8 @@ export class SignupComponent implements OnInit {
     this.post_type = postVal;
     this.departments = [];
     this.designations = [];
-    this.departments = this.postsData.find((post:any) => post.name === this.post_type).departments
-    .map((department:any) => department.name);
+    this.departments = this.postsData.find((post: any) => post.name === this.post_type).departments
+      .map((department: any) => department.name);
   }
 
   getPostsData() {  // this function retrives post data and save into variable by the help of getdataservice
@@ -374,52 +405,52 @@ export class SignupComponent implements OnInit {
   //   )
   // }
 
-  fetchSelectedPostData(type:string){
+  fetchSelectedPostData(type: string) {
     this.f['post_type'].patchValue(type);
     this.departments = [];
     this.designations = [];
     this.f['department'].patchValue(''); //every time when this onPostSelect() run we want department to be unset 
     this.f['designation'].patchValue(''); //every time when this onPostSelect() run we want designation to be unset 
-    this.departments = this.postsData.find((post:any) => post.name === this.post_type).departments
-    .map((department:any) => department.name);
+    this.departments = this.postsData.find((post: any) => post.name === this.post_type).departments
+      .map((department: any) => department.name);
   }
 
   onDepartmentSelect() {
     this.department = this.f['department'].value;
     this.f['designation'].patchValue(''); //every time when this onPostSelect() run we want designation to be unset 
-    this.designations = this.postsData.find((post:any) => post.name === this.post_type).departments
-    .find((department:any) => department.name === this.department).designations
-    .map((designation:any) => designation.name);
+    this.designations = this.postsData.find((post: any) => post.name === this.post_type).departments
+      .find((department: any) => department.name === this.department).designations
+      .map((designation: any) => designation.name);
   }
 
   onSignatureEnter($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
       console.log(file);
-        if(file.type == "image/png") {
-          console.log("correct");
-          this.signatureFile = file;
-          console.log(this.signatureFile);
-        }
-        else {
-          //call validation
-          // this.f['empSignature'].setValue('');
-        }
+      if (file.type == "image/png") {
+        console.log("correct");
+        this.signatureFile = file;
+        console.log(this.signatureFile);
+      }
+      else {
+        //call validation
+        // this.f['empSignature'].setValue('');
+      }
     }
   }
 
-  onEmpImageChange($event: any){
+  onEmpImageChange($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
       console.log(file);
-        if(file.type == "image/png" || file.type == "image/jpg") {
-          console.log("correct");
-          this.empImageFile = file;
-          console.log(this.empImageFile);
-        }
-        else {
-          //call validation
-        }
+      if (file.type == "image/png" || file.type == "image/jpg") {
+        console.log("correct");
+        this.empImageFile = file;
+        console.log(this.empImageFile);
+      }
+      else {
+        //call validation
+      }
     }
   }
 

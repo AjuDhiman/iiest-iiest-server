@@ -73,14 +73,15 @@ export class EmployeelistComponent implements OnInit {
       this.isSearch =false;
       this.filteredEmployees = this.allEmployees;
     } else {
-      if (this.selectedFilter === 'byName') {
-        this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      } else if (this.selectedFilter === 'byEmail') {
-        this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.email.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      } else if (this.selectedFilter === 'byEmpId') {
-        this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      } else if (this.selectedFilter === 'byContact') {
-        this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.contact_no.toString().includes(this.searchQuery.toString()))
+      switch (this.selectedFilter) {
+        case 'byName': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          break;
+        case 'byEMail': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.email.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          break;
+        case 'byEmpId': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          break;
+        case 'byContact': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.contact_no.toString().includes(this.searchQuery.toString()))
+          break;
       }
     }
   }
