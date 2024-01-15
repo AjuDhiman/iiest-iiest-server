@@ -272,6 +272,8 @@ export class FbonewComponent implements OnInit {
               this._toastrService.error('', 'Signature Not Found');
             } else if(errorObj.registerErr){
               this._toastrService.error('', 'Some Error Occured. Please Try Again');
+            } else if(errorObj.areaAllocationErr){
+              this._toastrService.error('', 'Area has not been allocated to this employee.')
             }
           }
         })
@@ -296,6 +298,8 @@ export class FbonewComponent implements OnInit {
               this._toastrService.error('', 'Signature Not Found');
             } else if(errorObj.registerErr){
               this._toastrService.error('', 'Some Error Occured. Please Try Again');
+            } else if(errorObj.areaAllocationErr){
+              this._toastrService.error('', 'Area has not been allocated to this employee.')
             }
           }
         })
