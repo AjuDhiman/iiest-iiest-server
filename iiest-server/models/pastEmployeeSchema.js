@@ -77,8 +77,8 @@ const pastEmp = new Schema({
         type: Number, 
         required: true
     },
-    grade_pay: {
-        type: Number, 
+    pay_band: {
+        type: String, 
         required: true
     },
     doj: {

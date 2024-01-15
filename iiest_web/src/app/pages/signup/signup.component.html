@@ -66,6 +66,17 @@
               </div>
             </div>
             <div class="col-md-3">
+              <label for="project_name" class="form-label">Project Name</label><sup>*</sup>
+              <select id="project_name" [ngClass]="{ 'is-invalid': submitted && f['project_name'].errors }"
+                formControlName="project_name" class="form-select form-select-sm" (change)="onProjectSelect()">
+                <option value="" disabled selected>Select the Project</option>
+                <option *ngFor="let projectName of projects" [ngValue]="projectName">{{ projectName }}</option>
+              </select>
+              <div *ngIf="submitted && f['project_name'].errors" class="invalid-feedback">
+                <div *ngIf="f['project_name'].errors['required']">Project Name is required</div>
+              </div>
+            </div>
+            <div class="col-md-3">
               <label class="form-label">Post Type</label><sup>*</sup>
               <div class="d-flex gap-5">
                 <div class="form-check form-check-sm">
@@ -109,14 +120,14 @@
               </div>
             </div>
             <div class="col-md-3">
-              <label for="grade_pay" class="form-label">Pay Band</label><sup>*</sup>
-              <select id="grade_pay" [ngClass]="{ 'is-invalid': submitted && f['grade_pay'].errors }"
-                formControlName="grade_pay" class="form-select form-select-sm">
+              <label for="pay_band" class="form-label">Pay Band</label><sup>*</sup>
+              <select id="pay_band" [ngClass]="{ 'is-invalid': submitted && f['pay_band'].errors }"
+                formControlName="pay_band" class="form-select form-select-sm">
                 <option value="" disabled selected>Select the Pay Band</option>
-                <option *ngFor="let gradePay of getGradePay" [ngValue]="gradePay">{{ gradePay }}</option>
+                <option *ngFor="let payBand of payBands" [ngValue]="payBand">{{ payBand }}</option>
               </select>
-              <div *ngIf="submitted && f['grade_pay'].errors" class="invalid-feedback">
-                <div *ngIf="f['grade_pay'].errors['required']">Grade Pay is required</div>
+              <div *ngIf="submitted && f['pay_band'].errors" class="invalid-feedback">
+                <div *ngIf="f['pay_band'].errors['required']">Pay Band is required</div>
               </div>
             </div>
             <div class="col-md-3">
@@ -125,17 +136,6 @@
                 id="salary" [ngClass]="{ 'is-invalid': submitted && f['salary'].errors }">
               <div *ngIf="submitted && f['salary'].errors" class="invalid-feedback">
                 <div *ngIf="f['salary'].errors['required']">Gross Salary is required</div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <label for="project_name" class="form-label">Project Name</label><sup>*</sup>
-              <select id="project_name" [ngClass]="{ 'is-invalid': submitted && f['project_name'].errors }"
-                formControlName="project_name" class="form-select form-select-sm" (change)="onProjectSelect()">
-                <option value="" disabled selected>Select the Project</option>
-                <option *ngFor="let projectName of projects" [ngValue]="projectName">{{ projectName }}</option>
-              </select>
-              <div *ngIf="submitted && f['project_name'].errors" class="invalid-feedback">
-                <div *ngIf="f['project_name'].errors['required']">Project Name is required</div>
               </div>
             </div>
             
@@ -201,12 +201,9 @@
             <div class="col-md-2">
               <label for="state" class="form-label">State</label><sup>*</sup>
               <select id="state" [ngClass]="{ 'is-invalid': submitted && f['state'].errors }" formControlName="state"
-                class="form-select form-select-sm">
+                class="form-select form-select-sm" (change)="onStateSelect()">
                 <option value="" disabled selected>Select the State</option>
-                <option value="Delhi">Delhi</option>
-                <option value="UP">UP</option>
-                <option value="HP">HP</option>
-                <option value="Haryana">Haryana</option>
+                <option *ngFor="let state of stateName" [value]="state">{{state}}</option>
               </select>
               <div *ngIf="submitted && f['state'].errors" class="invalid-feedback">
                 <div *ngIf="f['state'].errors['required']">State is required</div>
@@ -214,11 +211,13 @@
             </div>
             <div class="col-md-2">
               <label for="city" class="form-label">City</label><sup>*</sup>
-              <input type="text" placeholder="City" formControlName="city" class="form-control form-control-sm"
-                id="city" [ngClass]="{ 'is-invalid': submitted && f['city'].errors }">
+              <select id="city" [ngClass]="{ 'is-invalid': submitted && f['city'].errors }" formControlName="city"
+                class="form-select form-select-sm">
+                <option value="" disabled selected>Select the City</option>
+                <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+              </select>
               <div *ngIf="submitted && f['city'].errors" class="invalid-feedback">
-                <div *ngIf="f['city'].errors['required']">
-                  City is required</div>
+                <div *ngIf="f['city'].errors['required']">City is required</div>
               </div>
             </div>
 

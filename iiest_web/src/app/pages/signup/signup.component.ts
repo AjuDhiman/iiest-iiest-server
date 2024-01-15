@@ -11,6 +11,7 @@ import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { UpdateEmployee } from 'src/app/store/actions/employee.action';
+import { stateName } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-signup',
@@ -31,7 +32,7 @@ export class SignupComponent implements OnInit {
   panelTypes: string[] = [];
   projects: string[] = [];
   getProjectData: any;
-  getGradePay: string[];
+  payBands: string[];
   formType: string = "Registration";
   isEditMode: boolean = false;
   postsData: any;
@@ -42,7 +43,8 @@ export class SignupComponent implements OnInit {
   departments: string[] = [];
   designations: string[] = [];
   //New Variables for pincode data
-  pincodesData: Array<Object>;
+  stateName=stateName
+  cities:string[]=[];
   form: FormGroup = new FormGroup({
     employee_name: new FormControl(''),
     gender: new FormControl(''),
@@ -60,7 +62,7 @@ export class SignupComponent implements OnInit {
     department: new FormControl(''),
     designation: new FormControl(''),
     salary: new FormControl(''),
-    grade_pay: new FormControl(''),
+    pay_band: new FormControl(''),
     contact_no: new FormControl(''),
     alternate_contact: new FormControl(''),
     address: new FormControl(''),
@@ -88,7 +90,6 @@ export class SignupComponent implements OnInit {
     private store: Store) {
     this.getPostsData();
     this.empGeneralData();
-    // this.getPincodesData();
   }
 
   ngOnInit(): void {
@@ -117,7 +118,7 @@ export class SignupComponent implements OnInit {
         department: ['', Validators.required],
         designation: ['', Validators.required],
         salary: ['', Validators.required], // Set a default value
-        grade_pay: ['', Validators.required], // Set a default value
+        pay_band: ['', Validators.required], // Set a default value
         contact_no: ['',
           [
             Validators.required,
@@ -184,7 +185,7 @@ export class SignupComponent implements OnInit {
     formData.append('designation', this.form.get('designation')?.value);
     formData.append('post_type', this.form.get('post_type')?.value)
     formData.append('salary', this.form.get('salary')?.value);
-    formData.append('grade_pay', this.form.get('grade_pay')?.value);
+    formData.append('pay_band', this.form.get('pay_band')?.value);
     formData.append('contact_no', this.form.get('contact_no')?.value);
     formData.append('alternate_contact', this.form.get('alternate_contact')?.value);
     formData.append('empSignature', this.signatureFile);
@@ -311,7 +312,7 @@ export class SignupComponent implements OnInit {
       'department': record.department,
       'designation': record.designation,
       'salary': record.salary,
-      'grade_pay': record.grade_pay,
+      'pay_band': record.pay_band,
       'contact_no': record.contact_no,
       'alternate_contact': record.alternate_contact,
       'address': record.address,
@@ -327,14 +328,14 @@ export class SignupComponent implements OnInit {
   onPostSelect(postVal: string) { // this function runs when post type changes employee register form and it sets the deparments array
     this.form.get('department')?.setValue('');
     this.form.get('designation')?.setValue('');
-    this.form.get('grade_pay')?.setValue('');
+    this.form.get('pay_band')?.setValue('');
     this.post_type = postVal;
     this.departments = [];
     this.designations = [];
-    this.getGradePay = [];
+    this.payBands = [];
     this.departments = this.postsData.find((post: any) => post.name === this.post_type).departments
       .map((department: any) => department.name);
-    this.getGradePay=this.postsData.find((post: any) => post.name === this.post_type).pay_bands;
+    this.payBands=this.postsData.find((post: any) => post.name === this.post_type).pay_bands;
   }
 
   getPostsData() {  // this function retrives post data and save into variable by the help of getdataservice
@@ -381,6 +382,29 @@ export class SignupComponent implements OnInit {
     let project_name = this.f['project_name'].value;
     this.panelTypes = this.getProjectData
       .find((project: any) => project.name === project_name).panel_type;
+  }
+
+  onStateSelect(){
+    let state = this.f['state'].value;
+    this.cities=[];
+    this.f['city'].setValue('');
+    this._getdataService.getPincodesData(state).subscribe({
+      next: (res) => {
+        let pincodesData = res;
+        pincodesData.forEach((obj: any) => {
+          if (!this.cities.find((item: any) => item.toLowerCase() === obj.City.toLowerCase())) {
+            this.cities.push(obj.City);
+          }
+        })
+      },
+      error: (err) => {
+        let errorObj = err.error
+        // if (errorObj.userError) {
+        //   this._registerService.signout();
+        // }
+      }
+    }
+    )
   }
 
   onSignatureEnter($event: any) {

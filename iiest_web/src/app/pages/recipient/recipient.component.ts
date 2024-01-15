@@ -27,6 +27,7 @@ export class RecipientComponent implements OnInit {
   faFileExcel = faFileExcel;
   uploadExcel: boolean = false;
   excelData: any;
+  finalData:any[];
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
@@ -120,6 +121,7 @@ export class RecipientComponent implements OnInit {
     console.log(this.fboID);
 
     if (this.serviceType === 'fostac') {
+      console.log([this.recipientform.value]);
 
       this._registerService.addFboRecipent(this.fboID, [this.recipientform.value]).subscribe({
         next: (res) => {
@@ -218,12 +220,14 @@ export class RecipientComponent implements OnInit {
       let workbook = XLSX.read(fileReader.result, { type: 'binary' });
       let sheetNames = workbook.SheetNames;
       let data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
+
       console.log(data);
       this.excelData = data;
     }
   }
 
   submitExcel(){
+    this.fboID = this.fboData._id
     if (this.serviceType === 'fostac') {
       this._registerService.addFboRecipent(this.fboID, this.excelData).subscribe({
         next: (res) => {

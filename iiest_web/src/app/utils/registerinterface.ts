@@ -13,7 +13,7 @@ export interface Employee {
   post_type: string;
   department: string;
   designation: string;
-  grade_pay: string
+  pay_band: string
   salary: number;
   contact_no: number;
   alternate_contact: number;
