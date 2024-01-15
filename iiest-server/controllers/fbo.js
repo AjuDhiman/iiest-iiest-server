@@ -22,9 +22,9 @@ exports.fboPayment = async(req, res)=>{
     return res.status(404).json({success, signatureErr: true});
   } 
 
-  const areaStatus = await areaAllocationModel.findOne({employeeInfo: req.params.id});
+  const areaAlloted = await areaAllocationModel.findOne({employeeInfo: req.params.id});
 
-  if(!areaStatus){
+  if(!areaAlloted){
     success = false;
     return res.status(404).json({success, areaAllocationErr: true})
   }
@@ -41,6 +41,13 @@ exports.fboPayment = async(req, res)=>{
   const existing_email = await fboModel.findOne({ email: formBody.email });
       if(existing_email){
       return res.status(401).json({ success, emailErr: true });
+  }
+
+  const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
+
+  if(!pincodeCheck){
+    success = false;
+    return res.status(404).json({success, wrongPincode: true});
   }
   
   payRequest(formBody.grand_total, res);
@@ -166,8 +173,8 @@ exports.fboRegister = async (req, res) => {
         return res.status(404).json({success, signatureErr: true})
       }
 
-      const areaStatus = await areaAllocationModel.findOne({employeeInfo: createrObjId});
-      if(!areaStatus){
+      const areaAlloted = await areaAllocationModel.findOne({employeeInfo: createrObjId});
+      if(!areaAlloted){
         success = false;
         return res.status(404).json({success, areaAllocationErr: true})
       }
@@ -182,6 +189,13 @@ exports.fboRegister = async (req, res) => {
       const existing_email = await fboModel.findOne({ email });
       if (existing_email) {
       return res.status(401).json({ success, emailErr: true });
+      }
+
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+
+      if(!pincodeCheck){
+      success = false;
+      return res.status(404).json({success, wrongPincode: true});
       }
 
       const { idNumber, generatedCustomerId, date } = await generatedInfo();
