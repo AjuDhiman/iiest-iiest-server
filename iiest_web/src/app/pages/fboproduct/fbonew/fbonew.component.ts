@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+import { stateName } from '../../../utils/config';
 
 
 @Component({
@@ -63,6 +64,8 @@ export class FbonewComponent implements OnInit {
   allocated_district:string = '';
   allocated_state:string = '';
   allocated_pincodes:number[];
+
+  stateName = stateName;
 
   existingFbos: Object[];
   
