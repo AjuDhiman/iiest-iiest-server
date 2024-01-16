@@ -234,7 +234,6 @@ exports.editEmployee = async(req, res)=>{
 
 exports.allEmployeesData = async(req, res)=>{
     const employeesData = await employeeSchema.find({_id: {$ne: req.user.id}});
-    console.log(req.user.id)
     try {
         return res.status(200).json({employeesData})
     } catch (error) {
@@ -268,4 +267,15 @@ exports.areaAllocation = async(req, res)=>{
         return res.status(500).json({message: "Internal Server Error"});
     }
 
+}
+
+exports.allocatedAreas = async(req, res)=>{
+    try {
+
+        const allocatedPincodes = await areaAllocationModel.findOne({employeeInfo: req.params.id});
+        return res.status(200).json({allocatedPincodes})
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
 }

@@ -211,7 +211,7 @@
                     <div class="row">
                         <div class="col-md-4 title">Allocated State</div>
                         <div class="col-md-8 data test-danger">
-                            
+                            {{allocatedState}}
                         </div>
                     </div>
                 </div>
@@ -222,15 +222,15 @@
                     <div class="row">
                         <div class="col-md-4 title">Allocated District</div>
                         <div class="col-md-8 data">
-                            
+                            {{allocatedDistrict}}
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Allocated Pincodes</div>
-                        <div class="col-md-8 data test-danger">
-                            
+                        <div class="col-md-8 data test-danger" *ngFor="let pincode of allocatedPincodes">
+                            {{pincode}}
                         </div>
                     </div>
                 </div>
