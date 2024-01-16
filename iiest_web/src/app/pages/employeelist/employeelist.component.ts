@@ -150,6 +150,19 @@ export class EmployeelistComponent implements OnInit {
     const modalRef = this.modalService.open(EmploymentComponent, { size: type==='manager'?'md':'lg', backdrop: 'static' });
       modalRef.componentInstance.employee = res;
       modalRef.componentInstance.type = type;
+
+      if(type==='manager'){
+        let allManagers = this.allEmployees
+        .filter((emp: any) => emp.designation.toLowerCase().includes('manager'))
+        .map((emp:any) => {
+          return {
+            name:emp.employee_name,
+            emp_id:emp.employee_id
+          }
+        });
+        console.log(allManagers);
+        modalRef.componentInstance.allManagers = allManagers;
+      }
   }
 
     //View Employee Details

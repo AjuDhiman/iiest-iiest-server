@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({
   selector: 'app-setting-panel',
@@ -8,12 +9,14 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 })
 export class SettingPanelComponent implements OnInit {
   submitted:boolean = false;
+  userImage:string;
   updateProfileForm:FormGroup = new FormGroup({
     userImage:new FormControl(''),
     userSignature:new FormControl('')
   })
 
-  constructor(private formBuilder:FormBuilder){
+  constructor(private formBuilder:FormBuilder,
+    private getDataService:GetdataService){
     
   }
 
@@ -22,6 +25,8 @@ export class SettingPanelComponent implements OnInit {
       userImage:['',[Validators.required,this.validateFileType(['png'])]],
       userSignature:['',[Validators.required,this.validateFileType(['png','jpg'])]]
     })
+
+    this.getUserImage();
   }
 
   get updateprofileform(): { [key: string]: AbstractControl } {
@@ -34,6 +39,18 @@ export class SettingPanelComponent implements OnInit {
     if (this.updateProfileForm.invalid) {
       return;
     }
+  }
+
+  getUserImage(){
+    let user:any = sessionStorage.getItem('LoggedInUser');
+    let parsedUser = JSON.parse(user);
+    console.log(parsedUser)
+    this.getDataService.getUserImage(parsedUser.employeeImage).subscribe({
+      next: (res)=>{
+        this.userImage = res.imageConverted;
+        console.log(this.userImage);
+      }
+    })
   }
 
   validateFileType(allowedExtensions: string[]) {
