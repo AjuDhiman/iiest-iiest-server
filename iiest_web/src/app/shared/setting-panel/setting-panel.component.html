@@ -10,30 +10,8 @@
             <div class="col-12 col-md-8">
                 <div class="app-card app-card-settings shadow-sm p-4">
 
-                    <!-- <div class="col-md-3">
-                                <label for="empSignature" class="form-label">Signature</label><sup>*</sup>
-                                <input type="file" id="empSignature" formControlName="empSignature" (change)="onSignatureEnter($event)"
-                                  class="form-control form-control-sm"
-                                  [ngClass]="{ 'is-invalid': submitted && f['empSignature'].errors }">
-                                <div *ngIf="submitted && f['empSignature'].errors" class="invalid-feedback">
-                                  <div *ngIf="f['empSignature'].errors['required']">Signature is required</div>
-                                  <div *ngIf="f['empSignature'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-3">
-                                <label for="employeeImage" class="form-label">Employee Image</label><sup>*</sup>
-                                <input type="file" id="employeeImage" formControlName="employeeImage" (change)="onEmpImageChange($event)"
-                                  class="form-control form-control-sm"
-                                  [ngClass]="{ 'is-invalid': submitted && f['employeeImage'].errors }">
-                                <div *ngIf="submitted && f['employeeImage'].errors" class="invalid-feedback">
-                                  <div *ngIf="f['employeeImage'].errors['required']">Employee Image is required</div>
-                                  <div *ngIf="f['employeeImage'].errors['invalidFileType']">Invalid file type. Only .png and .jpg files are allowed.
-                                  </div>
-                                </div>
-                              </div> -->
                     <div class="app-card-body">
-                        <form class="settings-form" [formGroup]="updateProfileForm">
+                        <form class="settings-form" (submit)="onProfileUpdate()" [formGroup]="updateProfileForm">
                             <div class="mb-3">
                                 <label for="userImage" class="form-label">Upload Profile Pic
                                     <!-- <span class="ms-2" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="This is a Bootstrap popover example. You can use popover to provide extra info."><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +51,7 @@
 									    <label for="setting-input-3" class="form-label">Business Email Address</label>
 									    <input type="email" class="form-control" id="setting-input-3" value="hello@companywebsite.com" fdprocessedid="yj1y5e">
 									</div> -->
-                            <button type="submit" class="btn app-btn-primary" fdprocessedid="eizq5o">Save
+                            <button type="submit" class="btn btn-outline-dark" fdprocessedid="eizq5o">Save
                                 Changes</button>
                         </form>
                     </div><!--//app-card-body-->
