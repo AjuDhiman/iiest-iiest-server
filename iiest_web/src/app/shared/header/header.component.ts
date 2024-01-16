@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
   toggelNotification: boolean = false;
   width: number = window.innerWidth;
   userImage: string = '';
+  userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;
   notifications: Array<{ image: string, description: string, time: any }> = [{
@@ -61,6 +62,7 @@ export class HeaderComponent implements OnInit {
       loggedInUserData = JSON.parse(loggedInUserData);
       this.userdata = loggedInUserData.employee_name;
       this.empName = loggedInUserData.employee_name;
+      this.userImageId = loggedInUserData.employeeImage
       //console.log(this.empName);
     }
     if (this.width >= 1920) {
@@ -147,7 +149,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserImage(){
-    this.getDataService.getUserImage().subscribe({
+    this.getDataService.getUserImage(this.userImageId).subscribe({
       next: (res)=>{
         this.userImage = res.imageConverted;
       }

@@ -289,9 +289,9 @@ exports.employeeImage = (req, res)=>{
         
         const imageBucket = empImageBucket();
 
-        const imageDownloadStream = imageBucket.openDownloadStream(req.user.employeeImage);
+        console.log(req.params.id)
 
-        console.log(imageDownloadStream)
+        const imageDownloadStream = imageBucket.openDownloadStream(new ObjectId(req.params.id));
 
         let chunks = [];
 

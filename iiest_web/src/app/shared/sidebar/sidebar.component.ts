@@ -13,7 +13,8 @@ export class SidebarComponent {
   userData: any;
   fboRoles = fbo_roles;
   employeeRoles = empRegister_roles;
-  userImage: string = ''
+  userImage: string = '';
+  userImageId: string;
   @Input() sideBarToggle:boolean;
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
@@ -51,7 +52,8 @@ sideBarToggleValue(){
   this.toggelShow = false;
 }
 getUserImage(){
-  this.getDataService.getUserImage().subscribe({
+  this.userImageId = this.userData.employeeImage
+  this.getDataService.getUserImage(this.userImageId).subscribe({
     next: (res)=>{
       this.userImage = res.imageConverted;
     }

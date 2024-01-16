@@ -21,6 +21,6 @@ router.get('/getPincodesData/:stateName', authMiddleware, getPincodesData);
 router.get('/employeesaleslist', authMiddleware, employeeSalesData);
 router.post('/registerarea/:id', authMiddleware, areaAllocation);
 router.get('/allocatedareas/:id', authMiddleware, allocatedAreas);
-router.get('/getuserimage', authMiddleware, employeeImage);
+router.get('/getuserimage/:id', authMiddleware, employeeImage);
 
 module.exports = router;

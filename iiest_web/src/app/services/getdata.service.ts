@@ -23,8 +23,8 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
- public getUserImage(): Observable<any>{
-  const url = `${this.url}/getuserimage`;
+ public getUserImage(objId: string): Observable<any>{
+  const url = `${this.url}/getuserimage/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
