@@ -91,7 +91,8 @@
                         <input type="text" placeholder="Tehsil" formControlName="tehsil" id="tehsil"
                             class="form-control form-control-sm" autocomplete="off" [readOnly]="isExisting"/>
                     </div>
-                    <div class="col-md-3">
+                                       
+                    <!-- <div class="col-md-3">
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }"
                             formControlName="state" class="form-control form-control-sm" [readOnly]="isExisting"
@@ -99,8 +100,18 @@
                         <div *ngIf="submitted && fbo['state'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['state'].errors['required']">State is required</div>
                         </div>
+                    </div> -->
+                     <div class="col-md-3">
+                        <label for="state" class="form-label">State</label>
+                        <select  placeholder="State" formControlName="state" id="state"
+                            class="form-select form-select-sm" autocomplete="off" 
+                            [attr.disabled]="isExisting" (change)="onStateSelect($event)">
+                            <option value="" disabled>Select the State</option>
+                            <option *ngFor="let state of stateName" [value]="state">{{state}}</option>
+                        </select>
                     </div>
-                    <div class="col-md-3">
+
+                    <!-- <div class="col-md-3">
                         <label for="district" class="form-label">District<sup>*</sup></label>
                         <input id="district" 
                         [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="isExisting"
@@ -108,18 +119,17 @@
                         <div *ngIf="submitted && fbo['district'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['district'].errors['required']">District is required</div>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <!-- <div class="col-md-3">
+                    <div class="col-md-3">
                         <label for="district" class="form-label">District</label>
                         <select type="number" placeholder="District" formControlName="district" id="district"
                             class="form-select form-select-sm" autocomplete="off" 
-                            [attr.disabled]="true">
+                            [attr.disabled]="true" (change)="onDistrictSelect($event)">
                             <option value="" disabled>Select the District</option>
-                            <option value="Delhi" Selected>Delhi</option>
-                            <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
+                            <option *ngFor="let district of districts" [value]="district">{{district}}</option>
                         </select>
-                    </div> -->
+                    </div>
 
                     <!-- <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
@@ -137,8 +147,7 @@
                             class="form-select form-select-sm" autocomplete="off" 
                             [attr.disabled]="isExisting">
                             <option value="" disabled selected>Select the Pincode</option>
-                            <option value="111111">111111</option>
-                            <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
+                            <option *ngFor="let pincode of pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
