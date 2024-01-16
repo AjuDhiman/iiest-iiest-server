@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const { generateUsername, generatePassword, generateEmployeeID } = require('../employee/generateCredentials');
 const sendEmployeeInfo = require('../employee/sendMail');
 const { empSignBucket, empImageBucket } = require('../config/buckets');
+const { ObjectId } = require('mongodb');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
@@ -131,6 +132,7 @@ exports.employeeLogin = async(req, res)=>{
         const { username, password } = req.body;
         
         const employee_user = await employeeSchema.findOne({username});
+
         if(!employee_user){
             return res.status(401).json({success, message: "Please try to login with correct credentials"});
         }
@@ -274,6 +276,40 @@ exports.allocatedAreas = async(req, res)=>{
 
         const allocatedPincodes = await areaAllocationModel.findOne({employeeInfo: req.params.id});
         return res.status(200).json({allocatedPincodes})
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+}
+
+exports.employeeImage = (req, res)=>{
+    try {
+
+        let success = false;
+        
+        const imageBucket = empImageBucket();
+
+        const imageDownloadStream = imageBucket.openDownloadStream(req.user.employeeImage);
+
+        console.log(imageDownloadStream)
+
+        let chunks = [];
+
+        imageDownloadStream.on('data', (chunk)=>{
+            chunks.push(chunk);
+        })
+
+        imageDownloadStream.on('end', ()=>{
+
+            const imageBuffer = Buffer.concat(chunks);
+            const imagePrefix = 'data:image/png;base64,';
+            const imageBase64 = imageBuffer.toString('base64');
+            const imageConverted = `${imagePrefix}${imageBase64}`;
+
+            success = true;
+
+            return res.status(200).json({success, imageConverted})
+        })
 
     } catch (error) {
         return res.status(500).json({message: "Internal Server Error"});

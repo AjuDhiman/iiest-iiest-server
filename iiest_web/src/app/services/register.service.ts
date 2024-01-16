@@ -96,7 +96,6 @@ export class RegisterService {
     sessionStorage.setItem('issLoggedIn', 'true')
     sessionStorage.setItem('token', currentUser.authToken)
     sessionStorage.setItem("LoggedInUser", JSON.stringify(currentUser.employee_user));
-    
   }
 
   getToken(){

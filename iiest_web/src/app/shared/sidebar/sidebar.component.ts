@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 import { fbo_roles, empRegister_roles } from 'src/app/utils/config';
+import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,11 +13,13 @@ export class SidebarComponent {
   userData: any;
   fboRoles = fbo_roles;
   employeeRoles = empRegister_roles;
+  userImage: string = ''
   @Input() sideBarToggle:boolean;
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
   @Output() sideBarToggleUpdate = new EventEmitter();
   constructor(private registerService: RegisterService,
+    private getDataService: GetdataService,
     private router:Router){
   }
 
@@ -24,6 +27,7 @@ export class SidebarComponent {
     this.getUserData();
     console.log(fbo_roles);
     console.log(empRegister_roles);
+    this.getUserImage();
   }
 
   toggelStyle: object = {
@@ -45,6 +49,13 @@ getUserData(){
 sideBarToggleValue(){
   this.sideBarToggleUpdate.emit(false);
   this.toggelShow = false;
+}
+getUserImage(){
+  this.getDataService.getUserImage().subscribe({
+    next: (res)=>{
+      this.userImage = res.imageConverted;
+    }
+  })
 }
 
 closeDropMenu(){

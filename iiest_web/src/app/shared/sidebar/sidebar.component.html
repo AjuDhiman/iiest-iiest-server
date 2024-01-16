@@ -5,7 +5,7 @@
         <a id="sidepanel-close" (click)="sideBarToggleValue()" class="sidepanel-close d-xl-none">&times;</a>
         <div class="app-branding">
             <a class="app-logo" [routerLink]="['/home']">
-                <img class="logo-icon me-2" src="assets/images/logo-side.png" alt="logo">
+                <img class="logo-icon me-2" [src]="userImage" alt="logo">
                 <span *ngIf="userData;" class="logo-text">{{ userData.employee_name }}</span>
             </a>
         </div>

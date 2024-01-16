@@ -138,7 +138,7 @@
                         role="button" 
                         [ngClass]="toggelShow === true ? 'show' : '' "
                         [attr.aria-expanded]="!toggelShow">
-                        <img title="dropdown-menu" src="assets/images/logo-side.png" alt="user profile"></a>
+                        <img title="dropdown-menu" [src]="userImage" alt="user profile"></a>
                         <ul class="dropdown-menu" 
                         [ngClass]="toggelShow === true ? 'show' : '' " 
                         [ngStyle]="toggelShow?toggelStyle: {}"

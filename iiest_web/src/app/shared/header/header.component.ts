@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +16,7 @@ export class HeaderComponent implements OnInit {
   toggelSettings: boolean = false;
   toggelNotification: boolean = false;
   width: number = window.innerWidth;
+  userImage: string = '';
   isSidebarVisible = false;
   largeDisplay: boolean = false;
   notifications: Array<{ image: string, description: string, time: any }> = [{
@@ -51,7 +53,8 @@ export class HeaderComponent implements OnInit {
  
   blockMsg: boolean = true;
   empName: any;
-  constructor(private _registerService: RegisterService) {
+  constructor(private _registerService: RegisterService,
+  private getDataService: GetdataService) {
     let isLoggedIn = this._registerService.isLoggedIn();
     if (isLoggedIn) {
       let loggedInUserData: any = this._registerService.LoggedInUserData();
@@ -76,6 +79,7 @@ export class HeaderComponent implements OnInit {
   }
   ngOnInit() { 
     console.log(this.isSidebarVisible);
+    this.getUserImage();
    }
 
 //Window size
@@ -140,5 +144,13 @@ export class HeaderComponent implements OnInit {
     this.isSideBar = val;
     this.isSidebarVisible = !this.isSidebarVisible; //this variable is changing the right-margin in header on toggle 
     this.toogleSideBarEvent.emit({isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay});// this event used in changing the right-margin in app content on toggle 
+  }
+
+  getUserImage(){
+    this.getDataService.getUserImage().subscribe({
+      next: (res)=>{
+        this.userImage = res.imageConverted;
+      }
+    })
   }
 }

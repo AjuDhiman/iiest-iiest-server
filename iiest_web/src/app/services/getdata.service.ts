@@ -23,6 +23,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
+ public getUserImage(): Observable<any>{
+  const url = `${this.url}/getuserimage`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
  public getFboGeneralData():Observable<any>{
   const url = `${this.url}/fbogeneraldata`;
   return this.http.get<any>(url).pipe(catchError(this.handleError));
