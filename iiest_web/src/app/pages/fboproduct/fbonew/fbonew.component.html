@@ -110,7 +110,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <input type="number" placeholder="Pincode" formControlName="pincode"
                             class="form-control form-control-sm" id="pincode" [readOnly]="isExisting"
@@ -119,17 +119,17 @@
                         <div *ngIf="submitted && fbo['pincode'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['pincode'].errors['required']">Pincode is required</div>
                         </div>
-                    </div>
-                    <!-- <div class="col-md-3">
+                    </div> -->
+                    <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode</label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
-                            class="form-select form-select-sm" autocomplete="off" min="100000" max="999999" 
+                            class="form-select form-select-sm" autocomplete="off" 
                             [attr.disabled]="isExisting">
                             <option value="" disabled selected>Select the Pincode</option>
                             <option value="111111">111111</option>
                             <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
-                    </div> -->
+                    </div>
                     <div class="col-md-3">
                         <label class="form-label">Business Type<sup>*</sup></label>
                         <div>
