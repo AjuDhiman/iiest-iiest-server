@@ -113,7 +113,8 @@
       </div><!--//app-card-body-->
     </div><!--//app-card-->
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-between">
+      <div class="filtered-count">{{filteredEmployees.length}} of {{allEmployees.length}}</div>
       <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
       </pagination-controls>
     </div>
