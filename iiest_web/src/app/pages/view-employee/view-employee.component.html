@@ -203,13 +203,13 @@
                     <div class="row">
                         <div class="col-md-4 title">Reporting Manager</div>
                         <div class="col-md-8 data">
-                            
+                            Not Alloted yet
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4 title">Allocated State</div>
+                        <div class="col-md-4 title">Allocated Areas</div>
                         <div class="col-md-8 data test-danger">
                             {{allocatedState}}
                         </div>
@@ -217,31 +217,14 @@
                 </div>
             </div>
 
-            <div class="row   p-1">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4 title">Allocated District</div>
-                        <div class="col-md-8 data">
-                            {{allocatedDistrict}}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4 title">Allocated Pincodes</div>
-                        <div class="col-md-8 data test-danger" *ngFor="let pincode of allocatedPincodes">
-                            {{pincode}}
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="row   p-1">
+            <div class="row  p-1">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Status</div>
                         <div class="col-md-8 data">
-                            
+                            <span *ngIf="employee.status" >Active</span>
+                            <span *ngIf="!employee.status" >Inactive</span>
                         </div>
                     </div>
                 </div>
