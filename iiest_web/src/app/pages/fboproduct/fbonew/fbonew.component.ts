@@ -65,8 +65,13 @@ export class FbonewComponent implements OnInit {
   allocated_state:string = '';
   allocated_pincodes:number[];
 
+  //New variables by vansh on 16-01-2023
   stateName = stateName;
-
+  pincodesData:any;
+  districts:string[] = [];
+  pincodes:string[] = [];
+  state:string;
+  district:string;
   existingFbos: Object[];
   
   
@@ -483,4 +488,38 @@ export class FbonewComponent implements OnInit {
     this.fostacGST = gstAmount
     console.log(this.fostacGST);
   }
+
+  onStateSelect($event: any) {
+    this.state = $event.target.value;
+    this.fbo['district'].setValue('');
+    this.fbo['pincode'].setValue('');
+    this.districts = [];
+    this.pincodes = [];
+    this._getFboGeneralData.getPincodesData(this.state).subscribe({
+      next: (res) => {
+        this.pincodesData = res;
+        this.pincodesData.forEach((obj: any) => {
+          if (!this.districts.find((item: any) => item.toLowerCase() === obj.District.toLowerCase())) {
+            this.districts.push(obj.District);
+          }
+        })
+      },
+      error: (err) => {
+        let errorObj = err.error
+        // if (errorObj.userError) {
+        //   this._registerService.signout();
+        // }
+      }
+    }
+    )
+  }
+  onDistrictSelect($event: any) {
+    this.fbo['pincode'].setValue('')
+    this.pincodes = [];
+    this.district = $event.target.value;
+    this.pincodes = this.pincodesData
+      .filter((item: any) => item.State === this.state && item.District === this.district)
+      .map((item: any) => item.Pincode);
+  }
+
 }

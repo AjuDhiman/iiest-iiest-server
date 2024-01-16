@@ -105,9 +105,8 @@
                         <label for="state" class="form-label">State</label>
                         <select  placeholder="State" formControlName="state" id="state"
                             class="form-select form-select-sm" autocomplete="off" 
-                            [attr.disabled]="isExisting">
+                            [attr.disabled]="isExisting" (change)="onStateSelect($event)">
                             <option value="" disabled>Select the State</option>
-                            <option value="Delhi" Selected>Delhi</option>
                             <option *ngFor="let state of stateName" [value]="state">{{state}}</option>
                         </select>
                     </div>
@@ -126,10 +125,9 @@
                         <label for="district" class="form-label">District</label>
                         <select type="number" placeholder="District" formControlName="district" id="district"
                             class="form-select form-select-sm" autocomplete="off" 
-                            [attr.disabled]="true">
+                            [attr.disabled]="true" (change)="onDistrictSelect($event)">
                             <option value="" disabled>Select the District</option>
-                            <option value="Delhi" Selected>Delhi</option>
-                            <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
+                            <option *ngFor="let district of districts" [value]="district">{{district}}</option>
                         </select>
                     </div>
 
@@ -149,8 +147,7 @@
                             class="form-select form-select-sm" autocomplete="off" 
                             [attr.disabled]="isExisting">
                             <option value="" disabled selected>Select the Pincode</option>
-                            <option value="111111">111111</option>
-                            <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
+                            <option *ngFor="let pincode of pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
