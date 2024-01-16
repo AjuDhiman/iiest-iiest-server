@@ -91,7 +91,8 @@
                 <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
                 <td class="cell text-center">
                   <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
-                  <fa-icon class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
+                  <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
+                  <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
                 </td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
