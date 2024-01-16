@@ -111,6 +111,17 @@
                     </div>
 
                     <!-- <div class="col-md-3">
+                        <label for="district" class="form-label">District</label>
+                        <select type="number" placeholder="District" formControlName="district" id="district"
+                            class="form-select form-select-sm" autocomplete="off" 
+                            [attr.disabled]="true">
+                            <option value="" disabled>Select the District</option>
+                            <option value="Delhi" Selected>Delhi</option>
+                            <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
+                        </select>
+                    </div> -->
+
+                    <!-- <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <input type="number" placeholder="Pincode" formControlName="pincode"
                             class="form-control form-control-sm" id="pincode" [readOnly]="isExisting"

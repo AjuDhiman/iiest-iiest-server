@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({
   selector: 'app-view-employee',
@@ -10,9 +11,13 @@ import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 export class ViewEmployeeComponent implements OnInit {
   @Input() public employee: any;
   fulladdress: any;
-  allocatedArea: string;
+  allocatedState: string;
+  allocatedDistrict: string;
+  allocatedPincodes: [];
   faIndianRupeeSign = faIndianRupeeSign;
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NgbActiveModal, 
+  public getDataService: GetdataService
+  ) {
 
   }
 
@@ -20,6 +25,7 @@ export class ViewEmployeeComponent implements OnInit {
     // this.fulladdress = this.employee.address+", "+this.employee.city+", "+ this.employee.state+", "
     // +", Pincode: "+ this.employee.zip_code+", "+ this.employee.country;
     console.log(this.employee);
+    this.getAllocatedAreas();
   }
 
   getFormatedDate(date: string): string {
@@ -29,5 +35,16 @@ export class ViewEmployeeComponent implements OnInit {
     const day = String(originalDate.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate
+  }
+
+  getAllocatedAreas(){
+    this.getDataService.getAllocatedAreas(this.employee._id).subscribe({
+      next: (res)=>{
+        console.log(res)
+        this.allocatedState = res.allocatedPincodes.state;
+        this.allocatedDistrict = res.allocatedPincodes.district;
+        this.allocatedPincodes = res.allocatedPincodes.pincodes;
+      }
+    })
   }
 }
