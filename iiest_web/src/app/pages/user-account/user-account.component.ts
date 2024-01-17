@@ -27,8 +27,8 @@ export class UserAccountComponent {
 
   ngOnInit(): void {
     this.updateProfileForm=this.formBuilder.group({
-      userImage:['',[Validators.required,this.validateFileType(['png'])]],
-      userSign:['',[Validators.required,this.validateFileType(['png','jpg','jpeg'])]]
+      userImage:['',[Validators.required,this.validateFileType(['png','jpg','jpeg'])]],
+      userSign:['',[Validators.required,this.validateFileType(['png'])]]
     })
 
     this.getUserImage();
