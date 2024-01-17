@@ -14,6 +14,8 @@ export class UserAccountComponent {
   userSign:string;
   selectedImage:string = '';
   selectedSign:string = '';
+  imageObj: any;
+  signObj: any;
   updateProfileForm:FormGroup = new FormGroup({
     userImage:new FormControl(''),
     userSign:new FormControl('')
@@ -27,8 +29,8 @@ export class UserAccountComponent {
 
   ngOnInit(): void {
     this.updateProfileForm=this.formBuilder.group({
-      userImage:['',[Validators.required,this.validateFileType(['png','jpg','jpeg'])]],
-      userSign:['',[Validators.required,this.validateFileType(['png'])]]
+      userImage:['',[Validators.required,this.validateFileType(['png'])]],
+      userSign:['',[Validators.required,this.validateFileType(['png','jpg','jpeg'])]]
     })
 
     this.getUserImage();
@@ -46,6 +48,20 @@ export class UserAccountComponent {
     if (this.updateProfileForm.invalid) {
       return;
     }
+
+    const formData = new FormData();
+
+    formData.append('userImage', this.imageObj);
+    formData.append('userSign', this.signObj);
+
+    const filesSelect: any = formData
+
+    this.registerService.editEmployeeFiles(filesSelect).subscribe({
+      next: (res)=>{
+        console.log(res);
+      }
+    })
+
   }
 
   getUserImage(){
@@ -70,6 +86,7 @@ export class UserAccountComponent {
 
   changeImage($event:any){
     let image = $event.target.files[0];
+
     if(image){
       let reader:FileReader = new FileReader()
       reader.onload = (e: any) => {
@@ -78,6 +95,7 @@ export class UserAccountComponent {
       };
       // Read the selected image as a data URL
       reader.readAsDataURL(image);
+      this.imageObj = image;
     }
   }
 
@@ -91,6 +109,7 @@ export class UserAccountComponent {
       };
       // Read the selected image as a data URL
       reader.readAsDataURL(image);
+      this.signObj = image;
     }
   }
 

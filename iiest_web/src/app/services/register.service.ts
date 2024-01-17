@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles} from '../utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
 import { config } from '../utils/config'
@@ -51,6 +51,14 @@ export class RegisterService {
   public addFboShop(objId: string, addFboShop: fboShop[]): Observable<any> {
     const url = `${this.url}/fbo/addshop/${objId}`
     return this.http.post<any>(url, addFboShop).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public editEmployeeFiles(editForm: editUserFiles):  Observable<any> {
+    const url = `${this.url}/edituserfiles`
+    return this.http.post<any>(url, editForm).pipe(
       catchError(
         this.handleError
       ));

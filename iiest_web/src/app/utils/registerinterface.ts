@@ -109,3 +109,8 @@ export interface areaAllocation {
 export interface reportingManager {
   reportingManager: string;
 }
+
+export interface editUserFiles {
+  userImage: File,
+  userSign: File
+}

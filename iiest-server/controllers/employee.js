@@ -367,12 +367,59 @@ exports.employeeSignature = async(req, res)=>{
     }
 }
 
-// exports.editEmployeeImages = async(req, res)=>{
-//     try {
-        
-        
+exports.editEmployeeImages = async(req, res)=>{
+    try {
 
-//     } catch (error) {
-//         return res.status(500).json({message: "Internal Server Error"});
-//     }
-// }
+        let success = false;
+        
+        const imageFile = req.files['userImage'];
+        const signatureFile = req.files['userSign'];
+
+        const userInfo = await employeeSchema.findById(req.user.id);
+
+        console.log(signatureFile[0], imageFile[0]);
+
+        const imageBucket = empImageBucket();
+        const signatureBucket = empSignBucket();
+
+        const newImageName = `${Date.now()}_${imageFile[0].originalname}`;
+        const newSignName = `${Date.now()}_${signatureFile[0].originalname}`;
+
+        imageBucket.delete(userInfo.employeeImage);
+
+        signatureBucket.delete(userInfo.signatureImage);
+
+        const newImageStream = imageBucket.openUploadStream(newImageName);
+
+        newImageStream.write(imageFile[0].buffer);
+
+        newImageStream.end((err)=>{
+            if(err){
+                success = false;
+                return res.status(404).json({success, editImageErr: true})
+            }
+
+            console.log('New Image Uploaded Successfully');
+        })
+
+        const newSignStream = signatureBucket.openUploadStream(newSignName);
+
+        newSignStream.write(signatureFile[0].buffer);
+
+        newSignStream.end((err)=>{
+            if(err){
+                success = false;
+                return res.status(404).json({success, editSignErr: true})
+            }
+            console.log('New Signature Uploaded Successfully')
+        })
+
+        userInfo.employeeImage = newImageStream.id;
+        userInfo.signatureImage  = newSignStream.id;
+
+        await userInfo.save();
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+}
