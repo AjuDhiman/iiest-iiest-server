@@ -166,8 +166,19 @@ exports.deleteEmployee = async(req, res)=>{
 
     const date = new Date();
 
+    const signatureBucket = empSignBucket();
+    const imageBucket = empImageBucket();
+
     try {
+
         const deletedEmployee = await employeeSchema.findByIdAndDelete(objId);
+
+        const deletedSignature = await signatureBucket.delete(deletedEmployee.signatureImage);
+
+        const deletedImage = await imageBucket.delete(deletedEmployee.employeeImage);
+
+        console.log(deletedSignature, deletedImage);
+
         if(deletedEmployee){
 
             const {_id, ...pastEmployee} = deletedEmployee.toObject();
