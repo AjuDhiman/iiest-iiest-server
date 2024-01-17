@@ -58,8 +58,12 @@ getUserImage(){
   console.log(parsedData)
   this.getDataService.getUserImage(parsedData.employeeImage).subscribe({
     next: (res)=>{
+    if(res.imageConverted){
       this.userImage = res.imageConverted;
+    }else if(res.defaulImage){
+      this.userImage = res.defaultImage;
     }
+  }
   })
 }
 
