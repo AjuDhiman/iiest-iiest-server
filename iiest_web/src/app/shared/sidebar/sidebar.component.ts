@@ -29,6 +29,7 @@ export class SidebarComponent {
     console.log(fbo_roles);
     console.log(empRegister_roles);
     this.getUserImage();
+    // this.getUserImage();
   }
 
   toggelStyle: object = {
@@ -52,8 +53,10 @@ sideBarToggleValue(){
   this.toggelShow = false;
 }
 getUserImage(){
-  this.userImageId = this.userData.employeeImage
-  this.getDataService.getUserImage(this.userImageId).subscribe({
+  const rawUserData: any = this.registerService.LoggedInUserData();
+  const parsedData: any = JSON.parse(rawUserData);
+  console.log(parsedData)
+  this.getDataService.getUserImage(parsedData.employeeImage).subscribe({
     next: (res)=>{
       this.userImage = res.imageConverted;
     }

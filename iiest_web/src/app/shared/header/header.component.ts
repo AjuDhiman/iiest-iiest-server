@@ -63,6 +63,7 @@ export class HeaderComponent implements OnInit {
       this.userdata = loggedInUserData.employee_name;
       this.empName = loggedInUserData.employee_name;
       this.userImageId = loggedInUserData.employeeImage
+      this.getUserImage();
       //console.log(this.empName);
     }
     if (this.width >= 1920) {
@@ -81,7 +82,7 @@ export class HeaderComponent implements OnInit {
   }
   ngOnInit() { 
     console.log(this.isSidebarVisible);
-    this.getUserImage();
+    // this.getUserImage();
    }
 
 //Window size
