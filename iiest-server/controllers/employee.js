@@ -300,8 +300,6 @@ exports.employeeImage = (req, res)=>{
         
         const imageBucket = empImageBucket();
 
-        console.log(req.params.id)
-
         const imageDownloadStream = imageBucket.openDownloadStream(new ObjectId(req.params.id));
 
         let chunks = [];
@@ -320,6 +318,38 @@ exports.employeeImage = (req, res)=>{
             success = true;
 
             return res.status(200).json({success, imageConverted})
+        })
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+}
+
+
+exports.employeeSignature = async(req, res)=>{
+    try {
+        
+        let success = false;
+
+        const signatureBucket = empSignBucket();
+
+        const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
+
+        let chunks = [];
+
+        signDownloadStream.on('data', (chunk)=>{
+            chunks.push(chunk);
+        })
+
+        signDownloadStream.on('end', ()=>{
+            const signatureBuffer = Buffer.concat(chunks);
+            const signaturePrefix = 'data:image/png;base64,';
+            const signBase64 = signatureBuffer.toString('base64');
+            const signatureConverted = `${signaturePrefix}${signBase64}`;
+
+            success = true;
+
+            return res.status(200).json({success, signatureConverted})
         })
 
     } catch (error) {

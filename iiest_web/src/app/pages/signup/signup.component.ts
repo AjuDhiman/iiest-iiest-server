@@ -132,7 +132,7 @@ export class SignupComponent implements OnInit {
           ]
         ],
         empSignature: ['', [Validators.required, this.validateFileType(['png'])]],
-        employeeImage: ['', [Validators.required, this.validateFileType(['png', 'jpg'])]],
+        employeeImage: ['', [Validators.required, this.validateFileType(['png', 'jpg', 'jpeg'])]],
         address: ['', Validators.required],
         city: ['', Validators.required],
         state: ['', Validators.required],
@@ -440,7 +440,7 @@ export class SignupComponent implements OnInit {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
       console.log(file);
-      if (file.type == "image/png" || file.type == "image/jpg") {
+      if (file.type == "image/png" || file.type == "image/jpeg") {
         console.log("correct");
         this.empImageFile = file;
         console.log(this.empImageFile);
