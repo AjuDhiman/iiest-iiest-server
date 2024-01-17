@@ -92,62 +92,34 @@
                             class="form-control form-control-sm" autocomplete="off" [readOnly]="isExisting"/>
                     </div>
                                        
-                    <!-- <div class="col-md-3">
+                    <div class="col-md-3">
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }"
-                            formControlName="state" class="form-control form-control-sm" [readOnly]="isExisting"
+                            formControlName="state" [value]="allocated_state" class="form-control form-control-sm" [readOnly]="true"
                             />
                         <div *ngIf="submitted && fbo['state'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['state'].errors['required']">State is required</div>
                         </div>
-                    </div> -->
-                     <div class="col-md-3">
-                        <label for="state" class="form-label">State</label>
-                        <select  placeholder="State" formControlName="state" id="state"
-                            class="form-select form-select-sm" autocomplete="off" 
-                            [attr.disabled]="isExisting" (change)="onStateSelect($event)">
-                            <option value="" disabled>Select the State</option>
-                            <option *ngFor="let state of stateName" [value]="state">{{state}}</option>
-                        </select>
                     </div>
 
-                    <!-- <div class="col-md-3">
+                    <div class="col-md-3">
                         <label for="district" class="form-label">District<sup>*</sup></label>
                         <input id="district" 
-                        [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="isExisting"
-                            formControlName="district" class="form-control form-control-sm" />
+                        [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="true"
+                            formControlName="district" class="form-control form-control-sm"
+                            [value]="allocated_district" />
                         <div *ngIf="submitted && fbo['district'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['district'].errors['required']">District is required</div>
                         </div>
-                    </div> -->
-
-                    <div class="col-md-3">
-                        <label for="district" class="form-label">District</label>
-                        <select type="number" placeholder="District" formControlName="district" id="district"
-                            class="form-select form-select-sm" autocomplete="off" 
-                            [attr.disabled]="true" (change)="onDistrictSelect($event)">
-                            <option value="" disabled>Select the District</option>
-                            <option *ngFor="let district of districts" [value]="district">{{district}}</option>
-                        </select>
                     </div>
 
-                    <!-- <div class="col-md-3">
-                        <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
-                        <input type="number" placeholder="Pincode" formControlName="pincode"
-                            class="form-control form-control-sm" id="pincode" [readOnly]="isExisting"
-                            [ngClass]="{ 'is-invalid': submitted && fbo['pincode'].errors }"
-                            min="100000" max="999999"/>
-                        <div *ngIf="submitted && fbo['pincode'].errors" class="invalid-feedback">
-                            <div *ngIf="fbo['pincode'].errors['required']">Pincode is required</div>
-                        </div>
-                    </div> -->
                     <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode</label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
                             class="form-select form-select-sm" autocomplete="off" 
                             [attr.disabled]="isExisting">
                             <option value="" disabled selected>Select the Pincode</option>
-                            <option *ngFor="let pincode of pincodes" [value]="pincode">{{pincode}}</option>
+                            <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
                     </div>
                     <div class="col-md-3">

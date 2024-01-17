@@ -64,6 +64,7 @@ export class FbonewComponent implements OnInit {
   allocated_state:string = '';
   allocated_pincodes:number[];
 
+  //New variables by vansh on 16-01-2023
   existingFbos: Object[];
   
   
@@ -119,10 +120,6 @@ export class FbonewComponent implements OnInit {
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
-    // this.allocated_district=this.parsedUserData.allocated_areas.district;
-    // this.allocated_state=this.parsedUserData.allocated_areas.state;
-    // this.allocated_pincodes=this.parsedUserData.allocated_areas.pincodes;
-
     this.fostac_training = this.formBuilder.group({
       fostac_processing_amount: ['', Validators.required],
       fostac_service_name: ['', Validators.required],
@@ -174,6 +171,7 @@ export class FbonewComponent implements OnInit {
       });
 
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
+    this.getAllocatedArea();
   }
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
@@ -479,5 +477,22 @@ export class FbonewComponent implements OnInit {
   fostacGSTAmount(gstAmount: any){
     this.fostacGST = gstAmount
     console.log(this.fostacGST);
+  }
+
+  getAllocatedArea(){
+    let userData:any = this._registerService.LoggedInUserData();
+    let parsedData = JSON.parse(userData)
+    console.log(parsedData._id);
+    this._getFboGeneralData.getAllocatedAreas(parsedData._id).subscribe({
+      next: (res) => {
+        let data = res.allocatedPincodes;
+        this.allocated_state=data.state;
+        this.allocated_district=data.district;
+        this.allocated_pincodes=data.pincodes;
+      },
+      error: (err) => {
+
+      }
+    })
   }
 }

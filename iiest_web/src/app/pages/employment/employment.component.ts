@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -25,33 +25,12 @@ export class EmploymentComponent implements OnInit {
   allocationType: string;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
 
-  employee: any;
-  type: any;
+  @Input() employee: any;
+  @Input() type: any;
   //New variables for search box still in testing
   // isSearchEmpty: boolean;
   // searchSuggestions: any;
-  allManagers = [
-    {
-      name: 'vansh',
-      emp_id: 'IIEST/FD/7809'
-    },
-    {
-      name: 'harsh',
-      emp_id: 'IIEST/FD/9090'
-    },
-    {
-      name: 'bhavesh',
-      emp_id: 'IIEST/FD/9900'
-    },
-    {
-      name: 'rndheer',
-      emp_id: 'IIEST/FD/7890'
-    },
-    {
-      name: 'Abhishake',
-      emp_id: 'IIEST/FD/8908'
-    }
-  ] 
+  allManagers:any[] = [] 
 
   areaAllocationForm: FormGroup = new FormGroup({
     state: new FormControl(''),

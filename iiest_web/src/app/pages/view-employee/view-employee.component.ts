@@ -15,8 +15,9 @@ export class ViewEmployeeComponent implements OnInit {
   allocatedDistrict: string;
   allocatedPincodes: [];
   faIndianRupeeSign = faIndianRupeeSign;
+  userImage: string;
   constructor(public activeModal: NgbActiveModal, 
-  public getDataService: GetdataService
+  private getDataService: GetdataService
   ) {
 
   }
@@ -44,6 +45,15 @@ export class ViewEmployeeComponent implements OnInit {
         this.allocatedState = res.allocatedPincodes.state;
         this.allocatedDistrict = res.allocatedPincodes.district;
         this.allocatedPincodes = res.allocatedPincodes.pincodes;
+      }
+    })
+  }
+
+  getUserImage(){
+    let userImageId = this.employee.employeeImage
+    this.getDataService.getUserImage(userImageId).subscribe({
+      next: (res)=>{
+        this.userImage = res.imageConverted;
       }
     })
   }
