@@ -302,6 +302,11 @@ exports.employeeImage = (req, res)=>{
 
         const imageDownloadStream = imageBucket.openDownloadStream(new ObjectId(req.params.id));
 
+        imageDownloadStream.on('error', ()=>{
+                success = true;
+                return res.status(200).json({success, defaultImage: '../../../assets/logo-side.png'})
+        })
+
         let chunks = [];
 
         imageDownloadStream.on('data', (chunk)=>{
@@ -335,6 +340,11 @@ exports.employeeSignature = async(req, res)=>{
 
         const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
 
+        if(!signDownloadStream){
+            success = true;
+            return res.status.json({success, noSignature: true});
+        }
+
         let chunks = [];
 
         signDownloadStream.on('data', (chunk)=>{
@@ -356,3 +366,13 @@ exports.employeeSignature = async(req, res)=>{
         return res.status(500).json({message: "Internal Server Error"});
     }
 }
+
+// exports.editEmployeeImages = async(req, res)=>{
+//     try {
+        
+        
+
+//     } catch (error) {
+//         return res.status(500).json({message: "Internal Server Error"});
+//     }
+// }

@@ -15,7 +15,7 @@ export class ViewEmployeeComponent implements OnInit {
   allocatedDistrict: string;
   allocatedPincodes: [];
   faIndianRupeeSign = faIndianRupeeSign;
-  userImage: string;
+  userImage: string = '../../../assets/logo-side.png';
   constructor(public activeModal: NgbActiveModal, 
   private getDataService: GetdataService
   ) {
@@ -25,6 +25,7 @@ export class ViewEmployeeComponent implements OnInit {
   ngOnInit(): void {
     // this.fulladdress = this.employee.address+", "+this.employee.city+", "+ this.employee.state+", "
     // +", Pincode: "+ this.employee.zip_code+", "+ this.employee.country;
+    this.getUserImage();
     console.log(this.employee);
     this.getAllocatedAreas();
   }

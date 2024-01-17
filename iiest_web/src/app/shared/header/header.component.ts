@@ -152,7 +152,11 @@ export class HeaderComponent implements OnInit {
   getUserImage(){
     this.getDataService.getUserImage(this.userImageId).subscribe({
       next: (res)=>{
-        this.userImage = res.imageConverted;
+        if(res.imageConverted){
+          this.userImage = res.imageConverted;
+        }else if(res.defaulImage){
+          this.userImage = res.defaulImage;
+        }
       }
     })
   }
