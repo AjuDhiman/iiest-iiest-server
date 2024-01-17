@@ -12561,6 +12561,8 @@
  .app-card-account .item .profile-image {
    width: 60px;
    height: 60px;
+   /* border-radious is not by default */
+   border-radius: 50%;
  }
  .app-card-account .item .btn-sm,
  .app-card-account .item .btn-group-sm > .btn {

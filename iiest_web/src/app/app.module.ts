@@ -46,6 +46,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsComponent } from './pages/highcharts/highcharts.component';
 import { EmploymentComponent } from './pages/employment/employment.component';
 import { ViewEmployeeComponent } from './pages/view-employee/view-employee.component';
+import { UserAccountComponent } from './pages/user-account/user-account.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { ViewEmployeeComponent } from './pages/view-employee/view-employee.compo
     FbonewComponent,
     HighchartsComponent,
     EmploymentComponent,
-    ViewEmployeeComponent
+    ViewEmployeeComponent,
+    UserAccountComponent
   ],
   imports: [
     BrowserModule,

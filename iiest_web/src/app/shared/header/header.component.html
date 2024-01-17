@@ -162,8 +162,8 @@
                                 <img title="dropdown-menu" [src]="userImage" style="border-radius: 50%;" alt="user profile"></a>
                             <ul class="dropdown-menu" [ngClass]="toggelShow === true ? 'show' : '' "
                                 [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
-                                <li><a class="dropdown-item" href="account.html">Account</a></li>
-                                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                                <li><a class="dropdown-item" [routerLink]="['/user']">Account</a></li>
+                                <li><a class="dropdown-item" [routerLink]="['/settings']">Settings</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

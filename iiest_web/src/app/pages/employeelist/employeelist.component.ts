@@ -153,7 +153,8 @@ export class EmployeelistComponent implements OnInit {
 
       if(type==='manager'){
         let allManagers = this.allEmployees
-        .filter((emp: any) => emp.designation.toLowerCase().includes('manager'))
+        .filter((emp: any) => emp.department === res.department &&
+         emp.designation.toLowerCase().includes('manager'))
         .map((emp:any) => {
           return {
             name:emp.employee_name,

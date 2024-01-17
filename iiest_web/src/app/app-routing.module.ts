@@ -8,6 +8,7 @@ import { routeGuard } from './shared/gaurds/route.guard';
 import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
 import { fbo_roles, empRegister_roles } from './utils/config';
 import { SettingPanelComponent } from './shared/setting-panel/setting-panel.component';
+import { UserAccountComponent } from './pages/user-account/user-account.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'main', component: LandingpageComponent},
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   { path: 'settings', component: SettingPanelComponent, canActivate:[authGuard]},
+  { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}}
 ];
