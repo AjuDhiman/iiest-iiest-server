@@ -377,47 +377,63 @@ exports.editEmployeeImages = async(req, res)=>{
 
         const userInfo = await employeeSchema.findById(req.user.id);
 
-        console.log(signatureFile[0], imageFile[0]);
-
         const imageBucket = empImageBucket();
+
         const signatureBucket = empSignBucket();
 
-        const newImageName = `${Date.now()}_${imageFile[0].originalname}`;
-        const newSignName = `${Date.now()}_${signatureFile[0].originalname}`;
+        let updatedInfo;
 
-        imageBucket.delete(userInfo.employeeImage);
+        if(imageFile.length === 1){
+            const newImageName = `${Date.now()}_${imageFile[0].originalname}`;
 
-        signatureBucket.delete(userInfo.signatureImage);
+            await imageBucket.delete(userInfo.employeeImage);
 
-        const newImageStream = imageBucket.openUploadStream(newImageName);
+            const newImageStream = imageBucket.openUploadStream(newImageName);
 
-        newImageStream.write(imageFile[0].buffer);
+            newImageStream.write(imageFile[0].buffer);
 
-        newImageStream.end((err)=>{
+            newImageStream.end((err)=>{
             if(err){
                 success = false;
                 return res.status(404).json({success, editImageErr: true})
             }
 
             console.log('New Image Uploaded Successfully');
-        })
+            })
 
-        const newSignStream = signatureBucket.openUploadStream(newSignName);
+            userInfo.employeeImage = newImageStream.id;
+            updatedInfo = await userInfo.save();
+            console.log(updatedInfo);
+        }
 
-        newSignStream.write(signatureFile[0].buffer);
+        if(signatureFile.length === 1){
+            const newSignName = `${Date.now()}_${signatureFile[0].originalname}`;
 
-        newSignStream.end((err)=>{
+            await signatureBucket.delete(userInfo.signatureImage);
+
+            const newSignStream = signatureBucket.openUploadStream(newSignName);
+
+            newSignStream.write(signatureFile[0].buffer);
+
+            newSignStream.end((err)=>{
             if(err){
                 success = false;
                 return res.status(404).json({success, editSignErr: true})
             }
             console.log('New Signature Uploaded Successfully')
-        })
+            })
 
-        userInfo.employeeImage = newImageStream.id;
-        userInfo.signatureImage  = newSignStream.id;
+            userInfo.signatureImage  = newSignStream.id;
+            updatedInfo = await userInfo.save();
+            console.log(updatedInfo)
+        }
 
-        await userInfo.save();
+        console.log(updatedInfo);
+
+        if(updatedInfo){
+            success = true;
+            return res.status(200).json({success, infoUpdated: true});
+        }
 
     } catch (error) {
         return res.status(500).json({message: "Internal Server Error"});

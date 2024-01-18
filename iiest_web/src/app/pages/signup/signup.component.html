@@ -180,9 +180,9 @@
               </div>
             </div>
             <div class="col-md-3">
-              <label for="zip_code" class="form-label">Zip</label><sup>*</sup>
+              <label for="zip_code" class="form-label">Zip Code</label><sup>*</sup>
               <input type="number" placeholder="Zip" formControlName="zip_code" autocomplete="off"
-                class="form-control form-control-sm" id="zip_code"
+                class="form-control form-control-sm" id="zip_code" min="100000" max="999999"
                 [ngClass]="{ 'is-invalid': submitted && f['zip_code'].errors }">
               <div *ngIf="submitted && f['zip_code'].errors" class="invalid-feedback">
                 <div *ngIf="f['zip_code'].errors['required']">Zip Code is required</div>

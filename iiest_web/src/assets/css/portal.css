@@ -12559,8 +12559,8 @@
    font-size: 0.875rem;
  }
  .app-card-account .item .profile-image {
-   width: 100px;
-   height: 100px;
+   width: 120px;
+   height: 120px;
    object-position: center;
    /* border-radious is not by default */
    border-radius: 50%;

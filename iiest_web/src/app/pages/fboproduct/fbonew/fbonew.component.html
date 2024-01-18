@@ -94,7 +94,7 @@
                                        
                     <div class="col-md-3">
                         <label for="state" class="form-label">State<sup>*</sup></label>
-                        <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }"
+                        <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }" type="text"
                             formControlName="state" [value]="allocated_state" class="form-control form-control-sm" [readOnly]="true"
                             />
                         <div *ngIf="submitted && fbo['state'].errors" class="invalid-feedback">
@@ -105,7 +105,7 @@
                     <div class="col-md-3">
                         <label for="district" class="form-label">District<sup>*</sup></label>
                         <input id="district" 
-                        [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="true"
+                        [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="true" type="text"
                             formControlName="district" class="form-control form-control-sm"
                             [value]="allocated_district" />
                         <div *ngIf="submitted && fbo['district'].errors" class="invalid-feedback">
