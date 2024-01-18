@@ -489,6 +489,8 @@ export class FbonewComponent implements OnInit {
         this.allocated_state=data.state;
         this.allocated_district=data.district;
         this.allocated_pincodes=data.pincodes;
+        this.fboForm.patchValue({state: this.allocated_state});
+        this.fboForm.patchValue({district: this.allocated_district})
       },
       error: (err) => {
 
