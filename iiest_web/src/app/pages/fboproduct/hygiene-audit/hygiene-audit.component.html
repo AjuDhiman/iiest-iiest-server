@@ -1,1 +1,31 @@
-<p>hygiene-audit works!</p>
+<form [formGroup]="hygiene_audit"> 
+    <div class="row" >
+        <h6 class=" pull-left">Hygiene Audit</h6>
+        <div class="col-md-3">
+            <label for="spoc_person_name" class="form-label">Spoc Person Name<sup>*</sup></label>
+            <input id="spoc_person_name" formControlName="spoc_person_name" type="text"
+                [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('spoc_person_name')?.errors}"
+                class="form-control form-control-sm" placeholder="Spoc Person Name"/>
+            <div *ngIf="submitted && hygiene_audit.get('spoc_person_name')?.errors" class="invalid-feedback">
+                <div *ngIf="hygiene_audit.get('spoc_person_name')?.errors?.['required']">
+                    Spoc Person Name is Required
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-md-3">
+            <label for="fostac_service_name" class="form-label">Service Name<sup>*</sup></label>
+            <select id="fostac_service_name" formControlName="fostac_service_name"
+                [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_service_name')?.errors}"
+                class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Service</option>
+                <option *ngFor="let servicename of serviceNames.fostac" [value]="servicename">{{servicename}}
+                </option>
+            </select>
+            <div *ngIf="submitted && fostac_training.get('fostac_service_name')?.errors" class="invalid-feedback">
+                <div *ngIf="fostac_training.get('fostac_service_name')?.errors?.['required']">Service is
+                    required
+                </div>
+            </div>
+        </div> -->
+    </div>
+</form>

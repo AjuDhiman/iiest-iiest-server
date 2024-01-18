@@ -64,7 +64,7 @@
                 <th class="cell text-center">Action</th>
               </tr>
             </thead>
-            <tbody *ngIf="filteredData?.length>0">
+            <tbody *ngIf="filteredData">
               <tr *ngFor="let fbo of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }">
                 <td class="cell"><span class="truncate">{{fbo.serialNumber}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.fbo_name}}</span></td>

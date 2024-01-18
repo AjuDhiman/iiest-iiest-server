@@ -169,7 +169,8 @@
                     (foscosTotal)="foscosTotalAmount($event)" (foscosFixedCharge)="foscosCharges($event)" (foscosGSTAmount)="foscosGSTAmount($event)"></app-foscos>
                 
                 <!-- Hyginene Audit Component -->
-                <app-hygiene-audit *ngIf="isHygiene"></app-hygiene-audit>
+                <app-hygiene-audit *ngIf="isHygiene" formGroupName="hygiene_audit" [submitted]="submitted"
+                ></app-hygiene-audit>
 
                 <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene">
                     <div class="col-md-3">

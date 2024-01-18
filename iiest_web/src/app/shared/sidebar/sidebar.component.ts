@@ -13,7 +13,7 @@ export class SidebarComponent {
   userData: any;
   fboRoles = fbo_roles;
   employeeRoles = empRegister_roles;
-  userImage: string = '';
+  userImage: string = '../../assets/logo-side.png';
   userImageId: string;
   @Input() sideBarToggle:boolean;
   @Input() isSidebarVisible: boolean;

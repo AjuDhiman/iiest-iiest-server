@@ -1,5 +1,6 @@
 <div class="modal-header bg-secondary">
-  <h6 class="modal-title text-white" id="modal-basic-title">Recipients</h6>
+  <h6 *ngIf="this.serviceType === 'fostac'" class="modal-title text-white" id="modal-basic-title">Recipients</h6>
+  <h6 *ngIf="this.serviceType === 'foscos'" class="modal-title text-white" id="modal-basic-title">Shops</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
@@ -81,7 +82,8 @@
     <div>
       <!-- <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" /> -->
     </div>
-    <button type="submit" class="btn btn-sm btn-outline-dark">Add Recipient</button>
+    <button *ngIf="this.serviceType === 'fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add Recipient</button>
+    <button *ngIf="this.serviceType === 'foscos'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
   </div>
 </form>
 <form [ngClass]="uploadExcel===false?'d-none':''" (submit)="submitExcel()" [formGroup]="excelForm">
@@ -108,7 +110,8 @@
 
 <div class="row g-3 mb-4 mx-2 align-items-center justify-content-between">
   <div class="col-auto">
-    <h1 class="app-page-title mb-0">FBO Recipient List</h1>
+    <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">FBO Recipient List</h1>
+    <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">FBO Shop List</h1>
   </div>
   <div class="col-auto">
     <div class="page-utilities">

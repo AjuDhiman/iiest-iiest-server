@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -54,20 +55,20 @@ export class FbonewComponent implements OnInit {
   maxSelectedItems: number = 2;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
-  existingUserForm : FormGroup;
+  existingUserForm: FormGroup;
   //New Variables by vansh on 5-01-23 for exsisting 
   searchSuggestions: any;
-  isSearchEmpty=true;
+  isSearchEmpty = true;
   @ViewChild('searchElem') searchElem: any;
-   //New Variables by vansh on 12-01-2023 for allocted area detection for a employee
-  allocated_district:string = '';
-  allocated_state:string = '';
-  allocated_pincodes:number[];
+  //New Variables by vansh on 12-01-2023 for allocted area detection for a employee
+  allocated_district: string = '';
+  allocated_state: string = '';
+  allocated_pincodes: number[];
 
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];
-  
-  
+
+
   fostac_training: FormGroup = new FormGroup({
     fostac_processing_amount: new FormControl(''),
     fostac_service_name: new FormControl(''),
@@ -88,7 +89,15 @@ export class FbonewComponent implements OnInit {
   });
 
   hygiene_audit: FormGroup = new FormGroup({
-
+    spoc_person_name: new FormControl(''),
+    spoc_person_contact: new FormControl(''),
+    spoc_person_email: new FormControl(''),
+    spoc_person_designation: new FormControl(''),
+    hygiene_processing_amount: new FormControl(''),
+    hygiene_service_name: new FormControl(''),
+    hygiene_client_type: new FormControl(''),
+    shops_no: new FormControl(''),
+    hygiene_total: new FormControl('')
   })
 
   fboForm: FormGroup = new FormGroup({
@@ -108,7 +117,7 @@ export class FbonewComponent implements OnInit {
     createdBy: new FormControl(''),
     grand_total: new FormControl('')
   })
-  
+
 
 
   constructor(
@@ -116,7 +125,8 @@ export class FbonewComponent implements OnInit {
     private _getFboGeneralData: GetdataService,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
-    private existingFrom :FormBuilder
+    private existingFrom: FormBuilder,
+    private router: Router
   ) {
     this.getFboGeneralData();
   }
@@ -144,11 +154,19 @@ export class FbonewComponent implements OnInit {
     });
 
     this.hygiene_audit = this.formBuilder.group({
-
+      spoc_person_name: new FormControl(''),
+      spoc_person_contact: new FormControl(''),
+      spoc_person_email: new FormControl(''),
+      spoc_person_designation: new FormControl(''),
+      hygiene_processing_amount: new FormControl(''),
+      hygiene_service_name: new FormControl(''),
+      hygiene_client_type: new FormControl(''),
+      shops_no: new FormControl(''),
+      hygiene_total: new FormControl('')
     });
 
     this.existingUserForm = this.existingFrom.group({
-      existingUser:[''],
+      existingUser: [''],
       searchUser: ['', Validators.required]
     })
 
@@ -191,28 +209,28 @@ export class FbonewComponent implements OnInit {
     return [Validators.required];
   }
 
-  existingUser($event:any){
+  existingUser($event: any) {
     this.isExisting = $event.target.checked
     console.log(this.isExisting);
   }
 
-  filterSearch(event:any){
+  filterSearch(event: any) {
     let value = event.target.value
     console.log(value);
-    if(value !== ''){
+    if (value !== '') {
       this.isSearchEmpty = false;
     }
-    else{
+    else {
       this.isSearchEmpty = true;
       return
     }
     let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
-    this.searchSuggestions = this.existingFbos.filter((obj:any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
+    this.searchSuggestions = this.existingFbos.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
     console.log(this.searchSuggestions);
   }
 
-  fetchExistingUser(fboObj:any){
+  fetchExistingUser(fboObj: any) {
     this.searchElem.nativeElement.value = ''
     this.isSearchEmpty = true;
     let value = this.searchElem.nativeElement.value;
@@ -230,11 +248,11 @@ export class FbonewComponent implements OnInit {
     this.fbo['pincode'].setValue(fboObj.pincode);
     this.fbo['business_type'].setValue(fboObj.business_type);
     console.log(this.fbo);
-    if(fboObj.business_type === 'b2b'){
+    if (fboObj.business_type === 'b2b') {
       this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
       this.need_gst_number = true;
     }
-    if(fboObj.business_type === 'b2c'){
+    if (fboObj.business_type === 'b2c') {
       this.fboForm.removeControl('gst_number');
       this.need_gst_number;
     }
@@ -271,17 +289,17 @@ export class FbonewComponent implements OnInit {
             let errorObj = err.error;
             if (errorObj.userError) {
               this._registerService.signout();
-            } else if(errorObj.contactErr){
+            } else if (errorObj.contactErr) {
               this._toastrService.error('', 'This Contact Already Exists.');
-            } else if(errorObj.emailErr){
+            } else if (errorObj.emailErr) {
               this._toastrService.error('', 'This Email Already Existis');
-            } else if(errorObj.signatureErr){
+            } else if (errorObj.signatureErr) {
               this._toastrService.error('', 'Signature Not Found');
-            } else if(errorObj.registerErr){
+            } else if (errorObj.registerErr) {
               this._toastrService.error('', 'Some Error Occured. Please Try Again');
-            } else if(errorObj.areaAllocationErr){
+            } else if (errorObj.areaAllocationErr) {
               this._toastrService.error('', 'Area has not been allocated to this employee.')
-            } else if(errorObj.wrongPincode){
+            } else if (errorObj.wrongPincode) {
               this._toastrService.error('', 'You cannot make sale outside your allocated area');
             }
           }
@@ -299,17 +317,17 @@ export class FbonewComponent implements OnInit {
             let errorObj = err.error;
             if (errorObj.userError) {
               this._registerService.signout();
-            } else if (errorObj.contactErr){
+            } else if (errorObj.contactErr) {
               this._toastrService.error('', 'This Contact Already Exists.');
-            } else if (errorObj.emailErr){
+            } else if (errorObj.emailErr) {
               this._toastrService.error('', 'This Email Already Exists.');
-            } else if(errorObj.signatureErr){
+            } else if (errorObj.signatureErr) {
               this._toastrService.error('', 'Signature Not Found');
-            } else if(errorObj.registerErr){
+            } else if (errorObj.registerErr) {
               this._toastrService.error('', 'Some Error Occured. Please Try Again');
-            } else if(errorObj.areaAllocationErr){
+            } else if (errorObj.areaAllocationErr) {
               this._toastrService.error('', 'Area has not been allocated to this employee.')
-            }  else if(errorObj.wrongPincode){
+            } else if (errorObj.wrongPincode) {
               this._toastrService.error('', 'You cannot make sale outside your allocated area');
             }
           }
@@ -345,7 +363,7 @@ export class FbonewComponent implements OnInit {
         console.log(res);
         this.existingFbos = res.fboList;
       },
-      error: (err) => {  
+      error: (err) => {
       }
     })
   }
@@ -442,7 +460,7 @@ export class FbonewComponent implements OnInit {
   }
 
   // Method to clear the child component's form
-  clearChildForm(val:string) {
+  clearChildForm(val: string) {
     if (val === 'fostac') {
       this.fostacChildComponent.resetForm();
     }
@@ -485,31 +503,37 @@ export class FbonewComponent implements OnInit {
     this.foscos_processAmnt = TotalAmnt;
     this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt });
   }
-  foscosCharges(charges: any){
+  foscosCharges(charges: any) {
     this.foscosFixedCharges = charges;
     console.log(this.foscosFixedCharges);
   }
-  foscosGSTAmount(gstAmount: number){
+  foscosGSTAmount(gstAmount: number) {
     this.foscosGST = gstAmount
     console.log(this.foscosGST);
   }
-  fostacGSTAmount(gstAmount: any){
+  fostacGSTAmount(gstAmount: any) {
     this.fostacGST = gstAmount
     console.log(this.fostacGST);
   }
 
-  getAllocatedArea(){
-    let userData:any = this._registerService.LoggedInUserData();
+  getAllocatedArea() {
+    let userData: any = this._registerService.LoggedInUserData();
     let parsedData = JSON.parse(userData)
     console.log(parsedData._id);
     this._getFboGeneralData.getAllocatedAreas(parsedData._id).subscribe({
       next: (res) => {
         let data = res.allocatedPincodes;
-        this.allocated_state=data.state;
-        this.allocated_district=data.district;
-        this.allocated_pincodes=data.pincodes;
-        this.fboForm.patchValue({state: this.allocated_state});
-        this.fboForm.patchValue({district: this.allocated_district})
+        // console.log(data);
+        if (!data) {
+          this._toastrService.error('', 'Your Area is not allocated yet');
+          this.router.navigate(['/home']);
+        } else {
+          this.allocated_state = data.state;
+          this.allocated_district = data.district;
+          this.allocated_pincodes = data.pincodes;
+          this.fboForm.patchValue({ state: this.allocated_state })
+          this.fboForm.patchValue({ district: this.allocated_district });
+        }
       },
       error: (err) => {
 

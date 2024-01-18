@@ -43,13 +43,14 @@ export class FbolistComponent implements OnInit {
   ngOnInit(): void {
     this.fetchAllFboData();
   }
-
+ 
   fetchAllFboData(): void {
     this.getDataService.getSalesList().subscribe({
       next: (res) => {
-        this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.fboInfo.createdAt).getTime() - new Date(a.fboInfo.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
-        //console.log('data',this.allFBOEntries);
-        this.filter();
+        if (res.salesInfo) {
+          this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.fboInfo.createdAt).getTime() - new Date(a.fboInfo.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+          this.filter();
+        }
       },
       error: (err) => {
         let errorObj = err;
@@ -61,9 +62,9 @@ export class FbolistComponent implements OnInit {
   }
 
   filter(): void {
-    //console.log(this.filteredData)
     if (!this.searchQuery) {
       this.filteredData = this.allFBOEntries;
+      console.log(this.allFBOEntries)
       console.log(this.searchQuery)
     } else {
       switch (this.selectedFilter) {
@@ -101,7 +102,6 @@ export class FbolistComponent implements OnInit {
 
   //Edit Mode Emitter to Parent component fbo
   editRecord(res: any): void {
-    console.log(res);
     var data = {
       isEditMode: true,
       Record: res

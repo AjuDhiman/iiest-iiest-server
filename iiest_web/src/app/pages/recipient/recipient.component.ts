@@ -153,7 +153,7 @@ export class RecipientComponent implements OnInit {
 
       console.log(this.addRecipient)
 
-      this._registerService.addFboShop(this.fboID, [formData]).subscribe({
+      this._registerService.addFboShop(this.fboID, formData).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');

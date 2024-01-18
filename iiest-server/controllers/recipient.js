@@ -47,7 +47,7 @@ exports.addShop = async(req, res)=>{
     let billSaved = false;
 
     const eBill = req.file;
-    const { operatorName, address } = req.body[0];
+    const { operatorName, address } = req.body;
 
     if(!eBill){
         success = false;

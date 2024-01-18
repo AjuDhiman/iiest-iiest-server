@@ -87,12 +87,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getUserRecord();
     this.employees$.subscribe(res => {
       this.data = res;
-      console.log(this.data)
     })
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)
     this.projectType = loggedInUserData.project_name;
-    console.log(this.projectType)
     this.empName = loggedInUserData.employee_name;
     const message = interval(2000);
     this.msg = message.subscribe((res) => {
@@ -114,12 +112,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   getProductData() {
     this._getDataService.getProductData().subscribe({
       next: (res) => {
-        console.log(res)
         this.product = res;
         this.fssaiData = res.FSSAI;
         this.dpiitData = res.DPIIT;
-        console.log(this.fssaiData);
-        console.log(this.dpiitData);
       },
       error: (err) => {
       }
