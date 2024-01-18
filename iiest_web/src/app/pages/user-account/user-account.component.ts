@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 
@@ -23,14 +24,15 @@ export class UserAccountComponent {
 
   constructor(private formBuilder:FormBuilder,
     private getDataService:GetdataService,
-    private registerService:RegisterService){
+    private registerService:RegisterService,
+    private toastrService:ToastrService){
     
   }
 
   ngOnInit(): void {
     this.updateProfileForm=this.formBuilder.group({
-      userImage:['',[Validators.required,this.validateFileType(['png'])]],
-      userSign:['',[Validators.required,this.validateFileType(['png','jpg','jpeg'])]]
+      userImage:['',this.validateFileType(['png','jpg','jpeg'])],
+      userSign:['',this.validateFileType(['png'])]
     })
 
     this.getUserImage();
@@ -59,6 +61,7 @@ export class UserAccountComponent {
     this.registerService.editEmployeeFiles(filesSelect).subscribe({
       next: (res)=>{
         console.log(res);
+        this.toastrService.success('Record Edited Successfully', res.message);
       }
     })
 

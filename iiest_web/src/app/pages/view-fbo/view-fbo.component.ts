@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
 @Component({
   selector: 'app-view-fbo',
   templateUrl: './view-fbo.component.html',
@@ -8,9 +9,9 @@ import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 })
 export class ViewFboComponent implements OnInit {
   @Input() public fboData: any;
-  fulladdress: any;
-  recipientData: any;
-  shopDetails:any;
+  fulladdress: string;
+  recipientData: fboRecipient;
+  shopDetails: fboShop;
   isfostac:boolean= false;
   faIndianRupeeSign = faIndianRupeeSign;
   constructor(public activeModal: NgbActiveModal) { 

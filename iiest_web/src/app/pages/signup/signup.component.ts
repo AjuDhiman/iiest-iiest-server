@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Employee } from '../../utils/registerinterface'
+import { Employee, pincodeData } from '../../utils/registerinterface'
 import { DatePipe } from '@angular/common';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { RegisterService } from '../../services/register.service';
@@ -289,7 +289,7 @@ export class SignupComponent implements OnInit {
     this._getdataService.getGeneralData().subscribe({
       next: (res) => {
         this.getProjectData = Object.values(res.project_name);
-        this.projects = this.getProjectData.map((item: any) => item.name);
+        this.projects = this.getProjectData.map((item:any) => item.name);
       },
       error: (err) => {
         let errorObj = err.error
@@ -404,8 +404,8 @@ export class SignupComponent implements OnInit {
     this._getdataService.getPincodesData(state).subscribe({
       next: (res) => {
         let pincodesData = res;
-        pincodesData.forEach((obj: any) => {
-          if (!this.cities.find((item: any) => item.toLowerCase() === obj.City.toLowerCase())) {
+        pincodesData.forEach((obj: pincodeData) => {
+          if (!this.cities.find((item: string) => item.toLowerCase() === obj.City.toLowerCase())) {
             this.cities.push(obj.City);
           }
         })

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import * as Highcharts from 'highcharts';
 
 @Component({
@@ -16,6 +16,7 @@ export class HighchartsComponent {
   retailSale: any[] = [34, 88, 55, 33, 55, 32, 90];
   intervalType: string = 'week';
   categories = ['fostac(Retail)', 'fostac(Catering)', 'foscos(Registration)', 'foscos(State)'];
+  @Input() chartData:Highcharts.Options;
   data_0: any = [
     {
       date: '2023-12-26',
@@ -553,18 +554,18 @@ export class HighchartsComponent {
   };
 
   //High charts
-  chartOptions: Highcharts.Options = {
-    credits: {
-      enabled: false
-    },
-    series: [
-      {
-        type: 'line',
-        data: this.datas,
-      },
-    ],
-    colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
-  };
+  // chartOptions: Highcharts.Options = {
+  //   credits: {
+  //     enabled: false
+  //   },
+  //   series: [
+  //     {
+  //       type: 'line',
+  //       data: this.datas,
+  //     },
+  //   ],
+  //   colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
+  // };
 
   ChangeInterval(event: any) {
     this.intervalType = event.target.value;

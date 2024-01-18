@@ -42,10 +42,10 @@ export class FbonewComponent implements OnInit {
   addFbo: any;
   isFostac: boolean = false;
   isFoscos: boolean = false;
+  isHygiene: boolean = false;
   isEditMode: boolean = false;
   formType: string = "Registration";
   isReadOnly: boolean = false;
-  resetMultiDrop: boolean;
   need_gst_number: boolean = false;
   isBusinessTypeB2B: boolean = false;
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
@@ -86,6 +86,10 @@ export class FbonewComponent implements OnInit {
     license_duration: new FormControl(''),
     foscos_total: new FormControl(''),
   });
+
+  hygiene_audit: FormGroup = new FormGroup({
+
+  })
 
   fboForm: FormGroup = new FormGroup({
     fbo_name: new FormControl(''),
@@ -138,6 +142,11 @@ export class FbonewComponent implements OnInit {
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required]
     });
+
+    this.hygiene_audit = this.formBuilder.group({
+
+    });
+
     this.existingUserForm = this.existingFrom.group({
       existingUser:[''],
       searchUser: ['', Validators.required]
@@ -348,9 +357,11 @@ export class FbonewComponent implements OnInit {
     this.need_gst_number = false; // this will hide gst number on form reset 
     this.isFostac = false;
     this.isFoscos = false;
+    this.isHygiene = false;
     this.fboForm.removeControl('gst_number')// this will remove gst number form control on form reset 
     this.fboForm.removeControl('fostac_training');
     this.fboForm.removeControl('foscos_training');
+    this.fboForm.removeControl('hygiene_audit');
   }
 
   getSelectedProduct($event: any) {
@@ -362,6 +373,7 @@ export class FbonewComponent implements OnInit {
 
     this.isFostac = false;
     this.isFoscos = false;
+    this.isHygiene = false;
     if (this.productName.find((item: any) => item === 'Fostac Training')) {
       this.isFostac = true;
       this.fboForm.addControl('fostac_training', this.fostac_training);
@@ -375,6 +387,13 @@ export class FbonewComponent implements OnInit {
     }
     else {
       this.fboForm.removeControl('foscos_training');
+    }
+    if (this.productName.find((item: any) => item === 'Hygiene Audit')) {
+      this.isHygiene = true;
+      this.fboForm.addControl('hygiene_audit', this.hygiene_audit);
+    }
+    else {
+      this.fboForm.removeControl('hygiene_audit');
     }
 
   }

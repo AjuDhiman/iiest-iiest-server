@@ -36,8 +36,6 @@
                                     <label for="userImage" class="btn-sm app-btn-secondary">Change</label>
                                     <div *ngIf="submitted && updateprofileform['userImage'].errors"
                                         class="invalid-feedback" style="display: block;">
-                                        <div *ngIf="updateprofileform['userImage'].errors['required']">User Image is
-                                            required</div>
                                         <div *ngIf="updateprofileform['userImage'].errors['invalidFileType']">Invalid
                                             file type. Only .png and .jpg files are allowed.
                                         </div>
@@ -58,8 +56,6 @@
                                     <label class="btn-sm app-btn-secondary" for="userSign">Change</label>
                                     <div *ngIf="submitted && updateprofileform['userSign'].errors"
                                         class="invalid-feedback">
-                                        <div *ngIf="updateprofileform['userSign'].errors['required']">Signature is
-                                            required</div>
                                         <div *ngIf="updateprofileform['userSign'].errors['invalidFileType']">Invalid
                                             file type Only .png files are allowed.
                                         </div>

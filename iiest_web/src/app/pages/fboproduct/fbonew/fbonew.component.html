@@ -143,7 +143,7 @@
                     <div class="col-md-6">
                         <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
                         <app-multi-select #multi_select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
-                            [options]="productList" [formReset]="resetMultiDrop" [forProducts]="true"
+                            [options]="productList"  [forProducts]="true"
                             [placeHolder]="'Select Products'"></app-multi-select>
                         <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
@@ -167,8 +167,11 @@
                 <!--Foscos Component -->
                 <app-foscos *ngIf="isFoscos" formGroupName="foscos_training" [submitted]="submitted"
                     (foscosTotal)="foscosTotalAmount($event)" (foscosFixedCharge)="foscosCharges($event)" (foscosGSTAmount)="foscosGSTAmount($event)"></app-foscos>
+                
+                <!-- Hyginene Audit Component -->
+                <app-hygiene-audit *ngIf="isHygiene"></app-hygiene-audit>
 
-                <div class="row mt-3" *ngIf="isFoscos || isFostac">
+                <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene">
                     <div class="col-md-3">
                         <label for="grand_total" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
                             <span style="font-size: x-small;">(18% GST Inc.)</span></label>

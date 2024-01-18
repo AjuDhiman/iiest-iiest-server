@@ -26,6 +26,7 @@ export interface Employee {
   createdBy: string;
   empSignature: File;
   employeeImage: File;
+  _id: string;
 }
 
 export interface AddConsumer {
@@ -56,11 +57,11 @@ export interface fbo {
   gst_number: string;
   fostacInfo: object;
   foscosInfo: object;
-  payment_mode : string;
+  payment_mode: string;
   grand_total: number;
   createdBy: string;
-  pincode: number; 
-  village: string; 
+  pincode: number;
+  village: string;
   tehsil: string
   foscos_training: {
     foscos_service_name: string;
@@ -88,22 +89,23 @@ export interface fboRecipient {
 }
 
 export interface fboShop {
-  operatorName :string;
-  address : string;
+  operatorName: string;
+  address: string;
   eBill: File;
 }
 
 export interface pincodeData {
-  pincode:number;
-  tehsil:string;
-  state:string;
-  district:string
+  PostOfficeName: string;
+  Pincode: string;
+  City: string;
+  District: string;
+  State: string;
 }
 
 export interface areaAllocation {
-    state: string; 
-    district: string; 
-    pincodes: string[]
+  state: string;
+  district: string;
+  pincodes: string[]
 }
 
 export interface reportingManager {
@@ -113,4 +115,38 @@ export interface reportingManager {
 export interface editUserFiles {
   userImage: File,
   userSign: File
+}
+
+export interface userInerface {
+  address: string;
+  alternate_contact: number;
+  city: string;
+  company_name: string;
+  contact_no: number;
+  country:string;
+  createdAt: string;
+  createdBy: string;
+  department: string;
+  designation: string;
+  dob: string;
+  doj: string;
+  email: string
+  employeeImage: string;
+  employee_id: string;
+  employee_name: string;
+  gender: string;
+  id_nun: number; 
+  lastEdit: string;
+  panel_type: string;
+  password: string;
+  pay_band: string;
+  post_type: string;
+  project_name: string;
+  salary: number;
+  signatureImage: string;
+  state: string;
+  status: boolean;
+  username: string;
+  zip_code: number;
+  _id: string
 }

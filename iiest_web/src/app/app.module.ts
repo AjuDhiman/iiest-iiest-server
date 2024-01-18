@@ -47,6 +47,7 @@ import { HighchartsComponent } from './pages/highcharts/highcharts.component';
 import { EmploymentComponent } from './pages/employment/employment.component';
 import { ViewEmployeeComponent } from './pages/view-employee/view-employee.component';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
+import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-audit.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { UserAccountComponent } from './pages/user-account/user-account.componen
     HighchartsComponent,
     EmploymentComponent,
     ViewEmployeeComponent,
-    UserAccountComponent
+    UserAccountComponent,
+    HygieneAuditComponent
   ],
   imports: [
     BrowserModule,

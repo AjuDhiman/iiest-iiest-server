@@ -5,7 +5,7 @@ const fboSchema = new Schema({
     employeeInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
-        required: true
+        // required: true
     },
     id_num: {
         type: Number,
@@ -85,7 +85,7 @@ const fboSchema = new Schema({
     gst_number: {
         type: String, 
         required: function(){
-            return this.business_type.includes('b2b')
+            return this.business_type === 'b2b'
         }
     }
 })

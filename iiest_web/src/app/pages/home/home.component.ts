@@ -35,6 +35,45 @@ export class HomeComponent implements OnInit, OnDestroy {
   msg: Subscription;
   dnone: boolean = true;
   projectType: any;
+  categories = ['fostac(Retail)', 'fostac(Catering)', 'foscos(Registration)', 'foscos(State)'];
+  chartData:Highcharts.Options ={
+    credits: {
+      enabled: false
+    },
+    series: [
+      {
+        type: 'line',
+        data: [20,23,67,87,90],
+      },
+    ],
+    colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
+  };
+  barChart1: Highcharts.Options = {
+    title: {
+      text: 'Sales Chart',
+    },
+    xAxis: {
+      categories: this.categories,
+    },
+    yAxis: {
+      title: {
+        text: 'Sales',
+      },
+    },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+        colors: ['#1a9850', '#66bd63', '#a6d96a', '#d9ef8b'], // Shades of green
+      },
+    },
+    series: [
+      {
+        type: 'column',
+        data: [20, 50, 79, 22],
+        color: '#128c54',
+      },
+    ],
+  };
   constructor(
     private _registerService: RegisterService,
     private store: Store,

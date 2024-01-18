@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angu
 import { RegisterService } from 'src/app/services/register.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { GetdataService } from 'src/app/services/getdata.service';
+import { userInerface } from 'src/app/utils/registerinterface';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +21,7 @@ export class HeaderComponent implements OnInit {
   userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;
-  notifications: Array<{ image: string, description: string, time: any }> = [{
+  notifications: Array<{ image: string, description: string, time: string|Date }> = [{
     image: 'assets/images/profiles/profile-1.png',
     description: 'Amy shared a file with you. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     time: '2 hours ago'
@@ -45,7 +46,7 @@ export class HeaderComponent implements OnInit {
   public getScreenWidth: any;
 
   @Input() item: boolean;
-  @Input() userdata: any;
+  @Input() userdata: userInerface;
   @Input() isSideBar: boolean;
   @Output() toogleSideBarEvent = new EventEmitter<any>();
   //the purpose of this sidebar is to close drop menu of functions in sidebar component by falsing toggleshow var in sidebar component

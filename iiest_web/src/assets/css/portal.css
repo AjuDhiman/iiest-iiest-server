@@ -12559,10 +12559,13 @@
    font-size: 0.875rem;
  }
  .app-card-account .item .profile-image {
-   width: 60px;
-   height: 60px;
+   width: 100px;
+   height: 100px;
+   object-position: center;
    /* border-radious is not by default */
    border-radius: 50%;
+   border: 1px solid #15a362;
+   background-color: #ccc;
  }
  .app-card-account .item .btn-sm,
  .app-card-account .item .btn-group-sm > .btn {

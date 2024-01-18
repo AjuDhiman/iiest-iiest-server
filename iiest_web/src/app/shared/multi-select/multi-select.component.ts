@@ -16,10 +16,7 @@ export class MultiSelectComponent implements OnChanges {
   isDisplayEmpty: boolean = true;
 
   @Input()
-  options: any;
-
-  @Input()
-  formReset: any;
+  options: string[]|number[];
 
   @Input()
   placeHolder: string = '';
@@ -45,7 +42,7 @@ export class MultiSelectComponent implements OnChanges {
     }
   }
 
-  onclicked(event: any, index: number) {
+  onclicked(event: Event, index: number) {
     //initially we will toggle the check of clicked element tracking by index cames from templet
     this.all[index].checked = !this.all[index].checked;
 

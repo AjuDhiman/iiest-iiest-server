@@ -10,7 +10,7 @@ import { GetdataService } from 'src/app/services/getdata.service';
 })
 export class ViewEmployeeComponent implements OnInit {
   @Input() public employee: any;
-  fulladdress: any;
+  fulladdress: string;
   allocatedState: string;
   allocatedDistrict: string;
   allocatedPincodes: [];

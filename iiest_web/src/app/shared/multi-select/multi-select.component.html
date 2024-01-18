@@ -21,8 +21,8 @@
     </div>
     <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}">
         <div class="check px-3 disabled" style="height: 25px; font-size: 14px;">-- {{placeHolder}} --</div>
-        <div class="check px-3" [ngClass]="{'disabled':i>1 && forProducts}" *ngFor="let obj of all;let i = index" style="height: 25px;" >
-            <input [disabled]="i>1 && forProducts" type="checkbox" [(ngModel)]="obj.checked" (click)="onclicked($event,i)" class="myCheckbox"
+        <div class="check px-3" [ngClass]="{'disabled':i>2 && forProducts}" *ngFor="let obj of all;let i = index" style="height: 25px;" >
+            <input [disabled]="i>2 && forProducts" type="checkbox" [(ngModel)]="obj.checked" (click)="onclicked($event,i)" class="myCheckbox"
                 [id]="obj.value" />
             <label [for]="obj.value"> {{obj.value}}</label>
         </div>
