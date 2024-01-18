@@ -97,8 +97,8 @@ import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-
     NgxsReduxDevtoolsPluginModule.forRoot(),
     ToastrModule.forRoot({
       closeButton: true,
-      timeOut: 15000, // 15 seconds
-      progressBar: true,
+      timeOut: 5000, // 5 seconds
+      progressBar: false,
     }),
     NgSelectModule
   ],

@@ -11,7 +11,7 @@ import { RegisterService } from 'src/app/services/register.service';
 })
 export class UserAccountComponent {
   submitted:boolean = false;
-  userImage:string;
+  userImage:string = '../../assets/logo-side.png';
   userSign:string;
   selectedImage:string = '';
   selectedSign:string = '';
