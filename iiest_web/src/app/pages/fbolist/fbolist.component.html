@@ -56,7 +56,6 @@
                 <th class="cell">Customer ID</th>
                 <th class="cell">Contact</th>
                 <th class="cell">District</th>
-                <th class="cell">Product</th>
                 <th class="cell">Recipient No</th>
                 <th class="cell">Shop No</th>
                 <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
@@ -72,7 +71,6 @@
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_contact}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.product_name}}</span></td>
                 <td class="cell text-center"><span class="truncate selector" (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')">{{!fbo.fostacInfo ? '-' : fbo.fostacInfo.recipient_no}}</span></td>
                 <td class="cell text-center"><span class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')">{{!fbo.foscosInfo ? '-' : fbo.foscosInfo.shops_no}}</span></td>
                 <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>

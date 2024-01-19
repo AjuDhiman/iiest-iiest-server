@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
-import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
+import { faFileExcel, faFile } from '@fortawesome/free-solid-svg-icons';
 
 import * as XLSX from 'xlsx'
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -25,6 +25,7 @@ export class RecipientComponent implements OnInit {
   submitted = false;
   isfostac: boolean = false;
   faFileExcel = faFileExcel;
+  faFile=faFile;
   uploadExcel: boolean = false;
   excelData: any;
   finalData:any[];
