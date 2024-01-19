@@ -7,25 +7,34 @@
     background: #00000085;
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding-top: 10px;
+    align-items: flex-start;
 }
 
 .e-bill{
     width: 40%;
+    height: 70vh;
 }
 
 .e-bill-body{
     background-color: #fff;
     border-radius:0 0 10px 10px;
+    max-height: 85vh;
+    overflow-y: scroll;
 }
 
 .e-bill-body img{
     width: 100%;
+    object-fit: cover;
 }
  
 //we want e bill size to be diffrent in small screen size
 @media (max-width:768px) {
     .e-bill{
         width: 80%;
+    }
+
+    .e-bill-body{
+        max-height: 515px;
     }
 }

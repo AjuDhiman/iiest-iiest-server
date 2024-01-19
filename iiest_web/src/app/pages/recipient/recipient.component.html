@@ -183,8 +183,8 @@
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
                 <td *ngIf="!isfostac" class="cell">
                   <span class="truncate">
-                    <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success" [icon]="faFile" (click)="openEBillWindow()"></fa-icon>
-                    <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger" [icon]="faFile" (click)="openEBillWindow()"></fa-icon>
+                    <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success" [icon]="faFile" (click)="openEBillWindow(shops.eBillImage)"></fa-icon>
+                    <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger" [icon]="faFile"></fa-icon>
                   </span>
                 </td>
               </tr>
@@ -212,7 +212,7 @@
             (click)="closeEBillWindow()"></button>
         </div>
         <div class="modal-body e-bill-body">
-          <img src="../../../assets/logo-side.png" alt="E Bill">
+          <img [src]="ebillImage" alt="E Bill">
         </div>
       </div>
     </div>

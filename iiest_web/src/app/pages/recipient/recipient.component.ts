@@ -30,6 +30,7 @@ export class RecipientComponent implements OnInit {
   excelData: any;
   finalData:any[];
   showEBill:boolean=false;
+  ebillImage:string = '';
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
@@ -297,11 +298,21 @@ export class RecipientComponent implements OnInit {
     };
   }
 
-  openEBillWindow(){
-    this.showEBill=true
+  openEBillWindow(id:string){
+    this.showEBill=true;
+    this.getEbill(id);
   }
 
   closeEBillWindow(){
     this.showEBill=false;
+  }
+
+  getEbill(id:string){
+    this.getDataServices.getEbill(id).subscribe({
+      next: (res)=>{
+        console.log(res)
+        this.ebillImage=res.billConverted;
+      }
+    })
   }
 }
