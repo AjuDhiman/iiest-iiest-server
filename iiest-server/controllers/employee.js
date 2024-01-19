@@ -10,6 +10,7 @@ const { ObjectId } = require('mongodb');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
+
 exports.employeeRegister = async(req, res)=>{
     try {
         const signature = req.files['empSignature'];
@@ -293,12 +294,19 @@ exports.allocatedAreas = async(req, res)=>{
     }
 }
 
-exports.employeeImage = (req, res)=>{
+exports.employeeImage = async(req, res)=>{
     try {
 
         let success = false;
         
         const imageBucket = empImageBucket();
+
+        const imageExists = await imageBucket.find({"_id": new ObjectId(req.params.id)}).toArray();
+
+        if(!imageExists.length > 0){
+            success = false;
+            return res.status(200).json({success, noImage: true})
+        }
 
         const imageDownloadStream = imageBucket.openDownloadStream(new ObjectId(req.params.id));
 
@@ -337,6 +345,13 @@ exports.employeeSignature = async(req, res)=>{
         let success = false;
 
         const signatureBucket = empSignBucket();
+        
+        const signExists = await signatureBucket.find({"_id": new ObjectId(req.params.id)}).toArray();
+
+        if(!signExists.length > 0){
+            success = false;
+            return res.status(200).json({success, noSign: true})
+        }
 
         const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
 
@@ -371,9 +386,6 @@ exports.editEmployeeImages = async(req, res)=>{
     try {
 
         let success = false;
-        
-        const imageFile = req.files['userImage'];
-        const signatureFile = req.files['userSign'];
 
         const userInfo = await employeeSchema.findById(req.user.id);
 
@@ -383,10 +395,15 @@ exports.editEmployeeImages = async(req, res)=>{
 
         let updatedInfo;
 
-        if(imageFile.length === 1){
+        if(req.files['userImage']){
+            const imageFile = req.files['userImage'];
             const newImageName = `${Date.now()}_${imageFile[0].originalname}`;
 
-            await imageBucket.delete(userInfo.employeeImage);
+            const imageExists = await imageBucket.find({"_id": new ObjectId(userInfo.employeeImage)}).toArray();
+
+            if(imageExists.length > 0){
+                await imageBucket.delete(userInfo.employeeImage);
+            }
 
             const newImageStream = imageBucket.openUploadStream(newImageName);
 
@@ -406,10 +423,15 @@ exports.editEmployeeImages = async(req, res)=>{
             console.log(updatedInfo);
         }
 
-        if(signatureFile.length === 1){
+        if(req.files['userSign']){
+            const signatureFile = req.files['userSign'];
             const newSignName = `${Date.now()}_${signatureFile[0].originalname}`;
 
-            await signatureBucket.delete(userInfo.signatureImage);
+            const signExists = await signatureBucket.find({"_id": new ObjectId(userInfo.signatureImage)}).toArray();
+
+            if(signExists.length > 0){
+                await signatureBucket.delete(userInfo.signatureImage);
+            }
 
             const newSignStream = signatureBucket.openUploadStream(newSignName);
 

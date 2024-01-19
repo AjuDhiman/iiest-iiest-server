@@ -21,7 +21,7 @@ const recipientSchema = new Schema({
         required: true,
         unique: true
     }
-})
+}, {timestamps: true})
 
 const shopSchema = new Schema({
     salesInfo: {
@@ -43,7 +43,7 @@ const shopSchema = new Schema({
     required: true,
     unique: true
     }
-})
+}, {timestamps: true})
 
 const recipientModel = mongoose.model('recipientDetails', recipientSchema);
 const shopModel = mongoose.model('shopDetails', shopSchema);

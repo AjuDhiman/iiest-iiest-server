@@ -60,8 +60,17 @@ export class UserAccountComponent {
 
     this.registerService.editEmployeeFiles(filesSelect).subscribe({
       next: (res)=>{
-        console.log(res);
-        this.toastrService.success('Record Edited Successfully', res.message);
+        if(res.success){
+          this.toastrService.success('', 'Record Edited Successfully');
+        }
+      },
+      error: (err)=>{
+        let errorObj = err.error
+        if(errorObj.editImageErr){
+          this.toastrService.error('', 'Something went wrong with image. Please try again');
+        }else if(errorObj.editSignErr){
+          this.toastrService.error('', 'Something went wrong with signature. Please try');
+        }
       }
     })
 

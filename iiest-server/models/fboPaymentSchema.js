@@ -29,7 +29,7 @@ const fboPaymentModel = new Schema({
         required: true,
         default: new Date()
     }
-})
+}, {timestamps: true})
 
 const fboPaymentSchema = mongoose.model('fbo_payment', fboPaymentModel);
 module.exports = fboPaymentSchema;

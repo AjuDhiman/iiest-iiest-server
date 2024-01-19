@@ -133,7 +133,7 @@ const employeeRegister = new Schema({
         required: true,
         // unique: true
     }
-})
+},{timestamps: true})
 
 const employeeSchema = mongoose.model('staff_registers', employeeRegister);
 module.exports = employeeSchema;

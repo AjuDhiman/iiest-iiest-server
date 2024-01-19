@@ -51,7 +51,7 @@ const salesSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     }
-})
+}, {timestamps: true})
 
 const salesModel = mongoose.model('employee_sales', salesSchema);
 module.exports = salesModel;

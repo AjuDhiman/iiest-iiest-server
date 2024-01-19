@@ -9,9 +9,6 @@ const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
 const employeeFilesUpload = multer({storage: employeeFilesStorage});
 
-// const editFilesStorage = multer.memoryStorage();
-// const editFilesUpload = multer({storage: editFilesStorage});
-
 router.post('/empregister', authMiddleware, employeeFilesUpload.fields([{name: 'empSignature', maxCount: 1}, {name: 'employeeImage', maxCount: 1}]), employeeRegister);
 router.post('/login', employeeLogin);
 router.delete('/deleteEmployee/:id', authMiddleware, deleteEmployee);
