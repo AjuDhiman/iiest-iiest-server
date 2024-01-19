@@ -78,6 +78,11 @@ export class GetdataService {
   return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
+ public getEbill(billId: string): Observable<any>{
+  const url = `${this.url}/shop/ebill/${billId}`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
  public getPincodesData(stateName:string):Observable<any>{
   const url = `${this.url}/getPincodesData/${stateName}`;
   return this.http.get<any>(url).pipe(catchError(this.handleError));

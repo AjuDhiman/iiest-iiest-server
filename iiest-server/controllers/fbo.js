@@ -6,7 +6,7 @@ const fboModel = require('../models/fboSchema');
 const salesModel = require('../models/employeeSalesSchema');
 const employeeSchema = require('../models/employeeSchema');
 const { ObjectId } = require('mongodb');
-const { createInvoiceBucket } = require('../config/buckets');
+const { createInvoiceBucket, empSignBucket } = require('../config/buckets');
 const payRequest = require('../fbo/phonePay');
 const areaAllocationModel = require('../models/employeeAreaSchema');
 
@@ -28,6 +28,15 @@ exports.fboPayment = async(req, res)=>{
     success = false;
     return res.status(404).json({success, areaAllocationErr: true})
   }
+
+  const signatureBucket = empSignBucket();
+
+      const signExists = await signatureBucket.find({"_id": new ObjectId(signatureFile)}).toArray();
+
+      if(!signExists.length > 0){
+        return res.status(404).json({success, noSignErr: true})
+      }
+
 
   const formBody = req.body;
   const createrId = req.params.id
@@ -177,6 +186,14 @@ exports.fboRegister = async (req, res) => {
       if(!areaAlloted){
         success = false;
         return res.status(404).json({success, areaAllocationErr: true})
+      }
+
+      const signatureBucket = empSignBucket();
+
+      const signExists = await signatureBucket.find({"_id": new ObjectId(signatureFile)}).toArray();
+
+      if(!signExists.length > 0){
+        return res.status(404).json({success, noSignErr: true})
       }
 
       const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, fostacGST, foscosGST, foscosFixedCharge } = req.body;
