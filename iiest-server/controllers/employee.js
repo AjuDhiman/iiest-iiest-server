@@ -311,7 +311,7 @@ exports.employeeImage = async(req, res)=>{
         const imageDownloadStream = imageBucket.openDownloadStream(new ObjectId(req.params.id));
 
         imageDownloadStream.on('error', ()=>{
-                success = true;
+                success = false;
                 return res.status(200).json({success, defaultImage: '../../../assets/logo-side.png'})
         })
 
@@ -356,7 +356,7 @@ exports.employeeSignature = async(req, res)=>{
         const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
 
         if(!signDownloadStream){
-            success = true;
+            success = false;
             return res.status.json({success, noSignature: true});
         }
 
