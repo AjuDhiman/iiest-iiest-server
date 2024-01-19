@@ -96,6 +96,13 @@
                                 [icon]="faIndianRupeeSign"></fa-icon>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4 title">Invoice</div>
+                        <div class="col-md-8 data">
+                            <fa-icon (click)="openInvoiceWindow()" class="fa-2xl text-success cursor-pointer" style="color: #5d6778;"
+                                [icon]="faFile"></fa-icon>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- <div class="row border border-1 p-1">
@@ -229,3 +236,18 @@
         </div>
     </div>
 </div>
+<div *ngIf="showInvoice" class="e-bill-modal-back-blur">
+    <div class="e-bill">
+      <div class="modal-header bg-secondary">
+        <h6 class="modal-title text-white" id="modal-basic-po">Invoice</h6>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close"
+          (click)="closeInvoiceWindow()"></button>
+      </div>
+      <div class="modal-body e-bill-body">
+        <!-- <a class="download-link" [href]="ebillImage" download="ebill.jpg">
+          <fa-icon class="fa-xl" [icon]="faDownload"></fa-icon>
+        </a> -->
+        <!-- <img [src]="ebillImage" alt="E Bill"> -->
+      </div>
+    </div>
+  </div>

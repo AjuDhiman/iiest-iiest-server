@@ -59,7 +59,6 @@ export class EmployeelistComponent implements OnInit {
   fetchAllEmployees(): void {
     this.allEmployees = this._utililitesService.getData();
     this.filter();
-    console.log(this.allEmployees);
     if(this.allEmployees.length === 0){
         this.getEmployees();
         this.employees$.subscribe(res => {
@@ -117,7 +116,6 @@ export class EmployeelistComponent implements OnInit {
    }
    
    editRecord(res:any): void{
-    console.log(res);
     var data = {
       isEditMode: true,
       Record: res
@@ -163,7 +161,6 @@ export class EmployeelistComponent implements OnInit {
             emp_id:emp.employee_id
           }
         });
-        console.log(allManagers);
         modalRef.componentInstance.allManagers = allManagers;
       }
   }
@@ -171,7 +168,6 @@ export class EmployeelistComponent implements OnInit {
     //View Employee Details
     viewEmployeeDetails(res:any){
       const modalRef = this.modalService.open(ViewEmployeeComponent, { size: 'lg', backdrop: 'static' });
-      console.log(res);
         modalRef.componentInstance.employee = res;
     }
 }

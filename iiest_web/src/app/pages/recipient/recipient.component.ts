@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
-import { faFileExcel, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faFileExcel, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 import * as XLSX from 'xlsx'
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -24,13 +24,19 @@ export class RecipientComponent implements OnInit {
   addRecipient: any;
   submitted = false;
   isfostac: boolean = false;
+  pageNumber: number = 1;
   faFileExcel = faFileExcel;
-  faFile=faFile;
+  faFile = faFile;
+  faDownload = faDownload;
   uploadExcel: boolean = false;
   excelData: any;
-  finalData:any[];
-  showEBill:boolean=false;
-  ebillImage:string = '';
+  finalData: any[];
+  showEBill: boolean = false;
+  ebillImage: string = '';
+  showPagination: boolean = false;
+  recipientCount:number = 0;
+  shopsCount:number;
+  listCount:number;
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
@@ -62,8 +68,7 @@ export class RecipientComponent implements OnInit {
     if (this.serviceType === 'foscos') {
       this.getSaleShopsList(this.fboData._id);
     }
-    // this.recipientData = this.fboData.recipientDetails; 
-    // this.shopData = this.fboData.shopDetails;
+    
 
     switch (this.serviceType) {
       case "fostac":
@@ -82,6 +87,7 @@ export class RecipientComponent implements OnInit {
                 Validators.pattern(/^[0-9]{12}$/)
               ]]
           });
+        this.listCount=this.fboData.fostacInfo.recipient_no;
         break;
       case "foscos":
         this.isfostac = false;
@@ -91,6 +97,7 @@ export class RecipientComponent implements OnInit {
             address: ['', Validators.required],
             eBill: ['', Validators.required]
           });
+          this.listCount=this.fboData.foscosInfo.shops_no;
         break;
       /* case "*":
         console.log(val1 * val2);
@@ -199,7 +206,11 @@ export class RecipientComponent implements OnInit {
   getSaleRecipientsList(saleId: string) {
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
-        this.recipientData = res.recipientsList;
+        if (res.recipientsList.length) {
+          this.showPagination=true;
+          this.recipientData = res.recipientsList;
+          this.recipientCount=res.recipientsList.length;
+        }
       }
     })
   }
@@ -207,8 +218,11 @@ export class RecipientComponent implements OnInit {
   getSaleShopsList(saleId: string) {
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
-        console.log(res.shopsList)
-        this.shopData = res.shopsList
+        if(res.shopsList.length){
+          this.shopData = res.shopsList
+          this.showPagination=true;
+          this.shopsCount=res.shopsList.length;
+        }
       }
     })
 
@@ -225,15 +239,14 @@ export class RecipientComponent implements OnInit {
       let sheetNames = workbook.SheetNames;
       let data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNames[0]]);
 
-      console.log(data);
       this.excelData = data;
     }
 
     this.closeModal()
-    
+
   }
 
-  submitExcel(){
+  submitExcel() {
     this.fboID = this.fboData._id
     if (this.serviceType === 'fostac') {
       this._registerService.addFboRecipent(this.fboID, this.excelData).subscribe({
@@ -252,7 +265,7 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
-    } else if(this.serviceType==='foscos'){
+    } else if (this.serviceType === 'foscos') {
       this._registerService.addFboShop(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
@@ -298,20 +311,25 @@ export class RecipientComponent implements OnInit {
     };
   }
 
-  openEBillWindow(id:string){
-    this.showEBill=true;
+  onTableDataChange(event: any) {
+    this.pageNumber = event;
+    // this.filter();
+  }
+
+  openEBillWindow(id: string) {
+    this.showEBill = true;
     this.getEbill(id);
   }
 
-  closeEBillWindow(){
-    this.showEBill=false;
+  closeEBillWindow() {
+    this.showEBill = false;
   }
 
-  getEbill(id:string){
+  getEbill(id: string) {
     this.getDataServices.getEbill(id).subscribe({
-      next: (res)=>{
+      next: (res) => {
         console.log(res)
-        this.ebillImage=res.billConverted;
+        this.ebillImage = res.billConverted;
       }
     })
   }

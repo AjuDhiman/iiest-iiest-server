@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { faIndianRupeeSign, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
 @Component({
   selector: 'app-view-fbo',
@@ -14,6 +14,9 @@ export class ViewFboComponent implements OnInit {
   shopDetails: fboShop;
   isfostac:boolean= false;
   faIndianRupeeSign = faIndianRupeeSign;
+  faFile=faFile;
+  faDownload=faDownload;
+  showInvoice:boolean=false;
   constructor(public activeModal: NgbActiveModal) { 
   }
 
@@ -26,9 +29,18 @@ export class ViewFboComponent implements OnInit {
     this.isfostac = true?this.fboData.product_name.includes('Fostac Training') : this.isfostac = false;
    //this.fulladdress =  "Village: "+ this.fboData.village+", Post-Office: "+ this.fboData.address+", Tehsil: "+ this.fboData.tehsil+", District: "+ this.fboData.district+", State: "+ this.fboData.state+", Pincode: "+ this.fboData.pincode+", "+ "India";
    this.fulladdress =  this.fboData.fboInfo.village+", "+ this.fboData.fboInfo.address+", "+ this.fboData.fboInfo.tehsil+", "+ this.fboData.fboInfo.district+", "+ this.fboData.fboInfo.state+", Pincode: "+ this.fboData.fboInfo.pincode+", "+ "India";
+   console.log(this.fboData);
   }
   closeModal() {
     this.activeModal.close();
+  }
+
+  openInvoiceWindow(){
+    this.showInvoice=true;
+  }
+
+  closeInvoiceWindow(){
+    this.showInvoice=false;
   }
 
 }

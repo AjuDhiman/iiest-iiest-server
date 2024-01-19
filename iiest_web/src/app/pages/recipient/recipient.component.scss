@@ -1,3 +1,14 @@
+.download-link{
+    color: black;
+    transition: all 0,4s ease-in-out;
+    padding-bottom: 20px;
+}
+
+.download-link:hover{
+    // border-color: #15a362;
+    color: blue;
+}
+
 .e-bill-modal-back-blur{
     position: fixed;
     top: 0;
@@ -21,9 +32,11 @@
     border-radius:0 0 10px 10px;
     max-height: 85vh;
     overflow-y: scroll;
+    text-align: right;
 }
 
 .e-bill-body img{
+    margin-top: 10px;
     width: 100%;
     object-fit: cover;
 }
