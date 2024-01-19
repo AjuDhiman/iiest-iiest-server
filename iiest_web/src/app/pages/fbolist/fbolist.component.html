@@ -54,7 +54,7 @@
                 <th class="cell">Fbo Name</th>
                 <th class="cell">Owner</th>
                 <th class="cell">Customer ID</th>
-                <th class="cell">Contact</th>
+                <th class="cell">State</th>
                 <th class="cell">District</th>
                 <th class="cell">Recipient No</th>
                 <th class="cell">Shop No</th>
@@ -69,12 +69,12 @@
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.fbo_name}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_name}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
-                <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_contact}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
                 <td class="cell text-center"><span class="truncate selector" (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')">{{!fbo.fostacInfo ? '-' : fbo.fostacInfo.recipient_no}}</span></td>
                 <td class="cell text-center"><span class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')">{{!fbo.foscosInfo ? '-' : fbo.foscosInfo.shops_no}}</span></td>
                 <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
-                <td class="cell"><span class="truncate">{{fbo.fboInfo.createdAt | date: 'shortDate'}}</span></td>
+                <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;" 
                   (click)="viewFboDetails(fbo)" [icon]="faEye"></fa-icon>

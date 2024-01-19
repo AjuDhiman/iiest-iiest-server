@@ -115,8 +115,8 @@
 
 <div class="row g-3 mb-4 mx-2 align-items-center justify-content-between" [ngClass]="recipientCount!==listCount?'':'mt-3'">
   <div class="col-auto">
-    <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">FBO Recipient List</h1>
-    <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">FBO Shop List</h1>
+    <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">Recipient List <small>({{fboData.fboInfo.fbo_name}})</small></h1>
+    <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">Shop List <small>({{fboData.fboInfo.fbo_name}})</small></h1>
   </div>
   <div class="col-auto">
     <div class="page-utilities">
