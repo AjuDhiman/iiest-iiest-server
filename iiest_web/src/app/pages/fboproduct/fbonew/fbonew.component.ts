@@ -295,6 +295,8 @@ export class FbonewComponent implements OnInit {
               this._toastrService.error('', 'Area has not been allocated to this employee.')
             } else if (errorObj.wrongPincode) {
               this._toastrService.error('', 'You cannot make sale outside your allocated area');
+            } else if(errorObj.noSignErr){
+              this._toastrService.error('', 'Provide your signature first in account in settings');
             }
           }
         })
@@ -322,6 +324,8 @@ export class FbonewComponent implements OnInit {
               this._toastrService.error('', 'Area has not been allocated to this employee.')
             } else if (errorObj.wrongPincode) {
               this._toastrService.error('', 'You cannot make sale outside your allocated area');
+            } else if(errorObj.noSignErr){
+              this._toastrService.error('', 'Provide your signature first in account in settings');
             }
           }
         })
