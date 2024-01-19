@@ -62,6 +62,7 @@ export class UserAccountComponent {
       next: (res)=>{
         if(res.success){
           this.registerService.replaceToken(res);
+          location.reload();
           this.toastrService.success('', 'Record Edited Successfully');
         }
       },
@@ -70,7 +71,7 @@ export class UserAccountComponent {
         if(errorObj.editImageErr){
           this.toastrService.error('', 'Something went wrong with image. Please try again');
         }else if(errorObj.editSignErr){
-          this.toastrService.error('', 'Something went wrong with signature. Please try');
+          this.toastrService.error('', 'Something went wrong with signature. Please try again');
         }
       }
     })

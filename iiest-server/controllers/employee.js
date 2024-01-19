@@ -174,11 +174,22 @@ exports.deleteEmployee = async(req, res)=>{
 
         const deletedEmployee = await employeeSchema.findByIdAndDelete(objId);
 
-        const deletedSignature = await signatureBucket.delete(deletedEmployee.signatureImage);
+        if(!deletedEmployee){
+            success = false;
+            return res.status(404).json({success, deleteEmpErr: true});
+        }
 
-        const deletedImage = await imageBucket.delete(deletedEmployee.employeeImage);
+        const signatureExists = await signatureBucket.find({'_id': new ObjectId(deletedEmployee.signatureImage)}).toArray();
 
-        console.log(deletedSignature, deletedImage);
+        const imageExists = await imageBucket.find({'_id': new ObjectId(deletedEmployee.employeeImage)}).toArray();
+
+        if(signatureExists.length > 0){
+           await signatureBucket.delete(deletedEmployee.signatureImage);
+        }
+
+        if(imageExists.length > 0){
+            await imageBucket.delete(deletedEmployee.employeeImage);
+        }
 
         if(deletedEmployee){
 

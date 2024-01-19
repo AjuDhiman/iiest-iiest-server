@@ -344,3 +344,39 @@ exports.registerdFBOList = async(req, res)=>{
   }
 }
 
+exports.saleInvoice = async(req, res)=>{
+  try {
+    
+    const invoiceId = req.params.id;
+
+    const invoiceBucket = createInvoiceBucket();
+
+    const invoiceCheck = await invoiceBucket.find({'_id': new ObjectId(invoiceId)}).toArray();
+
+    if(!invoiceCheck.length > 0){
+      success = false;
+      return res.status(404).json({success, invoiceErr});
+    }
+
+    const invoiceDownloadStream = invoiceBucket.openDownloadStream(new ObjectId(invoiceId));
+
+    let chunks = [];
+
+    invoiceDownloadStream.on('data', (chunk)=>{
+        chunks.push(chunk);
+    })
+
+    invoiceDownloadStream.on('end', ()=>{
+        const invoiceBuffer = Buffer.concat(chunks);
+        const invoicePrefix = 'data:image/png;base64,';
+        const invoiceBase64 = invoiceBuffer.toString('base64');
+        const invoiceConverted = `${invoicePrefix}${invoiceBase64}`
+        success = true
+        return res.status(200).json({success, invoiceConverted})
+    })
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({message: "Internal Server Error"});
+  }
+}
