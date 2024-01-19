@@ -44,11 +44,9 @@ export class SettingPanelComponent implements OnInit {
   getUserImage(){
     let user:any = sessionStorage.getItem('LoggedInUser');
     let parsedUser = JSON.parse(user);
-    console.log(parsedUser)
     this.getDataService.getUserImage(parsedUser.employeeImage).subscribe({
       next: (res)=>{
         this.userImage = res.imageConverted;
-        console.log(this.userImage);
       }
     })
   }
@@ -56,10 +54,8 @@ export class SettingPanelComponent implements OnInit {
   validateFileType(allowedExtensions: string[]) {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const file = control.value;
-      console.log(file);
       if (file) {
         const fileExtension = file.split('.').pop()?.toLowerCase();
-        console.log(fileExtension)
         if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
           return null;
         } else {
