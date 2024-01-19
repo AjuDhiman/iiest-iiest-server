@@ -64,7 +64,6 @@ export class HeaderComponent implements OnInit {
       this.empName = loggedInUserData.employee_name;
       this.userImageId = loggedInUserData.employeeImage
       this.getUserImage();
-      //console.log(this.empName);
     }
     if (this.width >= 1920) {
       this.isSideBar = true;
@@ -109,27 +108,23 @@ export class HeaderComponent implements OnInit {
   toggleClass = (event: any) => {
     let title = event.target.getAttribute('title');
     if (title === 'dropdown-menu') {
-      console.log(title)
       this.toggelSettings = false;
       this.toggelNotification = false;
       this.toggelShow = !this.toggelShow;
       event.target.classList.toggle('show');
     }
     else if (title === 'Settings') {
-      console.log(title)
       this.toggelShow = false;
       this.toggelNotification = false;
       this.toggelSettings = !this.toggelSettings;
       event.target.classList.toggle('show');
     }
     else if (title === 'Notifications') {
-      console.log(title)
       this.toggelShow = false;
       this.toggelSettings = false;
       this.toggelNotification = !this.toggelNotification;
       event.target.classList.toggle('show');
     }
-    console.log(title)
   }
   logout() {
     this._registerService.signout();

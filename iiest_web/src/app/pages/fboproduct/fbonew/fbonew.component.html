@@ -117,7 +117,7 @@
                         <label for="pincode" class="form-label">Pincode</label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
                             class="form-select form-select-sm" autocomplete="off" 
-                            [attr.disabled]="isExisting">
+                            [attr.disabled]="isExisting?true:null">
                             <option value="" disabled selected>Select the Pincode</option>
                             <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
                         </select>

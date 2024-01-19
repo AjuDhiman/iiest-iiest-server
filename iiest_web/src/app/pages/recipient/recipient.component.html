@@ -7,7 +7,7 @@
 <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
   <div class="form-check form-switch">
     <input class="form-check-input" type="checkbox" role="switch" (change)="ChangeFormType($event)"
-      id="flexSwitchCheckDefault"/>
+      id="flexSwitchCheckDefault" />
     <label class="form-check-label" for="flexSwitchCheckDefault">Upload Excel</label>
   </div>
   <fa-icon class="fa-lg" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel"
@@ -82,7 +82,8 @@
     <div>
       <!-- <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" /> -->
     </div>
-    <button *ngIf="this.serviceType === 'fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add Recipient</button>
+    <button *ngIf="this.serviceType === 'fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add
+      Recipient</button>
     <button *ngIf="this.serviceType === 'foscos'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
   </div>
 </form>
@@ -90,15 +91,15 @@
   <div class="modal-body">
     <div class="row">
       <div class="col-md-4">
-        <label for="Excel" class="form-label" >Upload Excel</label>
-        <input type="file" id="Excel" formControlName="excel" 
-          class="form-control form-control-sm" (change)="onExcelUpload($event)"
-          [ngClass]="{ 'is-invalid': excelSubmited && excelform['excel'].errors }">
+        <label for="Excel" class="form-label">Upload Excel</label>
+        <input type="file" id="Excel" formControlName="excel" class="form-control form-control-sm"
+          (change)="onExcelUpload($event)" [ngClass]="{ 'is-invalid': excelSubmited && excelform['excel'].errors }">
       </div>
     </div>
     <div *ngIf="excelSubmited && excelform['excel'].errors" class="invalid-feedback">
       <div *ngIf="excelSubmited && excelform['excel'].errors['required']">Employee Image is required</div>
-      <div *ngIf="excelSubmited && excelform['excel'].errors['invalidFileType']">Invalid file type Only .csv, .xlsx files are allowed.
+      <div *ngIf="excelSubmited && excelform['excel'].errors['invalidFileType']">Invalid file type Only .csv, .xlsx
+        files are allowed.
       </div>
     </div>
   </div>
@@ -180,7 +181,12 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-                <td *ngIf="!isfostac" class="cell text-success"><span class="truncate"><fa-icon class="fa-2xl"[icon]="faFile"></fa-icon></span></td>
+                <td *ngIf="!isfostac" class="cell">
+                  <span class="truncate">
+                    <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success" [icon]="faFile" (click)="openEBillWindow()"></fa-icon>
+                    <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger" [icon]="faFile" (click)="openEBillWindow()"></fa-icon>
+                  </span>
+                </td>
               </tr>
             </tbody>
             <tbody
@@ -197,4 +203,16 @@
 
     <div class="d-flex justify-content-end">
       <pagination-controls previousLabel="Prev" nextLabel="Next"></pagination-controls>
+    </div>
+    <div *ngIf="showEBill" class="e-bill-modal-back-blur">
+      <div class="e-bill">
+        <div class="modal-header bg-secondary">
+          <h6 class="modal-title text-white" id="modal-basic-po">E-Bill</h6>
+          <button type="button" class="btn-close btn-close-white" aria-label="Close"
+            (click)="closeEBillWindow()"></button>
+        </div>
+        <div class="modal-body e-bill-body">
+          <img src="../../../assets/logo-side.png" alt="E Bill">
+        </div>
+      </div>
     </div>

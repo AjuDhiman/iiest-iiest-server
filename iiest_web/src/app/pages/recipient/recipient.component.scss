@@ -1,10 +1,31 @@
-// .excel-upload-form{
-//     position: absolute;
-//     top: 50%;
-//     left: 50%;
-//     z-index: 200;
-//     height: 60px;
-//     width: 60px;
-//     transform: translate(-50%,-50%);
-//     background-color: red;
-//
+.e-bill-modal-back-blur{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00000085;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.e-bill{
+    width: 40%;
+}
+
+.e-bill-body{
+    background-color: #fff;
+    border-radius:0 0 10px 10px;
+}
+
+.e-bill-body img{
+    width: 100%;
+}
+ 
+//we want e bill size to be diffrent in small screen size
+@media (max-width:768px) {
+    .e-bill{
+        width: 80%;
+    }
+}

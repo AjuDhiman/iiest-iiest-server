@@ -26,8 +26,6 @@ export class SidebarComponent {
 
   ngOnInit(): void{
     this.getUserData();
-    console.log(fbo_roles);
-    console.log(empRegister_roles);
     this.getUserImage();
     // this.getUserImage();
   }
@@ -55,7 +53,6 @@ sideBarToggleValue(){
 getUserImage(){
   const rawUserData: any = this.registerService.LoggedInUserData();
   const parsedData: any = JSON.parse(rawUserData);
-  console.log(parsedData)
   this.getDataService.getUserImage(parsedData.employeeImage).subscribe({
     next: (res)=>{
     if(res.imageConverted){

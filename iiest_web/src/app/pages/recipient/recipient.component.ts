@@ -29,6 +29,7 @@ export class RecipientComponent implements OnInit {
   uploadExcel: boolean = false;
   excelData: any;
   finalData:any[];
+  showEBill:boolean=false;
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
@@ -205,6 +206,7 @@ export class RecipientComponent implements OnInit {
   getSaleShopsList(saleId: string) {
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
+        console.log(res.shopsList)
         this.shopData = res.shopsList
       }
     })
@@ -225,6 +227,9 @@ export class RecipientComponent implements OnInit {
       console.log(data);
       this.excelData = data;
     }
+
+    this.closeModal()
+    
   }
 
   submitExcel(){
@@ -290,5 +295,13 @@ export class RecipientComponent implements OnInit {
 
       return null;
     };
+  }
+
+  openEBillWindow(){
+    this.showEBill=true
+  }
+
+  closeEBillWindow(){
+    this.showEBill=false;
   }
 }

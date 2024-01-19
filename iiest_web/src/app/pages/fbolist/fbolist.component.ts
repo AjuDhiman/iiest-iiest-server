@@ -64,8 +64,6 @@ export class FbolistComponent implements OnInit {
   filter(): void {
     if (!this.searchQuery) {
       this.filteredData = this.allFBOEntries;
-      console.log(this.allFBOEntries)
-      console.log(this.searchQuery)
     } else {
       switch (this.selectedFilter) {
         case 'byOwner': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
@@ -142,13 +140,11 @@ export class FbolistComponent implements OnInit {
     };
 
     this.exportAsService.save(options, 'table_data').subscribe(() => {
-      console.log('Save completed');
     });
   }
 
   //Recipient Add
   recipient(res: any, serviceType: string) {
-    console.log(serviceType);
     if (res !== '' && serviceType === 'fostac') {
       const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.fboData = res;

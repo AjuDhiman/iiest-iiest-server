@@ -211,12 +211,10 @@ export class FbonewComponent implements OnInit {
 
   existingUser($event: any) {
     this.isExisting = $event.target.checked
-    console.log(this.isExisting);
   }
 
   filterSearch(event: any) {
     let value = event.target.value
-    console.log(value);
     if (value !== '') {
       this.isSearchEmpty = false;
     }
@@ -227,7 +225,6 @@ export class FbonewComponent implements OnInit {
     let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
     this.searchSuggestions = this.existingFbos.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
-    console.log(this.searchSuggestions);
   }
 
   fetchExistingUser(fboObj: any) {
@@ -235,7 +232,6 @@ export class FbonewComponent implements OnInit {
     this.isSearchEmpty = true;
     let value = this.searchElem.nativeElement.value;
     this.fbo['fbo_name'];
-    console.log(fboObj);
     this.fbo['fbo_name'].setValue(fboObj.fbo_name);
     this.fbo['owner_name'].setValue(fboObj.owner_name);
     this.fbo['owner_contact'].setValue(fboObj.owner_contact);
@@ -247,7 +243,6 @@ export class FbonewComponent implements OnInit {
     this.fbo['state'].setValue(fboObj.state);
     this.fbo['pincode'].setValue(fboObj.pincode);
     this.fbo['business_type'].setValue(fboObj.business_type);
-    console.log(this.fbo);
     if (fboObj.business_type === 'b2b') {
       this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
       this.need_gst_number = true;
@@ -263,7 +258,6 @@ export class FbonewComponent implements OnInit {
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
-    console.log(this.fboForm.value);
     if (this.fboForm.invalid) {
       return;
     }
@@ -305,7 +299,6 @@ export class FbonewComponent implements OnInit {
           }
         })
       } else {
-        console.log(this.addFbo)
         this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
           next: (res) => {
             if (res.success) {
@@ -342,7 +335,6 @@ export class FbonewComponent implements OnInit {
       next: (res) => {
         this.fboGeneralData = res.product_name;
         this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }));
-        console.log(this.fboGeneralData);
         this.productList = Object.keys(res.product_name);
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
@@ -360,7 +352,6 @@ export class FbonewComponent implements OnInit {
     // for getting fbo lists
     this._getFboGeneralData.getFbolist().subscribe({
       next: (res) => {
-        console.log(res);
         this.existingFbos = res.fboList;
       },
       error: (err) => {
@@ -387,7 +378,6 @@ export class FbonewComponent implements OnInit {
     this.productName = $event;
     this.fboForm.patchValue({ product_name: this.productName })
     var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key))
-    console.log(filtered);
 
     this.isFostac = false;
     this.isFoscos = false;
@@ -423,11 +413,9 @@ export class FbonewComponent implements OnInit {
   }
 
   isEditRecord(param: any) {
-    console.log(param.Record);
     this.isEditMode = param.isEditMode;
     const record = param.Record;
     this.objId = record._id
-    console.log(record);
     this.formType = "Edit"
     this.fboForm.setValue({
       fbo_name: record.fbo_name,
@@ -473,7 +461,6 @@ export class FbonewComponent implements OnInit {
   // This function conditionally add gst number filled in fbo form (condition: If checkox B2B is true in Business type field)
   onBusinessTypeChange($event: any) {
     let businessType: string = $event.target.value
-    console.log(businessType);
     if (businessType) {
       if (businessType === 'b2b') { // If we have business type b2b then we want to add gst number form control
         this.need_gst_number = true;
@@ -505,28 +492,23 @@ export class FbonewComponent implements OnInit {
   }
   foscosCharges(charges: any) {
     this.foscosFixedCharges = charges;
-    console.log(this.foscosFixedCharges);
   }
   foscosGSTAmount(gstAmount: number) {
     this.foscosGST = gstAmount
-    console.log(this.foscosGST);
   }
   fostacGSTAmount(gstAmount: any) {
     this.fostacGST = gstAmount
-    console.log(this.fostacGST);
   }
 
   getAllocatedArea() {
     let userData: any = this._registerService.LoggedInUserData();
     let parsedData = JSON.parse(userData)
-    console.log(parsedData._id);
     this._getFboGeneralData.getAllocatedAreas(parsedData._id).subscribe({
       next: (res) => {
         let data = res.allocatedPincodes;
-        // console.log(data);
         if (!data) {
-          this._toastrService.error('', 'Your Area is not allocated yet');
-          this.router.navigate(['/home']);
+          // this._toastrService.error('', 'Your Area is not allocated yet');
+          // this.router.navigate(['/home']);
         } else {
           this.allocated_state = data.state;
           this.allocated_district = data.district;

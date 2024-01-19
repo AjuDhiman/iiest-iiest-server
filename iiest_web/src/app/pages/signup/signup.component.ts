@@ -151,8 +151,6 @@ export class SignupComponent implements OnInit {
       }
     );
 
-    console.log(this.calendar.getToday());
-
     this.form.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
 
   }
@@ -199,7 +197,6 @@ export class SignupComponent implements OnInit {
 
     if (this.isEditMode) {
       this.editedData = this.form.value;
-      console.log(this.editedData);
       this._registerService.updateEmployee(this.objId, this.editedData, `${this.userName}(${this.parsedUserData.employee_id})`).subscribe({
         next: (response) => {
           if (response.success) {
@@ -423,11 +420,8 @@ export class SignupComponent implements OnInit {
   onSignatureEnter($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
-      console.log(file);
       if (file.type == "image/png") {
-        console.log("correct");
         this.signatureFile = file;
-        console.log(this.signatureFile);
       }
       else {
         //call validation
@@ -439,11 +433,8 @@ export class SignupComponent implements OnInit {
   onEmpImageChange($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
-      console.log(file);
       if (file.type == "image/png" || file.type == "image/jpeg") {
-        console.log("correct");
         this.empImageFile = file;
-        console.log(this.empImageFile);
       }
       else {
         //call validation
@@ -454,10 +445,8 @@ export class SignupComponent implements OnInit {
   validateFileType(allowedExtensions: string[]) {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const file = control.value;
-      console.log(file);
       if (file) {
         const fileExtension = file.split('.').pop()?.toLowerCase();
-        console.log(fileExtension)
         if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
           return null;
         } else {
