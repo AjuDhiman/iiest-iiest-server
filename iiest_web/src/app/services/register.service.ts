@@ -106,6 +106,13 @@ export class RegisterService {
     sessionStorage.setItem("LoggedInUser", JSON.stringify(currentUser.employee_user));
   }
 
+  replaceToken(userUpdated: any){
+    sessionStorage.removeItem('token');
+    sessionStorage.setItem('token', userUpdated.newToken)
+    sessionStorage.removeItem('LoggedInUser');
+    sessionStorage.setItem('LoggedInUser', JSON.stringify(userUpdated.newData))
+  }
+
   getToken(){
     return sessionStorage.getItem('token')
   }

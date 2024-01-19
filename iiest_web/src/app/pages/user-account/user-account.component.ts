@@ -61,6 +61,7 @@ export class UserAccountComponent {
     this.registerService.editEmployeeFiles(filesSelect).subscribe({
       next: (res)=>{
         if(res.success){
+          this.registerService.replaceToken(res);
           this.toastrService.success('', 'Record Edited Successfully');
         }
       },

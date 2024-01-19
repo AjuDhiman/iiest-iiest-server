@@ -420,7 +420,6 @@ exports.editEmployeeImages = async(req, res)=>{
 
             userInfo.employeeImage = newImageStream.id;
             updatedInfo = await userInfo.save();
-            console.log(updatedInfo);
         }
 
         if(req.files['userSign']){
@@ -447,14 +446,20 @@ exports.editEmployeeImages = async(req, res)=>{
 
             userInfo.signatureImage  = newSignStream.id;
             updatedInfo = await userInfo.save();
-            console.log(updatedInfo)
         }
 
-        console.log(updatedInfo);
-
         if(updatedInfo){
+
+            const newData = {
+                user:{
+                    id: userInfo._id
+                }
+            }    
+        
+            const newToken = jwt.sign(newData, JWT_SECRET);
+
             success = true;
-            return res.status(200).json({success, infoUpdated: true});
+            return res.status(200).json({success, infoUpdated: true, newToken, newData: updatedInfo});
         }
 
     } catch (error) {
