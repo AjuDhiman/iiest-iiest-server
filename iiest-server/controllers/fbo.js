@@ -355,20 +355,20 @@ exports.saleInvoice = async(req, res)=>{
 
     if(!invoiceCheck.length > 0){
       success = false;
-      return res.status(404).json({success, oldSaleErr: true});
+      return res.status(404).json({success, oldInvoiceErr: true});
     }
 
     const invoiceDownloadStream = invoiceBucket.openDownloadStream(new ObjectId(invoiceId));
+
+    invoiceDownloadStream.on('error', ()=>{
+      success = false;
+      return res.status(200).json({success, randomErr: true});
+    })
 
     let chunks = [];
 
     invoiceDownloadStream.on('data', (chunk)=>{
         chunks.push(chunk);
-    })
-
-    invoiceDownloadStream.on('error', ()=>{
-      success = false;
-      return res.status(404).json({success, invoiceErr: true})
     })
 
     invoiceDownloadStream.on('end', ()=>{
