@@ -14,6 +14,7 @@ export class UtilitiesService {
   constructor(private http: HttpClient, private router:Router) { }
 
   employeeData: any = [];
+  recipientId:string;
 
 public setData(data:any) { // call this method from the component and pass the result you get from the API to set it in the service
   this.employeeData = data;
@@ -42,5 +43,13 @@ public downloadFile(fileType:String): void {
 private handleError(err: HttpErrorResponse): Observable<never> {
   // just a test ... more could would go here
   return throwError(() => err);
+}
+
+public setOperationRecpId(id:string){
+   this.recipientId=id;
+}
+
+public getOperationRecpId(){
+ return this.recipientId;
 }
 }

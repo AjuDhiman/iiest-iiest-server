@@ -50,6 +50,7 @@ import { UserAccountComponent } from './pages/user-account/user-account.componen
 import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-audit.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
+import { OperationformComponent } from './pages/operation/operationform/operationform.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { CaseListComponent } from './pages/operation/case-list/case-list.compone
     ViewEmployeeComponent,
     UserAccountComponent,
     HygieneAuditComponent,
-    CaseListComponent
+    CaseListComponent,
+    OperationformComponent
   ],
   imports: [
     BrowserModule,

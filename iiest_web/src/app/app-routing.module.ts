@@ -10,6 +10,7 @@ import { fbo_roles, empRegister_roles } from './utils/config';
 import { SettingPanelComponent } from './shared/setting-panel/setting-panel.component';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
+import { OperationformComponent } from './pages/operation/operationform/operationform.component';
 
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'settings', component: SettingPanelComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard]},
+  { path: 'operationform', component: OperationformComponent, canActivate:[authGuard]},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
 ];

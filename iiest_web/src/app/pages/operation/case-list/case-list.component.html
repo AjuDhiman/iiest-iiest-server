@@ -50,26 +50,33 @@
                                         <th class="cell">Recipient Id</th>
                                         <th class="cell">Recipient Name</th>
                                         <th class="cell">Contact number</th>
+                                        <th class="cell">Aadhar number</th>
                                         <th class="cell">Address</th>
                                         <th class="cell">Type of Licence</th>
-                                        <th class="cell">Mode of License</th>
                                         <th class="cell">Officers Name</th>
                                         <th class="cell">Client Status</th>
                                     </tr>
                                 </thead>
-                                <tbody *ngIf="filteredData">
+                                <tbody>
                                     <tr
-                                        *ngFor="let fbo of filteredData | paginate: { itemsPerPage: 20, currentPage: pageNumber }">
-                                        <td class="cell"><span class="truncate"></span></td>
-
+                                        *ngFor="let data of caseData | paginate: { itemsPerPage: 12, currentPage: pageNumber }; let i=index">
+                                        <td class="cell"><span class="truncate">{{i+1}}</span></td>
+                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate text-capitalize selector" (click)="collectResData(data._id)">{{data.name}}</span></td>
+                                        <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
+                                        <td class="cell"><span class="truncate">{{data.aadharNo}}</span></td>
+                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">-</span></td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf="!filteredData">
+                                <!-- <tbody *ngIf="!filteredData">
                                     <tr>
                                         <td colspan="15" class="text-center fw-bold">----------------- No Data Found
                                             ----------------</td>
                                     </tr>
-                                </tbody>
+                                </tbody> -->
                             </table>
                         </div><!--//table-responsive-->
 
