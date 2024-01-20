@@ -1,5 +1,5 @@
-const { recipientModel, shopModel } = require('../models/recipientSchema')
-const { fboEbillBucket } = require('../config/buckets');
+const { recipientModel, shopModel } = require('../../models/recipientSchema')
+const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 
 exports.addRecipient = async (req, res) => {

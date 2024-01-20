@@ -1,7 +1,7 @@
 const express = require('express');
-const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages } = require('../controllers/employee');
-const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalData');
-const { employeeRecord, employeeSalesData } = require('../controllers/employeeRecord');
+const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages } = require('../controllers/employeeControllers/employee');
+const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
+const { employeeRecord, employeeSalesData } = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer')
 

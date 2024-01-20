@@ -1,14 +1,14 @@
-const pastFboSchema = require('../models/pastFboSchema');
-const generatedInfo = require('../fbo/generateCredentials');
-const invoiceDataHandler = require('../fbo/generateInvoice');
-const fboPaymentSchema = require('../models/fboPaymentSchema');
-const fboModel = require('../models/fboSchema');
-const salesModel = require('../models/employeeSalesSchema');
-const employeeSchema = require('../models/employeeSchema');
+const pastFboSchema = require('../../models/pastFboSchema');
+const generatedInfo = require('../../fbo/generateCredentials');
+const invoiceDataHandler = require('../../fbo/generateInvoice');
+const fboPaymentSchema = require('../../models/fboPaymentSchema');
+const fboModel = require('../../models/fboSchema');
+const salesModel = require('../../models/employeeSalesSchema');
+const employeeSchema = require('../../models/employeeSchema');
 const { ObjectId } = require('mongodb');
-const { createInvoiceBucket, empSignBucket } = require('../config/buckets');
-const payRequest = require('../fbo/phonePay');
-const areaAllocationModel = require('../models/employeeAreaSchema');
+const { createInvoiceBucket, empSignBucket } = require('../../config/buckets');
+const payRequest = require('../../fbo/phonePay');
+const areaAllocationModel = require('../../models/employeeAreaSchema');
 
 exports.fboPayment = async(req, res)=>{
   try {

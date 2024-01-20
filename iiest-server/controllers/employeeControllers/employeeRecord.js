@@ -1,4 +1,4 @@
-const salesModel = require('../models/employeeSalesSchema');
+const salesModel = require('../../models/employeeSalesSchema');
 
 exports.employeeRecord = async(req, res)=>{
     try {

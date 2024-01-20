@@ -1,7 +1,7 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fbo');
-const { fboFormData, getProductData } = require('../controllers/generalData');
-const { addRecipient, addShop, recipientsList, shopsList, showBill } = require('../controllers/recipient');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fboControllers/fbo');
+const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
+const { addRecipient, addShop, recipientsList, shopsList, showBill } = require('../controllers/fboControllers/recipient');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 

@@ -1,11 +1,11 @@
-const employeeSchema = require('../models/employeeSchema');
-const pastEmployeeSchema = require('../models/pastEmployeeSchema');
-const areaAllocationModel = require('../models/employeeAreaSchema');
+const employeeSchema = require('../../models/employeeSchema');
+const pastEmployeeSchema = require('../../models/pastEmployeeSchema');
+const areaAllocationModel = require('../../models/employeeAreaSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { generateUsername, generatePassword, generateEmployeeID } = require('../employee/generateCredentials');
-const sendEmployeeInfo = require('../employee/sendMail');
-const { empSignBucket, empImageBucket } = require('../config/buckets');
+const { generateUsername, generatePassword, generateEmployeeID } = require('../../employee/generateCredentials');
+const sendEmployeeInfo = require('../../employee/sendMail');
+const { empSignBucket, empImageBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;

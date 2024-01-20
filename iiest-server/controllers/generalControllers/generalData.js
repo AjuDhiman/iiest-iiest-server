@@ -1,4 +1,4 @@
-const generalDataSchema = require('../models/generalDataSchema');
+const generalDataSchema = require('../../models/generalDataSchema');
 
 exports.employeeFormData = async(req, res)=>{
     try {
@@ -38,7 +38,7 @@ exports.getPostData = async(req, res)=>{
 
 exports.getPincodesData = async(req, res)=>{
     try {
-        const jsonData = require('../assets/pincodes.json')
+        const jsonData = require('../../assets/pincodes.json')
         const filteredData = jsonData.filter((item) => item.State===req.params.stateName);
         res.setHeader('Content-Type','application/json');
         return res.status(200).json(filteredData);
