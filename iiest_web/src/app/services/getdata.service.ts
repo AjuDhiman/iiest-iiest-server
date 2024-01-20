@@ -83,6 +83,11 @@ export class GetdataService {
   return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
+ public getInvoice(invoiceId: string): Observable<any>{
+  const url = `${this.url}/fbo/invoice/${invoiceId}`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
  public getPincodesData(stateName:string):Observable<any>{
   const url = `${this.url}/getPincodesData/${stateName}`;
   return this.http.get<any>(url).pipe(catchError(this.handleError));

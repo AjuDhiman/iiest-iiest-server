@@ -6,8 +6,6 @@ const payRequest = (grandTotal, res)=>{
 
   let tx_uuid =  uniqid();
 
-  let responseURL;
-
   let normalPayLoad = {
     "merchantId": "PGTESTPAYUAT93",
     "merchantTransactionId": tx_uuid,

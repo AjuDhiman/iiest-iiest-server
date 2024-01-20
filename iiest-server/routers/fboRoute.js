@@ -1,5 +1,5 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList } = require('../controllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill } = require('../controllers/recipient');
 const authMiddleware = require('../middleware/auth');
@@ -23,5 +23,6 @@ router.get('/getproductdata', authMiddleware, getProductData); //Router for prod
 router.post('/fbo/addshop/:id', authMiddleware, eBillUpload.single('eBill'), addShop); //Router for adding shop data
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
+router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 
 module.exports = router;
