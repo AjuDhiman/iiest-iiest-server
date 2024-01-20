@@ -236,6 +236,9 @@
         </div>
     </div>
 </div>
+
+
+<!-- Thus modal is for showing Invoice -->
 <div *ngIf="showInvoice" class="e-bill-modal-back-blur">
     <div class="e-bill">
       <div class="modal-header bg-secondary">
@@ -247,7 +250,7 @@
         <!-- <a class="download-link" [href]="ebillImage" download="ebill.jpg">
           <fa-icon class="fa-xl" [icon]="faDownload"></fa-icon>
         </a> -->
-        <!-- <img [src]="ebillImage" alt="E Bill"> -->
+        <pdf-viewer [src]="invoice"></pdf-viewer>
       </div>
     </div>
   </div>
