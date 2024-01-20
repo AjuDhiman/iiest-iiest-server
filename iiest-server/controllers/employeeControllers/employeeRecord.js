@@ -1,4 +1,5 @@
 const salesModel = require('../../models/employeeSalesSchema');
+const employeeSchema = require('../../models/employeeSchema');
 
 exports.employeeRecord = async(req, res)=>{
     try {
@@ -50,4 +51,35 @@ exports.employeeSalesData = async(req, res)=>{
         console.error(error);
         return res.status(500).json({message: "Internal Server Error"});
     }
+}
+
+exports.employeeDepartmentCount = async(req, res)=>{
+
+    try {
+
+        let success = false;
+
+        const employeeGroupCount = await employeeSchema.aggregate( [
+            {
+                $group : {
+                   _id : {department: '$department'},
+                   count: { $sum: 1 }
+                }
+              }
+         ] )
+
+        if(!employeeGroupCount){
+            success = false;
+            return res.status(404).json({success, randomErr: true});
+        }
+
+        success = true;
+
+        return res.status(200).json({success, employeeGroupCount})
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+
 }
