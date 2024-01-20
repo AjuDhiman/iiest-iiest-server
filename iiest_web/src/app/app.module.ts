@@ -51,6 +51,7 @@ import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
 import { OperationformComponent } from './pages/operation/operationform/operationform.component';
+import { DepartmentListComponent } from './pages/department-list/department-list.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { OperationformComponent } from './pages/operation/operationform/operatio
     UserAccountComponent,
     HygieneAuditComponent,
     CaseListComponent,
-    OperationformComponent
+    OperationformComponent,
+    DepartmentListComponent
   ],
   imports: [
     BrowserModule,

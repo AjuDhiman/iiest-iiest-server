@@ -8,6 +8,8 @@ import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DepartmentListComponent } from '../department-list/department-list.component';
 
 @Component({
   selector: 'app-home',
@@ -82,7 +84,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private store: Store,
     private _utilitiesService: UtilitiesService,
     private _getDataService: GetdataService,
-
+    private modalService: NgbModal
   ) { }
   ngOnInit(): void {
     this.getEmployees();
@@ -160,6 +162,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+  viewDepartmentData(res:any){
+    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.employees = res;
+  }
 
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
