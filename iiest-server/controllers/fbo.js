@@ -377,7 +377,7 @@ exports.saleInvoice = async(req, res)=>{
         const invoiceBase64 = invoiceBuffer.toString('base64');
         const invoiceConverted = `${invoicePrefix}${invoiceBase64}`
         success = true
-        return res.status(200).json({success, invoiceConverted: Uint8Array.from(invoiceBuffer)})
+        return res.status(200).json({success, invoiceConverted})
     })
 
   } catch (error) {

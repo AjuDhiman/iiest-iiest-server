@@ -49,7 +49,6 @@ import { ViewEmployeeComponent } from './pages/view-employee/view-employee.compo
 import { UserAccountComponent } from './pages/user-account/user-account.component';
 import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-audit.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -103,8 +102,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
       progressBar: false,
     }),
     NgSelectModule,
-    PdfViewerModule,
-    NgxExtendedPdfViewerModule
+    PdfViewerModule
   ],
   providers: [
     DatePipe,
