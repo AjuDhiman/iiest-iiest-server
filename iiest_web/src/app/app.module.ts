@@ -48,6 +48,8 @@ import { EmploymentComponent } from './pages/employment/employment.component';
 import { ViewEmployeeComponent } from './pages/view-employee/view-employee.component';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
 import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-audit.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -100,7 +102,9 @@ import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-
       timeOut: 5000, // 5 seconds
       progressBar: false,
     }),
-    NgSelectModule
+    NgSelectModule,
+    PdfViewerModule,
+    NgxExtendedPdfViewerModule
   ],
   providers: [
     DatePipe,

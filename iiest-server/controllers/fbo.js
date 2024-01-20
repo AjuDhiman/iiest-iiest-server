@@ -373,11 +373,11 @@ exports.saleInvoice = async(req, res)=>{
 
     invoiceDownloadStream.on('end', ()=>{
         const invoiceBuffer = Buffer.concat(chunks);
-        const invoicePrefix = 'data:image/png;base64,';
+        const invoicePrefix = 'data:application/pdf;base64,';
         const invoiceBase64 = invoiceBuffer.toString('base64');
         const invoiceConverted = `${invoicePrefix}${invoiceBase64}`
         success = true
-        return res.status(200).json({success, invoiceConverted})
+        return res.status(200).json({success, invoiceConverted: Uint8Array.from(invoiceBuffer)})
     })
 
   } catch (error) {

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faIndianRupeeSign, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
+import { GetdataService } from 'src/app/services/getdata.service';
 @Component({
   selector: 'app-view-fbo',
   templateUrl: './view-fbo.component.html',
@@ -17,7 +18,10 @@ export class ViewFboComponent implements OnInit {
   faFile=faFile;
   faDownload=faDownload;
   showInvoice:boolean=false;
-  constructor(public activeModal: NgbActiveModal) { 
+  invoice:string='';
+  constructor(public activeModal: NgbActiveModal,
+    private getDataServices: GetdataService,
+    ) { 
   }
 
   ngOnInit(): void {
@@ -37,6 +41,16 @@ export class ViewFboComponent implements OnInit {
 
   openInvoiceWindow(){
     this.showInvoice=true;
+    this.getInvoice();
+  }
+
+  getInvoice() {
+    this.getDataServices.getInvoice(this.fboData.invoiceId).subscribe({
+      next: (res) => {
+        console.log(res)
+        this.invoice = res.invoiceConverted;
+      }
+    })
   }
 
   closeInvoiceWindow(){
