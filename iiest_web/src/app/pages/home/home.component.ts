@@ -28,6 +28,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   userApprovedSales: number;
   pendingSalesCount: number;
   approvedSalesCount: number;
+  department:string;
+  departmentAndCount:Array<{department:string, count:string}>
+  // departmentAndCount:object;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
@@ -85,6 +88,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getEmployees();
     this.getProductData();
     this.getUserRecord();
+    this.getEmployeeCountByDept();
     this.employees$.subscribe(res => {
       this.data = res;
     })
@@ -92,6 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     loggedInUserData = JSON.parse(loggedInUserData)
     this.projectType = loggedInUserData.project_name;
     this.empName = loggedInUserData.employee_name;
+    this.department = loggedInUserData.department;
     const message = interval(2000);
     this.msg = message.subscribe((res) => {
       if (res >= 2) {
@@ -134,6 +139,27 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     })
   }
+
+  getEmployeeCountByDept(){
+    this._getDataService.getEmpCount().subscribe({
+      next : res =>{
+        console.log(res);
+        let departmentArr=res.employeeGroupCount;
+        this.departmentAndCount=departmentArr.map((elem:any) => {
+          return{
+            department:elem._id.department,
+            count:elem.count
+          }
+        });
+        console.log(this.departmentAndCount)
+      },
+      error: err => {
+
+      }
+      
+    })
+  }
+
 
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();

@@ -75,15 +75,6 @@ export class FbolistComponent implements OnInit {
         case 'byCustomerID': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
           break;
       }
-      // if (this.selectedFilter === 'byOwner') {
-      //   this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      // } else if (this.selectedFilter === 'byDistrict') {
-      //   this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      // } else if (this.selectedFilter === 'byName') {
-      //   this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      // } else if (this.selectedFilter === 'byCustomerID') {
-      //   this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery));
-      // }
     }
   }
 

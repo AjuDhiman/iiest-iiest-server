@@ -1,0 +1,84 @@
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xxl border border-1 rounded-3 pt-3">
+        <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-auto">
+                <h1 class="app-page-title mb-0">Case List</h1>
+            </div>
+            <div class="col-auto">
+                <div class="page-utilities">
+                    <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                        <div class="col-auto">
+                            <form class="form">
+                                <div class="input-group">
+                                    <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
+                                        style="position: absolute; padding: 9px 10px;"
+                                        [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                                </div>
+                                <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                                    class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+                            </form>
+                        </div>
+                        <div class="col-auto">
+                            <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
+                                <option value="byOwner">Search by Owner</option>
+                                <option value="byName">Search by Name</option>
+                                <option value="byCustomerID">Search by Customer ID</option>
+                                <option value="byDistrict">Search by District</option>
+
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <fa-icon (click)="exportToCsv()" class="fa-2xl" style="margin: 7px 7px; color: #1957a9;"
+                                [icon]="faFileCsv"></fa-icon>
+                            <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
+                        </div>
+                    </div><!--//row-->
+                </div><!--//table-utilities-->
+            </div><!--//col-auto-->
+        </div><!--//row-->
+
+
+        <div class="tab-content" id="orders-table-tab-content">
+            <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive">
+                            <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">S.No</th>
+                                        <th class="cell">Recipient Id</th>
+                                        <th class="cell">Recipient Name</th>
+                                        <th class="cell">Contact number</th>
+                                        <th class="cell">Address</th>
+                                        <th class="cell">Type of Licence</th>
+                                        <th class="cell">Mode of License</th>
+                                        <th class="cell">Officers Name</th>
+                                        <th class="cell">Client Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="filteredData">
+                                    <tr
+                                        *ngFor="let fbo of filteredData | paginate: { itemsPerPage: 20, currentPage: pageNumber }">
+                                        <td class="cell"><span class="truncate"></span></td>
+
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="!filteredData">
+                                    <tr>
+                                        <td colspan="15" class="text-center fw-bold">----------------- No Data Found
+                                            ----------------</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!--//table-responsive-->
+
+                    </div><!--//app-card-body-->
+                </div><!--//app-card-->
+
+                <div class="d-flex justify-content-end">
+                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                        (pageChange)="onTableDataChange($event)"></pagination-controls>
+                </div>
+            </div>
+        </div>

@@ -32,7 +32,6 @@ export class ViewFboComponent implements OnInit {
     this.isfostac = true?this.fboData.product_name.includes('Fostac Training') : this.isfostac = false;
    //this.fulladdress =  "Village: "+ this.fboData.village+", Post-Office: "+ this.fboData.address+", Tehsil: "+ this.fboData.tehsil+", District: "+ this.fboData.district+", State: "+ this.fboData.state+", Pincode: "+ this.fboData.pincode+", "+ "India";
    this.fulladdress =  this.fboData.fboInfo.village+", "+ this.fboData.fboInfo.address+", "+ this.fboData.fboInfo.tehsil+", "+ this.fboData.fboInfo.district+", "+ this.fboData.fboInfo.state+", Pincode: "+ this.fboData.fboInfo.pincode+", "+ "India";
-   console.log(this.fboData);
   }
   closeModal() {
     this.activeModal.close();
@@ -46,7 +45,6 @@ export class ViewFboComponent implements OnInit {
   getInvoice() {
     this.getDataServices.getInvoice(this.fboData.invoiceId).subscribe({
       next: (res) => {
-        console.log(res)
         this.invoice = res.invoiceConverted;
       },
       error(err) {
