@@ -73,8 +73,6 @@ exports.employeeRegister = async(req, res)=>{
 
         const secPass = await bcrypt.hash(generatedPassword, salt);
 
-        const date = new Date();
-
         const signatureFileName = `${Date.now()}_${signature[0].originalname}`;
         const imageFileName = `${Date.now()}_employeeimage_${image[0].originalname}`;        
 
@@ -107,7 +105,7 @@ exports.employeeRegister = async(req, res)=>{
         })
       
         const employeeRegisterd = await employeeSchema.create({
-        id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, createdAt: date, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
+        id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
         });
 
         if(!employeeRegisterd){
@@ -165,8 +163,6 @@ exports.deleteEmployee = async(req, res)=>{
     const {deletedBy} = req.body;
     let success = false;
 
-    const date = new Date();
-
     const signatureBucket = empSignBucket();
     const imageBucket = empImageBucket();
 
@@ -195,7 +191,7 @@ exports.deleteEmployee = async(req, res)=>{
 
             const {_id, ...pastEmployee} = deletedEmployee.toObject();
 
-            await pastEmployeeSchema.create({...pastEmployee, deletedAt: date, deletedBy: deletedBy}) //Adding deleted employee to past employee data
+            await pastEmployeeSchema.create({...pastEmployee, deletedBy: deletedBy}) //Adding deleted employee to past employee data
 
             success = true;
             return res.status(200).json({success, deletedEmployee});

@@ -46,22 +46,12 @@ const fboSchema = new Schema({
     },
     business_type:{
         type: String,
-        // validate: {
-        //     validator: function(arr){
-        //         return arr.length > 0;
-        //     },
-        //     message: 'Business type cannot be empty'
-        // },
         required: true
     },
     customer_id: {
         type: String, 
         required: true,
         unique: true
-    },
-    createdAt: {
-        type: Date,
-        required: true
     },
     createdBy: {
         type: String, 
@@ -88,7 +78,7 @@ const fboSchema = new Schema({
             return this.business_type === 'b2b'
         }
     }
-})
+}, {timestamps: true})
 
 const fboModel = mongoose.model('fbo_registers', fboSchema);
 module.exports = fboModel;

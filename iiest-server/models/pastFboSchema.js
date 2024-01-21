@@ -66,10 +66,6 @@ const pastFbo = new Schema({
     water_test_fee: {
         type: Number
     },
-    createdAt: {
-        type: Date,
-        required: true
-    },
     payment_mode: {
         type: String, 
         required: true
@@ -90,15 +86,14 @@ const pastFbo = new Schema({
         type: String, 
         required: true
     },
-    deletedAt: {
-        type: Date,
-        required: true
-    },
     deletedBy: {
         type: String, 
         required: true
     }
-});
+}, {timestamps: {
+    createdAt: 'deletedAt',
+    updatedAt: false
+}});
 
 const pastFboSchema = mongoose.model('past_fbo', pastFbo);
 module.exports = pastFboSchema;

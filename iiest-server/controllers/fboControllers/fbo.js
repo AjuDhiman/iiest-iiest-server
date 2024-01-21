@@ -78,7 +78,7 @@ exports.fboPayReturn = async(req, res)=>{
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, foscosFixedCharge } = fetchedFormData;  
         
-        const { idNumber, generatedCustomerId, date } = await generatedInfo();
+        const { idNumber, generatedCustomerId } = await generatedInfo();
 
         let serviceArr = [];
 
@@ -110,7 +110,7 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         const fboEntry = await fboModel.create({
-        employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, createdAt: date, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+        employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
         });
 
         if(!fboEntry){
@@ -215,7 +215,7 @@ exports.fboRegister = async (req, res) => {
       return res.status(404).json({success, wrongPincode: true});
       }
 
-      const { idNumber, generatedCustomerId, date } = await generatedInfo();
+      const { idNumber, generatedCustomerId} = await generatedInfo();
 
       let serviceArr = [];
 
@@ -253,7 +253,7 @@ exports.fboRegister = async (req, res) => {
       const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
       const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, createdAt: date, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+      employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
       });
 
       if(!fboEntry){
@@ -283,8 +283,6 @@ exports.deleteFbo = async(req, res)=>{
     const objId =  req.params.id;
     let success = false;
 
-    let date = new Date();
-
     try {
         const deletedFbo = await fboModel.findByIdAndDelete(objId);
         if(deletedFbo){
@@ -292,7 +290,7 @@ exports.deleteFbo = async(req, res)=>{
             const {_id, ...pastFbo} = deletedFbo.toObject();
             const{ deletedBy } = req.body;
 
-            await pastFboSchema.create({...pastFbo, deletedAt: date, deletedBy: deletedBy}) //Adding deleted fbo to past fbo data
+            await pastFboSchema.create({...pastFbo, deletedBy: deletedBy}) //Adding deleted fbo to past fbo data
 
             success = true;
             return res.status(200).json({success, deletedFbo});

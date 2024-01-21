@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GetdataService } from 'src/app/services/getdata.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 
 @Component({
@@ -9,11 +10,16 @@ import { UtilitiesService } from 'src/app/services/utilities.service';
 export class OperationformComponent implements OnInit{
   recipientId:string;
 
-  constructor(private _utilityService:UtilitiesService){
+  constructor(private _utilityService:UtilitiesService, 
+              private getDataService: GetdataService){
   }
 
   ngOnInit(): void {
     this.recipientId=this._utilityService.getOperationRecpId();
-    console.log(this.recipientId);
+    this.getDataService.getMoreCaseInfo(this.recipientId).subscribe({
+      next: (res)=>{
+        console.log(res.moreInfo);
+      }
+    })
   }
 }

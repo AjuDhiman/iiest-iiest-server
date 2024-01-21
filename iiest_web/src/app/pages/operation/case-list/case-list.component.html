@@ -62,7 +62,7 @@
                                         *ngFor="let data of caseData | paginate: { itemsPerPage: 12, currentPage: pageNumber }; let i=index">
                                         <td class="cell"><span class="truncate">{{i+1}}</span></td>
                                         <td class="cell"><span class="truncate">-</span></td>
-                                        <td class="cell"><span class="truncate text-capitalize selector" (click)="collectResData(data._id)">{{data.name}}</span></td>
+                                        <td class="cell"><span class="truncate text-capitalize selector" (click)="collectResData(data.salesInfo)">{{data.name}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.aadharNo}}</span></td>
                                         <td class="cell"><span class="truncate">-</span></td>

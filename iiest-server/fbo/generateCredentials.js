@@ -19,9 +19,8 @@ const generatedInfo = async()=>{
     }
 
     const generatedCustomerId = generateCustomerId(idNumber);
-    let date = new Date();
 
-    return { idNumber, generatedCustomerId, date}
+    return { idNumber, generatedCustomerId}
 }
 
 module.exports = generatedInfo;

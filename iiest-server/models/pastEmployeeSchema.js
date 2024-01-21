@@ -105,20 +105,11 @@ const pastEmp = new Schema({
     createdBy: {
         type: String, 
         required: true
-    },
-    createdAt: {
-        type: Date,
-        required: true
-    },
-    deletedAt: {
-        type: Date,
-        required: true
-    },
-    deletedBy: {
-        type: String,
-        required: true
     }
-})
+}, {timestamps: {
+    createdAt: 'deletedAt',
+    updatedAt: false
+}})
 
 const pastEmployeeSchema = mongoose.model('past_emp', pastEmp);
 module.exports = pastEmployeeSchema;
