@@ -40,12 +40,14 @@ exports.caseInfo = async(req, res)=>{
         }else if(req.user.panel_type === 'Foscos Panel'){
           recipientInfo = await shopModel.findById(recipientId);
         }
-        
-        const moreInfo = (await recipientInfo.populate('saleInfo')).populate(['fboInfo', 'employeeInfo']);
+
+        const moreInfo = await recipientInfo.populate('salesInfo')
+
+        const populatedInfo = await moreInfo.populate(['salesInfo.employeeInfo', 'salesInfo.fboInfo']);
 
         success = true;
 
-        return res.status(200).json({success, moreInfo});
+        return res.status(200).json({success, populatedInfo});
 
     } catch (error) {
         return res.status(500).json({message: "Internal Server Error"});
