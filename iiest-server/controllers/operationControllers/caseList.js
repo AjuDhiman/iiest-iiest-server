@@ -1,5 +1,4 @@
 const { recipientModel, shopModel } = require('../../models/recipientSchema');
-const salesModel = require('../../models/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeSchema');
 
 exports.caseList = async(req, res)=>{
@@ -41,13 +40,11 @@ exports.caseInfo = async(req, res)=>{
           recipientInfo = await shopModel.findById(recipientId);
         }
 
-        const moreInfo = await recipientInfo.populate('salesInfo')
-
-        const populatedInfo = await moreInfo.populate(['salesInfo.employeeInfo', 'salesInfo.fboInfo']);
+        const moreInfo = await (await recipientInfo.populate('salesInfo')).populate(['salesInfo.employeeInfo', 'salesInfo.fboInfo']);
 
         success = true;
 
-        return res.status(200).json({success, populatedInfo});
+        return res.status(200).json({success, populatedInfo: moreInfo});
 
     } catch (error) {
         return res.status(500).json({message: "Internal Server Error"});
