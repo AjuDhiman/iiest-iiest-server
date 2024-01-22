@@ -72,7 +72,7 @@
               <div class="col-md-3">
                 <label for="recipient_contact_no" class="form-label">Recipient contact no.</label><sup>*</sup>
                 <input type="text" placeholder="Recipient contact no." formControlName="recipient_contact_no"
-                  class="form-control form-control-sm" id="recipient_contact_no"
+                  class="form-control form-control-sm" id="recipient_contact_no" [disabled]="true"
                   [ngClass]="{ 'is-invalid': submitted && operationform['recipient_contact_no'].errors }">
                 <div *ngIf="submitted && operationform['recipient_contact_no'].errors" class="invalid-feedback">
                   <div *ngIf="operationform['recipient_contact_no'].errors['required']">Recipient contact number is required</div>

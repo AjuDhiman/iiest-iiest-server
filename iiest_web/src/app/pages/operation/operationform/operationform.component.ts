@@ -43,14 +43,14 @@ export class OperationformComponent implements OnInit{
     this.getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res)=>{
         console.log(res);
-        this.recipientInfo=res.moreInfo;
-        // console.log(this.recipientInfo);
-        // console.log(this.recipientInfo.fboInfo);
-        // this.operationForm.patchValue({fbo_name:res.moreInfo.fboInfo.fbo_name});
-        // this.operationForm.patchValue({owner_name:res.moreInfo.fboInfo.owner_name});
-        // this.operationForm.patchValue({fostac_total:res.moreInfo.fostacInfo.fostac_total});
-        // this.operationForm.patchValue({sales_date:this.getFormatedDate(res.moreInfo.createdAt)});
-        // this.operationForm.patchValue({sales_person:res.moreInfo.employeeInfo.employee_name});
+        this.operationForm.patchValue({recipient_name:res.populatedInfo.name});
+        this.operationForm.patchValue({fbo_name:res.populatedInfo.salesInfo.fboInfo.fbo_name});
+        this.operationForm.patchValue({owner_name:res.populatedInfo.salesInfo.fboInfo.owner_name});
+        this.operationForm.patchValue({recipient_contact_no:res.populatedInfo.phoneNo});
+        this.operationForm.patchValue({aadhar_no:res.populatedInfo.aadharNo});
+        this.operationForm.patchValue({fostac_total:res.populatedInfo.salesInfo.fostacInfo.fostac_total});
+        this.operationForm.patchValue({sales_date:this.getFormatedDate(res.populatedInfo.salesInfo.createdAt)});
+        this.operationForm.patchValue({sales_person:res.populatedInfo.salesInfo.employeeInfo.employee_name});
       }
     })
 
@@ -70,12 +70,7 @@ export class OperationformComponent implements OnInit{
       sales_person:['',Validators.required],
       username:['',Validators.required],
       password:['',Validators.required]
-    })
-
-    // this.operationform['fbo_name'].patchValue(this.recipientInfo.fboInfo.fbo_name);
-    // this.operationform['owner_name'].patchValue(this.recipientInfo.fboInfo.owner_name);
-    // this.operationform['fostac_total'].patchValue(this.recipientInfo.fostacInfo.fostac_total);
-    // this.operationform['officer_name'].patchValue(this.recipientInfo.employeeInfo.employee_name);
+    });
 
   }
 
