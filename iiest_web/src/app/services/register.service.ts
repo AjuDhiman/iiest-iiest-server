@@ -94,6 +94,13 @@ export class RegisterService {
     return this.http.post<any>(url, areaAllocation).pipe(catchError(this.handleError));
   }
 
+  public existingFboSale(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
+    const url = `${this.url}/existingfbosale/${objId}`
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge, existingFboId}).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
 
   private handleError(err: HttpErrorResponse): Observable<never> {
     // just a test ... more could would go here

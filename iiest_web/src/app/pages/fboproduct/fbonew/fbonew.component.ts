@@ -7,7 +7,6 @@ import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -22,6 +21,7 @@ export class FbonewComponent implements OnInit {
   userName: string = '';
   userData: any;
   processAmnts: any = {};
+  existingFboId: string;
   servicesNames: any = {};
   minValue: number = 1;
   loggedUser: any;
@@ -125,8 +125,7 @@ export class FbonewComponent implements OnInit {
     private _getFboGeneralData: GetdataService,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
-    private existingFrom: FormBuilder,
-    private router: Router
+    private existingFrom: FormBuilder
   ) {
     this.getFboGeneralData();
   }
@@ -228,9 +227,9 @@ export class FbonewComponent implements OnInit {
   }
 
   fetchExistingUser(fboObj: any) {
+    this.existingFboId = fboObj.customer_id
     this.searchElem.nativeElement.value = ''
     this.isSearchEmpty = true;
-    let value = this.searchElem.nativeElement.value;
     this.fbo['fbo_name'];
     this.fbo['fbo_name'].setValue(fboObj.fbo_name);
     this.fbo['owner_name'].setValue(fboObj.owner_name);
@@ -274,61 +273,78 @@ export class FbonewComponent implements OnInit {
       });
     } else {
       this.addFbo = this.fboForm.value;
-      if (this.addFbo.payment_mode === 'Pay Page') {
-        this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
-          next: (res) => {
-            window.location.href = res.message;
-          },
-          error: (err) => {
-            let errorObj = err.error;
-            if (errorObj.userError) {
-              this._registerService.signout();
-            } else if (errorObj.contactErr) {
-              this._toastrService.error('', 'This Contact Already Exists.');
-            } else if (errorObj.emailErr) {
-              this._toastrService.error('', 'This Email Already Existis');
-            } else if (errorObj.signatureErr) {
-              this._toastrService.error('', 'Signature Not Found');
-            } else if (errorObj.registerErr) {
-              this._toastrService.error('', 'Some Error Occured. Please Try Again');
-            } else if (errorObj.areaAllocationErr) {
-              this._toastrService.error('', 'Area has not been allocated to this employee.')
-            } else if (errorObj.wrongPincode) {
-              this._toastrService.error('', 'You cannot make sale outside your allocated area');
-            } else if(errorObj.noSignErr){
-              this._toastrService.error('', 'Provide your signature first in account in settings');
+      if(!this.isExisting){
+        if (this.addFbo.payment_mode === 'Pay Page') {
+          this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
+            next: (res) => {
+              window.location.href = res.message;
+            },
+            error: (err) => {
+              let errorObj = err.error;
+              if (errorObj.userError) {
+                this._registerService.signout();
+              } else if (errorObj.contactErr) {
+                this._toastrService.error('', 'This Contact Already Exists.');
+              } else if (errorObj.emailErr) {
+                this._toastrService.error('', 'This Email Already Existis');
+              } else if (errorObj.signatureErr) {
+                this._toastrService.error('', 'Signature Not Found');
+              } else if (errorObj.registerErr) {
+                this._toastrService.error('', 'Some Error Occured. Please Try Again');
+              } else if (errorObj.areaAllocationErr) {
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              } else if (errorObj.wrongPincode) {
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              } else if(errorObj.noSignErr){
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              }
             }
-          }
-        })
-      } else {
-        this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
-          next: (res) => {
-            if (res.success) {
-              this._toastrService.success('', 'Record Added Successfully');
-              this.backToRegister();
+          })
+        } else {
+          this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
+            next: (res) => {
+              if (res.success) {
+                this._toastrService.success('', 'Record Added Successfully');
+                this.backToRegister();
+              }
+            },
+            error: (err) => {
+              let errorObj = err.error;
+              if (errorObj.userError) {
+                this._registerService.signout();
+              } else if (errorObj.contactErr) {
+                this._toastrService.error('', 'This Contact Already Exists.');
+              } else if (errorObj.emailErr) {
+                this._toastrService.error('', 'This Email Already Exists.');
+              } else if (errorObj.signatureErr) {
+                this._toastrService.error('', 'Signature Not Found');
+              } else if (errorObj.registerErr) {
+                this._toastrService.error('', 'Some Error Occured. Please Try Again');
+              } else if (errorObj.areaAllocationErr) {
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              } else if (errorObj.wrongPincode) {
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              } else if(errorObj.noSignErr){
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              }
             }
-          },
-          error: (err) => {
-            let errorObj = err.error;
-            if (errorObj.userError) {
-              this._registerService.signout();
-            } else if (errorObj.contactErr) {
-              this._toastrService.error('', 'This Contact Already Exists.');
-            } else if (errorObj.emailErr) {
-              this._toastrService.error('', 'This Email Already Exists.');
-            } else if (errorObj.signatureErr) {
-              this._toastrService.error('', 'Signature Not Found');
-            } else if (errorObj.registerErr) {
-              this._toastrService.error('', 'Some Error Occured. Please Try Again');
-            } else if (errorObj.areaAllocationErr) {
-              this._toastrService.error('', 'Area has not been allocated to this employee.')
-            } else if (errorObj.wrongPincode) {
-              this._toastrService.error('', 'You cannot make sale outside your allocated area');
-            } else if(errorObj.noSignErr){
-              this._toastrService.error('', 'Provide your signature first in account in settings');
+          })
+        }
+      }else{
+        if(this.addFbo.payment_mode === 'Cash'){
+          this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+            next: (res)=>{
+              if (res.success) {
+                this._toastrService.success('', 'Record Added Successfully');
+                this.backToRegister();
+              }
+            },
+            error: (err)=>{
+              let errorObj = err.error
+              
             }
-          }
-        })
+          })
+        }
       }
     }
   }

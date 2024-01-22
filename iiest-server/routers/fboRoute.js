@@ -2,6 +2,7 @@ const express = require('express');
 const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill } = require('../controllers/fboControllers/recipient');
+const { existingFboCash } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 
@@ -24,5 +25,6 @@ router.post('/fbo/addshop/:id', authMiddleware, eBillUpload.single('eBill'), add
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
+router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 
 module.exports = router;
