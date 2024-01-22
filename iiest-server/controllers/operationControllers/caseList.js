@@ -31,11 +31,17 @@ exports.caseInfo = async(req, res)=>{
 
         let success = false;
         
-        const saleId = req.params.id;
+        const recipientId = req.params.recipientid
 
-        let salesInfo = await salesModel.findById(saleId);
+        let recipientInfo;
+
+        if(req.user.panel_type === 'Fostac Panel'){
+          recipientInfo  = await recipientModel.findById(recipientId);
+        }else if(req.user.panel_type === 'Foscos Panel'){
+          recipientInfo = await shopModel.findById(recipientId);
+        }
         
-        const moreInfo = await salesInfo.populate(['fboInfo', 'employeeInfo'])
+        const moreInfo = (await recipientInfo.populate('saleInfo')).populate(['fboInfo', 'employeeInfo']);
 
         success = true;
 
@@ -45,6 +51,7 @@ exports.caseInfo = async(req, res)=>{
         return res.status(500).json({message: "Internal Server Error"});
     }
 }
+
  exports.employeeCountDeptWise = async(req, res)=>{
     try {
 

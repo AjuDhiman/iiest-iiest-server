@@ -5,7 +5,7 @@ const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/op
 const router = express.Router();
 
 router.get('/getcaseslist', authMiddleware, caseList);
-router.get('/morecaseinfo/:id', authMiddleware, caseInfo);
+router.get('/morecaseinfo/:recipieintid', authMiddleware, caseInfo);
 router.get('/employeelistdeptwise/:dept',authMiddleware, employeeCountDeptWise);
 
 module.exports = router;
