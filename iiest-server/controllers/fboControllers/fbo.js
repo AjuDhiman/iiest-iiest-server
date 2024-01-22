@@ -9,6 +9,7 @@ const { ObjectId } = require('mongodb');
 const { createInvoiceBucket, empSignBucket } = require('../../config/buckets');
 const payRequest = require('../../fbo/phonePay');
 const areaAllocationModel = require('../../models/employeeAreaSchema');
+const { fboFormData } = require('../generalControllers/generalData');
 
 exports.fboPayment = async(req, res)=>{
   try {

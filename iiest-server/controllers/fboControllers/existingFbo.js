@@ -6,6 +6,7 @@ const salesModel = require("../../models/employeeSalesSchema");
 const employeeSchema = require("../../models/employeeSchema");
 const fboModel = require('../../models/fboSchema');
 const payRequest = require("../../fbo/phonePay");
+const fboPaymentSchema = require("../../models/fboPaymentSchema");
 
 exports.existingFboCash = async(req, res)=>{
     try {
@@ -201,9 +202,9 @@ exports.existingFboPayReturn = async(req,res)=>{
 
             const invoiceBucket = createInvoiceBucket();
 
-            const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
-
             const fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
+
+            const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
             const buyerData = await fboPaymentSchema.create({
             buyerId: existingFboInfo._id, merchantId: req.body.merchantId, merchantTransactionId: req.body.transactionId, providerReferenceId: req.body.providerReferenceId, amount: grand_total});
@@ -218,7 +219,7 @@ exports.existingFboPayReturn = async(req,res)=>{
               return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
             }
 
-            await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
+            await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
 
             res.redirect('http://localhost:4200/fbo');
             }
