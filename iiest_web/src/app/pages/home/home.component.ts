@@ -164,7 +164,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   viewDepartmentData(res:any){
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.employees = res;
+      modalRef.componentInstance.department = res;
   }
 
   ngOnDestroy(): void {
