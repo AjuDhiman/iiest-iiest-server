@@ -357,7 +357,11 @@ export class FbonewComponent implements OnInit {
             }
           })
         }else if(this.addFbo.payment_mode === 'Pay Page'){
-          
+          this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+            next: (res)=>{
+              window.location.href = res.message
+            }
+          })
         } 
       }
     }

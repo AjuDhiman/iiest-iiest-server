@@ -59,7 +59,7 @@ exports.fboPayment = async(req, res)=>{
     return res.status(404).json({success, wrongPincode: true});
   }
   
-  payRequest(formBody.grand_total, res);
+  payRequest(formBody.grand_total, res, 'http://localhost:3000/iiest/fbo-pay-return');
   
   } catch (error) {
     return res.status(500).json({message: 'Internal Server Error'});

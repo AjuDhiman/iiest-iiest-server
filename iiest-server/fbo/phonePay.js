@@ -2,7 +2,7 @@ const axios = require('axios');
 const sha256 = require('sha256');
 const uniqid = require('uniqid');
 
-const payRequest = (grandTotal, res)=>{
+const payRequest = (grandTotal, res, redirectUrl)=>{
 
   let tx_uuid =  uniqid();
 
@@ -11,9 +11,9 @@ const payRequest = (grandTotal, res)=>{
     "merchantTransactionId": tx_uuid,
     "merchantUserId": "MUID123",
     "amount": grandTotal * 100,
-    "redirectUrl": "http://localhost:3000/iiest/fbo-pay-return",
+    "redirectUrl": redirectUrl,
     "redirectMode": "POST",
-    "callbackUrl": "http://localhost:3000/iiest/fbo-pay-return",
+    "callbackUrl": redirectUrl,
     "paymentInstrument": {
       "type": "PAY_PAGE"
     }
