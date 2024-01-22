@@ -108,6 +108,9 @@ exports.existingFboPayPage = async(req, res)=>{
 
     let success = false;
         
+    const formBody = req.body;
+    const createrId = req.params.id
+
     const userInfo = await employeeSchema.findById(req.params.id);
     const signatureFile = userInfo.signatureImage;
 
@@ -131,10 +134,14 @@ exports.existingFboPayPage = async(req, res)=>{
         return res.status(404).json({success, noSignErr: true})
     }
 
+    const existingFboInfo = await fboModel.findOne({customer_id: formBody.existingFboId});
 
-    const formBody = req.body;
-    const createrId = req.params.id
-    req.session.fboFormData = {...formBody, createrObjId: createrId, signatureFile};
+    if(!existingFboInfo){
+        success = false;
+        return res.status(404).json({success, fboMissing: true});
+    }
+
+    req.session.fboFormData = {...formBody, createrObjId: createrId, signatureFile, existingFboInfo};
 
     const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
 
@@ -161,7 +168,7 @@ exports.existingFboPayReturn = async(req,res)=>{
       
               const fetchedFormData = req.session.fboFormData;
       
-              const { product_name, payment_mode, grand_total, fostac_training, foscos_training, createrObjId, signatureFile, fostacGST, foscosGST, foscosFixedCharge, existingFboId } = fetchedFormData;  
+              const { product_name, payment_mode, grand_total, fostac_training, foscos_training, createrObjId, signatureFile, fostacGST, foscosGST, foscosFixedCharge, existingFboInfo } = fetchedFormData;  
       
               let serviceArr = [];
       
@@ -195,8 +202,6 @@ exports.existingFboPayReturn = async(req,res)=>{
             const invoiceBucket = createInvoiceBucket();
 
             const invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
-
-            const existingFboInfo = await fboModel.findOne({customer_id: existingFboId});
 
             const fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
 
