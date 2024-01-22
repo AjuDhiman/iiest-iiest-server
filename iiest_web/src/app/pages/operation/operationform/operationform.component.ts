@@ -29,7 +29,7 @@ export class OperationformComponent implements OnInit{
     this.candidateId=this._utilityService.getOperationRecpId();
     this.getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res)=>{
-        console.log(res.moreInfo);
+        console.log(res);
       }
     })
 

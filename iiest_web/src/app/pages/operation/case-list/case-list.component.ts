@@ -53,7 +53,7 @@ export class CaseListComponent implements OnInit {
   getCasedata(){
     this._getDataService.getCaseList().subscribe({
       next: res => {
-        console.log(res);
+        console.log(res)
         this.caseData=res.caseList;
         console.log(this.caseData);
       },
