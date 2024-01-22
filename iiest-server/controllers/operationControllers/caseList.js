@@ -33,7 +33,15 @@ exports.caseInfo = async(req, res)=>{
         
         const saleId = req.params.id;
 
-        const salesInfo = await salesModel.findById(saleId);
+        let salesInfo = await salesModel.findById(saleId);
+
+        if(!salesInfo){
+            salesInfo = await recipientModel.findById(saleId);
+            if(!salesInfo){
+                success = false;
+                return res.status(404).json({randomErr: true})
+            }
+        }
         
         const moreInfo = await salesInfo.populate(['fboInfo', 'employeeInfo'])
 
