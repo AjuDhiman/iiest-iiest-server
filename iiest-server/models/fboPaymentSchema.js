@@ -5,7 +5,6 @@ const fboPaymentModel = new Schema({
     buyerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
-        unique: true,
         required: true
     },
     merchantId: {
