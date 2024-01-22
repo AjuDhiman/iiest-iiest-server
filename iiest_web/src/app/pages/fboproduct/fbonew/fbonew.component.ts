@@ -300,7 +300,7 @@ export class FbonewComponent implements OnInit {
               }
             }
           })
-        } else {
+        } else if(this.addFbo.payment_mode === 'Cash') {
           this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               if (res.success) {
@@ -341,10 +341,24 @@ export class FbonewComponent implements OnInit {
             },
             error: (err)=>{
               let errorObj = err.error
-              
+              if(errorObj.userError){
+                this._registerService.signout();
+              }else if(errorObj.signatureErr){
+                this._toastrService.error('', 'Signature Not Found');
+              }else if(errorObj.areaAllocationErr){
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              }else if(errorObj.wrongPincode){
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              }else if(errorObj.noSignErr){
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              }else if(errorObj.fboMissing){
+                this._toastrService.error('', 'FBO not found');
+              }
             }
           })
-        }
+        }else if(this.addFbo.payment_mode === 'Pay Page'){
+          
+        } 
       }
     }
   }

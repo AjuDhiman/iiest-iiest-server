@@ -1,5 +1,6 @@
 const { recipientModel, shopModel } = require('../../models/recipientSchema');
 const salesModel = require('../../models/employeeSalesSchema');
+const employeeSchema = require('../../models/employeeSchema');
 
 exports.caseList = async(req, res)=>{
     try {
@@ -44,3 +45,23 @@ exports.caseInfo = async(req, res)=>{
         return res.status(500).json({message: "Internal Server Error"});
     }
 }
+ exports.employeeCountDeptWise = async(req, res)=>{
+    try {
+
+        let success = true;
+        
+        const departmentName = req.params.dept;
+
+        const employeeList = await employeeSchema.find({department: departmentName});
+
+        if(!employeeList){
+            success = false;
+            return res.status(404).json({success, randomErr: true});
+        }
+
+        return res.status(200).json({success, employeeList});
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+ }
