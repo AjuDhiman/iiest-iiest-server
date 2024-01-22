@@ -163,7 +163,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   viewDepartmentData(res:any){
-    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'md', backdrop: 'static' });
       modalRef.componentInstance.department = res;
   }
 

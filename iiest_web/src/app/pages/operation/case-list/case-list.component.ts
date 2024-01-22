@@ -15,6 +15,7 @@ export class CaseListComponent implements OnInit {
   isSearch:boolean;
   searchQuery:string;
   selectedFilter:string;
+  itemsNumber:number=25;
   pageNumber:number=1;
   caseData: any;
   faMagnifyingGlass=faMagnifyingGlass;
@@ -46,16 +47,14 @@ export class CaseListComponent implements OnInit {
 
   }
 
-  onTableDataChange($event:any){
-
+  onTableDataChange(event: any) {
+    this.pageNumber = event;
   }
 
   getCasedata(){
     this._getDataService.getCaseList().subscribe({
       next: res => {
-        console.log(res);
         this.caseData=res.caseList;
-        console.log(this.caseData);
       },
       error: err => {
 
@@ -65,7 +64,6 @@ export class CaseListComponent implements OnInit {
 
   //method for opening operation form
   collectResData(id:string){
-     console.log(id);
      this._utilityService.setOperationRecpId(id);
      this.router.navigate(['/operationform'])
   }

@@ -3,22 +3,43 @@
       <div class="container-xxl">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
           <div class="col-auto">
-            <h1 class="app-page-title mb-2">Operation Form</h1>
+            <h1 class="app-page-title mb-2">Customer Fostac Form</h1>
           </div>
+          <!-- <div class="">Customer ID</div> -->
           <div class="row gy-4 mb-3">
             <form [formGroup]="operationForm" class="row g-1 p-3 border border-1 rounded-3 pb-3" autocomplete="off"
               (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-              <div class="col-md-4">
-                <label for="candidate_name" class="form-label">Candidate name</label><sup>*</sup>
-                <input type="text" placeholder="Candidate Name" formControlName="candidate_name"
-                  class="form-control form-control-sm" id="candidate_name"
-                  [ngClass]="{ 'is-invalid': submitted && operationform['candidate_name'].errors }">
-                <div *ngIf="submitted && operationform['candidate_name'].errors" class="invalid-feedback">
-                  <div *ngIf="operationform['candidate_name'].errors['required']">Candidate name is required</div>
+              <div class="col-md-3">
+                <label for="recipient_name" class="form-label">Recipient name</label><sup>*</sup>
+                <input type="text" placeholder="Recipient name" formControlName="recipient_name"
+                  class="form-control form-control-sm" id="recipient_name" [readOnly]="true"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['recipient_name'].errors }">
+                <div *ngIf="submitted && operationform['recipient_name'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['recipient_name'].errors['required']">Recipient name is required</div>
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
+                <label for="fbo_name" class="form-label">FBO name</label><sup>*</sup>
+                <input type="text" placeholder="FBO name" formControlName="fbo_name"
+                  class="form-control form-control-sm" id="fbo_name" [readOnly]="true"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['fbo_name'].errors }">
+                <div *ngIf="submitted && operationform['fbo_name'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['fbo_name'].errors['required']">FBO name is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="owner_name" class="form-label">Owner name</label><sup>*</sup>
+                <input type="text" placeholder="Owner Name" formControlName="owner_name"
+                  class="form-control form-control-sm" id="owner_name" [readOnly]="true"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['owner_name'].errors }">
+                <div *ngIf="submitted && operationform['owner_name'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['owner_name'].errors['required']">Owner name is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
                 <label for="father_name" class="form-label">Father's name</label><sup>*</sup>
                 <input type="text" placeholder="Father's name" formControlName="father_name"
                   class="form-control form-control-sm" id="father_name"
@@ -28,9 +49,40 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
-                <label for="email" class="form-label">E mail</label><sup>*</sup>
-                <input type="email" placeholder="E mail" formControlName="email"
+              <div class="col-md-3">
+                <label for="dob" class="form-label">DOB</label><sup>*</sup>
+                <input type="date" placeholder="DOB" formControlName="dob"
+                  class="form-control form-control-sm" id="dob"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['dob'].errors }">
+                <div *ngIf="submitted && operationform['dob'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['dob'].errors['required']">DOB is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="address" class="form-label">Address</label><sup>*</sup>
+                <input type="text" placeholder="Address" formControlName="address"
+                  class="form-control form-control-sm" id="address"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['address'].errors }">
+                <div *ngIf="submitted && operationform['address'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['address'].errors['required']">Address is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="recipient_contact_no" class="form-label">Recipient contact no.</label><sup>*</sup>
+                <input type="text" placeholder="Recipient contact no." formControlName="recipient_contact_no"
+                  class="form-control form-control-sm" id="recipient_contact_no"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['recipient_contact_no'].errors }">
+                <div *ngIf="submitted && operationform['recipient_contact_no'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['recipient_contact_no'].errors['required']">Recipient contact number is required</div>
+                  <div *ngIf="operationform['recipient_contact_no'].errors['pattern']">Recipient contact number is invalid</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="email" class="form-label">E-mail</label><sup>*</sup>
+                <input type="email" placeholder="E-mail" formControlName="email"
                   class="form-control form-control-sm" id="email"
                   [ngClass]="{ 'is-invalid': submitted && operationform['email'].errors }">
                 <div *ngIf="submitted && operationform['email'].errors" class="invalid-feedback">
@@ -39,19 +91,56 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
-                <label for="aadhar_no" class="form-label">Aadhar number</label><sup>*</sup>
-                <input type="text" placeholder="Aadhar No." formControlName="aadhar_no"
-                  class="form-control form-control-sm" id="aadhar_no"
+              <div class="col-md-3">
+                <label for="aadhar_no" class="form-label">Aadhar no.</label><sup>*</sup>
+                <input type="number" placeholder="Aadhar no." formControlName="aadhar_no"
+                  class="form-control form-control-sm" id="aadhar_no" [readOnly]="true"
                   [ngClass]="{ 'is-invalid': submitted && operationform['aadhar_no'].errors }">
                 <div *ngIf="submitted && operationform['aadhar_no'].errors" class="invalid-feedback">
                   <div *ngIf="operationform['aadhar_no'].errors['required']">Aadhar Number is required</div>
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
+                <label for="aadhar_no" class="form-label">Pancard no.</label>
+                <input type="text" placeholder="Pancard no." formControlName="pancard_no"
+                  class="form-control form-control-sm" id="aadhar_no"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['pancard_no'].errors }">
+              </div>
+
+              <div class="col-md-3">
+                <label for="fostac_total" class="form-label">Fostac Total Amount</label><sup>*</sup>
+                <input type="number" placeholder="Fostac Total Amount" formControlName="fostac_total"
+                  class="form-control form-control-sm" id="officer_name" [readOnly]="true"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['fostac_total'].errors }">
+                <div *ngIf="submitted && operationform['fostac_total'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['fostac_total'].errors['required']">Fostac Total is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="sales_date" class="form-label">Sales date</label><sup>*</sup>
+                <input type="date" placeholder="Fostac Total Amount" formControlName="sales_date"
+                  class="form-control form-control-sm" id="sale_date" [readOnly]="true"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['sales_date'].errors }">
+                <div *ngIf="submitted && operationform['sales_date'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['sales_date'].errors['required']">Sales Date is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="sales_person" class="form-label">Sales Person</label><sup>*</sup>
+                <input type="text" placeholder="Sales Person" formControlName="sales_person"
+                  class="form-control form-control-sm" id="sales_person" [readOnly]="true"
+                  [ngClass]="{ 'is-invalid': submitted && operationform['sales_person'].errors }">
+                <div *ngIf="submitted && operationform['sales_person'].errors" class="invalid-feedback">
+                  <div *ngIf="operationform['sales_person'].errors['required']">Sales Person name is required</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
                 <label for="username" class="form-label">User name</label><sup>*</sup>
-                <input type="text" placeholder="user Name" formControlName="username"
+                <input type="text" placeholder="User name" formControlName="username"
                   class="form-control form-control-sm" id="username"
                   [ngClass]="{ 'is-invalid': submitted && operationform['username'].errors }">
                 <div *ngIf="submitted && operationform['username'].errors" class="invalid-feedback">
@@ -59,7 +148,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label for="password" class="form-label">Password</label><sup>*</sup>
                 <input type="text" placeholder="Password" formControlName="password"
                   class="form-control form-control-sm" id="password"
