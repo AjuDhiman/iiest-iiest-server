@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+import { FbolistComponent } from '../../fbolist/fbolist.component';
 
 
 @Component({
@@ -68,10 +69,12 @@ export class FbonewComponent implements OnInit {
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];
 
+  @ViewChild(FbolistComponent)fboList: FbolistComponent;
+
 
   fostac_training: FormGroup = new FormGroup({
     fostac_processing_amount: new FormControl(''),
-    fostac_service_name: new FormControl(''),
+    fostac_service_name: new FormControl(''), 
     fostac_client_type: new FormControl(''),
     recipient_no: new FormControl(''),
     fostac_total: new FormControl('')
@@ -337,6 +340,8 @@ export class FbonewComponent implements OnInit {
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
                 this.backToRegister();
+                //for reloading fbo list
+                this.fboList.fetchAllFboData()
               }
             },
             error: (err)=>{
