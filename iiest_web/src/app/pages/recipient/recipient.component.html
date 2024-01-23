@@ -195,6 +195,9 @@
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" id="uploadEbill" hidden>
                   </span>
+                  <a class="download-link truncate" [href]="ebillImage" download="ebill.jpg">
+                    <fa-icon class="fa-2xl" [icon]="faDownload"></fa-icon>
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -224,9 +227,6 @@
             (click)="closeEBillWindow()"></button>
         </div>
         <div class="modal-body e-bill-body">
-          <a class="download-link" [href]="ebillImage" download="ebill.jpg">
-            <fa-icon class="fa-xl" [icon]="faDownload"></fa-icon>
-          </a>
           <img [src]="ebillImage" alt="E Bill">
         </div>
       </div>

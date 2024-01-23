@@ -32,6 +32,7 @@ export class FbolistComponent implements OnInit {
   faIndianRupeeSign = faIndianRupeeSign;
   faMagnifyingGlass = faMagnifyingGlass;
   pageNumber: number = 1;
+  itemsNumber:number=10;
 
   isModal: boolean = false;
 

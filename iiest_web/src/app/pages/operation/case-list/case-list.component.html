@@ -29,11 +29,7 @@
                         </div>
                         <div class="col-auto">
                             <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
-                                <option value="byOwner">Search by Owner</option>
-                                <option value="byName">Search by Name</option>
-                                <option value="byCustomerID">Search by Customer ID</option>
-                                <option value="byDistrict">Search by District</option>
-
+                                <option value="byRecipientName">Search by Recipient name</option>
                             </select>
                         </div>
                         <div class="col-auto">
@@ -68,7 +64,7 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        *ngFor="let data of caseData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
                                         <td class="cell"><span class="truncate">{{i+1}}</span></td>
                                         <td class="cell"><span class="truncate">-</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector" (click)="collectResData(data._id)">{{data.name}}</span></td>
@@ -80,19 +76,20 @@
                                         <td class="cell"><span class="truncate">-</span></td>
                                     </tr>
                                 </tbody>
-                                <!-- <tbody *ngIf="!filteredData">
+                                <tbody *ngIf="!filteredData || filteredData.length===0">
                                     <tr>
                                         <td colspan="15" class="text-center fw-bold">----------------- No Data Found
                                             ----------------</td>
                                     </tr>
-                                </tbody> -->
+                                </tbody>
                             </table>
                         </div><!--//table-responsive-->
 
                     </div><!--//app-card-body-->
                 </div><!--//app-card-->
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex" [ngClass]="caseData?'justify-content-between':'justify-content-end'">
+                    <div *ngIf="caseData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of {{caseData.length}}</div>
                     <pagination-controls previousLabel="Prev" nextLabel="Next"
                         (pageChange)="onTableDataChange($event)"></pagination-controls>
                 </div>

@@ -37,10 +37,23 @@
     padding: .25em .5em;
 }
 
-// .department-card-container{
-//    display: grid;
-// }
+.department-card-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+}
 
-// .department-card{
+.department-card{
+    min-height: 135px;
+}
 
-// }
+@media (max-width:768px){
+    .department-card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .department-card{
+        min-height: 90px;
+    }
+}

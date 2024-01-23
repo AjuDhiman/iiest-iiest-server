@@ -39,10 +39,8 @@ export class OperationformComponent implements OnInit{
   ngOnInit(): void {
 
     this.candidateId=this._utilityService.getOperationRecpId();
-    console.log(this.candidateId);
     this.getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res)=>{
-        console.log(res);
         this.operationForm.patchValue({recipient_name:res.populatedInfo.name});
         this.operationForm.patchValue({fbo_name:res.populatedInfo.salesInfo.fboInfo.fbo_name});
         this.operationForm.patchValue({owner_name:res.populatedInfo.salesInfo.fboInfo.owner_name});
@@ -77,8 +75,6 @@ export class OperationformComponent implements OnInit{
   get operationform(): { [key: string]: AbstractControl } {
     return this.operationForm.controls;
   }
-
-
   
   getFormatedDate(date: string): string {
     const originalDate = new Date(date);
