@@ -36,12 +36,11 @@ const shopSchema = new Schema({
     address: {
         type: String, 
         required: true,
-        unique: true
+        // unique: true
     },
     eBillImage: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true
+    type: mongoose.Schema.Types.ObjectId
+    // unique: true
     }
 }, {timestamps: true})
 
