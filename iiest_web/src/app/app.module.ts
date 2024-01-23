@@ -52,6 +52,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
 import { OperationformComponent } from './pages/operation/operationform/operationform.component';
 import { DepartmentListComponent } from './pages/department-list/department-list.component';
+import { AnalyticCardsComponent } from './pages/home/analytic-cards/analytic-cards.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { DepartmentListComponent } from './pages/department-list/department-list
     HygieneAuditComponent,
     CaseListComponent,
     OperationformComponent,
-    DepartmentListComponent
+    DepartmentListComponent,
+    AnalyticCardsComponent
   ],
   imports: [
     BrowserModule,

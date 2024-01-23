@@ -5,6 +5,12 @@
   <div class="col-auto">
     <div class="page-utilities">
       <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+        <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber">
+          <option value=10>10</option>
+          <option value=25 selected>25</option>
+          <option value=50>50</option>
+          <option value=100>100</option>
+        </select>
         <div class="col-auto">
           <form class="form">
             <div class="input-group">
@@ -25,7 +31,8 @@
           </select>
         </div>
         <div class="col-auto">
-          <fa-icon (click)="exportToCsv()" class="fa-2xl" style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"></fa-icon>
+          <fa-icon (click)="exportToCsv()" class="fa-2xl" style="margin: 7px 7px; color: #1957a9;"
+            [icon]="faFileCsv"></fa-icon>
           <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
         </div>
       </div><!--//row-->
@@ -64,29 +71,34 @@
               </tr>
             </thead>
             <tbody *ngIf="filteredData">
-              <tr *ngFor="let fbo of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }">
+              <tr *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }">
                 <td class="cell"><span class="truncate">{{fbo.serialNumber}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.fbo_name}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_name}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
                 <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
-                <td class="cell text-center"><span class="truncate selector" (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')">{{!fbo.fostacInfo ? '-' : fbo.fostacInfo.recipient_no}}</span></td>
-                <td class="cell text-center"><span class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')">{{!fbo.foscosInfo ? '-' : fbo.foscosInfo.shops_no}}</span></td>
-                <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
+                <td class="cell text-center"><span class="truncate selector"
+                    (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')">{{!fbo.fostacInfo ? '-' :
+                    fbo.fostacInfo.recipient_no}}</span></td>
+                <td class="cell text-center"><span class="truncate selector"
+                    (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')">{{!fbo.foscosInfo ? '-' :
+                    fbo.foscosInfo.shops_no}}</span></td>
+                <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"
+                      style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
                 <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
                 <td class="cell text-center">
-                  <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;" 
-                  (click)="viewFboDetails(fbo)" [icon]="faEye"></fa-icon>
+                  <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;"
+                    (click)="viewFboDetails(fbo)" [icon]="faEye"></fa-icon>
                   <!-- <fa-icon class="fa-l" (click)="editRecord(fbo)"style="margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon> -->
                   <!-- <fa-icon class="fa-l" style="color: #c64115;" [icon]="faTrash" (click)="deleteFBO(fbo)"></fa-icon> -->
                 </td>
               </tr>
             </tbody>
-            <tbody *ngIf="filteredData?.length ==0">
-               <tr>
+            <tbody *ngIf="filteredData?.length==0">
+              <tr>
                 <td colspan="15" class="text-center fw-bold">----------------- No Data Found ----------------</td>
-               </tr>
+              </tr>
             </tbody>
           </table>
         </div><!--//table-responsive-->
@@ -98,4 +110,3 @@
       <pagination-controls previousLabel="Prev" nextLabel="Next"
         (pageChange)="onTableDataChange($event)"></pagination-controls>
     </div>
-    

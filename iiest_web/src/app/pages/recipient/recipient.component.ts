@@ -99,15 +99,6 @@ export class RecipientComponent implements OnInit {
           });
           this.listCount=this.fboData.foscosInfo.shops_no;
         break;
-      /* case "*":
-        console.log(val1 * val2);
-        break;
-      case "/":
-        console.log(val1 / val2);
-        break;
-      default:
-        console.log("Invalid operator");
-        break; */
     }
     this.excelForm = this.formBuilder.group({
       excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
@@ -128,10 +119,8 @@ export class RecipientComponent implements OnInit {
     }
 
     this.fboID = this.fboData._id
-    console.log(this.fboID);
 
     if (this.serviceType === 'fostac') {
-      console.log([this.recipientform.value]);
 
       this._registerService.addFboRecipent(this.fboID, [this.recipientform.value]).subscribe({
         next: (res) => {
@@ -159,10 +148,6 @@ export class RecipientComponent implements OnInit {
         formData.append('eBill', this.selectedFile);
       }
 
-      console.log(this.recipientform.get('eBill')?.value)
-
-      console.log(this.addRecipient)
-
       this._registerService.addFboShop(this.fboID, formData).subscribe({
         next: (res) => {
           if (res.success) {
@@ -189,11 +174,8 @@ export class RecipientComponent implements OnInit {
   onImageChangeFromFile($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
-      console.log(file);
       if (file.type == "image/jpeg" || file.type == "image/png") {
-        console.log("correct");
         this.selectedFile = file;
-        console.log(this.selectedFile);
       }
       else {
         //call validation
@@ -296,10 +278,8 @@ export class RecipientComponent implements OnInit {
   validateFileType(allowedExtensions: string[]) {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const file = control.value;
-      console.log(file);
       if (file) {
         const fileExtension = file.split('.').pop()?.toLowerCase();
-        console.log(fileExtension)
         if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
           return null;
         } else {
@@ -328,7 +308,6 @@ export class RecipientComponent implements OnInit {
   getEbill(id: string) {
     this.getDataServices.getEbill(id).subscribe({
       next: (res) => {
-        console.log(res)
         this.ebillImage = res.billConverted;
       }
     })

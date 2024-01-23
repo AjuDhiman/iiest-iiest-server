@@ -30,6 +30,7 @@ export class EmployeelistComponent implements OnInit {
   selectedFilter: string = 'byName';
   pageNumber: number = 1;
   isSearch: boolean = false;
+  itemsNumber:number=10;
   faEye = faEye;
   faPencil = faPencil;
   faTrash = faTrash;

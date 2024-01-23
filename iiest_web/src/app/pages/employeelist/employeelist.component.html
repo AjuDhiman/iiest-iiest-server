@@ -5,6 +5,13 @@
   <div class="col-auto">
     <div class="page-utilities">
       <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+        <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber">
+          <option value=10>10</option>
+          <option value=25 selected>25</option>
+          <option value=50>50</option>
+          <option value=100>100</option>
+
+      </select>
         <div class="col-auto">
           <form class="form">
 
@@ -76,7 +83,7 @@
             <tbody *ngIf="filteredEmployees?.length>0">
 
               <tr
-                *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
+                *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                 <td class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
