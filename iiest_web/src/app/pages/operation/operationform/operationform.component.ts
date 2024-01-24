@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
+import { faCircleXmark, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operationform',
@@ -12,8 +13,9 @@ export class OperationformComponent implements OnInit{
   candidateId:string;
   submitted:boolean=false;
   recipientInfo:any;
+  faCircleCheck=faCircleCheck;
 
-  operationForm:FormGroup=new FormGroup({
+  verificationForm:FormGroup=new FormGroup({
     recipient_name:new FormControl(''),
     fbo_name:new FormControl(''),
     owner_name:new FormControl(''),
@@ -31,6 +33,11 @@ export class OperationformComponent implements OnInit{
     password:new FormControl('')
   })
 
+  enrollmentForm:FormGroup=new FormGroup({
+    training_date:new FormControl(''),
+    roll_no:new FormControl('')
+  })
+
   constructor(private _utilityService:UtilitiesService, 
               private getDataService: GetdataService,
               private formBuilder:FormBuilder){
@@ -42,19 +49,19 @@ export class OperationformComponent implements OnInit{
     this.getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res)=>{
         console.log(res);
-        this.operationForm.patchValue({recipient_name:res.populatedInfo.name});
-        this.operationForm.patchValue({fbo_name:res.populatedInfo.salesInfo.fboInfo.fbo_name});
-        this.operationForm.patchValue({owner_name:res.populatedInfo.salesInfo.fboInfo.owner_name});
-        this.operationForm.patchValue({address:res.populatedInfo.salesInfo.fboInfo.address});
-        this.operationForm.patchValue({recipient_contact_no:res.populatedInfo.phoneNo});
-        this.operationForm.patchValue({aadhar_no:res.populatedInfo.aadharNo});
-        this.operationForm.patchValue({fostac_total:res.populatedInfo.salesInfo.fostacInfo.fostac_total});
-        this.operationForm.patchValue({sales_date:this.getFormatedDate(res.populatedInfo.salesInfo.createdAt)});
-        this.operationForm.patchValue({sales_person:res.populatedInfo.salesInfo.employeeInfo.employee_name});
+        this.verificationForm.patchValue({recipient_name:res.populatedInfo.name});
+        this.verificationForm.patchValue({fbo_name:res.populatedInfo.salesInfo.fboInfo.fbo_name});
+        this.verificationForm.patchValue({owner_name:res.populatedInfo.salesInfo.fboInfo.owner_name});
+        this.verificationForm.patchValue({address:res.populatedInfo.salesInfo.fboInfo.address});
+        this.verificationForm.patchValue({recipient_contact_no:res.populatedInfo.phoneNo});
+        this.verificationForm.patchValue({aadhar_no:res.populatedInfo.aadharNo});
+        this.verificationForm.patchValue({fostac_total:res.populatedInfo.salesInfo.fostacInfo.fostac_total});
+        this.verificationForm.patchValue({sales_date:this.getFormatedDate(res.populatedInfo.salesInfo.createdAt)});
+        this.verificationForm.patchValue({sales_person:res.populatedInfo.salesInfo.employeeInfo.employee_name});
       }
     })
 
-    this.operationForm=this.formBuilder.group({
+    this.verificationForm=this.formBuilder.group({
       recipient_name:['',Validators.required],
       fbo_name:['',Validators.required],
       owner_name:['',Validators.required],
@@ -72,10 +79,19 @@ export class OperationformComponent implements OnInit{
       password:['',Validators.required]
     });
 
+    this.enrollmentForm=this.formBuilder.group({
+      training_date:['',Validators.required],
+      roll_no:['',Validators.required]
+    })
+
   }
 
-  get operationform(): { [key: string]: AbstractControl } {
-    return this.operationForm.controls;
+  get verificationform(): { [key: string]: AbstractControl } {
+    return this.verificationForm.controls;
+  }
+
+  get enrollmentform(): { [key: string]: AbstractControl } {
+    return this.enrollmentForm.controls;
   }
   
   getFormatedDate(date: string): string {
@@ -89,6 +105,6 @@ export class OperationformComponent implements OnInit{
 
   onSubmit(){
      this.submitted=true;
-     console.log(this.operationForm);
+     console.log(this.verificationForm);
   }
 }

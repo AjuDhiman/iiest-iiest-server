@@ -15,7 +15,7 @@ export class DepartmentListComponent implements OnInit{
   pageNumber:number=1;
   searchQuery:string;
   selectedFilter:string='byEmployeeName';
-  showPagination:boolean=true;
+  showPagination:boolean=false;
   faMagnifyingGlass=faMagnifyingGlass
   isSearch:boolean=false;
   filteredData:any;
@@ -36,6 +36,7 @@ export class DepartmentListComponent implements OnInit{
             return {...elem, serialNumber:index+1}
           });
           this.filteredData=this.employeeList;
+          this.showPagination=true;
         }
     })
   }
@@ -48,7 +49,7 @@ export class DepartmentListComponent implements OnInit{
     }
     else{
       this.isSearch=false;
-      this.filteredData=this.employeeList
+      this.filteredData=this.employeeList;
     }
   }
 
@@ -63,7 +64,10 @@ export class DepartmentListComponent implements OnInit{
       switch (this.selectedFilter) {
         case 'byEmployeeName': this.filteredData = this.employeeList.filter((elem: any) => elem.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
+        case 'byState': this.filteredData = this.employeeList.filter((elem: any) => elem.state.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
       }
     }
+     this.filteredData.length?this.showPagination=true:this.showPagination=false;
   }
 }

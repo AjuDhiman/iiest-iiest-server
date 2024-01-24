@@ -21,6 +21,7 @@
           <div class="col-auto">
             <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
               <option value="byEmployeeName">Search by Employee Name</option>
+              <option value="byState">Search by State</option>
             </select>
           </div>
         </div><!--//row-->
@@ -54,12 +55,12 @@
                   <td class="cell"><span class="truncate">{{employee.state}}</span></td>
                 </tr>
               </tbody>
-              <!-- <tbody
-                    *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos')">
+              <tbody
+                    *ngIf="filteredData?.length==0">
                     <tr>
                       <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
                     </tr>
-                  </tbody> -->
+                  </tbody>
             </table>
           </div><!--//table-responsive-->
 

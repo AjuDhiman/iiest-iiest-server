@@ -68,7 +68,7 @@
                                         <th class="cell">Recipient Name</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
-                                        <th class="cell">Recipient Contact number</th>
+                                        <th class="cell">Recipient Contact</th>
                                         <th class="cell">Address</th>
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
@@ -101,8 +101,8 @@
                     </div><!--//app-card-body-->
                 </div><!--//app-card-->
 
-                <div class="d-flex" [ngClass]="caseData?'justify-content-between':'justify-content-end'">
-                    <div *ngIf="caseData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of {{caseData.length}}</div>
+                <div class="d-flex" *ngIf="showPagination" [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
+                    <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of {{caseData.length}}</div>
                     <pagination-controls previousLabel="Prev" nextLabel="Next"
                         (pageChange)="onTableDataChange($event)"></pagination-controls>
                 </div>

@@ -150,3 +150,21 @@ export interface userInerface {
   zip_code: number;
   _id: string
 }
+
+export interface fostacVerification{
+  recipient_name:string,
+  fbo_name:string,
+  owner_name:string,
+  father_name:string,
+  dob:Date,
+  address:string,
+  recipient_contact_no:number,
+  email:string,
+  aadhar_no:number,
+  pancard_no:string,
+  fostac_total:string,
+  sales_person:string,
+  officer_name: string,
+  username:string,
+  password:string
+}

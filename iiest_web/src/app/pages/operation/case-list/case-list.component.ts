@@ -19,6 +19,7 @@ export class CaseListComponent implements OnInit {
   itemsNumber: number = 25;
   pageNumber: number = 1;
   caseData: any;
+  showPagination:boolean=false;
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
   serviceType='Catering';
@@ -83,7 +84,7 @@ export class CaseListComponent implements OnInit {
 
     this.pageNumber = 1;
 
-    // this.filteredData=this.caseData.filter((obj:any) => obj.type)
+    // this.filteredData=this.caseData.filter((elem:any) => {elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name===type});
   }
 
   //method for opening operation form
@@ -105,6 +106,7 @@ export class CaseListComponent implements OnInit {
           break;
       }
     }
+    this.filteredData.length?this.showPagination=true:this.showPagination=false;
   }
 
 }
