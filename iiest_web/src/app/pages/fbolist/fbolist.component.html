@@ -106,7 +106,8 @@
       </div><!--//app-card-body-->
     </div><!--//app-card-->
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex" [ngClass]="allFBOEntries?'justify-content-between':'justify-content-end'">
+      <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of {{allFBOEntries.length}}</div>
       <pagination-controls previousLabel="Prev" nextLabel="Next"
-        (pageChange)="onTableDataChange($event)"></pagination-controls>
+      (pageChange)="onTableDataChange($event)"></pagination-controls>
     </div>

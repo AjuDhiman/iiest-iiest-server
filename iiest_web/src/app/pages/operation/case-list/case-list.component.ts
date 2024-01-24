@@ -14,12 +14,13 @@ export class CaseListComponent implements OnInit {
   filteredData: any;
   isSearch: boolean = false;
   searchQuery: string;
-  selectedFilter: string;
+  selectedFilter: string = 'byRecipientName';
   itemsNumber: number = 25;
   pageNumber: number = 1;
   caseData: any;
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
+  serviceType='Catering';
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
@@ -61,13 +62,24 @@ export class CaseListComponent implements OnInit {
   getCasedata() {
     this._getDataService.getCaseList().subscribe({
       next: res => {
-        this.caseData = res.caseList;
-        this.filteredData=this.caseData;
+        console.log(res);
+        // this.caseData = res.caseList;
+        // this.filteredData=this.caseData;
+        this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+        this.filter();
       },
       error: err => {
 
       }
     })
+  }
+
+  changeServiceType(type:string){
+    this.serviceType=type;
+
+    this.pageNumber = 1;
+
+    // this.filteredData=this.caseData.filter((obj:any) => obj.type)
   }
 
   //method for opening operation form

@@ -41,9 +41,11 @@ export class OperationformComponent implements OnInit{
     this.candidateId=this._utilityService.getOperationRecpId();
     this.getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res)=>{
+        console.log(res);
         this.operationForm.patchValue({recipient_name:res.populatedInfo.name});
         this.operationForm.patchValue({fbo_name:res.populatedInfo.salesInfo.fboInfo.fbo_name});
         this.operationForm.patchValue({owner_name:res.populatedInfo.salesInfo.fboInfo.owner_name});
+        this.operationForm.patchValue({address:res.populatedInfo.salesInfo.fboInfo.address});
         this.operationForm.patchValue({recipient_contact_no:res.populatedInfo.phoneNo});
         this.operationForm.patchValue({aadhar_no:res.populatedInfo.aadharNo});
         this.operationForm.patchValue({fostac_total:res.populatedInfo.salesInfo.fostacInfo.fostac_total});
@@ -84,7 +86,6 @@ export class OperationformComponent implements OnInit{
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate
   }
-
 
   onSubmit(){
      this.submitted=true;

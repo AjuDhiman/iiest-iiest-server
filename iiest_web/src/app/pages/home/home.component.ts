@@ -153,6 +153,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             count:elem.count
           }
         });
+        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1)
         console.log(this.departmentAndCount)
       },
       error: err => {
@@ -163,7 +164,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   viewDepartmentData(res:any){
-    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'md', backdrop: 'static' });
+    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.department = res;
   }
 

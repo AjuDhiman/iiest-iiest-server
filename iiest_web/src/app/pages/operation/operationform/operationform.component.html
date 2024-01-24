@@ -72,7 +72,7 @@
               <div class="col-md-3">
                 <label for="recipient_contact_no" class="form-label">Recipient contact no.</label><sup>*</sup>
                 <input type="text" placeholder="Recipient contact no." formControlName="recipient_contact_no"
-                  class="form-control form-control-sm" id="recipient_contact_no" [disabled]="true"
+                  class="form-control form-control-sm" id="recipient_contact_no"
                   [ngClass]="{ 'is-invalid': submitted && operationform['recipient_contact_no'].errors }">
                 <div *ngIf="submitted && operationform['recipient_contact_no'].errors" class="invalid-feedback">
                   <div *ngIf="operationform['recipient_contact_no'].errors['required']">Recipient contact number is required</div>
@@ -102,9 +102,9 @@
               </div>
 
               <div class="col-md-3">
-                <label for="aadhar_no" class="form-label">Pancard no.</label>
+                <label for="pancard_no" class="form-label">Pancard no.</label>
                 <input type="text" placeholder="Pancard no." formControlName="pancard_no"
-                  class="form-control form-control-sm" id="aadhar_no"
+                  class="form-control form-control-sm" id="pancard_no"
                   [ngClass]="{ 'is-invalid': submitted && operationform['pancard_no'].errors }">
               </div>
 
