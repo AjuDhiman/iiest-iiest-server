@@ -221,7 +221,12 @@ exports.existingFboPayReturn = async(req,res)=>{
 
             await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
 
+            req.session.destroy((err)=>{
+              console.log(err);
+            })
+
             res.redirect('http://localhost:4200/fbo');
+
             }
         }
 

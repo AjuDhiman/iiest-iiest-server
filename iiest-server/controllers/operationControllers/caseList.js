@@ -10,11 +10,11 @@ exports.caseList = async(req, res)=>{
 
         if(employeePanel === 'Foscos Panel'){
 
-            list = await shopModel.find({});
+            list = await shopModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
         }else if(employeePanel === 'Fostac Panel'){
 
-            list = await recipientModel.find({});
+            list = await recipientModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
         }
 

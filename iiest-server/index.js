@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(session({
   secret: 'samplepaymentproject',
-  saveUninitialized: true,
+  saveUninitialized: false,
   resave: true
 }))
 
