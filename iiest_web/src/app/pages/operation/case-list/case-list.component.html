@@ -2,13 +2,24 @@
     <div class="container-xxl border border-1 rounded-3 pt-3">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
-                <h1 class="app-page-title mb-0">Case List</h1>
+                <h1 class="app-page-title mb-0">Case List of </h1>
             </div>
             <div class="col-auto">
                 <div class="page-utilities">
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                         <div class="col-auto">
-                            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber">
+                            <button class="btn btn-sm mx-1" [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'"
+                             type="button" (click)="changeServiceType('Catering')">
+                                Catering
+                            </button>
+                            <button class="btn btn-sm mx-1" [ngClass]="serviceType==='Retail'?'btn-primary':'btn-secondary'" 
+                            type="button" (click)="changeServiceType('Retail')">
+                                Retail
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <select class="form-select form-select-sm w-auto"
+                             [(ngModel)]="itemsNumber" (click)="pageNumber=1">
                                 <option value=10>10</option>
                                 <option value=25 selected>25</option>
                                 <option value=50>50</option>
@@ -52,26 +63,24 @@
                                 <thead>
                                     <tr>
                                         <th class="cell">S.No</th>
-                                        <th class="cell">Recipient Id</th>
                                         <th class="cell">Recipient Name</th>
                                         <th class="cell">Contact number</th>
                                         <th class="cell">Aadhar number</th>
                                         <th class="cell">Address</th>
-                                        <th class="cell">Type of Licence</th>
-                                        <th class="cell">Officers Name</th>
+                                        <!-- <th class="cell">Type of Licence</th> -->
+                                        <th class="cell">Sales Executive</th>
                                         <th class="cell">Client Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
-                                        <td class="cell"><span class="truncate">{{i+1}}</span></td>
-                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector" (click)="collectResData(data._id)">{{data.name}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.aadharNo}}</span></td>
                                         <td class="cell"><span class="truncate">-</span></td>
-                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <!-- <td class="cell"><span class="truncate">-</span></td> -->
                                         <td class="cell"><span class="truncate">-</span></td>
                                         <td class="cell"><span class="truncate">-</span></td>
                                     </tr>

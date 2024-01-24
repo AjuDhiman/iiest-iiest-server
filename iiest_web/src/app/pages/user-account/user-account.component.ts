@@ -83,7 +83,9 @@ export class UserAccountComponent {
     let parsedUser = JSON.parse(user);
     this.getDataService.getUserImage(parsedUser.employeeImage).subscribe({
       next: (res)=>{
-        this.userImage = res.imageConverted;
+        if(res.imageConverted){
+          this.userImage = res.imageConverted;
+        }
       }
     })
   }

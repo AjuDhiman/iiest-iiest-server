@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 
@@ -12,7 +13,12 @@ export class DepartmentListComponent implements OnInit{
   department:string;
   employeeList:any;
   pageNumber:number=1;
+  searchQuery:string;
+  selectedFilter:string='byEmployeeName';
   showPagination:boolean=true;
+  faMagnifyingGlass=faMagnifyingGlass
+  isSearch:boolean=false;
+  filteredData:any;
   constructor(public activeModal:NgbActiveModal,
               private _getDataService: GetdataService){
 
@@ -26,12 +32,37 @@ export class DepartmentListComponent implements OnInit{
     this._getDataService.getEmpCountDeptWise(this.department).subscribe({
         next: res=> {
           console.log(res);
-          this.employeeList=res.employeeList;
+          this.employeeList=res.employeeList.map((elem:any, index:number) => {
+            return {...elem, serialNumber:index+1}
+          });
+          this.filteredData=this.employeeList;
         }
     })
   }
 
+  onSearchChange(){
+    if(this.searchQuery){
+      this.pageNumber = 1;
+      this.isSearch = true;
+      this.filter();
+    }
+    else{
+      this.isSearch=false;
+    }
+  }
+
   onTableDataChange(event: any) {
     this.pageNumber = event;
+  }
+
+  filter(): void {
+    if (!this.searchQuery) {
+      this.filteredData = this.employeeList;
+    } else {
+      switch (this.selectedFilter) {
+        case 'byEmployeeName': this.filteredData = this.employeeList.filter((elem: any) => elem.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
+      }
+    }
   }
 }

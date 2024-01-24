@@ -271,6 +271,8 @@ export class FbonewComponent implements OnInit {
           if (res.success) {
             this._toastrService.success('', 'Record Edited Successfully');
             this.backToRegister();
+            //for reloading fbo list
+            this.fboList.fetchAllFboData()
           }
         }
       });
@@ -281,6 +283,8 @@ export class FbonewComponent implements OnInit {
           this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               window.location.href = res.message;
+              //for reloading fbo list
+              this.fboList.fetchAllFboData()
             },
             error: (err) => {
               let errorObj = err.error;
@@ -309,6 +313,8 @@ export class FbonewComponent implements OnInit {
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
                 this.backToRegister();
+                //for reloading fbo list
+                this.fboList.fetchAllFboData()
               }
             },
             error: (err) => {
