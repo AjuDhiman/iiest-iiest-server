@@ -3,6 +3,7 @@ import { Route, Router } from '@angular/router';
 import { faFileCsv, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
+import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 
 @Component({
@@ -25,6 +26,7 @@ export class CaseListComponent implements OnInit {
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
     private _utilityService: UtilitiesService,
+    private registerService: RegisterService,
     private router: Router) {
 
   }
@@ -69,7 +71,10 @@ export class CaseListComponent implements OnInit {
         this.filter();
       },
       error: err => {
-
+        let errorObj = err.error;
+        if(errorObj.userError){
+          this.registerService.signout();
+        }
       }
     })
   }

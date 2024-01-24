@@ -137,6 +137,12 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
+
+        req.session.destroy((err)=>{
+          if(err){
+            console.log(console.log(err));
+          }
+        })
         
         res.redirect('http://localhost:4200/fbo');
 
