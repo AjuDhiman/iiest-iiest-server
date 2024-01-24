@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { GetdataService } from 'src/app/services/getdata.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { faCircleXmark, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
   selector: 'app-operationform',
@@ -40,6 +41,7 @@ export class OperationformComponent implements OnInit{
 
   constructor(private _utilityService:UtilitiesService, 
               private getDataService: GetdataService,
+              private registerService:RegisterService,
               private formBuilder:FormBuilder){
   }
 
@@ -103,8 +105,17 @@ export class OperationformComponent implements OnInit{
     return formattedDate
   }
 
-  onSubmit(){
+  onVerify($event:any){
+     $event.preventDefault();
      this.submitted=true;
-     console.log(this.verificationForm);
+     console.log(this.candidateId)
+     if(this.verificationForm.invalid){
+      return
+     }
+     this.registerService.operationBasicForm(this.candidateId, this.verificationForm.value).subscribe({
+      next: res => {
+        console.log(res);
+      }
+     })
   }
 }

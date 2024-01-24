@@ -8,8 +8,11 @@ exports.fostacVerification = async(req, res)=>{
         let success = false;
 
         const recipientId = req.params.recipientid;
+
+        console.log(recipientId);
+        console.log(req.body)
         
-        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sale_date, username, password } = req.body;
+        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date, username, password } = req.body;
 
         const checkAddress = await fostacVerifyModel.findOne({address});
 
@@ -39,7 +42,7 @@ exports.fostacVerification = async(req, res)=>{
             return res.status(401).json({success, userNameErr: true})
         }
 
-        const basicFormAdd = await fostacVerifyModel.create({operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sale_date});
+        const basicFormAdd = await fostacVerifyModel.create({operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sales_date});
 
         if(basicFormAdd){
             success = true
