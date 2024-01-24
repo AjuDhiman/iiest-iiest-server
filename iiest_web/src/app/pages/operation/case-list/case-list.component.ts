@@ -54,6 +54,7 @@ export class CaseListComponent implements OnInit {
     }
     else{
       this.isSearch=false;
+      this.filteredData=this.caseData;
     }
   }
 
@@ -97,6 +98,10 @@ export class CaseListComponent implements OnInit {
     } else {
       switch (this.selectedFilter) {
         case 'byRecipientName': this.filteredData = this.caseData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          break;
+        case 'byFboName':this.filteredData = this.caseData.filter((elem: any) => elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
+        case 'byOwnerName': this.filteredData = this.caseData.filter((elem: any) => elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
       }
     }

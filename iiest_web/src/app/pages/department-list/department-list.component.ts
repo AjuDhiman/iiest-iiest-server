@@ -48,6 +48,7 @@ export class DepartmentListComponent implements OnInit{
     }
     else{
       this.isSearch=false;
+      this.filteredData=this.employeeList
     }
   }
 
@@ -56,7 +57,7 @@ export class DepartmentListComponent implements OnInit{
   }
 
   filter(): void {
-    if (!this.searchQuery) {
+    if (this.searchQuery==='') {
       this.filteredData = this.employeeList;
     } else {
       switch (this.selectedFilter) {
