@@ -52,5 +52,5 @@ const fostacVerification = new Schema({
 }, {timestamps: true})
 
 
-const fostacVerifyModel = mongoose.model('operation_basic', fostacVerification);
+const fostacVerifyModel = mongoose.model('fostac_verification', fostacVerification);
 module.exports = fostacVerifyModel;
