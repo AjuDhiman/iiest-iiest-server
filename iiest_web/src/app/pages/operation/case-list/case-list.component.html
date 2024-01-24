@@ -64,8 +64,9 @@
                                     <tr>
                                         <th class="cell">S.No</th>
                                         <th class="cell">Recipient Name</th>
-                                        <th class="cell">Contact number</th>
-                                        <th class="cell">Aadhar number</th>
+                                        <th class="cell">Fbo Name</th>
+                                        <th class="cell">Owner Name</th>
+                                        <th class="cell">Recipient Contact number</th>
                                         <th class="cell">Address</th>
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
@@ -77,11 +78,12 @@
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
                                         <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector" (click)="collectResData(data._id)">{{data.name}}</span></td>
+                                        <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
+                                        <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
-                                        <td class="cell"><span class="truncate">{{data.aadharNo}}</span></td>
-                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.address}}</span></td>
                                         <!-- <td class="cell"><span class="truncate">-</span></td> -->
-                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span></td>
                                         <td class="cell"><span class="truncate">-</span></td>
                                     </tr>
                                 </tbody>

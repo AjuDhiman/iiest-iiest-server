@@ -65,8 +65,6 @@ export class CaseListComponent implements OnInit {
     this._getDataService.getCaseList().subscribe({
       next: res => {
         console.log(res);
-        // this.caseData = res.caseList;
-        // this.filteredData=this.caseData;
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
         this.filter();
       },
