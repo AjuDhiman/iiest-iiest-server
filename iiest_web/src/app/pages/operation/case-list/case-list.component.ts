@@ -4,7 +4,6 @@ import { faFileCsv, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { UtilitiesService } from 'src/app/services/utilities.service';
 
 @Component({
   selector: 'app-case-list',
@@ -26,7 +25,6 @@ export class CaseListComponent implements OnInit {
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
-    private _utilityService: UtilitiesService,
     private registerService: RegisterService,
     private router: Router) {
 
@@ -89,8 +87,7 @@ export class CaseListComponent implements OnInit {
 
   //method for opening operation form
   collectResData(id: string) {
-    this._utilityService.setOperationRecpId(id);
-    this.router.navigate(['/operationform'])
+    this.router.navigate(['/operationform',id])
   }
 
   filter(): void {

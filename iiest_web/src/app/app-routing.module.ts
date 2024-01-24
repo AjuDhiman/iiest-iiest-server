@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'settings', component: SettingPanelComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard]},
-  { path: 'operationform', component: OperationformComponent, canActivate:[authGuard]},
+  { path: 'operationform/:id', component: OperationformComponent, canActivate:[authGuard]},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
 ];

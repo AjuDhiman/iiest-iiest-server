@@ -4,6 +4,7 @@ import { GetdataService } from 'src/app/services/getdata.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { faCircleXmark, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { RegisterService } from 'src/app/services/register.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-operationform',
@@ -42,12 +43,13 @@ export class OperationformComponent implements OnInit{
   constructor(private _utilityService:UtilitiesService, 
               private getDataService: GetdataService,
               private registerService:RegisterService,
-              private formBuilder:FormBuilder){
+              private formBuilder:FormBuilder,
+              private activatedRoute:ActivatedRoute){
   }
 
   ngOnInit(): void {
 
-    this.candidateId=this._utilityService.getOperationRecpId();
+    this.candidateId=this.activatedRoute.snapshot.params['id']
     this.getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res)=>{
         console.log(res);
