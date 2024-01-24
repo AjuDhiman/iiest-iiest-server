@@ -261,8 +261,6 @@ export class RecipientComponent implements OnInit {
           let errorObj = err.error;
           if (errorObj.userError) {
             this._registerService.signout();
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('', 'This Address Already Exists.');
           }
         }
       })

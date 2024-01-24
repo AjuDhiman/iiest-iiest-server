@@ -1,4 +1,4 @@
-const fboModel = require('../models/fboSchema');
+const fboModel = require('../models/fboModels/fboSchema');
 
 const generateCustomerId = (randonNum)=>{
     let customerId = '';

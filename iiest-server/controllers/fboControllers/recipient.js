@@ -1,4 +1,4 @@
-const { recipientModel, shopModel } = require('../../models/recipientSchema')
+const { recipientModel, shopModel } = require('../../models/fboModels/recipientSchema')
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 
@@ -62,13 +62,6 @@ exports.addShop = async(req, res)=>{
     if(!eBill){
         success = false;
         return res.status(401).json({ success, ebillErr: true })
-    }
-
-    const existingAddress = await recipientModel.findOne({ address });
-
-    if(existingAddress){
-        success = false;
-        return res.status(401).json({ success, addressErr: true })
     }
 
     const eBillName = `${Date.now()}_${eBill.originalname}`;

@@ -1,5 +1,5 @@
-const { recipientModel, shopModel } = require('../../models/recipientSchema');
-const employeeSchema = require('../../models/employeeSchema');
+const { recipientModel, shopModel } = require('../../models/fboModels/recipientSchema');
+const employeeSchema = require('../../models/employeeModels/employeeSchema');
 
 exports.caseList = async(req, res)=>{
     try {

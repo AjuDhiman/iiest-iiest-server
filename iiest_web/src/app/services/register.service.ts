@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification} from '../utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
 import { config } from '../utils/config'
@@ -97,6 +97,14 @@ export class RegisterService {
   public existingFboSale(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
     const url = `${this.url}/existingfbosale/${objId}`
     return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge, existingFboId}).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public operationBasicForm(recId: string, formInterface: fostacVerification){
+    const url = `${this.url}/fostacverification/${recId}`
+    return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
     ));

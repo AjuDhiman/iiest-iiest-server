@@ -1,6 +1,6 @@
-const employeeSchema = require('../../models/employeeSchema');
-const pastEmployeeSchema = require('../../models/pastEmployeeSchema');
-const areaAllocationModel = require('../../models/employeeAreaSchema');
+const employeeSchema = require('../../models/employeeModels/employeeSchema');
+const pastEmployeeSchema = require('../../models/historyModels/pastEmployeeSchema');
+const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { generateUsername, generatePassword, generateEmployeeID } = require('../../employee/generateCredentials');

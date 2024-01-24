@@ -1,5 +1,5 @@
-const salesModel = require('../../models/employeeSalesSchema');
-const employeeSchema = require('../../models/employeeSchema');
+const salesModel = require('../../models/employeeModels/employeeSalesSchema');
+const employeeSchema = require('../../models/employeeModels/employeeSchema');
 
 exports.employeeRecord = async(req, res)=>{
     try {

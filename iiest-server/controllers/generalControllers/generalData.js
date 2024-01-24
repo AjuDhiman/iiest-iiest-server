@@ -1,4 +1,4 @@
-const generalDataSchema = require('../../models/generalDataSchema');
+const generalDataSchema = require('../../models/generalModels/generalDataSchema');
 
 exports.employeeFormData = async(req, res)=>{
     try {

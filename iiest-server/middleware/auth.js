@@ -3,7 +3,7 @@
 const jwt = require('jsonwebtoken');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
-const employeeSchema = require('../models/employeeSchema')
+const employeeSchema = require('../models/employeeModels/employeeSchema')
 
 const authMiddleware = async(req, res, next)=>{
     const token = req.header('auth-token');
