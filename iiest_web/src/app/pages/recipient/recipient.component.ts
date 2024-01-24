@@ -135,6 +135,8 @@ export class RecipientComponent implements OnInit {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
             this._toastrService.error('', 'This Aadhar Number Already Exists');
+          } else if(errorObj.phoneErr){
+            this._toastrService.error('', 'This Phone Number Already Exists');
           }
         }
       })
@@ -224,8 +226,6 @@ export class RecipientComponent implements OnInit {
       this.excelData = data;
     }
 
-    this.closeModal()
-
   }
 
   submitExcel() {
@@ -244,6 +244,8 @@ export class RecipientComponent implements OnInit {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
             this._toastrService.error('', 'This Aadhar Number Already Exists');
+          } else if(errorObj.phoneErr){
+            this._toastrService.error('', 'This Phone Number Already Exists');
           }
         }
       })

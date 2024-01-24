@@ -7,31 +7,40 @@ exports.addRecipient = async (req, res) => {
 try {
 
     let success = false;
-    console.log(req.body[0]);
 
-    const { name, phoneNo, aadharNo }  = req.body[0];
+    const bodyArray = req.body;
 
-    const existingPhone = await recipientModel.findOne({phoneNo});
-    const existingAadhar = await recipientModel.findOne({aadharNo});
+    let isValid = false;
 
-    if(existingPhone){
-        success = false;
-        return res.status(401).json({success, phoneErr: true})
+    console.log(bodyArray);
+
+    for(let recipient of bodyArray){
+        const existingPhone = await recipientModel.findOne({phoneNo: recipient.phoneNo});
+        const existingAadhar = await recipientModel.findOne({aadharNo: recipient.aadharNo});
+        if(existingPhone){
+            return res.status(401).json({success, phoneErr: true});
+        }
+        if(existingAadhar){
+            return res.status(401).json({success, aadharErr: true})
+        }
+
+        isValid = true;
     }
 
-    if(existingAadhar){
-        success = false;
-        return res.status(401).json({success, aadharErr: true})
-    }
-
-    const addRecipient = await recipientModel.create({ salesInfo: req.params.id, name, phoneNo, aadharNo });
-
-    if(addRecipient){
+    if(isValid){
+        for(let recipient of bodyArray){
+            const addRecipient = await recipientModel.create({salesInfo: req.params.id, name: recipient.name, phoneNo: recipient.phoneNo, aadharNo: recipient.aadharNo});
+            if(!addRecipient){
+                success = false;
+                return res.status(404).json({success, randomErr: true})
+            }
+        }
         success = true;
-        return res.status(200).json({ success })
     }
 
-    return res.status(404).json({success, randomErr: true});
+    if(success){
+        return res.status(200).json({success})
+    }
 
 } catch (error) {
     console.log(error);
