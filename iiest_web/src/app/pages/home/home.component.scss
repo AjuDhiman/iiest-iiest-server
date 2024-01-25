@@ -39,21 +39,65 @@
 
 .department-card-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(9, 1fr);
 }
 
 .department-card{
-    min-height: 135px;
+    min-height: 100%;
+    transition:all 0.1s ease;
+
+    & .stats-type{
+        font-size: 12px;
+    }
+
+    & .stats-figure{
+        font-size: x-large;
+    }
+}
+
+.icons-element{
+    height: 50px;
+    width: 50px;
+    object-fit: fill;
+    filter: grayscale(100%) sepia(100%) saturate(5000%) hue-rotate(206deg);
+    // filter:  grayscale(100%) sepia(100%) hue-rotate(200deg) saturate(5000%) brightness(0.8);
+}
+
+.department-card:hover{
+    // background: #0069d9;
+    // background: #196076;
+    background: #20809d;
+
+    & .icons-element{
+        // filter: grayscale(100%) brightness(300%);
+        filter: brightness(0) invert(1);
+    }
+
+    & .stats-type{
+        color: #fff;
+    }
+
+    & .stats-figure{
+        color: #fff;
+    }
+}
+
+// media queries
+
+@media (max-width:992px){
+    .department-card-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 @media (max-width:768px){
     .department-card-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
+}
 
-    .department-card{
-        min-height: 90px;
+@media (max-width:300px){
+    .department-card-container {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

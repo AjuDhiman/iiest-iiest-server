@@ -9,11 +9,11 @@
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                         <div class="col-auto">
                             <button class="btn btn-sm mx-1" [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'"
-                             type="button" (click)="changeServiceType('Catering')">
+                             type="button" (click)="setServiceType('Catering')">
                                 Catering
                             </button>
                             <button class="btn btn-sm mx-1" [ngClass]="serviceType==='Retail'?'btn-primary':'btn-secondary'" 
-                            type="button" (click)="changeServiceType('Retail')">
+                            type="button" (click)="setServiceType('Retail')">
                                 Retail
                             </button>
                         </div>
@@ -102,7 +102,7 @@
                 </div><!--//app-card-->
 
                 <div class="d-flex" *ngIf="showPagination" [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
-                    <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of {{caseData.length}}</div>
+                    <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of {{totalCount}}</div>
                     <pagination-controls previousLabel="Prev" nextLabel="Next"
                         (pageChange)="onTableDataChange($event)"></pagination-controls>
                 </div>

@@ -53,6 +53,9 @@ import { CaseListComponent } from './pages/operation/case-list/case-list.compone
 import { OperationformComponent } from './pages/operation/operationform/operationform.component';
 import { DepartmentListComponent } from './pages/department-list/department-list.component';
 import { AnalyticCardsComponent } from './pages/home/analytic-cards/analytic-cards.component';
+import { EnrollmentSectionComponent } from './pages/operation/operationform/enrollment-section/enrollment-section.component';
+import { GeneralSectionComponent } from './pages/operation/operationform/general-section/general-section.component';
+import { VerificationSectionComponent } from './pages/operation/operationform/verification-section/verification-section.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +86,10 @@ import { AnalyticCardsComponent } from './pages/home/analytic-cards/analytic-car
     CaseListComponent,
     OperationformComponent,
     DepartmentListComponent,
-    AnalyticCardsComponent
+    AnalyticCardsComponent,
+    EnrollmentSectionComponent,
+    GeneralSectionComponent,
+    VerificationSectionComponent
   ],
   imports: [
     BrowserModule,

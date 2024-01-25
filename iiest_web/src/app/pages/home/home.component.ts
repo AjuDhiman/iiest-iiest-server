@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   approvedSalesCount: number;
   department:string;
   departmentAndCount:Array<{department:string, count:string}>
+  isNameVisible:boolean=true;
   // departmentAndCount:object;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
@@ -106,6 +107,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.msg.unsubscribe()
       }
     })
+
+    // let timeout = setTimeout(()=>{
+    //   this.isNameVisible=false;
+    // }, 5000);
   }
 
   getEmployees() {

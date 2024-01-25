@@ -1,0 +1,13 @@
+.logo-text{
+    color: #252930;
+    font-size: 1.3rem;
+    font-weight: 600;
+    vertical-align: middle;
+    transform:all 0.4s ease;
+}
+
+@media (max-width:768px) {
+    .logo-text{
+        font-size: 1rem;
+    }
+}

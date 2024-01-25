@@ -56,7 +56,7 @@ export class UserAccountComponent {
     formData.append('userImage', this.imageObj);
     formData.append('userSign', this.signObj);
 
-    const filesSelect: any = formData
+    const filesSelect: any = formData;
 
     this.registerService.editEmployeeFiles(filesSelect).subscribe({
       next: (res)=>{

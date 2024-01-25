@@ -17,7 +17,6 @@ const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
   { path: 'main', component: LandingpageComponent},
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
-  { path: 'settings', component: SettingPanelComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard]},
   { path: 'operationform/:id', component: OperationformComponent, canActivate:[authGuard]},

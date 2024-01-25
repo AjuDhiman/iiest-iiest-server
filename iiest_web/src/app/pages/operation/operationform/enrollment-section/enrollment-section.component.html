@@ -1,0 +1,42 @@
+<form [formGroup]="enrollmentForm" class="row" (submit)="onEnroll()">
+    <div class="d-flex justify-content-between">
+        <h6>Enrollment Section</h6>
+        <div class="status text-warning" style="font-size: large;">Not-Enrolled <fa-icon [icon]="faCircleExclamation"
+                class="fa-lg fa-regular ml-2"></fa-icon></div>
+    </div>
+
+    <div class="col-md-3">
+        <label for="training_date" class="form-label">Tentative Training Date</label><sup>*</sup>
+        <input type="date" placeholder="Tentative Training Date" formControlName="training_date"
+            class="form-control form-control-sm" id="training_date" [readOnly]="true"
+            [ngClass]="{ 'is-invalid': enrolled && enrollmentform['training_date'].errors }">
+        <div *ngIf="enrolled && enrollmentform['training_date'].errors" class="invalid-feedback">
+            <div *ngIf="enrollmentform['training_date'].errors['required']">Training is required</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <label for="training_date" class="form-label">Foatac Training Date</label><sup>*</sup>
+        <input type="date" placeholder="Fostac Training Date" formControlName="training_date"
+            class="form-control form-control-sm" id="training_date"
+            [ngClass]="{ 'is-invalid': enrolled && enrollmentform['training_date'].errors }">
+        <div *ngIf="enrolled && enrollmentform['training_date'].errors" class="invalid-feedback">
+            <div *ngIf="enrollmentform['training_date'].errors['required']">Training is required</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <label for="roll_no" class="form-label">Enrollment no.</label><sup>*</sup>
+        <input type="text" placeholder="Enrollment no." formControlName="roll_no" class="form-control form-control-sm"
+            id="roll_no" [ngClass]="{ 'is-invalid': enrolled && enrollmentform['roll_no'].errors }">
+        <div *ngIf="enrolled && enrollmentform['roll_no'].errors" class="invalid-feedback">
+            <div *ngIf="enrollmentform['roll_no'].errors['required']">Roll no. is required</div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-6">
+            <button type="submit" class="btn btn-sm btn-primary">Enroll</button>
+        </div>
+    </div>
+</form>

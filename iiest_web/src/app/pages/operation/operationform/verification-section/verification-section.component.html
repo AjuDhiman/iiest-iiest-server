@@ -1,0 +1,164 @@
+<form [formGroup]="verificationForm" autocomplete="off" class="row"
+  (ngSubmit)="onVerify()" >
+  <div class="d-flex justify-content-between">
+    <h6>Verification Section</h6>
+    <div [ngClass]="verifiedStatus?'text-success':'text-warning'" style="font-size: large;">
+      {{verifiedStatus?'verified':'In-Progress'}}
+      <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation" class="fa-lg ml-2"></fa-icon>
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle text-warning" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+          </svg> -->
+    </div>
+  </div>
+  <div class="col-md-3">
+    <label for="recipient_name" class="form-label">Recipient name</label><sup>*</sup>
+    <input type="text" placeholder="Recipient name" formControlName="recipient_name"
+      class="form-control form-control-sm" id="recipient_name" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['recipient_name'].errors }">
+    <div *ngIf="verified && verificationform['recipient_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['recipient_name'].errors['required']">Recipient name is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="fbo_name" class="form-label">FBO name</label><sup>*</sup>
+    <input type="text" placeholder="FBO name" formControlName="fbo_name" class="form-control form-control-sm"
+      id="fbo_name" [readOnly]="true" [ngClass]="{ 'is-invalid': verified && verificationform['fbo_name'].errors }">
+    <div *ngIf="verified && verificationform['fbo_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['fbo_name'].errors['required']">FBO name is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="owner_name" class="form-label">Owner name</label><sup>*</sup>
+    <input type="text" placeholder="Owner Name" formControlName="owner_name" class="form-control form-control-sm"
+      id="owner_name" [readOnly]="true" [ngClass]="{ 'is-invalid': verified && verificationform['owner_name'].errors }">
+    <div *ngIf="verified && verificationform['owner_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['owner_name'].errors['required']">Owner name is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="father_name" class="form-label">Father's name</label><sup>*</sup>
+    <input type="text" placeholder="Father's name" formControlName="father_name" class="form-control form-control-sm"
+      id="father_name" [ngClass]="{ 'is-invalid': verified && verificationform['father_name'].errors }">
+    <div *ngIf="verified && verificationform['father_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['father_name'].errors['required']">Father's name is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="dob" class="form-label">DOB</label><sup>*</sup>
+    <input type="date" placeholder="DOB" formControlName="dob" class="form-control form-control-sm" id="dob"
+      [ngClass]="{ 'is-invalid': verified && verificationform['dob'].errors }">
+    <div *ngIf="verified && verificationform['dob'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['dob'].errors['required']">DOB is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="address" class="form-label">Address</label><sup>*</sup>
+    <input type="text" placeholder="Address" formControlName="address" class="form-control form-control-sm" id="address"
+      [ngClass]="{ 'is-invalid': verified && verificationform['address'].errors }">
+    <div *ngIf="verified && verificationform['address'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['address'].errors['required']">Address is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="recipient_contact_no" class="form-label">Recipient contact no.</label><sup>*</sup>
+    <input type="text" placeholder="Recipient contact no." formControlName="recipient_contact_no"
+      class="form-control form-control-sm" id="recipient_contact_no"
+      [ngClass]="{ 'is-invalid': verified && verificationform['recipient_contact_no'].errors }">
+    <div *ngIf="verified && verificationform['recipient_contact_no'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['recipient_contact_no'].errors['required']">Recipient contact number is
+        required</div>
+      <div *ngIf="verificationform['recipient_contact_no'].errors['pattern']">Recipient contact number is
+        invalid
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="email" class="form-label">E-mail</label><sup>*</sup>
+    <input type="email" placeholder="E-mail" formControlName="email" class="form-control form-control-sm" id="email"
+      [ngClass]="{ 'is-invalid': verified && verificationform['email'].errors }">
+    <div *ngIf="verified && verificationform['email'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['email'].errors['required']">E-mail is required</div>
+      <div *ngIf="verificationform['email'].errors['email']">E-mail is invalid</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="aadhar_no" class="form-label">Aadhar no.</label><sup>*</sup>
+    <input type="number" placeholder="Aadhar no." formControlName="aadhar_no" class="form-control form-control-sm"
+      id="aadhar_no" [readOnly]="true" [ngClass]="{ 'is-invalid': verified && verificationform['aadhar_no'].errors }">
+    <div *ngIf="verified && verificationform['aadhar_no'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['aadhar_no'].errors['required']">Aadhar Number is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="pancard_no" class="form-label">Pancard no.</label>
+    <input type="text" placeholder="Pancard no." formControlName="pancard_no" class="form-control form-control-sm"
+      id="pancard_no" [ngClass]="{ 'is-invalid': verified && verificationform['pancard_no'].errors }">
+    <div *ngIf="verified && verificationform['pancard_no'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['pancard_no'].errors['pattern']">Pancard Number is invalid</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="fostac_total" class="form-label">Fostac Total Amount</label><sup>*</sup>
+    <input type="number" placeholder="Fostac Total Amount" formControlName="fostac_total"
+      class="form-control form-control-sm" id="officer_name" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['fostac_total'].errors }">
+    <div *ngIf="verified && verificationform['fostac_total'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['fostac_total'].errors['required']">Fostac Total is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="sales_date" class="form-label">Sales date</label><sup>*</sup>
+    <input type="date" placeholder="Fostac Total Amount" formControlName="sales_date"
+      class="form-control form-control-sm" id="sale_date" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['sales_date'].errors }">
+    <div *ngIf="verified && verificationform['sales_date'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['sales_date'].errors['required']">Sales Date is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="sales_person" class="form-label">Sales executive</label><sup>*</sup>
+    <input type="text" placeholder="Sales Person" formControlName="sales_person" class="form-control form-control-sm"
+      id="sales_person" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['sales_person'].errors }">
+    <div *ngIf="verified && verificationform['sales_person'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['sales_person'].errors['required']">Sales Person name is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="username" class="form-label">Recipient Username</label><sup>*</sup>
+    <input type="text" placeholder="Recipient Username" formControlName="username" class="form-control form-control-sm"
+      id="username" [ngClass]="{ 'is-invalid': verified && verificationform['username'].errors }">
+    <div *ngIf="verified && verificationform['username'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['username'].errors['required']">User name is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="password" class="form-label">Recipient Password</label><sup>*</sup>
+    <input type="text" placeholder="Recipient Password" formControlName="password" class="form-control form-control-sm"
+      id="password" [ngClass]="{ 'is-invalid': verified && verificationform['password'].errors }">
+    <div *ngIf="verified && verificationform['password'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['password'].errors['required']">Password is required</div>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-6">
+      <button type="submit" class="btn btn-sm btn-primary">Verify</button>
+    </div>
+  </div>
+</form>

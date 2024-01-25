@@ -18,6 +18,7 @@
 .sign-image{
     height: 60px;
     width: 60px;
-    object-fit: cover;
+    object-fit: contain;
+    filter: brightness(0%);
     object-position: center;
 }

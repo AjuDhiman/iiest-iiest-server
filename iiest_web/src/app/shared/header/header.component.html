@@ -20,6 +20,7 @@
                                     stroke-width="2" d="M4 4l22 22M4 26l22-22"></path>
                             </svg>
                         </a>
+                        <div *ngIf="userdata && !isSidebarVisible && isNameVisible" class="logo-text d-inline mx-2">{{ userdata.employee_name }}</div>
                     </div><!--//col-->
                     <div class="search-mobile-trigger d-sm-none col">
                         <i class="search-mobile-trigger-icon fa-solid fa-magnifying-glass"></i>
@@ -141,7 +142,7 @@
 
                             </div><!--//dropdown-menu-->
                         </div><!--//app-utility-item-->
-                        <div class="app-utility-item" [routerLink]="['/settings']">
+                        <div class="app-utility-item">
                             <a title="Settings">
                                 <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-gear icon"
@@ -163,7 +164,7 @@
                             <ul class="dropdown-menu" [ngClass]="toggelShow === true ? 'show' : '' "
                                 [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
                                 <li><a class="dropdown-item" [routerLink]="['/user']">Account</a></li>
-                                <li><a class="dropdown-item" [routerLink]="['/settings']">Settings</a></li>
+                                <li><a class="dropdown-item">Settings</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

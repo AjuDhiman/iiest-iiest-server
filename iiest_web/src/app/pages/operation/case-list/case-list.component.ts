@@ -22,6 +22,7 @@ export class CaseListComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
   serviceType='Catering';
+  totalCount:number=0;
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
@@ -67,6 +68,7 @@ export class CaseListComponent implements OnInit {
         console.log(res);
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
         this.filter();
+        this.setServiceType('Catering');
       },
       error: err => {
         let errorObj = err.error;
@@ -77,17 +79,20 @@ export class CaseListComponent implements OnInit {
     })
   }
 
-  changeServiceType(type:string){
+  setServiceType(type:string){
     this.serviceType=type;
 
     this.pageNumber = 1;
 
     this.filteredData=this.caseData.filter((elem:any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name===type);
+
+    //for getting Total number of case based on type 
+    this.totalCount=this.filteredData.length;
   }
 
   //method for opening operation form
   collectResData(id: string) {
-    this.router.navigate(['/operationform',id])
+    this.router.navigate(['/operationform',id]);
   }
 
   filter(): void {

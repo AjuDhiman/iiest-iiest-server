@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit {
   userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;
+  isNameVisible:boolean=false;
   notifications: Array<{ image: string, description: string, time: string|Date }> = [{
     image: 'assets/images/profiles/profile-1.png',
     description: 'Amy shared a file with you. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -82,6 +83,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit() { 
     console.log(this.isSidebarVisible);
     // this.getUserImage();
+    // let timeout = setTimeout(()=>{
+    //   this.isNameVisible=true;
+    // }, 5000);
    }
 
 //Window size
