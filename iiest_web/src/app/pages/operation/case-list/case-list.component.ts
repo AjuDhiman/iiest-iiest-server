@@ -19,23 +19,31 @@ export class CaseListComponent implements OnInit {
   pageNumber: number = 1;
   caseData: any;
   typeData: any;
-  showPagination:boolean=false;
+  showPagination: boolean = false;
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
-  serviceType='Catering';
-  totalCount:number=0;
+  serviceType = 'Catering';
+  totalCount: number = 0;
+  paneltype: string = '';
   //loading var
-  loading:boolean=true;
+  loading: boolean = true;
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
-    private registerService: RegisterService,
+    private _registerService: RegisterService,
     private router: Router) {
-      this.getCasedata()
+    this.getCasedata()
   }
 
   ngOnInit(): void {
+    let timeout = setTimeout(() => {
+      this.loading = false
+    }, 5000);
 
+    let user: any = this._registerService.LoggedInUserData();
+    let parsedUser = JSON.parse(user);
+    this.paneltype = parsedUser.panel_type;
+    console.log(this.paneltype);
   }
 
   //Export To CSV
@@ -50,12 +58,12 @@ export class CaseListComponent implements OnInit {
   }
 
   onSearchChange() {
-    if(this.searchQuery){
+    if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
     }
-    else{
-      this.isSearch=false;
+    else {
+      this.isSearch = false;
       // this.filteredData=this.typeData;
     }
     this.filter();
@@ -68,34 +76,37 @@ export class CaseListComponent implements OnInit {
   getCasedata() {
     this._getDataService.getCaseList().subscribe({
       next: res => {
+        console.log(res)
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
-        this.setServiceType('Catering'); 
-        this.filter();
-        this.loading=false;
+        if (this.paneltype === 'Fostac Panel') {
+          this.setServiceType('Catering');
+          this.filter();
+          this.loading = false;
+        }
       },
       error: err => {
         let errorObj = err.error;
-        if(errorObj.userError){
-          this.registerService.signout();
+        if (errorObj.userError) {
+          this._registerService.signout();
         }
       }
     })
   }
 
-  setServiceType(type:string){
-    this.serviceType=type;
+  setServiceType(type: string) {
+    this.serviceType = type;
     this.pageNumber = 1;
-    this.searchQuery='';
-    this.typeData=this.caseData.filter((elem:any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name===type);
+    this.searchQuery = '';
+    this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
 
     //for getting Total number of case based on type 
-    this.totalCount=this.typeData.length;  
-    this.filteredData=this.typeData;
+    this.totalCount = this.typeData.length;
+    this.filteredData = this.typeData;
   }
 
   //method for opening operation form
   collectResData(id: string) {
-    this.router.navigate(['/operationform',id]);
+    this.router.navigate(['/operationform', id]);
   }
 
   filter(): void {
@@ -105,13 +116,13 @@ export class CaseListComponent implements OnInit {
       switch (this.selectedFilter) {
         case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
-        case 'byFboName':this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
         case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
       }
     }
-    this.filteredData.length?this.showPagination=true:this.showPagination=false;
+    this.filteredData.length ? this.showPagination = true : this.showPagination = false;
   }
 
 }

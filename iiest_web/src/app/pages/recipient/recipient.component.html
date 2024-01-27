@@ -195,7 +195,7 @@
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" id="uploadEbill" hidden>
                   </span>
-                  <a class="download-link truncate" [href]="ebillImage" download="ebill.jpg">
+                  <a *ngIf="shops.eBillImage" class="download-link truncate" [href]="ebillImage" download="ebill.jpg">
                     <fa-icon class="fa-2xl cursor-pointer" [icon]="faDownload"></fa-icon>
                   </a>
                 </td>

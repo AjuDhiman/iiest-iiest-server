@@ -28,7 +28,8 @@
     <div class="col-md-3">
         <label for="roll_no" class="form-label">Enrollment no.</label><sup>*</sup>
         <input type="text" placeholder="Enrollment no." formControlName="roll_no" class="form-control form-control-sm"
-            id="roll_no" [ngClass]="{ 'is-invalid': enrolled && enrollmentform['roll_no'].errors }">
+            id="roll_no" [ngClass]="{ 'is-invalid': enrolled && enrollmentform['roll_no'].errors }"
+            [readOnly]="!isTentTrainingDate">
         <div *ngIf="enrolled && enrollmentform['roll_no'].errors" class="invalid-feedback">
             <div *ngIf="enrollmentform['roll_no'].errors['required']">Roll no. is required</div>
         </div>

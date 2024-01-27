@@ -10,6 +10,7 @@ import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 export class EnrollmentSectionComponent implements OnInit {
 //global variables
 enrolled:boolean=false;
+isTentTrainingDate:boolean=false;
 
 //icons
 faCircleExclamation=faCircleExclamation
