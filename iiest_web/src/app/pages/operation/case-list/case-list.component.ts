@@ -24,16 +24,18 @@ export class CaseListComponent implements OnInit {
   faFileCsv = faFileCsv;
   serviceType='Catering';
   totalCount:number=0;
+  //loading var
+  loading:boolean=true;
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
     private registerService: RegisterService,
     private router: Router) {
-
+      this.getCasedata()
   }
 
   ngOnInit(): void {
-    this.getCasedata()
+
   }
 
   //Export To CSV
@@ -69,6 +71,7 @@ export class CaseListComponent implements OnInit {
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
         this.setServiceType('Catering'); 
         this.filter();
+        this.loading=false;
       },
       error: err => {
         let errorObj = err.error;

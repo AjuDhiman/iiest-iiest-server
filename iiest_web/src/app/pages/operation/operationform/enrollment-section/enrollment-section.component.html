@@ -6,22 +6,22 @@
     </div>
 
     <div class="col-md-3">
-        <label for="training_date" class="form-label">Tentative Training Date</label><sup>*</sup>
-        <input type="date" placeholder="Tentative Training Date" formControlName="training_date"
-            class="form-control form-control-sm" id="training_date" [readOnly]="true"
-            [ngClass]="{ 'is-invalid': enrolled && enrollmentform['training_date'].errors }">
-        <div *ngIf="enrolled && enrollmentform['training_date'].errors" class="invalid-feedback">
-            <div *ngIf="enrollmentform['training_date'].errors['required']">Training is required</div>
+        <label for="tentative_training_date" class="form-label">Tentative Training Date</label><sup>*</sup>
+        <input type="date" placeholder="Tentative Training Date" formControlName="tentative_training_date"
+            class="form-control form-control-sm" id="tentative_training_date" [readOnly]="true"
+            [ngClass]="{ 'is-invalid': enrolled && enrollmentform['tentative_training_date'].errors }">
+        <div *ngIf="enrolled && enrollmentform['tentative_training_date'].errors" class="invalid-feedback">
+            <div *ngIf="enrollmentform['tentative_training_date'].errors['required']">Tentative Training Date is required</div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <label for="training_date" class="form-label">Foatac Training Date</label><sup>*</sup>
-        <input type="date" placeholder="Fostac Training Date" formControlName="training_date"
-            class="form-control form-control-sm" id="training_date"
-            [ngClass]="{ 'is-invalid': enrolled && enrollmentform['training_date'].errors }">
-        <div *ngIf="enrolled && enrollmentform['training_date'].errors" class="invalid-feedback">
-            <div *ngIf="enrollmentform['training_date'].errors['required']">Training is required</div>
+        <label for="fostac_training_date" class="form-label">Foatac Training Date</label><sup>*</sup>
+        <input type="date" placeholder="Fostac Training Date" formControlName="fostac_training_date"
+            class="form-control form-control-sm" id="fostac_training_date"
+            [ngClass]="{ 'is-invalid': enrolled && enrollmentform['fostac_training_date'].errors }">
+        <div *ngIf="enrolled && enrollmentform['fostac_training_date'].errors" class="invalid-feedback">
+            <div *ngIf="enrollmentform['fostac_training_date'].errors['required']">Fostac Training is required</div>
         </div>
     </div>
 

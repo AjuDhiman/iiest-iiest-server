@@ -4,12 +4,12 @@
   </div>
 
   <div class="col-md-3 col-12">
-    <label for="gender" class="form-label select-label">Cancle OR Refund</label><sup>*</sup>
-    <select id="gender" class="form-select form-select-sm" formControlName="gender">
+    <label for="other_case" class="form-label select-label">Other Cases</label><sup>*</sup>
+    <select id="other_case" class="form-select form-select-sm">
       <!-- [ngClass]="{ 'is-invalid': submitted && f['gender'].errors }"> -->
-      <option value="" disabled selected></option>
-      <option value="male">Cancle</option>
-      <option value="female">Refund</option>
+      <option value="" disabled selected>Other Cases</option>
+      <option value="cancle">Cancle</option>
+      <option value="refund">Refund</option>
     </select>
     <!-- <div *ngIf="submitted && f['gender'].errors" class="invalid-feedback">
         <div *ngIf="f['gender'].errors['required']">Gender is required</div>

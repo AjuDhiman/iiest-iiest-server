@@ -15,7 +15,8 @@ enrolled:boolean=false;
 faCircleExclamation=faCircleExclamation
 
 enrollmentForm:FormGroup=new FormGroup({
-  training_date:new FormControl(''),
+  tentative_training_date:new FormControl(''),
+  fostac_training_date:new FormControl(''),
   roll_no:new FormControl('')
 })
 
@@ -25,7 +26,8 @@ constructor(private formBuilder:FormBuilder){
   
 ngOnInit(): void {
   this.enrollmentForm=this.formBuilder.group({
-    training_date:['',Validators.required],
+    tentative_training_date:['',Validators.required],
+    fostac_training_date:['', Validators.required],
     roll_no:['',Validators.required]
   })
 }

@@ -6,10 +6,7 @@ import { GetEmployee } from 'src/app/store/actions/employee.action';
 import { Employee } from '../../utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
-import { UtilitiesService } from 'src/app/services/utilities.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DepartmentListComponent } from '../department-list/department-list.component';
 
 @Component({
   selector: 'app-home',
@@ -24,14 +21,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   product: any;
   fssaiData: any;
   dpiitData: any;
-  userTotalSales: number;
-  overallSalesCount: number;
-  userPendingSales: number;
-  userApprovedSales: number;
-  pendingSalesCount: number;
-  approvedSalesCount: number;
-  department:string;
-  departmentAndCount:Array<{department:string, count:string}>
   isNameVisible:boolean=true;
   // departmentAndCount:object;
   faIndianRupeeSign = faIndianRupeeSign;
@@ -83,15 +72,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private _registerService: RegisterService,
     private store: Store,
-    private _utilitiesService: UtilitiesService,
     private _getDataService: GetdataService,
-    private modalService: NgbModal
   ) { }
   ngOnInit(): void {
     this.getEmployees();
     this.getProductData();
-    this.getUserRecord();
-    this.getEmployeeCountByDept();
+    // this.getEmployeeCountByDept();
     this.employees$.subscribe(res => {
       this.data = res;
     })
@@ -99,7 +85,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     loggedInUserData = JSON.parse(loggedInUserData)
     this.projectType = loggedInUserData.project_name;
     this.empName = loggedInUserData.employee_name;
-    this.department = loggedInUserData.department;
     const message = interval(2000);
     this.msg = message.subscribe((res) => {
       if (res >= 2) {
@@ -108,9 +93,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     })
 
-    // let timeout = setTimeout(()=>{
-    //   this.isNameVisible=false;
-    // }, 5000);
+    let timeout = setTimeout(()=>{
+      this.isNameVisible=false;
+    }, 5000);
   }
 
   getEmployees() {
@@ -132,45 +117,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
     )
-  }
-
-  getUserRecord() {
-    this._getDataService.getUserRecord().subscribe({
-      next: (res) => {
-        this.userTotalSales = res.overAllSales;
-        this.userPendingSales = res.pendingSales;
-        this.userApprovedSales = res.approvedSales;
-        this.pendingSalesCount = res.pendingSalesCount;
-        this.approvedSalesCount = res.approvedSalesCount;
-        this.overallSalesCount = res.overallSalesCount;
-      }
-    })
-  }
-
-  getEmployeeCountByDept(){
-    this._getDataService.getEmpCount().subscribe({
-      next : res =>{
-        console.log(res);
-        let departmentArr=res.employeeGroupCount;
-        this.departmentAndCount=departmentArr.map((elem:any) => {
-          return{
-            department:elem._id.department,
-            count:elem.count
-          }
-        });
-        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1)
-        console.log(this.departmentAndCount)
-      },
-      error: err => {
-
-      }
-      
-    })
-  }
-
-  viewDepartmentData(res:any){
-    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.department = res;
   }
 
   ngOnDestroy(): void {

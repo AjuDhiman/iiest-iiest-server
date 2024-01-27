@@ -82,10 +82,10 @@ export class HeaderComponent implements OnInit {
   }
   ngOnInit() { 
     console.log(this.isSidebarVisible);
-    // this.getUserImage();
-    // let timeout = setTimeout(()=>{
-    //   this.isNameVisible=true;
-    // }, 5000);
+    this.getUserImage();
+    let timeout = setTimeout(()=>{
+      this.isNameVisible=true;
+    }, 5000);
    }
 
 //Window size

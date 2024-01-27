@@ -52,10 +52,11 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
 import { OperationformComponent } from './pages/operation/operationform/operationform.component';
 import { DepartmentListComponent } from './pages/department-list/department-list.component';
-import { AnalyticCardsComponent } from './pages/home/analytic-cards/analytic-cards.component';
 import { EnrollmentSectionComponent } from './pages/operation/operationform/enrollment-section/enrollment-section.component';
 import { GeneralSectionComponent } from './pages/operation/operationform/general-section/general-section.component';
 import { VerificationSectionComponent } from './pages/operation/operationform/verification-section/verification-section.component';
+import { NgxLoadingModule } from 'ngx-loading';
+import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component';
 
 @NgModule({
   declarations: [
@@ -86,10 +87,10 @@ import { VerificationSectionComponent } from './pages/operation/operationform/ve
     CaseListComponent,
     OperationformComponent,
     DepartmentListComponent,
-    AnalyticCardsComponent,
     EnrollmentSectionComponent,
     GeneralSectionComponent,
-    VerificationSectionComponent
+    VerificationSectionComponent,
+    StatCardsComponent
   ],
   imports: [
     BrowserModule,
@@ -110,6 +111,11 @@ import { VerificationSectionComponent } from './pages/operation/operationform/ve
     NgxsModule.forRoot([EmployeeState]),
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxLoadingModule.forRoot({
+      primaryColour:'#15a362',
+      secondaryColour:'#15a362',
+      tertiaryColour:'#15a362'
+    }),
     ToastrModule.forRoot({
       closeButton: true,
       timeOut: 5000, // 5 seconds
