@@ -22,9 +22,9 @@ export class CaseListComponent implements OnInit {
   showPagination: boolean = false;
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
-  serviceType = 'Catering';
+  serviceType = '';
   totalCount: number = 0;
-  paneltype: string = '';
+  panelType: string = '';
   //loading var
   loading: boolean = true;
 
@@ -32,18 +32,22 @@ export class CaseListComponent implements OnInit {
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
     private router: Router) {
-    this.getCasedata()
   }
 
   ngOnInit(): void {
     let timeout = setTimeout(() => {
       this.loading = false
     }, 5000);
+    this.getCasedata();
 
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
-    this.paneltype = parsedUser.panel_type;
-    console.log(this.paneltype);
+    this.panelType = parsedUser.panel_type;
+    if (this.panelType === 'Fostac Panel') {
+      this.serviceType = 'Catering'
+    } else if (this.panelType === 'Foscos Panel') {
+      this.serviceType = 'Registration'
+    }
   }
 
   //Export To CSV
@@ -76,12 +80,15 @@ export class CaseListComponent implements OnInit {
   getCasedata() {
     this._getDataService.getCaseList().subscribe({
       next: res => {
-        console.log(res)
+        this.loading = false;
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
-        if (this.paneltype === 'Fostac Panel') {
+        if (this.panelType === 'Fostac Panel') {
           this.setServiceType('Catering');
           this.filter();
-          this.loading = false;
+        }
+        else if (this.panelType === 'Foscos Panel') {
+          this.setServiceType("Registration");
+          this.filter();
         }
       },
       error: err => {
@@ -97,7 +104,12 @@ export class CaseListComponent implements OnInit {
     this.serviceType = type;
     this.pageNumber = 1;
     this.searchQuery = '';
-    this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
+
+    if (this.panelType === 'Fostac Panel') {
+      this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
+    } else if (this.panelType === 'Foscos Panel') {
+      this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.foscosInfo.foscos_service_name === type);
+    }
 
     //for getting Total number of case based on type 
     this.totalCount = this.typeData.length;
@@ -113,14 +125,28 @@ export class CaseListComponent implements OnInit {
     if (!this.searchQuery) {
       this.filteredData = this.typeData;
     } else {
-      switch (this.selectedFilter) {
-        case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-          break;
-        case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
-          break;
-        case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
-          break;
+      if (this.panelType = 'Fostac Panel') {
+        switch (this.selectedFilter) {
+          case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            break;
+
+          case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+
+          case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+        }
       }
+      // else if(this.panelType == 'Foscos Panel'){
+      //   switch (this.selectedFilter) {
+      //      case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      //       break;
+      //     case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+      //       break;
+      //     case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+      //       break;
+      //   }
+      // }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
   }
