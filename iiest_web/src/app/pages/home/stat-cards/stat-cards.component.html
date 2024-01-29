@@ -53,14 +53,16 @@
         <div class="app-card app-card-stat shadow-sm justify-content-center department-card cursor-pointer"
             (click)="viewDepartmentData(obj.department)">
             <div class="app-card-body p-2 p-lg-3">
-                <img [src]="'../../../assets/images/icons/departments/'+obj.department.toLocaleLowerCase()+'.png'"
+                <div class="">
+                    <img [src]="'../../../assets/images/icons/departments/'+obj.department.toLocaleLowerCase()+'.png'"
                     class="icons-element" alt="">
-                <div>
+                </div>
+                
+                <div class="">
                     <h4 class="stats-type mb-1">{{obj.department}}</h4>
                 </div>
                 <div class="stats-figure">{{obj.count}}</div>
-                <div class="stats-meta text-success">
-                </div>
+                
             </div><!--//app-card-body-->
         </div><!--//app-card-->
     </div><!--//col-->

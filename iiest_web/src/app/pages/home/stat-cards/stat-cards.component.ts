@@ -52,6 +52,7 @@ export class StatCardsComponent implements OnInit{
   getEmployeeCountByDept(){
     this._getDataService.getEmpCount().subscribe({
       next : res =>{
+        console.log(JSON.stringify(res.employeeGroupCount))
         let departmentArr=res.employeeGroupCount;
         this.departmentAndCount=departmentArr.map((elem:any) => {
           return{

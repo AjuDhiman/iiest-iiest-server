@@ -1,20 +1,30 @@
 .department-card-container {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
+   
 }
 
 .department-card{
     min-height: 100%;
-    transition:all 0.1s ease;
-
+    //transition:all 0.1s ease;
+    transition: transform 2s;
+    
     & .stats-type{
         font-size: 12px;
+        height:40px;
+        vertical-align: middle;
         word-wrap: break-word;
     }
 
     & .stats-figure{
         font-size: x-large;
     }
+}
+.department-card:hover{
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.5); 
+    z-index: 1;
 }
 
 .icons-element{
