@@ -11,71 +11,90 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./verification-section.component.scss']
 })
 export class VerificationSectionComponent implements OnInit {
-  verified:boolean=false;
-  verifiedStatus:boolean=false;
+  verified: boolean = false;
+  verifiedStatus: boolean = false;
   //icons
-  faCircleExclamation=faCircleExclamation;
-  faCircleCheck=faCircleCheck;
+  faCircleExclamation = faCircleExclamation;
+  faCircleCheck = faCircleCheck;
 
-  @Input() candidateId:string='';
-  
-  verificationForm:FormGroup=new FormGroup({
-    recipient_name:new FormControl(''),
-    fbo_name:new FormControl(''),
-    owner_name:new FormControl(''),
-    father_name:new FormControl(''),
-    dob:new FormControl(''),
-    address:new FormControl(''),
+  @Input() candidateId: string = '';
+
+  verificationForm: FormGroup = new FormGroup({
+    recipient_name: new FormControl(''),
+    fbo_name: new FormControl(''),
+    owner_name: new FormControl(''),
+    father_name: new FormControl(''),
+    dob: new FormControl(''),
+    address: new FormControl(''),
     recipient_contact_no: new FormControl(''),
-    email:new FormControl(''),
-    aadhar_no:new FormControl(''),
-    pancard_no:new FormControl(''),
-    fostac_total:new FormControl(''),
-    sales_person:new FormControl(''),
+    email: new FormControl(''),
+    aadhar_no: new FormControl(''),
+    pancard_no: new FormControl(''),
+    fostac_total: new FormControl(''),
+    sales_person: new FormControl(''),
     officer_name: new FormControl(''),
-    username:new FormControl(''),
-    password:new FormControl('')
+    username: new FormControl(''),
+    password: new FormControl('')
   });
 
-  constructor(private formBuilder:FormBuilder,
-    private _registerService:RegisterService,
-    private _getDataService:GetdataService,
-    private _toastrService:ToastrService){
-    
+  constructor(private formBuilder: FormBuilder,
+    private _registerService: RegisterService,
+    private _getDataService: GetdataService,
+    private _toastrService: ToastrService) {
+
   }
 
   ngOnInit(): void {
     this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
-      next: (res)=>{
+      next: (res) => {
         console.log(res);
-        this.verificationForm.patchValue({recipient_name:res.populatedInfo.name});
-        this.verificationForm.patchValue({fbo_name:res.populatedInfo.salesInfo.fboInfo.fbo_name});
-        this.verificationForm.patchValue({owner_name:res.populatedInfo.salesInfo.fboInfo.owner_name});
-        this.verificationForm.patchValue({address:res.populatedInfo.salesInfo.fboInfo.address});
-        this.verificationForm.patchValue({recipient_contact_no:res.populatedInfo.phoneNo});
-        this.verificationForm.patchValue({aadhar_no:res.populatedInfo.aadharNo});
-        this.verificationForm.patchValue({fostac_total:res.populatedInfo.salesInfo.fostacInfo.fostac_total});
-        this.verificationForm.patchValue({sales_date:this.getFormatedDate(res.populatedInfo.salesInfo.createdAt)});
-        this.verificationForm.patchValue({sales_person:res.populatedInfo.salesInfo.employeeInfo.employee_name});
+        this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
+        this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
+        this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
+        this.verificationForm.patchValue({ address: res.populatedInfo.salesInfo.fboInfo.address });
+        this.verificationForm.patchValue({ recipient_contact_no: res.populatedInfo.phoneNo });
+        this.verificationForm.patchValue({ aadhar_no: res.populatedInfo.aadharNo });
+        this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
+        this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
+        this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
       }
-    })
+    });
 
-    this.verificationForm=this.formBuilder.group({
-      recipient_name:['',Validators.required],
-      fbo_name:['',Validators.required],
-      owner_name:['',Validators.required],
-      father_name:['',Validators.required],
-      dob:['',Validators.required],
-      address:['', Validators.required],
-      recipient_contact_no:['',[Validators.required,Validators.pattern(/^[0-9]{10}$/)]],
-      email: ['',[Validators.required,Validators.email]],
-      aadhar_no:['',Validators.required],
-      pancard_no:[''],
-      fostac_total:['',Validators.required],
-      sales_date:['',Validators.required],
-      sales_person:['',Validators.required],
-      username:['',Validators.required],
-      password:['',Validators.required]
+    this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
+      next: res => {
+        if (res) {
+          this.verifiedStatus = true;
+          this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
+          this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
+          this.verificationForm.patchValue({ email: res.verifedData.email });
+          this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
+          this.verificationForm.patchValue({ username: res.verifedData.userName });
+          this.verificationForm.patchValue({ password: res.verifedData.password });
+        } else {
+          this.verifiedStatus = false;
+        }
+      },
+      error: err => {
+
+      }
+    });
+
+    this.verificationForm = this.formBuilder.group({
+      recipient_name: ['', Validators.required],
+      fbo_name: ['', Validators.required],
+      owner_name: ['', Validators.required],
+      father_name: ['', Validators.required],
+      dob: ['', Validators.required],
+      address: ['', Validators.required],
+      recipient_contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      aadhar_no: ['', Validators.required],
+      pancard_no: [''],
+      fostac_total: ['', Validators.required],
+      sales_date: ['', Validators.required],
+      sales_person: ['', Validators.required],
+      username: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 
@@ -83,27 +102,27 @@ export class VerificationSectionComponent implements OnInit {
     return this.verificationForm.controls;
   }
 
-  onVerify(){
-    this.verified=true;
-    if(this.verificationForm.invalid){
-     return
+  onVerify() {
+    this.verified = true;
+    if (this.verificationForm.invalid) {
+      return
     }
     this._registerService.operationBasicForm(this.candidateId, this.verificationForm.value).subscribe({
-     next: res => {
-       if(res.success){
-         this._toastrService.success('Resipient\'s information is Verified','Verified');
-       }
-     }
+      next: res => {
+        if (res.success) {
+          this._toastrService.success('Resipient\'s information is Verified', 'Verified');
+        }
+      }
     })
- }
+  }
 
- getFormatedDate(date: string): string {
-  const originalDate = new Date(date);
-  const year = originalDate.getFullYear();
-  const month = String(originalDate.getMonth() + 1).padStart(2, '0');
-  const day = String(originalDate.getDate()).padStart(2, '0');
-  const formattedDate = `${year}-${month}-${day}`;
-  return formattedDate;
-}
+  getFormatedDate(date: string): string {
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
 
 }

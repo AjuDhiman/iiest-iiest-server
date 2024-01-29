@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
-import { fbo_roles, empRegister_roles } from 'src/app/utils/config';
+import { fbo_roles, empRegister_roles, caseList_roles } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class SidebarComponent {
   userData: any;
   fboRoles = fbo_roles;
   employeeRoles = empRegister_roles;
+  caseListRoles = caseList_roles;
   userImage: string = '../../assets/logo-side.png';
   userImageId: string;
   @Input() sideBarToggle:boolean;

@@ -25,7 +25,6 @@ const fostacVerification = new Schema({
     },
     pancardNo: {
         type: String, 
-        required: true,
         unique: true
     },
     fatherName: {

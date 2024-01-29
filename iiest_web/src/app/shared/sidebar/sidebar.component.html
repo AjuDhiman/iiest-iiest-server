@@ -57,7 +57,7 @@
                             <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
                                     class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
                             </li>
-                            <li class="submenu-item"><a
+                            <li *ngIf="caseListRoles.includes(userData.designation)" class="submenu-item"><a
                                 class="submenu-link" [routerLink]="['/caselist']">Case List</a>
                             </li>
                         </ul>
@@ -77,6 +77,6 @@
             [routerLink]="['/empregister']">Employee Register</a></li>
     <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item" 
             [routerLink]="['/fbo']">Fbo Register</a></li>
-    <li (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="caseListRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item" 
             [routerLink]="['/caselist']">Case List</a></li>
 </ul>

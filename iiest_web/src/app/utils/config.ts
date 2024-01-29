@@ -80,3 +80,14 @@ export const empRegister_roles = [
    'Junior Executive(Admin & HR)',
    ...master_roles
  ];
+
+export const caseList_roles = [
+   'Regional Project Manager',
+   'deputy Regional Manager(Project)',
+   'Project Manager',
+   'Deputy Training Manager',
+   'Senior Project Associate',
+   'Project Associate',
+   'Project Coordinator',
+   ...master_roles
+]

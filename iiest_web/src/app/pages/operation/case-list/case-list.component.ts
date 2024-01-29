@@ -135,18 +135,23 @@ export class CaseListComponent implements OnInit {
 
           case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
+
+          case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo.toString().includes(this.searchQuery.toString()))
+            break;
         }
       }
-      // else if(this.panelType == 'Foscos Panel'){
-      //   switch (this.selectedFilter) {
-      //      case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
-      //       break;
-      //     case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
-      //       break;
-      //     case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
-      //       break;
-      //   }
-      // }
+      else if(this.panelType == 'Foscos Panel'){
+        switch (this.selectedFilter) {
+           case 'byOpetatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            break;
+
+          case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+
+          case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+        }
+      }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
   }

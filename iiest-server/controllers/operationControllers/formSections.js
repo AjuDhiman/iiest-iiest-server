@@ -53,3 +53,23 @@ exports.fostacVerification = async(req, res)=>{
         return res.status(500).json({message: 'Internal Server Error'});
     }
 }
+
+exports.getFostacVerifiedData = async(req, res) => {
+    try{ 
+       let success = false;
+
+       const recipientId = req.params.recipientid;
+       
+       const verifedData = await fostacVerifyModel.findOne({recipientInfo: recipientId});
+
+       if(verifedData){
+        success=true;
+        return res.status(200).json({success, message: 'verified recipient', verifedData});
+       } else {
+        return res.status(204).json({success, message: 'Recipient is not verified'});
+       }
+
+    } catch (error) {
+        return res.status(500).json({message: 'Internal Server Error'});
+    }
+}
