@@ -10,15 +10,16 @@
 
           <!-- verifiaction section -->
           <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3"
-          [candidateId]="candidateId"></app-verification-section>
+            [candidateId]="candidateId" (emitVerifiedID)="getVerifiedDataId($event)"></app-verification-section>
 
           <!-- enrollment section -->
-          <app-enrollment-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <app-enrollment-section [candidateId]="candidateId" [verifiedDataId]="verifiedDataId" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
           </app-enrollment-section>
-          
+
           <!-- general section -->
           <app-general-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"></app-general-section>
         </div>
       </div>
     </div>
   </div>
+</div>

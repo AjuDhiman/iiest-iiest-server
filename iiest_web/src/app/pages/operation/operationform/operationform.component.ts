@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class OperationformComponent implements OnInit{
   candidateId:string;
+  verifiedDataId: string;
 
   constructor(
               private activatedRoute:ActivatedRoute
@@ -17,5 +18,9 @@ export class OperationformComponent implements OnInit{
 
   ngOnInit(): void {
     this.candidateId=this.activatedRoute.snapshot.params['id'];
+  }
+
+  getVerifiedDataId($event:string){
+    this.verifiedDataId=$event;
   }
 }

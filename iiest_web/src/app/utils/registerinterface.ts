@@ -168,3 +168,9 @@ export interface fostacVerification{
   username:string,
   password:string
 }
+
+export interface fostacEnrollment{
+  tentative_training_date:Date,
+  fostac_training_date: Date,
+  roll_no: string;
+}

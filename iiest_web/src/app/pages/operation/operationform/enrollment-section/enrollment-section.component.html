@@ -1,7 +1,7 @@
 <form [formGroup]="enrollmentForm" class="row" (submit)="onEnroll()">
     <div class="d-flex justify-content-between">
         <h6>Enrollment Section</h6>
-        <div class="status text-warning" style="font-size: large;">Not-Enrolled <fa-icon [icon]="faCircleExclamation"
+        <div class="status" [ngClass]="enrolledStatus?'text-success':'text-warning'" style="font-size: large;">{{enrolledStatus?'Enrolled':'Not-Enrolled'}} <fa-icon [icon]="enrolledStatus?faCircleCheck:faCircleExclamation"
                 class="fa-lg fa-regular ml-2"></fa-icon></div>
     </div>
 
@@ -18,7 +18,7 @@
     <div class="col-md-3">
         <label for="fostac_training_date" class="form-label">Foatac Training Date</label><sup>*</sup>
         <input type="date" placeholder="Fostac Training Date" formControlName="fostac_training_date"
-            class="form-control form-control-sm" id="fostac_training_date"
+            class="form-control form-control-sm" id="fostac_training_date" [readOnly]="enrolledStatus"
             [ngClass]="{ 'is-invalid': enrolled && enrollmentform['fostac_training_date'].errors }">
         <div *ngIf="enrolled && enrollmentform['fostac_training_date'].errors" class="invalid-feedback">
             <div *ngIf="enrollmentform['fostac_training_date'].errors['required']">Fostac Training is required</div>
@@ -28,8 +28,8 @@
     <div class="col-md-3">
         <label for="roll_no" class="form-label">Enrollment no.</label><sup>*</sup>
         <input type="text" placeholder="Enrollment no." formControlName="roll_no" class="form-control form-control-sm"
-            id="roll_no" [ngClass]="{ 'is-invalid': enrolled && enrollmentform['roll_no'].errors }"
-            [readOnly]="!isTentTrainingDate">
+            id="roll_no" [ngClass]="{ 'is-invalid': enrolled && enrollmentform['roll_no'].errors }" [readOnly]="enrolledStatus"
+            >
         <div *ngIf="enrolled && enrollmentform['roll_no'].errors" class="invalid-feedback">
             <div *ngIf="enrollmentform['roll_no'].errors['required']">Roll no. is required</div>
         </div>
@@ -37,7 +37,7 @@
 
     <div class="row mt-3">
         <div class="col-6">
-            <button type="submit" class="btn btn-sm btn-primary">Enroll</button>
+            <button type="submit" class="btn btn-sm btn-primary" [disabled]="enrolledStatus">Enroll</button>
         </div>
     </div>
 </form>

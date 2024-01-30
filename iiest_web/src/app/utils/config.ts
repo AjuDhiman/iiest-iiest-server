@@ -45,7 +45,7 @@ export const stateName = [
    'West Bengal'
 ]
 
-const master_roles = [   
+const master_roles = [
    'Regional IT Manager',
    'Deputy Regional Manager(IT)',
    'IT Manager',
@@ -79,7 +79,7 @@ export const empRegister_roles = [
    'HR Coordinator',
    'Junior Executive(Admin & HR)',
    ...master_roles
- ];
+];
 
 export const caseList_roles = [
    'Regional Project Manager',
@@ -90,4 +90,19 @@ export const caseList_roles = [
    'Project Associate',
    'Project Coordinator',
    ...master_roles
+]
+
+// export const ourHolidays: any = [
+//    { date: '2024-01-25T08:12:11.000Z', name: 'public holiday' },
+//    { date: '2024-01-26T08:12:11.000Z', name: 'republic day' }
+// ]
+
+export const ourHolidays:Array<{date:string, name:string}> = [
+   { date: '2024-01-25', name: 'public holiday' },
+   { date: '2024-01-26', name: 'republic day' },
+   { date: '2024-01-30', name: 'republic day' },
+   { date: '2024-01-31', name: 'republic day' },
+   { date: '2024-02-01', name: 'republic day' },
+   { date: '2024-02-02', name: 'republic day' },
+   { date: '2024-02-03', name: 'republic day' }
 ]

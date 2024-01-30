@@ -1,19 +1,15 @@
-<form class="row">
+<form [formGroup]="generalForm" class="row">
   <div class="">
-    <h6>Genral section</h6>
+    <h6>General section</h6>
   </div>
 
   <div class="col-md-3 col-12">
     <label for="other_case" class="form-label select-label">Other Cases</label><sup>*</sup>
-    <select id="other_case" class="form-select form-select-sm">
-      <!-- [ngClass]="{ 'is-invalid': submitted && f['gender'].errors }"> -->
+    <select id="other_case" class="form-select form-select-sm" formControlName="other_case">
       <option value="" disabled selected>Other Cases</option>
       <option value="cancle">Cancle</option>
       <option value="refund">Refund</option>
     </select>
-    <!-- <div *ngIf="submitted && f['gender'].errors" class="invalid-feedback">
-        <div *ngIf="f['gender'].errors['required']">Gender is required</div>
-      </div> -->
   </div>
 
   <div class="w-100"></div>
@@ -22,19 +18,12 @@
     <label for="case_note" class="form-label">Case Note<sup>*</sup></label>
     <textarea rows="1" rows="8" [readOnly]="true" autocomplete="off" class="form-control form-control-sm"
       id="case_note"></textarea>
-    <!-- [ngClass]="{ 'is-invalid': varified && verificationform['case_note'].errors }"></textarea> -->
-    <!-- <div *ngIf="varified && fbo['address'].errors" class="invalid-feedback">
-          <div *ngIf="fbo['address'].errors['required']">Address is required</div>
-      </div> -->
   </div>
 
   <div class="col-md-6 col-12">
     <label for="client_revert" class="form-label">Officer Note<sup>*</sup></label>
-    <textarea rows="1" rows="8" autocomplete="off" class="form-control form-control-sm" id="client_revert"></textarea>
-    <!-- [ngClass]="{ 'is-invalid': varified && verificationform['client_revert'].errors }"></textarea> -->
-    <!-- <div *ngIf="varified && fbo['address'].errors" class="invalid-feedback">
-        <div *ngIf="fbo['address'].errors['required']">Address is required</div>
-    </div> -->
+    <textarea rows="1" rows="8" autocomplete="off" class="form-control form-control-sm" id="client_revert"
+    formControlName="officer_note"></textarea>
   </div>
 
   <div class="row mt-3">

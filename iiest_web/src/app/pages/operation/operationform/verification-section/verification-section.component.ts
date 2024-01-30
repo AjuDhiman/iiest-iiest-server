@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
@@ -18,6 +18,8 @@ export class VerificationSectionComponent implements OnInit {
   faCircleCheck = faCircleCheck;
 
   @Input() candidateId: string = '';
+
+  @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
   verificationForm: FormGroup = new FormGroup({
     recipient_name: new FormControl(''),
@@ -45,39 +47,10 @@ export class VerificationSectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
-        this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
-        this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
-        this.verificationForm.patchValue({ address: res.populatedInfo.salesInfo.fboInfo.address });
-        this.verificationForm.patchValue({ recipient_contact_no: res.populatedInfo.phoneNo });
-        this.verificationForm.patchValue({ aadhar_no: res.populatedInfo.aadharNo });
-        this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
-        this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
-        this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
-      }
-    });
 
-    this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
-      next: res => {
-        if (res) {
-          this.verifiedStatus = true;
-          this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
-          this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
-          this.verificationForm.patchValue({ email: res.verifedData.email });
-          this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
-          this.verificationForm.patchValue({ username: res.verifedData.userName });
-          this.verificationForm.patchValue({ password: res.verifedData.password });
-        } else {
-          this.verifiedStatus = false;
-        }
-      },
-      error: err => {
+    this.getMoreCaseInfo();
 
-      }
-    });
+    this.getFostacVerifiedData();
 
     this.verificationForm = this.formBuilder.group({
       recipient_name: ['', Validators.required],
@@ -111,9 +84,51 @@ export class VerificationSectionComponent implements OnInit {
       next: res => {
         if (res.success) {
           this._toastrService.success('Resipient\'s information is Verified', 'Verified');
+          this.verifiedStatus=true;
         }
       }
     })
+  }
+
+  //founction foe fetching recipient data 
+  getMoreCaseInfo(){
+    this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
+      next: (res) => {
+        this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
+        this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
+        this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
+        this.verificationForm.patchValue({ address: res.populatedInfo.salesInfo.fboInfo.address });
+        this.verificationForm.patchValue({ recipient_contact_no: res.populatedInfo.phoneNo });
+        this.verificationForm.patchValue({ aadhar_no: res.populatedInfo.aadharNo });
+        this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
+        this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
+        this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
+      }, error : err => {
+        
+      }
+    });
+  }
+  
+  getFostacVerifiedData(){
+    this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
+      next: res => {
+        if (res) {
+          this.verifiedStatus = true;
+          this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
+          this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
+          this.verificationForm.patchValue({ email: res.verifedData.email });
+          this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
+          this.verificationForm.patchValue({ username: res.verifedData.userName });
+          this.verificationForm.patchValue({ password: res.verifedData.password });
+          this.emitVerifiedID.emit(res.verifedData._id);
+        } else {
+          this.verifiedStatus = false;
+        }
+      },
+      error: err => {
+
+      }
+    });
   }
 
   getFormatedDate(date: string): string {
