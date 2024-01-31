@@ -16,7 +16,7 @@
                             <button class="btn btn-sm mx-1"
                                 [ngClass]="serviceType==='Retail'?'btn-primary':'btn-secondary'" type="button"
                                 (click)="setServiceType('Retail')">
-                                Retail 
+                                Retail
                             </button>
                         </div>
                         <div *ngIf="panelType==='Foscos Panel'" class="col-auto">
@@ -54,8 +54,10 @@
                         </div>
                         <div class="col-auto">
                             <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
-                                <option *ngIf="panelType=='Fostac Panel'" value="byRecipientName" selected>Search by Recipient Name</option>
-                                <option *ngIf="panelType=='Foscos Panel'" value="byOperatorName" selected>Search by Operator Name</option>
+                                <option *ngIf="panelType=='Fostac Panel'" value="byRecipientName" selected>Search by
+                                    Recipient Name</option>
+                                <option *ngIf="panelType=='Foscos Panel'" value="byOperatorName" selected>Search by
+                                    Operator Name</option>
                                 <option value="byFboName">Search by Fbo Name</option>
                                 <option value="byOwnerName">Search by Owner Name</option>
                                 <option value="byContact">Search by Contact no.</option>
@@ -77,7 +79,8 @@
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
-                            <table *ngIf="panelType==='Fostac Panel'" class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                            <table *ngIf="panelType==='Fostac Panel'"
+                                class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
                                         <th class="cell">S.No</th>
@@ -89,7 +92,7 @@
                                         <th class="cell">State</th>
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
-                                        <th class="cell">Client Status</th>
+                                        <th class="cell">Stage</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,12 +109,12 @@
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.address}}</span></td>
-                                        <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td>
+                                        <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.state}}</span>
+                                        </td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
-                                        <td class="cell"><span class="truncate">-</span></td>
+                                        <td class="cell"><span class="truncate">{{data.stage}}</span></td>
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">
@@ -122,29 +125,48 @@
                                 </tbody>
                             </table>
 
-                            <table *ngIf="panelType==='Foscos Panel'" class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                            <table *ngIf="panelType==='Foscos Panel'"
+                                class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
                                         <th class="cell">S.No</th>
                                         <th class="cell">Operator Name</th>
+                                        <th class="cell">Address</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
                                         <th class="cell">Licence Type</th>
-                                        <th class="cell">Foccos Total</th>
+                                        <th class="cell">Foscos Total</th>
+                                        <!-- <th class="cell">State</th> -->
                                         <th class="cell">Sales Executive</th>
+                                        <th class="cell">Stage</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
-                                        <td class="cell"><span
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                                        <td class="cell"><span class="truncate text-capitalize selector"
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate text-capitalize selector"
                                                 (click)="collectResData(data._id)">{{data.operatorName}}</span></td>
-                                        <td class="cell"><span
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate text-capitalize selector">{{data.address}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
-                                        <td class="cell"><span
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.foscosInfo.foscos_total}}</span></td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo" class="cell">
+                                            <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
+                                        </td>
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">

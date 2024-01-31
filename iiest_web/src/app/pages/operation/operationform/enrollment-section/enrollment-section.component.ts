@@ -84,7 +84,8 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     while (ourHolidays.find((item: any) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0){
       date.setDate(date.getDate() + 1);
     }
-      this.enrollmentForm.patchValue({ tentative_training_date: this.getFormatedDate(date.toString()) });
+    this.enrollmentForm.patchValue({ tentative_training_date: this.getFormatedDate(date.toString()) });
+    this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(date.toString()) });
   }
 
   getFormatedDate(date: string): string {
