@@ -61,6 +61,7 @@
                                 <option value="byFboName">Search by Fbo Name</option>
                                 <option value="byOwnerName">Search by Owner Name</option>
                                 <option value="byContact">Search by Contact no.</option>
+                                <option value="byState">Search by State</option>
                             </select>
                         </div>
                         <div class="col-auto">
@@ -88,11 +89,11 @@
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
                                         <th class="cell">Recipient Contact</th>
-                                        <th class="cell">Address</th>
+                                        <th class="cell">District</th>
                                         <th class="cell">State</th>
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
-                                        <th class="cell">Stage</th>
+                                        <!-- <th class="cell">Stage</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -108,13 +109,13 @@
                                                 class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.address}}</span></td>
+                                                class="truncate">{{data.salesInfo.fboInfo.district}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.state}}</span>
                                         </td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
-                                        <td class="cell"><span class="truncate">{{data.stage}}</span></td>
+                                        <!-- <td class="cell"><span class="truncate">{{data.stage}}</span></td> -->
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">
@@ -138,7 +139,7 @@
                                         <th class="cell">Foscos Total</th>
                                         <!-- <th class="cell">State</th> -->
                                         <th class="cell">Sales Executive</th>
-                                        <th class="cell">Stage</th>
+                                        <!-- <th class="cell">Stage</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,8 +166,8 @@
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo" class="cell">
                                             <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
-                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
+                                        </td> -->
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">

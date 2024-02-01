@@ -174,3 +174,8 @@ export interface fostacEnrollment{
   fostac_training_date: Date,
   roll_no: string;
 }
+
+export interface operGeneralSection{
+  recipient_status:string,
+  officer_note:string
+}

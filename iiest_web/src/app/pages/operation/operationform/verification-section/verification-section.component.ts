@@ -21,6 +21,10 @@ export class VerificationSectionComponent implements OnInit {
 
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
+  @Output() emitSalesDate: EventEmitter<string> = new EventEmitter<string>;
+
+  @Output() emitVerifiedStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
+
   verificationForm: FormGroup = new FormGroup({
     recipient_name: new FormControl(''),
     fbo_name: new FormControl(''),
@@ -83,8 +87,10 @@ export class VerificationSectionComponent implements OnInit {
     this._registerService.operationBasicForm(this.candidateId, this.verificationForm.value).subscribe({
       next: res => {
         if (res.success) {
+          console.log(res);
           this._toastrService.success('Resipient\'s information is Verified', 'Verified');
           this.verifiedStatus=true;
+          this.emitVerifiedStatus.emit(this.verifiedStatus);
         }
       }
     })
@@ -103,6 +109,7 @@ export class VerificationSectionComponent implements OnInit {
         this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
         this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
         this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
+        this.emitSalesDate.emit(res.populatedInfo.salesInfo.createdAt);
       }, error : err => {
         
       }
@@ -114,6 +121,7 @@ export class VerificationSectionComponent implements OnInit {
       next: res => {
         if (res) {
           this.verifiedStatus = true;
+          this.emitVerifiedStatus.emit(this.verifiedStatus);
           this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
           this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
           this.verificationForm.patchValue({ email: res.verifedData.email });
@@ -123,6 +131,7 @@ export class VerificationSectionComponent implements OnInit {
           this.emitVerifiedID.emit(res.verifedData._id);
         } else {
           this.verifiedStatus = false;
+          this.emitVerifiedStatus.emit(this.verifiedStatus);
         }
       },
       error: err => {

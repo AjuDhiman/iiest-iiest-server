@@ -2,6 +2,7 @@ const fboModel = require("../../models/fboModels/fboSchema");
 const { recipientModel } = require("../../models/fboModels/recipientSchema");
 const fostacVerifyModel = require("../../models/operationModels/basicFormSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
+const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 
 exports.fostacVerification = async (req, res) => {
     try {
@@ -77,13 +78,11 @@ exports.getFostacVerifiedData = async (req, res) => {
 
 //backend code for enrollment form
 exports.fostacEnrollment = async (req, res) => {
+    console.log(req.params.verifieddataid)
     try {
         let success = false;
 
         const recipientId = req.params.recipientid;
-
-        console.log(recipientId);
-        console.log(req.body);
 
         const { tentative_training_date, fostac_training_date, roll_no } = req.body;
 
@@ -94,24 +93,20 @@ exports.fostacEnrollment = async (req, res) => {
             return res.status(401).json({ success, rollNoErr: true });
         }
 
-        const verifiedRecipient = await fostacVerifyModel.findOne({ recipientInfo: recipientId });
+        const verifiedData = await fostacVerifyModel.findOne({recipientInfo:recipientId});
 
-        if (!verifiedRecipient) {
-            return res.status(404).json({ success, message: 'Recipient is not verified', title: "Unverified", unverifiedError:true });
-        }
+        // const alreadyVerified = await fostacEnrollmentModel.findOne({ verificationInfo: verifiedDataId });
 
-        const alreadyVerified = await fostacEnrollmentModel.findOne({ verificationInfo: verifiedRecipient._id });
+        // if (alreadyVerified) {
+        //     success = false;
+        //     return res.status(401).json({ success, alreadyVerifiedErr: true });
+        // }
 
-        if (alreadyVerified) {
-            success = false;
-            return res.status(401).json({ success, alreadyVerifiedErr: true });
-        }
-
-        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedRecipient._id, tentative_training_date, fostac_training_date, roll_no });
+        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedData._id, tentative_training_date, fostac_training_date, roll_no });
 
         if (enrollRecipient) {
             success = true;
-            return res.status(200).json({ success, message:'Enrolled recipient'});
+            return res.status(200).json({ success, message: 'Enrolled recipient' });
         }
 
     } catch (error) {
@@ -119,7 +114,7 @@ exports.fostacEnrollment = async (req, res) => {
     }
 }
 
-exports.getFostacEnrolledData = async(req, res) => {
+exports.getFostacEnrolledData = async (req, res) => {
     try {
         let success = false;
 
@@ -132,6 +127,70 @@ exports.getFostacEnrolledData = async(req, res) => {
             return res.status(200).json({ success, message: 'Enrolled recipient', enrolledData });
         } else {
             return res.status(204).json({ success, message: 'Recipient is not enrolled' });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.postGenOperData = async (req, res) => {
+
+    try {
+
+        let success = false;
+
+        const recipientId = req.params.recipientid;
+
+        const { recipient_status, officer_note } = req.body;
+
+        const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, recipientStatus: recipient_status, officerNote: officer_note });
+
+        if (operGenSecAdd) {
+            success = true
+            return res.status(200).json({ success })
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getGenOperData = async(req,res) => {
+    try {
+        let success = false;
+
+        const recipientId = req.params.recipientid;
+
+        const genSecData = await generalSectionModel.findOne({ recipientInfo: recipientId });
+
+        if (genSecData) {
+            success = true;
+            return res.status(200).json({ success, genSecData });
+        } else {
+            return res.status(204).json({ success });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.updateGenOperData = async (req, res) => {
+
+    try {
+
+        let success = false;
+
+        const recipientId = req.params.recipientid;
+
+        const { recipient_status, officer_note } = req.body;
+
+        const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({recipientInfo:recipientId},{ recipientStatus: recipient_status, officerNote: officer_note });
+
+        if (operGenSecUpdate) {
+            success = true
+            return res.status(200).json({ success })
         }
 
     } catch (error) {
