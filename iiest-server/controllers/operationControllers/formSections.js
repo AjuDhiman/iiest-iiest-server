@@ -11,9 +11,6 @@ exports.fostacVerification = async (req, res) => {
 
         const recipientId = req.params.recipientid;
 
-        console.log(recipientId);
-        console.log(req.body)
-
         const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date, username, password } = req.body;
 
         const checkAddress = await fostacVerifyModel.findOne({ address });
@@ -48,7 +45,7 @@ exports.fostacVerification = async (req, res) => {
 
         if (basicFormAdd) {
             success = true
-            return res.status(200).json({ success })
+            return res.status(200).json({ success, verifiedId:basicFormAdd._id });
         }
 
     } catch (error) {
@@ -78,11 +75,10 @@ exports.getFostacVerifiedData = async (req, res) => {
 
 //backend code for enrollment form
 exports.fostacEnrollment = async (req, res) => {
-    console.log(req.params.verifieddataid)
     try {
         let success = false;
 
-        const recipientId = req.params.recipientid;
+        const verifiedDataId = req.params.verifieddataid;
 
         const { tentative_training_date, fostac_training_date, roll_no } = req.body;
 
@@ -93,7 +89,7 @@ exports.fostacEnrollment = async (req, res) => {
             return res.status(401).json({ success, rollNoErr: true });
         }
 
-        const verifiedData = await fostacVerifyModel.findOne({recipientInfo:recipientId});
+        // const verifiedData = await fostacVerifyModel.findOne({recipientInfo:recipientId});
 
         // const alreadyVerified = await fostacEnrollmentModel.findOne({ verificationInfo: verifiedDataId });
 
@@ -102,7 +98,7 @@ exports.fostacEnrollment = async (req, res) => {
         //     return res.status(401).json({ success, alreadyVerifiedErr: true });
         // }
 
-        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedData._id, tentative_training_date, fostac_training_date, roll_no });
+        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, tentative_training_date, fostac_training_date, roll_no });
 
         if (enrollRecipient) {
             success = true;

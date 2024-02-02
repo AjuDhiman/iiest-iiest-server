@@ -91,6 +91,7 @@ export class VerificationSectionComponent implements OnInit {
           this._toastrService.success('Resipient\'s information is Verified', 'Verified');
           this.verifiedStatus=true;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
+          this.emitVerifiedID.emit(res.verifiedId);
         }
       }
     })

@@ -16,8 +16,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   enrolled: boolean = false;
   enrolledStatus: boolean = false;
   ourHolidays = ourHolidays;
-
-  @Input() candidateId: string;
+  
   @Input() verifiedDataId: string;
   @Input() salesDate: string;
   @Input() verifiedStatus: boolean;
@@ -71,17 +70,20 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     if (this.enrollmentForm.invalid) {
       return
     }
-    this._registerService.enrollRecipient(this.candidateId, this.enrollmentForm.value).subscribe({
-      next: res => {
-        this._toastrService.success(res.message, 'Enrolled');
-        this.enrolledStatus = true;
-      },
-      error: err => {
-        if (err.error.unverifiedError)
-          this._toastrService.warning(err.error.message, err.error.title)
-      }
-    })
-
+    if(this.verifiedDataId){
+      this._registerService.enrollRecipient(this.verifiedDataId, this.enrollmentForm.value).subscribe({
+        next: res => {
+          this._toastrService.success(res.message, 'Enrolled');
+          this.enrolledStatus = true;
+        },
+        error: err => {
+          if (err.error.unverifiedError)
+            this._toastrService.warning(err.error.message, err.error.title)
+        }
+      })
+  
+    }
+    
   }
 
   setTentativeTrainingDate(salesDate: string): void {

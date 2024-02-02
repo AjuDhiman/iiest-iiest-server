@@ -13,7 +13,7 @@
             [candidateId]="candidateId" (emitVerifiedID)="getVerifiedDataId($event)" (emitSalesDate)="getSalesData($event)" (emitVerifiedStatus)="getVerifiedStatus($event)"></app-verification-section>
 
           <!-- enrollment section: this section is for enrolling  -->
-          <app-enrollment-section [candidateId]="candidateId" [salesDate]="salesDate" [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <app-enrollment-section [salesDate]="salesDate" [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
           </app-enrollment-section>
 
           <!-- general section -->

@@ -110,8 +110,8 @@ export class RegisterService {
     ));
   }
 
-  public enrollRecipient(recId: string, formInterface: fostacEnrollment){
-    const url = `${this.url}/fostacenrollment/${recId}`
+  public enrollRecipient(verId: string, formInterface: fostacEnrollment){
+    const url = `${this.url}/fostacenrollment/${verId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
