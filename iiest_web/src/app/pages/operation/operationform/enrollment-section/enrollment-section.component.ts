@@ -17,10 +17,13 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   enrolledStatus: boolean = false;
   ourHolidays = ourHolidays;
   
+  //input variables
   @Input() verifiedDataId: string;
   @Input() salesDate: string;
   @Input() verifiedStatus: boolean;
 
+  //output event emitters
+  @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>
 
   //icons
   faCircleExclamation = faCircleExclamation
@@ -75,6 +78,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
         next: res => {
           this._toastrService.success(res.message, 'Enrolled');
           this.enrolledStatus = true;
+          this.refreshAuditLog.emit()
         },
         error: err => {
           if (err.error.unverifiedError)

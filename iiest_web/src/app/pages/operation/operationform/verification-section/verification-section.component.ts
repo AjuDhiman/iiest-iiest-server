@@ -25,6 +25,8 @@ export class VerificationSectionComponent implements OnInit {
 
   @Output() emitVerifiedStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
 
+  @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>
+
   verificationForm: FormGroup = new FormGroup({
     recipient_name: new FormControl(''),
     fbo_name: new FormControl(''),
@@ -92,6 +94,7 @@ export class VerificationSectionComponent implements OnInit {
           this.verifiedStatus=true;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
           this.emitVerifiedID.emit(res.verifiedId);
+          this.refreshAuditLog.emit();
         }
       }
     })

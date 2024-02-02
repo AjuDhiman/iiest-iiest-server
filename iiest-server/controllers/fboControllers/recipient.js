@@ -1,6 +1,7 @@
 const { recipientModel, shopModel } = require('../../models/fboModels/recipientSchema')
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
+const { logAudit } = require('../generalControllers/auditLogsControllers');
 
 exports.addRecipient = async (req, res) => {
 
@@ -30,6 +31,7 @@ try {
     if(isValid){
         for(let recipient of bodyArray){
             const addRecipient = await recipientModel.create({salesInfo: req.params.id, name: recipient.name, phoneNo: recipient.phoneNo, aadharNo: recipient.aadharNo});
+            const log = logAudit(req.user._id, addRecipient._id, "Recipient Registered");
             if(!addRecipient){
                 success = false;
                 return res.status(404).json({success, randomErr: true})

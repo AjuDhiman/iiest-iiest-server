@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute } from '@angular/router';
+import { GeneralSectionComponent } from './general-section/general-section.component';
 
 @Component({
   selector: 'app-operationform',
@@ -12,6 +13,8 @@ export class OperationformComponent implements OnInit {
   verifiedDataId: string;
   verifiedStatus: boolean;
   salesDate: string;
+
+  @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
 
   constructor(
     private activatedRoute: ActivatedRoute
