@@ -49,6 +49,7 @@ export class GeneralSectionComponent implements OnInit {
       this._registerService.postOperGenData(this.candidateId, this.generalForm.value).subscribe({
         next: res => {
           this._toastrService.success('Record Updated', 'Updated')
+          this.firstUpdate=false;
         },
         error: err => {
           
@@ -71,6 +72,8 @@ export class GeneralSectionComponent implements OnInit {
           this.generalForm.patchValue({ recipient_status: res.genSecData.recipientStatus });
           this.generalForm.patchValue({ officer_note: res.genSecData.officerNote });
           this.firstUpdate=false;
+        } else {
+          this.firstUpdate=true;
         }
       }
     })

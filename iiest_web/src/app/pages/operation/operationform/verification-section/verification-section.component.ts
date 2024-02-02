@@ -66,7 +66,7 @@ export class VerificationSectionComponent implements OnInit {
       recipient_contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
       aadhar_no: ['', Validators.required],
-      pancard_no: [''],
+      pancard_no: ['', Validators.pattern('/^[A-Z]{5}[0-9]{4}[A-Z]$/')],
       fostac_total: ['', Validators.required],
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],
