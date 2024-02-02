@@ -15,6 +15,8 @@ export class GeneralSectionComponent implements OnInit {
 
   firstUpdate:boolean=true;
 
+  caseNote:string='';
+
   generalForm: FormGroup = new FormGroup({
     recipient_status: new FormControl('ongoing'),
     officer_note: new FormControl(''),
@@ -33,13 +35,15 @@ export class GeneralSectionComponent implements OnInit {
       officer_note: ['']
     });
 
-    this.getGenSecData()
+    this.getGenSecData();
+    this.getCaseNotes();
   }
 
   get generalform(): { [key: string]: AbstractControl } {
     return this.generalForm.controls;
   }
 
+  // this function will run every timr you update the form
   onUpdate() {
     if (this.generalForm.invalid) {
       return;
@@ -65,6 +69,7 @@ export class GeneralSectionComponent implements OnInit {
     
   }
 
+  //this methord is used in getting genearal section area like officr note from db
   getGenSecData() {
     this._getDataService.getOperGenSecData(this.candidateId).subscribe({
       next: res => {
@@ -78,4 +83,46 @@ export class GeneralSectionComponent implements OnInit {
       }
     })
   }
+
+  //this methord is used in getting array of all audit logs by calling get api for audit logs
+  getCaseNotes(){
+    this._getDataService.getAuditLogs(this.candidateId).subscribe({
+      next: res => {
+        this.formatLogs(res.logs);
+      }
+    })
+  }
+
+  //this methord formats the logs in a better presentational form from a object form
+  formatLogs(logs:any){
+    let fullCaseNote:string = '';
+
+    logs.forEach((log:any) => {
+      let caseNote:string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}\n`; 
+
+      fullCaseNote+=caseNote;
+    });
+
+    this.caseNote=fullCaseNote;
+  }
+
+  getFormatedDate(date: string): string {
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+  getFormattedTime(dateString:string) {
+    const originalDate = new Date(dateString);
+    const hours = String(originalDate.getHours()).padStart(2, '0');
+    const minutes = String(originalDate.getMinutes()).padStart(2, '0');
+    const seconds = String(originalDate.getSeconds()).padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    return formattedTime;
+  }
+  
+
 }

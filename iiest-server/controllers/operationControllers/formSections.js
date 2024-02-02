@@ -3,6 +3,7 @@ const { recipientModel } = require("../../models/fboModels/recipientSchema");
 const fostacVerifyModel = require("../../models/operationModels/basicFormSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
+const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 exports.fostacVerification = async (req, res) => {
     try {
@@ -27,13 +28,6 @@ exports.fostacVerification = async (req, res) => {
             return res.status(401).json({ success, emailErr: true })
         }
 
-        // const checkPancard = await fostacVerifyModel.findOne({ pancardNo: pancard_no });
-
-        // if (checkPancard) {
-        //     success = false;
-        //     return res.status(401).json({ success, panErr: true })
-        // }
-
         const checkUsername = await fostacVerifyModel.findOne({ userName: username })
 
         if (checkUsername) {
@@ -42,6 +36,12 @@ exports.fostacVerification = async (req, res) => {
         }
 
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sales_date });
+
+        //this code is for tracking the flow of data regarding to a recipient
+
+        const log = logAudit(req.user._id, recipientId, "Recipient verified" );
+
+        // code for tracking ends
 
         if (basicFormAdd) {
             success = true
@@ -89,16 +89,15 @@ exports.fostacEnrollment = async (req, res) => {
             return res.status(401).json({ success, rollNoErr: true });
         }
 
-        // const verifiedData = await fostacVerifyModel.findOne({recipientInfo:recipientId});
-
-        // const alreadyVerified = await fostacEnrollmentModel.findOne({ verificationInfo: verifiedDataId });
-
-        // if (alreadyVerified) {
-        //     success = false;
-        //     return res.status(401).json({ success, alreadyVerifiedErr: true });
-        // }
-
         const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, tentative_training_date, fostac_training_date, roll_no });
+
+        //this code is for tracking the flow of data regarding to a recipient
+
+        const verifiedData = await fostacVerifyModel.findOne({_id:verifiedDataId});//only for getting recipient id
+
+        const log = logAudit(req.user._id , verifiedData.recipientInfo, "Recipient Enrolled" );
+
+        // code for tracking ends
 
         if (enrollRecipient) {
             success = true;
@@ -135,8 +134,6 @@ exports.postGenOperData = async (req, res) => {
     try {
 
         let success = false;
-
-        const recipientId = req.params.recipientid;
 
         const { recipient_status, officer_note } = req.body;
 
