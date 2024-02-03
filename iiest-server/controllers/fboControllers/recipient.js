@@ -13,8 +13,6 @@ try {
 
     let isValid = false;
 
-    console.log(bodyArray);
-
     for(let recipient of bodyArray){
         const existingPhone = await recipientModel.findOne({phoneNo: recipient.phoneNo});
         const existingAadhar = await recipientModel.findOne({aadharNo: recipient.aadharNo});

@@ -14,7 +14,7 @@ const generalSection=new Schema({
         unique: true
     },
     recipientStatus:{
-        type:String
+        type:String,
     },
     officerNote:{
         type:String,

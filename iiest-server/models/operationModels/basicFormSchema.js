@@ -21,7 +21,7 @@ const fostacVerification = new Schema({
     address: {
         type: String, 
         required: true, 
-        unique: true
+        // unique: true
     },
     pancardNo: {
         type: String, 

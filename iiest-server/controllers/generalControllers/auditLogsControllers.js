@@ -12,8 +12,6 @@ exports.getAuditLogs = async(req, res) => {
 
         const recipientId = req.params.recipientid;
 
-        console.log(recipientId);
-
         const logs = await auditLogsSchema.find({recipientInfo: recipientId}).populate({path: 'operatorInfo'});
 
         if(logs){
