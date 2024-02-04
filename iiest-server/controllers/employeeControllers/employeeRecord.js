@@ -43,6 +43,41 @@ exports.employeeRecord = async(req, res)=>{
     }
 }
 
+exports.empSalesProdWise = async(req, res)=>{
+    try {
+        const totalEmpSaleProdWise = await salesModel.find({employeeInfo: req.user.id});
+    
+        let totalFostacCateringSaleAmt = 0;
+        let totalFostacRetailSaleAmt = 0;
+        let totalFoscosRegistrationSaleAmt = 0;
+        let totalFoscosStateSaleAmt = 0;
+    
+        if(totalEmpSaleProdWise){
+            totalEmpSaleProdWise.forEach((elem)=>{
+                if(elem.product_name.includes("Fostac")){
+                    if(elem.fostacInfo.fostac_service_name === 'Catering') {
+                        totalFostacCateringSaleAmt += 1;
+                    } else if(elem.fostacInfo.fostac_service_name === 'Retail') {
+                        totalFostacRetailSaleAmt += 1;
+                    }
+                } 
+                if(elem.product_name.includes("Foscos")) {
+                    if(elem.foscosInfo.foscos_service_name === 'Registration') {
+                        totalFoscosRegistrationSaleAmt += 1;
+                    } else if(elem.foscosInfo.foscos_service_name === 'State') {
+                        totalFoscosStateSaleAmt += 1;
+                    }
+                }
+            })
+        }
+    
+        return res.status(200).json({totalFostacCateringSaleAmt, totalFostacRetailSaleAmt, totalFoscosRegistrationSaleAmt, totalFoscosStateSaleAmt });
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
 exports.employeeSalesData = async(req, res)=>{
     try {
         const salesInfo =  await salesModel.find({employeeInfo: req.user.id}).populate('fboInfo').select('-employeeInfo');

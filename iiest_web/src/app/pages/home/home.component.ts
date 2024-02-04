@@ -13,15 +13,17 @@ import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent implements OnInit, OnDestroy {
   employees: Employee;
   genericData: any;
   data: any;
   empName: String;
+  empDepartment: String;
   product: any;
   fssaiData: any;
   dpiitData: any;
-  isNameVisible:boolean=true;
+  isNameVisible: boolean = true;
   // departmentAndCount:object;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
@@ -30,61 +32,71 @@ export class HomeComponent implements OnInit, OnDestroy {
   msg: Subscription;
   dnone: boolean = true;
   projectType: any;
+  departmentCount: any = [];
+  empSalesProdWise: any = [];
   categories = ['fostac(Retail)', 'fostac(Catering)', 'foscos(Registration)', 'foscos(State)'];
-  chartData:Highcharts.Options ={
-    credits: {
-      enabled: false
-    },
-    series: [
-      {
-        type: 'line',
-        data: [20,23,67,87,90],
-      },
-    ],
-    colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
-  };
-  barChart1: Highcharts.Options = {
+  departmentList = ['Asmt. & Audit', 'Business Dev.', 'Finance', 'HR', 'IT', 'Research', 'Resource', 'Sales', 'Training'];
+
+  // chartData: Highcharts.Options = {
+  //   credits: {
+  //     enabled: false
+  //   },
+  //   series: [
+  //     {
+  //       type: 'line',
+  //       data: [20, 23, 67, 87, 90],
+  //     },
+  //   ],
+  //   colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
+  // };
+
+  salesChart: Highcharts.Options;
+
+  empChart: Highcharts.Options = {
     title: {
-      text: 'Sales Chart',
+      text: 'Employee Chart',
     },
     xAxis: {
-      categories: this.categories,
+      categories: this.departmentList,
     },
     yAxis: {
       title: {
-        text: 'Sales',
+        text: 'No. Of Employees',
       },
     },
     plotOptions: {
       column: {
         colorByPoint: true,
-        colors: ['#1a9850', '#66bd63', '#a6d96a', '#d9ef8b'], // Shades of green
+        colors: ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'], // Shades of green
       },
     },
     series: [
       {
         type: 'column',
-        data: [20, 50, 79, 22],
+        data: [2, 3, 4, 5, 6, 7, 8, 9, 10],
         color: '#128c54',
       },
     ],
   };
+
   constructor(
     private _registerService: RegisterService,
     private store: Store,
     private _getDataService: GetdataService,
-  ) { }
+  ) {}
+
   ngOnInit(): void {
     this.getEmployees();
     this.getProductData();
-    // this.getEmployeeCountByDept();
     this.employees$.subscribe(res => {
       this.data = res;
     })
+
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)
     this.projectType = loggedInUserData.project_name;
     this.empName = loggedInUserData.employee_name;
+    this.empDepartment = loggedInUserData.department;
     const message = interval(2000);
     this.msg = message.subscribe((res) => {
       if (res >= 2) {
@@ -93,9 +105,44 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     })
 
-    let timeout = setTimeout(()=>{
-      this.isNameVisible=false;
+    let timeout = setTimeout(() => {
+      this.isNameVisible = false;
     }, 5000);
+
+    this._getDataService.getEmpSalesProdWise().subscribe({
+      next: res => {
+        this.empSalesProdWise = Object.values(res); // this convert into array
+        this.salesChart = {
+          credits: {
+            enabled: false
+          },
+          title: {
+            text: 'Sales Chart',
+          },
+          xAxis: {
+            categories: this.categories,
+          },
+          yAxis: {
+            title: {
+              text: 'Sales Count',
+            },
+          },
+          plotOptions: {
+            column: {
+              colorByPoint: true,
+              colors: ['#1a9850', '#66bd63', '#a6d96a', '#d9ef8b'], // Shades of green
+            },
+          },
+          series: [
+            {
+              type: 'column',
+              data: this.empSalesProdWise,
+              color: '#128c54',
+            },
+          ],
+        };
+      }
+    })
   }
 
   getEmployees() {
@@ -122,5 +169,4 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
   }
-
 }

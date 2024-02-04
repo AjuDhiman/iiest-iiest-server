@@ -1,7 +1,7 @@
 const express = require('express');
 const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
-const { employeeRecord, employeeSalesData, employeeDepartmentCount } = require('../controllers/employeeControllers/employeeRecord');
+const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise } = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer')
 
@@ -24,6 +24,7 @@ router.get('/allocatedareas/:id', authMiddleware, allocatedAreas);
 router.get('/getuserimage/:id', authMiddleware, employeeImage);
 router.get('/getusersign/:id', authMiddleware, employeeSignature);
 router.post('/edituserfiles', authMiddleware, employeeFilesUpload.fields([{name: 'userImage', maxCount: 1}, {name: 'userSign', maxCount: 1}]), editEmployeeImages);
-router.get('/empcountbydept', authMiddleware, employeeDepartmentCount)
+router.get('/empcountbydept', authMiddleware, employeeDepartmentCount);
+router.get('/getempsalesprodwise', authMiddleware, empSalesProdWise);
 
 module.exports = router;
