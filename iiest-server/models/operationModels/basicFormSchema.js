@@ -21,7 +21,7 @@ const fostacVerification = new Schema({
     address: {
         type: String, 
         required: true, 
-        unique: true
+        // unique: true
     },
     pancardNo: {
         type: String, 
@@ -49,7 +49,6 @@ const fostacVerification = new Schema({
         required: true 
     }
 }, {timestamps: true})
-
 
 const fostacVerifyModel = mongoose.model('fostac_verification', fostacVerification);
 module.exports = fostacVerifyModel;

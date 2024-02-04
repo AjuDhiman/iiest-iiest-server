@@ -1,13 +1,12 @@
-<form [formGroup]="generalForm" class="row">
+<form [formGroup]="generalForm" class="row" (submit)="onUpdate()">
   <div class="">
     <h6>General section</h6>
   </div>
 
   <div class="col-md-3 col-12">
-    <label for="other_case" class="form-label select-label">Other Cases</label><sup>*</sup>
-    <select id="other_case" class="form-select form-select-sm" formControlName="other_case">
-      <option value="" disabled selected>Other Cases</option>
-      <option value="cancel">Cancel</option>
+    <label for="recipient_status" class="form-label select-label">Recipient status</label><sup>*</sup>
+    <select id="recipient_status" class="form-select form-select-sm" formControlName="recipient_status">
+      <option value="ongoing" selected>Ongoing</option>
       <option value="refund">Refund</option>
     </select>
   </div>
@@ -17,7 +16,7 @@
   <div class="col-md-6 col-12">
     <label for="case_note" class="form-label">Case Note<sup>*</sup></label>
     <textarea rows="1" rows="8" [readOnly]="true" autocomplete="off" class="form-control form-control-sm"
-      id="case_note"></textarea>
+      id="case_note">{{caseNote}}</textarea>
   </div>
 
   <div class="col-md-6 col-12">

@@ -52,7 +52,7 @@
   <div class="col-md-3">
     <label for="address" class="form-label">Address</label><sup>*</sup>
     <input type="text" placeholder="Address" formControlName="address" class="form-control form-control-sm" id="address"
-      [ngClass]="{ 'is-invalid': verified && verificationform['address'].errors }">
+      [ngClass]="{ 'is-invalid': verified && verificationform['address'].errors }" [readOnly]="true">
     <div *ngIf="verified && verificationform['address'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['address'].errors['required']">Address is required</div>
     </div>

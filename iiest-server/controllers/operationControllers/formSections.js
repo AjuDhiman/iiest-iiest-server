@@ -2,6 +2,8 @@ const fboModel = require("../../models/fboModels/fboSchema");
 const { recipientModel } = require("../../models/fboModels/recipientSchema");
 const fostacVerifyModel = require("../../models/operationModels/basicFormSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
+const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
+const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 exports.fostacVerification = async (req, res) => {
     try {
@@ -10,17 +12,14 @@ exports.fostacVerification = async (req, res) => {
 
         const recipientId = req.params.recipientid;
 
-        console.log(recipientId);
-        console.log(req.body)
-
         const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date, username, password } = req.body;
 
-        const checkAddress = await fostacVerifyModel.findOne({ address });
+        // const checkAddress = await fostacVerifyModel.findOne({ address });
 
-        if (checkAddress) {
-            success = false;
-            return res.status(401).json({ success, addressErr: true });
-        }
+        // if (checkAddress) {
+        //     success = false;
+        //     return res.status(401).json({ success, addressErr: true });
+        // }
 
         const checkExistingMail = await fostacVerifyModel.findOne({ email });
 
@@ -28,13 +27,6 @@ exports.fostacVerification = async (req, res) => {
             success = false;
             return res.status(401).json({ success, emailErr: true })
         }
-
-        // const checkPancard = await fostacVerifyModel.findOne({ pancardNo: pancard_no });
-
-        // if (checkPancard) {
-        //     success = false;
-        //     return res.status(401).json({ success, panErr: true })
-        // }
 
         const checkUsername = await fostacVerifyModel.findOne({ userName: username })
 
@@ -45,9 +37,15 @@ exports.fostacVerification = async (req, res) => {
 
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sales_date });
 
+        //this code is for tracking the flow of data regarding to a recipient
+
+        const log = logAudit(req.user._id, recipientId, "Recipient verified" );
+
+        // code for tracking ends
+
         if (basicFormAdd) {
             success = true
-            return res.status(200).json({ success })
+            return res.status(200).json({ success, verifiedId:basicFormAdd._id });
         }
 
     } catch (error) {
@@ -80,10 +78,7 @@ exports.fostacEnrollment = async (req, res) => {
     try {
         let success = false;
 
-        const recipientId = req.params.recipientid;
-
-        console.log(recipientId);
-        console.log(req.body);
+        const verifiedDataId = req.params.verifieddataid;
 
         const { tentative_training_date, fostac_training_date, roll_no } = req.body;
 
@@ -94,24 +89,35 @@ exports.fostacEnrollment = async (req, res) => {
             return res.status(401).json({ success, rollNoErr: true });
         }
 
-        const verifiedRecipient = await fostacVerifyModel.findOne({ recipientInfo: recipientId });
+        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, tentative_training_date, fostac_training_date, roll_no });
 
-        if (!verifiedRecipient) {
-            return res.status(404).json({ success, message: 'Recipient is not verified', title: "Unverified", unverifiedError:true });
+        //this code is for tracking the flow of data regarding to a recipient
+
+        const verifiedData = await fostacVerifyModel.findOne({_id:verifiedDataId});//only for getting recipient id
+
+        // //this code is for tracking fostac training date and tentative training date
+
+        let trainingDateAction = '';
+
+        if(getFormatedDate(enrollRecipient.tentative_training_date) !== getFormatedDate(enrollRecipient.fostac_training_date)){
+
+            trainingDateAction = `Date ${enrollRecipient.fostac_training_date} is given instead of tentative training date(${enrollRecipient.tentative_training_date})`
+
+        } else {
+
+            trainingDateAction=`Training Date(${enrollRecipient.fostac_training_date}) is given`;
+
         }
 
-        const alreadyVerified = await fostacEnrollmentModel.findOne({ verificationInfo: verifiedRecipient._id });
+        const log = await logAudit(req.user._id , verifiedData.recipientInfo, trainingDateAction );
 
-        if (alreadyVerified) {
-            success = false;
-            return res.status(401).json({ success, alreadyVerifiedErr: true });
-        }
+        const log1 = await logAudit(req.user._id , verifiedData.recipientInfo, "Recipient Enrolled" );
 
-        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedRecipient._id, tentative_training_date, fostac_training_date, roll_no });
+        // code for tracking ends
 
         if (enrollRecipient) {
             success = true;
-            return res.status(200).json({ success, message:'Enrolled recipient'});
+            return res.status(200).json({ success, message: 'Enrolled recipient' });
         }
 
     } catch (error) {
@@ -119,7 +125,7 @@ exports.fostacEnrollment = async (req, res) => {
     }
 }
 
-exports.getFostacEnrolledData = async(req, res) => {
+exports.getFostacEnrolledData = async (req, res) => {
     try {
         let success = false;
 
@@ -137,4 +143,77 @@ exports.getFostacEnrolledData = async(req, res) => {
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
+}
+
+exports.postGenOperData = async (req, res) => {
+
+    try {
+
+        const recipientId = req.params.recipientid;
+
+        let success = false;
+
+        const { recipient_status, officer_note } = req.body;
+
+        const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user._id, recipientInfo: recipientId, recipientStatus: recipient_status, officerNote: officer_note });
+
+        if (operGenSecAdd) {
+            success = true
+            return res.status(200).json({ success })
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getGenOperData = async(req,res) => {
+    try {
+        let success = false;
+
+        const recipientId = req.params.recipientid;
+
+        const genSecData = await generalSectionModel.findOne({ recipientInfo: recipientId });
+
+        if (genSecData) {
+            success = true;
+            return res.status(200).json({ success, genSecData });
+        } else {
+            return res.status(204).json({ success });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.updateGenOperData = async (req, res) => {
+
+    try {
+
+        let success = false;
+
+        const recipientId = req.params.recipientid;
+
+        const { recipient_status, officer_note } = req.body;
+
+        const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({recipientInfo:recipientId},{ recipientStatus: recipient_status, officerNote: officer_note });
+
+        if (operGenSecUpdate) {
+            success = true
+            return res.status(200).json({ success })
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+function getFormatedDate(date) {
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
 }

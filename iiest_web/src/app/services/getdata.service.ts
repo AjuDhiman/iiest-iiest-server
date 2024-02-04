@@ -123,6 +123,16 @@ export class GetdataService {
   return this.http.get<any>(url).pipe(catchError(this.handleError));
  }
 
+ public getOperGenSecData(candidateId:string): Observable<any>{
+  const url = `${this.url}/getopergensecdata/${candidateId}`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
+ public getAuditLogs(candidateId:string): Observable<any>{
+  const url = `${this.url}/getauditlogs/${candidateId}`;
+  return this.http.get<any>(url).pipe(catchError(this.handleError));
+ }
+
  public getEmpSalesProdWise(): Observable<any>{
   const url = `${this.url}/getempsalesprodwise`;
   return this.http.get<any>(url).pipe(catchError(this.handleError));

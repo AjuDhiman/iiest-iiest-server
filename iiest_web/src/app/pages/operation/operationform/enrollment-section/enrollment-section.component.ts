@@ -16,10 +16,14 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   enrolled: boolean = false;
   enrolledStatus: boolean = false;
   ourHolidays = ourHolidays;
-
-  @Input() candidateId: string;
+  
+  //input variables
   @Input() verifiedDataId: string;
+  @Input() salesDate: string;
+  @Input() verifiedStatus: boolean;
 
+  //output event emitters
+  @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>
 
   //icons
   faCircleExclamation = faCircleExclamation
@@ -44,15 +48,19 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
       fostac_training_date: ['', Validators.required],
       roll_no: ['', Validators.required]
     });
-
-    this.getMoreCaseInfo();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes && changes['verifiedDataId']){
-       if(changes['verifiedDataId'].currentValue){
+    if (changes && changes['verifiedDataId']) {
+      if (changes['verifiedDataId'].currentValue) {
         this.getFostacEnrolledData();
-       }
+      }
+    }
+
+    if (changes && changes['salesDate']) {
+      if (changes['salesDate'].currentValue) {
+        this.setTentativeTrainingDate(this.salesDate);
+      }
     }
   }
 
@@ -65,23 +73,27 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     if (this.enrollmentForm.invalid) {
       return
     }
-
-    this._registerService.enrollRecipient(this.candidateId, this.enrollmentForm.value).subscribe({
-      next: res => {
-        this._toastrService.success(res.message, 'Enrolled');
-        this.enrolledStatus=true;
-      },
-      error: err => {
-        if (err.error.unverifiedError)
-          this._toastrService.warning(err.error.message, err.error.title)
-      }
-    })
+    if(this.verifiedDataId){
+      this._registerService.enrollRecipient(this.verifiedDataId, this.enrollmentForm.value).subscribe({
+        next: res => {
+          this._toastrService.success(res.message, 'Enrolled');
+          this.enrolledStatus = true;
+          this.refreshAuditLog.emit()
+        },
+        error: err => {
+          if (err.error.unverifiedError)
+            this._toastrService.warning(err.error.message, err.error.title)
+        }
+      })
+  
+    }
+    
   }
 
   setTentativeTrainingDate(salesDate: string): void {
     const date = new Date(salesDate);
     date.setDate(date.getDate() + 7);
-    while (ourHolidays.find((item: any) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0){
+    while (ourHolidays.find((item: any) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0) {
       date.setDate(date.getDate() + 1);
     }
     this.enrollmentForm.patchValue({ tentative_training_date: this.getFormatedDate(date.toString()) });
@@ -97,27 +109,16 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     return formattedDate;
   }
 
-  getMoreCaseInfo() {
-    this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
-      next: (res) => {
-        this.setTentativeTrainingDate(res.populatedInfo.salesInfo.createdAt);
-      },
-      error: err => {
-
-      }
-    })
-  }
-
-  getFostacEnrolledData(){
+  getFostacEnrolledData() {
     this._getDataService.getFostacEnrolledData(this.verifiedDataId).subscribe({
       next: res => {
-        if(res.success){
-          this.enrolledStatus=true;
+        if (res) {
+          this.enrolledStatus = true;
           this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date.toString()) });
           this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });
         } else {
-          this.enrolledStatus=false;
-        } 
+          this.enrolledStatus = false;
+        }
       }
     });
   }
