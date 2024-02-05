@@ -19,11 +19,7 @@
 		</div><!--//app-card-->
 
 		<!-- this section will be show data according to employee's department -->
-<<<<<<< HEAD
-		<app-stat-cards (emitDeptCount)="catchDeptCount($event)"></app-stat-cards>
-=======
 		<app-stat-cards *ngIf="empDepartment==='HR Department'" (emitDeptCount)="catchDeptCount($event)"></app-stat-cards>
->>>>>>> 1365ce0d543f9bdca1ff36526fa9491ea060c1c7
 		
 		<div class="row my-2">
 			<!-- <app-highcharts [chartData]="chartData" class="col-12 col-lg-6"></app-highcharts> -->

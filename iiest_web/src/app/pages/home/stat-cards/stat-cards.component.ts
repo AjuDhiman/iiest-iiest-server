@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-=======
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
->>>>>>> 1365ce0d543f9bdca1ff36526fa9491ea060c1c7
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { DepartmentListComponent } from '../../department-list/department-list.component';
