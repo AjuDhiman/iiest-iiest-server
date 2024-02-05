@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscriber, Subscription, interval, skipLast } from 'rxjs';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -34,50 +34,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   projectType: any;
   departmentCount: any = [];
   empSalesProdWise: any = [];
-  categories = ['fostac(Retail)', 'fostac(Catering)', 'foscos(Registration)', 'foscos(State)'];
-  departmentList = ['Asmt. & Audit', 'Business Dev.', 'Finance', 'HR', 'IT', 'Research', 'Resource', 'Sales', 'Training'];
-
-  // chartData: Highcharts.Options = {
-  //   credits: {
-  //     enabled: false
-  //   },
-  //   series: [
-  //     {
-  //       type: 'line',
-  //       data: [20, 23, 67, 87, 90],
-  //     },
-  //   ],
-  //   colors: ['#15a362', '#33FF57', '#5733FF', '#FF33A3', '#33A3FF'], // Add your desired colors here
-  // };
-
-  salesChart: Highcharts.Options;
-
-  empChart: Highcharts.Options = {
-    title: {
-      text: 'Employee Chart',
-    },
-    xAxis: {
-      categories: this.departmentList,
-    },
-    yAxis: {
-      title: {
-        text: 'No. Of Employees',
-      },
-    },
-    plotOptions: {
-      column: {
-        colorByPoint: true,
-        colors: ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'], // Shades of green
-      },
-    },
-    series: [
-      {
-        type: 'column',
-        data: [2, 3, 4, 5, 6, 7, 8, 9, 10],
-        color: '#128c54',
-      },
-    ],
-  };
+  chartData: any;
+  deptData: any;
+  categories= ['Fostac(Catering)', 'Fostac(Retail)', 'Foscos(Registration)', 'Foscos(State)'];
+  departmentList = [];
 
   constructor(
     private _registerService: RegisterService,
@@ -91,6 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.employees$.subscribe(res => {
       this.data = res;
     })
+    console.log(this.chartData);
 
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)
@@ -112,37 +73,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
         this.empSalesProdWise = Object.values(res); // this convert into array
-        this.salesChart = {
-          credits: {
-            enabled: false
-          },
-          title: {
-            text: 'Sales Chart',
-          },
-          xAxis: {
-            categories: this.categories,
-          },
-          yAxis: {
-            title: {
-              text: 'Sales Count',
-            },
-          },
-          plotOptions: {
-            column: {
-              colorByPoint: true,
-              colors: ['#1a9850', '#66bd63', '#a6d96a', '#d9ef8b'], // Shades of green
-            },
-          },
-          series: [
-            {
-              type: 'column',
-              data: this.empSalesProdWise,
-              color: '#128c54',
-            },
-          ],
-        };
+        // console.log(this.empSalesProdWise);
+        this.chartData = this.getChartData(this.empSalesProdWise);
+        // console.log(this.chartData);
       }
     })
+  }
+
+  getChartData(response:any){
+    let chartData=[{
+      chartType: 'column',
+      chartTitle:'Employee Sales Chart',
+      category: this.categories,
+      seriesName: 'Sales Count',
+      data: response
+    }]
+    return chartData;
   }
 
   getEmployees() {
@@ -151,6 +97,20 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.store.dispatch(new GetEmployee());
       }
     })
+  }
+
+  catchDeptCount($event:any){
+    const dept = $event.map((item: any) => item.department);
+    const count = $event.map((item: any) => item.count);
+
+    this.deptData=[{
+      chartType: 'column',
+      chartTitle:'Employee Count By Department',
+      category: dept,
+      seriesName: 'Employee Count',
+      data: count
+    }]
+
   }
 
   getProductData() {

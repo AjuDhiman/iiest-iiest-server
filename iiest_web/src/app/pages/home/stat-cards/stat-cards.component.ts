@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { DepartmentListComponent } from '../../department-list/department-list.component';
@@ -20,6 +20,8 @@ export class StatCardsComponent implements OnInit{
   userPendingSales:number;
   userTotalSales:number;
   faIndianRupeeSign = faIndianRupeeSign;
+
+  @Output() emitDeptCount: EventEmitter<any> = new EventEmitter<any>
 
 
   constructor(private _getDataService:GetdataService,
@@ -60,7 +62,9 @@ export class StatCardsComponent implements OnInit{
             count:elem.count
           }
         });
-        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1)
+        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1);
+        this.emitDeptCount.emit(this.departmentAndCount);
+
       },
       error: err => {
 

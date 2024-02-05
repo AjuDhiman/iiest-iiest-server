@@ -20,7 +20,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
   // ------column chart variables------
   @Input() columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
   @Input() chartCategories: any = [];
-  @Input() chartData: any = [];
+  @Input() chartData: any;
   // -------line chart Varibles-------
   @Input() lineChartData: any = [];
   @Input() lineChartSeriesTitle: string;
@@ -33,8 +33,11 @@ export class HighchartsComponent implements OnInit, OnChanges {
   intervalType: string = 'week';
   allEmployees: any;
 
+
   ngOnInit(): void {
-    this.plotChart(this.chartType);
+    // this.chartData = this.chartData[0];
+    this.plotChart(this.chartData[0].chartType);
+    console.log(this.chartData[0]);
   }
 
   // fetchAllEmployees(): void {
@@ -49,7 +52,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['chartData']) {
-      this.plotChart(this.chartType);
+      this.plotChart(this.chartData[0].chartType);
+      console.log(this.chartData);
     }
   }
 
@@ -73,36 +77,40 @@ export class HighchartsComponent implements OnInit, OnChanges {
   // -------Column Chart Function---------
   plotColumnChart() {
     this.chart = {
+      chart: {
+        type: 'column'
+      },
       title: {
-        text: this.ChartTitle,
+        text: this.chartData[0].chartTitle,
       },
       credits: {
         enabled: false
       },
       xAxis: {
-        categories: this.chartCategories,
+        categories: this.chartData[0].category,
       },
       yAxis: {
         title: {
-          text: this.yaxixTitle,
+          // text: this.yaxixTitle,
         },
       },
       plotOptions: {
         column: {
           colorByPoint: true,
-          colors: this.columnColorShade,
-          events: {
-            click: (e) => {
-              console.log(e)
-            }
-          }
+          colors: this.columnColorShade
         },
       },
       series: [
         {
+          name: this.chartData[0].seriesName,
           type: 'column',
-          data: this.chartData,
-          color: '#128c54'
+          data: this.chartData[0].data,
+          color: '#128c54',
+          events: {
+            click: (e) => {
+              alert("Hello");
+            }
+          }
         }
       ],
     }
@@ -112,13 +120,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
   plotLineChart() {
     this.chart =  {
       title: {
-        text: this.ChartTitle,
+        text: this.chartData[0].chartTitle,
       },
       credits: {
         enabled: false,
       },
       xAxis: {
-        categories: this.chartCategories,
+        categories: this.chartData[0].category
       },
       yAxis: {
         title: {
@@ -135,8 +143,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'line',
-          name: 'Your Line Name',
-          data: this.chartData,
+          name: this.chartData[0].seriesName,
+          data: this.chartData[0].data
         },
       ],
     };
@@ -147,7 +155,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
   plotPieChart() {
     this.chart = {
       title: {
-        text: this.ChartTitle,
+        text: this.chartData[0].chartTitle,
       },
       credits: {
         enabled: false,
@@ -176,17 +184,17 @@ export class HighchartsComponent implements OnInit, OnChanges {
   
   }
 
-  // ---------Donut Chart Function---------
-  plotDonutChart() {
+  // ---------Area Chart Function---------
+  plotAreaChart() {
     this.chart = {
       title: {
-        text: this.ChartTitle,
+        text: this.chartData[0].chartTitle,
       },
       credits: {
         enabled: false,
       },
       xAxis: {
-        categories: this.chartCategories,
+        categories: this.chartData[0].category,
       },
       yAxis: {
         title: {
@@ -203,8 +211,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'area',
-          name: 'Your Area Name',
-          data: this.chartData,
+          name: this.chartData[0].seriesName,
+          data: this.chartData[0].data,
         },
       ],
     };
@@ -274,7 +282,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
         break;
       case "pie": this.plotPieChart();
         break;
-      case "donut": this.plotDonutChart();
+      case "area": this.plotAreaChart();
     }
   }
 }
