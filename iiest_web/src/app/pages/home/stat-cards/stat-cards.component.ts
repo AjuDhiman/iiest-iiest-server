@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+=======
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+>>>>>>> 1365ce0d543f9bdca1ff36526fa9491ea060c1c7
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { DepartmentListComponent } from '../../department-list/department-list.component';
@@ -62,7 +66,9 @@ export class StatCardsComponent implements OnInit{
             count:elem.count
           }
         });
-        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1)
+        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1);
+        this.emitDeptCount.emit(this.departmentAndCount);
+
       },
       error: err => {
 

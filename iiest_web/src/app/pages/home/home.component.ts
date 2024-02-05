@@ -35,7 +35,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   departmentCount: any = [];
   empSalesProdWise: any = [];
   chartData: any;
-  categories= [];
+  deptData: any;
+  categories= ['Fostac(Catering)', 'Fostac(Retail)', 'Foscos(Registration)', 'Foscos(State)'];
   departmentList = [];
 
   constructor(
@@ -50,6 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.employees$.subscribe(res => {
       this.data = res;
     })
+    console.log(this.chartData);
 
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)
@@ -71,8 +73,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
         this.empSalesProdWise = Object.values(res); // this convert into array
+        // console.log(this.empSalesProdWise);
+        this.chartData = this.getChartData(this.empSalesProdWise);
+        // console.log(this.chartData);
       }
     })
+  }
+
+  getChartData(response:any){
+    let chartData=[{
+      chartType: 'column',
+      chartTitle:'Employee Sales Chart',
+      category: this.categories,
+      seriesName: 'Sales Count',
+      data: response
+    }]
+    return chartData;
   }
 
   getEmployees() {
@@ -83,13 +99,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  
   catchDeptCount($event:any){
-    console.log($event);
-    this.chartData=[{
-      chartType: 'Bar',
-      chartTitle:'dept',
-      data: $event
+    const dept = $event.map((item: any) => item.department);
+    const count = $event.map((item: any) => item.count);
+
+    this.deptData=[{
+      chartType: 'column',
+      chartTitle:'Employee Count By Department',
+      category: dept,
+      seriesName: 'Employee Count',
+      data: count
     }]
 
   }
