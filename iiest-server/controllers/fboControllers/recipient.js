@@ -29,7 +29,15 @@ try {
     if(isValid){
         for(let recipient of bodyArray){
             const addRecipient = await recipientModel.create({salesInfo: req.params.id, name: recipient.name, phoneNo: recipient.phoneNo, aadharNo: recipient.aadharNo});
-            const log = logAudit(req.user._id, addRecipient._id, "Recipient Registered");
+
+            // this code is for tracking the the record related action of a recipient
+
+            const prevVal = {},
+
+            currentVal = addRecipient;
+
+            const log = logAudit(req.user._id, "recipientdetails", addRecipient._id, prevVal, currentVal, "Recipient Registered");
+
             if(!addRecipient){
                 success = false;
                 return res.status(404).json({success, randomErr: true})

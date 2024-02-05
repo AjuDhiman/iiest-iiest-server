@@ -14,13 +14,6 @@ exports.fostacVerification = async (req, res) => {
 
         const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date, username, password } = req.body;
 
-        // const checkAddress = await fostacVerifyModel.findOne({ address });
-
-        // if (checkAddress) {
-        //     success = false;
-        //     return res.status(401).json({ success, addressErr: true });
-        // }
-
         const checkExistingMail = await fostacVerifyModel.findOne({ email });
 
         if (checkExistingMail) {
@@ -37,9 +30,13 @@ exports.fostacVerification = async (req, res) => {
 
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sales_date });
 
-        //this code is for tracking the flow of data regarding to a recipient
+        //this code is for tracking the CRUD operation regarding to a recipient
+        
+        const prevVal = {}
 
-        const log = logAudit(req.user._id, recipientId, "Recipient verified");
+        const currentVal = basicFormAdd;
+
+        logAudit(req.user._id, "recipientdetails", recipientId , prevVal, currentVal, "Recipient verified");
 
         // code for tracking ends
 
@@ -109,9 +106,13 @@ exports.fostacEnrollment = async (req, res) => {
 
         }
 
-        const log = await logAudit(req.user._id, verifiedData.recipientInfo, trainingDateAction);
+        const prevVal = {}
 
-        const log1 = await logAudit(req.user._id, verifiedData.recipientInfo, "Recipient Enrolled");
+        const currentVal = enrollRecipient;
+
+        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo,  prevVal, currentVal, trainingDateAction);
+
+        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo, prevVal, currentVal, "Recipient Enrolled");
 
         // code for tracking ends
 
@@ -157,6 +158,12 @@ exports.postGenOperData = async (req, res) => {
 
         const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user._id, recipientInfo: recipientId, recipientStatus: recipient_status, officerNote: officer_note });
 
+        const prevVal = {}
+
+        const currentVal = operGenSecAdd
+
+        await logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Officer Note changed");
+
         if (operGenSecAdd) {
             success = true
             return res.status(200).json({ success })
@@ -198,6 +205,12 @@ exports.updateGenOperData = async (req, res) => {
         const { recipient_status, officer_note } = req.body;
 
         const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({ recipientInfo: recipientId }, { recipientStatus: recipient_status, officerNote: officer_note });
+
+        const prevVal = operGenSecUpdate;
+
+        const currentVal = await generalSectionModel.findOne({_id :operGenSecUpdate._id})
+
+        await logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Officer Note changed");
 
         if (operGenSecUpdate) {
             success = true

@@ -19,7 +19,7 @@
 		</div><!--//app-card-->
 
 		<!-- this section will be show data according to employee's department -->
-		<app-stat-cards></app-stat-cards>
+		<app-stat-cards (emitDeptCount)="catchDeptCount($event)"></app-stat-cards>
 		
 		<div class="row my-2">
 			<!-- <app-highcharts [chartData]="chartData" class="col-12 col-lg-6"></app-highcharts> -->

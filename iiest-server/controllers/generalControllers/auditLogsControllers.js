@@ -1,7 +1,7 @@
 const auditLogsSchema = require('../../models/operationModels/auditLogSchema');
 
-exports.logAudit = async(userId, candidateId, action) => {
-   let log = await auditLogsSchema.create({operatorInfo:userId, recipientInfo:candidateId, action})
+exports.logAudit = async(userId, targetCollection , targetId, prevVal, currentVal, action) => {
+   let log = await auditLogsSchema.create({operatorInfo:userId, targetCollection:targetCollection, targetInfo:targetId, prevVal: prevVal, currentVal: currentVal, action})
    return log;
 }
 
@@ -12,7 +12,7 @@ exports.getAuditLogs = async(req, res) => {
 
         const recipientId = req.params.recipientid;
 
-        const logs = await auditLogsSchema.find({recipientInfo: recipientId}).populate({path: 'operatorInfo'});
+        const logs = await auditLogsSchema.find({targetInfo: recipientId}).populate({path: 'operatorInfo'});
 
         if(logs){
             success=true;

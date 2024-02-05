@@ -54,6 +54,7 @@ export class GeneralSectionComponent implements OnInit {
         next: res => {
           this._toastrService.success('Record Updated', 'Updated')
           this.firstUpdate=false;
+          this.getCaseNotes();
         },
         error: err => {
           
@@ -63,6 +64,7 @@ export class GeneralSectionComponent implements OnInit {
      this._registerService.updateOperGenData(this.candidateId, this.generalForm.value).subscribe({
       next: res => {
         this._toastrService.success('Record Updated', 'Updated')
+        this.getCaseNotes();
       }
      })
     }
