@@ -39,13 +39,13 @@ exports.fostacVerification = async (req, res) => {
 
         //this code is for tracking the flow of data regarding to a recipient
 
-        const log = logAudit(req.user._id, recipientId, "Recipient verified" );
+        const log = logAudit(req.user._id, recipientId, "Recipient verified");
 
         // code for tracking ends
 
         if (basicFormAdd) {
             success = true
-            return res.status(200).json({ success, verifiedId:basicFormAdd._id });
+            return res.status(200).json({ success, verifiedId: basicFormAdd._id });
         }
 
     } catch (error) {
@@ -93,25 +93,25 @@ exports.fostacEnrollment = async (req, res) => {
 
         //this code is for tracking the flow of data regarding to a recipient
 
-        const verifiedData = await fostacVerifyModel.findOne({_id:verifiedDataId});//only for getting recipient id
+        const verifiedData = await fostacVerifyModel.findOne({ _id: verifiedDataId });//only for getting recipient id
 
         // //this code is for tracking fostac training date and tentative training date
 
         let trainingDateAction = '';
 
-        if(getFormatedDate(enrollRecipient.tentative_training_date) !== getFormatedDate(enrollRecipient.fostac_training_date)){
+        if (getFormatedDate(enrollRecipient.tentative_training_date) !== getFormatedDate(enrollRecipient.fostac_training_date)) {
 
-            trainingDateAction = `Date ${enrollRecipient.fostac_training_date} is given instead of tentative training date(${enrollRecipient.tentative_training_date})`
+            trainingDateAction = `Date ${getFormatedDate(enrollRecipient.fostac_training_date)} is given instead of tentative training date(${getFormatedDate(enrollRecipient.tentative_training_date)})`
 
         } else {
 
-            trainingDateAction=`Training Date(${enrollRecipient.fostac_training_date}) is given`;
+            trainingDateAction = `Training Date(${getFormatedDate(enrollRecipient.fostac_training_date)}) is given`;
 
         }
 
-        const log = await logAudit(req.user._id , verifiedData.recipientInfo, trainingDateAction );
+        const log = await logAudit(req.user._id, verifiedData.recipientInfo, trainingDateAction);
 
-        const log1 = await logAudit(req.user._id , verifiedData.recipientInfo, "Recipient Enrolled" );
+        const log1 = await logAudit(req.user._id, verifiedData.recipientInfo, "Recipient Enrolled");
 
         // code for tracking ends
 
@@ -167,7 +167,7 @@ exports.postGenOperData = async (req, res) => {
     }
 }
 
-exports.getGenOperData = async(req,res) => {
+exports.getGenOperData = async (req, res) => {
     try {
         let success = false;
 
@@ -197,7 +197,7 @@ exports.updateGenOperData = async (req, res) => {
 
         const { recipient_status, officer_note } = req.body;
 
-        const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({recipientInfo:recipientId},{ recipientStatus: recipient_status, officerNote: officer_note });
+        const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({ recipientInfo: recipientId }, { recipientStatus: recipient_status, officerNote: officer_note });
 
         if (operGenSecUpdate) {
             success = true
@@ -210,10 +210,11 @@ exports.updateGenOperData = async (req, res) => {
 }
 
 function getFormatedDate(date) {
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
-    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const month = months[originalDate.getMonth()];
     const day = String(originalDate.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
+    const formattedDate = `${day}-${month}-${year}`;
     return formattedDate;
 }

@@ -107,11 +107,12 @@ export class GeneralSectionComponent implements OnInit {
   }
 
   getFormatedDate(date: string): string {
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
-    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const month = months[originalDate.getMonth()];
     const day = String(originalDate.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
+    const formattedDate = `${day}-${month}-${year}`;
     return formattedDate;
   }
 
