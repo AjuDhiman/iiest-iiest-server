@@ -19,8 +19,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
   chart: Highcharts.Options;
   // ------column chart variables------
   @Input() columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
-  @Input() columnChartCategory: any = [];
-  @Input() columnChartData: any = [];
+  @Input() chartCategories: any = [];
+  @Input() chartData: any = [];
   // -------line chart Varibles-------
   @Input() lineChartData: any = [];
   @Input() lineChartSeriesTitle: string;
@@ -31,7 +31,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
   //New Variables
   intervals: any = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   intervalType: string = 'week';
-  @Input() chartData: Highcharts.Options;
   allEmployees: any;
 
   ngOnInit(): void {
@@ -49,7 +48,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
   // }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes['columnChartData']) {
+    if (changes && changes['chartData']) {
       this.plotChart(this.chartType);
     }
   }
@@ -81,7 +80,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
         enabled: false
       },
       xAxis: {
-        categories: this.columnChartCategory,
+        categories: this.chartCategories,
       },
       yAxis: {
         title: {
@@ -102,7 +101,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'column',
-          data: this.columnChartData,
+          data: this.chartData,
           color: '#128c54'
         }
       ],
@@ -111,212 +110,104 @@ export class HighchartsComponent implements OnInit, OnChanges {
 
   // -------Line Chart Function---------
   plotLineChart() {
-    this.chart = {
-
+    this.chart =  {
       title: {
         text: this.ChartTitle,
-        align: 'left'
       },
-
       credits: {
-        enabled: false
+        enabled: false,
       },
-
-      subtitle: {
-        text: this.chartSubCategoryTitle,
-        align: 'left'
+      xAxis: {
+        categories: this.chartCategories,
       },
-
       yAxis: {
         title: {
-          text: this.yaxixTitle
-        }
+          text: this.yaxixTitle,
+        },
       },
-
-      legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-      },
-
       plotOptions: {
-        series: {
-          label: {
-            connectorAllowed: false
+        line: {
+          marker: {
+            enabled: true,
           },
-          pointStart: this.lineChartStartPoint
-        }
+        },
       },
+      series: [
+        {
+          type: 'line',
+          name: 'Your Line Name',
+          data: this.chartData,
+        },
+      ],
+    };
 
-      series: [{
-        name: this.lineChartSeriesTitle,
-        data: this.lineChartData,
-        type: "line"
-      }],
-
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: 500
-          },
-          chartOptions: {
-            legend: {
-              layout: 'horizontal',
-              align: 'center',
-              verticalAlign: 'bottom'
-            }
-          }
-        }]
-      }
-    }
   }
 
   // -------Pie Chart Function---------
   plotPieChart() {
     this.chart = {
-      chart: {
-        type: 'pie'
-      },
       title: {
-        text: 'Pie Graph'
+        text: this.ChartTitle,
       },
-      tooltip: {
-        valueSuffix: '%'
-      },
-      subtitle: {
-        text: 'General pie data'
+      credits: {
+        enabled: false,
       },
       plotOptions: {
-        series: {
+        pie: {
           allowPointSelect: true,
           cursor: 'pointer',
-          dataLabels: [{
+          dataLabels: {
             enabled: true,
-            // distance: 20
-          }, {
-            enabled: true,
-            // distance: -40,
-            format: '{point.percentage:.1f}%',
-            style: {
-              fontSize: '1.2em',
-              textOutline: 'none',
-              opacity: 0.7
-            },
-            filter: {
-              operator: '>',
-              property: 'percentage',
-              value: 10
-            }
-          }]
-        }
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+          },
+          showInLegend: true,
+        },
       },
       series: [
         {
           type: 'pie',
-          name: 'Percentage',
-          // colorByPoint: true,
-          data: [
-            {
-              name: 'Water',
-              y: 55.02
-            },
-            {
-              name: 'Fat',
-              sliced: true,
-              y: 26.71
-            },
-            {
-              name: 'Carbohydrates',
-              y: 1.09
-            },
-            {
-              name: 'Protein',
-              y: 15.5
-            },
-            {
-              name: 'Ash',
-              y: 1.68
-            }
-          ]
+          data:  this.chartData.map((value:any, index:number) => ({
+            name: this.chartCategories[index],
+            y: value,
+          })),
         }
       ]
-    }
+    };
+  
   }
 
   // ---------Donut Chart Function---------
   plotDonutChart() {
     this.chart = {
-      chart: {
-        type: 'pie'
-      },
       title: {
         text: this.ChartTitle,
-        align: 'left'
       },
-      subtitle: {
-        text: this.chartSubCategoryTitle,
-        align: 'left'
+      credits: {
+        enabled: false,
+      },
+      xAxis: {
+        categories: this.chartCategories,
+      },
+      yAxis: {
+        title: {
+          text: this.yaxixTitle,
+        },
       },
       plotOptions: {
-        pie: {
-          shadow: false,
-          center: ['50%', '50%']
-        }
-      },
-      tooltip: {
-        valueSuffix: '%'
-      },
-      series: [{
-        name: 'Browsers',
-        // data: browserData,
-        size: '45%',
-        dataLabels: {
-          color: '#ffffff',
-          distance: '-50%'
-        },
-        type: "pie"
-      },
-      {
-        name: 'Versions',
-        // data: versionsData,
-        size: '80%',
-        innerSize: '60%',
-        dataLabels: {
-          format: '<b>{point.name}:</b> <span style="opacity: 0.5">{y}%</span>',
-          filter: {
-            property: 'y',
-            operator: '>',
-            value: 1
+        area: {
+          marker: {
+            enabled: false, // Disable markers on data points
           },
-          style: {
-            fontWeight: 'normal'
-          }
         },
-        type: "pie",
-        id: 'versions'
-      }],
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: 400
-          },
-          chartOptions: {
-            // series: [{
-            //   id: 'versions',
-            //   dataLabels: {
-            //     distance: 10,
-            //     format: '{point.custom.version}',
-            //     filter: {
-            //       property: 'percentage',
-            //       operator: '>',
-            //       value: 2
-            //     }
-            //   }
-            // }]
-          }
-        }]
-      }
-    }
+      },
+      series: [
+        {
+          type: 'area',
+          name: 'Your Area Name',
+          data: this.chartData,
+        },
+      ],
+    };
   }
 
   ChangeProduct() {
