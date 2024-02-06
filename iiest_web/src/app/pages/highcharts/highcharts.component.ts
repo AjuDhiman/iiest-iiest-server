@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { UtilitiesService } from 'src/app/services/utilities.service';
-// import {} from 'highcharts-angular';
+import { DepartmentListComponent } from '../department-list/department-list.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -33,6 +33,9 @@ export class HighchartsComponent implements OnInit, OnChanges {
   intervalType: string = 'week';
   allEmployees: any;
 
+  constructor(private modalService: NgbModal){
+
+  }
 
   ngOnInit(): void {
     // this.chartData = this.chartData[0];
@@ -108,7 +111,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
           color: '#128c54',
           events: {
             click: (e) => {
-              alert("Hello");
+              console.log(e);
+              this.viewDepartmentData(e.point.category);
             }
           }
         }
@@ -272,6 +276,11 @@ export class HighchartsComponent implements OnInit, OnChanges {
 
   chartTypeEvent(event: any) {
     this.plotChart(event.target.value);
+  }
+
+  viewDepartmentData(res:any){
+    const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.department = res;
   }
 
   plotChart(type:string) {
