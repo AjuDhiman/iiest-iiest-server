@@ -87,8 +87,10 @@
                 <td class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
-                <td class="cell"><span class="truncate selector"
-                    (click)="allocate(employee, 'manager')">{{employee.username}}</span></td>
+                <td class="cell cursor-pointer">
+                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()" [icon]="faCopy"></fa-icon>
+                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"> {{ employee.username}}</span>
+                </td>
                 <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
                 <td class="cell"><span class="truncate">
                     <fa-icon class="fa-l" style="margin-right: 5px;"

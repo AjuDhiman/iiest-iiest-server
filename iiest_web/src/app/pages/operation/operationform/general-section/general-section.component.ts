@@ -49,6 +49,8 @@ export class GeneralSectionComponent implements OnInit {
       return;
     }
 
+    this.markOfficerNote();
+
     if(this.firstUpdate){
       this._registerService.postOperGenData(this.candidateId, this.generalForm.value).subscribe({
         next: res => {
@@ -126,6 +128,11 @@ export class GeneralSectionComponent implements OnInit {
     const formattedTime = `${hours}:${minutes}:${seconds}`;
     return formattedTime;
   }
-  
 
+  markOfficerNote(){
+    let user:any = this._registerService.LoggedInUserData();
+    let parsedUser = JSON.parse(user);
+    this.generalForm.patchValue({officer_note: `${this.generalform['officer_note'].value} (${parsedUser.employee_name})\n`});
+  }
+  
 }

@@ -179,3 +179,8 @@ export interface operGeneralSection{
   recipient_status:string,
   officer_note:string
 }
+
+export interface fostacAttendance{
+  attendee_status:string,
+  marks:Number
+}

@@ -11,7 +11,9 @@ import { GeneralSectionComponent } from './general-section/general-section.compo
 export class OperationformComponent implements OnInit {
   candidateId: string;
   verifiedDataId: string;
+  enrolledDataId: string;
   verifiedStatus: boolean;
+  enrolledStatus: boolean
   salesDate: string;
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
@@ -29,11 +31,19 @@ export class OperationformComponent implements OnInit {
     this.verifiedDataId = $event;
   }
 
+  getEnrolledDataId($event: string) {
+    this.enrolledDataId = $event;
+  }
+
   getSalesData($event: string) {
     this.salesDate = $event;
   }
 
   getVerifiedStatus($event: boolean) {
     this.verifiedStatus = $event
+  }
+
+  getEnrolledStatus($event: boolean){
+    this.enrolledStatus = $event;
   }
 }

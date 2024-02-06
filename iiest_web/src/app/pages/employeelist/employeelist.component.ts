@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { faEye, faPencil, faTrash, faEnvelope, faXmark, faCheck, faFileCsv, faFilePdf, faMagnifyingGlass, faLocationPin } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPencil, faTrash, faEnvelope, faXmark, faCheck, faFileCsv, faFilePdf, faMagnifyingGlass, faLocationPin, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { UtilitiesService } from 'src/app/services/utilities.service'
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Select, Store } from '@ngxs/store';
@@ -41,6 +41,7 @@ export class EmployeelistComponent implements OnInit {
   faFilePdf = faFilePdf;
   faMagnifyingGlass = faMagnifyingGlass;
   faLocationPin = faLocationPin;
+  faCopy = faCopy;
  
   
   constructor( 
@@ -50,7 +51,8 @@ export class EmployeelistComponent implements OnInit {
     private _toastrService : ToastrService,
     private papa: Papa,
     private fileSaverService: FileSaverService,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    ) {
   }
 
   ngOnInit(): void {
@@ -164,6 +166,10 @@ export class EmployeelistComponent implements OnInit {
         });
         modalRef.componentInstance.allManagers = allManagers;
       }
+  }
+
+  copyNotification(){
+    this._toastrService.success('Text Copied');
   }
 
     //View Employee Details

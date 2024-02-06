@@ -57,6 +57,8 @@ import { GeneralSectionComponent } from './pages/operation/operationform/general
 import { VerificationSectionComponent } from './pages/operation/operationform/verification-section/verification-section.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component';
+import { ClipboardModule } from 'ngx-clipboard';
+import { AttendanceSectionComponent } from './pages/operation/operationform/attendance-section/attendance-section.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,8 @@ import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component
     EnrollmentSectionComponent,
     GeneralSectionComponent,
     VerificationSectionComponent,
-    StatCardsComponent
+    StatCardsComponent,
+    AttendanceSectionComponent
   ],
   imports: [
     BrowserModule,
@@ -122,13 +125,14 @@ import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component
       progressBar: false,
     }),
     NgSelectModule,
-    PdfViewerModule
+    PdfViewerModule,
+    ClipboardModule
   ],
   providers: [
     DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi :true},
     GetdataService ,
-    Papa 
+    Papa,
 ],
   bootstrap: [AppComponent]
 })

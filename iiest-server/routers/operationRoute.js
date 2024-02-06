@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
 const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/operationControllers/caseList');
-const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData } = require('../controllers/operationControllers/formSections');
+const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 
 const router = express.Router();
@@ -18,3 +18,7 @@ router.get('/getopergensecdata/:recipientid', authMiddleware, getGenOperData); /
 router.put('/updateopergensecdata/:recipientid', authMiddleware, updateGenOperData); // route for updating person's general sec data in operation form
 router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route for getting audit logs history of a particular recipient
 module.exports = router;
+
+//routes for trainer
+router.post('/fostacattendance/:enrolleddataid', authMiddleware, fostacAttendance)
+router.get('/getfostacattendata/:enrolleddataid', authMiddleware, getFostacAttenData); 

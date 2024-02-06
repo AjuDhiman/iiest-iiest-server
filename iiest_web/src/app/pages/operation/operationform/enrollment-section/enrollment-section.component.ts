@@ -19,11 +19,17 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   
   //input variables
   @Input() verifiedDataId: string;
+
   @Input() salesDate: string;
+
   @Input() verifiedStatus: boolean;
 
   //output event emitters
+  @Output() emitEnrolledDataId:EventEmitter<string>= new EventEmitter<string>
+
   @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>
+
+  @Output() emitEnrolledStatus:EventEmitter<boolean>= new EventEmitter<boolean>
 
   //icons
   faCircleExclamation = faCircleExclamation
@@ -78,6 +84,8 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
         next: res => {
           this._toastrService.success(res.message, 'Enrolled');
           this.enrolledStatus = true;
+          this.emitEnrolledStatus.emit(this.enrolledStatus);
+          this.emitEnrolledDataId.emit(res.enrolledId);
           this.refreshAuditLog.emit()
         },
         error: err => {
@@ -114,10 +122,13 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
       next: res => {
         if (res) {
           this.enrolledStatus = true;
+          this.emitEnrolledStatus.emit(this.enrolledStatus);
           this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date.toString()) });
           this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });
+          this.emitEnrolledDataId.emit(res.enrolledData._id);
         } else {
           this.enrolledStatus = false;
+          this.emitEnrolledStatus.emit(this.enrolledStatus);
         }
       }
     });

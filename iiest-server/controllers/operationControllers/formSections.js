@@ -1,5 +1,6 @@
 const fboModel = require("../../models/fboModels/fboSchema");
 const { recipientModel } = require("../../models/fboModels/recipientSchema");
+const fostacAttendanceModel = require("../../models/operationModels/attenSecSchema");
 const fostacVerifyModel = require("../../models/operationModels/basicFormSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
@@ -90,7 +91,7 @@ exports.fostacEnrollment = async (req, res) => {
 
         //this code is for tracking the flow of data regarding to a recipient
 
-        const verifiedData = await fostacVerifyModel.findOne({ _id: verifiedDataId });//only for getting recipient id
+        const verifiedData = await fostacVerifyModel.findOne({ _id: verifiedDataId });//only for getting recipient id because we want to track recipient
 
         // //this code is for tracking fostac training date and tentative training date
 
@@ -118,7 +119,7 @@ exports.fostacEnrollment = async (req, res) => {
 
         if (enrollRecipient) {
             success = true;
-            return res.status(200).json({ success, message: 'Enrolled recipient' });
+            return res.status(200).json({ success, message: 'Enrolled recipient', enrolledId: enrollRecipient._id });
         }
 
     } catch (error) {
@@ -230,4 +231,63 @@ function getFormatedDate(date) {
     const day = String(originalDate.getDate()).padStart(2, '0');
     const formattedDate = `${day}-${month}-${year}`;
     return formattedDate;
+}
+
+
+//for trainers panel
+
+//backend code for attendance form
+exports.fostacAttendance = async (req, res) => {
+    console.log(req.params.enrolleddataid);
+    try {
+        let success = false;
+
+        const enrolledDataId = req.params.enrolleddataid;
+
+        const { attendee_status, marks } = req.body;
+
+        const addAttendance = await fostacAttendanceModel.create({ operatorInfo: req.user.id, EnrollmentInfo: enrolledDataId, attendeeStatus: attendee_status, marks:marks})
+
+        //this code is for tracking the flow of data regarding to a recipient
+
+        const enrolledData = await fostacEnrollmentModel.findOne({ _id: enrolledDataId });
+
+        const verifiedData = await fostacVerifyModel.findOne({ _id: enrolledData.verificationInfo });
+
+        const prevVal = {}
+
+        const currentVal = addAttendance;
+
+        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo, prevVal, currentVal, `Attendance Marked ${attendee_status}`);
+
+        // code for tracking ends
+
+        if (addAttendance) {
+            success = true;
+            return res.status(200).json({ success, message: 'Attendance Marked' });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getFostacAttenData = async(req,res) => {
+    try {
+        let success = false;
+
+        const enrolledDataId = req.params.enrolleddataid;
+
+        const attenData = await fostacAttendanceModel.findOne({ EnrollmentInfo: enrolledDataId });
+
+        if (attenData) {
+            success = true;
+            return res.status(200).json({ success, attenData });
+        } else {
+            return res.status(204).json({ success });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
 }
