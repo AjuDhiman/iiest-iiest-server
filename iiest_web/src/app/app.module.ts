@@ -59,6 +59,7 @@ import { NgxLoadingModule } from 'ngx-loading';
 import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { AttendanceSectionComponent } from './pages/operation/operationform/attendance-section/attendance-section.component';
+import { FbolistprodwiseComponent } from './pages/fbolistprodwise/fbolistprodwise.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +95,7 @@ import { AttendanceSectionComponent } from './pages/operation/operationform/atte
     VerificationSectionComponent,
     StatCardsComponent,
     AttendanceSectionComponent
+    FbolistprodwiseComponent
   ],
   imports: [
     BrowserModule,

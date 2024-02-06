@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 
@@ -19,6 +19,8 @@ export class DepartmentListComponent implements OnInit{
   faMagnifyingGlass=faMagnifyingGlass
   isSearch:boolean=false;
   filteredData:any;
+  faXmark = faXmark;
+  faCheck = faCheck;
   constructor(public activeModal:NgbActiveModal,
               private _getDataService: GetdataService){
 

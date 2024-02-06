@@ -57,8 +57,11 @@
                             <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
                                     class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
                             </li>
+                            <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
+                                    class="submenu-link" [routerLink]="['/fbolist']">FBO List</a>
+                            </li>
                             <li *ngIf="caseListRoles.includes(userData.designation)" class="submenu-item"><a
-                                class="submenu-link" [routerLink]="['/caselist']">Case List</a>
+                                    class="submenu-link" [routerLink]="['/caselist']">Case List</a>
                             </li>
                         </ul>
                     </div>
@@ -75,8 +78,10 @@
     [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
     <li *ngIf="employeeRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/empregister']">Employee Register</a></li>
-    <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/fbo']">Fbo Register</a></li>
-    <li *ngIf="caseListRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item" 
+    <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
+            [routerLink]="['/fbolist']">FBO List</a></li>
+    <li *ngIf="caseListRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/caselist']">Case List</a></li>
 </ul>

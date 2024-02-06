@@ -10,6 +10,7 @@ import { fbo_roles, empRegister_roles, caseList_roles } from './utils/config';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
 import { OperationformComponent } from './pages/operation/operationform/operationform.component';
+import { FbolistComponent } from './pages/fbolist/fbolist.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'operationform/:id', component: OperationformComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
+  { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
 ];
 
 @NgModule({

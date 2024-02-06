@@ -36,14 +36,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   empSalesProdWise: any = [];
   chartData: any;
   deptData: any;
-  categories= ['Fostac(Catering)', 'Fostac(Retail)', 'Foscos(Registration)', 'Foscos(State)'];
+  // categories = ['Fostac(Catering)', 'Fostac(Retail)', 'Foscos(Registration)', 'Foscos(State)'];
+  categories = ['Fostac Catering', 'Fostac Retail', 'Foscos Registration', 'Foscos State'];
   departmentList = [];
 
   constructor(
     private _registerService: RegisterService,
     private store: Store,
     private _getDataService: GetdataService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getEmployees();
@@ -73,18 +74,35 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
         this.empSalesProdWise = Object.values(res); // this convert into array
-        // console.log(this.empSalesProdWise);
         this.chartData = this.getChartData(this.empSalesProdWise);
-        // console.log(this.chartData);
       }
     })
   }
 
-  getChartData(response:any){
-    let chartData=[{
+  getChartData(response: any) {
+    let chartData = [{
       chartType: 'column',
-      chartTitle:'Employee Sales Chart',
+      department: 'Sales Department',
+      chartTitle: 'Employee Sales Chart',
       category: this.categories,
+      // category: {
+      //   product: [{
+      //     name: 'Fostac',
+      //     type: 'Catering'
+      //   },
+      //   {
+      //     name: 'Fostac',
+      //     type: 'Retail'
+      //   },
+      //   {
+      //     name: 'Foscos',
+      //     type: 'Registration'
+      //   },
+      //   {
+      //     name: 'Foscos',
+      //     type: 'State'
+      //   }]
+      // },
       seriesName: 'Sales Count',
       data: response
     }]
@@ -99,13 +117,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  catchDeptCount($event:any){
+  catchDeptCount($event: any) {
     const dept = $event.map((item: any) => item.department);
     const count = $event.map((item: any) => item.count);
 
-    this.deptData=[{
+    this.deptData = [{
       chartType: 'column',
-      chartTitle:'Employee Count By Department',
+      // department: 'HR Department',
+      chartTitle: 'Employee Count By Department',
       category: dept,
       seriesName: 'Employee Count',
       data: count
