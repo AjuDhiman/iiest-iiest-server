@@ -2,6 +2,8 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import * as Highcharts from 'highcharts';
 import { DepartmentListComponent } from '../department-list/department-list.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FbolistprodwiseComponent } from '../fbolistprodwise/fbolistprodwise.component';
+import { RegisterService } from 'src/app/services/register.service';
 
 
 @Component({
@@ -10,6 +12,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./highcharts.component.scss']
 })
 export class HighchartsComponent implements OnInit, OnChanges {
+
+  salesCategory: any;
 
   //------Common variables for chart-----
   @Input() chartType: string;
@@ -32,16 +36,18 @@ export class HighchartsComponent implements OnInit, OnChanges {
   intervals: any = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   intervalType: string = 'week';
   allEmployees: any;
+  // loggedInUserData1: any;
 
-  constructor(private modalService: NgbModal){
-
-  }
+  constructor(private modalService: NgbModal,
+    private _registerService:RegisterService){}
 
   ngOnInit(): void {
     // this.chartData = this.chartData[0];
     this.plotChart(this.chartData[0].chartType);
-    console.log(this.chartData[0]);
   }
+
+  loggedInUserData: any = this._registerService.LoggedInUserData();
+  loggedInUserData1 = JSON.parse(this.loggedInUserData);
 
   // fetchAllEmployees(): void {
   //   this.allEmployees = this._utililitesService.getData();
@@ -90,7 +96,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
         enabled: false
       },
       xAxis: {
-        categories: this.chartData[0].category,
+        categories: this.chartData[0].category
       },
       yAxis: {
         title: {
@@ -112,7 +118,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
           events: {
             click: (e) => {
               console.log(e);
-              this.viewDepartmentData(e.point.category);
+              this.salesCategory = e.point.category;
+              this.salesCategory = this.salesCategory.split(" ");
+              if(this.loggedInUserData1.department==="Sales Department") {
+                this.viewSalesDataProdWise(e.point.category, this.salesCategory);
+              } else {
+                this.viewDepartmentData(e.point.category);
+              }
             }
           }
         }
@@ -281,6 +293,12 @@ export class HighchartsComponent implements OnInit, OnChanges {
   viewDepartmentData(res:any){
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.department = res;
+  }
+
+  viewSalesDataProdWise(res:any, salesCategory: any){
+    const modalRef = this.modalService.open(FbolistprodwiseComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.department = res;
+      modalRef.componentInstance.salesCategory = salesCategory;
   }
 
   plotChart(type:string) {

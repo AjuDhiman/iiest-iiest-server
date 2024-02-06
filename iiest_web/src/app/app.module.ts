@@ -57,6 +57,7 @@ import { GeneralSectionComponent } from './pages/operation/operationform/general
 import { VerificationSectionComponent } from './pages/operation/operationform/verification-section/verification-section.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component';
+import { FbolistprodwiseComponent } from './pages/fbolistprodwise/fbolistprodwise.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component
     EnrollmentSectionComponent,
     GeneralSectionComponent,
     VerificationSectionComponent,
-    StatCardsComponent
+    StatCardsComponent,
+    FbolistprodwiseComponent
   ],
   imports: [
     BrowserModule,
