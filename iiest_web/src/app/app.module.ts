@@ -94,7 +94,7 @@ import { FbolistprodwiseComponent } from './pages/fbolistprodwise/fbolistprodwis
     GeneralSectionComponent,
     VerificationSectionComponent,
     StatCardsComponent,
-    AttendanceSectionComponent
+    AttendanceSectionComponent,
     FbolistprodwiseComponent
   ],
   imports: [
