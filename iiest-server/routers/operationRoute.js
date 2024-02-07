@@ -15,7 +15,7 @@ router.post('/fostacenrollment/:verifieddataid', authMiddleware, fostacEnrollmen
 router.get('/getfostacenrolleddata/:verifieddataid', authMiddleware, getFostacEnrolledData); // route for getting if a person is enrolled or not if enrolled then getting it's data
 router.post('/postopergendata/:recipientid', authMiddleware, postGenOperData);//route for adding data in genral section of operation form
 router.get('/getopergensecdata/:recipientid', authMiddleware, getGenOperData); // route for getting if a person general sec data in operation form
-router.put('/updateopergensecdata/:recipientid', authMiddleware, updateGenOperData); // route for updating person's general sec data in operation form
+// router.put('/updateopergensecdata/:recipientid', authMiddleware, updateGenOperData); // route for updating person's general sec data in operation form
 router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route for getting audit logs history of a particular recipient
 module.exports = router;
 

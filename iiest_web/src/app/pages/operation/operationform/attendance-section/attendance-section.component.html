@@ -1,7 +1,7 @@
 <form [formGroup]="attendanceForm" class="row" (submit)="onSubmit()">
     <div class="d-flex justify-content-between">
         <h6>Attendance Section</h6>
-        <div class="status" [ngClass]="submittedStatus?(attendeeStatus=='prsent'?'text-success':'text-info'):'text-warning'" style="font-size: large;">{{submittedStatus?(attendeeStatus=='present'?'Trained':'Absent'):'Not-Trained'}} <fa-icon [icon]="submittedStatus && attendeeStatus=='present'?faCircleCheck:faCircleExclamation"
+        <div class="status" [ngClass]="submittedStatus?(attendeeStatus=='present'?'text-success':'text-danger'):'text-warning'" style="font-size: large;">{{submittedStatus?(attendeeStatus=='present'?'Trained':'Absent'):'Not-Trained'}} <fa-icon [icon]="submittedStatus && attendeeStatus=='present'?faCircleCheck:faCircleExclamation"
                 class="fa-lg fa-regular ml-2"></fa-icon></div>
     </div>
 

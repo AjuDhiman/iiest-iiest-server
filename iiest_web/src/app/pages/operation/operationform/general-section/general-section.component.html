@@ -20,10 +20,20 @@
   </div>
 
   <div class="col-md-6 col-12">
-    <label for="client_revert" class="form-label">Officer Note<sup>*</sup></label>
-    <textarea rows="1" rows="8" autocomplete="off" class="form-control form-control-sm" id="client_revert"
-    formControlName="officer_note"></textarea>
+    <div class="">
+      <label for="officer_chat" class="form-label">Officer Comments<sup>*</sup></label>
+      <textarea rows="1" rows="5" autocomplete="off" class="form-control form-control-sm" id="officer_chat"
+        [readOnly]="true">{{officerComments}}</textarea>
+    </div>
+    <div class="">
+      <label for="officer_note" class="form-label">Officer Note</label>
+      <input type="text" class="form-control form-control-sm" id="officer_note" formControlName="officer_note">
+    </div>
   </div>
+
+  <div class="col-md-6"></div>
+
+ 
 
   <div class="row mt-3">
     <div class="col-6">

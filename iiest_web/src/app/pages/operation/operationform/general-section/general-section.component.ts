@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -13,9 +13,9 @@ export class GeneralSectionComponent implements OnInit {
 
   @Input() candidateId: string = ''
 
-  firstUpdate:boolean=true;
+  caseNote: string = '';
 
-  caseNote:string='';
+  officerComments: string = '';
 
   generalForm: FormGroup = new FormGroup({
     recipient_status: new FormControl('ongoing'),
@@ -25,7 +25,7 @@ export class GeneralSectionComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
     private _getDataService: GetdataService,
-    private _toastrService:ToastrService) {
+    private _toastrService: ToastrService) {
 
   }
 
@@ -49,28 +49,20 @@ export class GeneralSectionComponent implements OnInit {
       return;
     }
 
-    this.markOfficerNote();
-
-    if(this.firstUpdate){
-      this._registerService.postOperGenData(this.candidateId, this.generalForm.value).subscribe({
-        next: res => {
-          this._toastrService.success('Record Updated', 'Updated')
-          this.firstUpdate=false;
-          this.getCaseNotes();
-        },
-        error: err => {
-          
-        }
-      })
-    } else {
-     this._registerService.updateOperGenData(this.candidateId, this.generalForm.value).subscribe({
+    this._registerService.postOperGenData(this.candidateId, this.generalForm.value).subscribe({
       next: res => {
-        this._toastrService.success('Record Updated', 'Updated')
-        this.getCaseNotes();
+        if (res) {
+          this._toastrService.success('Record Updated', 'Updated')
+          this.getCaseNotes();
+          this.getGenSecData();
+          this.generalForm.patchValue({officer_note:''});
+        }
+      },
+      error: err => {
+
       }
-     })
-    }
-    
+    })
+
   }
 
   //this methord is used in getting genearal section area like officr note from db
@@ -79,17 +71,16 @@ export class GeneralSectionComponent implements OnInit {
       next: res => {
         if (res) {
           this.generalForm.patchValue({ recipient_status: res.genSecData.recipientStatus });
-          this.generalForm.patchValue({ officer_note: res.genSecData.officerNote });
-          this.firstUpdate=false;
-        } else {
-          this.firstUpdate=true;
+          // this.generalForm.patchValue({ officer_note: res.genSecData.officerNote });
+          console.log(res);
+          this.formatofficerComments(res.genSecData);
         }
       }
     })
   }
 
   //this methord is used in getting array of all audit logs by calling get api for audit logs
-  getCaseNotes(){
+  getCaseNotes() {
     this._getDataService.getAuditLogs(this.candidateId).subscribe({
       next: res => {
         this.formatLogs(res.logs);
@@ -98,41 +89,57 @@ export class GeneralSectionComponent implements OnInit {
   }
 
   //this methord formats the logs in a better presentational form from a object form
-  formatLogs(logs:any){
-    let fullCaseNote:string = '';
+  formatLogs(logs: any) {
+    let fullCaseNote: string = '';
 
-    logs.forEach((log:any) => {
-      let caseNote:string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}\n`; 
+    logs.forEach((log: any) => {
+      let caseNote: string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}\n`;
 
-      fullCaseNote+=caseNote;
+      fullCaseNote += caseNote;
     });
 
-    this.caseNote=fullCaseNote;
+    this.caseNote = fullCaseNote;
   }
 
   getFormatedDate(date: string): string {
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+    let days = [ 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
-    const month = months[originalDate.getMonth()];
-    const day = String(originalDate.getDate()).padStart(2, '0');
-    const formattedDate = `${day}-${month}-${year}`;
+    let formattedDate;
+    if(Math.floor((new Date().getTime() - originalDate.getTime())/(1000*60*60*24)) < 7){
+      formattedDate = days[originalDate.getDay()];
+    } else {
+      const month = months[originalDate.getMonth()];
+      const day = String(originalDate.getDate()).padStart(2, '0');
+      formattedDate = `${day}-${month}-${year}`;
+    }  
     return formattedDate;
   }
 
-  getFormattedTime(dateString:string) {
+  getFormattedTime(dateString: string) {
     const originalDate = new Date(dateString);
-    const hours = String(originalDate.getHours()).padStart(2, '0');
+    let hours = String(originalDate.getHours()%12).padStart(2, '0');
     const minutes = String(originalDate.getMinutes()).padStart(2, '0');
-    const seconds = String(originalDate.getSeconds()).padStart(2, '0');
-    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    const meridiem = originalDate.getHours()>12?'PM':'AM';
+    const formattedTime = `${hours}:${minutes} ${meridiem}`;
     return formattedTime;
   }
 
-  markOfficerNote(){
-    let user:any = this._registerService.LoggedInUserData();
-    let parsedUser = JSON.parse(user);
-    this.generalForm.patchValue({officer_note: `${this.generalform['officer_note'].value} (${parsedUser.employee_name})\n`});
+  // markOfficerNote() {
+  //   let user: any = this._registerService.LoggedInUserData();
+  //   let parsedUser = JSON.parse(user);
+  //   this.generalForm.patchValue({ officer_note: `${this.generalform['officer_note'].value} (${parsedUser.employee_name})\n` });
+  // }
+
+  formatofficerComments(notes: any) {
+    let fullofficerComments = ''
+
+    notes.forEach((note: any) => {
+      fullofficerComments += `${note.officerNote} (${note.operatorInfo.employee_name}) on ${this.getFormatedDate(note.createdAt.toString())} at ${this.getFormattedTime(note.createdAt)}\n`;
+    })
+
+    this.officerComments=fullofficerComments;
   }
-  
+
 }

@@ -11,7 +11,6 @@ const generalSection=new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'recipientdetails',
         required: true,
-        unique: true
     },
     recipientStatus:{
         type:String,

@@ -181,7 +181,7 @@ exports.getGenOperData = async (req, res) => {
 
         const recipientId = req.params.recipientid;
 
-        const genSecData = await generalSectionModel.findOne({ recipientInfo: recipientId });
+        const genSecData = await generalSectionModel.find({ recipientInfo: recipientId }).populate({ path: 'operatorInfo'});
 
         if (genSecData) {
             success = true;
@@ -195,33 +195,33 @@ exports.getGenOperData = async (req, res) => {
     }
 }
 
-exports.updateGenOperData = async (req, res) => {
+// exports.updateGenOperData = async (req, res) => {
 
-    try {
+//     try {
 
-        let success = false;
+//         let success = false;
 
-        const recipientId = req.params.recipientid;
+//         const recipientId = req.params.recipientid;
 
-        const { recipient_status, officer_note } = req.body;
+//         const { recipient_status, officer_note } = req.body;
 
-        const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({ recipientInfo: recipientId }, { recipientStatus: recipient_status, officerNote: officer_note });
+//         const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({ recipientInfo: recipientId }, { recipientStatus: recipient_status, officerNote: officer_note });
 
-        const prevVal = operGenSecUpdate;
+//         const prevVal = operGenSecUpdate;
 
-        const currentVal = await generalSectionModel.findOne({_id :operGenSecUpdate._id})
+//         const currentVal = await generalSectionModel.findOne({_id :operGenSecUpdate._id})
 
-        await logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Officer Note changed");
+//         await logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Officer Note changed");
 
-        if (operGenSecUpdate) {
-            success = true
-            return res.status(200).json({ success })
-        }
+//         if (operGenSecUpdate) {
+//             success = true
+//             return res.status(200).json({ success })
+//         }
 
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-}
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Internal Server Error' });
+//     }
+// }
 
 function getFormatedDate(date) {
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']

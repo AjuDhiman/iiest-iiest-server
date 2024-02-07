@@ -126,14 +126,6 @@ export class RegisterService {
     ));
   }
 
-  public updateOperGenData(recId: string, formInterface: operGeneralSection){
-    const url = `${this.url}/updateopergensecdata/${recId}`
-    return this.http.put<any>(url, formInterface).pipe(
-      catchError(
-        this.handleError
-    ));
-  }
-
   public submitAttenSec(enrId: string, formInterface: fostacAttendance){ // this service helps on posting data related to recipient attendance
     const url = `${this.url}/fostacattendance/${enrId}`
     return this.http.post<any>(url, formInterface).pipe(

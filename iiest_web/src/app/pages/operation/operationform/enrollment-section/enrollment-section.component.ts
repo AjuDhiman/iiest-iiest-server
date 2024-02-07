@@ -35,6 +35,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   faCircleExclamation = faCircleExclamation
   faCircleCheck = faCircleCheck;
 
+  //Fostac Enrollment Reactive form 
   enrollmentForm: FormGroup = new FormGroup({
     tentative_training_date: new FormControl(''),
     fostac_training_date: new FormControl(''),
@@ -121,10 +122,11 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     this._getDataService.getFostacEnrolledData(this.verifiedDataId).subscribe({
       next: res => {
         if (res) {
+          // we want to update enrollment form's value if it's data exsists in database and disable it 
+          this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date.toString()) });
+          this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });      
           this.enrolledStatus = true;
           this.emitEnrolledStatus.emit(this.enrolledStatus);
-          this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date.toString()) });
-          this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });
           this.emitEnrolledDataId.emit(res.enrolledData._id);
         } else {
           this.enrolledStatus = false;
