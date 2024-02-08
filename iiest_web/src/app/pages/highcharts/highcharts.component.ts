@@ -2,8 +2,8 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import * as Highcharts from 'highcharts';
 import { DepartmentListComponent } from '../department-list/department-list.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FbolistprodwiseComponent } from '../fbolistprodwise/fbolistprodwise.component';
 import { RegisterService } from 'src/app/services/register.service';
+import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 
 
 @Component({
@@ -118,13 +118,17 @@ export class HighchartsComponent implements OnInit, OnChanges {
           events: {
             click: (e) => {
               console.log(e);
-              this.salesCategory = e.point.category;
-              this.salesCategory = this.salesCategory.split(" ");
-              if(this.loggedInUserData1.department==="Sales Department") {
-                this.viewSalesDataProdWise(e.point.category, this.salesCategory);
-              } else {
-                this.viewDepartmentData(e.point.category);
+              if(e.point.category==="retail" || e.point.category==="catering"){
+                this.salesCategory = "Fostac";
+              } else if(e.point.category==="registration" || e.point.category==="state") {
+                this.salesCategory = "Foscos";
               }
+              console.log(this.salesCategory);
+              // if(this.loggedInUserData1.department==="Sales Department") {
+                this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
+              // } else {
+              //   this.viewDepartmentData(e.point.category);
+              // }
             }
           }
         }
@@ -291,14 +295,16 @@ export class HighchartsComponent implements OnInit, OnChanges {
   }
 
   viewDepartmentData(res:any){
+    console.log(res);
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.department = res;
   }
 
-  viewSalesDataProdWise(res:any, salesCategory: any){
-    const modalRef = this.modalService.open(FbolistprodwiseComponent, { size: 'lg', backdrop: 'static' });
+  viewSalesDataProdWise(res:any, salesCategory: any, userDept: string){
+    const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.department = res;
       modalRef.componentInstance.salesCategory = salesCategory;
+      modalRef.componentInstance.userDept = userDept;
   }
 
   plotChart(type:string) {

@@ -33,12 +33,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   dnone: boolean = true;
   projectType: any;
   departmentCount: any = [];
-  empSalesProdWise: any = [];
+  empSalesProdWise: any;
   chartData: any;
   deptData: any;
   // categories = ['Fostac(Catering)', 'Fostac(Retail)', 'Foscos(Registration)', 'Foscos(State)'];
-  categories = ['Fostac Catering', 'Fostac Retail', 'Foscos Registration', 'Foscos State'];
+  salesChartcategories: any;
   departmentList = [];
+  salesChartData: any[];
+  empSalesProdkey: string[];
 
   constructor(
     private _registerService: RegisterService,
@@ -73,36 +75,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
+        console.log(res);        
+        console.log(this.salesChartcategories);
         this.empSalesProdWise = Object.values(res); // this convert into array
-        this.chartData = this.getChartData(this.empSalesProdWise);
+        this.empSalesProdkey = Object.keys(res); // this convert into array
+        this.chartData = this.getChartData(this.empSalesProdWise, this.empSalesProdkey);
       }
     })
   }
 
-  getChartData(response: any) {
+  getChartData(response: any, reskey: any) {
+    console.log(response);
     let chartData = [{
       chartType: 'column',
       department: 'Sales Department',
       chartTitle: 'Employee Sales Chart',
-      category: this.categories,
-      // category: {
-      //   product: [{
-      //     name: 'Fostac',
-      //     type: 'Catering'
-      //   },
-      //   {
-      //     name: 'Fostac',
-      //     type: 'Retail'
-      //   },
-      //   {
-      //     name: 'Foscos',
-      //     type: 'Registration'
-      //   },
-      //   {
-      //     name: 'Foscos',
-      //     type: 'State'
-      //   }]
-      // },
+      category: reskey,
       seriesName: 'Sales Count',
       data: response
     }]

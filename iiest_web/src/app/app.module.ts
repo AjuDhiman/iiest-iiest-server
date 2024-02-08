@@ -59,7 +59,7 @@ import { NgxLoadingModule } from 'ngx-loading';
 import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component';
 import { ClipboardModule } from 'ngx-clipboard';
 import { AttendanceSectionComponent } from './pages/operation/operationform/attendance-section/attendance-section.component';
-import { FbolistprodwiseComponent } from './pages/fbolistprodwise/fbolistprodwise.component';
+import { HighchartDataModalComponent } from './pages/modals/highchart-data-modal/highchart-data-modal.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +95,7 @@ import { FbolistprodwiseComponent } from './pages/fbolistprodwise/fbolistprodwis
     VerificationSectionComponent,
     StatCardsComponent,
     AttendanceSectionComponent,
-    FbolistprodwiseComponent
+    HighchartDataModalComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,109 @@
+<div class="modal-header bg-secondary">
+  <h6 class="modal-title text-white" id="modal-basic-title">{{department.toUpperCase()}}</h6>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+  <div class="row g-3 mb-4 align-items-center justify-content-end">
+    <div class="col-auto">
+      <div class="page-utilities">
+        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+          <div class="col-auto">
+            <form class="form">
+              <div class="input-group">
+                <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
+                  [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+              </div>
+              <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+            </form>
+          </div>
+          <div class="col-auto" *ngIf="userDept==='Sales Department'">
+            <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilterSales">
+              <option value="byName">Search by FBO Name</option>
+              <option value="byOwner">Search by Owner</option>
+              <option value="byDistrict">Search by District</option>
+              <option value="byCustomerID">Search by Customer ID</option>
+            </select>
+          </div>
+          <div class="col-auto" *ngIf="userDept==='HR Department'">
+            <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilterHr">
+              <option value="byEmployeeName">Search by Employee Name</option>
+              <option value="byState">Search by State</option>
+            </select>
+          </div>
+        </div><!--//row-->
+      </div><!--//table-utilities-->
+    </div><!--//col-auto-->
+  </div><!--//row-->
+  <div class="tab-content mx-3" id="orders-table-tab-content">
+    <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+      <div class="app-card app-card-orders-table shadow-sm mb-5">
+        <div class="app-card-body">
+          <div class="table-responsive">
+            <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+              <thead *ngIf="userDept==='Sales Department'">
+                <tr>
+                  <th class="cell">S.No</th>
+                  <th class="cell">FBO Name</th>
+                  <th class="cell">Owner Name</th>
+                  <th class="cell">Customer ID</th>
+                  <th class="cell">Contact no.</th>
+                  <th class="cell">District</th>
+                  <th class="cell">State</th>
+                </tr>
+              </thead>
+              <thead *ngIf="userDept==='HR Department'">
+                <tr>
+                  <th class="cell">S.No</th>
+                  <th class="cell">Employee name</th>
+                  <th class="cell">Employee Id</th>
+                  <th class="cell">Contact no.</th>
+                  <th class="cell">E-mail</th>
+                  <th class="cell">State</th>
+                  <th class="cell">Status</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="specificDatas?.length>0 && userDept==='Sales Department'">
+                <tr
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
+                  <td class="cell"><span class="truncate">{{sr+1}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.fboInfo.fbo_name}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.fboInfo.owner_name}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.fboInfo.customer_id}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.fboInfo.owner_contact}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.fboInfo.district}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.fboInfo.state}}</span></td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="employeeList?.length>0 && userDept==='HR Department'">
+                <tr
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
+                  <td class="cell"><span class="truncate">{{employee.serialNumber}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.email}}</span></td>
+                  <td class="cell"><span class="truncate">{{employee.state}}</span></td>
+                  <td class="cell text-center">
+                    <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
+                    <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="filteredData?.length==0">
+                <tr>
+                  <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div><!--//table-responsive-->
+
+        </div><!--//app-card-body-->
+      </div><!--//app-card-->
+      <div *ngIf="showPagination===true" class="d-flex justify-content-end">
+        <pagination-controls previousLabel="Prev" nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
