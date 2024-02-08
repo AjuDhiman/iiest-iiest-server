@@ -96,6 +96,9 @@ exports.employeeDepartmentCount = async (req, res) => {
 
         const employeeGroupCount = await employeeSchema.aggregate([
             {
+                $match: { status: true } // Filter documents where status is true
+            },
+            {
                 $group: {
                     _id: { department: '$department' },
                     count: { $sum: 1 }
