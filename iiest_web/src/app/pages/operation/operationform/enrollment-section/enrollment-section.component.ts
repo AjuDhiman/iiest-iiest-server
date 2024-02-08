@@ -12,6 +12,7 @@ import { ourHolidays } from 'src/app/utils/config';
   styleUrls: ['./enrollment-section.component.scss']
 })
 export class EnrollmentSectionComponent implements OnInit, OnChanges {
+
   //global variables
   enrolled: boolean = false;
   enrolledStatus: boolean = false;
@@ -83,39 +84,19 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     if(this.verifiedDataId){
       this._registerService.enrollRecipient(this.verifiedDataId, this.enrollmentForm.value).subscribe({
         next: res => {
-          this._toastrService.success(res.message, 'Enrolled');
           this.enrolledStatus = true;
           this.emitEnrolledStatus.emit(this.enrolledStatus);
           this.emitEnrolledDataId.emit(res.enrolledId);
-          this.refreshAuditLog.emit()
+          this.refreshAuditLog.emit();
+          this._toastrService.success(res.message, 'Enrolled');
         },
         error: err => {
-          if (err.error.unverifiedError)
-            this._toastrService.warning(err.error.message, err.error.title)
+          if (err.error.rollNoErr) this._toastrService.warning('Enrollment number already exsists');
         }
       })
   
     }
     
-  }
-
-  setTentativeTrainingDate(salesDate: string): void {
-    const date = new Date(salesDate);
-    date.setDate(date.getDate() + 7);
-    while (ourHolidays.find((item: any) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0) {
-      date.setDate(date.getDate() + 1);
-    }
-    this.enrollmentForm.patchValue({ tentative_training_date: this.getFormatedDate(date.toString()) });
-    this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(date.toString()) });
-  }
-
-  getFormatedDate(date: string): string {
-    const originalDate = new Date(date);
-    const year = originalDate.getFullYear();
-    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
-    const day = String(originalDate.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
   }
 
   getFostacEnrolledData() {
@@ -134,5 +115,25 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
         }
       }
     });
+  }
+
+  setTentativeTrainingDate(salesDate: string): void {
+    const date = new Date(salesDate);
+    date.setDate(date.getDate() + 7);
+    //we will increase training date by 1 while we find any holiday or sunday on that day
+    while (ourHolidays.find((item: any) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0) {
+      date.setDate(date.getDate() + 1);
+    }
+    this.enrollmentForm.patchValue({ tentative_training_date: this.getFormatedDate(date.toString()) });
+    this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(date.toString()) });
+  }
+
+  getFormatedDate(date: string): string {
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
   }
 }

@@ -45,7 +45,6 @@ export class UserAccountComponent {
 
   onProfileUpdate(){
     this.submitted = true;
-    console.log(this.updateProfileForm)
     //return;
     if (this.updateProfileForm.invalid) {
       return;
@@ -132,10 +131,8 @@ export class UserAccountComponent {
   validateFileType(allowedExtensions: string[]) {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const file = control.value;
-      console.log(file);
       if (file) {
         const fileExtension = file.split('.').pop()?.toLowerCase();
-        console.log(fileExtension)
         if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
           return null;
         } else {

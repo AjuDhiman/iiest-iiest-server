@@ -2,25 +2,26 @@
     <div class="app-header-inner" [ngClass]="{'left-margin-190': isSidebarVisible && largeDisplay}">
         <div class="container-fluid py-2">
             <div class="app-header-content">
-                <div class="row justify-content-between align-items-center">
+                <div class="row justify-content-between align-items-start">
                     <!--  {{width}} {{isSideBar}} -->
                     <div class="col-auto">
                         <a (click)="sideBarToggle(isSideBar)" id="sidepanel-toggler"
                             class="sidepanel-toggler d-inline-block">
                             <svg *ngIf="!isSidebarVisible || !largeDisplay" xmlns="http://www.w3.org/2000/svg"
-                                width="30" height="30" viewBox="0 0 30 30" role="img">
+                                width="30" height="30" viewBox="0 0 30 30" role="img" class="mt-1">
                                 <title>Menu</title>
                                 <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10"
                                     stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path>
                             </svg>
                             <svg *ngIf="isSidebarVisible && largeDisplay" xmlns="http://www.w3.org/2000/svg" width="30"
-                                height="30" viewBox="0 0 30 30" role="img">
+                                height="30" viewBox="0 0 30 30" role="img" class="mt-1">
                                 <title>Cross</title>
                                 <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10"
                                     stroke-width="2" d="M4 4l22 22M4 26l22-22"></path>
                             </svg>
                         </a>
-                        <div *ngIf="userdata && !isSidebarVisible && isNameVisible" class="logo-text d-inline mx-2">{{ userdata.employee_name }}</div>
+                        <div *ngIf="userdata && !isSidebarVisible && isNameVisible" class="logo-text d-inline mx-2">{{ userdata.employee_name }} 
+                            <span>{{userdata.designation}}</span></div>
                     </div><!--//col-->
                     <div class="search-mobile-trigger d-sm-none col">
                         <i class="search-mobile-trigger-icon fa-solid fa-magnifying-glass"></i>

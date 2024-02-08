@@ -9,23 +9,35 @@
         <div class="row gy-4 mb-3">
 
           <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
-          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
-            (emitVerifiedID)="getVerifiedDataId($event)" (emitSalesDate)="getSalesData($event)"
+          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3"
+            [candidateId]="candidateId"
+            (emitSalesDate)="getSalesData($event)" 
+            (emitVerifiedID)="getVerifiedDataId($event)" 
             (emitVerifiedStatus)="getVerifiedStatus($event)"
-            (refreshAuditLog)="generalsec.getCaseNotes()"></app-verification-section>
+            (refreshAuditLog)="generalsec.getCaseNotes()">
+          </app-verification-section>
 
-          <!-- enrollment section: this section is for enrolling  -->
-          <app-enrollment-section [salesDate]="salesDate" [verifiedStatus]="verifiedStatus"
-            [verifiedDataId]="verifiedDataId" (refreshAuditLog)="generalsec.getCaseNotes()" (emitEnrolledStatus)="getEnrolledStatus($event)"
-            (emitEnrolledDataId)="getEnrolledDataId($event)" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
+          <app-enrollment-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [salesDate]="salesDate"
+            [verifiedStatus]="verifiedStatus"
+            [verifiedDataId]="verifiedDataId" 
+            (emitEnrolledStatus)="getEnrolledStatus($event)"
+            (emitEnrolledDataId)="getEnrolledDataId($event)"
+            (refreshAuditLog)="generalsec.getCaseNotes()" >
           </app-enrollment-section>
 
-          <!-- Attendance section -->
-          <app-attendance-section [enrolledDataId]="enrolledDataId" [enrolledStatus]="enrolledStatus" (refreshAuditLog)="generalsec.getCaseNotes()" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"></app-attendance-section>
+          <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
+          <app-attendance-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [enrolledStatus]="enrolledStatus"
+            [enrolledDataId]="enrolledDataId" 
+            (refreshAuditLog)="generalsec.getCaseNotes()" >
+          </app-attendance-section>
 
-          <!-- general section -->
-          <app-general-section [candidateId]="candidateId"
-            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"></app-general-section>
+          <!-- general section: this section is for tracking recpients record like case notes and officer notes -->
+          <app-general-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [candidateId]="candidateId">
+          </app-general-section>
         </div>
       </div>
     </div>

@@ -52,7 +52,6 @@ export class EmploymentComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.type = params['type'];
     });
-    console.log(this.type);
   }
 
   ngOnInit(): void {
@@ -83,8 +82,6 @@ export class EmploymentComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    console.log(this.areaAllocationForm.value);
-    console.log(this.reportingManagerForm);
     this.registerService.registerArea(this.employee._id, this.areaAllocationForm.value).subscribe({
       next: (res)=>{
         if(res.success){
@@ -93,7 +90,6 @@ export class EmploymentComponent implements OnInit {
       },
       error: (err)=>{
         let errorObj = err.error;
-        console.log(errorObj)
         if(errorObj.userError){
           this.registerService.signout();
         }else if(errorObj.existingAreaErr){

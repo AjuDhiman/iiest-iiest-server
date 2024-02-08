@@ -33,6 +33,7 @@ export class DepartmentListComponent implements OnInit {
 
   getDepartmentdata() {
     this._getDataService.getEmpCountDeptWise(this.department).subscribe({
+<<<<<<< HEAD
       next: res => {
         console.log(res);
         this.employeeList = res.employeeList.map((elem: any, index: number) => {
@@ -45,6 +46,15 @@ export class DepartmentListComponent implements OnInit {
         this.filteredData = this.employeeList;
         this.showPagination = true;
       }
+=======
+        next: res=> {
+          this.employeeList=res.employeeList.map((elem:any, index:number) => {
+            return {...elem, serialNumber:index+1}
+          });
+          this.filteredData=this.employeeList;
+          this.showPagination=true;
+        }
+>>>>>>> d8a0147dca8398f31a57e72afbde94c821b261b8
     })
   }
 

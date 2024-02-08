@@ -11,8 +11,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Papa } from 'ngx-papaparse';
 import { FileSaverService } from 'ngx-filesaver'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EmploymentComponent } from '../employment/employment.component';
-import { ViewEmployeeComponent } from '../view-employee/view-employee.component';
+import { ViewEmployeeComponent } from '../modals/view-employee/view-employee.component';
+import { EmploymentComponent } from '../modals/employment/employment.component';
 
 @Component({
   selector: 'app-employeelist',

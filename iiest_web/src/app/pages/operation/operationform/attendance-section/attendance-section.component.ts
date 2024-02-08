@@ -11,20 +11,24 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./attendance-section.component.scss']
 })
 export class AttendanceSectionComponent implements OnInit, OnChanges {
-
+   //global variables
   submitted:boolean=false;
   submittedStatus: boolean = false;
   attendeeStatus:string = '';
 
+  //icons
   faCircleCheck=faCircleCheck;
   faCircleExclamation=faCircleExclamation;
 
+  //input variables
   @Input() enrolledStatus:boolean;
 
   @Input() enrolledDataId: string = '';
 
+  //output event emitters
   @Output() refreshAuditLog: EventEmitter<void>=new EventEmitter<void>
 
+  //reactive attendance form
   attendanceForm: FormGroup = new FormGroup({
     attendee_status: new FormControl(''),
     marks: new FormControl('')
@@ -54,18 +58,13 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
 
   onSubmit(){
     if(this.attendanceForm.invalid){
-      console.log(this.attendanceForm)
       return;
     }
-    console.log(this.enrolledDataId);
     this._registerService.submitAttenSec(this.enrolledDataId,this.attendanceForm.value).subscribe({
       next: res => {
         this._toastrService.success(res.message);
         this.submittedStatus=true;
         this.refreshAuditLog.emit();
-      },
-      error: err => {
-
       }
     })
   }

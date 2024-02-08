@@ -31,7 +31,7 @@ export class HighchartDataModalComponent {
 
   constructor(public activeModal: NgbActiveModal,
     private _getDataService: GetdataService,
-    private registerService: RegisterService,) {}
+    private registerService: RegisterService) {}
 
   ngOnInit(){
     this.fetchAllFboData();

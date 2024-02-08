@@ -26,7 +26,6 @@ export class ViewEmployeeComponent implements OnInit {
     // this.fulladdress = this.employee.address+", "+this.employee.city+", "+ this.employee.state+", "
     // +", Pincode: "+ this.employee.zip_code+", "+ this.employee.country;
     this.getUserImage();
-    console.log(this.employee);
     this.getAllocatedAreas();
   }
 
@@ -42,7 +41,6 @@ export class ViewEmployeeComponent implements OnInit {
   getAllocatedAreas(){
     this.getDataService.getAllocatedAreas(this.employee._id).subscribe({
       next: (res)=>{
-        console.log(res)
         this.allocatedState = res.allocatedPincodes.state;
         this.allocatedDistrict = res.allocatedPincodes.district;
         this.allocatedPincodes = res.allocatedPincodes.pincodes;

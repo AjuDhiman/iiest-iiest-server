@@ -1,16 +1,15 @@
-<form [formGroup]="verificationForm" autocomplete="off" class="row"
-  (ngSubmit)="onVerify()" >
+<form [formGroup]="verificationForm" autocomplete="off" class="row" (ngSubmit)="onVerify()">
+
+  <!-- form heading and status -->
   <div class="d-flex justify-content-between">
     <h6>Verification Section</h6>
     <div [ngClass]="verifiedStatus?'text-success':'text-warning'" style="font-size: large;">
       {{verifiedStatus?'verified':'In-Progress'}}
       <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation" class="fa-lg ml-2"></fa-icon>
-      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle text-warning" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
-          </svg> -->
     </div>
   </div>
+
+  <!-- form input fields -->
   <div class="col-md-3">
     <label for="recipient_name" class="form-label">Recipient name</label><sup>*</sup>
     <input type="text" placeholder="Recipient name" formControlName="recipient_name"
@@ -42,12 +41,12 @@
   <div class="col-md-3">
     <label for="father_name" class="form-label">Father's name</label><sup>*</sup>
     <input type="text" placeholder="Father's name" formControlName="father_name" class="form-control form-control-sm"
-      id="father_name" [ngClass]="{ 'is-invalid': verified && verificationform['father_name'].errors }" [readOnly]="verifiedStatus">
+      id="father_name" [ngClass]="{ 'is-invalid': verified && verificationform['father_name'].errors }"
+      [readOnly]="verifiedStatus">
     <div *ngIf="verified && verificationform['father_name'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['father_name'].errors['required']">Father's name is required</div>
     </div>
   </div>
-
 
   <div class="col-md-3">
     <label for="address" class="form-label">Address</label><sup>*</sup>
@@ -103,7 +102,8 @@
   <div class="col-md-3">
     <label for="pancard_no" class="form-label">Pancard no.</label>
     <input type="text" placeholder="Pancard no." formControlName="pancard_no" class="form-control form-control-sm"
-      id="pancard_no" [ngClass]="{ 'is-invalid': verified && verificationform['pancard_no'].errors }" [readOnly]="verifiedStatus">
+      id="pancard_no" [ngClass]="{ 'is-invalid': verified && verificationform['pancard_no'].errors }"
+      [readOnly]="verifiedStatus">
     <div *ngIf="verified && verificationform['pancard_no'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['pancard_no'].errors['pattern']">Pancard Number is invalid</div>
     </div>
@@ -142,7 +142,8 @@
   <div class="col-md-3">
     <label for="username" class="form-label">Recipient Username</label><sup>*</sup>
     <input type="text" placeholder="Recipient Username" formControlName="username" class="form-control form-control-sm"
-      id="username" [ngClass]="{ 'is-invalid': verified && verificationform['username'].errors }" [readOnly]="verifiedStatus">
+      id="username" [ngClass]="{ 'is-invalid': verified && verificationform['username'].errors }"
+      [readOnly]="verifiedStatus">
     <div *ngIf="verified && verificationform['username'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['username'].errors['required']">Recipient's Username is required</div>
     </div>
@@ -151,7 +152,8 @@
   <div class="col-md-3">
     <label for="password" class="form-label">Recipient Password</label><sup>*</sup>
     <input type="text" placeholder="Recipient Password" formControlName="password" class="form-control form-control-sm"
-      id="password" [ngClass]="{ 'is-invalid': verified && verificationform['password'].errors }" [readOnly]="verifiedStatus">
+      id="password" [ngClass]="{ 'is-invalid': verified && verificationform['password'].errors }"
+      [readOnly]="verifiedStatus">
     <div *ngIf="verified && verificationform['password'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['password'].errors['required']">Recipient's Password is required</div>
     </div>

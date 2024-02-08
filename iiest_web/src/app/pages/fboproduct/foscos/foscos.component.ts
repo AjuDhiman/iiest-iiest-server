@@ -28,7 +28,6 @@ export class FoscosComponent implements OnInit {
   waterTestAmnt: number;
   constructor(private rootFormGroup: FormGroupDirective) { }
   ngOnInit(): void {
-    console.log(this.formGroupName);
     this.foscos_training = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
   }
 
@@ -71,7 +70,6 @@ export class FoscosComponent implements OnInit {
     if (serviceType !== '' && duration !== '') {
       this.getProcessAmnt(serviceType, licenceCat);
       this.totalFixedCharge = this.fixedChargeIntoDuration(serviceType, licenceCat, duration);
-      console.log(this.totalFixedCharge);
     }
     if ((licenceCat !== '' && duration !== '' && clientType !== '' && shopsCount !== '') || waterTestAmnt !== '') {
       let totalAmnt = this.GSTandTotalAmnt(shopsCount);
@@ -93,10 +91,8 @@ export class FoscosComponent implements OnInit {
     let clientType = this.foscos_training.value.foscos_client_type;
     let shopsCount = this.foscos_training.value.shops_no;
     let waterTestAmnt = this.foscos_training.value.water_test_fee;
-    console.log(typeof ($event.target.value))
     if (serviceType !== '' && licenceCat !== '') {
       this.totalFixedCharge = this.fixedChargeIntoDuration(serviceType, licenceCat, duration);
-      console.log(this.totalFixedCharge);
     }
     if ((licenceCat !== '' && serviceType !== '' && clientType !== '' && shopsCount !== '') || waterTestAmnt !== '') {
       let totalAmnt = this.GSTandTotalAmnt(shopsCount);
@@ -153,7 +149,6 @@ export class FoscosComponent implements OnInit {
   }
 
   fixedChargeIntoDuration(serviceType: string, licenceCat: string, duration: number) {
-    console.log(serviceType, licenceCat, duration);
     if (serviceType === 'Registration') {
       this.fixedCharge = 100;
       if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
@@ -216,7 +211,6 @@ export class FoscosComponent implements OnInit {
     this.foscosGSTAmount.emit(GST_amount)
     this.foscosTotalAmnt = Number(GST_amount) + foscos_processAmnt;
     this.foscosTotalAmount(this.foscosTotalAmnt);
-    console.log(this.foscosTotalAmnt);
     return this.foscosTotalAmnt;
   }
 

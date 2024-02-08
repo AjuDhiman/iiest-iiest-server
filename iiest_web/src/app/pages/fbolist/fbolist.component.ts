@@ -3,9 +3,9 @@ import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { faEye, faPencil, faTrash, faEnvelope, faXmark, faMagnifyingGlass, faFileCsv, faFilePdf, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
-import { RecipientComponent } from '../recipient/recipient.component'
-import { ViewFboComponent } from '../view-fbo/view-fbo.component'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ViewFboComponent } from '../modals/view-fbo/view-fbo.component';
+import { RecipientComponent } from '../modals/recipient/recipient.component';
 
 
 @Component({
@@ -49,7 +49,6 @@ export class FbolistComponent implements OnInit {
     this.getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
-          console.log(res.salesInfo);
           this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
           this.filter();
         }
@@ -112,8 +111,6 @@ export class FbolistComponent implements OnInit {
             this.allFBOEntries.splice(index, 1);
             this.filter();
           }
-        } else {
-          console.error(res.message);
         }
       },
       error: (err) => {

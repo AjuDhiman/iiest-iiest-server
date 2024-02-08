@@ -46,6 +46,7 @@ export const stateName = [
 ]
 
 const master_roles = [
+   'Director',
    'Regional IT Manager',
    'Deputy Regional Manager(IT)',
    'IT Manager',

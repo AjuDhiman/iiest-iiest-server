@@ -96,7 +96,6 @@ export class SignupComponent implements OnInit {
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData);
     this.userName = this.parsedUserData.employee_name;
-    console.log(this._registerService.msg);
     this.dobValue;
     this.dojValue;
     this.form = this.formBuilder.group(
@@ -236,10 +235,8 @@ export class SignupComponent implements OnInit {
       })
     } else {
       this.addemployee = formData
-      console.log(this.addemployee);
       this._registerService.addEmployee(this.addemployee).subscribe({
         next: (response) => {
-          console.log(response);
           if (response.success) {
             this._toastrService.success('', 'Record Added Successfully.');
             this.onReset();
@@ -304,11 +301,9 @@ export class SignupComponent implements OnInit {
   }
 
   isEditRecord(param: any) {
-    console.log(param.Record);
     this.isEditMode = param.isEditMode;
     const record = param.Record;
     this.objId = record._id
-    console.log(record);
     this.formType = "Edit"
     this.form.setValue({
       'employee_name': record.employee_name,
