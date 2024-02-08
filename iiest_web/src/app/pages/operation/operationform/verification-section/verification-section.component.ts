@@ -11,14 +11,18 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./verification-section.component.scss']
 })
 export class VerificationSectionComponent implements OnInit {
+  //general variables
   verified: boolean = false;
   verifiedStatus: boolean = false;
+
   //icons
   faCircleExclamation = faCircleExclamation;
   faCircleCheck = faCircleCheck;
 
+  // input variables
   @Input() candidateId: string = '';
 
+  //output variables
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
   @Output() emitSalesDate: EventEmitter<string> = new EventEmitter<string>;
@@ -27,6 +31,7 @@ export class VerificationSectionComponent implements OnInit {
 
   @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>
 
+  //Verification Reactive angular form
   verificationForm: FormGroup = new FormGroup({
     recipient_name: new FormControl(''),
     fbo_name: new FormControl(''),
@@ -75,6 +80,7 @@ export class VerificationSectionComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
   }
 
   get verificationform(): { [key: string]: AbstractControl } {
@@ -89,18 +95,20 @@ export class VerificationSectionComponent implements OnInit {
     this._registerService.operationBasicForm(this.candidateId, this.verificationForm.value).subscribe({
       next: res => {
         if (res.success) {
-          console.log(res);
-          this._toastrService.success('Resipient\'s information is Verified', 'Verified');
           this.verifiedStatus=true;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
           this.emitVerifiedID.emit(res.verifiedId);
           this.refreshAuditLog.emit();
+          this._toastrService.success('Resipient\'s information is Verified', 'Verified');
         }
+      },
+      error: err => {
+        this._toastrService.error(err.messsage, 'Can\'t Verify');
       }
     })
   }
 
-  //founction foe fetching recipient data 
+  //founction for fetching recipient data 
   getMoreCaseInfo(){
     this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res) => {
@@ -114,8 +122,6 @@ export class VerificationSectionComponent implements OnInit {
         this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
         this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
         this.emitSalesDate.emit(res.populatedInfo.salesInfo.createdAt);
-      }, error : err => {
-        
       }
     });
   }
@@ -126,20 +132,17 @@ export class VerificationSectionComponent implements OnInit {
         if (res) {
           this.verifiedStatus = true;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
+          this.emitVerifiedID.emit(res.verifedData._id);
           this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
           this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
           this.verificationForm.patchValue({ email: res.verifedData.email });
           this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
           this.verificationForm.patchValue({ username: res.verifedData.userName });
           this.verificationForm.patchValue({ password: res.verifedData.password });
-          this.emitVerifiedID.emit(res.verifedData._id);
         } else {
           this.verifiedStatus = false;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
         }
-      },
-      error: err => {
-
       }
     });
   }

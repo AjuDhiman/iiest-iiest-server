@@ -11,3 +11,17 @@
 .green-drop-down a:hover{
     opacity: 0.8;
 }
+
+.logo-text{
+    position: relative;
+    text-transform: capitalize;
+}
+
+.logo-text span{
+    position: absolute;
+    width: 150px;
+    font-size: 10px;
+    color: #7a7c7e;
+    top: 20px;
+    left: 0;
+}

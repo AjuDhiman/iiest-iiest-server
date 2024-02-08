@@ -46,7 +46,7 @@
                 </tr>
               </thead>
               <tbody *ngIf="employeeList?.length>0">
-                <tr
+                <tr class="list-tr"
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{employee.serialNumber}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>

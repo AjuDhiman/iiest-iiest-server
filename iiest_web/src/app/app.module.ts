@@ -37,15 +37,11 @@ import { EditrecordComponent } from './pages/editrecord/editrecord.component';
 import { QrCodeModule } from 'ng-qrcode';
 import { Papa } from 'ngx-papaparse';
 import { FileSaverModule } from 'ngx-filesaver';
-import { RecipientComponent } from './pages/recipient/recipient.component';
-import { ViewFboComponent } from './pages/view-fbo/view-fbo.component';
 import { FostacComponent } from './pages/fboproduct/fostac/fostac.component';
 import { FoscosComponent } from './pages/fboproduct/foscos/foscos.component';
 import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HighchartsComponent } from './pages/highcharts/highcharts.component';
-import { EmploymentComponent } from './pages/employment/employment.component';
-import { ViewEmployeeComponent } from './pages/view-employee/view-employee.component';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
 import { HygieneAuditComponent } from './pages/fboproduct/hygiene-audit/hygiene-audit.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
@@ -60,6 +56,10 @@ import { StatCardsComponent } from './pages/home/stat-cards/stat-cards.component
 import { ClipboardModule } from 'ngx-clipboard';
 import { AttendanceSectionComponent } from './pages/operation/operationform/attendance-section/attendance-section.component';
 import { HighchartDataModalComponent } from './pages/modals/highchart-data-modal/highchart-data-modal.component';
+import { ViewFboComponent } from './pages/modals/view-fbo/view-fbo.component';
+import { ViewEmployeeComponent } from './pages/modals/view-employee/view-employee.component';
+import { RecipientComponent } from './pages/modals/recipient/recipient.component';
+import { EmploymentComponent } from './pages/modals/employment/employment.component';
 
 @NgModule({
   declarations: [

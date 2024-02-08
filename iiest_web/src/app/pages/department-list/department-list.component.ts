@@ -33,7 +33,6 @@ export class DepartmentListComponent implements OnInit{
   getDepartmentdata(){
     this._getDataService.getEmpCountDeptWise(this.department).subscribe({
         next: res=> {
-          console.log(res);
           this.employeeList=res.employeeList.map((elem:any, index:number) => {
             return {...elem, serialNumber:index+1}
           });

@@ -9,11 +9,12 @@ import { GeneralSectionComponent } from './general-section/general-section.compo
   styleUrls: ['./operationform.component.scss']
 })
 export class OperationformComponent implements OnInit {
+  //global variables 
   candidateId: string;
   verifiedDataId: string;
   enrolledDataId: string;
   verifiedStatus: boolean;
-  enrolledStatus: boolean
+  enrolledStatus: boolean;
   salesDate: string;
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
@@ -27,22 +28,28 @@ export class OperationformComponent implements OnInit {
     this.candidateId = this.activatedRoute.snapshot.params['id'];
   }
 
-  getVerifiedDataId($event: string) {
-    this.verifiedDataId = $event;
-  }
-
-  getEnrolledDataId($event: string) {
-    this.enrolledDataId = $event;
-  }
-
+  //this methord catch sales date from verification section which we will pass in enrollment section
   getSalesData($event: string) {
     this.salesDate = $event;
   }
 
+  // this methord catch verification Id from verification section which we will pass in enrollment section
+  getVerifiedDataId($event: string) {
+    this.verifiedDataId = $event;
+  }
+
+  // this methord catch verification sataus from verification section which we will pass in enrollment section
   getVerifiedStatus($event: boolean) {
     this.verifiedStatus = $event
   }
 
+  
+  // this methord catch enrollment Id from Enrollment section which we will pass in Attendance section
+  getEnrolledDataId($event: string) {
+    this.enrolledDataId = $event;
+  }
+
+   // this methord catch enrollment ststus from Enrollment section which we will pass in Attendance section
   getEnrolledStatus($event: boolean){
     this.enrolledStatus = $event;
   }

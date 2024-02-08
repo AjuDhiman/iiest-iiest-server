@@ -71,8 +71,6 @@ export class GeneralSectionComponent implements OnInit {
       next: res => {
         if (res) {
           this.generalForm.patchValue({ recipient_status: res.genSecData.recipientStatus });
-          // this.generalForm.patchValue({ officer_note: res.genSecData.officerNote });
-          console.log(res);
           this.formatofficerComments(res.genSecData);
         }
       }
@@ -107,7 +105,7 @@ export class GeneralSectionComponent implements OnInit {
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
     let formattedDate;
-    if(Math.floor((new Date().getTime() - originalDate.getTime())/(1000*60*60*24)) < 7){
+    if(Math.floor((new Date().getMinutes() - originalDate.getMinutes())/(24*60)) < 7){
       formattedDate = days[originalDate.getDay()];
     } else {
       const month = months[originalDate.getMonth()];
@@ -121,7 +119,7 @@ export class GeneralSectionComponent implements OnInit {
     const originalDate = new Date(dateString);
     let hours = String(originalDate.getHours()%12).padStart(2, '0');
     const minutes = String(originalDate.getMinutes()).padStart(2, '0');
-    const meridiem = originalDate.getHours()>12?'PM':'AM';
+    const meridiem = originalDate.getHours()>=12?'PM':'AM';
     const formattedTime = `${hours}:${minutes} ${meridiem}`;
     return formattedTime;
   }

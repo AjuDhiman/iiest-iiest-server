@@ -6,7 +6,7 @@
         <div class="app-branding">
             <a class="app-logo" [routerLink]="['/main']">
                 <img class="logo-icon me-2" [src]="userImage" alt="logo">
-                <span *ngIf="userData;" class="logo-text">{{ userData.employee_name }}</span>
+                <span *ngIf="userData;" class="logo-text">{{ userData.employee_name }}<span>{{userData.designation}}</span></span>
             </a>
         </div>
 
@@ -55,10 +55,10 @@
                                 <a class="submenu-link" [routerLink]="['/empregister']">Employee Register</a>
                             </li>
                             <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
-                                    class="submenu-link" [routerLink]="['/fbo']">FBO Register</a>
+                                    class="submenu-link" [routerLink]="['/fbo']">Fbo Register</a>
                             </li>
                             <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
-                                    class="submenu-link" [routerLink]="['/fbolist']">FBO List</a>
+                                    class="submenu-link" [routerLink]="['/fbolist']">Fbo List</a>
                             </li>
                             <li *ngIf="caseListRoles.includes(userData.designation)" class="submenu-item"><a
                                     class="submenu-link" [routerLink]="['/caselist']">Case List</a>
@@ -81,7 +81,7 @@
     <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/fbo']">Fbo Register</a></li>
     <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
-            [routerLink]="['/fbolist']">FBO List</a></li>
+            [routerLink]="['/fbolist']">Fbo List</a></li>
     <li *ngIf="caseListRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
             [routerLink]="['/caselist']">Case List</a></li>
 </ul>
