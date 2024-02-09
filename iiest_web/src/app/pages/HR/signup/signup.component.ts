@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Employee, pincodeData } from '../../utils/registerinterface'
 import { DatePipe } from '@angular/common';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
-import { RegisterService } from '../../services/register.service';
-import { GetdataService } from '../../services/getdata.service'
-import Validation from '../../utils/validation'
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { EmployeeState } from 'src/app/store/state/employee.state';
@@ -12,6 +8,10 @@ import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { UpdateEmployee } from 'src/app/store/actions/employee.action';
 import { stateName } from 'src/app/utils/config';
+import { RegisterService } from 'src/app/services/register.service';
+import { GetdataService } from 'src/app/services/getdata.service';
+import { Employee, pincodeData } from 'src/app/utils/registerinterface';
+import Validation from 'src/app/utils/validation';
 
 @Component({
   selector: 'app-signup',

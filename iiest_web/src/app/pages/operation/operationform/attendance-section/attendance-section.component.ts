@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -15,6 +15,7 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   submitted:boolean=false;
   submittedStatus: boolean = false;
   attendeeStatus:string = '';
+  isAttendeeAbsent:boolean = false;
 
   //icons
   faCircleCheck=faCircleCheck;
@@ -32,7 +33,7 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   attendanceForm: FormGroup = new FormGroup({
     attendee_status: new FormControl(''),
     marks: new FormControl('')
-  })
+  });
 
   constructor(private formBuilder:FormBuilder,
     private _registerService: RegisterService,
@@ -46,6 +47,10 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
       attendee_status: ['', Validators.required],
       marks: ['', Validators.required]
     });
+  }
+
+  get attendanceform(): { [key: string]: AbstractControl } {
+    return this.attendanceForm.controls;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -65,8 +70,20 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
         this._toastrService.success(res.message);
         this.submittedStatus=true;
         this.refreshAuditLog.emit();
+        this.attendeeStatus = this.attendanceForm.value.attendee_status;
+        console.log(this.attendanceform);
       }
     })
+  }
+
+  onAtendeeStatusChange($event:any){
+    if($event.target.value === 'absent'){
+      this.isAttendeeAbsent = true;
+      this.attendanceForm.patchValue({marks:0});
+    } else {
+      this.isAttendeeAbsent = false;
+      this.attendanceForm.patchValue({marks:''});
+    }
   }
 
   getFostacAttendanceData(){

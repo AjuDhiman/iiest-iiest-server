@@ -1,9 +1,9 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { DepartmentListComponent } from '../../department-list/department-list.component';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { DepartmentListComponent } from '../../modals/department-list/department-list.component';
 
 @Component({
   selector: 'app-stat-cards',

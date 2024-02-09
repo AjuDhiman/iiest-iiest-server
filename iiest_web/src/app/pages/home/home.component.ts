@@ -3,10 +3,12 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscriber, Subscription, interval, skipLast } from 'rxjs';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { GetEmployee } from 'src/app/store/actions/employee.action';
-import { Employee } from '../../utils/registerinterface';
+import { Employee, sales } from '../../utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { SalesState } from 'src/app/store/state/sales.state';
+import { GetSales } from 'src/app/store/actions/sales.action';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +30,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
+  @Select(SalesState.GetSalesList) sales$:Observable<sales>;
+  @Select(SalesState.salesLoaded) salesLoaded$:Observable<boolean>
   empLoadedSub: Subscription;
+  salesLoadedSub: Subscription;
   msg: Subscription;
   dnone: boolean = true;
   projectType: any;
@@ -41,6 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   departmentList = [];
   salesChartData: any[];
   empSalesProdkey: string[];
+  salesData: any;
 
   constructor(
     private _registerService: RegisterService,
@@ -53,6 +59,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getProductData();
     this.employees$.subscribe(res => {
       this.data = res;
+    })
+    this.sales$.subscribe(res => {
+      this.salesData=res;
+      console.log(res);
     })
     console.log(this.chartData);
 
@@ -98,7 +108,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getEmployees() {
-    this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
+    this.empLoadedSub = this.employeeLoaded$.subscribe(loadedSales => {
+      if (!loadedSales) {
+        this.store.dispatch(new GetSales());
+      }
+    })
+  }
+
+  getSales() {
+    this.salesLoadedSub = this.salesLoaded$.subscribe(loadedEmployee => {
       if (!loadedEmployee) {
         this.store.dispatch(new GetEmployee());
       }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { faFileCsv, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -22,6 +22,10 @@ export class CaseListComponent implements OnInit {
   showPagination: boolean = false;
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
+  faUpload = faUpload;
+  faDownload = faDownload;
+  faEye = faEye;
+  faFile = faFile;
   serviceType = '';
   totalCount: number = 0;
   panelType: string = '';

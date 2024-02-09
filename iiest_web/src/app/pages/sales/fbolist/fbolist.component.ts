@@ -4,9 +4,8 @@ import { RegisterService } from 'src/app/services/register.service';
 import { faEye, faPencil, faTrash, faEnvelope, faXmark, faMagnifyingGlass, faFileCsv, faFilePdf, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ViewFboComponent } from '../modals/view-fbo/view-fbo.component';
-import { RecipientComponent } from '../modals/recipient/recipient.component';
-
+import { RecipientComponent } from '../../modals/recipient/recipient.component';
+import { ViewFboComponent } from '../../modals/view-fbo/view-fbo.component';
 
 @Component({
   selector: 'app-fbolist',
@@ -32,7 +31,7 @@ export class FbolistComponent implements OnInit {
   faIndianRupeeSign = faIndianRupeeSign;
   faMagnifyingGlass = faMagnifyingGlass;
   pageNumber: number = 1;
-  itemsNumber:number=10;
+  itemsNumber: number = 10;
 
   isModal: boolean = false;
 
@@ -44,7 +43,7 @@ export class FbolistComponent implements OnInit {
   ngOnInit(): void {
     this.fetchAllFboData();
   }
- 
+
   fetchAllFboData(): void {
     this.getDataService.getSalesList().subscribe({
       next: (res) => {
@@ -75,7 +74,16 @@ export class FbolistComponent implements OnInit {
           break;
         case 'byCustomerID': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
           break;
+        case 'byProduct': this.filteredData = this.allFBOEntries.filter((elem: any) => {
+          if(elem.fboInfo.product_name.find((product: string) => product.toLowerCase().includes(this.searchQuery))){
+            return true;
+          } else {
+            return false;
+          }
+        });
+          break;
       }
+      console.log(this.filteredData);
     }
   }
 

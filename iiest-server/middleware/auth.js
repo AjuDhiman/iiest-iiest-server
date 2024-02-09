@@ -10,17 +10,19 @@ const authMiddleware = async(req, res, next)=>{
     if(!token){
         res.status(401).send({error: 'Please authenticate using a valid token'});
     }
-    try {
-        const data = jwt.verify(token,  JWT_SECRET);
-        const userCheck = await employeeSchema.findById(data.user.id).select('-password');
-        req.user = userCheck;
-        if(userCheck){
-           return next();
-        }else{
-            return res.status(401).json({userError: "User does not exist"})
+    else {
+        try {
+            const data = jwt.verify(token,  JWT_SECRET);
+            const userCheck = await employeeSchema.findById(data.user.id).select('-password');
+            req.user = userCheck;
+            if(userCheck){
+               return next();
+            }else{
+                return res.status(401).json({userError: "User does not exist"})
+            }
+        } catch (error) {
+                return res.status(401).json({error: 'Please authenticate using a valid token'});
         }
-    } catch (error) {
-            return res.status(401).json({error: 'Please authenticate using a valid token'});
     }
 }
 

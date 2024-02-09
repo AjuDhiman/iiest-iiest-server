@@ -93,7 +93,7 @@
                                         <th class="cell">State</th>
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
-                                        <!-- <th class="cell">Stage</th> -->
+                                        <th class="cell">Certificate</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,7 +115,17 @@
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
-                                        <!-- <td class="cell"><span class="truncate">{{data.stage}}</span></td> -->
+                                        <td class="cell"><span class="truncate">
+                                                <!-- <fa-icon class="mx-2 fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon> -->
+
+                                                <label for="upload-certificate"> <fa-icon
+                                                        class="mx-1 fa-2xl text-danger cursor-pointer"
+                                                        [icon]="faFile"></fa-icon>
+                                                </label>
+                                                <input type="file" id="upload-certificate" hidden>
+                                                <fa-icon class="mx-1 fa-xl text-black cursor-pointer"
+                                                    [icon]="faDownload"></fa-icon>
+                                            </span></td>
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">

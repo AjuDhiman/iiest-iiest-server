@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { waterTestFee, clientType, paymentMode, licenceType, serviceNames } from '../../../utils/config';
+import { clientType, licenceType, paymentMode, serviceNames, waterTestFee } from 'src/app/utils/config';
+
 @Component({
   selector: 'app-foscos',
   templateUrl: './foscos.component.html',

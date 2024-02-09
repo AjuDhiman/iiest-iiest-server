@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { clientType, processAmnt, serviceNames } from '../../../utils/config';
+import { clientType, processAmnt, serviceNames } from 'src/app/utils/config';
 @Component({
   selector: 'app-fostac',
   templateUrl: './fostac.component.html',
