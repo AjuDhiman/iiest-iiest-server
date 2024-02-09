@@ -23,7 +23,7 @@
             <div class="col-md-3">
               <label for="gender" class="form-label select-label">Gender</label><sup>*</sup>
               <select id="gender" [ngClass]="{ 'is-invalid': submitted && f['gender'].errors }" formControlName="gender"
-                class="form-select form-select-sm">
+                class="form-select form-select-sm cursor-pointer">
                 <option value="" disabled selected>Select the Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-3">
               <label for="dob" class="form-label">Date of Birth</label><sup>*</sup>
-              <input type="date" placeholder="Date of Birth" formControlName="dob" class="form-control form-control-sm"
+              <input type="date" placeholder="Date of Birth" formControlName="dob" class="form-control form-control-sm cursor-pointer"
                 id="dob" [ngClass]="{ 'is-invalid': submitted && f['dob'].errors }" />
               <div *ngIf="submitted && f['dob'].errors" class="invalid-feedback">
                 <div *ngIf="f['dob'].errors['required']">Date of Birth is required</div>
@@ -56,7 +56,7 @@
             <div class="col-md-3">
               <label for="company_name" class="form-label">Company Name</label><sup>*</sup>
               <select id="company_name" [ngClass]="{ 'is-invalid': submitted && f['company_name'].errors }"
-                formControlName="company_name" class="form-select form-select-sm">
+                formControlName="company_name" class="form-select form-select-sm cursor-pointer">
                 <option value="" disabled selected>Select the Company</option>
                 <option value="Federation">Federation</option>
                 <option value="Business Center">Business Center</option>
@@ -68,7 +68,7 @@
             <div class="col-md-3">
               <label for="project_name" class="form-label">Project Name</label><sup>*</sup>
               <select id="project_name" [ngClass]="{ 'is-invalid': submitted && f['project_name'].errors }"
-                formControlName="project_name" class="form-select form-select-sm" (change)="onProjectSelect()">
+                formControlName="project_name" class="form-select form-select-sm cursor-pointer" (change)="onProjectSelect()">
                 <option value="" disabled selected>Select the Project</option>
                 <option *ngFor="let projectName of projects" [ngValue]="projectName">{{ projectName }}</option>
               </select>
@@ -81,15 +81,15 @@
               <div class="d-flex gap-5">
                 <div class="form-check form-check-sm">
                   <input type="radio" style="height: 20px; width: 20px;"
-                 class="form-check-input form-check-input-sm" formControlName="post_type" [value]="post_types[0]" name="post_type"
+                 class="form-check-input form-check-input-sm cursor-pointer" formControlName="post_type" [value]="post_types[0]" name="post_type"
                     (change)="onPostSelect(post_types[0])" [id]="post_types[0]" [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
-                  <label class="form-label form-label-sm" [for]="post_types[0]" style="font-size: 14px;">{{post_types[0]}}</label>
+                  <label class="form-label form-label-sm cursor-pointer" [for]="post_types[0]" style="font-size: 14px;">{{post_types[0]}}</label>
                 </div>
                 <div class="form-check form-check-sm">
 
                   <input type="radio" style="height: 20px; width: 20px;" [id]="post_types[1]" name="post_type"
-                    (change)="onPostSelect(post_types[1])" class="form-check-input form-check-input-sm" formControlName="post_type" [value]="post_types[1]" [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
-                  <label class="form-label form-label-sm" [for]="post_types[1]" style="font-size: 14px;">{{post_types[1]}}</label>
+                    (change)="onPostSelect(post_types[1])" class="form-check-input form-check-input-sm cursor-pointer" formControlName="post_type" [value]="post_types[1]" [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                  <label class="form-label form-label-sm cursor-pointer" [for]="post_types[1]" style="font-size: 14px;">{{post_types[1]}}</label>
                 </div>
               </div>
               <div *ngIf="submitted && f['post_type'].errors" class="invalid-feedback" style="display: block;">
@@ -100,7 +100,7 @@
               <label for="department" class="form-label">Department</label><sup>*</sup>
               <select (change)="onDepartmentSelect()" id="department"
                 [ngClass]="{ 'is-invalid': submitted && f['department'].errors }" formControlName="department"
-                class="form-select form-select-sm">
+                class="form-select form-select-sm cursor-pointer">
                 <option value="" disabled selected>Select the Department</option>
                 <option *ngFor="let department of departments" [ngValue]="department">{{ department }}</option>
               </select>
@@ -111,7 +111,7 @@
             <div class="col-md-3">
               <label for="designation" class="form-label">Designation</label><sup>*</sup>
               <select id="designation" [ngClass]="{ 'is-invalid': submitted && f['designation'].errors }"
-                formControlName="designation" class="form-select form-select-sm">
+                formControlName="designation" class="form-select form-select-sm cursor-pointer">
                 <option value="" disabled selected>Select the Designation</option>
                 <option *ngFor="let designation of designations" [ngValue]="designation">{{ designation }}</option>
               </select>
@@ -122,7 +122,7 @@
             <div class="col-md-3">
               <label for="pay_band" class="form-label">Pay Band</label><sup>*</sup>
               <select id="pay_band" [ngClass]="{ 'is-invalid': submitted && f['pay_band'].errors }"
-                formControlName="pay_band" class="form-select form-select-sm">
+                formControlName="pay_band" class="form-select form-select-sm cursor-pointer">
                 <option value="" disabled selected>Select the Pay Band</option>
                 <option *ngFor="let payBand of payBands" [ngValue]="payBand">{{ payBand }}</option>
               </select>
@@ -141,7 +141,7 @@
             
             <div class="col-md-3">
               <label for="panel_type" class="form-label">Select Panel Type:</label><sup>*</sup>
-              <select class="form-select form-select-sm" id="panel_type"
+              <select class="form-select form-select-sm cursor-pointer" id="panel_type"
                 [ngClass]="{ 'is-invalid': submitted && f['panel_type'].errors }" formControlName="panel_type">
                 <option value="" disabled selected>Select the Panel</option>
                 <option *ngFor="let panelType of panelTypes" [ngValue]="panelType">{{ panelType }}</option>
@@ -154,7 +154,7 @@
             <div class="col-md-3">
               <label for="doj" class="form-label">Date of Joining</label><sup>*</sup>
               <input type="date" placeholder="Date of Joining" formControlName="doj"
-                class="form-control form-control-sm" id="doj"
+                class="form-control form-control-sm cursor-pointer" id="doj"
                 [ngClass]="{ 'is-invalid': submitted && f['doj'].errors }" />
               <div *ngIf="submitted && f['doj'].errors" class="invalid-feedback">
                 <div *ngIf="f['doj'].errors['required']">Date of Joining is required</div>
@@ -201,7 +201,7 @@
             <div class="col-md-2">
               <label for="state" class="form-label">State</label><sup>*</sup>
               <select id="state" [ngClass]="{ 'is-invalid': submitted && f['state'].errors }" formControlName="state"
-                class="form-select form-select-sm" (change)="onStateSelect()">
+                class="form-select form-select-sm cursor-pointer" (change)="onStateSelect()">
                 <option value="" disabled selected>Select the State</option>
                 <option *ngFor="let state of stateName" [value]="state">{{state}}</option>
               </select>
@@ -212,7 +212,7 @@
             <div class="col-md-2">
               <label for="city" class="form-label">City</label><sup>*</sup>
               <select id="city" [ngClass]="{ 'is-invalid': submitted && f['city'].errors }" formControlName="city"
-                class="form-select form-select-sm">
+                class="form-select form-select-sm cursor-pointer">
                 <option value="" disabled selected>Select the City</option>
                 <option *ngFor="let city of cities" [value]="city">{{city}}</option>
               </select>

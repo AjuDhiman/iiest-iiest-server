@@ -10,9 +10,8 @@
           <div class="col-auto">
             <form class="form">
               <div class="input-group">
-                <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
-                                style="position: absolute; padding: 9px 10px;"
-                                [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
+                  [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
               </div>
               <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
                 class="form-control form-control-sm search-orders" (input)="onSearchChange()">
@@ -46,9 +45,15 @@
                 </tr>
               </thead>
               <tbody *ngIf="employeeList?.length>0">
+<<<<<<< HEAD
+                <tr
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                  <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
+=======
                 <tr class="list-tr"
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{employee.serialNumber}}</span></td>
+>>>>>>> d8a0147dca8398f31a57e72afbde94c821b261b8
                   <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
@@ -58,15 +63,16 @@
                   <td class="cell text-center">
                     <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
                     <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
-                  </td>
+                               
+                  </td>
                 </tr>
               </tbody>
-              <tbody
-                    *ngIf="filteredData?.length==0">
-                    <tr>
-                      <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
-                    </tr>
-                  </tbody>
+              <tbody *ngIf="filteredData?.length==0">
+                <tr>
+                  <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div><!--//table-responsive-->
 

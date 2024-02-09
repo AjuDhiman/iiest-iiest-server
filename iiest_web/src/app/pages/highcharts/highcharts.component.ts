@@ -39,7 +39,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
   // loggedInUserData1: any;
 
   constructor(private modalService: NgbModal,
-    private _registerService:RegisterService){}
+    private _registerService: RegisterService) {}
 
   ngOnInit(): void {
     // this.chartData = this.chartData[0];
@@ -118,17 +118,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
           events: {
             click: (e) => {
               console.log(e);
-              if(e.point.category==="retail" || e.point.category==="catering"){
+              if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
-              } else if(e.point.category==="registration" || e.point.category==="state") {
+              } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
               console.log(this.salesCategory);
-              // if(this.loggedInUserData1.department==="Sales Department") {
-                this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
-              // } else {
-              //   this.viewDepartmentData(e.point.category);
-              // }
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
             }
           }
         }
@@ -138,7 +134,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
 
   // -------Line Chart Function---------
   plotLineChart() {
-    this.chart =  {
+    this.chart = {
       title: {
         text: this.chartData[0].chartTitle,
       },
@@ -164,7 +160,19 @@ export class HighchartsComponent implements OnInit, OnChanges {
         {
           type: 'line',
           name: this.chartData[0].seriesName,
-          data: this.chartData[0].data
+          data: this.chartData[0].data,
+          events: {
+            click: (e) => {
+              console.log(e);
+              if (e.point.category === "retail" || e.point.category === "catering") {
+                this.salesCategory = "Fostac";
+              } else if (e.point.category === "registration" || e.point.category === "state") {
+                this.salesCategory = "Foscos";
+              }
+              console.log(this.salesCategory);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
+            }
+          }
         },
       ],
     };
@@ -194,14 +202,14 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'pie',
-          data:  this.chartData.map((value:any, index:number) => ({
+          data: this.chartData.map((value: any, index: number) => ({
             name: this.chartCategories[index],
             y: value,
           })),
         }
       ]
     };
-  
+
   }
 
   // ---------Area Chart Function---------
@@ -233,6 +241,18 @@ export class HighchartsComponent implements OnInit, OnChanges {
           type: 'area',
           name: this.chartData[0].seriesName,
           data: this.chartData[0].data,
+          events: {
+            click: (e) => {
+              console.log(e);
+              if (e.point.category === "retail" || e.point.category === "catering") {
+                this.salesCategory = "Fostac";
+              } else if (e.point.category === "registration" || e.point.category === "state") {
+                this.salesCategory = "Foscos";
+              }
+              console.log(this.salesCategory);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
+            }
+          }
         },
       ],
     };
@@ -294,20 +314,20 @@ export class HighchartsComponent implements OnInit, OnChanges {
     this.plotChart(event.target.value);
   }
 
-  viewDepartmentData(res:any){
+  viewDepartmentData(res: any) {
     console.log(res);
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.department = res;
+    modalRef.componentInstance.department = res;
   }
 
-  viewSalesDataProdWise(res:any, salesCategory: any, userDept: string){
+  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string) {
     const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.department = res;
-      modalRef.componentInstance.salesCategory = salesCategory;
-      modalRef.componentInstance.userDept = userDept;
+    modalRef.componentInstance.department = res;
+    modalRef.componentInstance.salesCategory = salesCategory;
+    modalRef.componentInstance.userDept = userDept;
   }
 
-  plotChart(type:string) {
+  plotChart(type: string) {
     switch (type) {
       case "column": this.plotColumnChart();
         break;

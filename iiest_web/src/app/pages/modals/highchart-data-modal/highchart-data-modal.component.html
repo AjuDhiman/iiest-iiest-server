@@ -65,8 +65,8 @@
               </thead>
               <tbody *ngIf="specificDatas?.length>0 && userDept==='Sales Department'">
                 <tr
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
-                  <td class="cell"><span class="truncate">{{sr+1}}</span></td>
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                  <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.fbo_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.owner_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.customer_id}}</span></td>
@@ -77,8 +77,8 @@
               </tbody>
               <tbody *ngIf="employeeList?.length>0 && userDept==='HR Department'">
                 <tr
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
-                  <td class="cell"><span class="truncate">{{employee.serialNumber}}</span></td>
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                  <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
@@ -98,7 +98,6 @@
               </tbody>
             </table>
           </div><!--//table-responsive-->
-
         </div><!--//app-card-body-->
       </div><!--//app-card-->
       <div *ngIf="showPagination===true" class="d-flex justify-content-end">

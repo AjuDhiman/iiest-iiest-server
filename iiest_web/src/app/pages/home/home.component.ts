@@ -26,7 +26,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   fssaiData: any;
   dpiitData: any;
   isNameVisible: boolean = true;
-  // departmentAndCount:object;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
@@ -41,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   empSalesProdWise: any;
   chartData: any;
   deptData: any;
-  // categories = ['Fostac(Catering)', 'Fostac(Retail)', 'Foscos(Registration)', 'Foscos(State)'];
   salesChartcategories: any;
   departmentList = [];
   salesChartData: any[];
@@ -85,7 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
-        console.log(res);        
+        console.log(res);
         console.log(this.salesChartcategories);
         this.empSalesProdWise = Object.values(res); // this convert into array
         this.empSalesProdkey = Object.keys(res); // this convert into array
@@ -129,13 +127,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.deptData = [{
       chartType: 'column',
-      // department: 'HR Department',
-      chartTitle: 'Employee Count By Department',
+      chartTitle: 'Active Employee',
       category: dept,
       seriesName: 'Employee Count',
       data: count
     }]
-
   }
 
   getProductData() {

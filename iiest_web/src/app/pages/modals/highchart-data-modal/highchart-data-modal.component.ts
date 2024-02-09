@@ -23,6 +23,7 @@ export class HighchartDataModalComponent {
   faMagnifyingGlass = faMagnifyingGlass;
   isSearch: boolean = false;
   pageNumber: number = 1;
+  itemsNumber: number = 10;
   employeeList: any;
   specificDatas: any;
   faXmark = faXmark;
@@ -64,8 +65,12 @@ export class HighchartDataModalComponent {
         next: res=> {
           console.log(res);
           this.employeeList=res.employeeList.map((elem:any, index:number) => {
-            return {...elem, serialNumber:index+1}
-          });
+            if(elem.status===true){
+              return {...elem, serialNumber:index+1};
+            } else {
+              return null;
+            }
+          }).filter((value: any) => value !== null);
           this.filteredData=this.employeeList;
           this.showPagination=true;
         }
