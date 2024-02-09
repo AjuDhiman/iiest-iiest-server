@@ -184,3 +184,17 @@ export interface fostacAttendance{
   attendee_status:string,
   marks:Number
 }
+
+export interface sales{
+  _id: string,
+  employeeInfo:[],
+  fboInfo: [],
+  product_name:[],
+  fostacInfo: {},
+  foscosInfo: {},
+  payment_mode: string,
+  checkStatus: string,
+  grand_total: number,
+  invoiceId: string,
+  createdAt: string
+}

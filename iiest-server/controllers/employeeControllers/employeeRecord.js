@@ -80,7 +80,13 @@ exports.empSalesProdWise = async (req, res) => {
 
 exports.employeeSalesData = async (req, res) => {
     try {
-        const salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
+        let salesInfo;
+        console.log(req.user.designation)
+        if(req.user.designation==='Director'){
+            salesInfo = await salesModel.find({}).populate('fboInfo').select('-employeeInfo');
+        } else{
+            salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
+        }
         return res.status(200).json({ salesInfo });
     } catch (error) {
         console.error(error);

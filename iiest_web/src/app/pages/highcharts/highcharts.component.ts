@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { DepartmentListComponent } from '../department-list/department-list.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
+import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 
 
 @Component({

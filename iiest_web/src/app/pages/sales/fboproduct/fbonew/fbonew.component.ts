@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { waterTestFee, clientType, paymentMode, licenceType } from '../../../utils/config';
-import { RegisterService } from '../../../services/register.service';
-import { GetdataService } from '../../../services/getdata.service';
 import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { FbolistComponent } from '../../fbolist/fbolist.component';
+import { clientType, licenceType, paymentMode, waterTestFee } from 'src/app/utils/config';
+import { GetdataService } from 'src/app/services/getdata.service';
+import { RegisterService } from 'src/app/services/register.service';
 
 
 @Component({

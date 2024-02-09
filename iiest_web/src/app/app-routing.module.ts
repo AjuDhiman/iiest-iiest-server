@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SignupComponent } from './pages/signup/signup.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LandingpageComponent } from './pages/landingpage/landingpage.component'
 import { authGuard } from './shared/gaurds/auth.guard';
 import { routeGuard } from './shared/gaurds/route.guard';
-import { FbonewComponent } from './pages/fboproduct/fbonew/fbonew.component';
 import { fbo_roles, empRegister_roles, caseList_roles } from './utils/config';
 import { UserAccountComponent } from './pages/user-account/user-account.component';
 import { CaseListComponent } from './pages/operation/case-list/case-list.component';
 import { OperationformComponent } from './pages/operation/operationform/operationform.component';
-import { FbolistComponent } from './pages/fbolist/fbolist.component';
-
+import { SignupComponent } from './pages/HR/signup/signup.component';
+import { FbonewComponent } from './pages/sales/fboproduct/fbonew/fbonew.component';
+import { FbolistComponent } from './pages/sales/fbolist/fbolist.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route

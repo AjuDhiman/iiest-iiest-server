@@ -6,15 +6,17 @@
     vertical-align: middle;
     transform:all 0.4s ease;
     position: relative;
+    width: 150px;
+    padding-bottom: 0;
+    line-height: 17px;
+    top: 5px;
 }
 
 .logo-text span{
-    position: absolute;
-    width: 150px;
-    font-size: 10px;
+    font-size: 12px;
     color: #7a7c7e;
-    top: 20px;
-    left: 0;
+    width: 150px;
+    padding: 0;
 }
 
 @media (max-width:768px) {

@@ -6,15 +6,15 @@
     </div>
 
     <div class="col-md-3">
-        <label class="form-label">Attendee Status<sup>*</sup></label>
+        <label class="form-label" onAtendeeStatusChange>Attendee Status<sup>*</sup></label>
         <div>
             <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" value="present" id="present" formControlName="attendee_status"
+                <input type="radio" class="form-check-input" value="present" id="present" formControlName="attendee_status" (change)="onAtendeeStatusChange($event)"
                     [attr.disabled]="submittedStatus?true:null" name="attendee_status" id="present" [checked]="attendeeStatus=='present'">
                 <label class="form-label" for="present">Present</label>
             </div>
             <div class="form-check form-check-inline">
-                <input type="radio" class="form-check-input" value="absent" id="absent" formControlName="attendee_status"
+                <input type="radio" class="form-check-input" value="absent" id="absent" formControlName="attendee_status" (change)="onAtendeeStatusChange($event)"
                     name="attendee_status" [checked]="attendeeStatus=='absent'" [attr.disabled]="submittedStatus?true:null">
                 <label class="form-label" for="absent">Absent</label>
             </div>
@@ -24,7 +24,7 @@
     <div class="col-md-3">
         <label for="marks" class="form-label">Marks</label><sup>*</sup>
         <input type="number" placeholder="Score" formControlName="marks"
-            class="form-control form-control-sm" id="marks" [readOnly]="submittedStatus" min="0" max="100" [required]="submittedStatus">
+            class="form-control form-control-sm" id="marks" [readOnly]="submittedStatus || isAttendeeAbsent" min="0" max="100" [required]="submittedStatus">
             <!-- [ngClass]="{ 'is-invalid': enrolled && enrollmentform['fostac_training_date'].errors }">
         <div *ngIf="enrolled && enrollmentform['fostac_training_date'].errors" class="invalid-feedback">
             <div *ngIf="enrollmentform['fostac_training_date'].errors['required']">Fostac Training is required</div>
