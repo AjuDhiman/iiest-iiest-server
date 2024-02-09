@@ -84,7 +84,7 @@
  
               <tr class="list-tr"
                 *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
-                <td class="cell"><span class="truncate">{{sr+1}}</span></td>
+                <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                 <td class="cell cursor-pointer">

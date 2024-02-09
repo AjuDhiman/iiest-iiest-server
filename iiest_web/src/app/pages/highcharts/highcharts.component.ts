@@ -14,6 +14,7 @@ import { HighchartDataModalComponent } from '../modals/highchart-data-modal/high
 export class HighchartsComponent implements OnInit, OnChanges {
 
   salesCategory: any;
+  selectedChartType: string;
 
   //------Common variables for chart-----
   @Input() chartType: string;
@@ -39,27 +40,18 @@ export class HighchartsComponent implements OnInit, OnChanges {
   // loggedInUserData1: any;
 
   constructor(private modalService: NgbModal,
-    private _registerService: RegisterService) {}
+    private _registerService: RegisterService) { }
 
   ngOnInit(): void {
-    // this.chartData = this.chartData[0];
+    this.selectedChartType = this.chartData[0].chartType;
     this.plotChart(this.chartData[0].chartType);
   }
 
   loggedInUserData: any = this._registerService.LoggedInUserData();
   loggedInUserData1 = JSON.parse(this.loggedInUserData);
 
-  // fetchAllEmployees(): void {
-  //   this.allEmployees = this._utililitesService.getData();
-  //   if(this.allEmployees.length === 0){
-  //       this.getEmployees();
-  //       this.employees$.subscribe(res => {
-  //         this.allEmployees = res;
-  //       })
-  //   }
-  // }
-
   ngOnChanges(changes: SimpleChanges): void {
+    this.selectedChartType = this.chartData[0].chartType;
     if (changes && changes['chartData']) {
       this.plotChart(this.chartData[0].chartType);
       console.log(this.chartData);
@@ -123,7 +115,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              console.log(this.salesCategory);
               this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
             }
           }
@@ -148,6 +139,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
         title: {
           text: this.yaxixTitle,
         },
+        min: 0
       },
       plotOptions: {
         line: {
@@ -176,7 +168,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
         },
       ],
     };
-
   }
 
   // -------Pie Chart Function---------

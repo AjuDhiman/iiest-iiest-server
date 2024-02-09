@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   fssaiData: any;
   dpiitData: any;
   isNameVisible: boolean = true;
+  isChartDataAvailable: boolean = true;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
@@ -37,8 +38,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   deptData: any;
   salesChartcategories: any;
   departmentList = [];
-  salesChartData: any[];
+  salesChartData: any;
   empSalesProdkey: string[];
+  empHiringChartData: any;
 
   constructor(
     private _registerService: RegisterService,
@@ -73,17 +75,27 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
-        console.log(res);
-        console.log(this.salesChartcategories);
+        // console.log(this.salesChartcategories);
         this.empSalesProdWise = Object.values(res); // this convert into array
         this.empSalesProdkey = Object.keys(res); // this convert into array
-        this.chartData = this.getChartData(this.empSalesProdWise, this.empSalesProdkey);
+        this.salesChartData = this.getSalesChartData(this.empSalesProdWise, this.empSalesProdkey);
+      }
+    })
+
+    this._getDataService.getEmpHiringData().subscribe({
+      next: res => {
+        if (res.employeeHiringData.length > 0) {
+          const dept = res.employeeHiringData.map((item: any) => item._id.department);
+          const count = res.employeeHiringData.map((item: any) => item.count);
+          this.empHiringChartData = this.getEmpHiringData(dept, count);
+        } else {
+          this.isChartDataAvailable = false;
+        }
       }
     })
   }
 
-  getChartData(response: any, reskey: any) {
-    console.log(response);
+  getSalesChartData(response: any, reskey: any) {
     let chartData = [{
       chartType: 'column',
       department: 'Sales Department',
@@ -101,6 +113,18 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.store.dispatch(new GetEmployee());
       }
     })
+  }
+
+  getEmpHiringData(dept: any, count: any) {
+    this.empHiringChartData = [{
+      chartType: 'line',
+      chartTitle: 'Hiring Chart',
+      category: dept,
+      seriesName: 'Employee Count',
+      data: count
+    }]
+    console.log(this.empHiringChartData);
+    return this.empHiringChartData;
   }
 
   catchDeptCount($event: any) {

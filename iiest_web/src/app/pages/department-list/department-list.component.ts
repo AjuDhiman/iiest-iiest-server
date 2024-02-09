@@ -31,22 +31,9 @@ export class DepartmentListComponent implements OnInit {
     this.getDepartmentdata();
   }
 
-  getDepartmentdata() {
-    this._getDataService.getEmpCountDeptWise(this.department).subscribe({
-        next: res=> {
-          this.employeeList=res.employeeList.map((elem:any, index:number) => {
-            return {...elem, serialNumber:index+1}
-          });
-          this.filteredData=this.employeeList;
-          this.showPagination=true;
-        }
-    })
-  }
-
-  // getDepartmentdata(){
+  // getDepartmentdata() {
   //   this._getDataService.getEmpCountDeptWise(this.department).subscribe({
   //       next: res=> {
-  //         console.log(res);
   //         this.employeeList=res.employeeList.map((elem:any, index:number) => {
   //           return {...elem, serialNumber:index+1}
   //         });
@@ -55,6 +42,23 @@ export class DepartmentListComponent implements OnInit {
   //       }
   //   })
   // }
+
+  getDepartmentdata() {
+    this._getDataService.getEmpCountDeptWise(this.department).subscribe({
+      next: res => {
+        console.log(res);
+        this.employeeList = res.employeeList.map((elem: any, index: number) => {
+          if (elem.status === true) {
+            return { ...elem, serialNumber: index + 1 };
+          } else {
+            return null;
+          }
+        }).filter((value: any) => value !== null);
+        this.filteredData = this.employeeList;
+        this.showPagination = true;
+      }
+    })
+  }
 
   onSearchChange() {
     if (this.searchQuery) {

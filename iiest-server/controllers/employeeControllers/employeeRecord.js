@@ -121,3 +121,37 @@ exports.employeeDepartmentCount = async (req, res) => {
     }
 
 }
+
+exports.empHiringData = async (req, res) => {
+
+    try {
+
+        let success = false;
+
+        const employeeHiringData = await employeeSchema.aggregate([
+            {
+                $match: { createdBy: req.user.employee_name } // Filter documents where status is true
+            },
+            {
+                $group: {
+                    _id: { department: '$department' },
+                    count: { $sum: 1 }
+                }
+            }
+        ])
+
+        if (!employeeHiringData) {
+            success = false;
+            return res.status(404).json({ success, randomErr: true });
+        }
+
+        success = true;
+
+        return res.status(200).json({ success, employeeHiringData })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+}
