@@ -30,8 +30,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
-  @Select(SalesState.GetSalesList) sales$:Observable<sales>;
-  @Select(SalesState.salesLoaded) salesLoaded$:Observable<boolean>
+  @Select(SalesState.GetSalesList) sales$: Observable<sales>;
+  @Select(SalesState.salesLoaded) salesLoaded$: Observable<boolean>
   empLoadedSub: Subscription;
   salesLoadedSub: Subscription;
   msg: Subscription;
@@ -44,9 +44,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   salesChartcategories: any;
   departmentList = [];
   salesChartData: any;
+  areaSalesChartData: any;
   empSalesProdkey: string[];
   empHiringChartData: any;
   salesData: any;
+  stateCounts: any = {};
 
   constructor(
     private _registerService: RegisterService,
@@ -61,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.data = res;
     })
     this.sales$.subscribe(res => {
-      this.salesData=res;
+      this.salesData = res;
       console.log(res);
     })
     console.log(this.chartData);
@@ -88,7 +90,22 @@ export class HomeComponent implements OnInit, OnDestroy {
         // console.log(this.salesChartcategories);
         this.empSalesProdWise = Object.values(res); // this convert into array
         this.empSalesProdkey = Object.keys(res); // this convert into array
-        this.salesChartData = this.getSalesChartData(this.empSalesProdWise, this.empSalesProdkey);
+        this.salesChartData = this.setSalesChartData(this.empSalesProdWise, this.empSalesProdkey);
+      }
+    })
+
+    this._getDataService.getSalesList().subscribe({
+      next: res => {
+        this.stateCounts = res.salesInfo.reduce((counts: any, item: any) => {
+          const state = item.fboInfo.state;
+          counts[state] = counts[state] ? counts[state] + 1 : 1;
+          return counts;
+        }, {});
+
+        this.empSalesProdWise = Object.values(this.stateCounts); // this convert into array
+        this.empSalesProdkey = Object.keys(this.stateCounts); // this convert into array
+
+        this.areaSalesChartData = this.setAreaWiseSalesChartData(this.empSalesProdWise, this.empSalesProdkey);
       }
     })
 
@@ -97,7 +114,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (res.employeeHiringData.length > 0) {
           const dept = res.employeeHiringData.map((item: any) => item._id.department);
           const count = res.employeeHiringData.map((item: any) => item.count);
-          this.empHiringChartData = this.getEmpHiringData(dept, count);
+          this.empHiringChartData = this.setEmpHiringData(dept, count);
         } else {
           this.isChartDataAvailable = false;
         }
@@ -105,11 +122,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  getSalesChartData(response: any, reskey: any) {
+  setSalesChartData(response: any, reskey: any) {
     let chartData = [{
       chartType: 'column',
       department: 'Sales Department',
       chartTitle: 'Employee Sales Chart',
+      category: reskey,
+      seriesName: 'Sales Count',
+      data: response
+    }]
+    return chartData;
+  }
+
+  setAreaWiseSalesChartData(response: any, reskey: any) {
+    let chartData = [{
+      chartType: 'pie',
+      department: 'Sales Department',
+      chartTitle: 'Sales Chart Area Wise',
       category: reskey,
       seriesName: 'Sales Count',
       data: response
@@ -133,7 +162,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  getEmpHiringData(dept: any, count: any) {
+  setEmpHiringData(dept: any, count: any) {
     this.empHiringChartData = [{
       chartType: 'line',
       chartTitle: 'Hiring Chart',
@@ -141,7 +170,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       seriesName: 'Employee Count',
       data: count
     }]
-    console.log(this.empHiringChartData);
     return this.empHiringChartData;
   }
 
