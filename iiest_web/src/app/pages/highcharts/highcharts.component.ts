@@ -15,6 +15,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
 
   salesCategory: any;
   selectedChartType: string;
+  pieChartCategories: any = [];
+  pieChartData: any = [];
 
   //------Common variables for chart-----
   @Input() chartType: string;
@@ -24,7 +26,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
   chart: Highcharts.Options;
   // ------column chart variables------
   @Input() columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
-  @Input() chartCategories: any = [];
   @Input() chartData: any;
   // -------line chart Varibles-------
   @Input() lineChartData: any = [];
@@ -37,7 +38,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
   intervals: any = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   intervalType: string = 'week';
   allEmployees: any;
-  // loggedInUserData1: any;
 
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
@@ -45,6 +45,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.selectedChartType = this.chartData[0].chartType;
     this.plotChart(this.chartData[0].chartType);
+    this.pieChartCategories = this.chartData[0].category;
+    this.pieChartData = this.chartData[0].data;
   }
 
   loggedInUserData: any = this._registerService.LoggedInUserData();
@@ -52,15 +54,15 @@ export class HighchartsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.selectedChartType = this.chartData[0].chartType;
+    this.pieChartCategories = this.chartData[0].category;
+    this.pieChartData = this.chartData[0].data;
     if (changes && changes['chartData']) {
       this.plotChart(this.chartData[0].chartType);
-      console.log(this.chartData);
     }
   }
 
   ChangeInterval(event: any) {
     this.intervalType = event.target.value;
-    console.log(this.intervalType);
     switch (this.intervalType) {
       case 'today':
         this.intervals = ['Today'];
@@ -109,7 +111,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
           color: '#128c54',
           events: {
             click: (e) => {
-              console.log(e);
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
@@ -155,13 +156,11 @@ export class HighchartsComponent implements OnInit, OnChanges {
           data: this.chartData[0].data,
           events: {
             click: (e) => {
-              console.log(e);
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              console.log(this.salesCategory);
               this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
             }
           }
@@ -193,14 +192,23 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'pie',
-          data: this.chartData.map((value: any, index: number) => ({
-            name: this.chartCategories[index],
+          data: this.pieChartData.map((value: any, index: number) => ({
+            name: this.pieChartCategories[index],
             y: value,
           })),
+          events: {
+            click: (e) => {
+              if (e.point.name === "retail" || e.point.name === "catering") {
+                this.salesCategory = "Fostac";
+              } else if (e.point.name === "registration" || e.point.name === "state") {
+                this.salesCategory = "Foscos";
+              }
+              this.viewSalesDataProdWise(e.point.name, this.salesCategory, this.loggedInUserData1.department);
+            }
+          }
         }
       ]
     };
-
   }
 
   // ---------Area Chart Function---------
@@ -234,13 +242,11 @@ export class HighchartsComponent implements OnInit, OnChanges {
           data: this.chartData[0].data,
           events: {
             click: (e) => {
-              console.log(e);
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              console.log(this.salesCategory);
               this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
             }
           }
@@ -306,7 +312,6 @@ export class HighchartsComponent implements OnInit, OnChanges {
   }
 
   viewDepartmentData(res: any) {
-    console.log(res);
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.department = res;
   }

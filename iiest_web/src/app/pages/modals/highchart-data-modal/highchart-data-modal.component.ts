@@ -63,7 +63,6 @@ export class HighchartDataModalComponent {
   getDepartmentdata(){
     this._getDataService.getEmpCountDeptWise(this.department).subscribe({
         next: res=> {
-          console.log(res);
           this.employeeList=res.employeeList.map((elem:any, index:number) => {
             if(elem.status===true){
               return {...elem, serialNumber:index+1};
