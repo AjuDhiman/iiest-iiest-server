@@ -11,76 +11,42 @@ import { DepartmentListComponent } from '../modals/department-list/department-li
   templateUrl: './highcharts.component.html',
   styleUrls: ['./highcharts.component.scss']
 })
-export class HighchartsComponent implements OnInit, OnChanges {
+export class HighchartsComponent implements OnChanges {
 
-  salesCategory: any;
+  salesCategory: string;
+  categories: string[];
+  values: number[];
 
   //------Common variables for chart-----
-  @Input() chartType: string;
-  @Input() ChartTitle: string;
   @Input() yaxixTitle: string;
   @Input() chartSubCategoryTitle: string;
   chart: Highcharts.Options;
   // ------column chart variables------
   @Input() columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
-  @Input() chartCategories: any = [];
   @Input() chartData: any;
   // -------line chart Varibles-------
-  @Input() lineChartData: any = [];
-  @Input() lineChartSeriesTitle: string;
-  @Input() lineChartStartPoint: number;
 
   Highcharts: typeof Highcharts = Highcharts;
-  datas: any = [1, 2, 3, 4];
-  //New Variables
-  intervals: any = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   intervalType: string = 'week';
   allEmployees: any;
-  // loggedInUserData1: any;
 
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) {}
 
-  ngOnInit(): void {
-    // this.chartData = this.chartData[0];
-    this.plotChart(this.chartData[0].chartType);
-  }
-
   loggedInUserData: any = this._registerService.LoggedInUserData();
   loggedInUserData1 = JSON.parse(this.loggedInUserData);
 
-  // fetchAllEmployees(): void {
-  //   this.allEmployees = this._utililitesService.getData();
-  //   if(this.allEmployees.length === 0){
-  //       this.getEmployees();
-  //       this.employees$.subscribe(res => {
-  //         this.allEmployees = res;
-  //       })
-  //   }
-  // }
-
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes['chartData']) {
-      this.plotChart(this.chartData[0].chartType);
+    if (changes && changes['chartData'] && this.chartData?.chartType) {
+      console.log(1)
+      this.plotChart(this.chartData.chartType);
       console.log(this.chartData);
     }
   }
 
   ChangeInterval(event: any) {
     this.intervalType = event.target.value;
-    console.log(this.intervalType);
-    switch (this.intervalType) {
-      case 'today':
-        this.intervals = ['Today'];
-        break;
-      case 'week':
-        this.intervals = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        break;
-      case 'year':
-        this.intervals = ['January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December'];
-        break;
-    }
+    this.plotChart(this.chartData.chartType);
   }
 
   // -------Column Chart Function---------
@@ -90,13 +56,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
         type: 'column'
       },
       title: {
-        text: this.chartData[0].chartTitle,
+        text: this.chartData.chartTitle,
       },
       credits: {
         enabled: false
       },
       xAxis: {
-        categories: this.chartData[0].category
+        categories: this.categories,
       },
       yAxis: {
         title: {
@@ -111,9 +77,9 @@ export class HighchartsComponent implements OnInit, OnChanges {
       },
       series: [
         {
-          name: this.chartData[0].seriesName,
+          name: this.chartData.seriesName,
           type: 'column',
-          data: this.chartData[0].data,
+          data: this.values ,
           color: '#128c54',
           events: {
             click: (e) => {
@@ -136,13 +102,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
   plotLineChart() {
     this.chart = {
       title: {
-        text: this.chartData[0].chartTitle,
+        text: this.chartData.chartTitle,
       },
       credits: {
         enabled: false,
       },
       xAxis: {
-        categories: this.chartData[0].category
+        categories: this.chartData.category
       },
       yAxis: {
         title: {
@@ -159,8 +125,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'line',
-          name: this.chartData[0].seriesName,
-          data: this.chartData[0].data,
+          name: this.chartData.seriesName,
+          data: this.chartData.data,
           events: {
             click: (e) => {
               console.log(e);
@@ -183,7 +149,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
   plotPieChart() {
     this.chart = {
       title: {
-        text: this.chartData[0].chartTitle,
+        text: this.chartData.chartTitle,
       },
       credits: {
         enabled: false,
@@ -203,7 +169,7 @@ export class HighchartsComponent implements OnInit, OnChanges {
         {
           type: 'pie',
           data: this.chartData.map((value: any, index: number) => ({
-            name: this.chartCategories[index],
+            name: index,
             y: value,
           })),
         }
@@ -216,13 +182,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
   plotAreaChart() {
     this.chart = {
       title: {
-        text: this.chartData[0].chartTitle,
+        text: this.chartData.chartTitle,
       },
       credits: {
         enabled: false,
       },
       xAxis: {
-        categories: this.chartData[0].category,
+        categories: this.chartData.category,
       },
       yAxis: {
         title: {
@@ -239,8 +205,8 @@ export class HighchartsComponent implements OnInit, OnChanges {
       series: [
         {
           type: 'area',
-          name: this.chartData[0].seriesName,
-          data: this.chartData[0].data,
+          name: this.chartData.seriesName,
+          data: this.chartData.data,
           events: {
             click: (e) => {
               console.log(e);
@@ -328,6 +294,13 @@ export class HighchartsComponent implements OnInit, OnChanges {
   }
 
   plotChart(type: string) {
+    if(this.chartData.showIntervalSelection){
+      this.categories=Object.keys(this.chartData.data[this.intervalType]);
+      this.values=Object.values(this.chartData.data[this.intervalType]);
+    } else{
+      this.categories=Object.keys(this.chartData.data);
+      this.values=Object.values(this.chartData.data);
+    }
     switch (type) {
       case "column": this.plotColumnChart();
         break;

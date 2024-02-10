@@ -33,12 +33,12 @@ const createInvoiceBucket = ()=>{
     return new GridFSBucket(mongoose.connection.db, {bucketName: 'fboInvoices'});
 }
 
-const fostacCertificateBucket = ()=>{
-    if(!mongoose.connection.db){
-        throw new Error('MongoDB Connection not established')
-    }
-    console.log('Creating certificate bucket')
-    return new GridFSBucket(mongoose.connection.db, {bucketName: 'fostacCertificates'})
-}
+// const fostacCertificateBucket = ()=>{
+//     if(!mongoose.connection.db){
+//         throw new Error('MongoDB Connection not established')
+//     }
+//     console.log('Creating certificate bucket')
+//     return new GridFSBucket(mongoose.connection.db, {bucketName: 'fostacCertificates'});
+// }
 
 module.exports = {fboEbillBucket, createInvoiceBucket, empSignBucket, empImageBucket};

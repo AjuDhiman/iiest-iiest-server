@@ -107,3 +107,20 @@ export const ourHolidays:Array<{date:string, name:string}> = [
    { date: '2024-02-02', name: 'republic day' },
    { date: '2024-02-03', name: 'republic day' }
 ]
+
+export class chartData{
+   chartType: string;
+   department: string;
+   chartTitle:string;
+   seriesName: string;data: any;
+   showIntervalSelection= false;
+
+   constructor(chartType = 'column', department:string ,chartTitle:string,seriesName: string,data: any,showIntervalSelection= false){
+      this.chartType=chartType;
+      this.department=department;
+      this.chartTitle=chartTitle;
+      this.seriesName=seriesName;
+      this.data=data;
+      this.showIntervalSelection=showIntervalSelection;
+   }
+}

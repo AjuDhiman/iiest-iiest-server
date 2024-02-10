@@ -9,6 +9,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { SalesState } from 'src/app/store/state/sales.state';
 import { GetSales } from 'src/app/store/actions/sales.action';
+import { chartData } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-home',
@@ -26,25 +27,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   fssaiData: any;
   dpiitData: any;
   isNameVisible: boolean = true;
+  // departmentAndCount:object;
   faIndianRupeeSign = faIndianRupeeSign;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
-  @Select(SalesState.GetSalesList) sales$:Observable<sales>;
-  @Select(SalesState.salesLoaded) salesLoaded$:Observable<boolean>
   empLoadedSub: Subscription;
-  salesLoadedSub: Subscription;
   msg: Subscription;
   dnone: boolean = true;
   projectType: any;
-  departmentCount: any = [];
   empSalesProdWise: any;
   chartData: any;
-  deptData: any;
-  salesChartcategories: any;
-  departmentList = [];
-  salesChartData: any[];
-  empSalesProdkey: string[];
+  deptData: unknown;
   salesData: any;
+  topSalesmanData:{salesperson: string, salesAmount:number};
+  salesChartData:any;
 
   constructor(
     private _registerService: RegisterService,
@@ -54,14 +50,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getEmployees();
+    this.fetchAllFboData()
     this.getProductData();
+
     this.employees$.subscribe(res => {
       this.data = res;
     })
-    this.sales$.subscribe(res => {
-      this.salesData=res;
-      console.log(res);
-    })
+    
     console.log(this.chartData);
 
     let loggedInUserData: any = this._registerService.LoggedInUserData();
@@ -83,55 +78,46 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
-        console.log(res);
-        console.log(this.salesChartcategories);
-        this.empSalesProdWise = Object.values(res); // this convert into array
-        this.empSalesProdkey = Object.keys(res); // this convert into array
-        this.chartData = this.getChartData(this.empSalesProdWise, this.empSalesProdkey);
+        this.salesChartData = new chartData('column', 'Sales department', 'Sales Count Chart', 'Sales Count', res, true);
       }
     })
-  }
-
-  getChartData(response: any, reskey: any) {
-    console.log(response);
-    let chartData = [{
-      chartType: 'column',
-      department: 'Sales Department',
-      chartTitle: 'Employee Sales Chart',
-      category: reskey,
-      seriesName: 'Sales Count',
-      data: response
-    }]
-    return chartData;
   }
 
   getEmployees() {
-    this.empLoadedSub = this.employeeLoaded$.subscribe(loadedSales => {
-      if (!loadedSales) {
-        this.store.dispatch(new GetSales());
-      }
-    })
-  }
-
-  getSales() {
-    this.salesLoadedSub = this.salesLoaded$.subscribe(loadedEmployee => {
+    this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
       if (!loadedEmployee) {
         this.store.dispatch(new GetEmployee());
       }
     })
   }
 
-  catchDeptCount($event: any) {
-    const dept = $event.map((item: any) => item.department);
-    const count = $event.map((item: any) => item.count);
+  fetchAllFboData(): void {
+    this._getDataService.getSalesList().subscribe({
+      next: (res) => {
+        if (res.salesInfo) {
+          this.salesData = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+          console.log(this.salesData);
+        }
+      },
+      error: (err) => {
+        let errorObj = err;
+        if (errorObj.userError) {
+          this._registerService.signout();
+        }
+      }
+    })
+  }
 
-    this.deptData = [{
-      chartType: 'column',
-      chartTitle: 'Active Employee',
-      category: dept,
-      seriesName: 'Employee Count',
-      data: count
-    }]
+  catchDeptCount($event: any) {
+
+    const data:any = {};
+    
+    $event.forEach((element:any) => {
+      data[element.department] = element.count;
+    });
+
+    this.deptData = new chartData('column', 'HR department', 'Employee Count By Department', 'Employee Count', data);
+
   }
 
   getProductData() {
@@ -149,5 +135,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
+    // this.salesLoadedSub.unsubscribe();
   }
 }

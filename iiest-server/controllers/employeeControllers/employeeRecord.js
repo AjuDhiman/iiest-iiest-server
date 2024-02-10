@@ -47,31 +47,32 @@ exports.empSalesProdWise = async (req, res) => {
     try {
         const totalEmpSaleProdWise = await salesModel.find({ employeeInfo: req.user.id });
 
-        let catering = 0;
-        let retail = 0;
-        let registration = 0;
-        let state = 0;
+        const salesByDuration = {}
+
+        initializeAll(salesByDuration);
 
         if (totalEmpSaleProdWise) {
             totalEmpSaleProdWise.forEach((elem) => {
                 if (elem.product_name.includes("Fostac")) {
                     if (elem.fostacInfo.fostac_service_name === 'Catering') {
-                        catering += 1;
+                        filterByDuration(salesByDuration, 1, 'catering', elem.createdAt);
                     } else if (elem.fostacInfo.fostac_service_name === 'Retail') {
-                        retail += 1;
+                        filterByDuration(salesByDuration, 1, 'retail', elem.createdAt);
                     }
                 }
                 if (elem.product_name.includes("Foscos")) {
                     if (elem.foscosInfo.foscos_service_name === 'Registration') {
-                        registration += 1;
+                        filterByDuration(salesByDuration, 1, 'registration', elem.createdAt);
                     } else if (elem.foscosInfo.foscos_service_name === 'State') {
-                        state += 1;
+                        filterByDuration(salesByDuration, 1, 'state', elem.createdAt);
                     }
                 }
-            })
+            });
         }
 
-        return res.status(200).json({ catering, retail, registration, state });
+        console.log(salesByDuration);
+
+        return res.status(200).json(salesByDuration);
     } catch (error) {
         console.error(error)
         return res.status(500).json({ message: "Internal Server Error" })
@@ -81,10 +82,9 @@ exports.empSalesProdWise = async (req, res) => {
 exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
-        console.log(req.user.designation)
-        if(req.user.designation==='Director'){
+        if (req.user.designation === 'Director') {
             salesInfo = await salesModel.find({}).populate('fboInfo').select('-employeeInfo');
-        } else{
+        } else {
             salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
         }
         return res.status(200).json({ salesInfo });
@@ -126,4 +126,54 @@ exports.employeeDepartmentCount = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 
+}
+
+function filterByDuration(object, data, category, createdAt) {
+    let now = new Date();
+    let date = new Date(createdAt);
+
+    // Update tillNow
+    object.tillNow[category] += data;
+
+    // Update Financial year
+    if (date.getTime() > new Date(now.getFullYear() - 1, 3, 1).getTime() &&
+        date.getTime() < new Date(now.getFullYear(), 3, 1).getTime()) {
+        object.year[category] += data;
+    }
+
+    //update this Quater
+    if (date.getTime() > new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).getTime() &&
+        date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()) /3 + 1) * 3, 1).getTime()) {
+        object.quater[category] += data;
+    }
+
+    //update this Half year
+    if (date.getTime() > new Date(now.getFullYear(), Math.floor(now.getMonth() / 6) * 6, 1).getTime() &&
+        date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()/ 6) + 1) * 6, 1).getTime()) {
+        object.halfYearly[category] += data;
+    }
+
+    // Update month
+    if (date.getTime() > new Date(now.getFullYear(), now.getMonth(), 1).getTime() &&
+        date.getTime() < new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()) {
+        object.month[category] += data;
+    }
+
+    // Update week
+    if (now.getTime() - date.getTime() < now.getDay() * 24 * 60 * 60 * 1000) {
+        object.week[category] += data;
+    }
+}
+
+function initializeAll(object) {
+    const durationArr = ['week', 'month', 'quater', 'halfYearly', 'year', 'tillNow'];
+    const varriablesArr = ['retail', 'catering', 'registration', 'state'];
+
+    durationArr.forEach(item => {
+        object[item] = {};
+        varriablesArr.forEach(elem => {
+            object[item][elem] = 0;
+        });
+    });
+    console.log(object);
 }

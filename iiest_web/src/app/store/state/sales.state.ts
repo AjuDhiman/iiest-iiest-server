@@ -32,7 +32,7 @@ export class SalesState {
         return state.sales;
     }
 
-    //Get Loaded employee Info
+    //Get Loaded sales Info
     @Selector()
     static salesLoaded(state: SalesStateModel) {
         return state.salesLoaded;
@@ -42,10 +42,10 @@ export class SalesState {
     getsales({ getState, setState }: StateContext<SalesStateModel>) {
         return this._getDataService.getSalesList().pipe(tap(res => {
             const state = getState();
-            console.log(res)
+            console.log(res);
             setState({
                 ...state,
-                sales:res.salesData,
+                sales:res.salesInfo,
                 salesLoaded:true
             })
         })).subscribe({

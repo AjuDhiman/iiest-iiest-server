@@ -23,8 +23,8 @@
 		
 		<div class="row my-2">
 			<!-- <app-highcharts [chartData]="chartData" class="col-12 col-lg-6"></app-highcharts> -->
-			<app-highcharts *ngIf="empDepartment==='Sales Department'" [chartData]="chartData" class="col-12 col-lg-6"></app-highcharts>
-			<app-highcharts *ngIf="empDepartment==='HR Department'" [chartData]="deptData" class="col-12 col-lg-6"></app-highcharts>
+			<app-highcharts *ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' " [chartData]="salesChartData" class="col-12 col-lg-6"></app-highcharts>
+			<app-highcharts *ngIf="empDepartment==='HR Department' || empDepartment=='IT Department' " [chartData]="deptData" class="col-12 col-lg-6"></app-highcharts>
 		</div>
 		<div class="row my-2">
 			<div class="col-md-6" *ngIf="projectType=== 'FSSAI'">
