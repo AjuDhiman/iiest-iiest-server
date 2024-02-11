@@ -45,15 +45,9 @@
                 </tr>
               </thead>
               <tbody *ngIf="employeeList?.length>0">
-<<<<<<< HEAD
                 <tr
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
-=======
-                <tr class="list-tr"
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: 10, currentPage: pageNumber }; let sr = index">
-                  <td class="cell"><span class="truncate">{{employee.serialNumber}}</span></td>
->>>>>>> d8a0147dca8398f31a57e72afbde94c821b261b8
                   <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
@@ -63,7 +57,6 @@
                   <td class="cell text-center">
                     <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
                     <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
-                               
                   </td>
                 </tr>
               </tbody>

@@ -9,8 +9,8 @@
 				<option value="year">This Year</option>
 				<option value="tillNow">Till Now</option>
 			</select>
-			<select (change)="chartTypeEvent($event)" class="form-select form-select-sm d-inline-flex w-auto">
-				<option value="column" selected>Column Chart</option>
+			<select (change)="chartTypeEvent($event)" [(ngModel)]="selectedChartType" class="form-select form-select-sm d-inline-flex w-auto">
+				<option value="column">Column Chart</option>
 				<option value="pie">Pie Chart</option>
 				<option value="line">Line Chart</option>
 				<option value="area">Area Chart</option>

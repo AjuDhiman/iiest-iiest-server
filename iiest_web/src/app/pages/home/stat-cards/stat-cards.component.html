@@ -48,7 +48,7 @@
 </div><!--//row-->
 
 <!-- this section will be showed only to hr department -->
-<div class="g-2 mb-4 department-card-container row" *ngIf="department==='HR Department'">
+<div class="g-2 mb-4 department-card-container row" *ngIf="department==='HR Department' || department === 'IT Department' ">
     <div *ngFor="let obj of departmentAndCount" class="border-0" data-toggle="tooltip" data-bs-custom-class="department-tooltip" data-placement="bottom" [title]="obj.department">
         <div class="app-card app-card-stat shadow-sm justify-content-center department-card cursor-pointer"
             (click)="viewDepartmentData(obj.department)">

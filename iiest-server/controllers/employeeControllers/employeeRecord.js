@@ -45,7 +45,17 @@ exports.employeeRecord = async (req, res) => {
 
 exports.empSalesProdWise = async (req, res) => {
     try {
-        const totalEmpSaleProdWise = await salesModel.find({ employeeInfo: req.user.id });
+        let totalEmpSaleProdWise
+        
+        if(req.user.designation == 'Director'){
+
+            totalEmpSaleProdWise = await salesModel.find({});
+
+        } else {
+
+            totalEmpSaleProdWise = await salesModel.find({ employeeInfo: req.user.id });
+
+        }
 
         const salesByDuration = {}
 
@@ -69,8 +79,6 @@ exports.empSalesProdWise = async (req, res) => {
                 }
             });
         }
-
-        console.log(salesByDuration);
 
         return res.status(200).json(salesByDuration);
     } catch (error) {
@@ -136,25 +144,25 @@ function filterByDuration(object, data, category, createdAt) {
     object.tillNow[category] += data;
 
     // Update Financial year
-    if (date.getTime() > new Date(now.getFullYear() - 1, 3, 1).getTime() &&
+    if (date.getTime() >= new Date(now.getFullYear() - 1, 3, 1).getTime() &&
         date.getTime() < new Date(now.getFullYear(), 3, 1).getTime()) {
         object.year[category] += data;
     }
 
     //update this Quater
-    if (date.getTime() > new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).getTime() &&
+    if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).getTime() &&
         date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()) /3 + 1) * 3, 1).getTime()) {
         object.quater[category] += data;
     }
 
     //update this Half year
-    if (date.getTime() > new Date(now.getFullYear(), Math.floor(now.getMonth() / 6) * 6, 1).getTime() &&
+    if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 6) * 6, 1).getTime() &&
         date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()/ 6) + 1) * 6, 1).getTime()) {
         object.halfYearly[category] += data;
     }
 
     // Update month
-    if (date.getTime() > new Date(now.getFullYear(), now.getMonth(), 1).getTime() &&
+    if (date.getTime() >= new Date(now.getFullYear(), now.getMonth(), 1).getTime() &&
         date.getTime() < new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()) {
         object.month[category] += data;
     }
@@ -175,5 +183,38 @@ function initializeAll(object) {
             object[item][elem] = 0;
         });
     });
-    console.log(object);
+}
+
+exports.empHiringData = async (req, res) => {
+
+    try {
+
+        let success = false;
+
+        const employeeHiringData = await employeeSchema.aggregate([
+            {
+                $match: { createdBy: req.user.employee_name } // Filter documents where status is true
+            },
+            {
+                $group: {
+                    _id: { department: '$department' },
+                    count: { $sum: 1 }
+                }
+            }
+        ])
+
+        if (!employeeHiringData) {
+            success = false;
+            return res.status(404).json({ success, randomErr: true });
+        }
+
+        success = true;
+
+        return res.status(200).json({ success, employeeHiringData })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+
 }

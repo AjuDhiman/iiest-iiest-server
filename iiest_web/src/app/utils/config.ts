@@ -112,15 +112,18 @@ export class chartData{
    chartType: string;
    department: string;
    chartTitle:string;
-   seriesName: string;data: any;
-   showIntervalSelection= false;
+   seriesName: string;
+   data: any;
+   showIntervalSelection:boolean;
+   otherChartTypeOptions: string[];
 
-   constructor(chartType = 'column', department:string ,chartTitle:string,seriesName: string,data: any,showIntervalSelection= false){
+   constructor(chartType:string = 'column', department:string ,chartTitle:string,seriesName: string,data: {},showIntervalSelection= false, otherChartTypeOptions: string[] = []){
       this.chartType=chartType;
       this.department=department;
       this.chartTitle=chartTitle;
       this.seriesName=seriesName;
       this.data=data;
       this.showIntervalSelection=showIntervalSelection;
+      this.otherChartTypeOptions=otherChartTypeOptions;
    }
 }

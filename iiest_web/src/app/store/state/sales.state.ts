@@ -42,7 +42,6 @@ export class SalesState {
     getsales({ getState, setState }: StateContext<SalesStateModel>) {
         return this._getDataService.getSalesList().pipe(tap(res => {
             const state = getState();
-            console.log(res);
             setState({
                 ...state,
                 sales:res.salesInfo,

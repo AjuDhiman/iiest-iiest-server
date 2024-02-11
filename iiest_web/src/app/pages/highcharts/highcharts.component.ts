@@ -13,40 +13,37 @@ import { DepartmentListComponent } from '../modals/department-list/department-li
 })
 export class HighchartsComponent implements OnChanges {
 
-  salesCategory: string;
+  chart: Highcharts.Options;
+
+  @Input() chartData: any;
+
+  columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
+
   categories: string[];
+
   values: number[];
 
-  //------Common variables for chart-----
-  @Input() yaxixTitle: string;
-  @Input() chartSubCategoryTitle: string;
-  chart: Highcharts.Options;
-  // ------column chart variables------
-  @Input() columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
-  @Input() chartData: any;
-  // -------line chart Varibles-------
+  salesCategory: string;
+
+  selectedChartType: string;
 
   Highcharts: typeof Highcharts = Highcharts;
+
   intervalType: string = 'week';
-  allEmployees: any;
 
   constructor(private modalService: NgbModal,
-    private _registerService: RegisterService) {}
+              private _registerService: RegisterService) { }
 
-  loggedInUserData: any = this._registerService.LoggedInUserData();
-  loggedInUserData1 = JSON.parse(this.loggedInUserData);
+  user: any = this._registerService.LoggedInUserData();
+  parsedUser = JSON.parse(this.user);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['chartData'] && this.chartData?.chartType) {
-      console.log(1)
-      this.plotChart(this.chartData.chartType);
-      console.log(this.chartData);
+      this.selectedChartType = this.chartData.chartType;
+      if (changes && changes['chartData']) {
+        this.plotChart();
+      }
     }
-  }
-
-  ChangeInterval(event: any) {
-    this.intervalType = event.target.value;
-    this.plotChart(this.chartData.chartType);
   }
 
   // -------Column Chart Function---------
@@ -79,18 +76,17 @@ export class HighchartsComponent implements OnChanges {
         {
           name: this.chartData.seriesName,
           type: 'column',
-          data: this.values ,
+          data: this.values,
           color: '#128c54',
           events: {
             click: (e) => {
-              console.log(e);
+              console.log(e)
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              console.log(this.salesCategory);
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department);
             }
           }
         }
@@ -108,12 +104,13 @@ export class HighchartsComponent implements OnChanges {
         enabled: false,
       },
       xAxis: {
-        categories: this.chartData.category
+        categories: this.categories
       },
       yAxis: {
         title: {
-          text: this.yaxixTitle,
+          // text: this.yaxixTitle,
         },
+        min: 0
       },
       plotOptions: {
         line: {
@@ -126,23 +123,20 @@ export class HighchartsComponent implements OnChanges {
         {
           type: 'line',
           name: this.chartData.seriesName,
-          data: this.chartData.data,
+          data: this.values,
           events: {
             click: (e) => {
-              console.log(e);
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              console.log(this.salesCategory);
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department);
             }
           }
         },
       ],
     };
-
   }
 
   // -------Pie Chart Function---------
@@ -168,14 +162,23 @@ export class HighchartsComponent implements OnChanges {
       series: [
         {
           type: 'pie',
-          data: this.chartData.map((value: any, index: number) => ({
-            name: index,
+          data: this.values.map((value: any, index: number) => ({
+            name: this.categories[index],
             y: value,
           })),
+          events: {
+            click: (e: any) => {
+              if (e.point.name === "retail" || e.point.name === "catering") {
+                this.salesCategory = "Fostac";
+              } else if (e.point.name === "registration" || e.point.name === "state") {
+                this.salesCategory = "Foscos";
+              }
+              this.viewSalesDataProdWise(e.point.name, this.salesCategory, this.parsedUser.department);
+            }
+          }
         }
       ]
     };
-
   }
 
   // ---------Area Chart Function---------
@@ -188,11 +191,11 @@ export class HighchartsComponent implements OnChanges {
         enabled: false,
       },
       xAxis: {
-        categories: this.chartData.category,
+        categories: this.categories,
       },
       yAxis: {
         title: {
-          text: this.yaxixTitle,
+          // text: this.yaxixTitle,
         },
       },
       plotOptions: {
@@ -206,17 +209,15 @@ export class HighchartsComponent implements OnChanges {
         {
           type: 'area',
           name: this.chartData.seriesName,
-          data: this.chartData.data,
+          data: this.values,
           events: {
             click: (e) => {
-              console.log(e);
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              console.log(this.salesCategory);
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.loggedInUserData1.department);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department);
             }
           }
         },
@@ -224,84 +225,37 @@ export class HighchartsComponent implements OnChanges {
     };
   }
 
-  ChangeProduct() {
-    //  switch(){
-
-    //  }
+  ChangeInterval(event: any): void {
+    this.intervalType = event.target.value;
+    this.plotChart();
   }
 
-  UpdateData(Series: any, data: Number[]) {
-
+  chartTypeEvent(event: any): void {
+    this.selectedChartType = event.target.value;
+    this.plotChart();
   }
 
-  // for second type of sales chart
-  ChangeInterval1(event: any) {
-    //   var today = new Date();
-
-    //   switch (event.target.value) {
-    //     case 'week':
-    //       var currentDayOfWeek = today.getDay();
-    //       var difference = currentDayOfWeek - 0; // 0 is Sunday
-    //       today.setDate(today.getDate() - difference);
-
-    //       for (var i = 0; i <= currentDayOfWeek; i++) {
-    //           console.log("Day of the week:", today.toDateString());
-    //           today.setDate(today.getDate() + 1);
-    //       }
-    //       break;
-
-    //   case 'month':
-    //       var currentDayOfMonth = today.getDate();
-    //       today.setDate(1);
-
-    //       while (today.getDate() <= currentDayOfMonth) {
-    //           console.log("Day of the month:", today.toDateString());
-    //           today.setDate(today.getDate() + 1);
-    //       }
-    //       break;
-
-    //   case 'year':
-    //       var currentDayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    //       today = new Date(today.getFullYear(), 0, 1);
-
-    //       while (Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24)) <= currentDayOfYear) {
-    //           console.log("Day of the year:", today.toDateString());
-    //           today.setDate(today.getDate() + 1);
-    //       }
-    //       break;
-
-    //   default:
-    //       console.log("Invalid type. Use 'week', 'month', or 'year'.");
-    //       break;
-    //   }
-  }
-
-  chartTypeEvent(event: any) {
-    this.plotChart(event.target.value);
-  }
-
-  viewDepartmentData(res: any) {
-    console.log(res);
+  viewDepartmentData(res: any): void {
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.department = res;
   }
 
-  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string) {
+  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string): void {
     const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.department = res;
     modalRef.componentInstance.salesCategory = salesCategory;
     modalRef.componentInstance.userDept = userDept;
   }
 
-  plotChart(type: string) {
-    if(this.chartData.showIntervalSelection){
-      this.categories=Object.keys(this.chartData.data[this.intervalType]);
-      this.values=Object.values(this.chartData.data[this.intervalType]);
-    } else{
-      this.categories=Object.keys(this.chartData.data);
-      this.values=Object.values(this.chartData.data);
+  plotChart() {
+    if (this.chartData.showIntervalSelection) {
+      this.categories = Object.keys(this.chartData.data[this.intervalType]);
+      this.values = Object.values(this.chartData.data[this.intervalType]);
+    } else {
+      this.categories = Object.keys(this.chartData.data);
+      this.values = Object.values(this.chartData.data);
     }
-    switch (type) {
+    switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
         break;
       case "line": this.plotLineChart();
