@@ -4,7 +4,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
+import { chartData } from 'src/app/utils/config';
+import noData from 'highcharts/modules/no-data-to-display';
 
+// Initialize the noData module
+noData(Highcharts);
 
 @Component({
   selector: 'app-highcharts',
@@ -15,9 +19,9 @@ export class HighchartsComponent implements OnChanges {
 
   chart: Highcharts.Options;
 
-  @Input() chartData: any;
+  @Input() chartData: chartData;
 
-  columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
+  // columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
 
   categories: string[];
 
@@ -31,8 +35,16 @@ export class HighchartsComponent implements OnChanges {
 
   intervalType: string = 'week';
 
+  noData: string =  'NO data to show';
+
+  noDataStyle: any =  {
+    fontWeight: 'bold',
+    fontSize: '15px',
+    color: '#303030'
+  };
+
   constructor(private modalService: NgbModal,
-              private _registerService: RegisterService) { }
+    private _registerService: RegisterService) { }
 
   user: any = this._registerService.LoggedInUserData();
   parsedUser = JSON.parse(this.user);
@@ -50,7 +62,7 @@ export class HighchartsComponent implements OnChanges {
   plotColumnChart() {
     this.chart = {
       chart: {
-        type: 'column'
+        type: 'column',
       },
       title: {
         text: this.chartData.chartTitle,
@@ -66,10 +78,23 @@ export class HighchartsComponent implements OnChanges {
           // text: this.yaxixTitle,
         },
       },
+      lang: {
+        noData: '<div>No data avilable </div>',
+      },
+      noData: {
+        style: {
+          fontSize: '20px',
+          color: '#967921',
+          fontWeight: '400',
+          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+          padding: '10px', 
+          borderRadius: 5,
+        },
+      },
       plotOptions: {
         column: {
           colorByPoint: true,
-          colors: this.columnColorShade
+          // colors: this.columnColorShade
         },
       },
       series: [
@@ -112,6 +137,19 @@ export class HighchartsComponent implements OnChanges {
         },
         min: 0
       },
+      lang: {
+        noData: '<div>No data avilable </div>',
+      },
+      noData: {
+        style: {
+          fontSize: '20px',
+          color: '#967921',
+          fontWeight: '400',
+          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+          padding: '10px', 
+          borderRadius: 5,
+        },
+      },
       plotOptions: {
         line: {
           marker: {
@@ -147,6 +185,19 @@ export class HighchartsComponent implements OnChanges {
       },
       credits: {
         enabled: false,
+      },
+      lang: {
+        noData: '<div>No data avilable </div>',
+      },
+      noData: {
+        style: {
+          fontSize: '20px',
+          color: '#967921',
+          fontWeight: '400',
+          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+          padding: '10px', 
+          borderRadius: 5,
+        },
       },
       plotOptions: {
         pie: {
@@ -196,6 +247,19 @@ export class HighchartsComponent implements OnChanges {
       yAxis: {
         title: {
           // text: this.yaxixTitle,
+        },
+      },
+      lang: {
+        noData: '<div>No data avilable </div>',
+      },
+      noData: {
+        style: {
+          fontSize: '20px',
+          color: '#967921',
+          fontWeight: '400',
+          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+          padding: '10px', 
+          borderRadius: 5,
         },
       },
       plotOptions: {
@@ -248,6 +312,7 @@ export class HighchartsComponent implements OnChanges {
   }
 
   plotChart() {
+
     if (this.chartData.showIntervalSelection) {
       this.categories = Object.keys(this.chartData.data[this.intervalType]);
       this.values = Object.values(this.chartData.data[this.intervalType]);
@@ -255,6 +320,21 @@ export class HighchartsComponent implements OnChanges {
       this.categories = Object.keys(this.chartData.data);
       this.values = Object.values(this.chartData.data);
     }
+
+    if (this.values.every((item: number) => item == 0)) {
+      this.noData = 'NO data to show';
+      this.noDataStyle = {
+        fontWeight: 'bold',
+        fontSize: '15px',
+        color: '#303030'
+      }
+    } else {
+      this.noData = ''
+    }
+   if(this.values.every(value => value === 0)){
+    this.values=[];
+   }
+
     switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
         break;
@@ -264,5 +344,33 @@ export class HighchartsComponent implements OnChanges {
         break;
       case "area": this.plotAreaChart();
     }
+
+    console.log(this.chart.lang);
   }
+
+  // myFunction(): void {
+  //   if (this.chart.series) {
+  //       if ((this.chart.series[0] as any).data.every((item: number) => Number(item) === 0)) {
+  //           this.chart.renderer.rect(
+  //               this.chart.plotLeft + (this.chart.plotWidth - 400) / 2,
+  //               this.chart.plotTop + (this.chart.plotHeight - 50) / 2,
+  //               400,
+  //               50,
+  //               3
+  //           )
+  //               .attr({
+  //                   'fill': '#fff3cd'
+  //               })
+  //               .add();
+  //           this.chart.renderer.text('No data to display!', this.chart.plotLeft + (this.chart.plotWidth - 400) / 2 + 400 / 2, this.chart.plotTop + (this.chart.plotHeight - 50) / 2 + 30)
+  //               .attr({
+  //                   'text-anchor': 'middle',
+  //                   'fill': '#cab475',
+  //                   'font-size': '20px',
+  //               })
+  //               .add();
+  //       }
+  //   }
+  // }
+
 }

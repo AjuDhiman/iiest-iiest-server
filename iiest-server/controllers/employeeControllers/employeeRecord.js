@@ -3,7 +3,14 @@ const employeeSchema = require('../../models/employeeModels/employeeSchema');
 
 exports.employeeRecord = async (req, res) => {
     try {
-        const overAllRecord = await salesModel.find({ employeeInfo: req.user.id });
+
+        let overAllRecord
+
+        if(req.user.designation == 'Director'){
+            overAllRecord = await salesModel.find({});
+        } else {
+            overAllRecord = await salesModel.find({ employeeInfo: req.user.id });
+        }
 
         let totalSaleAmount = 0;
 
@@ -168,7 +175,7 @@ function filterByDuration(object, data, category, createdAt) {
     }
 
     // Update week
-    if (now.getTime() - date.getTime() < now.getDay() * 24 * 60 * 60 * 1000) {
+    if (Math.floor((now.getTime() - date.getTime())/ 24 * 60 * 60 * 1000) < 7) {
         object.week[category] += data;
     }
 }

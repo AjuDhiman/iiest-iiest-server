@@ -105,7 +105,7 @@ export class GeneralSectionComponent implements OnInit {
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
     let formattedDate;
-    if(Math.floor((new Date().getMinutes() - originalDate.getMinutes())/(24*60)) < 7){
+    if(Math.floor((new Date().getTime() - originalDate.getTime())/(24*60*60*1000)) < 7){
       formattedDate = days[originalDate.getDay()];
     } else {
       const month = months[originalDate.getMonth()];
@@ -123,12 +123,6 @@ export class GeneralSectionComponent implements OnInit {
     const formattedTime = `${hours}:${minutes} ${meridiem}`;
     return formattedTime;
   }
-
-  // markOfficerNote() {
-  //   let user: any = this._registerService.LoggedInUserData();
-  //   let parsedUser = JSON.parse(user);
-  //   this.generalForm.patchValue({ officer_note: `${this.generalform['officer_note'].value} (${parsedUser.employee_name})\n` });
-  // }
 
   formatofficerComments(notes: any) {
     let fullofficerComments = ''
