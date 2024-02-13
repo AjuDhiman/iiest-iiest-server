@@ -1,3 +1,31 @@
 textarea{
     resize:none;
 }
+
+.case-note-block, .officer-comment-block{
+    width: 100%;
+    height: calc(11*16px);
+    background-color: #fff;
+    border: 0.5px solid #e6e6e6;
+    border-radius: 4px;
+    overflow: scroll;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.officer-comment-block{
+    height: calc(7.1*16px);
+}
+
+.note{
+    background-color: #73c798;
+    border: 1.5px solid #0e4325;
+    // background-color: #5d9dfd;
+    // border: 1.5px solid #175bc1;
+    margin-bottom: 5px;
+    color: #0e4325;
+    padding: 2px 8px;
+    border-radius: 3px;
+    width: fit-content;
+    // box-shadow: 3px 3px 10px inset #0e4325, -3px -3px 10px #0e4325;
+}

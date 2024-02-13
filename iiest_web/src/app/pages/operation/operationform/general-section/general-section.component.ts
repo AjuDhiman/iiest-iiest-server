@@ -13,9 +13,9 @@ export class GeneralSectionComponent implements OnInit {
 
   @Input() candidateId: string = ''
 
-  caseNote: string = '';
+  caseNote: string[] = [];
 
-  officerComments: string = '';
+  officerComments: string[] = [];
 
   generalForm: FormGroup = new FormGroup({
     recipient_status: new FormControl('ongoing'),
@@ -88,15 +88,12 @@ export class GeneralSectionComponent implements OnInit {
 
   //this methord formats the logs in a better presentational form from a object form
   formatLogs(logs: any) {
-    let fullCaseNote: string = '';
 
     logs.forEach((log: any) => {
-      let caseNote: string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}\n`;
+      let caseNote: string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}`;
 
-      fullCaseNote += caseNote;
+      this.caseNote.push(caseNote);
     });
-
-    this.caseNote = fullCaseNote;
   }
 
   getFormatedDate(date: string): string {
@@ -125,13 +122,10 @@ export class GeneralSectionComponent implements OnInit {
   }
 
   formatofficerComments(notes: any) {
-    let fullofficerComments = ''
-
     notes.forEach((note: any) => {
-      fullofficerComments += `${note.officerNote} (${note.operatorInfo.employee_name}) on ${this.getFormatedDate(note.createdAt.toString())} at ${this.getFormattedTime(note.createdAt)}\n`;
+      let comment = `${note.officerNote} (${note.operatorInfo.employee_name}) on ${this.getFormatedDate(note.createdAt.toString())} at ${this.getFormattedTime(note.createdAt)}\n`;
+      this.officerComments.push(comment)
     })
-
-    this.officerComments=fullofficerComments;
   }
 
 }
