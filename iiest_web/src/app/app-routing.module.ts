@@ -11,6 +11,7 @@ import { OperationformComponent } from './pages/operation/operationform/operatio
 import { SignupComponent } from './pages/HR/signup/signup.component';
 import { FbonewComponent } from './pages/sales/fboproduct/fbonew/fbonew.component';
 import { FbolistComponent } from './pages/sales/fbolist/fbolist.component';
+import { EmployeelistComponent } from './pages/HR/employeelist/employeelist.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
   { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
+  { path: 'emplist', component: EmployeelistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
 ];
 
 @NgModule({

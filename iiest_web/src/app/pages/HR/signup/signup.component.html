@@ -35,8 +35,9 @@
             </div>
             <div class="col-md-3">
               <label for="dob" class="form-label">Date of Birth</label><sup>*</sup>
-              <input type="date" placeholder="Date of Birth" formControlName="dob" class="form-control form-control-sm cursor-pointer"
-                id="dob" [ngClass]="{ 'is-invalid': submitted && f['dob'].errors }" />
+              <input type="date" placeholder="Date of Birth" formControlName="dob"
+                class="form-control form-control-sm cursor-pointer" id="dob"
+                [ngClass]="{ 'is-invalid': submitted && f['dob'].errors }" />
               <div *ngIf="submitted && f['dob'].errors" class="invalid-feedback">
                 <div *ngIf="f['dob'].errors['required']">Date of Birth is required</div>
               </div>
@@ -52,7 +53,7 @@
                 <div *ngIf="f['email'].errors['email']">Email is invalid</div>
               </div>
             </div>
-       
+
             <div class="col-md-3">
               <label for="company_name" class="form-label">Company Name</label><sup>*</sup>
               <select id="company_name" [ngClass]="{ 'is-invalid': submitted && f['company_name'].errors }"
@@ -68,7 +69,8 @@
             <div class="col-md-3">
               <label for="project_name" class="form-label">Project Name</label><sup>*</sup>
               <select id="project_name" [ngClass]="{ 'is-invalid': submitted && f['project_name'].errors }"
-                formControlName="project_name" class="form-select form-select-sm cursor-pointer" (change)="onProjectSelect()">
+                formControlName="project_name" class="form-select form-select-sm cursor-pointer"
+                (change)="onProjectSelect()">
                 <option value="" disabled selected>Select the Project</option>
                 <option *ngFor="let projectName of projects" [ngValue]="projectName">{{ projectName }}</option>
               </select>
@@ -81,15 +83,20 @@
               <div class="d-flex gap-5">
                 <div class="form-check form-check-sm">
                   <input type="radio" style="height: 20px; width: 20px;"
-                 class="form-check-input form-check-input-sm cursor-pointer" formControlName="post_type" [value]="post_types[0]" name="post_type"
-                    (change)="onPostSelect(post_types[0])" [id]="post_types[0]" [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
-                  <label class="form-label form-label-sm cursor-pointer" [for]="post_types[0]" style="font-size: 14px;">{{post_types[0]}}</label>
+                    class="form-check-input form-check-input-sm cursor-pointer" formControlName="post_type"
+                    [value]="post_types[0]" name="post_type" (change)="onPostSelect(post_types[0])" [id]="post_types[0]"
+                    [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                  <label class="form-label form-label-sm cursor-pointer" [for]="post_types[0]"
+                    style="font-size: 14px;">{{post_types[0]}}</label>
                 </div>
                 <div class="form-check form-check-sm">
 
                   <input type="radio" style="height: 20px; width: 20px;" [id]="post_types[1]" name="post_type"
-                    (change)="onPostSelect(post_types[1])" class="form-check-input form-check-input-sm cursor-pointer" formControlName="post_type" [value]="post_types[1]" [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
-                  <label class="form-label form-label-sm cursor-pointer" [for]="post_types[1]" style="font-size: 14px;">{{post_types[1]}}</label>
+                    (change)="onPostSelect(post_types[1])" class="form-check-input form-check-input-sm cursor-pointer"
+                    formControlName="post_type" [value]="post_types[1]"
+                    [ngClass]="{ 'is-invalid': submitted && f['post_type'].errors }">
+                  <label class="form-label form-label-sm cursor-pointer" [for]="post_types[1]"
+                    style="font-size: 14px;">{{post_types[1]}}</label>
                 </div>
               </div>
               <div *ngIf="submitted && f['post_type'].errors" class="invalid-feedback" style="display: block;">
@@ -132,13 +139,14 @@
             </div>
             <div class="col-md-3">
               <label for="salary" class="form-label">Gross Salary</label><sup>*</sup>
-              <input type="number" placeholder="Gross Salary" formControlName="salary" class="form-control form-control-sm"
-                id="salary" [ngClass]="{ 'is-invalid': submitted && f['salary'].errors }">
+              <input type="number" placeholder="Gross Salary" formControlName="salary"
+                class="form-control form-control-sm" id="salary"
+                [ngClass]="{ 'is-invalid': submitted && f['salary'].errors }">
               <div *ngIf="submitted && f['salary'].errors" class="invalid-feedback">
                 <div *ngIf="f['salary'].errors['required']">Gross Salary is required</div>
               </div>
             </div>
-            
+
             <div class="col-md-3">
               <label for="panel_type" class="form-label">Select Panel Type:</label><sup>*</sup>
               <select class="form-select form-select-sm cursor-pointer" id="panel_type"
@@ -150,7 +158,7 @@
                 <div *ngIf="f['panel_type'].errors['required']">Panel type is required</div>
               </div>
             </div>
-            
+
             <div class="col-md-3">
               <label for="doj" class="form-label">Date of Joining</label><sup>*</sup>
               <input type="date" placeholder="Date of Joining" formControlName="doj"
@@ -248,7 +256,8 @@
                 [ngClass]="{ 'is-invalid': submitted && f['employeeImage'].errors }">
               <div *ngIf="submitted && f['employeeImage'].errors" class="invalid-feedback">
                 <div *ngIf="f['employeeImage'].errors['required']">Employee Image is required</div>
-                <div *ngIf="f['employeeImage'].errors['invalidFileType']">Invalid file type. Only .png and .jpg files are allowed.
+                <div *ngIf="f['employeeImage'].errors['invalidFileType']">Invalid file type. Only .png and .jpg files
+                  are allowed.
                 </div>
               </div>
             </div>
@@ -269,11 +278,5 @@
         </div>
       </div>
     </div>
-
-    <div class="app-content pt-3 p-md-3 p-lg-4">
-      <div class="container-xxl border border-1 rounded-3">
-        <app-employeelist (isEditRecord)="isEditRecord($event)" class="border"></app-employeelist>
-      </div>
-    </div>
-
   </div>
+</div>

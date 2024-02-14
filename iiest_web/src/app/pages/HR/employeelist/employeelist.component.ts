@@ -21,16 +21,17 @@ import { EmploymentComponent } from '../../modals/employment/employment.componen
 })
 export class EmployeelistComponent implements OnInit {
   @Output() isEditRecord = new EventEmitter();
-  @Select(EmployeeState.GetEmployeeList) employees$:Observable<Employee>;
-  @Select(EmployeeState.employeeLoaded) employeeLoaded$:Observable<boolean>
-  empLoadedSub:Subscription;
+  @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
+  @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
+  empLoadedSub: Subscription;
   allEmployees: any;
   filteredEmployees: any;
   searchQuery: string = '';
   selectedFilter: string = 'byName';
   pageNumber: number = 1;
   isSearch: boolean = false;
-  itemsNumber:number=10;
+  isActive: boolean = true;
+  itemsNumber: number = 25;
   faEye = faEye;
   faPencil = faPencil;
   faTrash = faTrash;
@@ -42,17 +43,16 @@ export class EmployeelistComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faLocationPin = faLocationPin;
   faCopy = faCopy;
- 
-  
-  constructor( 
+
+  constructor(
     private _utililitesService: UtilitiesService,
     private registerService: RegisterService,
-    private store:Store,
-    private _toastrService : ToastrService,
+    private store: Store,
+    private _toastrService: ToastrService,
     private papa: Papa,
     private fileSaverService: FileSaverService,
     private modalService: NgbModal,
-    ) {
+  ) {
   }
 
   ngOnInit(): void {
@@ -62,19 +62,20 @@ export class EmployeelistComponent implements OnInit {
   fetchAllEmployees(): void {
     this.allEmployees = this._utililitesService.getData();
     this.filter();
-    if(this.allEmployees.length === 0){
-        this.getEmployees();
-        this.employees$.subscribe(res => {
-          this.allEmployees = res;
-          this.filter();
-        });
+    if (this.allEmployees.length === 0) {
+      this.getEmployees();
+      this.employees$.subscribe(res => {
+        this.allEmployees = res;
+        this.filter();
+      });
     }
   }
 
   filter(): void {
     if (!this.searchQuery) {
-      this.isSearch =false;
-      this.filteredEmployees = this.allEmployees;
+      this.isSearch = false;
+
+      this.filteredEmployees = this.filterEmpByStatus(this.isActive);
     } else {
       switch (this.selectedFilter) {
         case 'byName': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
@@ -85,13 +86,26 @@ export class EmployeelistComponent implements OnInit {
           break;
         case 'byContact': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.contact_no.toString().includes(this.searchQuery.toString()))
           break;
-        case 'byLocation': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.state.toLowerCase().includes(this.searchQuery.toString())) 
+        case 'byLocation': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.state.toLowerCase().includes(this.searchQuery.toString()))
           break;
       }
     }
   }
 
-  onSearchChange(): void{
+  filterEmpByStatus(type: boolean) {
+    if (type === true) {
+      return this.allEmployees.filter((elem: any) => elem.status === true);
+    } else if (type === false) {
+      return this.allEmployees.filter((elem: any) => elem.status === false);
+    }
+  }
+
+  filterEmp(type: boolean) {
+    this.isActive = type;
+    this.fetchAllEmployees();
+  }
+
+  onSearchChange(): void {
     this.pageNumber = 1;
     this.isSearch = true;
     this.filter();
@@ -103,78 +117,79 @@ export class EmployeelistComponent implements OnInit {
   }
   //Export To CSV
   exportToCsv() {
-    const csvData = this.papa.unparse(this.filteredEmployees, {header: true})
+    const csvData = this.papa.unparse(this.filteredEmployees, { header: true })
 
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
 
     this.fileSaverService.save(blob, 'employeelist.csv');
   }
 
-  getEmployees(){
-   this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee =>{
-       if(!loadedEmployee){
-         this.store.dispatch(new GetEmployee());
-       }
-     })
-   }
-   
-   editRecord(res:any): void{
+  getEmployees() {
+    this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
+      if (!loadedEmployee) {
+        this.store.dispatch(new GetEmployee());
+      }
+    })
+  }
+
+  editRecord(res: any): void {
     var data = {
       isEditMode: true,
       Record: res
     }
     this.isEditRecord.emit(data);
-   }
+  }
 
-   deleteEmployee(objId: string): void{
-      const loggedInUserData: any = this.registerService.LoggedInUserData();
-      const parsedData = JSON.parse(loggedInUserData);
-      const deletedBy = `${parsedData.employee_name}(${parsedData.employee_id})`;
-      this.registerService.deleteEmployee(objId, deletedBy).subscribe({
-        next: (res) =>{
-        if(res.success){
+  deleteEmployee(objId: string): void {
+    const loggedInUserData: any = this.registerService.LoggedInUserData();
+    const parsedData = JSON.parse(loggedInUserData);
+    const deletedBy = `${parsedData.employee_name}(${parsedData.employee_id})`;
+    this.registerService.deleteEmployee(objId, deletedBy).subscribe({
+      next: (res) => {
+        if (res.success) {
           this.store.dispatch(new DeleteEmployee(objId))
           this._toastrService.success('Record Edited Successfully', res.message);
-        }else{
+        } else {
           this._toastrService.success('Message Error!', res.message);
         }
       },
-        error: (err) =>{
+      error: (err) => {
         let errorObj = err.error;
-        if(errorObj.userError){
+        if (errorObj.userError) {
           this.registerService.signout();
-        }else if(errorObj.deleteEmpErr){
+        } else if (errorObj.deleteEmpErr) {
           this._toastrService.error('', 'Some error occured. Please try again')
         }
-      }})
-   }
-
-   allocate(res:any, type:string){
-    const modalRef = this.modalService.open(EmploymentComponent, { size: type==='manager'?'md':'lg', backdrop: 'static' });
-      modalRef.componentInstance.employee = res;
-      modalRef.componentInstance.type = type;
-
-      if(type==='manager'){
-        let allManagers = this.allEmployees
-        .filter((emp: any) => emp.department === res.department &&
-         emp.designation.toLowerCase().includes('manager'))
-        .map((emp:any) => {
-          return {
-            name:emp.employee_name,
-            emp_id:emp.employee_id
-          }
-        });
-        modalRef.componentInstance.allManagers = allManagers;
       }
+    })
   }
 
-  copyNotification(){
+  allocate(res: any, type: string) {
+    const modalRef = this.modalService.open(EmploymentComponent, { size: type === 'manager' ? 'md' : 'lg', backdrop: 'static' });
+    modalRef.componentInstance.employee = res;
+    modalRef.componentInstance.type = type;
+
+    if (type === 'manager') {
+      let allManagers = this.allEmployees
+        .filter((emp: any) => emp.department === res.department &&
+          emp.designation.toLowerCase().includes('manager'))
+        .map((emp: any) => {
+          return {
+            name: emp.employee_name,
+            emp_id: emp.employee_id
+          }
+        });
+      modalRef.componentInstance.allManagers = allManagers;
+    }
+  }
+
+  copyNotification() {
     this._toastrService.success('Text Copied');
   }
 
-    //View Employee Details
-    viewEmployeeDetails(res:any){
-      const modalRef = this.modalService.open(ViewEmployeeComponent, { size: 'lg', backdrop: 'static' });
-        modalRef.componentInstance.employee = res;
-    }
+  //View Employee Details
+  viewEmployeeDetails(res: any) {
+    const modalRef = this.modalService.open(ViewEmployeeComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.employee = res;
+  }
 }
