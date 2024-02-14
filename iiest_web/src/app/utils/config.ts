@@ -127,3 +127,7 @@ export class chartData{
       this.otherChartTypeOptions=otherChartTypeOptions;
    }
 }
+
+export const days:string[] = [ 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
+
+export const months:string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];

@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/f
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
+import { days, months } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-general-section',
@@ -13,9 +14,9 @@ export class GeneralSectionComponent implements OnInit {
 
   @Input() candidateId: string = ''
 
-  caseNote: string = '';
+  caseNote: string[] = [];
 
-  officerComments: string = '';
+  officerComments: string[] = [];
 
   generalForm: FormGroup = new FormGroup({
     recipient_status: new FormControl('ongoing'),
@@ -88,24 +89,19 @@ export class GeneralSectionComponent implements OnInit {
 
   //this methord formats the logs in a better presentational form from a object form
   formatLogs(logs: any) {
-    let fullCaseNote: string = '';
 
     logs.forEach((log: any) => {
-      let caseNote: string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}\n`;
+      let caseNote: string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}`;
 
-      fullCaseNote += caseNote;
+      this.caseNote.push(caseNote);
     });
-
-    this.caseNote = fullCaseNote;
   }
 
   getFormatedDate(date: string): string {
-    let days = [ 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
     let formattedDate;
-    if(Math.floor((new Date().getMinutes() - originalDate.getMinutes())/(24*60)) < 7){
+    if(Math.floor((new Date().getTime() - originalDate.getTime())/(24*60*60*1000)) < 7){
       formattedDate = days[originalDate.getDay()];
     } else {
       const month = months[originalDate.getMonth()];
@@ -124,20 +120,11 @@ export class GeneralSectionComponent implements OnInit {
     return formattedTime;
   }
 
-  // markOfficerNote() {
-  //   let user: any = this._registerService.LoggedInUserData();
-  //   let parsedUser = JSON.parse(user);
-  //   this.generalForm.patchValue({ officer_note: `${this.generalform['officer_note'].value} (${parsedUser.employee_name})\n` });
-  // }
-
   formatofficerComments(notes: any) {
-    let fullofficerComments = ''
-
     notes.forEach((note: any) => {
-      fullofficerComments += `${note.officerNote} (${note.operatorInfo.employee_name}) on ${this.getFormatedDate(note.createdAt.toString())} at ${this.getFormattedTime(note.createdAt)}\n`;
+      let comment = `${note.officerNote} (${note.operatorInfo.employee_name}) on ${this.getFormatedDate(note.createdAt.toString())} at ${this.getFormattedTime(note.createdAt)}\n`;
+      this.officerComments.push(comment)
     })
-
-    this.officerComments=fullofficerComments;
   }
 
 }

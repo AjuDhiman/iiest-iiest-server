@@ -31,9 +31,12 @@ export class FbolistComponent implements OnInit {
   faIndianRupeeSign = faIndianRupeeSign;
   faMagnifyingGlass = faMagnifyingGlass;
   pageNumber: number = 1;
-  itemsNumber: number = 10;
+  itemsNumber: number = 25;
 
   isModal: boolean = false;
+
+  //loading
+  loading:boolean = true;
 
   constructor(private getDataService: GetdataService,
     private registerService: RegisterService,
@@ -50,6 +53,7 @@ export class FbolistComponent implements OnInit {
         if (res.salesInfo) {
           this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
           this.filter();
+          this.loading = false;
         }
       },
       error: (err) => {
@@ -96,6 +100,10 @@ export class FbolistComponent implements OnInit {
   onTableDataChange(event: any) {
     this.pageNumber = event;
     this.filter();
+  }
+
+  onItemNumChange(){
+    this.pageNumber = 1;
   }
 
   //Edit Mode Emitter to Parent component fbo

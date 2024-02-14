@@ -3,7 +3,14 @@ const employeeSchema = require('../../models/employeeModels/employeeSchema');
 
 exports.employeeRecord = async (req, res) => {
     try {
-        const overAllRecord = await salesModel.find({ employeeInfo: req.user.id });
+
+        let overAllRecord
+
+        if(req.user.designation == 'Director'){
+            overAllRecord = await salesModel.find({});
+        } else {
+            overAllRecord = await salesModel.find({ employeeInfo: req.user.id });
+        }
 
         let totalSaleAmount = 0;
 
@@ -91,7 +98,7 @@ exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
-            salesInfo = await salesModel.find({}).populate('fboInfo').select('-employeeInfo');
+            salesInfo = await salesModel.find({}).populate([{path:'fboInfo'}, {path:'employeeInfo'}]);
         } else {
             salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
         }
@@ -110,15 +117,16 @@ exports.employeeDepartmentCount = async (req, res) => {
 
         const employeeGroupCount = await employeeSchema.aggregate([
             {
-                $match: { status: true } // Filter documents where status is true
-            },
-            {
                 $group: {
-                    _id: { department: '$department' },
-                    count: { $sum: 1 }
+                    _id: {
+                        department:'$department'
+                    },
+                    count: {
+                        $sum: { $cond: { if: { $eq: ["$status", true] }, then: 1, else: 0 } }
+                    }
                 }
             }
-        ])
+        ]);
 
         if (!employeeGroupCount) {
             success = false;
@@ -168,7 +176,7 @@ function filterByDuration(object, data, category, createdAt) {
     }
 
     // Update week
-    if (now.getTime() - date.getTime() < now.getDay() * 24 * 60 * 60 * 1000) {
+    if (Math.floor((now.getTime() - date.getTime())/ 24 * 60 * 60 * 1000) < 7) {
         object.week[category] += data;
     }
 }
