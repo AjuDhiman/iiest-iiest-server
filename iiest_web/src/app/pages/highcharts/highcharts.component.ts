@@ -80,13 +80,13 @@ export class HighchartsComponent implements OnChanges {
           color: '#128c54',
           events: {
             click: (e) => {
-              console.log(e)
+              console.log(e);
               if (e.point.category === "retail" || e.point.category === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
             }
           }
         }
@@ -131,7 +131,7 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
             }
           }
         },
@@ -173,7 +173,7 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.name === "registration" || e.point.name === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.name, this.salesCategory, this.parsedUser.department);
+              this.viewSalesDataProdWise(e.point.name, this.salesCategory, this.parsedUser.department, this.intervalType);
             }
           }
         }
@@ -217,7 +217,7 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department);
+              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
             }
           }
         },
@@ -240,11 +240,12 @@ export class HighchartsComponent implements OnChanges {
     modalRef.componentInstance.department = res;
   }
 
-  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string): void {
+  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string, intervalType: string): void {
     const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.department = res;
     modalRef.componentInstance.salesCategory = salesCategory;
     modalRef.componentInstance.userDept = userDept;
+    modalRef.componentInstance.intervalType = intervalType;
   }
 
   plotChart() {

@@ -20,6 +20,9 @@ export class HighchartDataModalComponent {
   department: string;
   salesCategory: string;
   userDept: string;
+  intervalType: string;
+  filterDate: string | void;
+  fboSalesData: any;
   faMagnifyingGlass = faMagnifyingGlass;
   isSearch: boolean = false;
   pageNumber: number = 1;
@@ -31,22 +34,35 @@ export class HighchartDataModalComponent {
 
   constructor(public activeModal: NgbActiveModal,
     private _getDataService: GetdataService,
-    private registerService: RegisterService) {}
+    private registerService: RegisterService) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.fetchAllFboData();
     this.getDepartmentdata();
+    this.filterDate = this.filterByDuration(this.intervalType);
+    console.log(typeof(this.filterDate));
   }
 
+  // this function is work for sales department data acc to logged user
   fetchAllFboData(): void {
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
+          console.log(res.salesInfo);
+          // this.filterDate = this.filterDate.toString();
           this.department = this.department.charAt(0).toUpperCase() + this.department.slice(1);
-          if(this.salesCategory==='Fostac'){
-            this.specificDatas = res.salesInfo.filter((item:any) => item.product_name.includes(this.salesCategory) && item.fostacInfo.fostac_service_name===this.department);
+          if (this.filterDate === "tillNow") {
+            if (this.salesCategory === 'Fostac') {
+              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.fostacInfo.fostac_service_name === this.department));
+            } else {
+              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.foscosInfo.foscos_service_name === this.department));
+            }
           } else {
-            this.specificDatas = res.salesInfo.filter((item:any) => item.product_name.includes(this.salesCategory) && item.foscosInfo.foscos_service_name===this.department);
+            if (this.salesCategory === 'Fostac') {
+              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.fostacInfo.fostac_service_name === this.department) && (item.createdAt.includes(this.filterDate)));
+            } else {
+              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.foscosInfo.foscos_service_name === this.department) && (item.createdAt.includes(this.filterDate)));
+            }
           }
           this.salesDeptfilter();
         }
@@ -60,24 +76,24 @@ export class HighchartDataModalComponent {
     })
   }
 
-  getDepartmentdata(){
+  getDepartmentdata() {
     this._getDataService.getEmpCountDeptWise(this.department).subscribe({
-        next: res=> {
-          this.employeeList=res.employeeList.map((elem:any, index:number) => {
-            if(elem.status===true){
-              return {...elem, serialNumber:index+1};
-            } else {
-              return null;
-            }
-          }).filter((value: any) => value !== null);
-          this.filteredData=this.employeeList;
-          this.showPagination=true;
-        }
+      next: res => {
+        this.employeeList = res.employeeList.map((elem: any, index: number) => {
+          if (elem.status === true) {
+            return { ...elem, serialNumber: index + 1 };
+          } else {
+            return null;
+          }
+        }).filter((value: any) => value !== null);
+        this.filteredData = this.employeeList;
+        this.showPagination = true;
+      }
     })
   }
 
   hrDeptfilter(): void {
-    if (this.searchQuery==='') {
+    if (this.searchQuery === '') {
       this.filteredData = this.employeeList;
     } else {
       switch (this.selectedFilterHr) {
@@ -87,7 +103,7 @@ export class HighchartDataModalComponent {
           break;
       }
     }
-     this.filteredData.length?this.showPagination=true:this.showPagination=false;
+    this.filteredData.length ? this.showPagination = true : this.showPagination = false;
   }
 
   salesDeptfilter(): void {
@@ -105,7 +121,7 @@ export class HighchartDataModalComponent {
           break;
       }
     }
-    this.filteredData.length?this.showPagination=true:this.showPagination=false;
+    this.filteredData.length ? this.showPagination = true : this.showPagination = false;
   }
 
   onTableDataChange(event: any) {
@@ -116,21 +132,88 @@ export class HighchartDataModalComponent {
     if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
-      switch(this.userDept){
+      switch (this.userDept) {
         case "Sales Department": this.salesDeptfilter();
-        break;
+          break;
         case "HR Department": this.hrDeptfilter();
-        break;
+          break;
       }
     }
     else {
       this.isSearch = false;
-      switch(this.userDept){
+      switch (this.userDept) {
         case "Sales Department": this.filteredData = this.specificDatas;
-        break;
+          break;
         case "HR Department": this.filteredData = this.employeeList;
-        break;
+          break;
       }
+    }
+  }
+
+  // filterByDuration(object: any, data: any, category: any, createdAt: any) {
+  //   let now = new Date();
+  //   let date = new Date(createdAt);
+
+  //   // Update tillNow
+  //   object.tillNow[category] += data;
+
+  //   // Update Financial year
+  //   if (date.getTime() >= new Date(now.getFullYear() - 1, 3, 1).getTime() &&
+  //     date.getTime() < new Date(now.getFullYear(), 3, 1).getTime()) {
+  //     object.year[category] += data;
+  //   }
+
+  //   //update this Quater
+  //   if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).getTime() &&
+  //     date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()) / 3 + 1) * 3, 1).getTime()) {
+  //     object.quater[category] += data;
+  //   }
+
+  //   //update this Half year
+  //   if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 6) * 6, 1).getTime() &&
+  //     date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth() / 6) + 1) * 6, 1).getTime()) {
+  //     object.halfYearly[category] += data;
+  //   }
+
+  //   // Update month
+  //   if (date.getTime() >= new Date(now.getFullYear(), now.getMonth(), 1).getTime() &&
+  //     date.getTime() < new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()) {
+  //     object.month[category] += data;
+  //   }
+
+  //   // Update week
+  //   if (now.getTime() - date.getTime() < now.getDay() * 24 * 60 * 60 * 1000) {
+  //     object.week[category] += data;
+  //   }
+  // }
+
+  filterByDuration(intervalType: string): string | void {
+    let now = new Date();
+
+    if (intervalType === "tillNow") {
+      return "tillNow";
+    } else if (intervalType === "year") {
+      let yearStr = now.getFullYear();
+      // Concatenate components to form desired date string
+      let formattedDate = yearStr.toString();
+      console.log(formattedDate);
+      return formattedDate;
+
+    } else if (intervalType === "month") {
+      let yearStr = now.getFullYear();
+      let monthStr = ('0' + (now.getMonth() + 1)).slice(-2); // Add leading zero if month is < 10
+      // Concatenate components to form desired date string
+      let formattedDate = yearStr + '-' + monthStr;
+      console.log(formattedDate);
+      return formattedDate;
+
+    } else if (intervalType === "quater") {
+      let yearStr = now.getFullYear();
+      let monthStr = ('0' + (now.getMonth() - 2)).slice(-2); // Add leading zero if month is < 10
+      // Concatenate components to form desired date string
+      let formattedDate = yearStr + '-' + monthStr + '-01';
+      console.log(formattedDate);
+      return formattedDate;
     }
   }
 }
