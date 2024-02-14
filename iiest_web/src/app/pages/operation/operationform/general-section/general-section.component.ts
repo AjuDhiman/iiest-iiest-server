@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/f
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
+import { days, months } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-general-section',
@@ -97,8 +98,6 @@ export class GeneralSectionComponent implements OnInit {
   }
 
   getFormatedDate(date: string): string {
-    let days = [ 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
     let formattedDate;

@@ -34,7 +34,7 @@
                 [title]="!isSidebarVisible && largeDisplay?'Employee Register':''">
                     <a class="nav-link" [routerLink]="['/empregister']">
                         <span class="nav-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" color="" fill="currentColor" class="bi bi-person-add" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" color="" fill="currentColor" class="" viewBox="0 0 16 16">
                                 <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
                                 <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
                               </svg>
@@ -91,6 +91,23 @@
                                 </svg>
                         </span>
                         <span class="nav-link-text">Fbo List</span>
+                    </a>
+                </li>
+                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item"
+                [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
+                [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
+                    <a class="nav-link" [routerLink]="['/caselist']">
+                        <span class="nav-icon">
+                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
+
+                                <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+                                <path d="M160 415 c0 -37 4 -65 10 -65 6 0 10 25 10 55 l0 55 90 0 90 0 0 -50 0 -50 50 0 50 0 0 -140 0 -140 -70 0 c-40 0 -70 -4 -70 -10 0 -6 33 -10 80 -10 l80 0 0 158 0 158 -53 52 -53 52 -107 0 -107 0 0 -65z m255 -5 l29 -30 -32 0 c-29 0 -32 3 -32 30 0 17 1 30 3 30 2 0 16 -13 32 -30z"/>
+                                <path d="M121 323 c-27 -23 -31 -105 -8 -150 24 -46 22 -52 -27 -73 -41 -17 -66 -43 -66 -69 0 -7 50 -11 150 -11 100 0 150 4 150 11 0 26 -25 52 -66 69 -48 21 -51 28 -30 68 13 25 21 82 17 124 -1 18 -53 48 -81 48 -10 0 -27 -8 -39 -17z m86 -23 c17 -15 20 -27 16 -62 -3 -24 -12 -53 -19 -65 -8 -12 -14 -29 -14 -38 0 -22 -40 -19 -40 3 0 9 -7 26 -15 36 -18 24 -20 117 -3 134 18 18 52 15 75 -8z m-51 -234 c-6 -24 -11 -26 -62 -26 -64 0 -63 10 4 44 51 27 68 21 58 -18z m139 -16 c4 -6 -14 -10 -48 -10 -47 0 -55 3 -65 24 -18 41 4 48 59 21 26 -14 50 -29 54 -35z"/>
+                                </g>
+                                </svg>
+                        </span>
+                        <span class="nav-link-text">Employee List</span>
                     </a>
                 </li>
                 <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item"

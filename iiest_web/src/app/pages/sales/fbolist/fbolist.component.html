@@ -24,7 +24,7 @@
               </form>
             </div>
             <div class="col-auto">
-              <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
+              <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
                 <option value="byOwner">Search by Owner</option>
                 <option value="byName">Search by Name</option>
                 <option value="byCustomerID">Search by Customer ID</option>
@@ -120,3 +120,5 @@
     </div>
   </div>
 </div>
+
+<ngx-loading [show]="loading"></ngx-loading>

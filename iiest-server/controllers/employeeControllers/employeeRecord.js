@@ -98,7 +98,7 @@ exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
-            salesInfo = await salesModel.find({}).populate('fboInfo').select('-employeeInfo');
+            salesInfo = await salesModel.find({}).populate([{path:'fboInfo'}, {path:'employeeInfo'}]);
         } else {
             salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
         }
@@ -117,15 +117,16 @@ exports.employeeDepartmentCount = async (req, res) => {
 
         const employeeGroupCount = await employeeSchema.aggregate([
             {
-                $match: { status: true } // Filter documents where status is true
-            },
-            {
                 $group: {
-                    _id: { department: '$department' },
-                    count: { $sum: 1 }
+                    _id: {
+                        department:'$department'
+                    },
+                    count: {
+                        $sum: { $cond: { if: { $eq: ["$status", true] }, then: 1, else: 0 } }
+                    }
                 }
             }
-        ])
+        ]);
 
         if (!employeeGroupCount) {
             success = false;
