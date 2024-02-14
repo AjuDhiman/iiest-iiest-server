@@ -1,5 +1,5 @@
 const express = require('express');
-const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages } = require('../controllers/employeeControllers/employee');
+const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData } = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
@@ -20,6 +20,7 @@ router.get('/employeeRecord', authMiddleware, employeeRecord);
 router.get('/getPincodesData/:stateName', authMiddleware, getPincodesData);
 router.get('/employeesaleslist', authMiddleware, employeeSalesData);
 router.post('/registerarea/:id', authMiddleware, areaAllocation);
+router.post('/assignmanager/:id', authMiddleware, assignManger);
 router.get('/allocatedareas/:id', authMiddleware, allocatedAreas);
 router.get('/getuserimage/:id', authMiddleware, employeeImage);
 router.get('/getusersign/:id', authMiddleware, employeeSignature);

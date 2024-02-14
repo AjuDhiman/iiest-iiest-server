@@ -36,27 +36,16 @@
           </select>
         </div>
         <div class="col-auto">
-          <fa-icon (click)="exportToCsv()" class="fa-2xl" style="cursor: pointer; margin: 7px 7px; color: #1957a9;"
+          <fa-icon (click)="exportToCsv()"  data-bs-toggle='tooltip' data-bs-placement='top' 
+          title='Export As CSV' class="fa-2xl" style="cursor: pointer; margin: 7px 7px; color: #1957a9;"
             [icon]="faFileCsv"></fa-icon>
-          <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon>
+          <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' 
+          title='Export As PDF' class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon>
         </div>
       </div><!--//row-->
     </div><!--//table-utilities-->
   </div><!--//col-auto-->
 </div><!--//row-->
-
-
-<!-- <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-  <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all"
-    role="tab" aria-controls="orders-all" aria-selected="true">All</a>
-  <a class="flex-sm-fill text-sm-center nav-link" id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid"
-    role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
-  <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending"
-    role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
-  <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab"
-    href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
-</nav> -->
-
 
 <div class="tab-content" id="orders-table-tab-content">
   <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
@@ -88,29 +77,37 @@
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                 <td class="cell cursor-pointer">
-                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()" [icon]="faCopy"></fa-icon>
-                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"> {{ employee.username}}</span>
+                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()" [icon]="faCopy" data-bs-toggle='tooltip' data-bs-placement='top' 
+                   title='copy text'></fa-icon>
+                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')" data-bs-toggle='tooltip' data-bs-placement='top' title='assign reporting manger'> {{ employee.username}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
                 <td class="cell"><span class="truncate">
-                    <fa-icon class="fa-l" style="margin-right: 5px;"
+                    <fa-icon class="fa-l cursor-pointer" style="margin-right: 5px;" data-bs-toggle='tooltip' data-bs-placement='top' 
+                    title='e-mail'
                       [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.state}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
                 <td class="cell text-center">
                   <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
-                  <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
-                  <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
+                  <fa-icon *ngIf="employee.status" data-bs-toggle='tooltip' data-bs-placement='top' 
+                  title='active employee' class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
+                  <fa-icon *ngIf="!employee.status" data-bs-toggle='tooltip' data-bs-placement='top' 
+                  title='inactive employee' class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
                 </td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='view employee'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="allocate(employee, 'area')"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='allocate area'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="editRecord(employee)"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='edit'
                     style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
                   <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='delete'
                     [icon]="faTrash"></fa-icon>
                 </td>
                 <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
@@ -124,6 +121,6 @@
 
     <div class="d-flex justify-content-between">
       <div class="filtered-count">{{filteredEmployees.length}} of {{allEmployees.length}}</div>
-      <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+      <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onPageChange($event)">
       </pagination-controls>
     </div>
