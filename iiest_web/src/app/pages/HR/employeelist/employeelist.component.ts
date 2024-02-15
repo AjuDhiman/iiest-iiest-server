@@ -20,11 +20,15 @@ import { EmploymentComponent } from '../../modals/employment/employment.componen
   styleUrls: ['./employeelist.component.scss']
 })
 export class EmployeelistComponent implements OnInit {
-
-  //store related variables
+  @Output() isEditRecord = new EventEmitter();
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
   empLoadedSub: Subscription;
+
+  //store related variables
+  // @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
+  // @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
+  // empLoadedSub: Subscription;
 
   //employee list table related variables
   allEmployees: any;
@@ -33,7 +37,8 @@ export class EmployeelistComponent implements OnInit {
   selectedFilter: string = 'byName';
   pageNumber: number = 1;
   isSearch: boolean = false;
-  itemsNumber: number = 10;
+  isActive: boolean = true;
+  itemsNumber: number = 25;
 
   //icons
   faEye = faEye;
@@ -49,7 +54,7 @@ export class EmployeelistComponent implements OnInit {
   faCopy = faCopy;
 
   //output event emitters
-  @Output() isEditRecord = new EventEmitter();
+  // @Output() isEditRecord = new EventEmitter();
 
   constructor(
     private _utililitesService: UtilitiesService,
@@ -83,8 +88,9 @@ export class EmployeelistComponent implements OnInit {
   filter(): void {
     if (!this.searchQuery) {
       this.isSearch = false;
-      this.filteredEmployees = this.allEmployees;
+      this.filteredEmployees = this.filterEmpByStatus(this.isActive);
     } else {
+      this.allEmployees = this.filterEmpByStatus(this.isActive);
       switch (this.selectedFilter) {
         case 'byName': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
@@ -98,6 +104,20 @@ export class EmployeelistComponent implements OnInit {
           break;
       }
     }
+  }
+
+  // This method is used to filter active and inactive employees
+  filterEmpByStatus(type: boolean) {
+    if (type === true) {
+      return this.allEmployees.filter((elem: any) => elem.status === true);
+    } else if (type === false) {
+      return this.allEmployees.filter((elem: any) => elem.status === false);
+    }
+  }
+
+  filterEmp(type: boolean) {
+    this.isActive = type;
+    this.fetchAllEmployees();
   }
 
   //this method sets the table configuration on the basis of search change

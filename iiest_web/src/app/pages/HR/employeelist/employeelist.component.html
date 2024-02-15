@@ -1,37 +1,49 @@
-<div class="row g-3 mb-4 align-items-center justify-content-between">
-  <div class="col-auto">
-    <h1 class="app-page-title mb-0">Employee List</h1>
-  </div>
-  <div class="col-auto">
-    <div class="page-utilities">
-      <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-        <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber">
-          <option value=10>10</option>
-          <option value=25 selected>25</option>
-          <option value=50>50</option>
-          <option value=100>100</option>
-
-      </select>
-        <div class="col-auto">
-          <form class="form">
-
-            <div class="input-group">
-              <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
-                [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+<div class="app-content pt-3 p-md-3 p-lg-4">
+  <div class="container-xxl border border-1 rounded-3 pt-3">
+    <div class="row g-3 mb-4 align-items-center justify-content-between">
+      <div class="col-auto">
+        <h1 class="app-page-title mb-0">Employee List</h1>
+      </div>
+      <div class="col-auto">
+        <div class="page-utilities">
+          <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+            <div class="col-auto">
+              <button class="btn btn-sm mx-1" [ngClass]="isActive===true?'btn-primary':'btn-secondary'" type="button"
+                (click)="filterEmp(true)">
+                Active
+              </button>
+              <button class="btn btn-sm mx-1" [ngClass]="isActive===false?'btn-primary':'btn-secondary'" type="button"
+                (click)="filterEmp(false)">
+                Inactive
+              </button>
             </div>
-            <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
-              class="form-control form-control-sm search-orders" (input)="onSearchChange()">
-          </form>
+            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber">
+              <option value=10>10</option>
+              <option value=25>25</option>
+              <option value=50>50</option>
+              <option value=100>100</option>
 
-        </div>
-        <div class="col-auto">
+            </select>
+            <div class="col-auto">
+              <form class="form">
 
-          <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
-            <option value="byName" selected>Search by name</option>
-            <option value="byEmail">Search by email</option>
-            <option value="byEmpId">Search by employee ID</option>
-            <option value="byContact">Search by contact</option>
-            <option value="byLocation">Search by location</option>
+                <div class="input-group">
+                  <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
+                    [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                </div>
+                <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                  class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+              </form>
+
+            </div>
+            <div class="col-auto">
+
+              <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
+                <option value="byName" selected>Search by name</option>
+                <option value="byEmail">Search by email</option>
+                <option value="byEmpId">Search by employee ID</option>
+                <option value="byContact">Search by contact</option>
+                <option value="byLocation">Search by location</option>
 
           </select>
         </div>
@@ -47,25 +59,25 @@
   </div><!--//col-auto-->
 </div><!--//row-->
 
-<div class="tab-content" id="orders-table-tab-content">
-  <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-    <div class="app-card app-card-orders-table shadow-sm mb-5">
-      <div class="app-card-body">
-        <div class="table-responsive">
-          <table class="table app-table-hover table-striped mb-0 text-left">
-            <thead>
-              <tr>
-                <th class="cell">S.No</th>
-                <th class="cell">Name</th>
-                <th class="cell">Employee ID</th>
-                <th class="cell">Username</th>
-                <th class="cell">Contact</th>
-                <th class="cell">Email</th>
-                <th class="cell">Location</th>
-                <th class="cell">Created By</th>
-                <th class="cell text-center">Status</th>
-                <th class="cell text-center">Action</th>
-                <!-- <th class="cell">Last Edit</th> -->
+    <div class="tab-content" id="orders-table-tab-content">
+      <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+        <div class="app-card app-card-orders-table shadow-sm mb-5">
+          <div class="app-card-body">
+            <div class="table-responsive">
+              <table class="table app-table-hover table-striped mb-0 text-left">
+                <thead>
+                  <tr>
+                    <th class="cell">S.No</th>
+                    <th class="cell">Name</th>
+                    <th class="cell">Employee ID</th>
+                    <th class="cell">Username</th>
+                    <th class="cell">Contact</th>
+                    <th class="cell">Email</th>
+                    <th class="cell">Location</th>
+                    <th class="cell">Created By</th>
+                    <th class="cell text-center">Status</th>
+                    <th class="cell text-center">Action</th>
+                    <!-- <th class="cell">Last Edit</th> -->
 
               </tr>
             </thead>
@@ -77,37 +89,29 @@
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                 <td class="cell cursor-pointer">
-                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()" [icon]="faCopy" data-bs-toggle='tooltip' data-bs-placement='top' 
-                   title='copy text'></fa-icon>
-                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')" data-bs-toggle='tooltip' data-bs-placement='top' title='assign reporting manger'> {{ employee.username}}</span>
+                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()" [icon]="faCopy"></fa-icon>
+                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"> {{ employee.username}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
                 <td class="cell"><span class="truncate">
-                    <fa-icon class="fa-l cursor-pointer" style="margin-right: 5px;" data-bs-toggle='tooltip' data-bs-placement='top' 
-                    title='e-mail'
+                    <fa-icon class="fa-l" style="margin-right: 5px;"
                       [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.state}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
                 <td class="cell text-center">
                   <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
-                  <fa-icon *ngIf="employee.status" data-bs-toggle='tooltip' data-bs-placement='top' 
-                  title='active employee' class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
-                  <fa-icon *ngIf="!employee.status" data-bs-toggle='tooltip' data-bs-placement='top' 
-                  title='inactive employee' class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
+                  <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
+                  <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
                 </td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='view employee'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="allocate(employee, 'area')"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='allocate area'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="editRecord(employee)"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='edit'
                     style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
                   <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='delete'
                     [icon]="faTrash"></fa-icon>
                 </td>
                 <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
@@ -116,8 +120,8 @@
           </table>
         </div><!--//table-responsive-->
 
-      </div><!--//app-card-body-->
-    </div><!--//app-card-->
+          </div><!--//app-card-body-->
+        </div><!--//app-card-->
 
     <div class="d-flex justify-content-between">
       <div class="filtered-count">{{filteredEmployees.length}} of {{allEmployees.length}}</div>

@@ -93,11 +93,11 @@
                         <span class="nav-link-text">Fbo List</span>
                     </a>
                 </li>
-                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item"
+                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
-                [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
-                    <a class="nav-link" [routerLink]="['/caselist']">
+                [title]="!isSidebarVisible && largeDisplay?'Employee List':''" data-bs-custom-class="custom-tooltip">
+                    <a class="nav-link" [routerLink]="['/emplist']">
                         <span class="nav-icon">
                             <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
 
