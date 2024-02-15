@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager} from '../utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
 import { config } from '../utils/config'
@@ -91,6 +91,11 @@ export class RegisterService {
 
   public registerArea(objId: string, areaAllocation: areaAllocation){
     const url = `${this.url}/registerarea/${objId}`;
+    return this.http.post<any>(url, areaAllocation).pipe(catchError(this.handleError));
+  }
+
+  public assignManager(empId: string, areaAllocation: reportingManager){
+    const url = `${this.url}/assignmanager/${empId}`;
     return this.http.post<any>(url, areaAllocation).pipe(catchError(this.handleError));
   }
 

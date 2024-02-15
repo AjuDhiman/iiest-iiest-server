@@ -1,6 +1,6 @@
 <div class="modal-header bg-secondary">
-    <h6 *ngIf="type==='area'" class="modal-title text-white" id="modal-basic-title">Area Allocation</h6>
-    <h6 *ngIf="type==='manager'" class="modal-title text-white" id="modal-basic-title">Reporting Manager</h6>
+    <h6 *ngIf="type==='area'" class="modal-title text-white" id="modal-basic-title">Area Allocation of {{employee.employee_name}}</h6>
+    <h6 *ngIf="type==='manager'" class="modal-title text-white" id="modal-basic-title">Reporting Manager for {{employee.employee_name}}</h6>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div>
@@ -46,7 +46,7 @@
             <button type="submit" class="btn btn-sm btn-outline-dark">Allocate Area</button>
         </div>
     </form>
-    <form *ngIf="type=='manager'" [formGroup]="reportingManagerForm" autocomplete="off" (ngSubmit)="onSubmit()">
+    <form *ngIf="type=='manager'" [formGroup]="reportingManagerForm" autocomplete="off" (ngSubmit)="onManagerAssignment()">
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-6">
@@ -55,7 +55,7 @@
                         [ngClass]="{ 'is-invalid': submitted && managerForm['reportingManager'].errors }"
                         formControlName="reportingManager" class="form-select form-select-sm">
                         <option value="" disabled selected>Select the Reporting Manager</option>
-                        <option *ngFor="let reportingManager of allManagers" [value]="reportingManager.name">
+                        <option *ngFor="let reportingManager of allManagers" [value]="reportingManager._id">
                             {{reportingManager.name}}
                         </option>
                     </select>

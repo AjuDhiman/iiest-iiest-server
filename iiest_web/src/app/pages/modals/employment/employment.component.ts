@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { stateName } from 'src/app/utils/config'
@@ -27,9 +27,7 @@ export class EmploymentComponent implements OnInit {
 
   @Input() employee: any;
   @Input() type: any;
-  //New variables for search box still in testing
-  // isSearchEmpty: boolean;
-  // searchSuggestions: any;
+
   allManagers:any[] = [] 
 
   areaAllocationForm: FormGroup = new FormGroup({
@@ -99,6 +97,25 @@ export class EmploymentComponent implements OnInit {
     });
   }
 
+  onManagerAssignment(){
+    this.submitted = true;
+    console.log(this.reportingManagerForm.value);
+    this.registerService.assignManager(this.employee._id, this.reportingManagerForm.value).subscribe({
+      next: res => {
+        this.toasterService.success('', 'Manager assigned sucessfully');
+      },
+      error: (err)=>{
+        let errorObj = err.error;
+        if(errorObj.userError){
+          this.registerService.signout();
+        }else if(errorObj.existingManagerErr){
+          this.toasterService.error('', 'manager Already Assigned');
+        }
+      }
+    })
+
+  }
+
   // this function will fetch the array of distinct districsts onbased of state select
   onStateSelect($event: any) {
     this.state = $event.target.value;
@@ -139,10 +156,6 @@ export class EmploymentComponent implements OnInit {
     this.areaForm['pincodes'].setValue(event)
   }
 
-  selectManager(){
-
-  }
-
   getNameWithID():string{
     let manager = this.allManagers
     .find(item => item.name===this.managerForm['reportingManager'].value);
@@ -151,20 +164,4 @@ export class EmploymentComponent implements OnInit {
     }
     return `${manager?.name}(${manager?.emp_id})`
   }
-
-  // filterSearch(event: any) {
-  //   let value = event.target.value
-  //   console.log(value);
-  //   if (value !== '') {
-  //     this.isSearchEmpty = false;
-  //   }
-  //   else {
-  //     this.isSearchEmpty = true;
-  //     return
-  //   }
-  //   let regex = new RegExp(value, "i") // i means case insesitive
-  //   //using regex for comparing fbo names and customer ids
-  //   this.searchSuggestions = this.allManagers.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
-  //   console.log(this.searchSuggestions);
-  // }
 }

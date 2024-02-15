@@ -24,6 +24,13 @@ export class EmployeelistComponent implements OnInit {
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
   empLoadedSub: Subscription;
+
+  //store related variables
+  // @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
+  // @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
+  // empLoadedSub: Subscription;
+
+  //employee list table related variables
   allEmployees: any;
   filteredEmployees: any;
   searchQuery: string = '';
@@ -32,6 +39,8 @@ export class EmployeelistComponent implements OnInit {
   isSearch: boolean = false;
   isActive: boolean = true;
   itemsNumber: number = 25;
+
+  //icons
   faEye = faEye;
   faPencil = faPencil;
   faTrash = faTrash;
@@ -43,6 +52,9 @@ export class EmployeelistComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faLocationPin = faLocationPin;
   faCopy = faCopy;
+
+  //output event emitters
+  // @Output() isEditRecord = new EventEmitter();
 
   constructor(
     private _utililitesService: UtilitiesService,
@@ -59,6 +71,7 @@ export class EmployeelistComponent implements OnInit {
     this.fetchAllEmployees();
   }
 
+  // this methord fetches the list of all employees from ngrx store
   fetchAllEmployees(): void {
     this.allEmployees = this._utililitesService.getData();
     this.filter();
@@ -71,12 +84,13 @@ export class EmployeelistComponent implements OnInit {
     }
   }
 
+  //this methord filter the table data on the basis of search query and selected search filter
   filter(): void {
     if (!this.searchQuery) {
       this.isSearch = false;
-
       this.filteredEmployees = this.filterEmpByStatus(this.isActive);
     } else {
+      this.allEmployees = this.filterEmpByStatus(this.isActive);
       switch (this.selectedFilter) {
         case 'byName': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
@@ -92,6 +106,7 @@ export class EmployeelistComponent implements OnInit {
     }
   }
 
+  // This method is used to filter active and inactive employees
   filterEmpByStatus(type: boolean) {
     if (type === true) {
       return this.allEmployees.filter((elem: any) => elem.status === true);
@@ -105,18 +120,21 @@ export class EmployeelistComponent implements OnInit {
     this.fetchAllEmployees();
   }
 
+  //this method sets the table configuration on the basis of search change
   onSearchChange(): void {
     this.pageNumber = 1;
     this.isSearch = true;
     this.filter();
   }
 
-  onTableDataChange(event: any) {
+  //this method sets the table configuration on the basis pagination change
+  onPageChange(event: any): void {
     this.pageNumber = event;
     this.filter();
   }
+
   //Export To CSV
-  exportToCsv() {
+  exportToCsv(): void {
     const csvData = this.papa.unparse(this.filteredEmployees, { header: true })
 
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
@@ -124,7 +142,8 @@ export class EmployeelistComponent implements OnInit {
     this.fileSaverService.save(blob, 'employeelist.csv');
   }
 
-  getEmployees() {
+  //this methord manages the state of ngrx store
+  getEmployees(): void {
     this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
       if (!loadedEmployee) {
         this.store.dispatch(new GetEmployee());
@@ -132,6 +151,7 @@ export class EmployeelistComponent implements OnInit {
     })
   }
 
+  //this methord emits the data from from employee list component to emp register component in case of edit record
   editRecord(res: any): void {
     var data = {
       isEditMode: true,
@@ -140,12 +160,13 @@ export class EmployeelistComponent implements OnInit {
     this.isEditRecord.emit(data);
   }
 
+  //methord for deleting employee from our record and calling the api for sending updatingemployee in past employee schema
   deleteEmployee(objId: string): void {
     const loggedInUserData: any = this.registerService.LoggedInUserData();
     const parsedData = JSON.parse(loggedInUserData);
     const deletedBy = `${parsedData.employee_name}(${parsedData.employee_id})`;
     this.registerService.deleteEmployee(objId, deletedBy).subscribe({
-      next: (res) => {
+      next: (res): void => {
         if (res.success) {
           this.store.dispatch(new DeleteEmployee(objId))
           this._toastrService.success('Record Edited Successfully', res.message);
@@ -153,7 +174,7 @@ export class EmployeelistComponent implements OnInit {
           this._toastrService.success('Message Error!', res.message);
         }
       },
-      error: (err) => {
+      error: (err) : void => {
         let errorObj = err.error;
         if (errorObj.userError) {
           this.registerService.signout();
@@ -164,31 +185,34 @@ export class EmployeelistComponent implements OnInit {
     })
   }
 
-  allocate(res: any, type: string) {
+  //methord for area allocation of a employee
+  allocate(res: any, type: string): void {
     const modalRef = this.modalService.open(EmploymentComponent, { size: type === 'manager' ? 'md' : 'lg', backdrop: 'static' });
     modalRef.componentInstance.employee = res;
     modalRef.componentInstance.type = type;
 
     if (type === 'manager') {
       let allManagers = this.allEmployees
-        .filter((emp: any) => emp.department === res.department &&
+        .filter((emp: any) => 
           emp.designation.toLowerCase().includes('manager'))
         .map((emp: any) => {
           return {
+            _id: emp._id,
             name: emp.employee_name,
-            emp_id: emp.employee_id
+            emp_id: emp.employee_id,
           }
         });
       modalRef.componentInstance.allManagers = allManagers;
     }
   }
 
-  copyNotification() {
+  //this methord will notify us in case of copy text event in employee table 
+  copyNotification() :void {
     this._toastrService.success('Text Copied');
   }
 
   //View Employee Details
-  viewEmployeeDetails(res: any) {
+  viewEmployeeDetails(res: any): void {
     const modalRef = this.modalService.open(ViewEmployeeComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.employee = res;
   }
