@@ -23,9 +23,14 @@
 				</ng-container> -->
 			</select>
 		</div>
-		<div class="chart-container">
-			<highcharts-chart [Highcharts]="Highcharts" [options]="chart" style="width: 100%; display: block;">
+		<div class="chart-container position-relative" style="overflow: scroll;">
+			<highcharts-chart *ngIf="isDataAvilable; else noData" [Highcharts]="Highcharts" [options]="chart" style="width: 100%; display: block;">
 			</highcharts-chart>
+			<ng-template #noData>
+				<div class="alert alert-warning position-absolute" role="alert">
+					No {{chartData.chartTitle}} data avilable <span style="text-transform: capitalize;"> {{formatIntervalType(intervalType)}}</span>
+				  </div>
+			</ng-template>
 		</div><!-- //app-card-body -->
 	</div><!-- //app-card -->
 </div><!-- //col  -->

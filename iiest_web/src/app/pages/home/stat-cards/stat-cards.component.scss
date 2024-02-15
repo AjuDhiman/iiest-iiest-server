@@ -1,3 +1,42 @@
+.sales-card-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.sales-card{
+    min-height: 100%;
+    //transition:all 0.1s ease;
+    transition: transform 0.8s;
+    
+    & .stats-type{
+        font-size: 16px;
+        height:40px;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+
+    & .stats-figure{
+        font-size: x-large;
+    }
+}
+
+.sales-card:hover:hover{
+    -ms-transform: scale(1.1); /* IE 9 */
+    -webkit-transform: scale(1.1); /* Safari 3-8 */
+    transform: scale(1.1); 
+    z-index: 1;
+
+    background: #20809d;
+
+    & .stats-type{
+        color: #fff;
+    }
+
+    & .stats-figure{
+        color: #fff;
+    }
+}
+
 .department-card-container {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -60,16 +99,25 @@
     .department-card-container {
         grid-template-columns: repeat(5, 1fr);
     }
+    .sales-card-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 @media (max-width:768px){
     .department-card-container {
         grid-template-columns: repeat(3, 1fr);
     }
+    .sales-card-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width:300px){
     .department-card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .sales-card-container {
         grid-template-columns: repeat(2, 1fr);
     }
 }

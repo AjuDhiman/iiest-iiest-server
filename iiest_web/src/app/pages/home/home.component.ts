@@ -43,11 +43,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   salesChartData: chartData;
   areaSalesChartData: chartData;
   empHiringChartData: chartData;
+  salesPersonChartData: chartData;
 
   //condtional variables
   isNameVisible: boolean = true;
   isChartDataAvailable: boolean = true;
   dnone: boolean = true;
+
+  //others
+  salesData: any;
+  topSalesman: any = {};
 
   constructor(
     private _registerService: RegisterService,
@@ -76,7 +81,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       this.getSalesCountData();
 
-      this.getAreaSalesChartData();
+      // this.getAreaSalesChartData();
+      this.fetchAllSalesData();
 
     }
 
@@ -90,7 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getProductData();
   }
 
-  getEmployees() {
+  getEmployees(): void {
     this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
       if (!loadedEmployee) {
         this.store.dispatch(new GetEmployee());
@@ -98,23 +104,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  // fetchAllFboData(): void {
-  //   this._getDataService.getSalesList().subscribe({
-  //     next: (res) => {
-  //       if (res.salesInfo) {
-  //         this.salesData = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
-  //       }
-  //     },
-  //     error: (err) => {
-  //       let errorObj = err;
-  //       if (errorObj.userError) {
-  //         this._registerService.signout();
-  //       }
-  //     }
-  //   })
-  // }
-
-  getUserBasicData() {
+  getUserBasicData(): void {
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)
     this.projectType = loggedInUserData.project_name;
@@ -130,9 +120,31 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  //function for getting chart data by the help of apis starts
+  //function for statcards
 
-  catchDeptCount($event: any) {
+
+
+  //function for getting chart data by the help of apis starts
+  getSalesPersonSalesData(sales:any) {
+    console.log(sales)
+    sales.forEach((sale: any) => {
+      if(sale.employeeInfo){
+        const employee = sale.employeeInfo.employee_name;
+
+        const grandTotal = Number(sale.grand_total);
+  
+        if (this.topSalesman.hasOwnProperty(employee)) {
+          this.topSalesman[employee] += grandTotal;
+        } else {
+          this.topSalesman[employee] = grandTotal ;
+        }
+      }
+      
+    });
+    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart','sales', this.topSalesman);
+  }
+
+  catchDeptCount($event: any): void {
     const data: any = {};
 
     $event.forEach((element: any) => {
@@ -142,33 +154,31 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.deptData = new chartData('column', 'HR department', 'Employee Count By Department', 'Employee Count', data);
   }
 
-  getSalesCountData() {
+  getSalesCountData(): void {
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
-        this.salesChartData = new chartData('column', 'Sales department', 'Sales Count Chart', 'Sales Count', res, true);
+        this.salesChartData = new chartData('column', 'Sales department', 'Sales Count Chart', 'Sales Count', res, true, ['pie']);
       }
     })
   }
 
-  getAreaSalesChartData() {
+  getAreaSalesChartData(res: any): void {
     let stateCounts = {}
-    this._getDataService.getSalesList().subscribe({
-      next: res => {
-        console.log(res);
-        stateCounts = res.salesInfo.reduce((counts: any, item: any) => {
-          if (item.fboInfo) {
-            const district = item.fboInfo.district;
-            counts[district] = counts[district] ? counts[district] + 1 : 1;
-          }
-          return counts;
-        }, {});
-
-        this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Sales Chart Area Wise', 'Sales Count', stateCounts)
+    stateCounts = res.salesInfo.reduce((counts: any, item: any) => {
+      if (item.fboInfo) {
+        const state = item.fboInfo.state;
+        counts[state] = counts[state] ? counts[state] + 1 : 1;
       }
-    });
+      return counts;
+    }, {});
+    this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Sales Chart Area Wise', 'Sales Count', stateCounts);
   }
 
-  getEmpHiringChartData() {
+  getEmployeeSalesData(sales:any){
+      
+  }
+
+  getEmpHiringChartData(): void {
     this._getDataService.getEmpHiringData().subscribe({
       next: res => {
         let data: any = {};
@@ -185,16 +195,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   //function for getting chart data by the help of apis ends
-  getProductData() {
+  getProductData(): void {
     this._getDataService.getProductData().subscribe({
       next: (res) => {
         this.fssaiData = res.FSSAI;
         this.dpiitData = res.DPIIT;
       },
       error: (err) => {
+        console.log(err);
       }
     }
     )
+  }
+
+  fetchAllSalesData(): void {
+    this._getDataService.getSalesList().subscribe({
+      next: res => {
+        console.log(res);
+        this.getAreaSalesChartData(res);
+        this.getSalesPersonSalesData(res.salesInfo);
+      }
+    });
   }
 
   ngOnDestroy(): void {

@@ -5,15 +5,11 @@ import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 import { chartData } from 'src/app/utils/config';
-import noData from 'highcharts/modules/no-data-to-display';
-
-// Initialize the noData module
-noData(Highcharts);
 
 @Component({
   selector: 'app-highcharts',
   templateUrl: './highcharts.component.html',
-  styleUrls: ['./highcharts.component.scss']
+  styleUrls: ['./highcharts.component.scss'],
 })
 export class HighchartsComponent implements OnChanges {
 
@@ -35,13 +31,9 @@ export class HighchartsComponent implements OnChanges {
 
   intervalType: string = 'week';
 
-  noData: string =  'NO data to show';
+  noData: string = `<div>No data avilable </div> this ${this.intervalType}`;
 
-  noDataStyle: any =  {
-    fontWeight: 'bold',
-    fontSize: '15px',
-    color: '#303030'
-  };
+  isDataAvilable: boolean = true;
 
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
@@ -71,25 +63,23 @@ export class HighchartsComponent implements OnChanges {
         enabled: false
       },
       xAxis: {
+        labels: {
+          style: {
+            width: 70, // Set a fixed width for the labels
+            overflow: 'hidden', // Hide overflow text
+            textOverflow: 'ellipsis'
+          }
+        },
+        scrollbar: {
+          enabled: true
+        },
         categories: this.categories,
+        tickLength: 0
       },
       yAxis: {
         title: {
           // text: this.yaxixTitle,
-        },
-      },
-      lang: {
-        noData: '<div>No data avilable </div>',
-      },
-      noData: {
-        style: {
-          fontSize: '20px',
-          color: '#967921',
-          fontWeight: '400',
-          backgroundColor: 'rgba(255, 0, 0, 0.1)',
-          padding: '10px', 
-          borderRadius: 5,
-        },
+        }
       },
       plotOptions: {
         column: {
@@ -117,6 +107,7 @@ export class HighchartsComponent implements OnChanges {
         }
       ],
     }
+    console.log(this.chart);
   }
 
   // -------Line Chart Function---------
@@ -136,19 +127,6 @@ export class HighchartsComponent implements OnChanges {
           // text: this.yaxixTitle,
         },
         min: 0
-      },
-      lang: {
-        noData: '<div>No data avilable </div>',
-      },
-      noData: {
-        style: {
-          fontSize: '20px',
-          color: '#967921',
-          fontWeight: '400',
-          backgroundColor: 'rgba(255, 0, 0, 0.1)',
-          padding: '10px', 
-          borderRadius: 5,
-        },
       },
       plotOptions: {
         line: {
@@ -185,19 +163,6 @@ export class HighchartsComponent implements OnChanges {
       },
       credits: {
         enabled: false,
-      },
-      lang: {
-        noData: '<div>No data avilable </div>',
-      },
-      noData: {
-        style: {
-          fontSize: '20px',
-          color: '#967921',
-          fontWeight: '400',
-          backgroundColor: 'rgba(255, 0, 0, 0.1)',
-          padding: '10px', 
-          borderRadius: 5,
-        },
       },
       plotOptions: {
         pie: {
@@ -249,19 +214,6 @@ export class HighchartsComponent implements OnChanges {
           // text: this.yaxixTitle,
         },
       },
-      lang: {
-        noData: '<div>No data avilable </div>',
-      },
-      noData: {
-        style: {
-          fontSize: '20px',
-          color: '#967921',
-          fontWeight: '400',
-          backgroundColor: 'rgba(255, 0, 0, 0.1)',
-          padding: '10px', 
-          borderRadius: 5,
-        },
-      },
       plotOptions: {
         area: {
           marker: {
@@ -291,6 +243,7 @@ export class HighchartsComponent implements OnChanges {
 
   ChangeInterval(event: any): void {
     this.intervalType = event.target.value;
+    // if (this.chart.lang) this.chart.lang.noData = `<div>No data avilable </div> this ${this.intervalType}`;
     this.plotChart();
   }
 
@@ -319,21 +272,15 @@ export class HighchartsComponent implements OnChanges {
     } else {
       this.categories = Object.keys(this.chartData.data);
       this.values = Object.values(this.chartData.data);
+      console.log(this.values);
     }
-
-    if (this.values.every((item: number) => item == 0)) {
-      this.noData = 'NO data to show';
-      this.noDataStyle = {
-        fontWeight: 'bold',
-        fontSize: '15px',
-        color: '#303030'
-      }
+    if (this.values.every(value => value === 0)) {
+      this.values = [];
+      this.isDataAvilable = false;
+      return;
     } else {
-      this.noData = ''
+      this.isDataAvilable = true;
     }
-   if(this.values.every(value => value === 0)){
-    this.values=[];
-   }
 
     switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
@@ -348,29 +295,21 @@ export class HighchartsComponent implements OnChanges {
     console.log(this.chart.lang);
   }
 
-  // myFunction(): void {
-  //   if (this.chart.series) {
-  //       if ((this.chart.series[0] as any).data.every((item: number) => Number(item) === 0)) {
-  //           this.chart.renderer.rect(
-  //               this.chart.plotLeft + (this.chart.plotWidth - 400) / 2,
-  //               this.chart.plotTop + (this.chart.plotHeight - 50) / 2,
-  //               400,
-  //               50,
-  //               3
-  //           )
-  //               .attr({
-  //                   'fill': '#fff3cd'
-  //               })
-  //               .add();
-  //           this.chart.renderer.text('No data to display!', this.chart.plotLeft + (this.chart.plotWidth - 400) / 2 + 400 / 2, this.chart.plotTop + (this.chart.plotHeight - 50) / 2 + 30)
-  //               .attr({
-  //                   'text-anchor': 'middle',
-  //                   'fill': '#cab475',
-  //                   'font-size': '20px',
-  //               })
-  //               .add();
-  //       }
-  //   }
+  // onWindowResize($event:WindowEventHandlers){
+  //   this.plotChart();
   // }
+
+  formatIntervalType(type:string): string{
+    switch(type){
+      case 'halfYearly':
+        return 'this Half Year'
+        break;
+      case 'tillNow':
+        return 'Till Now'
+        break;
+      default: 
+        return `this ${type}`
+    }
+  }
 
 }
