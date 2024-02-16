@@ -15,7 +15,7 @@ export class ViewEmployeeComponent implements OnInit {
   allocatedDistrict: string;
   allocatedPincodes: [];
   faIndianRupeeSign = faIndianRupeeSign;
-  userImage: string = '../../../assets/logo-side.png';
+  userImage: string = '../../../../assets/logo-side.png';
   constructor(public activeModal: NgbActiveModal, 
   private getDataService: GetdataService
   ) {
@@ -52,6 +52,7 @@ export class ViewEmployeeComponent implements OnInit {
     let userImageId = this.employee.employeeImage
     this.getDataService.getUserImage(userImageId).subscribe({
       next: (res)=>{
+        if(res.imageConverted)
         this.userImage = res.imageConverted;
       }
     })
