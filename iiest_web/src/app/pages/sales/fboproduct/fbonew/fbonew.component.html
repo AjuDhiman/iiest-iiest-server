@@ -7,8 +7,8 @@
             </div>
             <div class="col-md-6 text-end">
                 <form [formGroup]="existingUserForm">
-                    <label for="fbo_name" class="form-label p-1"> Existing User:</label><input type="checkbox"
-                        formControlName="existingUser" id="existing" class="align-middle"
+                    <label for="existing" class="form-label p-1"> Existing User:</label><input type="checkbox"
+                        formControlName="existingUser" id="existing" class="align-middle cursor-pointer"
                         (change)="existingUser($event)"> &nbsp;
                     <div class="d-inline m-0 p-0" style="position: relative;">
                         <input #searchElem *ngIf="isExisting" type="search" (input)="filterSearch($event)" name="search"
@@ -116,7 +116,7 @@
                     <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode</label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
-                            class="form-select form-select-sm" autocomplete="off" 
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off" 
                             [attr.disabled]="isExisting?true:null">
                             <option value="" disabled selected>Select the Pincode</option>
                             <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
@@ -144,7 +144,7 @@
                         <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
                         <app-multi-select #multi_select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
                             [options]="productList"  [forProducts]="true"
-                            [placeHolder]="'Select Products'"></app-multi-select>
+                            [placeHolder]="'Select Products'" class="cursor-pointer"></app-multi-select>
                         <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
                         </div>

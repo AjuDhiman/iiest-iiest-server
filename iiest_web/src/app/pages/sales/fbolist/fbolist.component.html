@@ -7,7 +7,7 @@
       <div class="col-auto">
         <div class="page-utilities">
           <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber">
+            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
               <option value=10>10</option>
               <option value=25 selected>25</option>
               <option value=50>50</option>
@@ -15,7 +15,7 @@
             </select>
             <div class="col-auto">
               <form class="form">
-                <div class="input-group">
+                <div class="input-group" title="Search Employee">
                   <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
                     [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
                 </div>
@@ -24,7 +24,7 @@
               </form>
             </div>
             <div class="col-auto">
-              <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
+              <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
                 <option value="byOwner">Search by Owner</option>
                 <option value="byName">Search by Name</option>
                 <option value="byCustomerID">Search by Customer ID</option>
@@ -34,8 +34,8 @@
               </select>
             </div>
             <div class="col-auto">
-              <fa-icon (click)="exportToCsv()" class="fa-2xl" style="margin: 7px 7px; color: #1957a9;"
-                [icon]="faFileCsv"></fa-icon>
+              <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
+                [icon]="faFileCsv" title="Export as CSV"></fa-icon>
               <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
             </div>
           </div><!--//row-->
@@ -83,17 +83,17 @@
                     <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
                     <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
                     <td class="cell text-center"><span class="truncate selector"
-                        (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')">{{!fbo.fostacInfo ? '-' :
+                        (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')" title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
                         fbo.fostacInfo.recipient_no}}</span></td>
                     <td class="cell text-center"><span class="truncate selector"
-                        (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')">{{!fbo.foscosInfo ? '-' :
+                        (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')" title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
                         fbo.foscosInfo.shops_no}}</span></td>
                     <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"
                           style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
                     <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
                     <td class="cell text-center">
                       <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;"
-                        (click)="viewFboDetails(fbo)" [icon]="faEye"></fa-icon>
+                        (click)="viewFboDetails(fbo)" [icon]="faEye" title="View Detail"></fa-icon>
                       <!-- <fa-icon class="fa-l" (click)="editRecord(fbo)"style="margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon> -->
                       <!-- <fa-icon class="fa-l" style="color: #c64115;" [icon]="faTrash" (click)="deleteFBO(fbo)"></fa-icon> -->
                     </td>
