@@ -165,7 +165,6 @@ export class SignupComponent implements OnInit {
       return;
     }
 
-
     this.form.value.dob = this.datePipe.transform(this.form.value.dob, 'yyyy-MM-dd');
     this.form.value.doj = this.datePipe.transform(this.form.value.doj, 'yyyy-MM-dd');
 

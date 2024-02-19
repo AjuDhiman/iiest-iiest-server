@@ -38,7 +38,7 @@
             </div>
             <div class="col-auto">
 
-              <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
+              <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter">
                 <option value="byName" selected>Search by name</option>
                 <option value="byEmail">Search by email</option>
                 <option value="byEmpId">Search by employee ID</option>
@@ -49,10 +49,10 @@
         </div>
         <div class="col-auto">
           <fa-icon (click)="exportToCsv()"  data-bs-toggle='tooltip' data-bs-placement='top' 
-          title='Export As CSV' class="fa-2xl" style="cursor: pointer; margin: 7px 7px; color: #1957a9;"
+          title='Export As CSV' class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
             [icon]="faFileCsv"></fa-icon>
           <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' 
-          title='Export As PDF' class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon>
+          title='Export As PDF' class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon>
         </div>
       </div><!--//row-->
     </div><!--//table-utilities-->
@@ -95,7 +95,7 @@
                   data-bs-toggle='tooltip' data-bs-placement='top' title='assign manager'> {{ employee.username}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
-                <td class="cell"><span class="truncate">
+                <td class="cell"><span class="truncate cursor-pointer">
                     <fa-icon class="fa-l" style="margin-right: 5px;" 
                     data-bs-toggle='tooltip' data-bs-placement='top' title='mail'
                       [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
