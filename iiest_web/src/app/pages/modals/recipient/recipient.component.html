@@ -47,7 +47,7 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['eBill'].errors }" />
           <div *ngIf="submitted && recipient['eBill'].errors" class="invalid-feedback">
             <div *ngIf="recipient['eBill'].errors['required']">Electricity Bill is required.(jpeg or png)</div>
-            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.</div>
+            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
           </div>
         </div>
         <div class="col-md-4">
@@ -57,7 +57,7 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['shopPic'].errors }" />
           <div *ngIf="submitted && recipient['shopPic'].errors" class="invalid-feedback">
             <div *ngIf="recipient['shopPic'].errors['required']">Shop Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['shopPic'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.</div>
+            <div *ngIf="recipient['shopPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
           </div>
         </div>
         <div class="col-md-4">
@@ -67,7 +67,7 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['ownerPic'].errors }" />
           <div *ngIf="submitted && recipient['ownerPic'].errors" class="invalid-feedback">
             <div *ngIf="recipient['ownerPic'].errors['required']">Owner Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['ownerPic'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.</div>
+            <div *ngIf="recipient['ownerPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
           </div>
         </div>
       </div>
@@ -190,6 +190,8 @@
                 <th class="cell">Operator Name</th>
                 <th class="cell">Address</th>
                 <th class="cell">Electricity Bill</th>
+                <th class="cell">Shop Photo</th>
+                <th class="cell">Owner Photo</th>
               </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
@@ -221,6 +223,8 @@
                     <fa-icon class="fa-2xl cursor-pointer" [icon]="faDownload"></fa-icon>
                   </a>
                 </td>
+                <td></td>
+                <td></td>
               </tr>
             </tbody>
             <tbody
