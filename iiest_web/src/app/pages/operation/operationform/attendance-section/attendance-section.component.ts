@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -16,10 +16,14 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   submittedStatus: boolean = false;
   attendeeStatus:string = '';
   isAttendeeAbsent:boolean = false;
+  marks: number = 0;
+  resultText: string = 'Not Trained';
+  resultTextClass: string = 'text-warning';
+  resultIcon: IconDefinition = faCircleExclamation;
 
   //icons
-  faCircleCheck=faCircleCheck;
-  faCircleExclamation=faCircleExclamation;
+  faCircleCheck: IconDefinition = faCircleCheck;
+  faCircleExclamation: IconDefinition = faCircleExclamation;
 
   //input variables
   @Input() enrolledStatus:boolean;
@@ -27,6 +31,8 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   @Input() enrolledDataId: string = '';
 
   //output event emitters
+  @Output() emitAttenanceStatus: EventEmitter<boolean> = new EventEmitter<boolean>
+
   @Output() refreshAuditLog: EventEmitter<void>=new EventEmitter<void>
 
   //reactive attendance form
@@ -71,7 +77,8 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
         this.submittedStatus=true;
         this.refreshAuditLog.emit();
         this.attendeeStatus = this.attendanceForm.value.attendee_status;
-        console.log(this.attendanceform);
+        this.setAttendenceResult();
+        this.emitAttenanceStatus.emit(this.submittedStatus);
       }
     })
   }
@@ -94,9 +101,37 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
           this.attendanceForm.patchValue({ attandee_status:res.attenData.attendeeStatus });
           this.attendanceForm.patchValue({ marks: res.attenData.marks});
           this.attendeeStatus=res.attenData.attendeeStatus;
+          this.marks=res.attenData.marks;
           this.submittedStatus=true;
+          this.setAttendenceResult();
+          this.emitAttenanceStatus.emit(this.submittedStatus);
         }
       }
     })
   }
+
+  setAttendenceResult(): void{
+    if(this.submittedStatus === false){
+      this.resultText = 'Not-Trained';
+      this.resultTextClass = 'text-warning';
+      this.resultIcon = faCircleExclamation;
+      return;
+    }
+    else if(this.attendeeStatus === 'absent'){
+      this.resultText = 'Absent';
+      this.resultTextClass = 'text-danger';
+      this.resultIcon = faCircleExclamation;
+      return;
+    }
+    else if(this.marks < 50){
+      this.resultText = 'Not Qualified';
+      this.resultTextClass = 'text-danger';
+      this.resultIcon = faCircleExclamation;
+      return;
+    }
+    this.resultText = 'Trained';
+    this.resultTextClass = 'text-success';
+    this.resultIcon = faCircleCheck;
+  }
+
 }

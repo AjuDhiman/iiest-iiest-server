@@ -89,30 +89,38 @@
                 <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                 <td class="cell cursor-pointer">
-                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()" [icon]="faCopy"></fa-icon>
-                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"> {{ employee.username}}</span>
+                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()"
+                    data-bs-toggle='tooltip' data-bs-placement='top' title='copy employee id' [icon]="faCopy"></fa-icon>
+                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='assign manager'> {{ employee.username}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
                 <td class="cell"><span class="truncate">
-                    <fa-icon class="fa-l" style="margin-right: 5px;"
+                    <fa-icon class="fa-l" style="margin-right: 5px;" 
+                    data-bs-toggle='tooltip' data-bs-placement='top' title='mail'
                       [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
                 </td>
                 <td class="cell"><span class="truncate">{{employee.state}}</span></td>
                 <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
                 <td class="cell text-center">
                   <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
-                  <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"></fa-icon>
-                  <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"></fa-icon>
+                  <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='active employee'></fa-icon>
+                  <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='inactive employee'></fa-icon>
                 </td>
                 <td class="cell text-center">
                   <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='view employee'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="allocate(employee, 'area')"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='allocate area'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="editRecord(employee)"
+                  data-bs-toggle='tooltip' data-bs-placement='top' title='edit'
                     style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
-                  <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
-                    [icon]="faTrash"></fa-icon>
+                  <!-- <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
+                    [icon]="faTrash"></fa-icon> -->
                 </td>
                 <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
               </tr>

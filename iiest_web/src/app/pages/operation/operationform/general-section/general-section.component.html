@@ -3,23 +3,27 @@
     <h6>General section</h6>
   </div>
 
-  <div class="col-md-3 col-12">
+  <!-- <div class="col-md-3 col-12">
     <label for="recipient_status" class="form-label select-label">Recipient status</label><sup>*</sup>
     <select id="recipient_status" class="form-select form-select-sm" formControlName="recipient_status">
       <option value="ongoing" selected>Ongoing</option>
       <option value="refund">Refund</option>
     </select>
-  </div>
+  </div> -->
 
   <div class="w-100"></div>
 
-  <div class="col-md-6 col-12">
-    <label for="case_note" class="form-label">Case Note<sup>*</sup></label>
-    <!-- <textarea rows="1" rows="8" [readOnly]="true" autocomplete="off" class="form-control form-control-sm"
-      id="case_note">{{caseNote}}</textarea> -->
-      <div class="case-note-block">
-        <div *ngFor="let note of caseNote" class="note">{{note}}</div>
+  <div *ngIf="productType==='Foscos'" class="col-md-6 col-12">
+    <div class="">
+      <label for="officer_chat" class="form-label">Fssai Comment<sup>*</sup></label>
+      <div class="officer-comment-block">
+        <!-- <div *ngFor="let comment of officerComments" class="note">{{comment}}</div> -->
       </div>
+    </div>
+    <div class="">
+      <label for="fssai_revert" class="form-label">Fssai Revert</label>
+      <input type="text" class="form-control form-control-sm" id="fssai_revert">
+    </div>
   </div>
 
   <div class="col-md-6 col-12">
@@ -28,13 +32,18 @@
       <div class="officer-comment-block">
         <div *ngFor="let comment of officerComments" class="note">{{comment}}</div>
       </div>
-      <!-- <textarea rows="1" rows="5" autocomplete="off" class="form-control form-control-sm" id="officer_chat"
-        [readOnly]="true">{{officerComments}}</textarea> -->
     </div>
     <div class="">
       <label for="officer_note" class="form-label">Officer Note</label>
       <input type="text" class="form-control form-control-sm" id="officer_note" formControlName="officer_note">
     </div>
+  </div>
+
+  <div class="col-md-6 col-12">
+    <label for="case_note" class="form-label">Case Note<sup>*</sup></label>
+      <div class="case-note-block">
+        <div *ngFor="let note of caseNote" class="note">{{note}}</div>
+      </div>
   </div>
 
   <div class="col-md-6"></div>

@@ -1,12 +1,13 @@
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
+const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
 
 exports.employeeRecord = async (req, res) => {
     try {
 
         let overAllRecord
 
-        if(req.user.designation == 'Director'){
+        if (req.user.designation == 'Director') {
             overAllRecord = await salesModel.find({});
         } else {
             overAllRecord = await salesModel.find({ employeeInfo: req.user.id });
@@ -53,8 +54,8 @@ exports.employeeRecord = async (req, res) => {
 exports.empSalesProdWise = async (req, res) => {
     try {
         let totalEmpSaleProdWise
-        
-        if(req.user.designation == 'Director'){
+
+        if (req.user.designation == 'Director') {
 
             totalEmpSaleProdWise = await salesModel.find({});
 
@@ -98,7 +99,7 @@ exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
-            salesInfo = await salesModel.find({}).populate([{path:'fboInfo'}, {path:'employeeInfo'}]);
+            salesInfo = await salesModel.find({}).populate([{ path: 'fboInfo' }, { path: 'employeeInfo' }]);
         } else {
             salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
         }
@@ -119,7 +120,7 @@ exports.employeeDepartmentCount = async (req, res) => {
             {
                 $group: {
                     _id: {
-                        department:'$department'
+                        department: '$department'
                     },
                     count: {
                         $sum: { $cond: { if: { $eq: ["$status", true] }, then: 1, else: 0 } }
@@ -159,13 +160,13 @@ function filterByDuration(object, data, category, createdAt) {
 
     //update this Quater
     if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).getTime() &&
-        date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()) /3 + 1) * 3, 1).getTime()) {
+        date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()) / 3 + 1) * 3, 1).getTime()) {
         object.quater[category] += data;
     }
 
     //update this Half year
     if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 6) * 6, 1).getTime() &&
-        date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()/ 6) + 1) * 6, 1).getTime()) {
+        date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth() / 6) + 1) * 6, 1).getTime()) {
         object.halfYearly[category] += data;
     }
 
@@ -176,7 +177,7 @@ function filterByDuration(object, data, category, createdAt) {
     }
 
     // Update week
-    if (Math.floor((now.getTime() - date.getTime())/ 24 * 60 * 60 * 1000) < 7) {
+    if (Math.floor((now.getTime() - date.getTime()) / 24 * 60 * 60 * 1000) < 7) {
         object.week[category] += data;
     }
 }
@@ -225,4 +226,28 @@ exports.empHiringData = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 
+}
+
+exports.getEmployeeUnderManager = async (req, res) => {
+    try {
+
+        let success = false;
+
+        const employees = await reportingManagerModel.find({ reportingManager: req.user._id }).select('-reportingManager').populate({ path: 'employeeInfo' });
+
+        const empArr = employees.map(emp => emp.employeeInfo);
+
+        if (!employees) {
+            success = false;
+            return res.status(404).json({ success, randomErr: true });
+        }
+
+        success = true;
+
+        return res.status(200).json({ success, empArr })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
 }
