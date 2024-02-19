@@ -96,9 +96,9 @@ export class RecipientComponent implements OnInit {
           {
             operatorName: ['', Validators.required],
             address: ['', Validators.required],
-            eBill: ['', Validators.required, this.validateFileType(['jpeg', 'jpg'])],
-            shopPic: ['', Validators.required, this.validateFileType(['jpeg', 'jpg'])],
-            ownerPic: ['', Validators.required, this.validateFileType(['jpeg', 'jpg'])]
+            eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            shopPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            ownerPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]]
           });
         this.listCount = this.fboData.foscosInfo.shops_no;
         break;
