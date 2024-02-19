@@ -46,3 +46,12 @@ exports.getPincodesData = async(req, res)=>{
         return res.status(500).json({message: "Internal Server Error"})
     }
 }
+
+exports.getKobData = async(req, res) => {
+    try{
+        const data = await generalDataSchema.find();
+        return res.status(200).json(data[0].kob);
+    } catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+} 

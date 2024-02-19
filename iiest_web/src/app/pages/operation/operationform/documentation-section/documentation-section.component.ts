@@ -26,7 +26,7 @@ export class DocumentationSectionComponent implements OnInit {
     roll_no: new FormControl(''),
   })
 
-  constructor(private modalService: NgbModal){
+  constructor(){
 
   }
 
@@ -36,11 +36,5 @@ export class DocumentationSectionComponent implements OnInit {
 
   onFile(){
 
-  }
-
-  //View Employee Details
-  onCancle(res: any): void {
-    const modalRef = this.modalService.open(ConformationModalComponent, { size: 'lg', backdrop: 'static' });
-    // modalRef.componentInstance.employee = res;
   }
 }

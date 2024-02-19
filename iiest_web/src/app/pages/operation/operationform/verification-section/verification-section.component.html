@@ -259,8 +259,9 @@
   <div class="col-md-3">
     <label for="kob" class="form-label select-label">KOB</label><sup>*</sup>
     <select id="kob" [ngClass]="{ 'is-invalid': verified && verificationform['kob'].errors }" formControlName="kob"
-      class="form-select form-select-sm cursor-pointer">
+      class="form-select form-select-sm cursor-pointer" (change)="onKobChange($event)">
       <option value="" disabled selected>Select Kind of Business</option>
+      <option *ngFor="let kob of kobList" [value]="kob">{{kob}}</option>
     </select>
     <div *ngIf="verified && verificationform['kob'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['kob'].errors['required']">KOB is required</div>
@@ -272,6 +273,7 @@
     <select id="food_category" [ngClass]="{ 'is-invalid': verified && verificationform['food_category'].errors }"
       formControlName="food_category" class="form-select form-select-sm cursor-pointer">
       <option value="" disabled selected>Select Food Category</option>
+      <option *ngFor="let foodCategory of foodCategoryList" [value]="foodCategory">{{foodCategory}}</option>
     </select>
     <div *ngIf="verified && verificationform['food_category'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['food_category'].errors['required']">Food Category is required</div>

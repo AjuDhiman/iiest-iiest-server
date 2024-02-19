@@ -33,6 +33,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>
 
+  kobData: any;
+
+  kobList: string[] = [];
+
+  foodCategoryList: string[] = [];
+
   //Verification Reactive angular form
   verificationForm: FormGroup = new FormGroup({});
 
@@ -94,6 +100,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         break;
 
       case 'Foscos':
+
+        this.getKobData(); 
+
         this.verificationForm = this.foscosVerificationForm;
         break;
     }
@@ -204,7 +213,27 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     return formattedDate;
   }
 
-  setFormValidation(){
+  getKobData(): void{
+    this._getDataService.getKobData().subscribe({
+      next: res => {
+        this.kobData = res;
+        this.kobList = this.kobData.map((elem:any) => elem.name);
+      }
+    })
+  }
+
+  onKobChange($event:any){
+    this.verificationForm.patchValue({ food_category: ""});
+    this.kobData.forEach((kob:any) => {
+      console.log($event.target.value);
+      console.log(kob.name);
+      if(kob.name === $event.target.value) {
+        this.foodCategoryList = kob.food_category;
+      }
+    })
+  }
+
+  setFormValidation(): void{
     this.fostacVerificationForm = this.formBuilder.group({
       recipient_name: ['', Validators.required],
       fbo_name: ['', Validators.required],

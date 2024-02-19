@@ -93,7 +93,6 @@
                                         <th class="cell">State</th>
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
-                                        <th class="cell">Certificate</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,17 +114,6 @@
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
-                                        <td class="cell"><span class="truncate">
-                                                <!-- <fa-icon class="mx-2 fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon> -->
-
-                                                <label for="upload-certificate"> <fa-icon
-                                                        class="mx-1 fa-xl text-danger cursor-pointer"
-                                                        [icon]="faFile"></fa-icon>
-                                                </label>
-                                                <input type="file" id="upload-certificate text-center"hidden>
-                                                <!-- <fa-icon class="mx-1 fa-l text-black cursor-pointer"
-                                                    [icon]="faDownload"></fa-icon> -->
-                                            </span></td>
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">
@@ -155,29 +143,34 @@
                                 <tbody>
                                     <tr
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td  class="cell"><span
                                                 class="truncate text-capitalize selector"
                                                 (click)="collectResData(data._id)">{{data.operatorName}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td  class="cell"><span
                                                 class="truncate text-capitalize selector">{{data.address}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td  class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
                                         </td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                        <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.foscos_total}}</span></td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
-                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo" class="cell">
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData" class="cell">
                                             <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
                                         </td> -->
+                                        <ng-template #noData>
+                                            <td class="cell">
+                                                <span class="truncate">-</span>
+                                            </td>
+                                        </ng-template>
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">
