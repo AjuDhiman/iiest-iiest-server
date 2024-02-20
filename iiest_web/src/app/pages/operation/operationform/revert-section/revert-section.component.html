@@ -1,1 +1,37 @@
-<p>revert-section works!</p>
+<form [formGroup]="revertForm" class="row" (submit)="onUpdate()">
+    <div class="d-flex justify-content-between">
+
+        <!-- heading and form status -->
+        <h6>Revert Section</h6>
+        <div class="status" [ngClass]="completedStatus?'text-success':'text-warning'" style="font-size: large;">
+            {{completedStatus?'completed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
+                [icon]="completedStatus?faCircleCheck:faCircleExclamation">
+            </fa-icon>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-12">
+        <div class="">
+          <label for="officer_chat" class="form-label">Fssai Comment<sup>*</sup></label>
+          <div class="officer-comment-block">
+            <!-- <div *ngFor="let comment of officerComments" class="note">{{comment}}</div> -->
+          </div>
+        </div>
+        <div class="">
+          <label for="fssai_revert" class="form-label">Fssai Revert</label>
+          <input type="text" class="form-control form-control-sm" id="fssai_revert">
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <fa-icon [icon]="faFileArrowUp"></fa-icon>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-6">
+            <button type="submit" class="btn btn-sm btn-primary"
+                [disabled]="">Update
+            </button>
+        </div>
+    </div>
+</form>

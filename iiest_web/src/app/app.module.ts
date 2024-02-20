@@ -101,7 +101,13 @@ import { CalendarComponent } from './pages/lms/calendar/calendar.component';
     VerificationSectionComponent,
     StatCardsComponent,
     AttendanceSectionComponent,
-    HighchartDataModalComponent
+    HighchartDataModalComponent,
+    DocumentationSectionComponent,
+    RevertSectionComponent,
+    LmsComponent,
+    ConformationModalComponent,
+    CalendarComponent,
+    CertificationSectionComponent
   ],
   imports: [
     BrowserModule,

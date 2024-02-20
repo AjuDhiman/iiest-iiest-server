@@ -117,9 +117,10 @@
                             <div class="d-flex flex-row justify-content-around">
                                 <div *ngFor="let weekname of weekDays">{{weekname}}</div>
                             </div>
-                            
+
                             <div class="week" *ngFor="let week of calendar">
-                                <div class="day rounded-circle m-3" [ngClass]=" isCurrentDate === true && day == todayDate[2] ? current' : ''"
+                                <div class="day rounded-circle m-3"
+                                    [ngClass]=" (isCurrentDate === true && day == todayDate[2]) ? 'current' : ''"
                                     [ngStyle]="{'border':day > 0 ? '1px solid #ccc' : 'none' }"
                                     *ngFor="let day of week">
                                     {{ day }}
@@ -224,7 +225,7 @@
 
     <footer class="app-footer">
         <div class="container text-center py-3">
-            
+
         </div>
     </footer><!--//app-footer-->
 </div>

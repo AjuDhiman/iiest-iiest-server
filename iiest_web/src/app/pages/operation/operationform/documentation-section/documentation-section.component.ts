@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { faCircleCheck, faCircleExclamation,faFileArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-documentation-section',
@@ -13,11 +11,15 @@ export class DocumentationSectionComponent implements OnInit {
 
   filedStatus: boolean = false;
 
+  filed: boolean = false;
+
   @Input() verifiedStatus: boolean = false;
 
   // icons
   faCircleCheck = faCircleCheck;
   faCircleExclamation = faCircleExclamation;
+  faFileArrowUp = faFileArrowUp;
+
 
   //Filing Reactive form 
   filingForm: FormGroup = new FormGroup({
@@ -32,6 +34,10 @@ export class DocumentationSectionComponent implements OnInit {
 
   ngOnInit(): void {
     
+  }
+
+  get filingform(): {[key: string] : AbstractControl} {
+    return this.filingForm.controls;
   }
 
   onFile(){
