@@ -1,43 +1,70 @@
 <div>
   <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xxl">
-      <div class="row g-3 mb-4 align-items-center justify-content-between">
-        <div class="col-auto">
-          <h1 class="app-page-title mb-2">Operation Fostac Form</h1>
+      <div class="row g-3 mb-4 align-items-center justify-content-between px-0 ">
+        <div class="col-12 d-flex justify-content-between align-items-center px-0">
+          <h1 class="app-page-title mb-2">Operation {{productType}} Form</h1>
         </div>
         <!-- <div class="">Customer ID</div> -->
         <div class="row gy-4 mb-3">
 
           <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
-          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3"
+          <app-verification-section
+            class="g-1 p-3 border border-1 rounded-3 pb-3"
             [candidateId]="candidateId"
-            (emitSalesDate)="getSalesData($event)" 
+            [productType]="productType"
+            (emitSalesDate)="getSalesData($event)"
             (emitVerifiedID)="getVerifiedDataId($event)" 
             (emitVerifiedStatus)="getVerifiedStatus($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-verification-section>
 
           <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
-          <app-enrollment-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+          <app-enrollment-section
+            *ngIf="productType === 'Fostac'"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
             [salesDate]="salesDate"
             [verifiedStatus]="verifiedStatus"
-            [verifiedDataId]="verifiedDataId" 
+            [verifiedDataId]="verifiedDataId"
             (emitEnrolledStatus)="getEnrolledStatus($event)"
             (emitEnrolledDataId)="getEnrolledDataId($event)"
-            (refreshAuditLog)="generalsec.getCaseNotes()" >
+            (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-enrollment-section>
 
+          <app-documentation-section 
+            *ngIf="productType === 'Foscos'"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [verifiedStatus]="verifiedStatus">
+          </app-documentation-section>
+
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
-          <app-attendance-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [enrolledStatus]="enrolledStatus"
-            [enrolledDataId]="enrolledDataId" 
-            (refreshAuditLog)="generalsec.getCaseNotes()" >
+          <app-attendance-section 
+            *ngIf="productType === 'Fostac'" 
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [enrolledStatus]="enrolledStatus" 
+            [enrolledDataId]="enrolledDataId"
+            (emitAttenanceStatus)="getAttendanceStatus($event)"
+            (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
 
+          <app-revert-section 
+            *ngIf="productType === 'Foscos'"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          </app-revert-section>
+
+          <app-certification-section 
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [attendanceStatus]="attendanceStatus"
+            [projectType]="productType">
+          </app-certification-section>
+
           <!-- general section: this section is for tracking recpients record like case notes and officer notes -->
-          <app-general-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [candidateId]="candidateId">
+          <app-general-section 
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [candidateId]="candidateId"
+            [productType]="productType">
           </app-general-section>
+
         </div>
       </div>
     </div>

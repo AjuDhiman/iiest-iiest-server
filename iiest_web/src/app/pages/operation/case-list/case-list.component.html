@@ -32,7 +32,7 @@
                             </button>
                         </div>
                         <div class="col-auto">
-                            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsNumber"
+                            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber"
                                 (click)="pageNumber=1">
                                 <option value=10>10</option>
                                 <option value=25 selected>25</option>
@@ -53,7 +53,7 @@
                             </form>
                         </div>
                         <div class="col-auto">
-                            <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
+                            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter">
                                 <option *ngIf="panelType=='Fostac Panel'" value="byRecipientName" selected>Search by
                                     Recipient Name</option>
                                 <option *ngIf="panelType=='Foscos Panel'" value="byOperatorName" selected>Search by
@@ -65,8 +65,8 @@
                             </select>
                         </div>
                         <div class="col-auto">
-                            <fa-icon (click)="exportToCsv()" class="fa-2xl" style="margin: 7px 7px; color: #1957a9;"
-                                [icon]="faFileCsv"></fa-icon>
+                            <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
+                                [icon]="faFileCsv" title="Export as CSV"></fa-icon>
                             <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
                         </div>
                     </div><!--//row-->
@@ -102,7 +102,7 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)">{{data.name}}</span></td>
+                                                (click)="collectResData(data._id)" title="View Case">{{data.name}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
                                         <td class="cell"><span

@@ -1,0 +1,20 @@
+<form [formGroup]="filingForm" class="row" (submit)="onFile()">
+    <div class="d-flex justify-content-between">
+
+        <!-- heading and form status -->
+        <h6>Documentation Section</h6>
+        <div class="status" [ngClass]="filedStatus?'text-success':'text-warning'" style="font-size: large;">
+            {{filedStatus?'Filed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
+                [icon]="filedStatus?faCircleCheck:faCircleExclamation">
+            </fa-icon>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-6">
+            <button type="submit" class="btn btn-sm btn-primary"
+                [disabled]="!verifiedStatus || filedStatus">File
+            </button>
+        </div>
+    </div>
+</form>

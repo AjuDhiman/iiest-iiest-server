@@ -12,7 +12,9 @@ import { days, months } from 'src/app/utils/config';
 })
 export class GeneralSectionComponent implements OnInit {
 
-  @Input() candidateId: string = ''
+  @Input() candidateId: string = '';
+
+  @Input() productType: string = '';
 
   caseNote: string[] = [];
 

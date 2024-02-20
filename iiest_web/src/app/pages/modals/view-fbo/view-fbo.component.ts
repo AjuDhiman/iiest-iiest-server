@@ -3,8 +3,6 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faIndianRupeeSign, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { RegisterService } from 'src/app/services/register.service';
-import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-view-fbo',
   templateUrl: './view-fbo.component.html',
@@ -23,8 +21,6 @@ export class ViewFboComponent implements OnInit {
   invoice:string='';
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
-    private registerServices: RegisterService,
-    private toasterService: ToastrService
     ) { 
   }
 

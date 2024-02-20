@@ -60,6 +60,10 @@ import { FoscosComponent } from './pages/sales/fboproduct/foscos/foscos.componen
 import { HygieneAuditComponent } from './pages/sales/fboproduct/hygiene-audit/hygiene-audit.component';
 import { FbonewComponent } from './pages/sales/fboproduct/fbonew/fbonew.component';
 import { ContactusformComponent } from './pages/landingpage/contactusform/contactusform.component';
+import { DocumentationSectionComponent } from './pages/operation/operationform/documentation-section/documentation-section.component';
+import { RevertSectionComponent } from './pages/operation/operationform/revert-section/revert-section.component';
+import { ConformationModalComponent } from './pages/modals/conformation-modal/conformation-modal.component';
+import { CertificationSectionComponent } from './pages/operation/operationform/certification-section/certification-section.component';
 import { LmsComponent } from './pages/lms/lms.component';
 import { CalendarComponent } from './pages/lms/calendar/calendar.component';
 
@@ -97,9 +101,7 @@ import { CalendarComponent } from './pages/lms/calendar/calendar.component';
     VerificationSectionComponent,
     StatCardsComponent,
     AttendanceSectionComponent,
-    HighchartDataModalComponent,
-    LmsComponent,
-    CalendarComponent
+    HighchartDataModalComponent
   ],
   imports: [
     BrowserModule,

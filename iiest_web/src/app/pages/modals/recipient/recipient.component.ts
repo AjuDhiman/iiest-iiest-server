@@ -34,16 +34,18 @@ export class RecipientComponent implements OnInit {
   showEBill: boolean = false;
   ebillImage: string = '';
   showPagination: boolean = false;
-  recipientCount:number = 0;
-  shopsCount:number;
-  listCount:number;
+  recipientCount: number = 0;
+  shopsCount: number;
+  listCount: number;
   recipientform: FormGroup = new FormGroup({
     name: new FormControl(''),
     phoneNo: new FormControl(''),
     aadharNo: new FormControl(''),
     operatorName: new FormControl(''),
     address: new FormControl(''),
-    eBill: new FormControl('')
+    eBill: new FormControl(''),
+    ownerPic: new FormControl(''),
+    shopPic: new FormControl('')
   });
   excelSubmited: boolean = false;
   recipientform1: FormGroup = new FormGroup({
@@ -68,7 +70,6 @@ export class RecipientComponent implements OnInit {
     if (this.serviceType === 'foscos') {
       this.getSaleShopsList(this.fboData._id);
     }
-    
 
     switch (this.serviceType) {
       case "fostac":
@@ -87,7 +88,7 @@ export class RecipientComponent implements OnInit {
                 Validators.pattern(/^[0-9]{12}$/)
               ]]
           });
-        this.listCount=this.fboData.fostacInfo.recipient_no;
+        this.listCount = this.fboData.fostacInfo.recipient_no;
         break;
       case "foscos":
         this.isfostac = false;
@@ -95,18 +96,22 @@ export class RecipientComponent implements OnInit {
           {
             operatorName: ['', Validators.required],
             address: ['', Validators.required],
-            eBill: ['', Validators.required]
+            eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            shopPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            ownerPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]]
           });
-          this.listCount=this.fboData.foscosInfo.shops_no;
+        this.listCount = this.fboData.foscosInfo.shops_no;
         break;
     }
     this.excelForm = this.formBuilder.group({
       excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
     });
   }
+
   get recipient(): { [key: string]: AbstractControl } {
     return this.recipientform.controls;
   }
+  
   get excelform(): { [key: string]: AbstractControl } {
     return this.excelForm.controls;
   }
@@ -135,7 +140,7 @@ export class RecipientComponent implements OnInit {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
             this._toastrService.error('', 'This Aadhar Number Already Exists');
-          } else if(errorObj.phoneErr){
+          } else if (errorObj.phoneErr) {
             this._toastrService.error('', 'This Phone Number Already Exists');
           }
         }
@@ -148,6 +153,8 @@ export class RecipientComponent implements OnInit {
       formData.append('address', this.recipientform.get('address')?.value)
       if (this.selectedFile) {
         formData.append('eBill', this.selectedFile);
+        formData.append('shopPic', this.selectedFile);
+        formData.append('ownerPic', this.selectedFile);
       }
 
       this._registerService.addFboShop(this.fboID, formData).subscribe({
@@ -176,13 +183,13 @@ export class RecipientComponent implements OnInit {
   onImageChangeFromFile($event: any) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
-      if (file.type == "image/jpeg" || file.type == "image/png") {
+      if (file.type == "image/jpeg" || file.type == "image/jpg") {
         this.selectedFile = file;
       }
       else {
         //call validation
-        this.recipientform.reset();
-        this.recipientform.controls["eBill"].setValidators([Validators.required]);
+        // this.recipientform.reset();
+        // this.recipientform.controls["eBill"].setValidators([Validators.required]);
       }
     }
   }
@@ -191,9 +198,9 @@ export class RecipientComponent implements OnInit {
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
         if (res.recipientsList.length) {
-          this.showPagination=true;
+          this.showPagination = true;
           this.recipientData = res.recipientsList;
-          this.recipientCount=res.recipientsList.length;
+          this.recipientCount = res.recipientsList.length;
         }
       }
     })
@@ -202,10 +209,10 @@ export class RecipientComponent implements OnInit {
   getSaleShopsList(saleId: string) {
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
-        if(res.shopsList.length){
+        if (res.shopsList.length) {
           this.shopData = res.shopsList
-          this.showPagination=true;
-          this.shopsCount=res.shopsList.length;
+          this.showPagination = true;
+          this.shopsCount = res.shopsList.length;
         }
       }
     })
@@ -244,7 +251,7 @@ export class RecipientComponent implements OnInit {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
             this._toastrService.error('', 'This Aadhar Number Already Exists');
-          } else if(errorObj.phoneErr){
+          } else if (errorObj.phoneErr) {
             this._toastrService.error('', 'This Phone Number Already Exists');
           }
         }

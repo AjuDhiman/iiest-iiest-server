@@ -8,12 +8,12 @@
 <div class="border-top border-dark-subtle" *ngIf="recipientCount!==listCount">
   <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
     <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" role="switch" (change)="ChangeFormType($event)"
+      <input class="form-check-input cursor-pointer" type="checkbox" role="switch" (change)="ChangeFormType($event)"
         id="flexSwitchCheckDefault" />
       <label class="form-check-label" for="flexSwitchCheckDefault">Upload Excel</label>
     </div>
-    <fa-icon class="fa-lg" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel"
-      (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')"></fa-icon>
+    <fa-icon class="fa-lg cursor-pointer" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel"
+      (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')" title="Download Format"></fa-icon>
   </div>
   <form [formGroup]="recipientform" autocomplete="off" [ngClass]="uploadExcel?'d-none':''" (ngSubmit)="onSubmit()"
     enctype="multipart/form-data">
@@ -30,7 +30,7 @@
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-8">
           <label for="address" class="form-label">Address<sup>*</sup></label>
           <input type="text" placeholder="Address" formControlName="address" class="form-control form-control-sm"
             id="address" [ngClass]="{ 'is-invalid': submitted && recipient['address'].errors }" />
@@ -38,13 +38,36 @@
             <div *ngIf="recipient['address'].errors['required']">Address is required</div>
           </div>
         </div>
+      </div>
+      <div class="row">
         <div class="col-md-4">
-          <label for="eBill" class="form-label">Electricity Bill<sup>*</sup></label>
+          <label for="eBill" class="form-label">Electricity Bill (jpeg or png)<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Electricity Bill"
             formControlName="eBill" class="form-control form-control-sm" id="eBill"
             [ngClass]="{ 'is-invalid': submitted && recipient['eBill'].errors }" />
           <div *ngIf="submitted && recipient['eBill'].errors" class="invalid-feedback">
             <div *ngIf="recipient['eBill'].errors['required']">Electricity Bill is required.(jpeg or png)</div>
+            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="shopPic" class="form-label">Shop's Photo (jpeg or png)<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Shop Photo(Name should be visible)"
+            formControlName="shopPic" class="form-control form-control-sm" id="shopPic"
+            [ngClass]="{ 'is-invalid': submitted && recipient['shopPic'].errors }" />
+          <div *ngIf="submitted && recipient['shopPic'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['shopPic'].errors['required']">Shop Photo is required.(jpeg or png)</div>
+            <div *ngIf="recipient['shopPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="ownerPic" class="form-label">Owner's Photo (jpeg or png)<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Owner Photo"
+            formControlName="ownerPic" class="form-control form-control-sm" id="ownerPic"
+            [ngClass]="{ 'is-invalid': submitted && recipient['ownerPic'].errors }" />
+          <div *ngIf="submitted && recipient['ownerPic'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['ownerPic'].errors['required']">Owner Photo is required.(jpeg or png)</div>
+            <div *ngIf="recipient['ownerPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
           </div>
         </div>
       </div>
@@ -78,7 +101,6 @@
             <div *ngIf="recipient['aadharNo'].errors['required']">Aadhar No. is required</div>
           </div>
         </div>
-
       </div>
     </div>
     <div class="modal-footer text-left">
@@ -168,6 +190,8 @@
                 <th class="cell">Operator Name</th>
                 <th class="cell">Address</th>
                 <th class="cell">Electricity Bill</th>
+                <th class="cell">Shop Photo</th>
+                <th class="cell">Owner Photo</th>
               </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
@@ -199,6 +223,8 @@
                     <fa-icon class="fa-2xl cursor-pointer" [icon]="faDownload"></fa-icon>
                   </a>
                 </td>
+                <td></td>
+                <td></td>
               </tr>
             </tbody>
             <tbody

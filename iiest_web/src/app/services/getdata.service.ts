@@ -144,7 +144,12 @@ export class GetdataService {
   }
 
   public getEmpHiringData(): Observable<any> {
-    const url = `${this.url}/getemphiringdata`;
+    const url: string = `${this.url}/getemphiringdata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getEmployeeUnderManager(): Observable<any>{
+    const url: string = `${this.url}/getemployeeundermanager`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
