@@ -85,6 +85,16 @@ export class HighchartsComponent implements OnChanges {
         column: {
           colorByPoint: true,
           // colors: this.columnColorShade
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+              textOutline: 'none'
+            }
+          }
         },
       },
       series: [
@@ -108,6 +118,58 @@ export class HighchartsComponent implements OnChanges {
       ],
     }
     console.log(this.chart);
+  }
+
+  // --------Column Drill Down Chart--------
+  plotDrillDownChart() {
+    this.chart = {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Main Chart'
+      },
+      xAxis: {
+        type: 'category'
+      },
+      yAxis: {
+        title: {
+          text: 'Values'
+        }
+      },
+      series: [{
+        type: 'column',
+        name: 'Main',
+        data: [{
+          name: 'Category 1',
+          y: 100,
+          drilldown: 'category1'
+        }, {
+          name: 'Category 2',
+          y: 200,
+          drilldown: 'category2'
+        }]
+      }],
+      drilldown: {
+        series: [{
+          type: 'column',
+          id: 'category1',
+          name: 'Category 1',
+          data: [
+            ['Subcategory 1.1', 50],
+            ['Subcategory 1.2', 50]
+          ]
+        }, {
+          type: 'column',
+          id: 'category2',
+          name: 'Category 2',
+          data: [
+            ['Subcategory 2.1', 100],
+            ['Subcategory 2.2', 100]
+          ]
+        }]
+      }
+    };
   }
 
   // -------Line Chart Function---------
@@ -300,15 +362,15 @@ export class HighchartsComponent implements OnChanges {
   //   this.plotChart();
   // }
 
-  formatIntervalType(type:string): string{
-    switch(type){
+  formatIntervalType(type: string): string {
+    switch (type) {
       case 'halfYearly':
         return 'this Half Year'
         break;
       case 'tillNow':
         return 'Till Now'
         break;
-      default: 
+      default:
         return `this ${type}`
     }
   }
