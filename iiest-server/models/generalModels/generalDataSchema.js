@@ -17,6 +17,10 @@ const generalData = new Schema({
     posts: {
         type: Array, 
         required: true
+    },
+    kob: {
+        typeof: Array,
+        // required: true
     }
 })
 

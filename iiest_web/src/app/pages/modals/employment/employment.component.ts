@@ -14,15 +14,22 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./employment.component.scss']
 })
 export class EmploymentComponent implements OnInit {
+
   submitted: boolean;
+  employeeId: string;
   pincodesData: Object[];
+
+  // Area allocation form related variables
   state: string;
   district: string;
   statesList = stateName;
-  employeeId: string;
   districts: string[] = [];
   pincodes: number[] = [];
   allocationType: string;
+
+  //reporting manager form relared variables
+  empWithId: string = ''
+
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
 
   @Input() employee: any;
@@ -97,9 +104,13 @@ export class EmploymentComponent implements OnInit {
     });
   }
 
-  onManagerAssignment(){
+  onManangerSelect($event:any): void{
+    let manager = this.allManagers.find((item: any) => item._id === $event.target.value);
+    this.empWithId = `${manager.name}(${manager.emp_id})`;
+  }
+
+  onManagerAssignment(): void{
     this.submitted = true;
-    console.log(this.reportingManagerForm.value);
     this.registerService.assignManager(this.employee._id, this.reportingManagerForm.value).subscribe({
       next: res => {
         this.toasterService.success('', 'Manager assigned sucessfully');
@@ -117,7 +128,7 @@ export class EmploymentComponent implements OnInit {
   }
 
   // this function will fetch the array of distinct districsts onbased of state select
-  onStateSelect($event: any) {
+  onStateSelect($event: any): void {
     this.state = $event.target.value;
     this.areaForm['district'].setValue('');
     this.areaForm['pincodes'].setValue('');
@@ -142,7 +153,8 @@ export class EmploymentComponent implements OnInit {
     }
     )
   }
-  onDistrictSelect($event: any) {
+  
+  onDistrictSelect($event: any): void {
     this.areaForm['pincodes'].setValue('')
     this.pincodes = [];
     this.multiSelect.onReset();
@@ -152,16 +164,7 @@ export class EmploymentComponent implements OnInit {
       .map((item: any) => item.Pincode);
   }
 
-  getPincodes(event: any) { //used for multi select
+  getPincodes(event: any): void { //used for multi select
     this.areaForm['pincodes'].setValue(event)
-  }
-
-  getNameWithID():string{
-    let manager = this.allManagers
-    .find(item => item.name===this.managerForm['reportingManager'].value);
-    if(!manager){
-      return '';
-    }
-    return `${manager?.name}(${manager?.emp_id})`
   }
 }

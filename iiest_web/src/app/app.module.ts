@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http'
-import{ FormsModule, ReactiveFormsModule} from '@angular/forms'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
+import { FormsModule, ReactiveFormsModule} from '@angular/forms'
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule, FaIconLibrary, FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -64,6 +64,8 @@ import { DocumentationSectionComponent } from './pages/operation/operationform/d
 import { RevertSectionComponent } from './pages/operation/operationform/revert-section/revert-section.component';
 import { ConformationModalComponent } from './pages/modals/conformation-modal/conformation-modal.component';
 import { CertificationSectionComponent } from './pages/operation/operationform/certification-section/certification-section.component';
+import { LmsComponent } from './pages/lms/lms.component';
+import { CalendarComponent } from './pages/lms/calendar/calendar.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +104,9 @@ import { CertificationSectionComponent } from './pages/operation/operationform/c
     HighchartDataModalComponent,
     DocumentationSectionComponent,
     RevertSectionComponent,
+    LmsComponent,
     ConformationModalComponent,
+    CalendarComponent,
     CertificationSectionComponent
   ],
   imports: [

@@ -18,16 +18,18 @@ export class SidebarComponent {
   userImage: string = '../../assets/logo-side.png';
   userImageId: string;
   faUserPlus = faUserPlus;
-  @Input() sideBarToggle:boolean;
+  activeLink: string = '/home';
+
+  @Input() sideBarToggle: boolean;
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
   @Output() sideBarToggleUpdate = new EventEmitter();
   constructor(private registerService: RegisterService,
     private getDataService: GetdataService,
-    private router:Router){
+    private router: Router) {
   }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.getUserData();
     this.getUserImage();
     // this.getUserImage();
@@ -40,38 +42,42 @@ export class SidebarComponent {
     'margin': '0px; transform: translate3d(0.666667px, 28px, 0px)'
   }
 
-toggelShow:boolean= false;
-toggleClass(event:any){
-  this.toggelShow = !this.toggelShow ;
-  event.target.classList.toggle('show');
-}
-getUserData(){
-  const rawUserData: any = this.registerService.LoggedInUserData()
-  this.userData = JSON.parse(rawUserData);
-}
-sideBarToggleValue(){
-  this.sideBarToggleUpdate.emit(false);
-  this.toggelShow = false;
-}
-getUserImage(){
-  const rawUserData: any = this.registerService.LoggedInUserData();
-  const parsedData: any = JSON.parse(rawUserData);
-  this.getDataService.getUserImage(parsedData.employeeImage).subscribe({
-    next: (res)=>{
-    if(res.imageConverted){
-      this.userImage = res.imageConverted;
-    }else if(res.defaulImage){
-      this.userImage = res.defaultImage;
-    }
+  toggelShow: boolean = false;
+  toggleClass(event: any) {
+    this.toggelShow = !this.toggelShow;
+    event.target.classList.toggle('show');
   }
-  })
-}
+  getUserData() {
+    const rawUserData: any = this.registerService.LoggedInUserData()
+    this.userData = JSON.parse(rawUserData);
+  }
+  sideBarToggleValue() {
+    this.sideBarToggleUpdate.emit(false);
+    this.toggelShow = false;
+    this.isSidebarVisible = !this.isSidebarVisible;
+  }
+  setActiveLink(link: string) {
+    this.activeLink = link;
+  }
+  getUserImage() {
+    const rawUserData: any = this.registerService.LoggedInUserData();
+    const parsedData: any = JSON.parse(rawUserData);
+    this.getDataService.getUserImage(parsedData.employeeImage).subscribe({
+      next: (res) => {
+        if (res.imageConverted) {
+          this.userImage = res.imageConverted;
+        } else if (res.defaulImage) {
+          this.userImage = res.defaultImage;
+        }
+      }
+    })
+  }
 
-closeDropMenu(){
-  this.toggelShow=false;
-}
+  closeDropMenu() {
+    this.toggelShow = false;
+  }
 
-navigateToEmployment(type: string) {
-  this.router.navigate(['/employment', type]);
-}
+  navigateToEmployment(type: string) {
+    this.router.navigate(['/employment', type]);
+  }
 }

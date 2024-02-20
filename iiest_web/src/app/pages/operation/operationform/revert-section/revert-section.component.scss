@@ -1,0 +1,28 @@
+textarea{
+    resize:none;
+}
+
+.case-note-block, .officer-comment-block{
+    width: 100%;
+    height: calc(11*16px);
+    background-color: #fff;
+    border: 0.5px solid #e6e6e6;
+    border-radius: 4px;
+    overflow-y: scroll;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.officer-comment-block{
+    height: calc(7.1*16px);
+}
+
+.note{
+    background-color: #f7f6f6;
+    border: 1px solid #505150;
+    margin-bottom: 5px;
+    color: #505150;
+    padding: 2px 8px;
+    border-radius: 3px;
+    width: fit-content;
+}

@@ -12,11 +12,11 @@
 
         <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
             <ul class="app-menu list-unstyled accordion" id="menu-accordion">
-                <li class="nav-item"
+                <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
                 [title]="!isSidebarVisible && largeDisplay?'Home':''">
-                    <a class="nav-link active" [routerLink]="['/home']">
+                    <a class="nav-link" [routerLink]="['/home']">
                         <span class="nav-icon">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-door"
                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -28,7 +28,7 @@
                         <span class="nav-link-text">Home</span>
                     </a>
                 </li>
-                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item"
+                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
                 [title]="!isSidebarVisible && largeDisplay?'Employee Register':''">
@@ -43,7 +43,7 @@
                         <span class="nav-link-text">Employee Register</span>
                     </a>
                 </li>
-                <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item"
+                <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
                 [title]="!isSidebarVisible && largeDisplay?'Fbo Register':''">
@@ -61,7 +61,7 @@
                         <span class="nav-link-text">Fbo Register</span>
                     </a>
                 </li>
-                <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item"
+                <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
                 [title]="!isSidebarVisible && largeDisplay?'Fbo List':''">
@@ -93,7 +93,7 @@
                         <span class="nav-link-text">Fbo List</span>
                     </a>
                 </li>
-                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item"
+                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
                 [title]="!isSidebarVisible && largeDisplay?'Employee List':''" data-bs-custom-class="custom-tooltip">
@@ -110,7 +110,7 @@
                         <span class="nav-link-text">Employee List</span>
                     </a>
                 </li>
-                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item"
+                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
                 [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                 [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null" 
                 [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
@@ -132,62 +132,9 @@
                         <span class="nav-link-text">Case List</span>
                     </a>
                 </li>
-                <!-- <li class="nav-item has-submenu">
-
-                    <a class="nav-link submenu-toggle" (click)="toggleClass($event)" data-bs-toggle="collapse"
-                        data-bs-target="#submenu-1" aria-expanded="false" aria-controls="submenu-1">
-                        <span class="nav-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files" fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z" />
-                                <path
-                                    d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z" />
-                            </svg>
-                        </span>
-                        <span class="nav-link-text">Functions</span>
-                        <span class="submenu-arrow">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down"
-                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                            </svg>
-                        </span>
-                    </a>
-                    <div id="submenu-1" [ngClass]="toggelShow === true && isSidebarVisible? 'show' : '' "
-                        class="collapse submenu submenu-1" data-bs-parent="#menu-accordion">
-                        <ul class="submenu-list list-unstyled">
-                            <li *ngIf="employeeRoles.includes(userData.designation)" class="submenu-item">
-                                <a class="submenu-link" [routerLink]="['/empregister']">Employee Register</a>
-                            </li>
-                            <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
-                                    class="submenu-link" [routerLink]="['/fbo']">Fbo Register</a>
-                            </li>
-                            <li *ngIf="fboRoles.includes(userData.designation)" class="submenu-item"><a
-                                    class="submenu-link" [routerLink]="['/fbolist']">Fbo List</a>
-                            </li>
-                            <li *ngIf="caseListRoles.includes(userData.designation)" class="submenu-item"><a
-                                    class="submenu-link" [routerLink]="['/caselist']">Case List</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li> -->
-
             </ul>
         </nav>
 
     </div>
 
 </div><!--//app-sidepanel-->
-<!-- <ul class="dropdown-menu green-drop-down"
-    [ngClass]="toggelShow === true && !isSidebarVisible && largeDisplay? 'show' : '' "
-    [ngStyle]="toggelShow?toggelStyle: {}" aria-labelledby="user-dropdown-toggle">
-    <li *ngIf="employeeRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
-            [routerLink]="['/empregister']">Employee Register</a></li>
-    <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
-            [routerLink]="['/fbo']">Fbo Register</a></li>
-    <li *ngIf="fboRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
-            [routerLink]="['/fbolist']">Fbo List</a></li>
-    <li *ngIf="caseListRoles.includes(userData.designation)" (click)="closeDropMenu()"><a class="dropdown-item"
-            [routerLink]="['/caselist']">Case List</a></li>
-</ul> -->

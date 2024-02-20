@@ -93,6 +93,37 @@ export const caseList_roles = [
    ...master_roles
 ]
 
+//roles array for showing highchart conditionally
+
+export const salesManagerRoles = [
+   'General Manager(Sales)',
+   'Regional Deputy Manager(Sales)',
+   'Area Manager(Sales)',
+   'Assistant Area Manager'
+]
+
+export const salesOfficersRoles = [
+   'Area Officer(District Head)',
+   'Senior Area Officer',
+   'Area Associate Officer',
+   'Area Officer',
+   'Workshop Mobiliser',
+   'Director',
+   ...master_roles
+]
+
+export const HrRoles = [
+   'Regional HR Manager',
+   'Deputy Regional Manager(HR)',
+   'Human Resource Manager',
+   'Deputy Human Resource Manager(HR)',
+   'Senior HR Associate',
+   'HR Associate',
+   'HR Coordinator',
+   'Junior Executive(Admin & HR)',
+   ...master_roles
+]
+
 // export const ourHolidays: any = [
 //    { date: '2024-01-25T08:12:11.000Z', name: 'public holiday' },
 //    { date: '2024-01-26T08:12:11.000Z', name: 'republic day' }
