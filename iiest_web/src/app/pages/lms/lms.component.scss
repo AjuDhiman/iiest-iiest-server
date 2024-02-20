@@ -1,0 +1,36 @@
+.weekDays{
+    color: orange;
+    font-weight: 400;
+    cursor: pointer;
+
+}
+.date{
+    
+    font-weight: 400;
+    cursor: pointer;
+    line-height: 42px;
+    width:45px;
+    height:45px;
+}
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .week {
+    display: flex;
+    
+  }
+  
+  .day {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    padding: 7px;
+    cursor: pointer;
+  }
+  .current {
+    background-color: lightblue;
+  }
+  
