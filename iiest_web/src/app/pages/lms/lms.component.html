@@ -1,5 +1,4 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
-
     <div class="container-xxl">
         <h1 class="app-page-title">Leave Management System</h1>
         <div class="row gy-4">
@@ -120,8 +119,7 @@
                             </div>
                             
                             <div class="week" *ngFor="let week of calendar">
-                                <div class="day rounded-circle m-3"
-                                    [ngClass]=" isCurrentDate === true && day == todayDate[2] ? 'current' : ''"
+                                <div class="day rounded-circle m-3" [ngClass]=" isCurrentDate === true && day == todayDate[2] ? current' : ''"
                                     [ngStyle]="{'border':day > 0 ? '1px solid #ccc' : 'none' }"
                                     *ngFor="let day of week">
                                     {{ day }}
@@ -226,10 +224,7 @@
 
     <footer class="app-footer">
         <div class="container text-center py-3">
-            <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-            <!--<small class="copyright">Designed with <span class="sr-only"></span><i class="fas fa-heart"
-					style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
-					target="_blank">Xiaoying Riley</a> for developers</small>-->
+            
         </div>
     </footer><!--//app-footer-->
 </div>
