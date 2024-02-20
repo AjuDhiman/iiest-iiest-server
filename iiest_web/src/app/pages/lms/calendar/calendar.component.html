@@ -1,0 +1,26 @@
+<p>calendar works!</p>
+<div class="calendar">
+    <div class="header">
+      <button (click)="prevMonth()">Previous</button>
+      <h2>{{ monthName }} {{ year }}</h2>
+      <button (click)="nextMonth()">Next</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th *ngFor="let day of days">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let week of weeks">
+          <td *ngFor="let day of week"
+              [class.today]="isToday(day)"
+              [class.selected]="isSelected(day)"
+              (click)="selectDate(day)">
+            {{ day.getDate() }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

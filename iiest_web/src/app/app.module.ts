@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http'
-import{ FormsModule, ReactiveFormsModule} from '@angular/forms'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
+import { FormsModule, ReactiveFormsModule} from '@angular/forms'
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule, FaIconLibrary, FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -60,6 +60,8 @@ import { FoscosComponent } from './pages/sales/fboproduct/foscos/foscos.componen
 import { HygieneAuditComponent } from './pages/sales/fboproduct/hygiene-audit/hygiene-audit.component';
 import { FbonewComponent } from './pages/sales/fboproduct/fbonew/fbonew.component';
 import { ContactusformComponent } from './pages/landingpage/contactusform/contactusform.component';
+import { LmsComponent } from './pages/lms/lms.component';
+import { CalendarComponent } from './pages/lms/calendar/calendar.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +97,9 @@ import { ContactusformComponent } from './pages/landingpage/contactusform/contac
     VerificationSectionComponent,
     StatCardsComponent,
     AttendanceSectionComponent,
-    HighchartDataModalComponent
+    HighchartDataModalComponent,
+    LmsComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,
