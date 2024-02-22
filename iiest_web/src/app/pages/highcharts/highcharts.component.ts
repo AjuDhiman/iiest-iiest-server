@@ -80,7 +80,7 @@ export class HighchartsComponent implements OnChanges {
         type: 'column',
       },
       title: {
-        text: this.chartData.chartTitle,
+        text: undefined
       },
       credits: {
         enabled: false
@@ -205,7 +205,7 @@ export class HighchartsComponent implements OnChanges {
   plotLineChart() {
     this.chart = {
       title: {
-        text: this.chartData.chartTitle,
+        text: undefined
       },
       credits: {
         enabled: false,
@@ -257,7 +257,11 @@ export class HighchartsComponent implements OnChanges {
   plotPieChart() {
     this.chart = {
       title: {
+<<<<<<< HEAD
         text: this.chartData.chartTitle
+=======
+        text: undefined
+>>>>>>> 170ec66e22aeea96d601784194c2f974826d4dbd
       },
       credits: {
         enabled: false,
@@ -283,6 +287,7 @@ export class HighchartsComponent implements OnChanges {
           })),
           events: {
             click: (e: any) => {
+              console.log(e);
               if (e.point.name === "retail" || e.point.name === "catering") {
                 this.salesCategory = "Fostac";
               } else if (e.point.name === "registration" || e.point.name === "state") {
@@ -306,9 +311,9 @@ export class HighchartsComponent implements OnChanges {
   // ---------Area Chart Function---------
   plotAreaChart() {
     this.chart = {
-      title: {
-        text: this.chartData.chartTitle,
-      },
+      // title: {
+      //   text: this.chartData.chartTitle,
+      // },
       credits: {
         enabled: false,
       },

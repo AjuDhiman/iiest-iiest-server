@@ -19,6 +19,7 @@ export class ViewFboComponent implements OnInit {
   faDownload=faDownload;
   showInvoice:boolean=false;
   invoice:string='';
+  remainingDays: string = '';
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
     ) { 
@@ -28,6 +29,8 @@ export class ViewFboComponent implements OnInit {
     this.isfostac = true?this.fboData.product_name.includes('Fostac Training') : this.isfostac = false;
    //this.fulladdress =  "Village: "+ this.fboData.village+", Post-Office: "+ this.fboData.address+", Tehsil: "+ this.fboData.tehsil+", District: "+ this.fboData.district+", State: "+ this.fboData.state+", Pincode: "+ this.fboData.pincode+", "+ "India";
    this.fulladdress =  this.fboData.fboInfo.village+", "+ this.fboData.fboInfo.address+", "+ this.fboData.fboInfo.tehsil+", "+ this.fboData.fboInfo.district+", "+ this.fboData.fboInfo.state+", Pincode: "+ this.fboData.fboInfo.pincode+", "+ "India";
+
+   this.calculateRemaningDays();
   }
   closeModal() {
     this.activeModal.close();
@@ -58,6 +61,15 @@ export class ViewFboComponent implements OnInit {
 
   closeInvoiceWindow(){
     this.showInvoice=false;
+  }
+
+  //this methord is for calculating remaning days for the foscos license
+  calculateRemaningDays(){
+    // let today = new Date()
+    // let startDate = new Date(this.);
+    // let lastDate = new Date(22, 1, )
+   
+    // console.log(this.fboData.foscosInfo.license_duration);
   }
 
 }
