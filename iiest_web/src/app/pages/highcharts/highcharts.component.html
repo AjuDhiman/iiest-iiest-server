@@ -23,7 +23,7 @@
 				</ng-container> -->
 			</select>
 		</div>
-		<div class="chart-container position-relative" style="overflow: scroll;">
+		<div class="chart-container position-relative">
 			<highcharts-chart *ngIf="isDataAvilable; else noData" [Highcharts]="Highcharts" [options]="chart" style="width: 100%; display: block;">
 			</highcharts-chart>
 			<ng-template #noData>

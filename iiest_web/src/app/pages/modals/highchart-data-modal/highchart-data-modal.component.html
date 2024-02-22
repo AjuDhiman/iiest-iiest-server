@@ -1,5 +1,5 @@
 <div class="modal-header bg-secondary">
-  <h6 class="modal-title text-white" id="modal-basic-title">{{department.toUpperCase()}}</h6>
+  <h6 class="modal-title text-white" id="modal-basic-title">{{chartData.filterValue.toUpperCase()}}</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
@@ -17,7 +17,7 @@
                 class="form-control form-control-sm search-orders" (input)="onSearchChange()">
             </form>
           </div>
-          <div class="col-auto" *ngIf="userDept==='Sales Department'">
+          <div class="col-auto" *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
             <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilterSales">
               <option value="byName">Search by FBO Name</option>
               <option value="byOwner">Search by Owner</option>
@@ -25,7 +25,7 @@
               <option value="byCustomerID">Search by Customer ID</option>
             </select>
           </div>
-          <div class="col-auto" *ngIf="userDept==='HR Department'">
+          <div class="col-auto" *ngIf="chartData.userDept==='HR Department'">
             <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilterHr">
               <option value="byEmployeeName">Search by Employee Name</option>
               <option value="byState">Search by State</option>
@@ -41,7 +41,7 @@
         <div class="app-card-body">
           <div class="table-responsive">
             <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
-              <thead *ngIf="userDept==='Sales Department'">
+              <thead *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr>
                   <th class="cell">S.No</th>
                   <th class="cell">FBO Name</th>
@@ -52,7 +52,7 @@
                   <th class="cell">State</th>
                 </tr>
               </thead>
-              <thead *ngIf="userDept==='HR Department'">
+              <thead *ngIf="chartData.userDept==='HR Department'">
                 <tr>
                   <th class="cell">S.No</th>
                   <th class="cell">Employee name</th>
@@ -63,9 +63,9 @@
                   <th class="cell">Status</th>
                 </tr>
               </thead>
-              <tbody *ngIf="specificDatas?.length>0 && userDept==='Sales Department'">
+              <tbody *ngIf="specificDatas?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                  *ngFor="let employee of specificDatas | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.fbo_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.owner_name}}</span></td>
@@ -75,7 +75,7 @@
                   <td class="cell"><span class="truncate">{{employee.fboInfo.state}}</span></td>
                 </tr>
               </tbody>
-              <tbody *ngIf="employeeList?.length>0 && userDept==='HR Department'">
+              <tbody *ngIf="employeeList?.length>0 && chartData.userDept==='HR Department'">
                 <tr
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>

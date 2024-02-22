@@ -23,10 +23,11 @@
 		<app-stat-cards (emitDeptCount)="catchDeptCount($event)"></app-stat-cards>
 
 		<div class="my-3 row" *ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
-			<app-highcharts  [chartData]="salesChartData" class="col-12 col-lg-6 mb-2"></app-highcharts>
-			<app-highcharts  [chartData]="areaSalesChartData" class="col-12 col-lg-6 mb-2"></app-highcharts>
-			<app-highcharts  [chartData]="monthSalesChartData" class="col-12 col-lg-6 mb-2"></app-highcharts>
-			<app-highcharts *ngIf="empDesigantion=='Director'" [chartData]="salesPersonChartData" class="col-12 col-lg-6 my-4"></app-highcharts>
+			<app-highcharts  [chartData]="salesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
+			<app-highcharts  [chartData]="areaSalesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
+			<app-highcharts  [chartData]="monthSalesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
+			<app-highcharts  [chartData]="clientTypeChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
+			<app-highcharts *ngIf="empDesigantion=='Director'" [chartData]="salesPersonChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
 		</div>
 		<div class="my-4 row" *ngIf="empDepartment==='HR Department' || empDepartment=='IT Department'">
 			<app-highcharts [chartData]="deptData" class="col-12 col-lg-6 mb-2"></app-highcharts>

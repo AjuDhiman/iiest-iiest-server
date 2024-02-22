@@ -6,6 +6,16 @@ import { HighchartDataModalComponent } from '../modals/highchart-data-modal/high
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 import { chartData } from 'src/app/utils/config';
 
+import drilldown from 'highcharts/modules/drilldown';
+// import HighchartsMore from 'highcharts/highcharts-more';
+// import HighchartsExporting from 'highcharts/modules/exporting';
+// import HC_exporting from 'highcharts/modules/export-data';
+
+// HighchartsMore(Highcharts);
+// HighchartsExporting(Highcharts);
+// HC_exporting(Highcharts);
+drilldown(Highcharts);
+
 @Component({
   selector: 'app-highcharts',
   templateUrl: './highcharts.component.html',
@@ -111,7 +121,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.category,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         }
@@ -209,7 +226,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.category,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         },
@@ -251,7 +275,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.name === "registration" || e.point.name === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.name, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.name,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         }
@@ -295,7 +326,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.category,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         },
@@ -319,12 +357,9 @@ export class HighchartsComponent implements OnChanges {
     modalRef.componentInstance.department = res;
   }
 
-  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string, intervalType: string): void {
+  viewChartData(res: any): void {
     const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.department = res;
-    modalRef.componentInstance.salesCategory = salesCategory;
-    modalRef.componentInstance.userDept = userDept;
-    modalRef.componentInstance.intervalType = intervalType;
+    modalRef.componentInstance.chartData = res;
   }
 
   plotChart() {
@@ -347,6 +382,7 @@ export class HighchartsComponent implements OnChanges {
 
     switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
+        // case "column": this.plotDrillDownChart();
         break;
       case "line": this.plotLineChart();
         break;
@@ -374,5 +410,4 @@ export class HighchartsComponent implements OnChanges {
         return `this ${type}`
     }
   }
-
 }

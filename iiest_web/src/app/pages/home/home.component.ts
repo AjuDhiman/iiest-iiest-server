@@ -43,6 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   salesChartData: chartData;
   areaSalesChartData: chartData;
   monthSalesChartData: chartData;
+  clientTypeChartData: chartData;
   empHiringChartData: chartData;
   salesPersonChartData: chartData;
 
@@ -93,7 +94,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     }
 
-    //this function is for collecting data related to product table
+    //------this function is for collecting data related to product table-------
     this.getProductData();
   }
 
@@ -121,11 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  //function for statcards
-
-
-
-  //function for getting chart data by the help of apis starts
+  //--------function for getting chart data by the help of apis starts------
   getSalesPersonSalesData(sales: any) {
     sales.forEach((sale: any) => {
       if (sale.employeeInfo) {
@@ -141,7 +138,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
 
     });
-    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart', 'sales', this.topSalesman);
+    this.salesPersonChartData = new chartData('line', 'Director', 'Employee Sales Chart', 'sales', this.topSalesman);
   }
 
   catchDeptCount($event: any): void {
@@ -176,7 +173,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   // ------this function is responsible for monthy sales data shown in highcharts--------
-
   getMonthSalesChartData(res: any): void {
     let monthCounts: { [key: string]: number } = {};
     // let date = new Date().getFullYear();
@@ -195,6 +191,29 @@ export class HomeComponent implements OnInit, OnDestroy {
       monthCounts[month[index]] = count;
     });
     this.monthSalesChartData = new chartData('column', 'Sales Department', 'Sales Chart Month Wise', 'Sales Count', monthCounts);
+
+    let clientType: { [key: string]: number } = {};
+    let corporateClient = 0;
+    let generalClient = 0;
+    res.salesInfo.forEach((elem: any) => {
+      if (elem.fostacInfo) {
+        if (elem.fostacInfo.fostac_client_type === "Corporate Client") {
+          corporateClient++;
+        } else if (elem.fostacInfo.fostac_client_type === "General Client") {
+          generalClient++;
+        }
+      }
+      if (elem.foscosInfo) {
+        if (elem.foscosInfo.foscos_client_type === "Corporate Client") {
+          corporateClient++;
+        } else if (elem.foscosInfo.foscos_client_type === "General Client") {
+          generalClient++;
+        }
+      }
+      clientType['Corporate Client'] = corporateClient;
+      clientType['General Client'] = generalClient;
+    });
+    this.clientTypeChartData = new chartData('pie', 'Sales Department', 'Client Type', 'Client Type', clientType);
   }
 
   getEmployeeSalesData(sales: any) {
