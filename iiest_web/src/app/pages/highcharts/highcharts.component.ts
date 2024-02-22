@@ -257,11 +257,7 @@ export class HighchartsComponent implements OnChanges {
   plotPieChart() {
     this.chart = {
       title: {
-<<<<<<< HEAD
-        text: this.chartData.chartTitle
-=======
         text: undefined
->>>>>>> 170ec66e22aeea96d601784194c2f974826d4dbd
       },
       credits: {
         enabled: false,

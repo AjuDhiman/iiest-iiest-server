@@ -1,22 +1,5 @@
 <div class="app-card app-card-chart h-100 shadow-sm">
 	<div class="app-card-body p-3 p-lg-4">
-<<<<<<< HEAD
-		<div class="mb-3 d-flex justify-content-end gap-3">
-			<select *ngIf="chartData?.showIntervalSelection" (change)="ChangeInterval($event)"
-				class="form-select form-select-sm d-inline-flex w-auto">
-				<option value="week" selected>This week</option>
-				<option value="month">This Month</option>
-				<option value="quater">This Quater</option>
-				<option value="halfYearly">This half Year</option>
-				<option value="year">This Year</option>
-				<option value="tillNow">Till Now</option>
-			</select>
-			<select (change)="chartTypeEvent($event)"
-				class="form-select form-select-sm d-inline-flex w-auto">
-				<option [value]="chartData.chartType">{{chartData.chartType}}</option>
-				<option *ngFor="let type of chartData.otherChartTypeOptions" [value]="type">{{type}}</option>
-			</select>
-=======
 		<div class="mb-3 d-flex justify-content-between gap-3">
 			<div class="text-uppercase fw-semibold app-card-title">{{chartData.chartTitle}}</div>
 			<div>
@@ -42,7 +25,6 @@
 				</ng-container> -->
 				</select>
 			</div>
->>>>>>> 170ec66e22aeea96d601784194c2f974826d4dbd
 		</div>
 		<div class="chart-container position-relative">
 			<highcharts-chart *ngIf="isDataAvilable; else noData" [Highcharts]="Highcharts" [options]="chart"
