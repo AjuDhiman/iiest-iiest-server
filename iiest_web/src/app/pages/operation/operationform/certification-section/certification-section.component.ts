@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IconDefinition, faCircleCheck, faCircleExclamation, faFile, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faCircleCheck, faCircleExclamation, faFile, faFilePdf, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
@@ -47,6 +47,8 @@ export class CertificationSectionComponent implements OnInit {
   src: string = '';
 
   faFilePdf = faFilePdf;
+
+  faDownload = faDownload;
 
   connformationFunc = (confirmation:boolean) => {
     if(confirmation){

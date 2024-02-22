@@ -42,6 +42,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   deptData: chartData;
   salesChartData: chartData;
   areaSalesChartData: chartData;
+  monthSalesChartData: chartData;
+  clientTypeChartData: chartData;
   empHiringChartData: chartData;
   salesPersonChartData: chartData;
 
@@ -102,6 +104,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     //this function is for collecting data related to product table
+    //------this function is for collecting data related to product table-------
     this.getProductData();
   }
 
@@ -129,26 +132,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  //function for statcards
-
-
-
-  //function for getting chart data by the help of apis starts
-  getSalesPersonSalesData(sales:any) {
-    console.log(sales)
+  //--------function for getting chart data by the help of apis starts------
+  getSalesPersonSalesData(sales: any) {
     sales.forEach((sale: any) => {
-      if(sale.employeeInfo){
+      if (sale.employeeInfo) {
         const employee = sale.employeeInfo.employee_name;
 
         const grandTotal = Number(sale.grand_total);
-  
+
         if (this.topSalesman.hasOwnProperty(employee)) {
           this.topSalesman[employee] += grandTotal;
         } else {
-          this.topSalesman[employee] = grandTotal ;
+          this.topSalesman[employee] = grandTotal;
         }
       }
-      
+
     });
     this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart','sales', this.topSalesman, false);
   }
@@ -183,8 +181,53 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Sales Chart Area Wise', 'Sales Count', stateCounts, false, ['column']);
   }
 
-  getEmployeeSalesData(sales:any){
-      
+
+  // ------this function is responsible for monthy sales data shown in highcharts--------
+  getMonthSalesChartData(res: any): void {
+    let monthCounts: { [key: string]: number } = {};
+    // let date = new Date().getFullYear();
+    let date = "2023";
+    let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    let monthNum = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+    monthNum.forEach((element, index) => {
+      let str = (date + "-" + element).toString();
+      let count = 0;
+      res.salesInfo.forEach((item: any) => {
+        if (item.createdAt.includes(str)) {
+          count++;
+        }
+      });
+      monthCounts[month[index]] = count;
+    });
+    this.monthSalesChartData = new chartData('column', 'Sales Department', 'Sales Chart Month Wise', 'Sales Count', monthCounts);
+
+    let clientType: { [key: string]: number } = {};
+    let corporateClient = 0;
+    let generalClient = 0;
+    res.salesInfo.forEach((elem: any) => {
+      if (elem.fostacInfo) {
+        if (elem.fostacInfo.fostac_client_type === "Corporate Client") {
+          corporateClient++;
+        } else if (elem.fostacInfo.fostac_client_type === "General Client") {
+          generalClient++;
+        }
+      }
+      if (elem.foscosInfo) {
+        if (elem.foscosInfo.foscos_client_type === "Corporate Client") {
+          corporateClient++;
+        } else if (elem.foscosInfo.foscos_client_type === "General Client") {
+          generalClient++;
+        }
+      }
+      clientType['Corporate Client'] = corporateClient;
+      clientType['General Client'] = generalClient;
+    });
+    this.clientTypeChartData = new chartData('pie', 'Sales Department', 'Client Type', 'Client Type', clientType);
+  }
+
+  getEmployeeSalesData(sales: any) {
+
   }
 
   getEmployeeUnderManager(){
@@ -229,8 +272,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   fetchAllSalesData(): void {
     this._getDataService.getSalesList().subscribe({
       next: res => {
-        console.log(res);
         this.getAreaSalesChartData(res);
+        this.getMonthSalesChartData(res);
         this.getSalesPersonSalesData(res.salesInfo);
       }
     });

@@ -16,6 +16,16 @@ import { chartData } from 'src/app/utils/config';
 // drilldown(Highcharts);
 
 
+import drilldown from 'highcharts/modules/drilldown';
+// import HighchartsMore from 'highcharts/highcharts-more';
+// import HighchartsExporting from 'highcharts/modules/exporting';
+// import HC_exporting from 'highcharts/modules/export-data';
+
+// HighchartsMore(Highcharts);
+// HighchartsExporting(Highcharts);
+// HC_exporting(Highcharts);
+drilldown(Highcharts);
+
 @Component({
   selector: 'app-highcharts',
   templateUrl: './highcharts.component.html',
@@ -98,6 +108,16 @@ export class HighchartsComponent implements OnChanges {
         column: {
           colorByPoint: true,
           // colors: this.columnColorShade
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+              textOutline: 'none'
+            }
+          }
         },
       },
       series: [
@@ -114,12 +134,71 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.category,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         }
       ]
     }
+  }
+
+  // --------Column Drill Down Chart--------
+  plotDrillDownChart() {
+    this.chart = {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Main Chart'
+      },
+      xAxis: {
+        type: 'category'
+      },
+      yAxis: {
+        title: {
+          text: 'Values'
+        }
+      },
+      series: [{
+        type: 'column',
+        name: 'Main',
+        data: [{
+          name: 'Category 1',
+          y: 100,
+          drilldown: 'category1'
+        }, {
+          name: 'Category 2',
+          y: 200,
+          drilldown: 'category2'
+        }]
+      }],
+      drilldown: {
+        series: [{
+          type: 'column',
+          id: 'category1',
+          name: 'Category 1',
+          data: [
+            ['Subcategory 1.1', 50],
+            ['Subcategory 1.2', 50]
+          ]
+        }, {
+          type: 'column',
+          id: 'category2',
+          name: 'Category 2',
+          data: [
+            ['Subcategory 2.1', 100],
+            ['Subcategory 2.2', 100]
+          ]
+        }]
+      }
+    };
   }
 
   // -------Line Chart Function---------
@@ -159,7 +238,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.category,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         },
@@ -202,7 +288,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.name === "registration" || e.point.name === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.name, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.name,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         }
@@ -246,7 +339,14 @@ export class HighchartsComponent implements OnChanges {
               } else if (e.point.category === "registration" || e.point.category === "state") {
                 this.salesCategory = "Foscos";
               }
-              this.viewSalesDataProdWise(e.point.category, this.salesCategory, this.parsedUser.department, this.intervalType);
+              let chartData = {
+                filterValue: e.point.category,
+                salesCategory: this.salesCategory,
+                userDept: this.parsedUser.department,
+                interval: this.intervalType,
+                chartTitile: this.chartData.chartTitle
+              }
+              this.viewChartData(chartData);
             }
           }
         },
@@ -270,12 +370,9 @@ export class HighchartsComponent implements OnChanges {
     modalRef.componentInstance.department = res;
   }
 
-  viewSalesDataProdWise(res: any, salesCategory: any, userDept: string, intervalType: string): void {
+  viewChartData(res: any): void {
     const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.department = res;
-    modalRef.componentInstance.salesCategory = salesCategory;
-    modalRef.componentInstance.userDept = userDept;
-    modalRef.componentInstance.intervalType = intervalType;
+    modalRef.componentInstance.chartData = res;
   }
 
   plotChart() {
@@ -298,6 +395,7 @@ export class HighchartsComponent implements OnChanges {
 
     switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
+        // case "column": this.plotDrillDownChart();
         break;
       case "line": this.plotLineChart();
         break;
@@ -313,17 +411,16 @@ export class HighchartsComponent implements OnChanges {
   //   this.plotChart();
   // }
 
-  formatIntervalType(type:string): string{
-    switch(type){
+  formatIntervalType(type: string): string {
+    switch (type) {
       case 'halfYearly':
         return 'this Half Year'
         break;
       case 'tillNow':
         return 'Till Now'
         break;
-      default: 
+      default:
         return `this ${type}`
     }
   }
-
 }

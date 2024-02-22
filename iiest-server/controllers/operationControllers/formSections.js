@@ -1,7 +1,7 @@
 const fboModel = require("../../models/fboModels/fboSchema");
 const { recipientModel } = require("../../models/fboModels/recipientSchema");
 const fostacAttendanceModel = require("../../models/operationModels/attenSecSchema");
-const fostacVerifyModel = require("../../models/operationModels/basicFormSchema");
+const fostacVerifyModel = require("../../models/operationModels/verificationSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");

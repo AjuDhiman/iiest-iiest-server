@@ -17,9 +17,8 @@ export class HighchartDataModalComponent {
   selectedFilterSales: string = 'byName';
   selectedFilterHr: string = 'byEmployeeName';
   showPagination: boolean = false;
-  department: string;
-  salesCategory: string;
-  userDept: string;
+  filterValue: string;
+  chartData: any;
   intervalType: string;
   filterDate: string | void;
   fboSalesData: any;
@@ -37,34 +36,72 @@ export class HighchartDataModalComponent {
     private registerService: RegisterService) { }
 
   ngOnInit() {
-    this.fetchAllFboData();
-    this.getDepartmentdata();
+    switch (this.chartData.chartTitile) {
+      case 'Sales Count Chart': this.fetchAllFboData();
+        break;
+      case 'Sales Chart Area Wise': this.fetchFboDataByState();
+        break;
+      case 'Employee Count By Department': this.getDepartmentdata();
+        break;
+      case 'Client Type': this.fetchFboDataByClientType();
+        break;
+    }
     this.filterDate = this.filterByDuration(this.intervalType);
-    console.log(typeof(this.filterDate));
+    console.log(this.chartData);
   }
 
-  // this function is work for sales department data acc to logged user
+  // -------this function is work for sales chart data of state wise---------
+  fetchFboDataByState(): void {
+    this._getDataService.getSalesList().subscribe({
+      next: (res) => {
+        if (res.salesInfo) {
+          this.specificDatas = res.salesInfo.filter((item: any) => (item.fboInfo.state === this.chartData.filterValue));
+          this.salesDeptfilter();
+        }
+      },
+    })
+  }
+
+  // -------this function is work for sales chart data of client type---------
+  fetchFboDataByClientType(): void {
+    this._getDataService.getSalesList().subscribe({
+      next: (res) => {
+        if (res.salesInfo) {
+          this.specificDatas = res.salesInfo.filter((item: any, index: number) => {
+            if (item.fostacInfo) {
+              if (item.fostacInfo.fostac_client_type === this.chartData.filterValue) {
+                return item;
+              }
+            }
+            if (item.foscosInfo) {
+              if (item.foscosInfo.foscos_client_type === this.chartData.filterValue) {
+                return item;
+              }
+            }
+          })
+          this.salesDeptfilter();
+        }
+      },
+    })
+  }
+
+  // -------this function is work for sales department data acc to logged user--------
   fetchAllFboData(): void {
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
           console.log(res.salesInfo);
           // this.filterDate = this.filterDate.toString();
-          this.department = this.department.charAt(0).toUpperCase() + this.department.slice(1);
-          if (this.filterDate === "tillNow") {
-            if (this.salesCategory === 'Fostac') {
-              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.fostacInfo.fostac_service_name === this.department));
+          this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
+          if (this.chartData.interval === "tillNow") {
+            if (this.chartData.salesCategory === 'Fostac') {
+              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
             } else {
-              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.foscosInfo.foscos_service_name === this.department));
+              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
             }
-          } else {
-            if (this.salesCategory === 'Fostac') {
-              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.fostacInfo.fostac_service_name === this.department) && (item.createdAt.includes(this.filterDate)));
-            } else {
-              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.salesCategory)) && (item.foscosInfo.foscos_service_name === this.department) && (item.createdAt.includes(this.filterDate)));
-            }
+            console.log(this.specificDatas);
+            this.salesDeptfilter();
           }
-          this.salesDeptfilter();
         }
       },
       error: (err) => {
@@ -77,7 +114,7 @@ export class HighchartDataModalComponent {
   }
 
   getDepartmentdata() {
-    this._getDataService.getEmpCountDeptWise(this.department).subscribe({
+    this._getDataService.getEmpCountDeptWise(this.chartData.filterValue).subscribe({
       next: res => {
         this.employeeList = res.employeeList.map((elem: any, index: number) => {
           if (elem.status === true) {
@@ -132,7 +169,7 @@ export class HighchartDataModalComponent {
     if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
-      switch (this.userDept) {
+      switch (this.chartData.userDept) {
         case "Sales Department": this.salesDeptfilter();
           break;
         case "HR Department": this.hrDeptfilter();
@@ -141,7 +178,7 @@ export class HighchartDataModalComponent {
     }
     else {
       this.isSearch = false;
-      switch (this.userDept) {
+      switch (this.chartData.userDept) {
         case "Sales Department": this.filteredData = this.specificDatas;
           break;
         case "HR Department": this.filteredData = this.employeeList;

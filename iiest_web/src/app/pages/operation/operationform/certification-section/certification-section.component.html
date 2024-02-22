@@ -37,11 +37,14 @@
         </div>
 
         <ng-template #ticketdelivered> 
-            <label for="certificate" class="form-label">Certificate</label>
+            <label for="certificate" class="form-label">Fostac Certificate</label>
             <br>
-            <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' 
-          title='Export As PDF' class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf" 
+            <fa-icon data-bs-toggle='tooltip' data-bs-placement='top'
+          title='Fostac Certificate' class="fa-2xl mx-1 cursor-pointer text-primary" style="margin: 7px 7px;" [icon]="faFilePdf" 
         (click)="showCertificate()"></fa-icon>
+           <fa-icon class="fa-2xl mx-2 cursor-pointer" [icon]="faDownload" title="Download Certificate">
+              
+           </fa-icon>
         </ng-template>
 
     </div>
