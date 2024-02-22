@@ -5,6 +5,16 @@ import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 import { chartData } from 'src/app/utils/config';
+// import drilldown from 'highcharts/modules/drilldown';
+// import HighchartsMore from 'highcharts/highcharts-more';
+// import HighchartsExporting from 'highcharts/modules/exporting';
+// import HC_exporting from 'highcharts/modules/export-data';
+
+// HighchartsMore(Highcharts);
+// HighchartsExporting(Highcharts);
+// HC_exporting(Highcharts);
+// drilldown(Highcharts);
+
 
 @Component({
   selector: 'app-highcharts',
@@ -35,6 +45,8 @@ export class HighchartsComponent implements OnChanges {
 
   isDataAvilable: boolean = true;
 
+  otherChartTypes:any
+
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
 
@@ -46,6 +58,7 @@ export class HighchartsComponent implements OnChanges {
       this.selectedChartType = this.chartData.chartType;
       if (changes && changes['chartData']) {
         this.plotChart();
+        this.otherChartTypes=this.chartData.otherChartTypeOptions;
       }
     }
   }
@@ -105,9 +118,8 @@ export class HighchartsComponent implements OnChanges {
             }
           }
         }
-      ],
+      ]
     }
-    console.log(this.chart);
   }
 
   // -------Line Chart Function---------
@@ -159,7 +171,7 @@ export class HighchartsComponent implements OnChanges {
   plotPieChart() {
     this.chart = {
       title: {
-        text: this.chartData.chartTitle,
+        text: this.chartData.chartTitle
       },
       credits: {
         enabled: false,
@@ -170,13 +182,14 @@ export class HighchartsComponent implements OnChanges {
           cursor: 'pointer',
           dataLabels: {
             enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            format: '<b>{point.name}</b>: {point.y}',
           },
           showInLegend: true,
         },
       },
       series: [
         {
+          name: 'sale count',
           type: 'pie',
           data: this.values.map((value: any, index: number) => ({
             name: this.categories[index],

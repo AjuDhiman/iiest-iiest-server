@@ -1,11 +1,16 @@
 <div class="" id="msdd">
-    <div class="display py-1 px-0 form-control form-control-sm"
+    <div class="display py-1 px-0 form-control form-control-sm" #display
         [ngClass]="{'display-focus': isdropped, 'invalid-display': invalid, 'invalid-display-focus':invalid && isdropped}"
         (click)="onDisplayClick($event) ">
+
+        <!-- Place holder -->
         <div *ngIf="isDisplayEmpty" class="placeHolder px-2">{{placeHolder}}</div>
+
+        <!-- These are the elements which are visible in the window -->
         <div *ngIf="selected.length > 0" class="tags mx-1 px-2">
             {{selected[0]}}
         </div>
+        
         <div *ngIf="selected.length > 1" class="tags">
             {{'+' + (selected.length - 1).toString()}}
         </div>

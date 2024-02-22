@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -23,8 +23,14 @@ export class MultiSelectComponent implements OnChanges {
 
   @Input() forProducts:boolean=false
 
+  @ViewChild('display') display: ElementRef;
+
   @Output()
   selectedArrayChange: EventEmitter<any> = new EventEmitter<any>;
+
+  ngAfterViewInit(): void {
+    console.log(this.display.nativeElement);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options'] && changes['options'].currentValue) {
@@ -33,7 +39,7 @@ export class MultiSelectComponent implements OnChanges {
     }
   }
 
-  initializeAll() {
+  initializeAll(): void {
     this.all = [];
     //we are associating a checked boolean with every value for keepig track of check boxes 
     //associated with them
@@ -42,7 +48,7 @@ export class MultiSelectComponent implements OnChanges {
     }
   }
 
-  onclicked(event: Event, index: number) {
+  onclicked(event: Event, index: number): void {
     //initially we will toggle the check of clicked element tracking by index cames from templet
     this.all[index].checked = !this.all[index].checked;
 
@@ -67,16 +73,16 @@ export class MultiSelectComponent implements OnChanges {
     event.stopPropagation();
   }
 
-  onDisplayClick(event: Event) {//this function will close if display is unfocused
+  onDisplayClick(event: Event): void {//this function will close if display is unfocused
     this.isdropped = !this.isdropped;
     event.stopPropagation();
   }
 
-  onCheckClick(event: Event) {
+  onCheckClick(event: Event): void {
     event.stopPropagation();
   }
 
-  onReset() {
+  onReset() : void {
     this.selected = [];
     this.isDisplayEmpty = true;
     this.isdropped = false;

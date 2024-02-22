@@ -7,20 +7,13 @@
 				<option value="month">This Month</option>
 				<option value="quater">This Quater</option>
 				<option value="halfYearly">This half Year</option>
-				<option value="year">This Financial Year</option>
+				<option value="year">This Year</option>
 				<option value="tillNow">Till Now</option>
 			</select>
-			<select (change)="chartTypeEvent($event)" [(ngModel)]="selectedChartType"
+			<select (change)="chartTypeEvent($event)"
 				class="form-select form-select-sm d-inline-flex w-auto">
-				<option value="column">Column</option>
-				<option value="pie">Pie</option>
-				<option value="line">Line</option>
-				<option value="area">Area</option>
-
-				<!-- <ng-container *ngIf="chartData?.otherChartTypeOptions?.length">
-                    <option value="chartData?.chartType" [selected] = "true">{{chartData.chartType}}</option>
-					<option *ngFor="let option of chartData?.otherChartTypeOptions" value="option">{{option}}</option>
-				</ng-container> -->
+				<option [value]="chartData.chartType">{{chartData.chartType}}</option>
+				<option *ngFor="let type of chartData.otherChartTypeOptions" [value]="type">{{type}}</option>
 			</select>
 		</div>
 		<div class="chart-container position-relative" style="overflow: scroll;">
@@ -31,6 +24,6 @@
 					No {{chartData.chartTitle}} data avilable <span style="text-transform: capitalize;"> {{formatIntervalType(intervalType)}}</span>
 				  </div>
 			</ng-template>
-		</div><!-- //app-card-body -->
+		</div><!-- //app-card-body --
 	</div><!-- //app-card -->
 </div><!-- //col  -->

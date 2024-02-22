@@ -22,16 +22,12 @@
 		<!-- this section will be show data according to employee's department -->
 		<app-stat-cards (emitDeptCount)="catchDeptCount($event)"></app-stat-cards>
 
-		<div class="my-3 row" *ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
-			<app-highcharts  [chartData]="salesChartData" class="col-12 col-lg-6"></app-highcharts>
-			<app-highcharts  [chartData]="areaSalesChartData" class="col-12 col-lg-6"></app-highcharts>
-			<app-highcharts *ngIf="empDesigantion=='Director'" [chartData]="salesPersonChartData" class="col-12 col-lg-6 my-4"></app-highcharts>
+		<div class="my-3 row">
+			<app-highcharts *ngIf="salesOfficersRoles.includes(empDesigantion)"  [chartData]="salesChartData" class="col-12 col-lg-6 my-2"></app-highcharts>
+			<app-highcharts *ngIf="empDesigantion === 'Director'" [chartData]="areaSalesChartData" class="col-12 col-lg-6 my-2"></app-highcharts>
+			<app-highcharts *ngIf="empDesigantion=='Director'" [chartData]="salesPersonChartData" class="col-12 col-lg-6 my-2"></app-highcharts>
+			<app-highcharts *ngIf="empDepartment == 'HR Department'" [chartData]="deptData" class="col-12 col-lg-6 my-2"></app-highcharts>
 		</div>
-		<div class="my-4 row" *ngIf="empDepartment==='HR Department' || empDepartment=='IT Department'">
-			<app-highcharts [chartData]="deptData" class="col-12 col-lg-6"></app-highcharts>
-			<app-highcharts *ngIf="isChartDataAvailable===true" [chartData]="empHiringChartData" class="col-12 col-lg-6"></app-highcharts>
-		</div>
-
 
 		<div class="row my-2">
 			<div class="col-md-6" *ngIf="projectType=== 'FSSAI'">

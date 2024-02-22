@@ -7,7 +7,7 @@ import { Employee } from '../../utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { chartData } from 'src/app/utils/config';
+import { chartData, salesManagerRoles, salesOfficersRoles } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-home',
@@ -54,6 +54,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   salesData: any;
   topSalesman: any = {};
 
+  //roles arrays
+  salesOfficersRoles = salesOfficersRoles;
+
   constructor(
     private _registerService: RegisterService,
     private store: Store,
@@ -89,6 +92,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.empDepartment === 'HR Department' || this.empDepartment === 'IT Department' || this.empDesigantion === 'Director') {
 
       this.getEmpHiringChartData();
+
+    }
+
+    if(salesManagerRoles.includes(this.empDesigantion)){
+
+      this.getEmployeeUnderManager()
 
     }
 
@@ -141,7 +150,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       
     });
-    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart','sales', this.topSalesman);
+    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart','sales', this.topSalesman, false);
   }
 
   catchDeptCount($event: any): void {
@@ -171,11 +180,20 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       return counts;
     }, {});
-    this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Sales Chart Area Wise', 'Sales Count', stateCounts);
+    this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Sales Chart Area Wise', 'Sales Count', stateCounts, false, ['column']);
   }
 
   getEmployeeSalesData(sales:any){
       
+  }
+
+  getEmployeeUnderManager(){
+    this._getDataService.getEmployeeUnderManager().subscribe({
+      next: res => {
+        console.log(res);
+        
+      }
+    })
   }
 
   getEmpHiringChartData(): void {
