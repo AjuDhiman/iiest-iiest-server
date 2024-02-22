@@ -4,6 +4,7 @@ const fostacAttendanceModel = require("../../models/operationModels/attenSecSche
 const fostacVerifyModel = require("../../models/operationModels/basicFormSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
+const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 exports.fostacVerification = async (req, res) => {
@@ -32,12 +33,12 @@ exports.fostacVerification = async (req, res) => {
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sales_date });
 
         //this code is for tracking the CRUD operation regarding to a recipient
-        
+
         const prevVal = {}
 
         const currentVal = basicFormAdd;
 
-        logAudit(req.user._id, "recipientdetails", recipientId , prevVal, currentVal, "Recipient verified");
+        logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
 
         // code for tracking ends
 
@@ -111,7 +112,7 @@ exports.fostacEnrollment = async (req, res) => {
 
         const currentVal = enrollRecipient;
 
-        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo,  prevVal, currentVal, trainingDateAction);
+        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo, prevVal, currentVal, trainingDateAction);
 
         await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo, prevVal, currentVal, "Recipient Enrolled");
 
@@ -181,7 +182,7 @@ exports.getGenOperData = async (req, res) => {
 
         const recipientId = req.params.recipientid;
 
-        const genSecData = await generalSectionModel.find({ recipientInfo: recipientId }).populate({ path: 'operatorInfo'});
+        const genSecData = await generalSectionModel.find({ recipientInfo: recipientId }).populate({ path: 'operatorInfo' });
 
         if (genSecData) {
             success = true;
@@ -238,7 +239,7 @@ function getFormatedDate(date) {
 
 //backend code for attendance form
 exports.fostacAttendance = async (req, res) => {
-    console.log(req.params.enrolleddataid);
+
     try {
         let success = false;
 
@@ -246,7 +247,7 @@ exports.fostacAttendance = async (req, res) => {
 
         const { attendee_status, marks } = req.body;
 
-        const addAttendance = await fostacAttendanceModel.create({ operatorInfo: req.user.id, EnrollmentInfo: enrolledDataId, attendeeStatus: attendee_status, marks:marks})
+        const addAttendance = await fostacAttendanceModel.create({ operatorInfo: req.user.id, EnrollmentInfo: enrolledDataId, attendeeStatus: attendee_status, marks: marks })
 
         //this code is for tracking the flow of data regarding to a recipient
 
@@ -272,7 +273,7 @@ exports.fostacAttendance = async (req, res) => {
     }
 }
 
-exports.getFostacAttenData = async(req,res) => {
+exports.getFostacAttenData = async (req, res) => {
     try {
         let success = false;
 
@@ -287,6 +288,71 @@ exports.getFostacAttenData = async(req,res) => {
             return res.status(204).json({ success });
         }
 
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.ticketDelivery = async (req, res) => {
+
+    try {
+        let success = false;
+
+        const certificateFile = req.file;
+
+        console.log(certificateFile);
+
+        const ticket_status = req.body.ticket_status;
+
+        if (!certificateFile && ticket_status === 'delivered') {
+            success = false;
+            return res.status(401).json({ success, fileErr: true })
+        }
+
+        const ticket = await ticketDeliveryModel.findOne({ recipientInfo: req.params.id });
+
+        if (ticket) {
+            res.status(401).json({ success, recpErr: true });
+        }
+
+        let addTicket;
+
+        if (ticket_status == 'delivered') {
+            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.path });
+        } else {
+            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status });
+        }
+
+        if (addTicket) {
+            //this code is for audit logging 
+
+            const prevVal = {}
+            const currentVal = addTicket;
+
+            await logAudit(req.user._id, "recipientdetails", req.params.recipientid , prevVal, currentVal, `Ticket marked ${ticket_status}`);
+
+            success = true;
+            return res.status(200).json({ success });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getTicketDeliveryData = async (req, res) => {
+    try {
+        let success = false;
+
+        const recipientId = req.params.recipientid
+
+        const data = await ticketDeliveryModel.findOne({ recipientInfo: recipientId });
+
+        if (data) {
+            success = true;
+            res.status(200).json({ success, data });
+        } else {
+            res.status(204).json({ success });
+        }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });
     }

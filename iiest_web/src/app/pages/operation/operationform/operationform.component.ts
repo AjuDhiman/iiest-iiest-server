@@ -10,7 +10,8 @@ import { RegisterService } from 'src/app/services/register.service';
 })
 export class OperationformComponent implements OnInit {
   //global variables 
-  candidateId: string;
+  customerId: string;
+  candidateId: string = '';
   verifiedDataId: string;
   enrolledDataId: string;
   verifiedStatus: boolean;
@@ -33,6 +34,12 @@ export class OperationformComponent implements OnInit {
     this.getUserProductType();
   }
 
+  //this methord for geting recipient customer id 
+  getCustomerId($event: any) : void {
+    console.log($event);
+    this.customerId = $event;
+  }
+  
   //this methord catch sales date from verification section which we will pass in enrollment section
   getSalesData($event: string) {
     this.salesDate = $event;

@@ -4,41 +4,51 @@
         <!-- heading and form status -->
         <h6>Certification Section</h6>
         <div class="status" [ngClass]="resultTextClass">
-            {{resultText}} <fa-icon class="fa-lg fa-regular ml-2"
-                [icon]="resultIcon">
+            {{resultText}} <fa-icon class="fa-lg fa-regular ml-2" [icon]="resultIcon">
             </fa-icon>
         </div>
     </div>
 
     <div class="col-md-3">
         <label for="ticket_status" class="form-label select-label">Ticket Status</label><sup>*</sup>
-        <select id="ticket_status" [ngClass]="{ 'is-invalid': ticketClosed && certificationform['ticket_status'].errors }"               formControlName="ticket_status"
-        (change)="onTicketStatusChange($event)"
-          class="form-select form-select-sm cursor-pointer">
-          <option value="" disabled selected>Select Ticket Status</option>
-          <option value="dilivered">Dilivered</option>
-          <option *ngIf="projectType === 'Foscos'" value="rejected">Rejected</option>
-          <option value="refund">Refund</option>
-          <option value="cancle">Cancle</option>
+        <select id="ticket_status" [ngClass]="{ 'is-invalid': submitted && certificationform['ticket_status'].errors }"
+            formControlName="ticket_status" [attr.disabled]="ticketClosed" (change)="onTicketStatusChange($event)"
+            class="form-select form-select-sm cursor-pointer">
+            <option value="" disabled selected>Select Ticket Status</option>
+            <option value="delivered">delivered</option>
+            <option *ngIf="projectType === 'Foscos'" value="rejected">Rejected</option>
+            <option value="refund">Refund</option>
+            <option value="cancle">Cancle</option>
         </select>
-        <div *ngIf="ticketClosed && certificationform['ticket_status'].errors" class="invalid-feedback">
+        <div *ngIf="submitted && certificationform['ticket_status'].errors" class="invalid-feedback">
             <div *ngIf="certificationform['ticket_status'].errors['required']">Ticket Status is required</div>
         </div>
     </div>
 
     <div class="col-md-3" *ngIf="isUploadVisible">
-        <label for="roll_no" class="form-label">Upload Cerificate</label><sup>*</sup>
-        <input type="file" placeholder="Enrollment no." formControlName="roll_no" class="form-control form-control-sm"
-            id="roll_no" [ngClass]="{ 'is-invalid': ticketClosed && certificationform['roll_no'].errors }">
-        <div *ngIf="ticketClosed && certificationform['roll_no'].errors" class="invalid-feedback">
-            <div *ngIf="certificationform['roll_no'].errors['required']">Roll no. is required</div>
+        <div *ngIf="!ticketClosed;else ticketdelivered">
+            <label for="certificate" class="form-label">Upload Cerificate</label><sup>*</sup>
+            <input type="file" placeholder="Upload Certificate" class="form-control form-control-sm"
+                (change)="onFileSelected($event)" id="certificate"
+                [ngClass]="{ 'is-invalid': submitted && certificationform['certificate'].errors }">
+            <div *ngIf="submitted && certificationform['certificate'].errors" class="invalid-feedback">
+                <div *ngIf="certificationform['certificate'].errors['required']">Certificate is required</div>
+            </div>
         </div>
+
+        <ng-template #ticketdelivered> 
+            <label for="certificate" class="form-label">Certificate</label>
+            <br>
+            <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' 
+          title='Export As PDF' class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf" 
+        (click)="showCertificate()"></fa-icon>
+        </ng-template>
+
     </div>
 
     <div class="row mt-3">
         <div class="col-6">
-            <button type="submit" class="btn btn-sm btn-primary"
-                [disabled]="isBtnDisble">Close Ticket
+            <button type="submit" class="btn btn-sm btn-primary">Close Ticket
             </button>
         </div>
     </div>

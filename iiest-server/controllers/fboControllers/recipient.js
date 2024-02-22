@@ -2,6 +2,7 @@ const { recipientModel, shopModel } = require('../../models/fboModels/recipientS
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const { logAudit } = require('../generalControllers/auditLogsControllers');
+const generateRecipientInfo = require('../../fbo/generateCredentials');
 
 exports.addRecipient = async (req, res) => {
 
@@ -28,7 +29,12 @@ try {
 
     if(isValid){
         for(let recipient of bodyArray){
-            const addRecipient = await recipientModel.create({salesInfo: req.params.id, name: recipient.name, phoneNo: recipient.phoneNo, aadharNo: recipient.aadharNo});
+
+            let {idNumber, recipientId} = await generateRecipientInfo(req.params.id);
+
+            console.log(idNumber, recipientId);
+            
+            const addRecipient = await recipientModel.create({salesInfo: req.params.id, id_num: idNumber, name: recipient.name, phoneNo: recipient.phoneNo, recipientId: recipientId, aadharNo: recipient.aadharNo});
 
             // this code is for tracking the the record related action of a recipient
 

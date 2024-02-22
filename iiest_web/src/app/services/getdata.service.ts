@@ -158,6 +158,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getTicketDeliveryData(recId: string): Observable<any> { // for geting delivery status of a recipient
+    const url: string = `${this.url}/getticketdeliverydata/${recId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   private handleError(err: HttpErrorResponse): Observable<never> {
     // just a test ... more could would go here
     return throwError(() => err);

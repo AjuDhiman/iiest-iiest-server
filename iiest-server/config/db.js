@@ -15,7 +15,7 @@ const connectToMongo = async() => {
         empImageBucket();
     }).catch((error) => {
         console.log(error);
-    })
+    });
 }
 
 module.exports = connectToMongo;

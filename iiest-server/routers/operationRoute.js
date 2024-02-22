@@ -1,9 +1,11 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
 const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/operationControllers/caseList');
-const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData } = require('../controllers/operationControllers/formSections');
+const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
+const { fostacDocuments } = require('../config/storage');
+const uploadCertificateMiddleware = require('../middleware/certificateUpload');
 
 const router = express.Router();
 
@@ -20,6 +22,8 @@ router.get('/getopergensecdata/:recipientid', authMiddleware, getGenOperData); /
 // router.put('/updateopergensecdata/:recipientid', authMiddleware, updateGenOperData); // route for updating person's general sec data in operation form
 router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route for getting audit logs history of a particular recipient
 module.exports = router;
+router.post('/ticketdelivery/:recipientid', authMiddleware, uploadCertificateMiddleware, ticketDelivery);
+router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliveryData)// route for getting ticket delivery data for a customer
 
 //routes for trainer
 router.post('/fostacattendance/:enrolleddataid', authMiddleware, fostacAttendance)

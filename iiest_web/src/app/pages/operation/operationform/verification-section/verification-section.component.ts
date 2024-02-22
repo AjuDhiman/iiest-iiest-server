@@ -31,7 +31,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Output() emitVerifiedStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
 
-  @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>
+  @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>;
+
+  @Output() emitCustomerId: EventEmitter<string> = new EventEmitter<string>;
 
   kobData: any;
 
@@ -156,6 +158,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       next: (res) => {
         console.log(res);
         if(this.productType === 'Fostac'){
+          this.emitCustomerId.emit(res.populatedInfo.recipientId);
           this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });

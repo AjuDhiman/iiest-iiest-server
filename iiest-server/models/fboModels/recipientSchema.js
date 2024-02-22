@@ -7,12 +7,24 @@ const recipientSchema = new Schema({
         ref: 'employee_sales',
         required: true
     },
+    id_num: {
+        type: Number,
+        unique: true,
+        required: true,
+        min: 10000,
+        max: 99999
+    },
     name: {
         type: String, 
         required: true
     },
     phoneNo: {
         type: Number,
+        required: true,
+        unique: true
+    },
+    recipientId: {
+        type: String,
         required: true,
         unique: true
     },
