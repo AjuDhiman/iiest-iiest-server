@@ -18,7 +18,6 @@ export class SidebarComponent {
   userImage: string = '../../assets/logo-side.png';
   userImageId: string;
   faUserPlus = faUserPlus;
-  activeLink: string = '/home';
 
   @Input() sideBarToggle: boolean;
   @Input() isSidebarVisible: boolean;
@@ -55,9 +54,6 @@ export class SidebarComponent {
     this.sideBarToggleUpdate.emit(false);
     this.toggelShow = false;
     this.isSidebarVisible = !this.isSidebarVisible;
-  }
-  setActiveLink(link: string) {
-    this.activeLink = link;
   }
   getUserImage() {
     const rawUserData: any = this.registerService.LoggedInUserData();

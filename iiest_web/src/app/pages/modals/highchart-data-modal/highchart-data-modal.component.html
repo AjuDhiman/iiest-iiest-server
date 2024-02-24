@@ -63,9 +63,9 @@
                   <th class="cell">Status</th>
                 </tr>
               </thead>
-              <tbody *ngIf="specificDatas?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
+              <tbody *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr
-                  *ngFor="let employee of specificDatas | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.fbo_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.fboInfo.owner_name}}</span></td>

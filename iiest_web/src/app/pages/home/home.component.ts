@@ -41,6 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // chart objects
   deptData: chartData;
   salesChartData: chartData;
+  productSalesChartData: chartData;
   areaSalesChartData: chartData;
   monthSalesChartData: chartData;
   clientTypeChartData: chartData;
@@ -85,8 +86,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department' || this.empDesigantion === 'Director') {
 
       this.getSalesCountData();
-
-      // this.getAreaSalesChartData();
       this.fetchAllSalesData();
 
     }
@@ -97,7 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     }
 
-    if(salesManagerRoles.includes(this.empDesigantion)){
+    if (salesManagerRoles.includes(this.empDesigantion)) {
 
       this.getEmployeeUnderManager()
 
@@ -148,7 +147,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
 
     });
-    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart','sales', this.topSalesman, false);
+    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart', 'Employee Sales', '', this.topSalesman, [], false, ['column', 'pie', 'line', 'area']);
   }
 
   catchDeptCount($event: any): void {
@@ -158,13 +157,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       data[element.department] = element.count;
     });
 
-    this.deptData = new chartData('column', 'HR department', 'Employee Count By Department', 'Employee Count', data);
+    this.deptData = new chartData('column', 'HR department', 'Employee Count By Department', 'Department', 'Employee Count', data, [], false, ['column', 'pie', 'line', 'area']);
   }
 
   getSalesCountData(): void {
     this._getDataService.getEmpSalesProdWise().subscribe({
       next: res => {
-        this.salesChartData = new chartData('column', 'Sales department', 'Sales Count Chart', 'Sales Count', res, true, ['pie']);
+        this.salesChartData = new chartData('column', 'Sales department', 'Sales Count Chart', '', 'Sales Count', res, [], true, ['column', 'pie', 'line', 'area']);
       }
     })
   }
@@ -178,7 +177,65 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       return counts;
     }, {});
-    this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Sales Chart Area Wise', 'Sales Count', stateCounts, false, ['column']);
+    this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Area Wise Sales Chart', 'States', 'Sales Count', stateCounts, [], false, ['column', 'pie', 'line', 'area']);
+  }
+
+  getProductSalesChartData(res: any): void {
+    let data: { [key: string]: number } = {};
+    const fostac: any = [];
+    const foscos: any = [];
+    console.log(res);
+    data = res.salesInfo.reduce((productCounts: { [key: string]: number }, order: any) => {
+      order.product_name.forEach((product: any) => {
+        if (productCounts.hasOwnProperty(product)) {
+          productCounts[product]++;
+        } else {
+          productCounts[product] = 1;
+        }
+      });
+      return productCounts;
+    }, {});
+    console.log(data);
+
+    res.salesInfo.forEach((item: any) => {
+      if (item.fostacInfo && item.fostacInfo.fostac_service_name) {
+        const serviceName = item.fostacInfo.fostac_service_name.toString();
+        const existingIndex = fostac.findIndex((entry: any) => entry[0] === serviceName);
+        if (existingIndex !== -1) {
+          fostac[existingIndex][1]++;
+        } else {
+          fostac.push([serviceName, 1]);
+        }
+      }
+    
+      // Increment count for foscos_service_name
+      if (item.foscosInfo && item.foscosInfo.foscos_service_name) {
+        const serviceName = item.foscosInfo.foscos_service_name.toString();
+        const existingIndex = foscos.findIndex((entry: any) => entry[0] === serviceName);
+        if (existingIndex !== -1) {
+          foscos[existingIndex][1]++;
+        } else {
+          foscos.push([serviceName, 1]);
+        }
+      }
+    });
+    
+    let fostacArr = {
+      type: 'column',
+      id: 'Fostac',
+      name: 'Fostac',
+      data: fostac
+    };
+    let foscosArr = {
+      type: 'column',
+      id: 'Foscos',
+      name: 'Foscos',
+      data: foscos
+    };
+
+    let drilldata = [fostacArr, foscosArr];
+
+    this.productSalesChartData = new chartData('drilldown', 'Sales Department', 'Product Sales Chart', 'Products', 'Sales Count', data, drilldata, false, []);
   }
 
 
@@ -200,7 +257,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
       monthCounts[month[index]] = count;
     });
-    this.monthSalesChartData = new chartData('column', 'Sales Department', 'Sales Chart Month Wise', 'Sales Count', monthCounts);
+    this.monthSalesChartData = new chartData('column', 'Sales Department', 'Sales Chart Month Wise', 'Current Year', 'Sales Count', monthCounts, [], false, ['column', 'pie', 'line', 'area']);
 
     let clientType: { [key: string]: number } = {};
     let corporateClient = 0;
@@ -223,18 +280,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       clientType['Corporate Client'] = corporateClient;
       clientType['General Client'] = generalClient;
     });
-    this.clientTypeChartData = new chartData('pie', 'Sales Department', 'Client Type', 'Client Type', clientType);
+    this.clientTypeChartData = new chartData('pie', 'Sales Department', 'Customer Type Chart', 'Client Type', 'Sales Count', clientType, [], false, ['column', 'pie', 'line', 'area']);
   }
 
   getEmployeeSalesData(sales: any) {
 
   }
 
-  getEmployeeUnderManager(){
+  getEmployeeUnderManager() {
     this._getDataService.getEmployeeUnderManager().subscribe({
       next: res => {
         console.log(res);
-        
+
       }
     })
   }
@@ -250,7 +307,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         } else {
           this.isChartDataAvailable = false;
         }
-        this.empHiringChartData = new chartData('line', 'Sales department', 'Hiring Chart', 'Employee Count', data);
+        this.empHiringChartData = new chartData('line', 'HR Department', 'Hiring Performance Chart', 'Department', 'Hiring Count', data, [], false, ['column', 'pie', 'line', 'area']);
       }
     })
   }
@@ -275,6 +332,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.getAreaSalesChartData(res);
         this.getMonthSalesChartData(res);
         this.getSalesPersonSalesData(res.salesInfo);
+        this.getProductSalesChartData(res);
       }
     });
   }

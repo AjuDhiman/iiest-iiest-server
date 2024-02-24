@@ -1,5 +1,4 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
-
 	<div class="container-xxl">
 		<h1 class="app-page-title">Home</h1>
 		<div *ngIf="isNameVisible" class="app-card alert alert-dismissible shadow-sm mb-4 border-left-decoration "
@@ -23,7 +22,8 @@
 		<app-stat-cards (emitDeptCount)="catchDeptCount($event)"></app-stat-cards>
 
 		<div class="my-3 row" *ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
-			<app-highcharts  [chartData]="salesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
+			<!-- <app-highcharts  [chartData]="salesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts> -->
+			<app-highcharts  [chartData]="productSalesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
 			<app-highcharts  [chartData]="areaSalesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
 			<app-highcharts  [chartData]="monthSalesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>
 			<app-highcharts  [chartData]="clientTypeChartData" class="col-12 col-lg-6 mb-3"></app-highcharts>

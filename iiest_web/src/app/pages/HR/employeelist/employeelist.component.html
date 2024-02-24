@@ -109,11 +109,11 @@
                   <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"
                   data-bs-toggle='tooltip' data-bs-placement='top' title='inactive employee'></fa-icon>
                 </td>
-                <td class="cell text-center">
+                <td class="cell text-end">
                   <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
                   data-bs-toggle='tooltip' data-bs-placement='top' title='view employee'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
-                  <fa-icon class="fa-l selector" (click)="allocate(employee, 'area')"
+                  <fa-icon *ngIf="employee.department === 'Sales Department'" class="fa-l selector" (click)="allocate(employee, 'area')"
                   data-bs-toggle='tooltip' data-bs-placement='top' title='allocate area'
                     style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
                   <fa-icon class="fa-l selector" (click)="editRecord(employee)"

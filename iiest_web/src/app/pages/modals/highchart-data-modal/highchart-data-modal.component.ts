@@ -39,11 +39,11 @@ export class HighchartDataModalComponent {
     switch (this.chartData.chartTitile) {
       case 'Sales Count Chart': this.fetchAllFboData();
         break;
-      case 'Sales Chart Area Wise': this.fetchFboDataByState();
+      case 'Area Wise Sales Chart': this.fetchFboDataByState();
         break;
       case 'Employee Count By Department': this.getDepartmentdata();
         break;
-      case 'Client Type': this.fetchFboDataByClientType();
+      case 'Customer Type Chart': this.fetchFboDataByClientType();
         break;
     }
     this.filterDate = this.filterByDuration(this.intervalType);
@@ -90,7 +90,6 @@ export class HighchartDataModalComponent {
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
-          console.log(res.salesInfo);
           // this.filterDate = this.filterDate.toString();
           this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
           if (this.chartData.interval === "tillNow") {
@@ -99,7 +98,6 @@ export class HighchartDataModalComponent {
             } else {
               this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
             }
-            console.log(this.specificDatas);
             this.salesDeptfilter();
           }
         }

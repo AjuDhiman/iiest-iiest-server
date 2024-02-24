@@ -22,12 +22,8 @@
                 </div>
                 <div class="col-md-4" *ngIf="type === 'area'">
                     <label for="district" class="form-label">District<sup>*</sup></label>
-                    <select id="district" [ngClass]="{ 'is-invalid': submitted && areaForm['district'].errors }"
-                        formControlName="district" class="form-select form-select-sm"
-                        (change)="onDistrictSelect($event)">
-                        <option value="" disabled selected>Select the District</option>
-                        <option *ngFor="let district of districts" [value]="district">{{district}}</option>
-                    </select>
+                    <app-multi-select #multiSelect (selectedArrayChange)="onDistrictSelect($event)" [options]="districts"
+                        [placeHolder]="'District'"></app-multi-select>
                     <div *ngIf="submitted && areaForm['district'].errors" class="invalid-feedback">
                         <div *ngIf="areaForm['district'].errors['required']">District is required</div>
                     </div>

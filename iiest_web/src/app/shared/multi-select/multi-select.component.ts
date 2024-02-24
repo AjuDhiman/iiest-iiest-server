@@ -31,7 +31,6 @@ export class MultiSelectComponent implements OnChanges {
   selectedArrayChange: EventEmitter<any> = new EventEmitter<any>;
 
   ngAfterViewInit(): void {
-    console.log(this.display.nativeElement);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
