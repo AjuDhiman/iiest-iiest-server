@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCircleExclamation, faL } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
+import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+import { ownershipType } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-verification-section',
@@ -35,11 +37,15 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Output() emitCustomerId: EventEmitter<string> = new EventEmitter<string>;
 
+  @ViewChild(MultiSelectComponent) multiSelect: MultiSelectComponent;
+
   kobData: any;
 
   kobList: string[] = [];
 
   foodCategoryList: string[] = [];
+
+  ownershipType = ownershipType;
 
   //Verification Reactive angular form
   verificationForm: FormGroup = new FormGroup({});
@@ -75,6 +81,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     food_category: new FormControl(''),
     license_category: new FormControl(''),
     license_duration: new FormControl(''),
+    ownership_type: new FormControl(''),
+    food_items: new FormControl(''),
+    operator_address: new FormControl(''),
     foscos_total: new FormControl(''),
     sales_date: new FormControl(''),
     sales_person: new FormControl(''),
@@ -106,6 +115,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this.getKobData(); 
 
         this.verificationForm = this.foscosVerificationForm;
+
+        this.getFoscosVerifiedData()
         break;
     }
 
@@ -131,25 +142,40 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   onVerify(): void {
     this.verified = true;
-    console.log(this.verificationForm)
-    console.log(this.foscosVerificationForm)
-    if (this.verificationForm.invalid) {
-      return
-    }
-    this._registerService.operationBasicForm(this.candidateId, this.verificationForm.value).subscribe({
-      next: res => {
-        if (res.success) {
-          this.verifiedStatus = true;
-          this.emitVerifiedStatus.emit(this.verifiedStatus);
-          this.emitVerifiedID.emit(res.verifiedId);
-          this.refreshAuditLog.emit();
-          this._toastrService.success('Resipient\'s information is Verified', 'Verified');
+    console.log(this.verificationForm.value);
+    // if (this.verificationForm.invalid) {
+    //   return
+    // }
+    if(this.productType === 'Fostac'){
+      this._registerService.verifyFostac(this.candidateId, this.verificationForm.value).subscribe({
+        next: res => {
+          if (res.success) {
+            this.verifiedStatus = true;
+            this.emitVerifiedStatus.emit(this.verifiedStatus);
+            this.emitVerifiedID.emit(res.verifiedId);
+            this.refreshAuditLog.emit();
+            this._toastrService.success('Resipient\'s information is Verified', 'Verified');
+          }
+        },
+        error: err => {
+          this._toastrService.error(err.messsage, 'Can\'t Verify');
         }
-      },
-      error: err => {
-        this._toastrService.error(err.messsage, 'Can\'t Verify');
-      }
-    })
+      })
+    } else if(this.productType === 'Foscos') {
+      console.log('works');
+      this._registerService.verifyFoscos(this.candidateId, this.verificationForm.value).subscribe({
+        next: res => {
+          console.log(this.verificationForm);
+          if(res.success){
+            // this.verifiedStatus = true;
+            this.emitVerifiedStatus.emit(this.verifiedStatus);
+            this.emitVerifiedID.emit(res.verifiedId);
+            this.refreshAuditLog.emit();
+            this._toastrService.success('Shop\'s information is Verified', 'Verified');
+          }
+        }
+      });
+    }
   }
 
   //founction for fetching recipient data 
@@ -207,6 +233,27 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     });
   }
 
+  getFoscosVerifiedData() {
+    this._getDataService.getFoscosVerifedData(this.candidateId).subscribe({
+      next: res => {
+        console.log(res);
+        if(res){
+          this.verifiedStatus = true;
+          this.multiSelect.isDisplayEmpty = false;
+          this.multiSelect.selected = res.verifedData.foodCategory;
+          this.verificationForm.patchValue({ kob: res.verifedData.kob });
+          this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
+          this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
+          this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
+          this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
+          this.verificationForm.patchValue({ food_items: res.verifedData.foodItems });
+        }  else {
+          this.verifiedStatus = false;
+        }
+      }
+    })
+  }
+
   getFormatedDate(date: string): string {
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
@@ -225,7 +272,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     })
   }
 
-  onKobChange($event:any){
+  //this methord sets food catgories on the basis of kob selection
+  onKobChange($event:any): void{
     this.verificationForm.patchValue({ food_category: ""});
     this.kobData.forEach((kob:any) => {
       console.log($event.target.value);
@@ -234,6 +282,10 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this.foodCategoryList = kob.food_category;
       }
     })
+  }
+
+  getSelectedFoodcat($event: any): void {
+    this.verificationForm.patchValue({ food_category: $event });
   }
 
   setFormValidation(): void{
@@ -267,8 +319,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       tehsil: ['', Validators.required],
       kob: ['', Validators.required],
       food_category: ['', Validators.required],
+      ownership_type: ['', Validators.required],
+      food_items: ['', Validators.required],
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
+      operator_address: ['', Validators.required],
       foscos_total: ['', Validators.required],
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],

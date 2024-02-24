@@ -42,7 +42,11 @@ export class RecipientComponent implements OnInit {
     phoneNo: new FormControl(''),
     aadharNo: new FormControl(''),
     operatorName: new FormControl(''),
+    state: new FormControl(''),
     address: new FormControl(''),
+    district: new FormControl(''),
+    village: new FormControl(''),
+    tehsil: new FormControl(''),
     eBill: new FormControl(''),
     ownerPic: new FormControl(''),
     shopPic: new FormControl('')
@@ -95,6 +99,10 @@ export class RecipientComponent implements OnInit {
         this.recipientform = this.formBuilder.group(
           {
             operatorName: ['', Validators.required],
+            state: ['', Validators.required],
+            district: ['', Validators.required],
+            village: ['', Validators.required],
+            tehsil: ['', Validators.required],
             address: ['', Validators.required],
             eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             shopPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
@@ -149,8 +157,13 @@ export class RecipientComponent implements OnInit {
 
       let formData: any = new FormData()
 
-      formData.append('operatorName', this.recipientform.get('operatorName')?.value)
-      formData.append('address', this.recipientform.get('address')?.value)
+      formData.append('operatorName', this.recipientform.get('operatorName')?.value);
+      formData.append('state', this.recipientform.get('state')?.value);
+      formData.append('district', this.recipientform.get('district')?.value);
+      formData.append('village', this.recipientform.get('state')?.value);
+      formData.append('tehsil', this.recipientform.get('state')?.value);
+      formData.append('pincode', this.recipientform.get('pincode')?.value);
+      formData.append('address', this.recipientform.get('address')?.value);
       if (this.selectedFile) {
         formData.append('eBill', this.selectedFile);
         formData.append('shopPic', this.selectedFile);

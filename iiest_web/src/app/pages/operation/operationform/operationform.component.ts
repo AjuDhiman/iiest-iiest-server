@@ -17,9 +17,11 @@ export class OperationformComponent implements OnInit {
   verifiedStatus: boolean;
   enrolledStatus: boolean;
   attendanceStatus: boolean;
+  attenSecResult: string;
   salesDate: string;
   productType: string;
   conformationText: string;
+  activeTab: string = 'form';
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
 
@@ -66,9 +68,14 @@ export class OperationformComponent implements OnInit {
     this.enrolledStatus = $event;
   }
 
-  // this methord catch attendance status from section which we will pass in Attendance section
+  // this methord catch attendance status from Attendance section which we will pass in Certification section
   getAttendanceStatus($event: boolean){
     this.attendanceStatus = $event;
+  }
+
+  // this methord catch attendance status from Attendance section which we will pass in Certification section
+  getAttenSecResult($event: string){
+    this.attenSecResult = $event;
   }
 
   getUserProductType(){
@@ -89,5 +96,9 @@ export class OperationformComponent implements OnInit {
       default:
         this.productType = ''
     }
+  }
+
+  toogleTabs(tab: string){
+    this.activeTab = tab;
   }
 }

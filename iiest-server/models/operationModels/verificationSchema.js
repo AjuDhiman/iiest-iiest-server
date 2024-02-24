@@ -52,4 +52,40 @@ const fostacVerification = new Schema({
 
 const fostacVerifyModel = mongoose.model('fostac_verification', fostacVerification);
 
-module.exports = fostacVerifyModel;
+const foscosVerification = new Schema({
+    operatorInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
+        required: true
+    },
+    shopInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'recipientdetails',
+        required: true,
+        unique: true
+    },
+    kob: {
+        type: String,
+        required: true
+    }, 
+    foodCategory: {
+        type: Array,
+        required: true
+    },
+    ownershipType: {
+        type: Array,
+        required: true
+    },
+    foodItems: {
+        type: String,
+        required: true
+    },
+    operatorAddress: {
+        type: String,
+        required: true
+    }
+});
+
+const foscosVerifyModel = mongoose.model('foscos_verification', foscosVerification)
+
+module.exports = {fostacVerifyModel, foscosVerifyModel};

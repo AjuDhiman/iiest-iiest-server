@@ -1,11 +1,13 @@
 const fboModel = require("../../models/fboModels/fboSchema");
-const { recipientModel } = require("../../models/fboModels/recipientSchema");
+const { recipientModel, shopModel } = require("../../models/fboModels/recipientSchema");
 const fostacAttendanceModel = require("../../models/operationModels/attenSecSchema");
-const fostacVerifyModel = require("../../models/operationModels/verificationSchema");
+const {fostacVerifyModel, foscosVerifyModel} = require("../../models/operationModels/verificationSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
+const sendDocumentMail = require("../../operations/sendMail");
+const { generateFsms } = require("../../operations/generateDocuments");
 
 exports.fostacVerification = async (req, res) => {
     try {
@@ -52,6 +54,39 @@ exports.fostacVerification = async (req, res) => {
     }
 }
 
+exports.foscosVerification = async(req, res) => {
+    try {
+        let success = false;
+
+        const shopID = req.params.shopid;
+
+        const verifiedData = req.body;
+
+        const {operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, food_items, operator_address, license_category, license_duration, foscos_total, sales_date, sales_person} = verifiedData;
+
+        console.log( req.user._id, shopID,  kob, food_category, ownership_type, food_items)
+
+        const addVerification = await foscosVerifyModel.create({operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address});
+        
+        // const shopInfo = await shopModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+
+        console.log(1);
+
+        if(!addVerification){
+            success = false;
+            res.status(204).json({success})
+        }
+
+        await generateFsms(verifiedData, shopID);
+
+        success = true;
+        res.status(200).json({success});
+
+    } catch(error) {
+
+    }
+}
+
 exports.getFostacVerifiedData = async (req, res) => {
     try {
         let success = false;
@@ -59,6 +94,26 @@ exports.getFostacVerifiedData = async (req, res) => {
         const recipientId = req.params.recipientid;
 
         const verifedData = await fostacVerifyModel.findOne({ recipientInfo: recipientId });
+
+        if (verifedData) {
+            success = true;
+            return res.status(200).json({ success, message: 'verified recipient', verifedData });
+        } else {
+            return res.status(204).json({ success, message: 'Recipient is not verified' });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getFoscosVerifiedData = async (req, res) => {
+    try {
+        let success = false;
+
+        const shopId = req.params.shopid;
+
+        const verifedData = await foscosVerifyModel.findOne({ shopInfo: shopId });
 
         if (verifedData) {
             success = true;
@@ -196,33 +251,7 @@ exports.getGenOperData = async (req, res) => {
     }
 }
 
-// exports.updateGenOperData = async (req, res) => {
 
-//     try {
-
-//         let success = false;
-
-//         const recipientId = req.params.recipientid;
-
-//         const { recipient_status, officer_note } = req.body;
-
-//         const operGenSecUpdate = await generalSectionModel.findOneAndUpdate({ recipientInfo: recipientId }, { recipientStatus: recipient_status, officerNote: officer_note });
-
-//         const prevVal = operGenSecUpdate;
-
-//         const currentVal = await generalSectionModel.findOne({_id :operGenSecUpdate._id})
-
-//         await logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Officer Note changed");
-
-//         if (operGenSecUpdate) {
-//             success = true
-//             return res.status(200).json({ success })
-//         }
-
-//     } catch (error) {
-//         return res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// }
 
 function getFormatedDate(date) {
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
@@ -300,16 +329,16 @@ exports.ticketDelivery = async (req, res) => {
 
         const certificateFile = req.file;
 
-        console.log(certificateFile);
-
         const ticket_status = req.body.ticket_status;
 
         if (!certificateFile && ticket_status === 'delivered') {
             success = false;
-            return res.status(401).json({ success, fileErr: true })
+            return res.status(401).json({ success, fileErr: true });
         }
 
-        const ticket = await ticketDeliveryModel.findOne({ recipientInfo: req.params.id });
+        const ticket = await ticketDeliveryModel.findOne({ recipientInfo: req.params.recipientid });
+
+        const verificationData = await fostacVerifyModel.findOne({ recipientInfo: req.params.recipientid });
 
         if (ticket) {
             res.status(401).json({ success, recpErr: true });
@@ -319,6 +348,7 @@ exports.ticketDelivery = async (req, res) => {
 
         if (ticket_status == 'delivered') {
             addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.path });
+            sendDocumentMail(verificationData.email, 'Fostac_Certificate.pdf', `${certificateFile.destination}/${certificateFile.filename}` );
         } else {
             addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status });
         }
@@ -332,7 +362,7 @@ exports.ticketDelivery = async (req, res) => {
             await logAudit(req.user._id, "recipientdetails", req.params.recipientid , prevVal, currentVal, `Ticket marked ${ticket_status}`);
 
             success = true;
-            return res.status(200).json({ success });
+            return res.status(200).json({ success, addTicket });
         }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });

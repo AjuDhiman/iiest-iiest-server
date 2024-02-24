@@ -169,6 +169,25 @@ export interface fostacVerification{
   password:string
 }
 
+export interface foscosVerification {
+  operator_name: string,
+  fbo_name: string,
+  owner_name: string,
+  operator_contact_no: string,
+  email: string,
+  address: string,
+  pincode: string,
+  village: string,
+  tehsil: string,
+  kob: string,
+  food_category: string,
+  license_category: string,
+  license_duration: string,
+  foscos_total: string,
+  sales_date: string,
+  sales_person: string,
+}
+
 export interface fostacEnrollment{
   tentative_training_date:Date,
   fostac_training_date: Date,

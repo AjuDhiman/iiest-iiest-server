@@ -13,6 +13,12 @@ export const clientType = ['General Client', 'Corporate Client'];
 //Payment Mode
 export const paymentMode = ['Cash', 'Pay Page'];
 
+export const ownershipType = [
+   'propraitorship',
+   'partnership',
+   'board of directors'
+]
+
 export const licenceType = {
    'licenceCategory': ['New Licence', 'Renewal', 'Modified'],
    'Duration': ['1', '2', '3', '4', '5']

@@ -21,7 +21,9 @@ export class MultiSelectComponent implements OnChanges {
   @Input()
   placeHolder: string = '';
 
-  @Input() forProducts:boolean=false
+  @Input() forProducts:boolean=false;
+
+  @Input() isDisabled: boolean = false;
 
   @ViewChild('display') display: ElementRef;
 
@@ -35,6 +37,11 @@ export class MultiSelectComponent implements OnChanges {
     if (changes['options'] && changes['options'].currentValue) {
       // 'options' has changed
       this.initializeAll();
+    }
+
+    if (changes['options'] && changes['isDisabled'].currentValue) {
+      // 'isDisabled' has changed
+      
     }
   }
 

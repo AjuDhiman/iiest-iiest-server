@@ -1,19 +1,27 @@
-<form [formGroup]="ceritificationForm" class="row" (submit)="onTicketClose()">
+<form class="row" [formGroup]="ceritificationForm"
+    (submit)="onTicketClose()">
     <div class="d-flex justify-content-between">
 
         <!-- heading and form status -->
         <h6>Certification Section</h6>
-        <div class="status" [ngClass]="resultTextClass">
-            {{resultText}} <fa-icon class="fa-lg fa-regular ml-2" [icon]="resultIcon">
+        <div class="status"
+            [ngClass]="resultTextClass">
+            {{resultText}} 
+            <fa-icon class="fa-lg fa-regular ml-2"
+             [icon]="resultIcon">
             </fa-icon>
         </div>
     </div>
 
     <div class="col-md-3">
-        <label for="ticket_status" class="form-label select-label">Ticket Status</label><sup>*</sup>
-        <select id="ticket_status" [ngClass]="{ 'is-invalid': submitted && certificationform['ticket_status'].errors }"
-            formControlName="ticket_status" [attr.disabled]="ticketClosed" (change)="onTicketStatusChange($event)"
-            class="form-select form-select-sm cursor-pointer">
+        <label for="ticket_status" class="form-label select-label">
+            Ticket Status<sup>*</sup>
+        </label>
+        <select id="ticket_status" class="form-select form-select-sm cursor-pointer"
+            formControlName="ticket_status"
+            [ngClass]="{ 'is-invalid': submitted && certificationform['ticket_status'].errors }"
+            [attr.disabled]="ticketClosed"
+            (change)="onTicketStatusChange($event)">
             <option value="" disabled selected>Select Ticket Status</option>
             <option value="delivered">delivered</option>
             <option *ngIf="projectType === 'Foscos'" value="rejected">Rejected</option>
@@ -28,7 +36,8 @@
     <div class="col-md-3" *ngIf="isUploadVisible">
         <div *ngIf="!ticketClosed;else ticketdelivered">
             <label for="certificate" class="form-label">Upload Cerificate</label><sup>*</sup>
-            <input type="file" placeholder="Upload Certificate" class="form-control form-control-sm"
+            <input type="file" placeholder="Upload Certificate"
+                class="form-control form-control-sm"
                 (change)="onFileSelected($event)" id="certificate"
                 [ngClass]="{ 'is-invalid': submitted && certificationform['certificate'].errors }">
             <div *ngIf="submitted && certificationform['certificate'].errors" class="invalid-feedback">
@@ -36,22 +45,23 @@
             </div>
         </div>
 
-        <ng-template #ticketdelivered> 
+        <ng-template #ticketdelivered>
             <label for="certificate" class="form-label">Fostac Certificate</label>
             <br>
-            <fa-icon data-bs-toggle='tooltip' data-bs-placement='top'
-          title='Fostac Certificate' class="fa-2xl mx-1 cursor-pointer text-primary" style="margin: 7px 7px;" [icon]="faFilePdf" 
-        (click)="showCertificate()"></fa-icon>
-           <fa-icon class="fa-2xl mx-2 cursor-pointer" [icon]="faDownload" title="Download Certificate">
-              
-           </fa-icon>
+            <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' title='Fostac Certificate'
+                class="fa-2xl mx-1 cursor-pointer text-primary" style="margin: 7px 7px;" [icon]="faFilePdf"
+                (click)="showCertificate()">
+            </fa-icon>
+            <!-- <fa-icon class="fa-2xl mx-2 cursor-pointer" [icon]="faDownload" title="Download Certificate"> -->
+
+            <!-- </fa-icon> -->
         </ng-template>
 
     </div>
 
     <div class="row mt-3">
         <div class="col-6">
-            <button type="submit" class="btn btn-sm btn-primary">Close Ticket
+            <button type="submit" class="btn btn-sm btn-primary" [disabled]="isBtnDisble">Close Ticket
             </button>
         </div>
     </div>

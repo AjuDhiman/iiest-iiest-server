@@ -231,7 +231,8 @@
   <div class="col-md-3">
     <label for="email" class="form-label">E-mail</label><sup>*</sup>
     <input type="email" placeholder="E-mail" formControlName="email" class="form-control form-control-sm" id="email"
-      [ngClass]="{ 'is-invalid': verified && verificationform['email'].errors }" [readOnly]="verifiedStatus" [readOnly]="true">
+      [ngClass]="{ 'is-invalid': verified && verificationform['email'].errors }" [readOnly]="verifiedStatus"
+      [readOnly]="true">
     <div *ngIf="verified && verificationform['email'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['email'].errors['required']">E-mail is required</div>
       <div *ngIf="verificationform['email'].errors['email']">E-mail is invalid</div>
@@ -250,33 +251,27 @@
   <div class="col-md-3">
     <label for="pincode" class="form-label">Pincode</label><sup>*</sup>
     <input type="text" placeholder="pincode" formControlName="pincode" class="form-control form-control-sm" id="address"
-      [ngClass]="{ 'is-invalid': verified && verificationform['pincode'].errors }" [readOnly]="true">
+      [ngClass]="{ 'is-invalid': verified && verificationform['pincode'].errors }" >
     <div *ngIf="verified && verificationform['pincode'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['pincode'].errors['required']">Pincode is required</div>
     </div>
   </div>
 
   <div class="col-md-3">
-    <label for="kob" class="form-label select-label">KOB</label><sup>*</sup>
-    <select id="kob" [ngClass]="{ 'is-invalid': verified && verificationform['kob'].errors }" formControlName="kob"
-      class="form-select form-select-sm cursor-pointer" (change)="onKobChange($event)">
-      <option value="" disabled selected>Select Kind of Business</option>
-      <option *ngFor="let kob of kobList" [value]="kob">{{kob}}</option>
-    </select>
-    <div *ngIf="verified && verificationform['kob'].errors" class="invalid-feedback">
-      <div *ngIf="verificationform['kob'].errors['required']">KOB is required</div>
+    <label for="village" class="form-label">Village</label><sup>*</sup>
+    <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm" id="address"
+      [ngClass]="{ 'is-invalid': verified && verificationform['village'].errors }" >
+    <div *ngIf="verified && verificationform['village'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['village'].errors['required']">Village is required</div>
     </div>
   </div>
 
   <div class="col-md-3">
-    <label for="food_category" class="form-label select-label">Food Category</label><sup>*</sup>
-    <select id="food_category" [ngClass]="{ 'is-invalid': verified && verificationform['food_category'].errors }"
-      formControlName="food_category" class="form-select form-select-sm cursor-pointer">
-      <option value="" disabled selected>Select Food Category</option>
-      <option *ngFor="let foodCategory of foodCategoryList" [value]="foodCategory">{{foodCategory}}</option>
-    </select>
-    <div *ngIf="verified && verificationform['food_category'].errors" class="invalid-feedback">
-      <div *ngIf="verificationform['food_category'].errors['required']">Food Category is required</div>
+    <label for="tehsil" class="form-label">Tehsil</label><sup>*</sup>
+    <input type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm" id="address"
+      [ngClass]="{ 'is-invalid': verified && verificationform['tehsil'].errors }" >
+    <div *ngIf="verified && verificationform['tehsil'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['tehsil'].errors['required']">Tehsil is required</div>
     </div>
   </div>
 
@@ -301,9 +296,66 @@
   </div>
 
   <div class="col-md-3">
+    <label for="kob" class="form-label select-label">KOB</label><sup>*</sup>
+    <select id="kob" [ngClass]="{ 'is-invalid': verified && verificationform['kob'].errors }" formControlName="kob"
+      class="form-select form-select-sm cursor-pointer" (change)="onKobChange($event)" [attr.disabled]="verifiedStatus">
+      <option value="" disabled selected>Select the Kind of Business</option>
+      <option *ngFor="let kob of kobList" [value]="kob">{{kob}}</option>
+    </select>
+    <div *ngIf="verified && verificationform['kob'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['kob'].errors['required']">KOB is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <label for="food_category" class="form-label">Food categories<sup>*</sup></label>
+    <app-multi-select #multiSelect 
+      class="cursor-pointer"
+      [options]="foodCategoryList" 
+      [placeHolder]="'Select Food Categories'" 
+      [isDisabled]="verifiedStatus"
+      (selectedArrayChange)="getSelectedFoodcat($event)"></app-multi-select>
+    <div *ngIf="verified && verificationform['food_category'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['food_category'].errors">Food categories are required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="ownership_type" class="form-label select-label">Ownership Type</label><sup>*</sup>
+    <select id="ownership_type" [ngClass]="{ 'is-invalid': verified && verificationform['ownership_type'].errors }" formControlName="ownership_type" [attr.disabled]="verifiedStatus"
+      class="form-select form-select-sm cursor-pointer" (change)="onKobChange($event)">
+      <option value="" disabled selected>Select the Ownership Type</option>
+      <option *ngFor="let type of ownershipType" [value]="type" style="text-transform: capitalize;">{{type}}</option>
+    </select>
+    <div *ngIf="verified && verificationform['ownership_type'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['ownership_type'].errors['required']">Ownership Type is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="food_items" class="form-label">Food Items</label><sup>*</sup>
+    <input type="text" placeholder="Food Items" formControlName="food_items"
+      class="form-control form-control-sm" id="food_items" [readOnly]="verifiedStatus"
+      [ngClass]="{ 'is-invalid': verified && verificationform['food_items'].errors }">
+    <div *ngIf="verified && verificationform['food_items'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['food_items'].errors['required']">Food Items is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="operator_address" class="form-label">Opertaor's Address(same as Aadhar)</label><sup>*</sup>
+    <input type="text" placeholder="Operator's Address" formControlName="operator_address"
+      class="form-control form-control-sm" id="operator_address" [required]="verifiedStatus"
+      [ngClass]="{ 'is-invalid': verified && verificationform['operator_address'].errors }">
+    <div *ngIf="verified && verificationform['operator_address'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['operator_address'].errors['required']">Food Items is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
     <label for="foscos_total" class="form-label">Foscos Total Amount</label><sup>*</sup>
     <input type="number" placeholder="Foscos Total Amount" formControlName="foscos_total"
-      class="form-control form-control-sm" id="officer_name" [readOnly]="true"
+      class="form-control form-control-sm" id="foscos_total" [readOnly]="true"
       [ngClass]="{ 'is-invalid': verified && verificationform['foscos_total'].errors }">
     <div *ngIf="verified && verificationform['foscos_total'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['foscos_total'].errors['required']">Fostac Total is required</div>
