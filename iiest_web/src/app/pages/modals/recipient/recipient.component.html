@@ -29,8 +29,7 @@
             <div *ngIf="recipient['operatorName'].errors['required']">Operator Name is required</div>
           </div>
         </div>
-
-        <div class="col-md-8">
+        <div class="col-md-4">
           <label for="address" class="form-label">Address<sup>*</sup></label>
           <input type="text" placeholder="Address" formControlName="address" class="form-control form-control-sm"
             id="address" [ngClass]="{ 'is-invalid': submitted && recipient['address'].errors }" />
@@ -38,8 +37,42 @@
             <div *ngIf="recipient['address'].errors['required']">Address is required</div>
           </div>
         </div>
-      </div>
-      <div class="row">
+        <div class="col-md-4">
+          <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
+          <input type="number" placeholder="Pincode" formControlName="pincode" class="form-control form-control-sm" id="pincode"
+            [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
+          <div *ngIf="submitted && recipient['pincode'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['pincode'].errors['required']">Pincode is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="village" class="form-label">Village<sup>*</sup></label>
+          <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm" id="village"
+            [ngClass]="{ 'is-invalid': submitted && recipient['village'].errors }" />
+          <div *ngIf="submitted && recipient['village'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['village'].errors['required']">Village is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="tehsil" class="form-label">Tehsil<sup>*</sup></label>
+          <input type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm" id="tehsil"
+            [ngClass]="{ 'is-invalid': submitted && recipient['tehsil'].errors }" />
+          <div *ngIf="submitted && recipient['tehsil'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['tehsil'].errors['required']">Tehsil is required</div>
+          </div>
+        </div>
+        
+        <!-- <div class="col-md-4">
+          <label for="eBill" class="form-label">Aadhar with sign<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Electricity Bill"
+            formControlName="eBill" class="form-control form-control-sm" id="eBill"
+            [ngClass]="{ 'is-invalid': submitted && recipient['eBill'].errors }" />
+          <div *ngIf="submitted && recipient['eBill'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['eBill'].errors['required']">Electricity Bill is required.(jpeg or png)</div>
+            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+              are allowed.</div>
+          </div>
+        </div> -->
         <div class="col-md-4">
           <label for="eBill" class="form-label">Electricity Bill (jpeg or png)<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Electricity Bill"
@@ -47,7 +80,8 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['eBill'].errors }" />
           <div *ngIf="submitted && recipient['eBill'].errors" class="invalid-feedback">
             <div *ngIf="recipient['eBill'].errors['required']">Electricity Bill is required.(jpeg or png)</div>
-            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
+            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+              are allowed.</div>
           </div>
         </div>
         <div class="col-md-4">
@@ -57,17 +91,19 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['shopPic'].errors }" />
           <div *ngIf="submitted && recipient['shopPic'].errors" class="invalid-feedback">
             <div *ngIf="recipient['shopPic'].errors['required']">Shop Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['shopPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
+            <div *ngIf="recipient['shopPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+              are allowed.</div>
           </div>
         </div>
         <div class="col-md-4">
           <label for="ownerPic" class="form-label">Owner's Photo (jpeg or png)<sup>*</sup></label>
-          <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Owner Photo"
-            formControlName="ownerPic" class="form-control form-control-sm" id="ownerPic"
+          <input type="file" (change)="onImageChangeFromFile($event)" placeholder="Owner Photo" formControlName="ownerPic"
+            class="form-control form-control-sm" id="ownerPic"
             [ngClass]="{ 'is-invalid': submitted && recipient['ownerPic'].errors }" />
           <div *ngIf="submitted && recipient['ownerPic'].errors" class="invalid-feedback">
             <div *ngIf="recipient['ownerPic'].errors['required']">Owner Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['ownerPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files are allowed.</div>
+            <div *ngIf="recipient['ownerPic'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+              are allowed.</div>
           </div>
         </div>
       </div>
@@ -135,10 +171,13 @@
 </div>
 
 
-<div class="row g-3 mb-4 mx-2 align-items-center justify-content-between" [ngClass]="recipientCount!==listCount?'':'mt-3'">
+<div class="row g-3 mb-4 mx-2 align-items-center justify-content-between"
+  [ngClass]="recipientCount!==listCount?'':'mt-3'">
   <div class="col-auto">
-    <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">Recipient List <small>({{fboData.fboInfo.fbo_name}})</small></h1>
-    <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">Shop List <small>({{fboData.fboInfo.fbo_name}})</small></h1>
+    <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">Recipient List
+      <small>({{fboData.fboInfo.fbo_name}})</small></h1>
+    <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">Shop List
+      <small>({{fboData.fboInfo.fbo_name}})</small></h1>
   </div>
   <div class="col-auto">
     <div class="page-utilities">
@@ -163,15 +202,6 @@
   </div><!--//col-auto-->
 </div><!--//row-->
 
-<!--   
-    <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-      <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
-      <a class="flex-sm-fill text-sm-center nav-link"  id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
-      <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
-      <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
-  </nav> -->
-
-
 <div class="tab-content mx-3" id="orders-table-tab-content">
   <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
     <div class="app-card app-card-orders-table shadow-sm mb-5">
@@ -188,6 +218,10 @@
               <tr *ngIf="this.serviceType == 'foscos'">
                 <th class="cell">S.No</th>
                 <th class="cell">Operator Name</th>
+                <!-- <th class="cell">State</th>
+                <th class="cell">District</th>
+                <th class="cell">Village</th>
+                <th class="cell">Tehsil</th> -->
                 <th class="cell">Address</th>
                 <th class="cell">Electricity Bill</th>
                 <th class="cell">Shop Photo</th>

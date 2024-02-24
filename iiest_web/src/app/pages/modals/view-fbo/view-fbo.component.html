@@ -99,8 +99,10 @@
                     <div class="row">
                         <div class="col-md-4 title">Invoice</div>
                         <div class="col-md-8 data">
-                            <fa-icon (click)="openInvoiceWindow()" class="fa-2xl text-success cursor-pointer" style="color: #5d6778;"
-                                [icon]="faFile"></fa-icon>
+                            <a class="download-link" [href]="invoice" download="invoice.pdf">
+                                <fa-icon class="fa-2xl text-success cursor-pointer" style="color: #5d6778;"
+                                [icon]="faFile" title="download"></fa-icon>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -118,8 +120,8 @@
             </div> -->
             <div *ngIf="fboData.foscosInfo" class="row border border-1 p-1">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
-                    <div class="product-title">Foscos Details</div> 
-                    <div class="remaining-time">(10 Days Remaining)</div>
+                    <div class="product-title">Foscos Details</div>
+                    <div class="remaining-time">({{remainingTime}} are Remaining)</div>
                 </div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -134,8 +136,8 @@
                         <div class="row">
                             <div class="col-md-6 title">Processing Amount </div>
                             <div class="col-md-6 data">
-                                {{fboData.foscosInfo.foscos_processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
+                                {{fboData.foscosInfo.foscos_processing_amount}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
                             </div>
                         </div>
                     </div>
@@ -168,19 +170,19 @@
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">Water Test Fee</div>
-                            <div class="col-md-6 data">{{fboData.foscosInfo.water_test_fee}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                [icon]="faIndianRupeeSign"></fa-icon></div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.water_test_fee}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></div>
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-3 title">Foscos Total <br><span
-                                style="font-size: x-small; font-weight: normal;">(18%
-                                GST Inc.)</span></div>
-                        <div class="col-md-9 data">
-                            {{fboData.foscosInfo.foscos_total}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                [icon]="faIndianRupeeSign"></fa-icon>
-                        </div>
+                                    style="font-size: x-small; font-weight: normal;">(18%
+                                    GST Inc.)</span></div>
+                            <div class="col-md-9 data">
+                                {{fboData.foscosInfo.foscos_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,8 +204,8 @@
                         <div class="row">
                             <div class="col-md-6 title">Processing Amount </div>
                             <div class="col-md-6 data">
-                                {{fboData.fostacInfo.fostac_processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
+                                {{fboData.fostacInfo.fostac_processing_amount}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
                             </div>
                         </div>
                     </div>
@@ -215,23 +217,23 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">No. of Recipient </div>
                             <div class="col-md-6 data">{{fboData.fostacInfo.recipient_no}}</div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-3 title">Fostac Total<br><span
-                                style="font-size: x-small; font-weight: normal;">(18%
-                                GST Inc.)</span></div>
-                        <div class="col-md-9 data">
-                            {{fboData.fostacInfo.fostac_total}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                [icon]="faIndianRupeeSign"></fa-icon>
-                        </div>
+                                    style="font-size: x-small; font-weight: normal;">(18%
+                                    GST Inc.)</span></div>
+                            <div class="col-md-9 data">
+                                {{fboData.fostacInfo.fostac_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,22 +241,3 @@
         </div>
     </div>
 </div>
-
-
-<!-- Thus modal is for showing Invoice -->
-<div *ngIf="showInvoice" class="e-bill-modal-back-blur">
-    <div class="e-bill">
-      <div class="modal-header bg-secondary">
-        <h6 class="modal-title text-white" id="modal-basic-po">Invoice</h6>
-        <button type="button" class="btn-close btn-close-white" aria-label="Close"
-          (click)="closeInvoiceWindow()"></button>
-      </div>
-      <div class="modal-body e-bill-body">
-        <!-- <a class="download-link" [href]="ebillImage" download="ebill.jpg">
-          <fa-icon class="fa-xl" [icon]="faDownload"></fa-icon>
-        </a> -->
-        <pdf-viewer [src]="invoice" style="width: 700px; height: 400px; object-fit: cover;"></pdf-viewer>
-        
-      </div>
-    </div>
-  </div>

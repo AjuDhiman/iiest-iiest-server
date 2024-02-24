@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification} from '../utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
 import { config } from '../utils/config'
@@ -99,8 +99,8 @@ export class RegisterService {
     return this.http.post<any>(url, areaAllocation).pipe(catchError(this.handleError));
   }
 
-  public uploadCertificate(recpId: string, certificate: any){
-    const url = `${this.url}/ticketdelivery/${recpId}`;
+  public closeTicket(recpId: string, certificate: any){
+    const url = `${this.url}/closeticket/${recpId}`;
     return this.http.post<any>(url, certificate).pipe(catchError(this.handleError));
   }
 
@@ -112,8 +112,16 @@ export class RegisterService {
     ));
   }
 
-  public operationBasicForm(recId: string, formInterface: fostacVerification){
+  public verifyFostac(recId: string, formInterface: fostacVerification){
     const url = `${this.url}/fostacverification/${recId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public verifyFoscos(shopId: string, formInterface: foscosVerification){
+    const url = `${this.url}/foscosverification/${shopId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError

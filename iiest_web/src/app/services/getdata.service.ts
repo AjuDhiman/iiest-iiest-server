@@ -118,6 +118,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getFoscosVerifedData(candidateId: string): Observable<any> {
+    const url = `${this.url}/getfoscosverifieddata/${candidateId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getFostacEnrolledData(verifiedDataId: string): Observable<any> {
     const url = `${this.url}/getfostacenrolleddata/${verifiedDataId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

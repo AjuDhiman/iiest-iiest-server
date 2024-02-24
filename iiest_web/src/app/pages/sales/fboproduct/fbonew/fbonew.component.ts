@@ -189,9 +189,9 @@ export class FbonewComponent implements OnInit {
         state: [this.allocated_state, Validators.required],
         district: [this.allocated_district, Validators.required],
         address: ['', Validators.required],
-        village: [''],
-        tehsil: [''],
-        pincode: [''],
+        village: ['', Validators.required],
+        tehsil: ['', Validators.required],
+        pincode: ['', Validators.required],
         product_name: [[], Validators.required],
         business_type: ['b2c', Validators.required],
         payment_mode: ['', Validators.required],
@@ -441,9 +441,17 @@ export class FbonewComponent implements OnInit {
     if (this.productName.find((item: any) => item === 'Foscos Training')) {
       this.isFoscos = true;
       this.fboForm.addControl('foscos_training', this.foscos_training);
+      this.fboForm.get('village')?.setValidators([Validators.required]);
+      this.fboForm.get('village')?.updateValueAndValidity();
+      this.fboForm.get('tehsil')?.setValidators([Validators.required]);
+      this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
     else {
       this.fboForm.removeControl('foscos_training');
+      this.fboForm.get('village')?.clearValidators();
+      this.fboForm.get('village')?.updateValueAndValidity();
+      this.fboForm.get('tehsil')?.clearValidators();
+      this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
     if (this.productName.find((item: any) => item === 'Hygiene Audit')) {
       this.isHygiene = true;

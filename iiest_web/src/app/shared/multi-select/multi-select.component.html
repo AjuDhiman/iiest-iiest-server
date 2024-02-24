@@ -1,6 +1,6 @@
 <div class="" id="msdd">
     <div class="display py-1 px-0 form-control form-control-sm" #display
-        [ngClass]="{'display-focus': isdropped, 'invalid-display': invalid, 'invalid-display-focus':invalid && isdropped}"
+        [ngClass]="{'display-focus': isdropped, 'invalid-display': invalid, 'invalid-display-focus':invalid && isdropped, 'multiselect-disabled': isDisabled}"
         (click)="onDisplayClick($event) ">
 
         <!-- Place holder -->
@@ -22,9 +22,9 @@
             <path
                 d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
         </svg>
-        <fa-icon class="fa-1x down-icon" [ngClass]="{'rotateUp':isdropped}" [icon]="faAngleDown"></fa-icon>
+        <fa-icon class="fa-1x down-icon" [icon]="faAngleDown"></fa-icon>
     </div>
-    <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped}">
+    <div class="checks form-control px-0 py-0" (click)="onCheckClick($event)" [ngClass]="{'option-dropped': isdropped, 'd-none': isDisabled}">
         <div class="check px-3 disabled" style="height: 25px; font-size: 14px;">-- {{placeHolder}} --</div>
         <div class="check px-3" [ngClass]="{'disabled':i>2 && forProducts}" *ngFor="let obj of all;let i = index" style="height: 25px;" >
             <input [disabled]="i>2 && forProducts" type="checkbox" [(ngModel)]="obj.checked" (click)="onclicked($event,i)" class="myCheckbox"

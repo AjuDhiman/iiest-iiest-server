@@ -31,9 +31,11 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   @Input() enrolledDataId: string = '';
 
   //output event emitters
-  @Output() emitAttenanceStatus: EventEmitter<boolean> = new EventEmitter<boolean>
+  @Output() emitAttenanceStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
 
-  @Output() refreshAuditLog: EventEmitter<void>=new EventEmitter<void>
+  @Output() emitAttenSecResult: EventEmitter<string> = new EventEmitter<string>;
+
+  @Output() refreshAuditLog: EventEmitter<void>=new EventEmitter<void>;
 
   //reactive attendance form
   attendanceForm: FormGroup = new FormGroup({
@@ -77,8 +79,10 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
         this.submittedStatus=true;
         this.refreshAuditLog.emit();
         this.attendeeStatus = this.attendanceForm.value.attendee_status;
+        this.marks = this.attendanceForm.value.attendee_status;
         this.setAttendenceResult();
         this.emitAttenanceStatus.emit(this.submittedStatus);
+        this.emitAttenSecResult.emit(this.resultText);
       }
     })
   }
@@ -105,11 +109,13 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
           this.submittedStatus=true;
           this.setAttendenceResult();
           this.emitAttenanceStatus.emit(this.submittedStatus);
+          this.emitAttenSecResult.emit(this.resultText);
         }
       }
     })
   }
 
+  //methord for setting result related to absent present or trained
   setAttendenceResult(): void{
     if(this.submittedStatus === false){
       this.resultText = 'Not-Trained';

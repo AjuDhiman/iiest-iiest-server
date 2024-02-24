@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCircleCheck, faCircleExclamation,faFileArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -23,17 +23,25 @@ export class DocumentationSectionComponent implements OnInit {
 
   //Filing Reactive form 
   filingForm: FormGroup = new FormGroup({
-    tentative_training_date: new FormControl(''),
-    fostac_training_date: new FormControl(''),
-    roll_no: new FormControl(''),
-  })
+    username: new FormControl(''),
+    password: new FormControl(''),
+    payment_amount: new FormControl(''),
+    payment_recipt: new FormControl(''),
+    payment_date: new FormControl('')
+  });
 
-  constructor(){
+  constructor(private formBuilder: FormBuilder){
 
   }
 
   ngOnInit(): void {
-    
+    this.filingForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+      payment_amount: ['', Validators.required],
+      payment_receipt: ['', Validators.required],
+      payment_date: ['', Validators.required],
+    });
   }
 
   get filingform(): {[key: string] : AbstractControl} {

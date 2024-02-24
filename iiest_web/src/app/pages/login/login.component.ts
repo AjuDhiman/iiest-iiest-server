@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
         next: (res) => { 
           this._registerService.storeToken(res);
           this.activeModal.close();
-          this.route.navigate(['/home']);
+          this.route.navigateByUrl('/home')
         },
         error: (err) => {
           let errorObj = err.error
