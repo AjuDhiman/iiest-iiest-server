@@ -104,10 +104,16 @@
 
                     <div class="col-md-3">
                         <label for="district" class="form-label">District<sup>*</sup></label>
-                        <input id="district" 
+                        <select type="string" placeholder="District" formControlName="district" id="district"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off" 
+                            [attr.disabled]="isExisting?true:null">
+                            <option value="" disabled selected>Select the Pincode</option>
+                            <option *ngFor="let district of allocated_district" [value]="district">{{district}}</option>
+                        </select>
+                        <!-- <input id="district" 
                         [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="true" type="text"
                             formControlName="district" class="form-control form-control-sm" placeholder="District"
-                            [value]="allocated_district" />
+                            [value]="allocated_district" /> -->
                         <div *ngIf="submitted && fbo['district'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['district'].errors['required']">District is required</div>
                         </div>

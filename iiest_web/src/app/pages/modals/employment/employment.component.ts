@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { stateName } from 'src/app/utils/config'
@@ -35,11 +35,11 @@ export class EmploymentComponent implements OnInit {
   @Input() employee: any;
   @Input() type: any;
 
-  allManagers:any[] = [] 
+  allManagers: any[] = []
 
   areaAllocationForm: FormGroup = new FormGroup({
     state: new FormControl(''),
-    district: new FormControl(''),
+    district: new FormControl([]),
     pincodes: new FormControl([])
   });
 
@@ -88,38 +88,38 @@ export class EmploymentComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.registerService.registerArea(this.employee._id, this.areaAllocationForm.value).subscribe({
-      next: (res)=>{
-        if(res.success){
+      next: (res) => {
+        if (res.success) {
           this.toasterService.success('', 'Area Allocated Successfully');
         }
       },
-      error: (err)=>{
+      error: (err) => {
         let errorObj = err.error;
-        if(errorObj.userError){
+        if (errorObj.userError) {
           this.registerService.signout();
-        }else if(errorObj.existingAreaErr){
+        } else if (errorObj.existingAreaErr) {
           this.toasterService.error('', 'Area Already Allocated');
         }
       }
     });
   }
 
-  onManangerSelect($event:any): void{
+  onManangerSelect($event: any): void {
     let manager = this.allManagers.find((item: any) => item._id === $event.target.value);
     this.empWithId = `${manager.name}(${manager.emp_id})`;
   }
 
-  onManagerAssignment(): void{
+  onManagerAssignment(): void {
     this.submitted = true;
     this.registerService.assignManager(this.employee._id, this.reportingManagerForm.value).subscribe({
       next: res => {
         this.toasterService.success('', 'Manager assigned sucessfully');
       },
-      error: (err)=>{
+      error: (err) => {
         let errorObj = err.error;
-        if(errorObj.userError){
+        if (errorObj.userError) {
           this.registerService.signout();
-        }else if(errorObj.existingManagerErr){
+        } else if (errorObj.existingManagerErr) {
           this.toasterService.error('', 'manager Already Assigned');
         }
       }
@@ -135,13 +135,18 @@ export class EmploymentComponent implements OnInit {
     this.districts = [];
     this.pincodes = [];
     this.multiSelect.onReset();
+    let distinctDistrict: any = [];
     this._getdataService.getPincodesData(this.state).subscribe({
       next: (res) => {
         this.pincodesData = res;
+        console.log(this.pincodesData);
         this.pincodesData.forEach((obj: any) => {
-          if (!this.districts.find((item: any) => item.toLowerCase() === obj.District.toLowerCase())) {
-            this.districts.push(obj.District);
+          if (!(this.districts.find((item: any) => item.toLowerCase() === obj.District.toLowerCase()))) {
+            distinctDistrict.push(obj);
           }
+          this.districts = distinctDistrict
+            .filter((item: any) => item.State === this.state)
+            .map((item: any) => item.District);
         })
       },
       error: (err) => {
@@ -153,15 +158,19 @@ export class EmploymentComponent implements OnInit {
     }
     )
   }
-  
+
   onDistrictSelect($event: any): void {
-    this.areaForm['pincodes'].setValue('')
+    this.areaForm['pincodes'].setValue('');
+    this.areaForm['district'].setValue($event);
     this.pincodes = [];
-    this.multiSelect.onReset();
-    this.district = $event.target.value;
-    this.pincodes = this.pincodesData
-      .filter((item: any) => item.State === this.state && item.District === this.district)
-      .map((item: any) => item.Pincode);
+    this.district = $event;
+    $event.forEach((element: any) => {
+      let pincodes = this.pincodesData
+        .filter((item: any) => item.State === this.state && item.District === element)
+        .map((item: any) => item.Pincode);
+
+      this.pincodes.push(...pincodes);
+    });
   }
 
   getPincodes(event: any): void { //used for multi select

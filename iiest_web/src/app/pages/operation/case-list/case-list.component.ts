@@ -122,7 +122,7 @@ export class CaseListComponent implements OnInit {
 
   //method for opening operation form
   collectResData(id: string) {
-    this.router.navigate(['/operationform', id]);
+    this.router.navigate(['caselist/operationform', id]);
   }
 
   filter(): void {

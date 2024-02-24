@@ -5,16 +5,6 @@ import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 import { chartData } from 'src/app/utils/config';
-// import drilldown from 'highcharts/modules/drilldown';
-// import HighchartsMore from 'highcharts/highcharts-more';
-// import HighchartsExporting from 'highcharts/modules/exporting';
-// import HC_exporting from 'highcharts/modules/export-data';
-
-// HighchartsMore(Highcharts);
-// HighchartsExporting(Highcharts);
-// HC_exporting(Highcharts);
-// drilldown(Highcharts);
-
 
 import drilldown from 'highcharts/modules/drilldown';
 // import HighchartsMore from 'highcharts/highcharts-more';
@@ -25,6 +15,16 @@ import drilldown from 'highcharts/modules/drilldown';
 // HighchartsExporting(Highcharts);
 // HC_exporting(Highcharts);
 drilldown(Highcharts);
+
+
+// import '../../../../node_modules/highcharts/modules/scrollbars'
+// import HighchartsMore from 'highcharts/highcharts-more';
+// import HighchartsExporting from 'highcharts/modules/exporting';
+// import HC_exporting from 'highcharts/modules/export-data';
+
+// HighchartsMore(Highcharts);
+// HighchartsExporting(Highcharts);
+// HC_exporting(Highcharts);
 
 @Component({
   selector: 'app-highcharts',
@@ -55,7 +55,7 @@ export class HighchartsComponent implements OnChanges {
 
   isDataAvilable: boolean = true;
 
-  otherChartTypes:any
+  otherChartTypes: any;
 
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
@@ -68,7 +68,7 @@ export class HighchartsComponent implements OnChanges {
       this.selectedChartType = this.chartData.chartType;
       if (changes && changes['chartData']) {
         this.plotChart();
-        this.otherChartTypes=this.chartData.otherChartTypeOptions;
+        this.otherChartTypes = this.chartData.otherChartTypeOptions;
       }
     }
   }
@@ -78,6 +78,11 @@ export class HighchartsComponent implements OnChanges {
     this.chart = {
       chart: {
         type: 'column',
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+        // spacingTop: 10,
+        // spacingLeft: 10,
+        // spacingRight: 10,
       },
       title: {
         text: undefined
@@ -97,11 +102,12 @@ export class HighchartsComponent implements OnChanges {
           enabled: true
         },
         categories: this.categories,
-        tickLength: 0
+        // min: 2,
+        // max: 6,
       },
       yAxis: {
         title: {
-          // text: this.yaxixTitle,
+          text: this.chartData.yAxisTitle
         }
       },
       plotOptions: {
@@ -145,7 +151,22 @@ export class HighchartsComponent implements OnChanges {
             }
           }
         }
-      ]
+      ],
+      // scrollbar: {
+      //   enabled: true,
+      //   barBackgroundColor: 'gray',
+      //   barBorderRadius: 7,
+      //   barBorderWidth: 0,
+      //   buttonBackgroundColor: 'gray',
+      //   buttonBorderWidth: 0,
+      //   buttonArrowColor: 'yellow',
+      //   buttonBorderRadius: 7,
+      //   rifleColor: 'yellow',
+      //   trackBackgroundColor: 'white',
+      //   trackBorderWidth: 1,
+      //   trackBorderColor: 'silver',
+      //   trackBorderRadius: 7
+      // }
     }
   }
 
@@ -153,50 +174,46 @@ export class HighchartsComponent implements OnChanges {
   plotDrillDownChart() {
     this.chart = {
       chart: {
-        type: 'column'
+        type: 'column',
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+        // spacingTop: 10,
+        // spacingLeft: 10,
+        // spacingRight: 10,
       },
       title: {
-        text: 'Main Chart'
+        text: undefined
+      },
+      credits: {
+        enabled: false
       },
       xAxis: {
         type: 'category'
       },
       yAxis: {
         title: {
-          text: 'Values'
+          text: this.chartData.yAxisTitle
         }
       },
       series: [{
         type: 'column',
-        name: 'Main',
-        data: [{
-          name: 'Category 1',
-          y: 100,
-          drilldown: 'category1'
-        }, {
-          name: 'Category 2',
-          y: 200,
-          drilldown: 'category2'
-        }]
+        name: this.chartData.seriesName,
+        data: Object.keys(this.chartData.data).map(key => ({
+          name: key,
+          y: this.chartData.data[key],
+          drilldown: key,
+        }))
       }],
       drilldown: {
-        series: [{
-          type: 'column',
-          id: 'category1',
-          name: 'Category 1',
-          data: [
-            ['Subcategory 1.1', 50],
-            ['Subcategory 1.2', 50]
-          ]
-        }, {
-          type: 'column',
-          id: 'category2',
-          name: 'Category 2',
-          data: [
-            ['Subcategory 2.1', 100],
-            ['Subcategory 2.2', 100]
-          ]
-        }]
+        breadcrumbs: {
+          position: {
+            align: 'right',
+            verticalAlign: 'top',
+            x: 13,
+            y: -48
+          }
+        },
+        series: this.chartData.drillData
       }
     };
   }
@@ -204,6 +221,13 @@ export class HighchartsComponent implements OnChanges {
   // -------Line Chart Function---------
   plotLineChart() {
     this.chart = {
+      chart: {
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+        // spacingTop: 10,
+        // spacingLeft: 10,
+        // spacingRight: 10,
+      },
       title: {
         text: undefined
       },
@@ -215,7 +239,7 @@ export class HighchartsComponent implements OnChanges {
       },
       yAxis: {
         title: {
-          // text: this.yaxixTitle,
+          text: this.chartData.yAxisTitle
         },
         min: 0
       },
@@ -256,6 +280,13 @@ export class HighchartsComponent implements OnChanges {
   // -------Pie Chart Function---------
   plotPieChart() {
     this.chart = {
+      chart: {
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+        // spacingTop: 10,
+        // spacingLeft: 10,
+        // spacingRight: 10,
+      },
       title: {
         text: undefined
       },
@@ -272,6 +303,11 @@ export class HighchartsComponent implements OnChanges {
           },
           showInLegend: true,
         },
+      },
+      yAxis: {
+        title: {
+          text: null
+        }
       },
       series: [
         {
@@ -307,9 +343,13 @@ export class HighchartsComponent implements OnChanges {
   // ---------Area Chart Function---------
   plotAreaChart() {
     this.chart = {
-      // title: {
-      //   text: this.chartData.chartTitle,
-      // },
+      chart: {
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+        // spacingTop: 10,
+        // spacingLeft: 10,
+        // spacingRight: 10,
+      },
       credits: {
         enabled: false,
       },
@@ -318,7 +358,7 @@ export class HighchartsComponent implements OnChanges {
       },
       yAxis: {
         title: {
-          // text: this.yaxixTitle,
+          text: this.chartData.yAxisTitle
         },
       },
       plotOptions: {
@@ -356,8 +396,9 @@ export class HighchartsComponent implements OnChanges {
   }
 
   ChangeInterval(event: any): void {
+    console.log(event);
     this.intervalType = event.target.value;
-    // if (this.chart.lang) this.chart.lang.noData = `<div>No data avilable </div> this ${this.intervalType}`;
+    console.log(this.intervalType);
     this.plotChart();
   }
 
@@ -384,8 +425,8 @@ export class HighchartsComponent implements OnChanges {
     } else {
       this.categories = Object.keys(this.chartData.data);
       this.values = Object.values(this.chartData.data);
-      console.log(this.values);
     }
+
     if (this.values.every(value => value === 0)) {
       this.values = [];
       this.isDataAvilable = false;
@@ -396,16 +437,17 @@ export class HighchartsComponent implements OnChanges {
 
     switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
-        // case "column": this.plotDrillDownChart();
         break;
       case "line": this.plotLineChart();
         break;
       case "pie": this.plotPieChart();
         break;
       case "area": this.plotAreaChart();
+        break;
+      case "drilldown": this.plotDrillDownChart();
+        break;
+      // default: this.plotColumnChart();
     }
-
-    console.log(this.chart.lang);
   }
 
   // onWindowResize($event:WindowEventHandlers){
@@ -413,6 +455,7 @@ export class HighchartsComponent implements OnChanges {
   // }
 
   formatIntervalType(type: string): string {
+    console.log(type);
     switch (type) {
       case 'halfYearly':
         return 'this Half Year'

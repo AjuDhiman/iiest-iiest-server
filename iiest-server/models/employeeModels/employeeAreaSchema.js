@@ -12,7 +12,7 @@ const areaAllocationSchema = new Schema({
         required: true,
     },
     district: {
-        type: String, 
+        type: [String], 
         required: true
     },
     pincodes: {

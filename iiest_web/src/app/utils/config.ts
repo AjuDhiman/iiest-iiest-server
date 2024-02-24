@@ -129,7 +129,7 @@ export const HrRoles = [
 //    { date: '2024-01-26T08:12:11.000Z', name: 'republic day' }
 // ]
 
-export const ourHolidays:Array<{date:string, name:string}> = [
+export const ourHolidays: Array<{ date: string, name: string }> = [
    { date: '2024-01-25', name: 'public holiday' },
    { date: '2024-01-26', name: 'republic day' },
    { date: '2024-01-30', name: 'republic day' },
@@ -139,26 +139,30 @@ export const ourHolidays:Array<{date:string, name:string}> = [
    { date: '2024-02-03', name: 'republic day' }
 ]
 
-export class chartData{
+export class chartData {
    chartType: string;
    department: string;
-   chartTitle:string;
+   chartTitle: string;
    seriesName: string;
+   yAxisTitle: string;
    data: any;
-   showIntervalSelection:boolean;
+   drillData: any;
+   showIntervalSelection: boolean;
    otherChartTypeOptions: string[];
 
-   constructor(chartType:string = 'column', department:string ,chartTitle:string,seriesName: string,data: {},showIntervalSelection= false, otherChartTypeOptions: string[] = []){
-      this.chartType=chartType;
-      this.department=department;
-      this.chartTitle=chartTitle;
-      this.seriesName=seriesName;
-      this.data=data;
-      this.showIntervalSelection=showIntervalSelection;
-      this.otherChartTypeOptions=otherChartTypeOptions;
+   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: {}, drillData: any, showIntervalSelection = false, otherChartTypeOptions: string[] = []) {
+      this.chartType = chartType;
+      this.department = department;
+      this.chartTitle = chartTitle;
+      this.seriesName = seriesName;
+      this.yAxisTitle = yAxisTitle;
+      this.data = data;
+      this.drillData = drillData;
+      this.showIntervalSelection = showIntervalSelection;
+      this.otherChartTypeOptions = otherChartTypeOptions;
    }
 }
 
-export const days:string[] = [ 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
+export const days: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
 
-export const months:string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+export const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
