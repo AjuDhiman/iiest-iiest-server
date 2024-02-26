@@ -5,6 +5,7 @@ const { addRecipient, addShop, recipientsList, shopsList, showBill } = require('
 const { existingFboCash, existingFboPayReturn, existingFboPayPage } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
+const { foscosDocuments } = require('../config/storage');
 
 const eBillStorage = multer.memoryStorage()
 const eBillUpload = multer({storage: eBillStorage});
@@ -21,7 +22,7 @@ router.delete('/deleteFbo/:id', authMiddleware, deleteFbo); //Router for deletin
 router.put('/editFbo/:id', authMiddleware, editFbo); //Router for editing FBO data
 router.get('/fbogeneraldata', authMiddleware, fboFormData); //Router for general FBO form data
 router.get('/getproductdata', authMiddleware, getProductData); //Router for product data
-router.post('/fbo/addshop/:id', authMiddleware, eBillUpload.single('eBill'), addShop); //Router for adding shop data
+router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'eBill', maxCount: 1 }, { name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}]), addShop); //Router for adding shop data
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);

@@ -48,13 +48,15 @@
         <ng-template #ticketdelivered>
             <label for="certificate" class="form-label">Fostac Certificate</label>
             <br>
-            <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' title='Fostac Certificate'
+            <!-- <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' title='Fostac Certificate'
                 class="fa-2xl mx-1 cursor-pointer text-primary" style="margin: 7px 7px;" [icon]="faFilePdf"
                 (click)="showCertificate()">
-            </fa-icon>
-            <!-- <fa-icon class="fa-2xl mx-2 cursor-pointer" [icon]="faDownload" title="Download Certificate"> -->
+            </fa-icon> -->
+           
+                <a [href]="'http://localhost:3000/' + src" download="fostac_certificate.pdf" target="_blank">
+                    <fa-icon class="fa-2xl mx-2 text-primary cursor-pointer" [icon]="faFilePdf" title="Download Certificate"></fa-icon>
+                </a>
 
-            <!-- </fa-icon> -->
         </ng-template>
 
     </div>

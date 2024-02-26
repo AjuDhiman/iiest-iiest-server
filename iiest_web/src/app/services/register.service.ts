@@ -48,7 +48,7 @@ export class RegisterService {
       ));
   }
 
-  public addFboShop(objId: string, addFboShop: fboShop[]): Observable<any> {
+  public addFboShop(objId: string, addFboShop: any): Observable<any> {
     const url = `${this.url}/fbo/addshop/${objId}`
     return this.http.post<any>(url, addFboShop).pipe(
       catchError(

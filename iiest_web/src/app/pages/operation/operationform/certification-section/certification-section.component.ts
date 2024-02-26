@@ -86,7 +86,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['attenSecResult']) {
-      this.setCertificateResult(changes['attenSecResult'].currentValue);
+      this.setCertificateResult(this.ceritificationForm.value.ticket_status);
     }
   }
 
@@ -156,7 +156,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
 
   // this methord sets the result of certification section
   setCertificateResult(ticketStatus: string): void {
-    console.log(this.attenSecResult);
+    console.log(this.attenSecResult, ticketStatus);
     if (this.attenSecResult) {
       if (this.attenSecResult !== 'Trained') {
         this.resultText = `${this.attenSecResult}`;

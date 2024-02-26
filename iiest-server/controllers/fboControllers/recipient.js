@@ -3,6 +3,7 @@ const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const { logAudit } = require('../generalControllers/auditLogsControllers');
 const generateRecipientInfo = require('../../fbo/generateCredentials');
+const fs = require('fs');
 
 exports.addRecipient = async (req, res) => {
 
@@ -70,13 +71,16 @@ exports.addShop = async(req, res)=>{
     let success = false;
     let billSaved = false;
 
+
     const eBill = req.file;
-    const { operatorName, address } = req.body;
+    const { operatorName, address, pincode, village, tehsil } = req.body;
 
     if(!eBill){
         success = false;
         return res.status(401).json({ success, ebillErr: true })
     }
+
+    return
 
     const eBillName = `${Date.now()}_${eBill.originalname}`;
 

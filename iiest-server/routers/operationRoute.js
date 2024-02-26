@@ -15,7 +15,7 @@ router.post('/fostacverification/:recipientid', authMiddleware, fostacVerificati
 router.post('/foscosverification/:shopid', authMiddleware, foscosVerification);
 router.get('/getkobdata', authMiddleware, getKobData); // route for getting kob heirarchy from general datas in case of foscos
 router.get('/getfostacverifieddata/:recipientid', authMiddleware, getFostacVerifiedData); // route for getting if a person is verifed or not if verified then getting it's data
-router.get('/getfoscosverifieddata/:shopid', getFoscosVerifiedData);
+router.get('/getfoscosverifieddata/:shopid',authMiddleware, getFoscosVerifiedData);
 router.post('/fostacenrollment/:verifieddataid', authMiddleware, fostacEnrollment);
 router.get('/getfostacenrolleddata/:verifieddataid', authMiddleware, getFostacEnrolledData); // route for getting if a person is enrolled or not if enrolled then getting it's data
 router.post('/postopergendata/:recipientid', authMiddleware, postGenOperData);//route for adding data in genral section of operation form

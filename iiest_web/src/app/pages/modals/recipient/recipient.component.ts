@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { RegisterService } from 'src/app/services/register.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { ToastrService } from 'ngx-toastr';
-import { faFileExcel, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faFileExcel, faFile, faDownload, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 import * as XLSX from 'xlsx'
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -17,7 +17,6 @@ import { fboRecipient } from 'src/app/utils/registerinterface';
 export class RecipientComponent implements OnInit {
   @Input() public fboData: any;
   @Input() public serviceType: string;
-  selectedFile: File | null = null;
   fboID: any;
   recipientData: any;
   shopData: any;
@@ -25,11 +24,6 @@ export class RecipientComponent implements OnInit {
   submitted = false;
   isfostac: boolean = false;
   pageNumber: number = 1;
-  faFileExcel = faFileExcel;
-  faFile = faFile;
-  faDownload = faDownload;
-  uploadExcel: boolean = false;
-  excelData: any;
   finalData: any[];
   showEBill: boolean = false;
   ebillImage: string = '';
@@ -37,27 +31,46 @@ export class RecipientComponent implements OnInit {
   recipientCount: number = 0;
   shopsCount: number;
   listCount: number;
+
+  //icons
+  faFileExcel: IconDefinition = faFileExcel;
+  faFile: IconDefinition = faFile;
+  faDownload: IconDefinition = faDownload;
+
+  //variables for File 
+  ebillFile: File;
+  ownerPhotoFile: File;
+  shopPhotoFile: File;
+  aadharFile: File;
+
+  //recipient reactive form this contains intialization of it's form control because we are using this form conditionally
   recipientform: FormGroup = new FormGroup({
+    //form controls recipient
     name: new FormControl(''),
     phoneNo: new FormControl(''),
     aadharNo: new FormControl(''),
+
+    //form controls shops
     operatorName: new FormControl(''),
-    state: new FormControl(''),
     address: new FormControl(''),
-    district: new FormControl(''),
+    pincode: new FormControl(''),
     village: new FormControl(''),
     tehsil: new FormControl(''),
     eBill: new FormControl(''),
-    ownerPic: new FormControl(''),
-    shopPic: new FormControl('')
+    owner_photo: new FormControl(''),
+    shop_photo: new FormControl(''),
+    aadhar_photo: new FormControl('')
   });
-  excelSubmited: boolean = false;
-  recipientform1: FormGroup = new FormGroup({
 
-  });
+
+  //excel related variables and form
+  uploadExcel: boolean = false;
+  excelData: any;
+  excelSubmited: boolean = false;
   excelForm: FormGroup = new FormGroup({
     excel: new FormControl(''),
   });
+
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _registerService: RegisterService,
@@ -66,6 +79,7 @@ export class RecipientComponent implements OnInit {
     private _utilService: UtilitiesService) {
 
   }
+
   ngOnInit(): void {
     if (this.serviceType === 'fostac') {
       this.getSaleRecipientsList(this.fboData._id);
@@ -75,65 +89,31 @@ export class RecipientComponent implements OnInit {
       this.getSaleShopsList(this.fboData._id);
     }
 
-    switch (this.serviceType) {
-      case "fostac":
-        this.isfostac = true;
-        this.recipientform = this.formBuilder.group(
-          {
-            name: ['', Validators.required],
-            phoneNo: ['',
-              [
-                Validators.required,
-                Validators.pattern(/^[0-9]{10}$/)
-              ]],
-            aadharNo: ['',
-              [
-                Validators.required,
-                Validators.pattern(/^[0-9]{12}$/)
-              ]]
-          });
-        this.listCount = this.fboData.fostacInfo.recipient_no;
-        break;
-      case "foscos":
-        this.isfostac = false;
-        this.recipientform = this.formBuilder.group(
-          {
-            operatorName: ['', Validators.required],
-            state: ['', Validators.required],
-            district: ['', Validators.required],
-            village: ['', Validators.required],
-            tehsil: ['', Validators.required],
-            address: ['', Validators.required],
-            eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
-            shopPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
-            ownerPic: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]]
-          });
-        this.listCount = this.fboData.foscosInfo.shops_no;
-        break;
-    }
-    this.excelForm = this.formBuilder.group({
-      excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
-    });
+    this.setFormValidation();
   }
 
   get recipient(): { [key: string]: AbstractControl } {
     return this.recipientform.controls;
   }
-  
+
   get excelform(): { [key: string]: AbstractControl } {
     return this.excelForm.controls;
   }
   //Form Submit Methode
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
 
-    if (this.recipientform.invalid) {
-      return;
-    }
+    // if (this.recipientform.invalid) {
+    //   return;
+    // }
 
     this.fboID = this.fboData._id
 
+    console.log(this.serviceType);
+
     if (this.serviceType === 'fostac') {
+
+      console.log(5);
 
       this._registerService.addFboRecipent(this.fboID, [this.recipientform.value]).subscribe({
         next: (res) => {
@@ -156,20 +136,18 @@ export class RecipientComponent implements OnInit {
     } else if (this.serviceType === 'foscos') {
 
       let formData: any = new FormData()
+      console.log(6);
 
       formData.append('operatorName', this.recipientform.get('operatorName')?.value);
-      formData.append('state', this.recipientform.get('state')?.value);
-      formData.append('district', this.recipientform.get('district')?.value);
-      formData.append('village', this.recipientform.get('state')?.value);
-      formData.append('tehsil', this.recipientform.get('state')?.value);
-      formData.append('pincode', this.recipientform.get('pincode')?.value);
       formData.append('address', this.recipientform.get('address')?.value);
-      if (this.selectedFile) {
-        formData.append('eBill', this.selectedFile);
-        formData.append('shopPic', this.selectedFile);
-        formData.append('ownerPic', this.selectedFile);
-      }
+      formData.append('pincode', this.recipientform.get('pincode')?.value);
+      formData.append('village', this.recipientform.get('village')?.value);
+      formData.append('tehsil', this.recipientform.get('tehsil')?.value);
+      formData.append('eBill', this.ebillFile);
+      formData.append('ownerPhoto', this.ownerPhotoFile);
+      formData.append('shopPhoto', this.shopPhotoFile);
 
+      console.log(1);
       this._registerService.addFboShop(this.fboID, formData).subscribe({
         next: (res) => {
           if (res.success) {
@@ -188,16 +166,32 @@ export class RecipientComponent implements OnInit {
       })
     }
   }
-  closeModal() {
+
+  closeModal(): void {
     this.activeModal.close();
   }
 
   //file type validation
-  onImageChangeFromFile($event: any) {
+  onImageChangeFromFile($event: any, fileType: string) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
-      if (file.type == "image/jpeg" || file.type == "image/jpg") {
-        this.selectedFile = file;
+      console.log(file);
+      if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png") {
+        switch (fileType) {
+          case 'eBill':
+            this.ebillFile = file;
+            break;
+          case 'ownerPhoto':
+            this.ownerPhotoFile = file;
+            break;
+          case 'shopPhoto':
+            this.shopPhotoFile = file;
+            break;
+          case 'aadhar':
+            this.aadharFile = file;
+            break;
+        }
+        console.log(this.ebillFile, this.ownerPhotoFile, this.shopPhotoFile, this.aadharFile);
       }
       else {
         //call validation
@@ -207,7 +201,7 @@ export class RecipientComponent implements OnInit {
     }
   }
 
-  getSaleRecipientsList(saleId: string) {
+  getSaleRecipientsList(saleId: string): void {
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
         if (res.recipientsList.length) {
@@ -219,7 +213,7 @@ export class RecipientComponent implements OnInit {
     })
   }
 
-  getSaleShopsList(saleId: string) {
+  getSaleShopsList(saleId: string): void {
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
         if (res.shopsList.length) {
@@ -314,6 +308,48 @@ export class RecipientComponent implements OnInit {
   onTableDataChange(event: any) {
     this.pageNumber = event;
     // this.filter();
+  }
+
+  setFormValidation(): void {
+    switch (this.serviceType) {
+      case "fostac":
+        this.isfostac = true;
+        this.recipientform = this.formBuilder.group(
+          {
+            name: ['', Validators.required],
+            phoneNo: ['',
+              [
+                Validators.required,
+                Validators.pattern(/^[0-9]{10}$/)
+              ]],
+            aadharNo: ['',
+              [
+                Validators.required,
+                Validators.pattern(/^[0-9]{12}$/)
+              ]]
+          });
+        this.listCount = this.fboData.fostacInfo.recipient_no;
+        break;
+      case "foscos":
+        this.isfostac = false;
+        this.recipientform = this.formBuilder.group(
+          {
+            operatorName: ['', Validators.required],
+            address: ['', Validators.required],
+            pincode: ['', Validators.required],
+            village: ['', Validators.required],
+            tehsil: ['', Validators.required],
+            eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            owner_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            shop_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+          });
+        this.listCount = this.fboData.foscosInfo.shops_no;
+        break;
+    }
+
+    this.excelForm = this.formBuilder.group({
+      excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
+    });
   }
 
   openEBillWindow(id: string) {

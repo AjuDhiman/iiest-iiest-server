@@ -143,9 +143,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   onVerify(): void {
     this.verified = true;
     console.log(this.verificationForm.value);
-    // if (this.verificationForm.invalid) {
-    //   return
-    // }
+    if (this.verificationForm.invalid) {
+      return
+    }
     if(this.productType === 'Fostac'){
       this._registerService.verifyFostac(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
@@ -182,7 +182,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   getMoreCaseInfo(): void {
     this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res) => {
-        console.log(res);
         if(this.productType === 'Fostac'){
           this.emitCustomerId.emit(res.populatedInfo.recipientId);
           this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });

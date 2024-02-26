@@ -4,6 +4,7 @@ const dotenv  = require('dotenv');
 const cors = require('cors');
 const connectToMongo = require('./config/db')
 const session = require('express-session'); 
+const path = require('path');
 
 dotenv.config();
 
@@ -16,6 +17,14 @@ app.use(session({
   saveUninitialized: false,
   resave: true
 }))
+
+// Define the directory where your static files reside next two lines we are using for acessing local storage we will remove them when we use aws
+const fostacDoc = path.join(__dirname, 'documents', 'foscos');
+const foscosDoc = path.join(__dirname, 'documents', 'fostac');
+
+// Serve static files from the public directory
+app.use(express.static(fostacDoc));
+app.use(express.static(foscosDoc));
 
 const config = JSON.parse(process.env.CONFIG);
 const port = config.PORT || 3000;
