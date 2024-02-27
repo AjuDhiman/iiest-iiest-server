@@ -1,7 +1,7 @@
 const express = require('express');
 const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
-const { addRecipient, addShop, recipientsList, shopsList, showBill } = require('../controllers/fboControllers/recipient');
+const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
@@ -23,6 +23,7 @@ router.put('/editFbo/:id', authMiddleware, editFbo); //Router for editing FBO da
 router.get('/fbogeneraldata', authMiddleware, fboFormData); //Router for general FBO form data
 router.get('/getproductdata', authMiddleware, getProductData); //Router for product data
 router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'eBill', maxCount: 1 }, { name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}]), addShop); //Router for adding shop data
+router.post('/fbo/addshopbyexcel/:id', authMiddleware, addShopByExcel); 
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);

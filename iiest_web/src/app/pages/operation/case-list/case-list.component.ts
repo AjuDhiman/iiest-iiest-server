@@ -161,6 +161,7 @@ export class CaseListComponent implements OnInit {
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
+    this.filteredData.sort((a: any, b: any) =>new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime() );
   }
 
 }

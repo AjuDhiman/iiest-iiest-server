@@ -61,23 +61,23 @@ exports.foscosVerification = async(req, res) => {
         const shopID = req.params.shopid;
 
         const verifiedData = req.body;
+        
+        const shopInfo = await shopModel.findOne({_id: shopID}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+
+        const fsmsCertificate = await generateFsms(verifiedData, shopInfo);
+
+        const selfDecOProp = await generateSelfDecOProp(verifiedData, shopInfo);
 
         const {operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, food_items, operator_address, license_category, license_duration, foscos_total, sales_date, sales_person} = verifiedData;
 
-        console.log( req.user._id, shopID,  kob, food_category, ownership_type, food_items)
-
-        const addVerification = await foscosVerifyModel.create({operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address});
+        const addVerification = await foscosVerifyModel.create({operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address, fsmsCertificate: fsmsCertificate});
         
-        // const shopInfo = await shopModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
-
         console.log(1);
 
         if(!addVerification){
             success = false;
             res.status(204).json({success})
         }
-
-        await generateFsms(verifiedData, shopID);
 
         success = true;
         res.status(200).json({success});

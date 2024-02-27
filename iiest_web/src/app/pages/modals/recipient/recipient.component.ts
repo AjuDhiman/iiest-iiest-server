@@ -264,7 +264,7 @@ export class RecipientComponent implements OnInit {
         }
       })
     } else if (this.serviceType === 'foscos') {
-      this._registerService.addFboShop(this.fboID, this.excelData).subscribe({
+      this._registerService.addFboShopByExcel(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');

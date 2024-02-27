@@ -1,5 +1,5 @@
 
-const fsmsTemplate = (verifiedInfo) => {
+const fsmsTemplate = (verifiedInfo, shopInfo) => {
 
   const foodCategories = verifiedInfo.food_category.join(", ");
 
@@ -96,7 +96,7 @@ const fsmsTemplate = (verifiedInfo) => {
         <p>I/ We, <b style="text-transform: capitalize;">${verifiedInfo.operator_name}</b>, as a <span style="text-transform: capitalize;"> ${ownership}</span> of M/s <b style="text-transform: capitalize;">“${verifiedInfo.fbo_name}”</b>, at Shop at <b style="text-transform: capitalize;">${address}</b> hereby declare that :</p>
         <br>
         <ol>
-          <li>I am /we are an applicant for State license under the food safety and standards Act (FSS ACT), 2006.</li>
+          <li>I am /we are an applicant for <span style="text-transform: capitalize;">${shopInfo.salesInfo.foscosInfo.foscos_service_name}</span> license under the food safety and standards Act (FSS ACT), 2006.</li>
           <br>
           <li>The nature of business of my/ our firm is <span style="text-transform: capitalize;">${foodCategories}<span>.</li>
           <br>

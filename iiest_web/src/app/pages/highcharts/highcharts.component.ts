@@ -57,6 +57,10 @@ export class HighchartsComponent implements OnChanges {
 
   otherChartTypes: any;
 
+  drillDownInfo: any = {};
+
+  isDrillDown: boolean = false;
+
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
 

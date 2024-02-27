@@ -56,6 +56,14 @@ export class RegisterService {
       ));
   }
 
+  public addFboShopByExcel(objId: string, addFboShop: any): Observable<any> {
+    const url = `${this.url}/fbo/addshopbyexcel/${objId}`
+    return this.http.post<any>(url, addFboShop).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   public editEmployeeFiles(editForm: editUserFiles):  Observable<any> {
     const url = `${this.url}/edituserfiles`
     return this.http.post<any>(url, editForm).pipe(

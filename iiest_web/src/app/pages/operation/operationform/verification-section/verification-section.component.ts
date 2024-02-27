@@ -37,6 +37,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Output() emitCustomerId: EventEmitter<string> = new EventEmitter<string>;
 
+  @Output() emitDocuments: EventEmitter<any> = new EventEmitter<any>
+
   @ViewChild(MultiSelectComponent) multiSelect: MultiSelectComponent;
 
   kobData: any;
@@ -112,7 +114,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
       case 'Foscos':
 
-        this.getKobData(); 
+        this.getKobData();
 
         this.verificationForm = this.foscosVerificationForm;
 
@@ -146,7 +148,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     if (this.verificationForm.invalid) {
       return
     }
-    if(this.productType === 'Fostac'){
+    if (this.productType === 'Fostac') {
       this._registerService.verifyFostac(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
           if (res.success) {
@@ -161,12 +163,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this._toastrService.error(err.messsage, 'Can\'t Verify');
         }
       })
-    } else if(this.productType === 'Foscos') {
+    } else if (this.productType === 'Foscos') {
       console.log('works');
       this._registerService.verifyFoscos(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
           console.log(this.verificationForm);
-          if(res.success){
+          if (res.success) {
             // this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
@@ -182,7 +184,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   getMoreCaseInfo(): void {
     this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res) => {
-        if(this.productType === 'Fostac'){
+        if (this.productType === 'Fostac') {
           this.emitCustomerId.emit(res.populatedInfo.recipientId);
           this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
@@ -194,9 +196,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
           this.emitSalesDate.emit(res.populatedInfo.salesInfo.createdAt);
-        } else if(this.productType === 'Foscos') {
-          this.verificationForm.patchValue({ operator_name: res.populatedInfo.operatorName});
-          this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name});
+        } else if (this.productType === 'Foscos') {
+          this.verificationForm.patchValue({ operator_name: res.populatedInfo.operatorName });
+          this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
           this.verificationForm.patchValue({ operator_contact_no: res.populatedInfo.salesInfo.fboInfo.owner_contact });
           this.verificationForm.patchValue({ email: res.populatedInfo.salesInfo.fboInfo.email });
@@ -206,6 +208,20 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ foscos_total: res.populatedInfo.salesInfo.foscosInfo.foscos_total });
           this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
+          this.emitDocuments.emit([
+            {
+              name: 'Electricity Bill',
+              src: res.populatedInfo.eBillImage
+            },
+            {
+              name: 'Owner Photo',
+              src: res.populatedInfo.ownerPhoto
+            },
+            {
+              name: 'Shop Photo',
+              src: res.populatedInfo.shopPhoto
+            }
+          ]);
         }
       }
     });
@@ -236,7 +252,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     this._getDataService.getFoscosVerifedData(this.candidateId).subscribe({
       next: res => {
         console.log(res);
-        if(res){
+        if (res) {
           this.verifiedStatus = true;
           this.multiSelect.isDisplayEmpty = false;
           this.multiSelect.selected = res.verifedData.foodCategory;
@@ -246,7 +262,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
           this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
           this.verificationForm.patchValue({ food_items: res.verifedData.foodItems });
-        }  else {
+          this.emitDocuments.emit([{
+            name: 'FSMS Cerificate',
+            src: res.verifedData.fsmsCertificate
+          }]);
+        } else {
           this.verifiedStatus = false;
         }
       }
@@ -262,22 +282,22 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     return formattedDate;
   }
 
-  getKobData(): void{
+  getKobData(): void {
     this._getDataService.getKobData().subscribe({
       next: res => {
         this.kobData = res;
-        this.kobList = this.kobData.map((elem:any) => elem.name);
+        this.kobList = this.kobData.map((elem: any) => elem.name);
       }
     })
   }
 
   //this methord sets food catgories on the basis of kob selection
-  onKobChange($event:any): void{
-    this.verificationForm.patchValue({ food_category: ""});
-    this.kobData.forEach((kob:any) => {
+  onKobChange($event: any): void {
+    this.verificationForm.patchValue({ food_category: "" });
+    this.kobData.forEach((kob: any) => {
       console.log($event.target.value);
       console.log(kob.name);
-      if(kob.name === $event.target.value) {
+      if (kob.name === $event.target.value) {
         this.foodCategoryList = kob.food_category;
       }
     })
@@ -287,7 +307,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     this.verificationForm.patchValue({ food_category: $event });
   }
 
-  setFormValidation(): void{
+  setFormValidation(): void {
     this.fostacVerificationForm = this.formBuilder.group({
       recipient_name: ['', Validators.required],
       fbo_name: ['', Validators.required],

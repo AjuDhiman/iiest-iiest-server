@@ -207,11 +207,8 @@
               <tr *ngIf="this.serviceType == 'foscos'">
                 <th class="cell">S.No</th>
                 <th class="cell">Operator Name</th>
-                <!-- <th class="cell">State</th>
-                <th class="cell">District</th>
-                <th class="cell">Village</th>
-                <th class="cell">Tehsil</th> -->
                 <th class="cell">Address</th>
+                <th class="cell">Pincode</th>
                 <th class="cell">Electricity Bill</th>
                 <th class="cell">Shop Photo</th>
                 <th class="cell">Owner Photo</th>
@@ -233,21 +230,46 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
                 <td *ngIf="!isfostac" class="cell">
                   <span class="truncate">
-                    <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon>
+                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
+                    <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                    </a>
                     <label for="uploadEbill"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" id="uploadEbill" hidden>
                   </span>
-                  <a *ngIf="shops.eBillImage" class="download-link truncate" [href]="ebillImage" download="ebill.jpg">
-                    <fa-icon class="fa-2xl cursor-pointer" [icon]="faDownload"></fa-icon>
-                  </a>
                 </td>
-                <td></td>
-                <td></td>
+
+                <td>
+                  <span class="truncate">
+                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
+                    <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                    </a>
+                    <label for="uploadOwnerPhoto"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-2xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" id="uploadOwnerPhoto" hidden>
+                  </span>
+                </td>
+
+                <td>
+                  <span class="truncate">
+                    <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
+                    <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                    </a>
+                    <label for="uploadShopPhoto"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-2xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" id="uploadShopPhoto" hidden>
+                  </span>
+                </td>
               </tr>
             </tbody>
             <tbody

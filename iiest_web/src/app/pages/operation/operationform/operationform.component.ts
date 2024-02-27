@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralSectionComponent } from './general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
+import { IconDefinition, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operationform',
@@ -22,6 +23,8 @@ export class OperationformComponent implements OnInit {
   productType: string;
   conformationText: string;
   activeTab: string = 'form';
+  faFilePdf: IconDefinition = faFilePdf;
+  documents: {name: string, src: string}[] = [];
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
 
@@ -56,7 +59,6 @@ export class OperationformComponent implements OnInit {
   getVerifiedStatus($event: boolean) {
     this.verifiedStatus = $event
   }
-
   
   // this methord catch enrollment Id from Enrollment section which we will pass in Attendance section
   getEnrolledDataId($event: string) {
@@ -76,6 +78,11 @@ export class OperationformComponent implements OnInit {
   // this methord catch attendance status from Attendance section which we will pass in Certification section
   getAttenSecResult($event: string){
     this.attenSecResult = $event;
+  }
+
+  getDocuments($event:any): void{
+    this.documents =[...this.documents, ...$event];
+    console.log(this.documents);
   }
 
   getUserProductType(){

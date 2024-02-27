@@ -48,11 +48,30 @@ const shopSchema = new Schema({
     address: {
         type: String, 
         required: true,
-        // unique: true
+    },
+    pincode: {
+        type: Number,
+        required: true,
+    },
+    village: {
+        type: String,
+        required: true
+    },
+    tehsil: {
+        type: String,
+        required: true
     },
     eBillImage: {
-    type: mongoose.Schema.Types.ObjectId
-    // unique: true
+        type: String,
+        required: true
+    },
+    ownerPhoto: {
+        type: String,
+        required: true
+    },
+    shopPhoto: {
+        type: String,
+        required: true,
     }
 }, {timestamps: true})
 

@@ -83,6 +83,10 @@ const foscosVerification = new Schema({
     operatorAddress: {
         type: String,
         required: true
+    }, 
+    fsmsCertificate: {
+        type: String,
+        required: true
     }
 });
 
