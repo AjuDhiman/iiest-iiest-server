@@ -63,15 +63,21 @@ const shopSchema = new Schema({
     },
     eBillImage: {
         type: String,
-        required: true
+        // required: function () { 
+        //     return (!this.byExcel);
+        // }
     },
     ownerPhoto: {
         type: String,
-        required: true
+        // required: function () { 
+        //     return (!this.byExcel);
+        // }
     },
     shopPhoto: {
         type: String,
-        required: true,
+        // required: function () { 
+        //     return (!this.byExcel);
+        // },
     }
 }, {timestamps: true})
 
