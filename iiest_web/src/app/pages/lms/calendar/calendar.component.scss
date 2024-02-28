@@ -1,29 +1,28 @@
 .calendar {
-    font-family: Arial, sans-serif;
-    border: 1px solid #ccc;
-    width: 300px;
-    padding: 10px;
-  }
-  
-  .calendar table {
-    width: 100%;
-  }
-  
-  .calendar th, .calendar td {
-    text-align: center;
-    padding: 5px;
-  }
-  
-  .calendar .today {
-    background-color: #e0e0e0;
-  }
-  
-  .calendar .selected {
-    background-color: #ffcc80;
-  }
-  
-  .calendar .header {
-    display: flex;
-    justify-content: space-between;
-  }
-  
+  font-family: Arial, sans-serif;
+  border: 1px solid #ccc;
+  width: 300px;
+  padding: 10px;
+}
+
+.calendar table {
+  width: 100%;
+}
+
+.calendar th, .calendar td {
+  text-align: center;
+  padding: 5px;
+}
+
+.calendar .today {
+  background-color: #e0e0e0;
+}
+
+.calendar .selected {
+  background-color: #ffcc80;
+}
+
+.calendar .header {
+  display: flex;
+  justify-content: space-between;
+}

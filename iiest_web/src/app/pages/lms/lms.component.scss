@@ -1,36 +1,162 @@
 .weekDays{
-    color: orange;
-    font-weight: 400;
-    cursor: pointer;
+  color: orange;
+  font-weight: 400;
+  cursor: pointer;
 
 }
 .date{
-    
-    font-weight: 400;
-    cursor: pointer;
-    line-height: 42px;
-    width:45px;
-    height:45px;
+  font-weight: 400;
+  cursor: pointer;
+  line-height: 42px;
+  width:45px;
+  height:45px;
 }
 
 .calendar {
-    display: flex;
-    flex-direction: column;
-  }
+  display: flex;
+  flex-direction: column;
+}
+
+.week {
+  display: flex;
   
-  .week {
-    display: flex;
-    
-  }
-  
-  .day {
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    padding: 7px;
-    cursor: pointer;
-  }
-  .current {
-    background-color: lightblue;
-  }
-  
+}
+
+.day {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  padding: 7px;
+  cursor: pointer;
+}
+.current {
+  background-color: lightblue;
+}
+.holiday-date {
+  font-size:normal; 
+  font-weight: bold; 
+}
+
+.bordered-content {
+ display: flex;
+align-items: center;
+width: 150px; 
+}
+.bordered-content button {
+background-color: transparent;
+border: none;
+}
+.month {
+flex-grow: 1;
+text-align: center;
+}
+.leftarrow{
+background : url(../../../assets/images/arrow.png);
+background-size: contain; 
+width: 20px; 
+height: 20px; 
+margin-right:10px;
+transform: rotate(180deg);
+}
+.rightarrow {
+background: url(../../../assets/images/arrow.png); 
+background-size: contain; 
+width: 20px; 
+height: 20px; 
+margin-left:10px;
+}
+.day.selected {
+background-color: green;
+color: white;
+cursor: pointer;
+}
+
+.day.unselected {
+background-color: transparent;
+color: inherit;
+cursor: pointer;
+
+}
+.clickSubmit{
+  text-align:right;
+  float:left; 
+}
+
+.leave_area{
+  width: 48%;
+float: left;
+margin: 7px 1%;
+padding: 0px;
+background-color: #eeee;
+}
+
+
+.half_leave{
+  width: 10%;
+  float:left;
+  border-right:2px solid #ebebeb;
+  text-align: center;
+  height: 100%;
+  background-color: #eeee
+
+}
+.leave_dayDate{
+  width: 30%;
+  float:left;
+  border-right:2px solid #ebebeb;
+  text-align: center;
+  height: 100%;
+ // font-weight: bold;
+  background-color: #eeee
+}
+.leave_dropdown{
+width: 50%;
+float:left;
+
+height: 100%;
+background-color: #eeee
+}
+.leave_cancel{
+  width: 10%;
+  float:left;
+  border-right:1px solid #ebebeb;
+  text-align: center;
+  height: 100%;
+  background-color: #eeee
+}
+.leave_area .border {
+  margin-right: 5px; 
+}
+.leave_area .border {
+  margin-right: 10px; 
+}
+.fa-close {
+  font-size: 1.9em; 
+}
+.fa-Sun{
+  font-size: 1.7em; 
+}
+.fa-lessThan{
+  font-size: 0.97rem;
+}
+.myLeave_image{
+  background-image: url(../../../assets/images/My_leave.png);
+  background-size: contain;   
+width: 50px; 
+height: 60px;
+filter: invert(37%) sepia(92%) saturate(3896%) hue-rotate(199deg) brightness(101%) contrast(107%);
+}
+.annualleave_image{
+  background-image: url(../../../assets/images/Annual_leave.png);
+  background-size:contain;   
+  width: 53px; 
+  height: 53px;
+  filter: invert(50%) sepia(82%) saturate(555%) hue-rotate(141deg) brightness(90%) contrast(82%); 
+}
+.RH_image{
+  background-image: url(../../../assets/images/restrictedleave.png);
+  background-size:contain;   
+  width: 52px; 
+  height: 60px;
+  filter: invert(54%) sepia(89%) saturate(388%) hue-rotate(82deg) brightness(82%) contrast(93%);
+}
