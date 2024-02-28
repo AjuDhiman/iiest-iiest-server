@@ -206,8 +206,15 @@ exports.empHiringData = async (req, res) => {
             },
             {
                 $group: {
-                    _id: { department: '$department' },
-                    count: { $sum: 1 }
+                    _id: '$department',
+                    // name: "$_id.department",
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    name: "$_id",
+                    value: "$count"
                 }
             }
         ])
@@ -219,7 +226,7 @@ exports.empHiringData = async (req, res) => {
 
         success = true;
 
-        return res.status(200).json({ success, employeeHiringData })
+        return res.status(200).json( employeeHiringData );
 
     } catch (error) {
         console.error(error);
@@ -248,6 +255,343 @@ exports.getEmployeeUnderManager = async (req, res) => {
 
     } catch (error) {
         console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+//api for product sales highchart
+exports.getProductSaleData = async (req, res) => {
+    try {
+
+        let productSaleData;
+
+        if (req.user.designation === 'Director') {
+
+            productSaleData = await salesModel.aggregate([
+                {
+                    $project: {
+                        name: { $cond: [{ $ifNull: ["$fostacInfo", false] }, "Fostac", "Foscos"] },
+                        service_name: { $ifNull: ["$fostacInfo.fostac_service_name", "$foscosInfo.foscos_service_name"] }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { name: "$name", category: "$service_name" },
+                        value: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.name",
+                        value: { $sum: "$value" },
+                        categories: {
+                            $push: {
+                                name: "$_id.category",
+                                value: "$value"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: "$_id",
+                        value: 1,
+                        categories: 1
+                    }
+                }
+            ]);
+
+        } else {
+            productSaleData = await salesModel.aggregate([
+                {
+                    $match: { "employeeInfo": req.user._id } // Filter based on the employeeInfo property
+                },
+                {
+                    $project: {
+                        name: { $cond: [{ $ifNull: ["$fostacInfo", false] }, "Fostac", "Foscos"] },
+                        service_name: { $ifNull: ["$fostacInfo.fostac_service_name", "$foscosInfo.foscos_service_name"] }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { name: "$name", category: "$service_name" },
+                        value: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.name",
+                        value: { $sum: "$value" },
+                        categories: {
+                            $push: {
+                                name: "$_id.category",
+                                value: "$value"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: "$_id",
+                        value: 1,
+                        categories: 1
+                    }
+                }
+            ]);
+        }
+        res.status(200).json(productSaleData);
+
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+//api for sare wise sales high cahrts
+exports.getAreaWiseSalesData = async (req, res) => {
+    try {
+
+        let salesAreaWiseData
+        if(req.user.disegnation === 'Director'){
+            salesAreaWiseData = await salesModel.aggregate([
+                {
+                    $lookup: {
+                        from: "fbo_registers",
+                        localField: "fboInfo",
+                        foreignField: "_id",
+                        as: "fboInfo"
+                    }
+                },
+                {
+                    $group: {
+                        _id: { state: "$fboInfo.state", district: "$fboInfo.district" },
+                        stateCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.state",
+                        stateCount: { $sum: "$stateCount" },
+                        districts: {
+                            $push: {
+                                name: { $arrayElemAt: ["$_id.district", 0] },
+                                value: "$stateCount"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: { $arrayElemAt: ["$_id", 0] },
+                        value: "$stateCount",
+                        categories: "$districts"
+                    }
+                }
+            ]);
+        } else {
+            salesAreaWiseData = await salesModel.aggregate([
+                {
+                    $match: {
+                        "employeeInfo": req.user._id
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "fbo_registers",
+                        localField: "fboInfo",
+                        foreignField: "_id",
+                        as: "fboInfo"
+                    }
+                },
+                {
+                    $group: {
+                        _id: { state: "$fboInfo.state", district: "$fboInfo.district" },
+                        stateCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.state",
+                        stateCount: { $sum: "$stateCount" },
+                        districts: {
+                            $push: {
+                                name: { $arrayElemAt: ["$_id.district", 0] },
+                                value: "$stateCount"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: { $arrayElemAt: ["$_id", 0] },
+                        value: "$stateCount",
+                        categories: "$districts"
+                    }
+                }
+            ]);
+        }
+
+        res.status(200).json(salesAreaWiseData);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+//api for sales by employee highcharts
+exports.getPersonWiseSalesData = async (req, res) => {
+    try {
+
+        let salesPersonWiseData
+        if(req.user.designation == 'Director'){
+            salesPersonWiseData = await salesModel.aggregate([
+                {
+                    $lookup: {
+                        from: "staff_registers",
+                        localField: "employeeInfo",
+                        foreignField: "_id",
+                        as: "employeeInfo"
+                    }
+                },
+                {
+                    $unwind: "$employeeInfo"
+                },
+                {
+                    $group: {
+                        _id: { person: "$employeeInfo.employee_name" },
+                        personCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: "$_id.person",
+                        value: "$personCount",
+                    }
+                }
+            ]);
+        } else {
+            salesPersonWiseData = await salesModel.aggregate([
+                {
+                    $match: {
+                        "employeeInfo": req.user._id
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "staff_registers",
+                        localField: "employeeInfo",
+                        foreignField: "_id",
+                        as: "employeeInfo"
+                    }
+                },
+                {
+                    $unwind: "$employeeInfo"
+                },
+                {
+                    $group: {
+                        _id: { person: "$employeeInfo.employee_name" },
+                        personCount: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: "$_id.person",
+                        value: "$personCount",
+                    }
+                }
+            ]);
+        }
+
+        res.status(200).json(salesPersonWiseData);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+//api for clent type highchart
+exports.getClientTypeSalesData = async (req, res) => {
+    try {
+
+        let clientTypeSalesdata
+        if(req.user.designation === 'Director') {
+            clientTypeSalesdata = await salesModel.aggregate([
+                {
+                    $project: {
+                        client_types: {
+                            $mergeObjects: [
+                                { $cond: { if: { $ifNull: ["$fostacInfo", false] }, then: { fostac_client_type: "$fostacInfo.fostac_client_type" }, else: {} } },
+                                { $cond: { if: { $ifNull: ["$foscosInfo", false] }, then: { foscos_client_type: "$foscosInfo.foscos_client_type" }, else: {} } }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        client_types: { $objectToArray: "$client_types" }
+                    }
+                },
+                {
+                    $unwind: "$client_types"
+                },
+                {
+                    $group: {
+                        _id: "$client_types.v",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        name: "$_id",
+                        value: "$count"
+                    }
+                }
+            ]);    
+        } else {
+            clientTypeSalesdata = await salesModel.aggregate([
+                {
+                    $match: {
+                        "employeeInfo" : req.user._id
+                    }
+                },
+                {
+                    $project: {
+                        client_types: {
+                            $mergeObjects: [
+                                { $cond: { if: { $ifNull: ["$fostacInfo", false] }, then: { fostac_client_type: "$fostacInfo.fostac_client_type" }, else: {} } },
+                                { $cond: { if: { $ifNull: ["$foscosInfo", false] }, then: { foscos_client_type: "$foscosInfo.foscos_client_type" }, else: {} } }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        client_types: { $objectToArray: "$client_types" }
+                    }
+                },
+                {
+                    $unwind: "$client_types"
+                },
+                {
+                    $group: {
+                        _id: "$client_types.v",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        name: "$_id",
+                        value: "$count"
+                    }
+                }
+            ]);    
+        }
+        
+        res.status(200).json(clientTypeSalesdata);
+    } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }

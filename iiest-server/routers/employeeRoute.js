@@ -1,7 +1,7 @@
 const express = require('express');
 const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
-const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager } = require('../controllers/employeeControllers/employeeRecord');
+const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData } = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer')
 
@@ -28,6 +28,10 @@ router.post('/edituserfiles', authMiddleware, employeeFilesUpload.fields([{name:
 router.get('/empcountbydept', authMiddleware, employeeDepartmentCount);
 router.get('/getempsalesprodwise', authMiddleware, empSalesProdWise);
 router.get('/getemphiringdata', authMiddleware, empHiringData);
-router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager)
+router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager);
+router.get('/getproductsaledata',authMiddleware, getProductSaleData);
+router.get('/getareawisesaledata', authMiddleware, getAreaWiseSalesData);
+router.get('/getpersonwisesaledata', authMiddleware, getPersonWiseSalesData);
+router.get('/getclienttypesaledata', authMiddleware, getClientTypeSalesData);
 
 module.exports = router;

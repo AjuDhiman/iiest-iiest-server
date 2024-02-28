@@ -4,8 +4,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
-import { chartData } from 'src/app/utils/config';
-
 import drilldown from 'highcharts/modules/drilldown';
 // import HighchartsMore from 'highcharts/highcharts-more';
 // import HighchartsExporting from 'highcharts/modules/exporting';
@@ -18,13 +16,6 @@ drilldown(Highcharts);
 
 
 // import '../../../../node_modules/highcharts/modules/scrollbars'
-// import HighchartsMore from 'highcharts/highcharts-more';
-// import HighchartsExporting from 'highcharts/modules/exporting';
-// import HC_exporting from 'highcharts/modules/export-data';
-
-// HighchartsMore(Highcharts);
-// HighchartsExporting(Highcharts);
-// HC_exporting(Highcharts);
 
 @Component({
   selector: 'app-highcharts',
@@ -35,9 +26,7 @@ export class HighchartsComponent implements OnChanges {
 
   chart: Highcharts.Options;
 
-  @Input() chartData: chartData;
-
-  // columnColorShade: any = ['#1a9850', '#1a9862', '#1a9874', '#1a9886', '#1a9898', '#1a9910', '#1a9922', '#1a9934', '#1a9946'];
+  @Input() chartData: any = {};
 
   categories: string[];
 
@@ -59,7 +48,11 @@ export class HighchartsComponent implements OnChanges {
 
   drillDownInfo: any = {};
 
-  isDrillDown: boolean = false;
+  drilldownData: any = {};
+
+  defaultChartType: string = '';
+
+  events: any = {};
 
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
@@ -68,12 +61,13 @@ export class HighchartsComponent implements OnChanges {
   parsedUser = JSON.parse(this.user);
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes['chartData'] && this.chartData?.chartType) {
+    if (changes && changes['chartData'] && changes['chartData'].currentValue) {
+      console.log(this.chartData);
       this.selectedChartType = this.chartData.chartType;
-      if (changes && changes['chartData']) {
-        this.plotChart();
-        this.otherChartTypes = this.chartData.otherChartTypeOptions;
-      }
+      console.log(this.selectedChartType);
+      this.defaultChartType = this.chartData.chartType;
+      this.plotChart();
+      // this.otherChartTypes = this.chartData.otherChartTypeOptions;
     }
   }
 
@@ -82,11 +76,7 @@ export class HighchartsComponent implements OnChanges {
     this.chart = {
       chart: {
         type: 'column',
-        // ---------Edit chart spacing---------
         spacingBottom: -5,
-        // spacingTop: 10,
-        // spacingLeft: 10,
-        // spacingRight: 10,
       },
       title: {
         text: undefined
@@ -94,20 +84,8 @@ export class HighchartsComponent implements OnChanges {
       credits: {
         enabled: false
       },
-      xAxis: {
-        labels: {
-          style: {
-            width: 70, // Set a fixed width for the labels
-            overflow: 'hidden', // Hide overflow text
-            textOverflow: 'ellipsis'
-          }
-        },
-        scrollbar: {
-          enabled: true
-        },
-        categories: this.categories,
-        // min: 2,
-        // max: 6,
+     xAxis: {
+        type: 'category'
       },
       yAxis: {
         title: {
@@ -135,27 +113,19 @@ export class HighchartsComponent implements OnChanges {
           name: this.chartData.seriesName,
           type: 'column',
           data: this.values,
-          color: '#128c54',
-          events: {
-            click: (e) => {
-              console.log(e);
-              if (e.point.category === "retail" || e.point.category === "catering") {
-                this.salesCategory = "Fostac";
-              } else if (e.point.category === "registration" || e.point.category === "state") {
-                this.salesCategory = "Foscos";
-              }
-              let chartData = {
-                filterValue: e.point.category,
-                salesCategory: this.salesCategory,
-                userDept: this.parsedUser.department,
-                interval: this.intervalType,
-                chartTitile: this.chartData.chartTitle
-              }
-              this.viewChartData(chartData);
-            }
-          }
+          events: this.events
         }
       ],
+      drilldown: {
+        breadcrumbs: {
+          position: {
+            x: 13,
+            y: -48
+          }
+        },
+        series : this.drilldownData
+        // series: this.chartData.drillData
+      }
       // scrollbar: {
       //   enabled: true,
       //   barBackgroundColor: 'gray',
@@ -211,13 +181,11 @@ export class HighchartsComponent implements OnChanges {
       drilldown: {
         breadcrumbs: {
           position: {
-            align: 'right',
-            verticalAlign: 'top',
             x: 13,
             y: -48
           }
         },
-        series: this.chartData.drillData
+        // series: this.chartData.drillData
       }
     };
   }
@@ -228,9 +196,6 @@ export class HighchartsComponent implements OnChanges {
       chart: {
         // ---------Edit chart spacing---------
         spacingBottom: -5,
-        // spacingTop: 10,
-        // spacingLeft: 10,
-        // spacingRight: 10,
       },
       title: {
         text: undefined
@@ -317,30 +282,11 @@ export class HighchartsComponent implements OnChanges {
         {
           name: 'sale count',
           type: 'pie',
-          data: this.values.map((value: any, index: number) => ({
-            name: this.categories[index],
-            y: value,
-          })),
-          events: {
-            click: (e: any) => {
-              console.log(e);
-              if (e.point.name === "retail" || e.point.name === "catering") {
-                this.salesCategory = "Fostac";
-              } else if (e.point.name === "registration" || e.point.name === "state") {
-                this.salesCategory = "Foscos";
-              }
-              let chartData = {
-                filterValue: e.point.name,
-                salesCategory: this.salesCategory,
-                userDept: this.parsedUser.department,
-                interval: this.intervalType,
-                chartTitile: this.chartData.chartTitle
-              }
-              this.viewChartData(chartData);
-            }
-          }
+          data: this.values,
+          events: this.events
         }
-      ]
+      ],
+      drilldown: this.drilldownData
     };
   }
 
@@ -430,6 +376,7 @@ export class HighchartsComponent implements OnChanges {
       this.categories = Object.keys(this.chartData.data);
       this.values = Object.values(this.chartData.data);
     }
+    this.initializeChartData();
 
     if (this.values.every(value => value === 0)) {
       this.values = [];
@@ -470,5 +417,61 @@ export class HighchartsComponent implements OnChanges {
       default:
         return `this ${type}`
     }
+  }
+
+  initializeChartData() {
+    if (this.chartData.isDrilldown) {
+      // this.categories = this.chartData.data.map((item: any) => item.name);
+      this.values = this.chartData.data.map((item: any) => {
+        return {
+          name: item.name,
+          y: item.value,
+          drilldown: item.name
+        }
+      });
+      this.values = this.values.sort((a:any ,b: any) => a.y - b.y);
+      this.drilldownData = this.chartData.data.map((item: any) => {
+        return {
+          type: 'column',
+          name: item.name,
+          id: item.name,
+          data: item.categories.map((e: any) => [e.name, e.value]),
+          point: {
+            events: {
+              click : this.clickEvent
+            }
+          }
+        }
+      });
+      this.events = {}
+      // this.drilldownData = this.drilldownData.sort((a:any, b:any) => a.name - b.name);
+    } else {
+      this.values = this.chartData.data.map((item: any) => {
+        return {
+          name: item.name,
+          y: item.value, 
+        }
+      });
+    }
+    // this.events = {
+    //   click: this.clickEvent
+    // }
+    console.log(this.drilldownData);
+  }
+
+  clickEvent = (e:any) => {
+    if (e.point.options.name === "retail" || e.point.options.name === "catering") {
+      this.salesCategory = "Fostac";
+    } else if (e.point.options.name === "registration" || e.point.options.name === "state") {
+      this.salesCategory = "Foscos";
+    }
+    let chartData = {
+      filterValue: e.point.options.name,
+      salesCategory: this.salesCategory,
+      userDept: this.parsedUser.department,
+      interval: this.intervalType,
+      chartTitile: this.chartData.chartTitle
+    }
+    this.viewChartData(chartData);
   }
 }

@@ -153,6 +153,26 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getProductSaledata(): Observable<any> {
+    const url: string = `${this.url}/getproductsaledata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getAreaWiseSaleData(): Observable<any> {
+    const url: string = `${this.url}/getareawisesaledata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getPersonWiseSaleData(): Observable<any> {
+    const url: string = `${this.url}/getpersonwisesaledata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getClientTypeSaleData(): Observable<any> {
+    const url: string = `${this.url}/getclienttypesaledata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getEmployeeUnderManager(): Observable<any>{
     const url: string = `${this.url}/getemployeeundermanager`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
