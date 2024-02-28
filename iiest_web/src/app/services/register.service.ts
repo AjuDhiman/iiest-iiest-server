@@ -48,17 +48,43 @@ export class RegisterService {
       ));
   }
 
-  public addFboShop(objId: string, addFboShop: any): Observable<any> {
-    const url = `${this.url}/fbo/addshop/${objId}`
-    return this.http.post<any>(url, addFboShop).pipe(
+  public addFboShop(objId: string, formInterface: any): Observable<any> {
+    const url = `${this.url}/fbo/addshop/${objId}`;
+    formInterface.append('byExcel', false)
+    return this.http.post<any>(url, formInterface ).pipe(
       catchError(
         this.handleError
       ));
   }
 
-  public addFboShopByExcel(objId: string, addFboShop: any): Observable<any> {
+  public addFboShopByExcel(objId: string, formInterface: any): Observable<any> {
     const url = `${this.url}/fbo/addshopbyexcel/${objId}`
-    return this.http.post<any>(url, addFboShop).pipe(
+    let shopData = {formInterface, byExcel: true}
+    return this.http.post<any>(url, shopData).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public uploadEbill(objId: string, formInterface: FormData): Observable<any> {
+    const url = `${this.url}/fbo/uploadebill/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public uploadOwnerPhoto(objId: string, formInterface: FormData): Observable<any> {
+    const url = `${this.url}/fbo/uploadownerphoto/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public uploadShopPhoto(objId: string, formInterface: FormData): Observable<any> {
+    const url = `${this.url}/fbo/uploadshophoto/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
       catchError(
         this.handleError
       ));

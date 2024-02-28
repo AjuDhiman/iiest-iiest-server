@@ -368,4 +368,40 @@ export class RecipientComponent implements OnInit {
       }
     })
   }
+
+  uploadEbill($event: any, shopId: string){
+    let file = $event.target.files[0]
+    let formData: FormData = new FormData();
+    formData.append('eBill', file);
+    this._registerService.uploadEbill(shopId, formData).subscribe({
+      next: res => {
+        this.activeModal.close();
+        this._toastrService.success('Ebill Uploaded')
+      }
+    })
+  }
+
+  uploadOwnerPhoto($event: any, shopId: string){
+    let file = $event.target.files[0]
+    let formData: FormData = new FormData();
+    formData.append('ownerPhoto', file);
+    this._registerService.uploadOwnerPhoto(shopId, formData).subscribe({
+      next: res => {
+        this.activeModal.close();
+        this._toastrService.success('Owner photo Uploaded')
+      }
+    })
+  }
+
+  uploadShopPhoto($event: any, shopId: string){
+    let file = $event.target.files[0]
+    let formData: FormData = new FormData();
+    formData.append('shopPhoto', file);
+    this._registerService.uploadShopPhoto(shopId, formData).subscribe({
+      next: res => {
+        this.activeModal.close();
+        this._toastrService.success('shopPhoto Uploaded')
+      }
+    })
+  }
 }

@@ -152,18 +152,18 @@ export class chartData {
    seriesName: string;
    yAxisTitle: string;
    data: any;
-   drillData: any;
+   isDrilldown: any;
    showIntervalSelection: boolean;
    otherChartTypeOptions: string[];
 
-   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: {}, drillData: any, showIntervalSelection = false, otherChartTypeOptions: string[] = []) {
+   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: any, isDrilldown:boolean, showIntervalSelection = false, otherChartTypeOptions: string[] = []) {
       this.chartType = chartType;
       this.department = department;
       this.chartTitle = chartTitle;
       this.seriesName = seriesName;
       this.yAxisTitle = yAxisTitle;
       this.data = data;
-      this.drillData = drillData;
+      this.isDrilldown = isDrilldown 
       this.showIntervalSelection = showIntervalSelection;
       this.otherChartTypeOptions = otherChartTypeOptions;
    }

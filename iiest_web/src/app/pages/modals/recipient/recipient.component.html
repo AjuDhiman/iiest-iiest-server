@@ -210,8 +210,8 @@
                 <th class="cell">Address</th>
                 <th class="cell">Pincode</th>
                 <th class="cell">Electricity Bill</th>
-                <th class="cell">Shop Photo</th>
                 <th class="cell">Owner Photo</th>
+                <th class="cell">Shop Photo</th>
               </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
@@ -239,9 +239,9 @@
                     <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
                       <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
                     </a>
-                    <label for="uploadEbill"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
+                    <label [for]="'uploadEbill' + sr"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
-                    <input type="file" id="uploadEbill" hidden>
+                    <input type="file" [id]="'uploadEbill' + sr" (change)="uploadEbill($event, shops._id)" hidden>
                   </span>
                 </td>
 
@@ -252,9 +252,9 @@
                     <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
                       <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
                     </a>
-                    <label for="uploadOwnerPhoto"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-2xl text-danger"
+                    <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
                         [icon]="faFile"></fa-icon></label>
-                    <input type="file" id="uploadOwnerPhoto" hidden>
+                    <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)" hidden>
                   </span>
                 </td>
 
@@ -265,9 +265,9 @@
                     <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
                       <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
                     </a>
-                    <label for="uploadShopPhoto"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-2xl text-danger"
+                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
                         [icon]="faFile"></fa-icon></label>
-                    <input type="file" id="uploadShopPhoto" hidden>
+                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)" hidden> 
                   </span>
                 </td>
               </tr>

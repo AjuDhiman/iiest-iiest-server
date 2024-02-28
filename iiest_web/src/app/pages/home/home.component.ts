@@ -49,9 +49,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   salesPersonChartData: chartData;
 
   //condtional variables
-  isNameVisible: boolean = true;
-  isChartDataAvailable: boolean = true;
+  isNameVisible: boolean = false;
+  isChartDataAvailable: boolean = false;
   dnone: boolean = true;
+  loading: boolean = true;
 
   //others
   salesData: any;
@@ -68,41 +69,30 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    //this function collects basic data reted to user 
+    this.getUserBasicData();
+
     //these two methords belongs to employee redux store by the help of then we want to collec data all the employees and save it to the store
     this.getEmployees();
 
     this.employees$.subscribe(res => {
       this.data = res;
-    })
+    });
 
-    //this function collects basic data reted to user 
-    this.getUserBasicData();
+    this.getProductSaledata();
 
-    let timeout = setTimeout(() => {
-      this.isNameVisible = false;
-    }, 5000);
+    this.getAreaWiseSaleData();
 
-    //we want to call these methord foer a specific department because they calss apis by which we want to send data to highcahrts and we are showing diffrent highcharts for diffrent departments
-    if (this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department' || this.empDesigantion === 'Director') {
+    this.getPersonWiseSaleData();
 
-      this.getSalesCountData();
-      this.fetchAllSalesData();
+    this.getClientTypeSaleData();
 
-    }
-
-    if (this.empDepartment === 'HR Department' || this.empDepartment === 'IT Department' || this.empDesigantion === 'Director') {
-
-      this.getEmpHiringChartData();
-
-    }
+    this.getEmpHiringData();
 
     if (salesManagerRoles.includes(this.empDesigantion)) {
-
       this.getEmployeeUnderManager()
-
     }
 
-    //this function is for collecting data related to product table
     //------this function is for collecting data related to product table-------
     this.getProductData();
   }
@@ -131,183 +121,115 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  //--------function for getting chart data by the help of apis starts------
-  getSalesPersonSalesData(sales: any) {
-    sales.forEach((sale: any) => {
-      if (sale.employeeInfo) {
-        const employee = sale.employeeInfo.employee_name;
-
-        const grandTotal = Number(sale.grand_total);
-
-        if (this.topSalesman.hasOwnProperty(employee)) {
-          this.topSalesman[employee] += grandTotal;
-        } else {
-          this.topSalesman[employee] = grandTotal;
-        }
-      }
-
-    });
-    this.salesPersonChartData = new chartData('column', 'Director', 'Employee Sales Chart', 'Employee Sales', '', this.topSalesman, [], false, ['column', 'pie', 'line', 'area']);
-  }
-
-  catchDeptCount($event: any): void {
-    const data: any = {};
-
-    $event.forEach((element: any) => {
-      data[element.department] = element.count;
-    });
-
-    this.deptData = new chartData('column', 'HR department', 'Employee Count By Department', 'Department', 'Employee Count', data, [], false, ['column', 'pie', 'line', 'area']);
-  }
-
-  getSalesCountData(): void {
-    this._getDataService.getEmpSalesProdWise().subscribe({
+  //functions for fetching data from backend and passing them to highcharts
+  getProductSaledata() {
+    this._getDataService.getProductSaledata().subscribe({
       next: res => {
-        this.salesChartData = new chartData('column', 'Sales department', 'Sales Count Chart', '', 'Sales Count', res, [], true, ['column', 'pie', 'line', 'area']);
+        const chartType = 'column';
+        const department = 'Sales Department';
+        const chartTitle = 'Product Sales Chart';
+        const seriesName = 'Products';
+        const yAxisTitle = 'SalesCcount';
+        const data = res;
+        const showIntervalSelection = false;
+        const isDrillDown = true;
+        this.productSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+      }
+    });
+  }
+
+  getAreaWiseSaleData() {
+    this._getDataService.getAreaWiseSaleData().subscribe({
+      next: res => {
+        const chartType = 'column';
+        const department = 'Sales Department';
+        const chartTitle = 'Area Wise Sales Chart';
+        const seriesName = 'States';
+        const yAxisTitle = 'Sales Count';
+        const data = res;
+        const showIntervalSelection = false;
+        const isDrillDown = true;
+        const otherChartTypeOptions = ['pie']
+        this.areaSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+        this.loading = false;
+      }
+    });
+  }
+
+  getPersonWiseSaleData(){
+    this._getDataService.getPersonWiseSaleData().subscribe({
+      next: res => {
+        const chartType = 'column';
+        const department = 'Director';
+        const chartTitle = 'Employee Sales Chart';
+        const seriesName = 'Employee Sales';
+        const yAxisTitle = '';
+        const data = res;
+        const showIntervalSelection = false;
+        const isDrillDown = false;
+        const otherChartTypeOptions = ['']
+        this.salesPersonChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+      }
+    });
+  }
+
+  getClientTypeSaleData(){
+    this._getDataService.getClientTypeSaleData().subscribe({
+      next: res => {
+        const chartType = 'column';
+        const department = 'Sales department';
+        const chartTitle = 'Customer Type Chart';
+        const seriesName = 'Employee Sales';
+        const yAxisTitle = 'Sales Count';
+        const data = res;
+        const showIntervalSelection = false;
+        const isDrillDown = false;
+        const otherChartTypeOptions = ['']
+        this.clientTypeChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+      }
+    });
+  }
+
+  getEmpHiringData(){
+    this._getDataService.getEmpHiringData().subscribe({
+      next: res => {
+        this.isChartDataAvailable = true;
+        const chartType = 'column';
+        const department = 'HR Department';
+        const chartTitle = 'Customer Type Chart';
+        const seriesName = 'Hiring Performance Chart';
+        const yAxisTitle = 'Department';
+        const data = res;
+        const showIntervalSelection = false;
+        const isDrillDown = false;
+        const otherChartTypeOptions = ['']
+        this.empHiringChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+      }
+    });
+  }
+
+  catchDeptCount($event: Array<{ department: string, count: number }>): void {
+    const chartType = 'column';
+    const department = 'HR department';
+    const chartTitle = 'Employee Count By Department';
+    const seriesName = 'Department';
+    const yAxisTitle = 'Employee Count';
+    const data = $event.map((item: { department: string, count: number }) => {
+      return {
+        name: item.department,
+        value: item.count
       }
     })
-  }
-
-  getAreaSalesChartData(res: any): void {
-    let stateCounts = {}
-    stateCounts = res.salesInfo.reduce((counts: any, item: any) => {
-      if (item.fboInfo) {
-        const state = item.fboInfo.state;
-        counts[state] = counts[state] ? counts[state] + 1 : 1;
-      }
-      return counts;
-    }, {});
-    this.areaSalesChartData = new chartData('pie', 'Sales Department', 'Area Wise Sales Chart', 'States', 'Sales Count', stateCounts, [], false, ['column', 'pie', 'line', 'area']);
-  }
-
-  getProductSalesChartData(res: any): void {
-    let data: { [key: string]: number } = {};
-    const fostac: any = [];
-    const foscos: any = [];
-    console.log(res);
-    data = res.salesInfo.reduce((productCounts: { [key: string]: number }, order: any) => {
-      order.product_name.forEach((product: any) => {
-        if (productCounts.hasOwnProperty(product)) {
-          productCounts[product]++;
-        } else {
-          productCounts[product] = 1;
-        }
-      });
-      return productCounts;
-    }, {});
-    console.log(data);
-
-    res.salesInfo.forEach((item: any) => {
-      if (item.fostacInfo && item.fostacInfo.fostac_service_name) {
-        const serviceName = item.fostacInfo.fostac_service_name.toString();
-        const existingIndex = fostac.findIndex((entry: any) => entry[0] === serviceName);
-        if (existingIndex !== -1) {
-          fostac[existingIndex][1]++;
-        } else {
-          fostac.push([serviceName, 1]);
-        }
-      }
-    
-      // Increment count for foscos_service_name
-      if (item.foscosInfo && item.foscosInfo.foscos_service_name) {
-        const serviceName = item.foscosInfo.foscos_service_name.toString();
-        const existingIndex = foscos.findIndex((entry: any) => entry[0] === serviceName);
-        if (existingIndex !== -1) {
-          foscos[existingIndex][1]++;
-        } else {
-          foscos.push([serviceName, 1]);
-        }
-      }
-    });
-    
-    let fostacArr = {
-      type: 'column',
-      id: 'Fostac',
-      name: 'Fostac',
-      data: fostac
-    };
-    let foscosArr = {
-      type: 'column',
-      id: 'Foscos',
-      name: 'Foscos',
-      data: foscos
-    };
-
-    let drilldata = [fostacArr, foscosArr];
-
-    this.productSalesChartData = new chartData('drilldown', 'Sales Department', 'Product Sales Chart', 'Products', 'Sales Count', data, drilldata, false, []);
-  }
-
-
-  // ------this function is responsible for monthy sales data shown in highcharts--------
-  getMonthSalesChartData(res: any): void {
-    let monthCounts: { [key: string]: number } = {};
-    // let date = new Date().getFullYear();
-    let date = "2023";
-    let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-    let monthNum = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-
-    monthNum.forEach((element, index) => {
-      let str = (date + "-" + element).toString();
-      let count = 0;
-      res.salesInfo.forEach((item: any) => {
-        if (item.createdAt.includes(str)) {
-          count++;
-        }
-      });
-      monthCounts[month[index]] = count;
-    });
-    this.monthSalesChartData = new chartData('column', 'Sales Department', 'Sales Chart Month Wise', 'Current Year', 'Sales Count', monthCounts, [], false, ['column', 'pie', 'line', 'area']);
-
-    let clientType: { [key: string]: number } = {};
-    let corporateClient = 0;
-    let generalClient = 0;
-    res.salesInfo.forEach((elem: any) => {
-      if (elem.fostacInfo) {
-        if (elem.fostacInfo.fostac_client_type === "Corporate Client") {
-          corporateClient++;
-        } else if (elem.fostacInfo.fostac_client_type === "General Client") {
-          generalClient++;
-        }
-      }
-      if (elem.foscosInfo) {
-        if (elem.foscosInfo.foscos_client_type === "Corporate Client") {
-          corporateClient++;
-        } else if (elem.foscosInfo.foscos_client_type === "General Client") {
-          generalClient++;
-        }
-      }
-      clientType['Corporate Client'] = corporateClient;
-      clientType['General Client'] = generalClient;
-    });
-    this.clientTypeChartData = new chartData('pie', 'Sales Department', 'Customer Type Chart', 'Client Type', 'Sales Count', clientType, [], false, ['column', 'pie', 'line', 'area']);
-  }
-
-  getEmployeeSalesData(sales: any) {
-
+    const showIntervalSelection = false;
+    const isDrillDown = false;
+    const otherChartTypeOptions = [''];
+    this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown, otherChartTypeOptions);
   }
 
   getEmployeeUnderManager() {
     this._getDataService.getEmployeeUnderManager().subscribe({
       next: res => {
         console.log(res);
-
-      }
-    })
-  }
-
-  getEmpHiringChartData(): void {
-    this._getDataService.getEmpHiringData().subscribe({
-      next: res => {
-        let data: any = {};
-        if (res.employeeHiringData.length > 0) {
-          res.employeeHiringData.forEach((item: any) => {
-            data[item._id.department] = item.count;
-          })
-        } else {
-          this.isChartDataAvailable = false;
-        }
-        this.empHiringChartData = new chartData('line', 'HR Department', 'Hiring Performance Chart', 'Department', 'Hiring Count', data, [], false, ['column', 'pie', 'line', 'area']);
       }
     })
   }
@@ -326,19 +248,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     )
   }
 
-  fetchAllSalesData(): void {
-    this._getDataService.getSalesList().subscribe({
-      next: res => {
-        this.getAreaSalesChartData(res);
-        this.getMonthSalesChartData(res);
-        this.getSalesPersonSalesData(res.salesInfo);
-        this.getProductSalesChartData(res);
-      }
-    });
-  }
-
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
-    // this.salesLoadedSub.unsubscribe();
   }
+
 }

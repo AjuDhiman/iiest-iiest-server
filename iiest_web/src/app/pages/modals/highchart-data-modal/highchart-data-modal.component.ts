@@ -52,10 +52,11 @@ export class HighchartDataModalComponent {
 
   // -------this function is work for sales chart data of state wise---------
   fetchFboDataByState(): void {
+    console.log(this.chartData);
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
-          this.specificDatas = res.salesInfo.filter((item: any) => (item.fboInfo.state === this.chartData.filterValue));
+          this.specificDatas = res.salesInfo.filter((item: any) =>((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
           this.salesDeptfilter();
         }
       },

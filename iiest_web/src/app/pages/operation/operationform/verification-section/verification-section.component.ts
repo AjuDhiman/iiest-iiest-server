@@ -265,7 +265,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.emitDocuments.emit([{
             name: 'FSMS Cerificate',
             src: res.verifedData.fsmsCertificate
-          }]);
+          },
+          {
+            name: 'Self Declearation of Propraitorship',
+            src: res.verificationForm.selfDecOProp
+          }
+          ]);
         } else {
           this.verifiedStatus = false;
         }
@@ -293,10 +298,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   //this methord sets food catgories on the basis of kob selection
   onKobChange($event: any): void {
-    this.verificationForm.patchValue({ food_category: "" });
+    this.verificationForm.patchValue({ food_category: [] });
+    this.foodCategoryList = [];
     this.kobData.forEach((kob: any) => {
-      console.log($event.target.value);
-      console.log(kob.name);
       if (kob.name === $event.target.value) {
         this.foodCategoryList = kob.food_category;
       }

@@ -7,7 +7,7 @@ const generalSectionModel = require("../../models/operationModels/generalSection
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 const sendDocumentMail = require("../../operations/sendMail");
-const { generateFsms } = require("../../operations/generateDocuments");
+const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 
 exports.fostacVerification = async (req, res) => {
     try {
@@ -70,7 +70,7 @@ exports.foscosVerification = async(req, res) => {
 
         const {operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, food_items, operator_address, license_category, license_duration, foscos_total, sales_date, sales_person} = verifiedData;
 
-        const addVerification = await foscosVerifyModel.create({operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address, fsmsCertificate: fsmsCertificate});
+        const addVerification = await foscosVerifyModel.create({operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address, fsmsCertificate: fsmsCertificate, selfDecOProp: selfDecOProp});
         
         console.log(1);
 

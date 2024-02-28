@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
   { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
   { path: 'emplist', component: EmployeelistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
-  { path: 'lms', component: LmsComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
+  { path: 'lms', component: LmsComponent, canActivate:[authGuard]},
 ];
 
 @NgModule({

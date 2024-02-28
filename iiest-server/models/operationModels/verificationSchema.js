@@ -87,6 +87,10 @@ const foscosVerification = new Schema({
     fsmsCertificate: {
         type: String,
         required: true
+    },
+    selfDecOProp: {
+        type: String,
+        required: true
     }
 });
 

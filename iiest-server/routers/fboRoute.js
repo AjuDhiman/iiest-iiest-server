@@ -1,7 +1,7 @@
 const express = require('express');
 const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
-const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel } = require('../controllers/fboControllers/recipient');
+const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
@@ -24,6 +24,9 @@ router.get('/fbogeneraldata', authMiddleware, fboFormData); //Router for general
 router.get('/getproductdata', authMiddleware, getProductData); //Router for product data
 router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'eBill', maxCount: 1 }, { name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}]), addShop); //Router for adding shop data
 router.post('/fbo/addshopbyexcel/:id', authMiddleware, addShopByExcel); 
+router.put('/fbo/uploadebill/:id', authMiddleware, foscosDocuments.fields([{name: 'eBill', maxCount: 1}]), uploadEbill); //Router for adding e bill to shop model
+router.put('/fbo/uploadownerphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'ownerPhoto', maxCount: 1}]), uploadOwnerPhoto); //Router for adding owner photo to shop model
+router.put('/fbo/uploadshopphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'shopPhoto', maxCount: 1}]), uploadShopPhoto); //Router for adding shop photo to shop model
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
