@@ -37,7 +37,8 @@ export class HighchartDataModalComponent {
 
   ngOnInit() {
     switch (this.chartData.chartTitile) {
-      case 'Sales Count Chart': this.fetchAllFboData();
+      case 'Sales Count Chart':
+        this.fetchAllFboData();
         break;
       case 'Area Wise Sales Chart': this.fetchFboDataByState();
         break;
@@ -45,9 +46,9 @@ export class HighchartDataModalComponent {
         break;
       case 'Customer Type Chart': this.fetchFboDataByClientType();
         break;
-    }
-    this.filterDate = this.filterByDuration(this.intervalType);
-    console.log(this.chartData);
+      case 'Sales Chart': this.monthWiseFilter();
+        break;
+      }
   }
 
   // -------this function is work for sales chart data of state wise---------
@@ -91,7 +92,6 @@ export class HighchartDataModalComponent {
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
-          // this.filterDate = this.filterDate.toString();
           this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
           if (this.chartData.interval === "tillNow") {
             if (this.chartData.salesCategory === 'Fostac') {
@@ -160,6 +160,24 @@ export class HighchartDataModalComponent {
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
   }
 
+  monthWiseFilter(){
+    this._getDataService.getSalesList().subscribe({
+      next: (res) => {
+        if(res.salesInfo) {
+          console.log(this.chartData)
+          this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == this.chartData.filterValue);
+          this.salesDeptfilter();
+        }
+      },
+      error: (err) => {
+        let errorObj = err;
+        if (errorObj.userError) {
+          this.registerService.signout();
+        }
+      }
+    })
+  }
+
   onTableDataChange(event: any) {
     this.pageNumber = event;
   }
@@ -185,43 +203,6 @@ export class HighchartDataModalComponent {
       }
     }
   }
-
-  // filterByDuration(object: any, data: any, category: any, createdAt: any) {
-  //   let now = new Date();
-  //   let date = new Date(createdAt);
-
-  //   // Update tillNow
-  //   object.tillNow[category] += data;
-
-  //   // Update Financial year
-  //   if (date.getTime() >= new Date(now.getFullYear() - 1, 3, 1).getTime() &&
-  //     date.getTime() < new Date(now.getFullYear(), 3, 1).getTime()) {
-  //     object.year[category] += data;
-  //   }
-
-  //   //update this Quater
-  //   if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1).getTime() &&
-  //     date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth()) / 3 + 1) * 3, 1).getTime()) {
-  //     object.quater[category] += data;
-  //   }
-
-  //   //update this Half year
-  //   if (date.getTime() >= new Date(now.getFullYear(), Math.floor(now.getMonth() / 6) * 6, 1).getTime() &&
-  //     date.getTime() < new Date(now.getFullYear(), (Math.floor(now.getMonth() / 6) + 1) * 6, 1).getTime()) {
-  //     object.halfYearly[category] += data;
-  //   }
-
-  //   // Update month
-  //   if (date.getTime() >= new Date(now.getFullYear(), now.getMonth(), 1).getTime() &&
-  //     date.getTime() < new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime()) {
-  //     object.month[category] += data;
-  //   }
-
-  //   // Update week
-  //   if (now.getTime() - date.getTime() < now.getDay() * 24 * 60 * 60 * 1000) {
-  //     object.week[category] += data;
-  //   }
-  // }
 
   filterByDuration(intervalType: string): string | void {
     let now = new Date();

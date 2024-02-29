@@ -81,8 +81,7 @@ export class OperationformComponent implements OnInit {
   }
 
   getDocuments($event:any): void{
-    this.documents =[...this.documents, ...$event];
-    console.log(this.documents);
+    
   }
 
   getUserProductType(){
