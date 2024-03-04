@@ -10,7 +10,14 @@ exports.caseList = async(req, res)=>{
 
         if(employeePanel === 'Foscos Panel'){
 
-            list = await shopModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+            list = await shopModel.find({})
+            .where('eBillImage')
+            .exists()
+            .where('ownerPhoto')
+            .exists()
+            .where('shopPhoto')
+            .exists()
+            .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
         }else if(employeePanel === 'Fostac Panel'){
 

@@ -4,7 +4,7 @@
         <div class="row gy-4">
             <div class="col-lg-3">
                 <!-- Annual Leave -->
-                <div class="col-lg-12 mb-4 custom-border" style="height: 130px;">
+                <div class="col-lg-12 mb-4 custom-border">
                     <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start h-100"
                         style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
                         <div class="app-card-header p-3 border-bottom-0">
@@ -138,10 +138,10 @@
             <div class="col-lg-9 bg-white" [ngClass]="isApply === true  ? 'd-block' : 'd-none'">
                 <form [formGroup]="leaveForm">
                     <div class="container">
-                        <div class="row mb-4 border-bottom">
+                        <div class="row mb-4"style="border-bottom: 3px solid #eee;">
                             <div class="col-lg-8 bg-white">
                                 <h4 class="app-card-title text-warning ">
-                                    <fa-icon class="fa-lessThan" style="color: rgb(103, 103, 103)" [icon]="faLessThan"></fa-icon>
+                                    <fa-icon class="fa-lessThan" style="color: rgb(145, 142, 142)" [icon]="faLessThan"></fa-icon>
                                     Total Leave Days
                                 </h4>
                             </div>
@@ -158,25 +158,28 @@
                         <!-- Add this code inside the form section -->
                         <div class="row mb-2 px-0" *ngIf="isApply">
                             <ng-container *ngFor="let selectedDate of selectedDatesWithLeaveType">
-                                <div class="border col-lg-6 mb-2  leave_area">
-                                    <div class="half_leave">
-                                       <span class="input-group-text border-0" style=" background-color:#eee;"> 
-                                     <fa-icon class="fa-Sun" [icon]="faSun" (click)="halfDayLeave(selectedDate.date)"></fa-icon>
-                                       </span>     
+                                <div class="col-lg-6 mb-2 leave_area">
+                                    <div class="half_leave" (dblclick)="updateLeaves($event)">
+                                        <span class="fa-Sun">
+                                          <fa-icon [icon]="faSun" [style.color]="sunIconState === 'full' ? 'orange' : 'yellow'"></fa-icon>
+                                        </span>
+                                      </div>
+                                    <div class="leave_dayDate text-muted"> 
+                                        <span [ngClass]="{'bold-date': selectedDate.date}">
+                                            {{ selectedDate.date | date: 'dd MMM yyy' }}
+                                        </span>
+                                        {{ selectedDate.date | date: ' EEEE'  }}
                                     </div>
-                                        <div class="leave_dayDate text-muted">
-                                          <span> {{ selectedDate.date | date: 'dd MMM yy EEEE'  }} </span> 
-                                        </div>
                                     
                                     <div class ="leave_dropdown">
-                                        <select class="form-select" style="margin: auto;background: #eee;" (change)="updateLeaves($event)">
+                                        <select class="form-select leave_select" style="background: #eee;" (change)="updateLeaves($event)">
                                             <option value="" disabled selected>Select Leave Type</option>
                                             <option value="annual">Annual Leave</option>
                                             <option value="my">My Leave</option>
                                         </select>
                                     </div>
                                     <div class="leave_cancel">
-                                        <fa-icon class="fa-close" style="color: rgb(103, 103, 103)" [icon]="faClose"></fa-icon>
+                                        <fa-icon class="fa-close" style="color: rgb(145, 142, 142); font-weight:normal;" [icon]="faClose"></fa-icon>
                                     </div>
 
                                 </div>
@@ -186,35 +189,37 @@
                         <div class="row mb-2 p-0">
                             <div class="col-lg-4 px-0"> 
                                 <div class="input-group">
-                                <span class="input-group-text" style="background:#eee;">
-                                    <fa-icon class="fa-l " style="color: rgb(103, 103, 103); background: #eee; " [icon]="faUser"></fa-icon>
-                                </span>
-                                <div class="form-floating">
-                                    <input type="text" class="form-control"  style="background: #eee;"formControlName="approverName"
-                                        placeholder="Approver Name" value="Approver">
-                                    <label for="approverName">Approver</label>
-                                </div>
+                                    <span class="input-group-text" style="background:#f5f2f2;">
+                                        <fa-icon class="fa-l" style="color: rgb(145, 142, 142); background: #f5f2f2; " [icon]="faUser"></fa-icon>
+                                    </span>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" formControlName="approverName"
+                                            placeholder="Approver Name" value="Approver"
+                                            style="background: #f5f2f2;">
+                                        <label for="approverName">Approver</label>
+                                    </div>
                                 </div>
                             </div>
+                            
 
                             <div class="col-lg-4 py-0">
                                 <div class="input-group">
-                                    <span class="input-group-text" style="background:#eee;">
-                                        <fa-icon class="fa-l" style="color: rgb(103, 103, 103); background: #eee ; " [icon]="faCopy"></fa-icon>
+                                    <span class="input-group-text" style="background:#f5f2f2;">
+                                        <fa-icon class="fa-l" style="color: rgb(145, 142, 142); background: #f5f2f2 ; " [icon]="faCopy"></fa-icon>
                                     </span>
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" style="background: #eee;" formControlName="cc" placeholder="CC">
+                                    <input type="text" class="form-control" style="background: #f5f2f2;" formControlName="cc" placeholder="CC">
                                     <label for="cc">cc</label>
                                 </div>
                                 </div>
                             </div>
                             <div class="col-lg-4 px-0">
                                 <div class="input-group">
-                                    <span class="input-group-text"style="background:#eee;">
-                                        <fa-icon class="fa-l" style="color: rgb(103, 103, 103); background: #eee;" [icon]="faPhone"></fa-icon>
+                                    <span class="input-group-text"style="background:#f5f2f2;">
+                                        <fa-icon class="fa-l" style="color: rgb(145, 142, 142); background: #f5f2f2;" [icon]="faPhone"></fa-icon>
                                     </span>
                                     <div class="form-floating">
-                                        <input type="text" class="form-control"style="background: #eee;" formControlName="contactNumber"
+                                        <input type="text" class="form-control"style="background: #f5f2f2;" formControlName="contactNumber"
                                             placeholder="Contact Number">
                                         <label for="contactNumber">Contact Number</label>
                                     </div>
@@ -223,7 +228,7 @@
 
                             <div class="col-lg-12 px-0">
                                 <label for="leaveReason" class="form-label"></label>
-                                <textarea class="form-control" id="leaveReason" style="background: #eee;" formControlName="leaveReason" rows="3"
+                                <textarea class="form-control" id="leaveReason" style="background: #f5f2f2;" formControlName="leaveReason" rows="3"
                                     placeholder="Provide your leave reason here"></textarea>
                             </div>
                         </div>

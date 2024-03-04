@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralSectionComponent } from './general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
-import { IconDefinition, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFilePdf, faFileImage } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operationform',
@@ -24,7 +24,8 @@ export class OperationformComponent implements OnInit {
   conformationText: string;
   activeTab: string = 'form';
   faFilePdf: IconDefinition = faFilePdf;
-  documents: {name: string, src: string}[] = [];
+  faFileImage:IconDefinition = faFileImage;
+  documents: {name: string, src: string, format: string}[] = [];
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
 
@@ -81,8 +82,25 @@ export class OperationformComponent implements OnInit {
   }
 
   getDocuments($event:any): void{
-    this.documents =[...this.documents, ...$event];
-    console.log(this.documents);
+    $event.forEach((item:any) => {
+      console.log(item);
+      if(!this.documents.find((elem:any) => (elem.name === item.name)) && item.src){
+        this.documents.push(item);
+      }
+    });
+  }
+
+  getFileIcon(type: string) {
+    let fileIcon: IconDefinition = faFilePdf ;
+    switch(type){
+      case 'pdf':
+      fileIcon = faFilePdf
+        break;
+      case 'image' : 
+      fileIcon = faFileImage
+      break;
+    }
+    return fileIcon
   }
 
   getUserProductType(){

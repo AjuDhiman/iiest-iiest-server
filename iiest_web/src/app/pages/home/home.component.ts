@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // chart objects
   deptData: chartData;
-  salesChartData: chartData;
   productSalesChartData: chartData;
   areaSalesChartData: chartData;
   monthSalesChartData: chartData;
@@ -80,13 +79,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.getProductSaledata();
-
     this.getAreaWiseSaleData();
-
+    this.getMonthWisesaleData();
     this.getPersonWiseSaleData();
-
     this.getClientTypeSaleData();
-
     this.getEmpHiringData();
 
     if (salesManagerRoles.includes(this.empDesigantion)) {
@@ -105,6 +101,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+  //methord for Getting basic information about user from session by the help of utility services
   getUserBasicData(): void {
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)
@@ -141,7 +138,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getAreaWiseSaleData() {
     this._getDataService.getAreaWiseSaleData().subscribe({
       next: res => {
-        const chartType = 'column';
+        const chartType = 'pie';
         const department = 'Sales Department';
         const chartTitle = 'Area Wise Sales Chart';
         const seriesName = 'States';
@@ -149,9 +146,25 @@ export class HomeComponent implements OnInit, OnDestroy {
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;
-        const otherChartTypeOptions = ['pie']
-        this.areaSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+        const otherChartTypeOptions = ['column']
+        this.areaSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
         this.loading = false;
+      }
+    });
+  }
+  
+  getMonthWisesaleData(){
+    this._getDataService.getMonthWisesaleData().subscribe({
+      next: res => {
+        const chartType = 'column';
+        const department = 'Sales Department';
+        const chartTitle = 'Sales Chart';
+        const seriesName = 'sales';
+        const yAxisTitle = 'SalesCcount';
+        const data = res;
+        const showIntervalSelection = false;
+        const isDrillDown = true;
+        this.monthSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
       }
     });
   }
@@ -168,7 +181,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const showIntervalSelection = false;
         const isDrillDown = false;
         const otherChartTypeOptions = ['']
-        this.salesPersonChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+        this.salesPersonChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
       }
     });
   }
@@ -185,7 +198,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const showIntervalSelection = false;
         const isDrillDown = false;
         const otherChartTypeOptions = ['']
-        this.clientTypeChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+        this.clientTypeChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
       }
     });
   }
@@ -203,7 +216,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const showIntervalSelection = false;
         const isDrillDown = false;
         const otherChartTypeOptions = ['']
-        this.empHiringChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+        this.empHiringChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
       }
     });
   }
@@ -223,7 +236,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const showIntervalSelection = false;
     const isDrillDown = false;
     const otherChartTypeOptions = [''];
-    this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown, otherChartTypeOptions);
+    this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown);
   }
 
   getEmployeeUnderManager() {

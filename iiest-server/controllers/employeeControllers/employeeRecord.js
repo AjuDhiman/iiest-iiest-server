@@ -226,7 +226,7 @@ exports.empHiringData = async (req, res) => {
 
         success = true;
 
-        return res.status(200).json( employeeHiringData );
+        return res.status(200).json(employeeHiringData);
 
     } catch (error) {
         console.error(error);
@@ -276,7 +276,7 @@ exports.getProductSaleData = async (req, res) => {
                 },
                 {
                     $group: {
-                        _id: { name: "$name", category: "$service_name" },
+                        _id: { name: "$name", category: "$service_name", date: "$createdAt" },
                         value: { $sum: 1 }
                     }
                 },
@@ -287,7 +287,11 @@ exports.getProductSaleData = async (req, res) => {
                         categories: {
                             $push: {
                                 name: "$_id.category",
-                                value: "$value"
+                                value: "$value",
+                                // modalData: {
+                                //     headers: ['Sale Date'],
+                                //     values: ['$name']
+                                // }
                             }
                         }
                     }
@@ -353,7 +357,7 @@ exports.getAreaWiseSalesData = async (req, res) => {
     try {
 
         let salesAreaWiseData
-        if(req.user.disegnation === 'Director'){
+        if (req.user.designation === 'Director') {
             salesAreaWiseData = await salesModel.aggregate([
                 {
                     $lookup: {
@@ -445,7 +449,7 @@ exports.getPersonWiseSalesData = async (req, res) => {
     try {
 
         let salesPersonWiseData
-        if(req.user.designation == 'Director'){
+        if (req.user.designation == 'Director') {
             salesPersonWiseData = await salesModel.aggregate([
                 {
                     $lookup: {
@@ -517,7 +521,7 @@ exports.getClientTypeSalesData = async (req, res) => {
     try {
 
         let clientTypeSalesdata
-        if(req.user.designation === 'Director') {
+        if (req.user.designation === 'Director') {
             clientTypeSalesdata = await salesModel.aggregate([
                 {
                     $project: {
@@ -549,12 +553,12 @@ exports.getClientTypeSalesData = async (req, res) => {
                         value: "$count"
                     }
                 }
-            ]);    
+            ]);
         } else {
             clientTypeSalesdata = await salesModel.aggregate([
                 {
                     $match: {
-                        "employeeInfo" : req.user._id
+                        "employeeInfo": req.user._id
                     }
                 },
                 {
@@ -587,10 +591,133 @@ exports.getClientTypeSalesData = async (req, res) => {
                         value: "$count"
                     }
                 }
-            ]);    
+            ]);
         }
-        
+
         res.status(200).json(clientTypeSalesdata);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+exports.getMonthWiseSaleData = async (req, res) => {
+    try {
+
+        let monthWiseSale
+
+        if (req.user.designation == 'Director') {
+            monthWiseSale = await salesModel.aggregate([
+                {
+                    $project: {
+                        month: { $month: "$createdAt" },
+                        dayOfMonth: { $dayOfMonth: "$createdAt" }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { month: "$month", dayOfMonth: "$dayOfMonth" },
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.month",
+                        count: { $sum: "$count" },
+                        categories: {
+                            $push: {
+                                name: "$_id.dayOfMonth",
+                                value: "$count"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        name: {
+                            $switch: {
+                                branches: [
+                                    { case: { $eq: ["$_id", 1] }, then: "January" },
+                                    { case: { $eq: ["$_id", 2] }, then: "February" },
+                                    { case: { $eq: ["$_id", 3] }, then: "March" },
+                                    { case: { $eq: ["$_id", 4] }, then: "April" },
+                                    { case: { $eq: ["$_id", 5] }, then: "May" },
+                                    { case: { $eq: ["$_id", 6] }, then: "June" },
+                                    { case: { $eq: ["$_id", 7] }, then: "July" },
+                                    { case: { $eq: ["$_id", 8] }, then: "August" },
+                                    { case: { $eq: ["$_id", 9] }, then: "September" },
+                                    { case: { $eq: ["$_id", 10] }, then: "October" },
+                                    { case: { $eq: ["$_id", 11] }, then: "November" },
+                                    { case: { $eq: ["$_id", 12] }, then: "December" }
+                                ],
+                                default: "Unknown"
+                            }
+                        },
+                        value: "$count",
+                        categories: 1
+                    }
+                }
+            ]);
+        } else {
+            monthWiseSale = await salesModel.aggregate([
+                {
+                    $match: {
+                        "employeeInfo": req.user_id
+                    }
+                },
+                {
+                  $project: {
+                    month: { $month: "$createdAt" },
+                    dayOfMonth: { $dayOfMonth: "$createdAt" }
+                  }
+                },
+                {
+                  $group: {
+                    _id: { month: "$month", dayOfMonth: "$dayOfMonth" },
+                    count: { $sum: 1 }
+                  }
+                },
+                {
+                  $group: {
+                    _id: "$_id.month",
+                    count: { $sum: "$count" },
+                    categories: {
+                      $push: {
+                        name: "$_id.dayOfMonth",
+                        value: "$count"
+                      }
+                    }
+                  }
+                },
+                {
+                  $project: {
+                    name: {
+                      $switch: {
+                        branches: [
+                          { case: { $eq: ["$_id", 1] }, then: "January" },
+                          { case: { $eq: ["$_id", 2] }, then: "February" },
+                          { case: { $eq: ["$_id", 3] }, then: "March" },
+                          { case: { $eq: ["$_id", 4] }, then: "April" },
+                          { case: { $eq: ["$_id", 5] }, then: "May" },
+                          { case: { $eq: ["$_id", 6] }, then: "June" },
+                          { case: { $eq: ["$_id", 7] }, then: "July" },
+                          { case: { $eq: ["$_id", 8] }, then: "August" },
+                          { case: { $eq: ["$_id", 9] }, then: "September" },
+                          { case: { $eq: ["$_id", 10] }, then: "October" },
+                          { case: { $eq: ["$_id", 11] }, then: "November" },
+                          { case: { $eq: ["$_id", 12] }, then: "December" }
+                        ],
+                        default: "Unknown"
+                      }
+                    },
+                    value: "$count",
+                    categories: 1
+                  }
+                }
+              ]);
+        }
+
+        res.status(200).json(monthWiseSale);
+
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" });
     }

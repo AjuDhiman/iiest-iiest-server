@@ -83,21 +83,24 @@ cursor: pointer;
 }
 
 .leave_area{
-  width: 48%;
+width: 48%;
 float: left;
-margin: 7px 1%;
-padding: 0px;
-background-color: #eeee;
+margin: 7px 2%;
+padding-left:0px;
+padding-right: 0px;
+background-color: #f5f2f2;
+margin-left: 0%;
 }
 
 
 .half_leave{
   width: 10%;
   float:left;
-  border-right:2px solid #ebebeb;
+ // border:2px solid #ebebeb;
   text-align: center;
   height: 100%;
-  background-color: #eeee
+  background-color: #f5f2f2;
+  padding: 2px;
 
 }
 .leave_dayDate{
@@ -107,37 +110,36 @@ background-color: #eeee;
   text-align: center;
   height: 100%;
  // font-weight: bold;
-  background-color: #eeee
+  background-color: #f5f2f2
 }
 .leave_dropdown{
 width: 50%;
 float:left;
-
 height: 100%;
 background-color: #eeee
 }
 .leave_cancel{
   width: 10%;
   float:left;
-  border-right:1px solid #ebebeb;
+  border:1px solid #ebebeb;
   text-align: center;
   height: 100%;
-  background-color: #eeee
+  background-color:white;
 }
 .leave_area .border {
   margin-right: 5px; 
 }
-.leave_area .border {
-  margin-right: 10px; 
-}
 .fa-close {
-  font-size: 1.9em; 
+  font-size: 1.7em; 
 }
 .fa-Sun{
-  font-size: 1.7em; 
+  font-size: 1.3em; 
+  text-align: center;
 }
 .fa-lessThan{
   font-size: 0.97rem;
+  font-weight: bold;
+  
 }
 .myLeave_image{
   background-image: url(../../../assets/images/My_leave.png);
@@ -160,3 +162,13 @@ filter: invert(37%) sepia(92%) saturate(3896%) hue-rotate(199deg) brightness(101
   height: 60px;
   filter: invert(54%) sepia(89%) saturate(388%) hue-rotate(82deg) brightness(82%) contrast(93%);
 }
+input:focus + label {
+  background-color: #eeee;
+}
+.bold-date {
+  font-weight: bold;
+}
+.leave_select{
+  padding-bottom: 16px;
+}
+

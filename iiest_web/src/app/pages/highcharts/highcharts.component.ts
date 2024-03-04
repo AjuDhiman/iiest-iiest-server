@@ -5,17 +5,17 @@ import { RegisterService } from 'src/app/services/register.service';
 import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 import drilldown from 'highcharts/modules/drilldown';
-// import HighchartsMore from 'highcharts/highcharts-more';
+import HighchartsMore from 'highcharts/highcharts-more';
 // import HighchartsExporting from 'highcharts/modules/exporting';
 // import HC_exporting from 'highcharts/modules/export-data';
 
-// HighchartsMore(Highcharts);
+HighchartsMore(Highcharts);
 // HighchartsExporting(Highcharts);
 // HC_exporting(Highcharts);
 drilldown(Highcharts);
 
 
-// import '../../../../node_modules/highcharts/modules/scrollbars'
+import * as HighchartsScroll from 'highcharts/highstock'; // Import the scrollbar module/
 
 @Component({
   selector: 'app-highcharts',
@@ -85,7 +85,7 @@ export class HighchartsComponent implements OnChanges {
         enabled: false
       },
      xAxis: {
-        type: 'category'
+        type: 'category',
       },
       yAxis: {
         title: {
@@ -108,12 +108,17 @@ export class HighchartsComponent implements OnChanges {
           }
         },
       },
+      scrollbar: {
+        enabled: true
+      },
       series: [
         {
           name: this.chartData.seriesName,
           type: 'column',
           data: this.values,
-          events: this.events
+          events: {
+            // click: 
+          }
         }
       ],
       drilldown: {
@@ -124,23 +129,7 @@ export class HighchartsComponent implements OnChanges {
           }
         },
         series : this.drilldownData
-        // series: this.chartData.drillData
       }
-      // scrollbar: {
-      //   enabled: true,
-      //   barBackgroundColor: 'gray',
-      //   barBorderRadius: 7,
-      //   barBorderWidth: 0,
-      //   buttonBackgroundColor: 'gray',
-      //   buttonBorderWidth: 0,
-      //   buttonArrowColor: 'yellow',
-      //   buttonBorderRadius: 7,
-      //   rifleColor: 'yellow',
-      //   trackBackgroundColor: 'white',
-      //   trackBorderWidth: 1,
-      //   trackBorderColor: 'silver',
-      //   trackBorderRadius: 7
-      // }
     }
   }
 
@@ -204,7 +193,7 @@ export class HighchartsComponent implements OnChanges {
         enabled: false,
       },
       xAxis: {
-        categories: this.categories
+        type: 'category'
       },
       yAxis: {
         title: {
@@ -224,25 +213,17 @@ export class HighchartsComponent implements OnChanges {
           type: 'line',
           name: this.chartData.seriesName,
           data: this.values,
-          events: {
-            click: (e) => {
-              if (e.point.category === "retail" || e.point.category === "catering") {
-                this.salesCategory = "Fostac";
-              } else if (e.point.category === "registration" || e.point.category === "state") {
-                this.salesCategory = "Foscos";
-              }
-              let chartData = {
-                filterValue: e.point.category,
-                salesCategory: this.salesCategory,
-                userDept: this.parsedUser.department,
-                interval: this.intervalType,
-                chartTitile: this.chartData.chartTitle
-              }
-              this.viewChartData(chartData);
-            }
-          }
         },
       ],
+      drilldown: {
+        breadcrumbs: {
+          position: {
+            x: 13,
+            y: -48
+          }
+        },
+        series : this.drilldownData
+      }
     };
   }
 
@@ -252,9 +233,6 @@ export class HighchartsComponent implements OnChanges {
       chart: {
         // ---------Edit chart spacing---------
         spacingBottom: -5,
-        // spacingTop: 10,
-        // spacingLeft: 10,
-        // spacingRight: 10,
       },
       title: {
         text: undefined
@@ -286,7 +264,15 @@ export class HighchartsComponent implements OnChanges {
           events: this.events
         }
       ],
-      drilldown: this.drilldownData
+      drilldown: {
+        breadcrumbs: {
+          position: {
+            x: 13,
+            y: -48
+          }
+        },
+        series : this.drilldownData
+      }
     };
   }
 
@@ -304,7 +290,7 @@ export class HighchartsComponent implements OnChanges {
         enabled: false,
       },
       xAxis: {
-        categories: this.categories,
+        type: 'category'
       },
       yAxis: {
         title: {
@@ -323,25 +309,17 @@ export class HighchartsComponent implements OnChanges {
           type: 'area',
           name: this.chartData.seriesName,
           data: this.values,
-          events: {
-            click: (e) => {
-              if (e.point.category === "retail" || e.point.category === "catering") {
-                this.salesCategory = "Fostac";
-              } else if (e.point.category === "registration" || e.point.category === "state") {
-                this.salesCategory = "Foscos";
-              }
-              let chartData = {
-                filterValue: e.point.category,
-                salesCategory: this.salesCategory,
-                userDept: this.parsedUser.department,
-                interval: this.intervalType,
-                chartTitile: this.chartData.chartTitle
-              }
-              this.viewChartData(chartData);
-            }
-          }
         },
       ],
+      drilldown: {
+        breadcrumbs: {
+          position: {
+            x: 13,
+            y: -48
+          }
+        },
+        series : this.drilldownData
+      }
     };
   }
 
@@ -369,13 +347,6 @@ export class HighchartsComponent implements OnChanges {
 
   plotChart() {
 
-    if (this.chartData.showIntervalSelection) {
-      this.categories = Object.keys(this.chartData.data[this.intervalType]);
-      this.values = Object.values(this.chartData.data[this.intervalType]);
-    } else {
-      this.categories = Object.keys(this.chartData.data);
-      this.values = Object.values(this.chartData.data);
-    }
     this.initializeChartData();
 
     if (this.values.every(value => value === 0)) {
@@ -385,6 +356,10 @@ export class HighchartsComponent implements OnChanges {
     } else {
       this.isDataAvilable = true;
     }
+
+    // if(this.chartData.isDrillDown){
+      
+    // }
 
     switch (this.selectedChartType) {
       case "column": this.plotColumnChart();
@@ -401,10 +376,6 @@ export class HighchartsComponent implements OnChanges {
     }
   }
 
-  // onWindowResize($event:WindowEventHandlers){
-  //   this.plotChart();
-  // }
-
   formatIntervalType(type: string): string {
     console.log(type);
     switch (type) {
@@ -420,6 +391,14 @@ export class HighchartsComponent implements OnChanges {
   }
 
   initializeChartData() {
+    
+    this.checkkDrillDown();
+
+    this.checkNoData();
+
+  }
+
+  checkkDrillDown(){
     if (this.chartData.isDrilldown) {
       // this.categories = this.chartData.data.map((item: any) => item.name);
       this.values = this.chartData.data.map((item: any) => {
@@ -432,7 +411,7 @@ export class HighchartsComponent implements OnChanges {
       this.values = this.values.sort((a:any ,b: any) => a.y - b.y);
       this.drilldownData = this.chartData.data.map((item: any) => {
         return {
-          type: 'column',
+          type: this.selectedChartType,
           name: item.name,
           id: item.name,
           data: item.categories.map((e: any) => [e.name, e.value]),
@@ -453,22 +432,38 @@ export class HighchartsComponent implements OnChanges {
         }
       });
     }
-    // this.events = {
-    //   click: this.clickEvent
-    // }
-    console.log(this.drilldownData);
+
+  }
+
+  checkNoData(){
+    if (this.values.every(value => value === 0)) {
+      this.values = [];
+      this.isDataAvilable = false;
+      return;
+    } else {
+      this.isDataAvilable = true;
+    }
   }
 
   clickEvent = (e:any) => {
-    if (e.point.options.name === "retail" || e.point.options.name === "catering") {
-      this.salesCategory = "Fostac";
-    } else if (e.point.options.name === "registration" || e.point.options.name === "state") {
-      this.salesCategory = "Foscos";
+    console.log(e);
+    if(e.point.options.name){
+      if (e.point.options.name === "Retail" || e.point.options.name === "Catering") {
+        this.salesCategory = "Fostac";
+      } else if (e.point.options.name === "Registration" || e.point.options.name === "State") {
+        this.salesCategory = "Foscos";
+      }
+    } else if(e.point.category){
+      if (e.point.category === "Retail" || e.point.category === "Catering") {
+        this.salesCategory = "Fostac";
+      } else if (e.point.category === "Registration" || e.point.options.name === "State") {
+        this.salesCategory = "Foscos";
+      }
     }
     let chartData = {
-      filterValue: e.point.options.name,
+      filterValue: e.point.options.name || e.point.category.toString() ,
       salesCategory: this.salesCategory,
-      userDept: this.parsedUser.department,
+      userDept: this.parsedUser.department, 
       interval: this.intervalType,
       chartTitile: this.chartData.chartTitle
     }

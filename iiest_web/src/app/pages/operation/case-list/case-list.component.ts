@@ -20,17 +20,21 @@ export class CaseListComponent implements OnInit {
   caseData: any;
   typeData: any;
   showPagination: boolean = false;
+ 
+  serviceType = '';
+  totalCount: number = 0;
+  panelType: string = '';
+  
+  //loading var
+  loading: boolean = true;
+
+  //icons
   faMagnifyingGlass = faMagnifyingGlass;
   faFileCsv = faFileCsv;
   faUpload = faUpload;
   faDownload = faDownload;
   faEye = faEye;
   faFile = faFile;
-  serviceType = '';
-  totalCount: number = 0;
-  panelType: string = '';
-  //loading var
-  loading: boolean = true;
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
@@ -72,8 +76,9 @@ export class CaseListComponent implements OnInit {
     }
     else {
       this.isSearch = false;
-      // this.filteredData=this.typeData;
     }
+    //  this.filteredData=this.typeData;
+    this.setServiceType("Registration");
     this.filter();
   }
 

@@ -211,15 +211,18 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.emitDocuments.emit([
             {
               name: 'Electricity Bill',
-              src: res.populatedInfo.eBillImage
+              src: res.populatedInfo.eBillImage,
+              format: 'image'
             },
             {
               name: 'Owner Photo',
-              src: res.populatedInfo.ownerPhoto
+              src: res.populatedInfo.ownerPhoto,
+              format: 'image'
             },
             {
               name: 'Shop Photo',
-              src: res.populatedInfo.shopPhoto
+              src: res.populatedInfo.shopPhoto,
+              format: 'image'
             }
           ]);
         }
@@ -259,16 +262,18 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ kob: res.verifedData.kob });
           this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
           this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
-          this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
           this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
           this.verificationForm.patchValue({ food_items: res.verifedData.foodItems });
+          console.log(res.verifedData)
           this.emitDocuments.emit([{
             name: 'FSMS Cerificate',
-            src: res.verifedData.fsmsCertificate
+            src: res.verifedData.fsmsCertificate,
+            format: 'pdf'
           },
           {
             name: 'Self Declearation of Propraitorship',
-            src: res.verificationForm.selfDecOProp
+            src: res.verifedData.selfDecOProp,
+            format: 'pdf'
           }
           ]);
         } else {
@@ -300,7 +305,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   onKobChange($event: any): void {
     this.verificationForm.patchValue({ food_category: [] });
     this.foodCategoryList = [];
+    this.multiSelect.onReset();
     this.kobData.forEach((kob: any) => {
+      console.log($event.target.value, kob.name);
       if (kob.name === $event.target.value) {
         this.foodCategoryList = kob.food_category;
       }

@@ -91,24 +91,29 @@ exports.addShop = async (req, res) => {
         if (!shopPhoto) {
             success = false;
             return res.status(401).json({ success, shopPhotoErr: true })
-        }
+        } 
 
-        // const eBillName = `${Date.now()}_${eBill.originalname}`;
+        let state;
+        let district;
 
-        // const billBucket = fboEbillBucket();
-
-        // const billUploadStream = billBucket.openUploadStream(eBillName);
-
-        // billUploadStream.write(eBill.buffer);
-
-        // billUploadStream.end((err)=>{
+        // await fs.readFile('./assets/pincodes.json', 'utf8', async (err, data) => {
         //     if(err){
-        //         success = false;
-        //         return res.status(401).json({success, billErr: true})
+        //         // res.status(404).json({success, fileErr: true});
+        //     } else {
+        //         let pincodeData = await JSON.parse(data);
+        //         for(let i = 0; i < pincodeData.length; i++){
+        //             if(pincodeData[i].Pincode == pincode){
+        //                 console.log(pincodeData[i]);
+        //                 state = await pincodeData[i].State;
+        //                 district = await pincodeData[i].District;
+        //                 return;
+        //             }
+        //         }   
         //     }
         // })
 
-        // eBillImage: billUploadStream.id
+        // console.log(state, district);
+        return;
 
         const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, byExcel });
 
@@ -246,7 +251,7 @@ exports.uploadOwnerPhoto = async(req, res) => {
 
         const ownerPhoto = req.files['ownerPhoto'];
 
-        const photoUploaded = await shopModel.updateOne({_id: req.params.id}, { $set: {shopPhoto: ownerPhoto[0].filename}});
+        const photoUploaded = await shopModel.updateOne({_id: req.params.id}, { $set: {ownerPhoto: ownerPhoto[0].filename}});
 
         if(!photoUploaded){
             success = false;
