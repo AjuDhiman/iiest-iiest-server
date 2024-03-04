@@ -352,15 +352,6 @@ export class RecipientComponent implements OnInit {
     });
   }
 
-  openEBillWindow(id: string) {
-    this.showEBill = true;
-    this.getEbill(id);
-  }
-
-  closeEBillWindow() {
-    this.showEBill = false;
-  }
-
   getEbill(id: string) {
     this.getDataServices.getEbill(id).subscribe({
       next: (res) => {

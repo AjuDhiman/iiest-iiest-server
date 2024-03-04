@@ -288,18 +288,3 @@
       <pagination-controls previousLabel="Prev" nextLabel="Next"
         (pageChange)="onTableDataChange($event)"></pagination-controls>
     </div>
-
-
-    <!-- Thus modal is for showing e bill  -->
-    <div *ngIf="showEBill" class="e-bill-modal-back-blur">
-      <div class="e-bill">
-        <div class="modal-header bg-secondary">
-          <h6 class="modal-title text-white" id="modal-basic-po">E-Bill</h6>
-          <button type="button" class="btn-close btn-close-white" aria-label="Close"
-            (click)="closeEBillWindow()"></button>
-        </div>
-        <div class="modal-body e-bill-body">
-          <img [src]="ebillImage" alt="E Bill">
-        </div>
-      </div>
-    </div>

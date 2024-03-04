@@ -16,7 +16,8 @@
         </ul>
           
         <!-- <div class="">Customer ID</div> -->
-        <div *ngIf="activeTab==='form'" class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-end-0">
+        <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-end-0 tabs"
+        [ngClass]="{'d-grid': activeTab==='form'}">
           <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
           <app-verification-section
             class="g-1 p-3 border border-1 rounded-3 pb-3"
@@ -80,19 +81,21 @@
           </app-general-section>
 
         </div>
-        <div *ngIf="activeTab==='documentation'" class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-end-0">
+        <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-end-0 tabs"
+        [ngClass]="{'d-grid': activeTab==='documentation'}">
           <div class="">
             <h6>Documents</h6>
           </div>
 
-          <ul class="doc-list row px-3 mx-3">
-            <li *ngFor="let doc of documents">
-              <p>{{doc.name}}</p>
+          <div class="doc-list row px-3 mx-3">
+            <div *ngFor="let doc of documents" class="col-md-3 my-2">
+              <label class="form-label">{{doc.name}}</label>
+              <br>
               <a [href]="'http://localhost:3000/' + doc.src" [download]="doc.name + '.pdf'" target="_blank">
-                <fa-icon class="fa-2xl mx-2 text-primary cursor-pointer" [icon]="faFilePdf" title="Download Certificate"></fa-icon>
+                <fa-icon class="fa-2xl mx-2 text-primary cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>

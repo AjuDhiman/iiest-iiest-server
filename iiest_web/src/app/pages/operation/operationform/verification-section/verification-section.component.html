@@ -6,7 +6,7 @@
   <div class="d-flex justify-content-between">
     <h6>Verification Section</h6>
     <div [ngClass]="verifiedStatus?'text-success':'text-warning'" style="font-size: large;">
-      {{verifiedStatus?'verified':'In-Progress'}}
+      {{verifiedStatus?'Verified':'In-Progress'}}
       <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation" class="fa-lg ml-2"></fa-icon>
     </div>
   </div>
@@ -180,7 +180,7 @@
   <div class="d-flex justify-content-between">
     <h6>Verification Section</h6>
     <div [ngClass]="verifiedStatus?'text-success':'text-warning'" style="font-size: large;">
-      {{verifiedStatus?'verified':'In-Progress'}}
+      {{verifiedStatus?'Verified':'In-Progress'}}
       <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation" class="fa-lg ml-2"></fa-icon>
     </div>
   </div>
@@ -384,7 +384,7 @@
 
   <div class="row mt-3">
     <div class="col-6">
-      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus">Verify</button>
+      <button type="submit" class="btn btn-sm btn-primary">Verify</button>
     </div>
   </div>
 </form>

@@ -116,7 +116,9 @@ export class HighchartsComponent implements OnChanges {
           name: this.chartData.seriesName,
           type: 'column',
           data: this.values,
-          // events: this.events
+          events: {
+            // click: 
+          }
         }
       ],
       drilldown: {

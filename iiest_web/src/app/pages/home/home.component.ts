@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // chart objects
   deptData: chartData;
-  salesChartData: chartData;
   productSalesChartData: chartData;
   areaSalesChartData: chartData;
   monthSalesChartData: chartData;
@@ -102,6 +101,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+  //methord for Getting basic information about user from session by the help of utility services
   getUserBasicData(): void {
     let loggedInUserData: any = this._registerService.LoggedInUserData();
     loggedInUserData = JSON.parse(loggedInUserData)

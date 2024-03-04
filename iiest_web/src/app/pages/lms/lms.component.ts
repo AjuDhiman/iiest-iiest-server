@@ -248,7 +248,8 @@ selectedLeaveType: string = '';
 isPopUpVisible: boolean = true;
 isCalendar:boolean=true;
 isApply:boolean=false;
-halfLeave:string;
+sunDoubleClickState: boolean = false; 
+sunIconState: 'full' | 'half' = 'full';
 totalSelectedDates:any;
 faPhone=faPhone;
 faSun=faSun;
@@ -256,6 +257,7 @@ faClose=faClose;
 faCopy=faCopy;
 faUser=faUser;
 faLessThan= faLessThan;
+
 
 leaveForm: FormGroup;
 
@@ -369,8 +371,6 @@ applySelection(): void {
 
   this.isCalendar = false;
   this.isApply = true; 
-  
-  
 
    // Logic for updating selected dates with leave type
   this.selectedDatesWithLeaveType = this.selectedDates.map(date => {
@@ -384,16 +384,6 @@ applySelection(): void {
  
 }
 
-halfDayLeave(date: string): void {
-  const index = this.selectedDatesWithLeaveType.findIndex(item => item.date === date);
-  if (index !== -1) {
-    if (this.selectedDatesWithLeaveType[index].leaveType === 'half') {
-      this.selectedDatesWithLeaveType[index].leaveType = '';
-    } else {
-      this.selectedDatesWithLeaveType[index].leaveType = 'half';
-    }
-  }
-}
 
 updateLeaves($event :any):void{
   this.selectedLeaveType= $event.target.value;
@@ -408,19 +398,14 @@ updateLeaves($event :any):void{
     this.leave[0].myLeave.availed += this.totalSelectedDates ;
      }
 
-     this.selectedDatesWithLeaveType.forEach(date => {
-      if (date.leaveType === 'half') {
-        if (this.selectedLeaveType === 'annual') {
-          this.leave[0].annualLeave.available -= 0.5;
-          this.leave[0].annualLeave.availed += 0.5;
-        } else if (this.selectedLeaveType === 'my') {
-          this.leave[0].myLeave.available -= 0.5;
-          this.leave[0].myLeave.availed += 0.5;
-        }
-      }
-    });
+  if (this.sunIconState === 'full') {
+    this.sunIconState = 'half';
+    this.totalSelectedDates += 0.5;
+  } else {
+    this.sunIconState = 'full';
+    this.totalSelectedDates -= 1;
+  }
 }
-
 
 
 onCancel():void{
