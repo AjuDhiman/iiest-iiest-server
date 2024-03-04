@@ -39,10 +39,10 @@ export class MultiSelectComponent implements OnChanges {
       this.initializeAll();
     }
 
-    if (changes['options'] && changes['isDisabled'].currentValue) {
-      // 'isDisabled' has changed
+    // if (changes['options'] && changes['isDisabled'].currentValue) {
+    //   // 'isDisabled' has changed
       
-    }
+    // }
   }
 
   initializeAll(): void {
@@ -60,7 +60,6 @@ export class MultiSelectComponent implements OnChanges {
 
     let value = this.all[index].value
     if (this.all[index].checked) {
-      console.log(value);
       this.selected.push(value);
     }
     else {
@@ -70,12 +69,8 @@ export class MultiSelectComponent implements OnChanges {
     //we want to emit the array of all selected elements
     this.selectedArrayChange.emit(this.selected);
     
-    if (this.selected.length === 0) {
-      this.isDisplayEmpty = true;
-    }
-    else {
-      this.isDisplayEmpty = false;
-    }
+   this.checkIfEmpty()
+
     event.stopPropagation();
   }
 
@@ -94,5 +89,14 @@ export class MultiSelectComponent implements OnChanges {
     this.isdropped = false;
     this.invalid = false;
     this.all.forEach(item => item.checked = false);
+  }
+
+  checkIfEmpty(){
+    if (this.selected.length === 0) {
+      this.isDisplayEmpty = true;
+    }
+    else {
+      this.isDisplayEmpty = false;
+    }
   }
 }

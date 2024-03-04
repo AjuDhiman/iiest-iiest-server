@@ -33,6 +33,8 @@ export class FbolistComponent implements OnInit {
   pageNumber: number = 1;
   itemsNumber: number = 25;
 
+  activeTab: string = 'fostac';
+
   isModal: boolean = false;
 
   //loading
@@ -166,6 +168,10 @@ export class FbolistComponent implements OnInit {
   viewFboDetails(res: any) {
     const modalRef = this.modalService.open(ViewFboComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.fboData = res;
+  }
+
+  toogleTabs(tab: string){
+    this.activeTab = tab;
   }
 
 }

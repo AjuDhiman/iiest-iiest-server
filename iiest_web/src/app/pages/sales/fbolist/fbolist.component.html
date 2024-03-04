@@ -1,4 +1,11 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
+  <ul class="nav nav-pills w-100 d-flex justify-content-end my-0 py-0">
+    <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2 mx-1">
+      <a class="nav-link mx-1"  [ngClass]="{'active': activeTab==='fostac'}" (click)="toogleTabs('fostac')">Fostac</a>
+      <a class="nav-link mx-1"  [ngClass]="{'active': activeTab==='foscos'}" (click)="toogleTabs('foscos')">Foscos</a>
+      <a class="nav-link mx-1"  [ngClass]="{'active': activeTab==='hygiene'}" (click)="toogleTabs('hygiene')">Hygiene</a>
+    </li>
+  </ul>
   <div class="container-xxl border border-1 rounded-3 pt-3">
     <div class="row g-3 mb-4 align-items-center justify-content-between">
       <div class="col-auto">

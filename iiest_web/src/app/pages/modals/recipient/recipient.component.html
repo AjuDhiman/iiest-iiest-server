@@ -43,6 +43,7 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
           <div *ngIf="submitted && recipient['pincode'].errors" class="invalid-feedback">
             <div *ngIf="recipient['pincode'].errors['required']">Pincode is required</div>
+            <div *ngIf="recipient['pincode'].errors['pattern']">Pincode is invalid</div>
           </div>
         </div>
         <div class="col-md-4">

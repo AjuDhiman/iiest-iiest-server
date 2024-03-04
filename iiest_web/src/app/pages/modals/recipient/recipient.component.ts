@@ -336,7 +336,7 @@ export class RecipientComponent implements OnInit {
           {
             operatorName: ['', Validators.required],
             address: ['', Validators.required],
-            pincode: ['', Validators.required],
+            pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$')]],
             village: ['', Validators.required],
             tehsil: ['', Validators.required],
             eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
@@ -370,7 +370,11 @@ export class RecipientComponent implements OnInit {
   }
 
   uploadEbill($event: any, shopId: string){
-    let file = $event.target.files[0]
+    let file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
+      return;
+    }
     let formData: FormData = new FormData();
     formData.append('eBill', file);
     this._registerService.uploadEbill(shopId, formData).subscribe({
@@ -382,7 +386,11 @@ export class RecipientComponent implements OnInit {
   }
 
   uploadOwnerPhoto($event: any, shopId: string){
-    let file = $event.target.files[0]
+    let file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
+      return;
+    }
     let formData: FormData = new FormData();
     formData.append('ownerPhoto', file);
     this._registerService.uploadOwnerPhoto(shopId, formData).subscribe({
@@ -394,7 +402,11 @@ export class RecipientComponent implements OnInit {
   }
 
   uploadShopPhoto($event: any, shopId: string){
-    let file = $event.target.files[0]
+    let file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
+      return;
+    }
     let formData: FormData = new FormData();
     formData.append('shopPhoto', file);
     this._registerService.uploadShopPhoto(shopId, formData).subscribe({
