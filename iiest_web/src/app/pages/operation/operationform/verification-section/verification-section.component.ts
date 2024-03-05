@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { faCircleCheck, faCircleExclamation, faL } from '@fortawesome/free-solid-svg-icons';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IconDefinition, faCheck, faCircleCheck, faCircleExclamation, faL } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -16,6 +16,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   //general variables
   verified: boolean = false;
   verifiedStatus: boolean = false;
+  isPropraitor: boolean = false;
+  minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
+  ownersNum: number = 0; // this var is for deciding the no of owners in case of partnership or board of directors
+  indexArr: number[] = []; //this var is used for converting ownersNum to array of increasing num till ownerNum because we are using this with ngFor and ngFor works only with array
+  ownerType: string = '';
 
   //icons
   faCircleExclamation = faCircleExclamation;
@@ -41,6 +46,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @ViewChild(MultiSelectComponent) multiSelect: MultiSelectComponent;
 
+  @ViewChildren('fieldVerification') fieldVerifications: QueryList<ElementRef>
+
   kobData: any;
 
   kobList: string[] = [];
@@ -49,8 +56,21 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   ownershipType = ownershipType;
 
+  //icons
+  faCheck: IconDefinition = faCheck;
+
   //Verification Reactive angular form
   verificationForm: FormGroup = new FormGroup({});
+
+  ownersDetails: FormGroup = new FormGroup({
+    name: new FormControl(''),
+    aadhar_no: new FormControl(''),
+    address: new FormControl(''),
+    state: new FormControl(''),
+    district: new FormControl(''),
+    pincode: new FormControl(''),
+    aadhar_photo: new FormControl(''),
+  })
 
   fostacVerificationForm: FormGroup = new FormGroup({
     recipient_name: new FormControl(''),
@@ -79,16 +99,18 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     pincode: new FormControl(''),
     village: new FormControl(''),
     tehsil: new FormControl(''),
-    kob: new FormControl(''),
-    food_category: new FormControl(''),
     license_category: new FormControl(''),
     license_duration: new FormControl(''),
-    ownership_type: new FormControl(''),
-    food_items: new FormControl(''),
-    operator_address: new FormControl(''),
     foscos_total: new FormControl(''),
     sales_date: new FormControl(''),
     sales_person: new FormControl(''),
+    kob: new FormControl(''),
+    food_items: new FormControl(''),
+    food_category: new FormControl(''),
+    ownership_type: new FormControl(''),
+    owner_num: new FormControl(''),
+    owner_details: new FormArray([]),//this property will contains array of details of every Owner
+    operator_address: new FormControl(''),
   });
 
   constructor(private formBuilder: FormBuilder,
@@ -142,9 +164,17 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     return this.verificationForm.controls;
   }
 
+  get ownerDetailsArray(): any {
+    return (this.verificationForm.get('owner_details') as FormArray).controls;
+  }
+
   onVerify(): void {
+    console.log(this.ownerDetailsArray[0]);
+    if (this.fieldVerifications.find((div: any) => div.nativeElement.getAttribute('valid') === 'false')) {
+      this._toastrService.warning('Please verify all fields first')
+      return
+    }
     this.verified = true;
-    console.log(this.verificationForm.value);
     if (this.verificationForm.invalid) {
       return
     }
@@ -319,6 +349,16 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   setFormValidation(): void {
+    this.ownersDetails = this.formBuilder.group({
+      name: ['', Validators.required],
+      aadhar_no: ['', Validators.required],
+      address: ['', Validators.required],
+      state: ['', Validators.required],
+      district: ['', Validators.required],
+      pincode: ['', Validators.required],
+      aadhar_photo: ['', Validators.required],
+    });
+
     this.fostacVerificationForm = this.formBuilder.group({
       recipient_name: ['', Validators.required],
       fbo_name: ['', Validators.required],
@@ -347,18 +387,94 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       pincode: ['', Validators.required],
       village: ['', Validators.required],
       tehsil: ['', Validators.required],
-      kob: ['', Validators.required],
-      food_category: ['', Validators.required],
-      ownership_type: ['', Validators.required],
-      food_items: ['', Validators.required],
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
-      operator_address: ['', Validators.required],
       foscos_total: ['', Validators.required],
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],
+      kob: ['', Validators.required],
+      food_category: ['', Validators.required],
+      food_items: ['', Validators.required],
+      ownership_type: ['', Validators.required],
+      owner_num: ['', Validators.required],
+      owner_details: this.formBuilder.array([this.ownersDetails]),
+      operator_address: ['', Validators.required],
     });
 
+  }
+
+  onOwnershipTypeChange($event: any) {
+    if ($event.target.value === 'Propraitorship') {
+      this.verificationForm.patchValue({ owner_num: 1 });
+      this.isPropraitor = true;
+      this.minMembers = 1;
+      this.ownersNum = 1;
+      this.indexArr = []
+      for (let i = 0; i < this.ownersNum; i++) {
+        this.indexArr.push(i);
+      }
+    } else {
+      this.verificationForm.patchValue({ owner_num: 2 });
+      this.isPropraitor = false;
+      this.minMembers = 2;
+      this.ownersNum = 2;
+      this.indexArr = []
+      for (let i = 0; i < this.ownersNum; i++) {
+        this.indexArr.push(i);
+      }
+    }
+
+    switch ($event.target.value) {
+      case 'Propraitorship':
+        this.ownerType = 'Propraitor'
+        break;
+      case 'Partnership':
+        this.ownerType = 'Partner'
+        break;
+      case 'Board of Directors':
+        this.ownerType = 'Director'
+        break;
+    }
+  }
+
+  onOwnerNumChange($event: any) {
+    let value;
+    if ($event.target.value > 20) {
+      this.verificationForm.patchValue({ owner_num: 20 });
+      value = 20;
+    } else {
+      value = $event.target.value;
+    }
+    this.ownersNum = value;
+    this.indexArr = [];
+    for (let i = 0; i < value; i++) {
+      this.indexArr.push(i);
+    }
+  }
+
+  addOrdinalSuffix(number: number): string {
+    if (number === 11 || number === 12 || number === 13) {
+      return number + "th";
+    }
+
+    let lastDigit = number % 10;
+    let suffix = "";
+
+    switch (lastDigit) {
+      case 1:
+        suffix = "st";
+        break;
+      case 2:
+        suffix = "nd";
+        break;
+      case 3:
+        suffix = "rd";
+        break;
+      default:
+        suffix = "th";
+    }
+
+    return number + suffix;
   }
 
 }

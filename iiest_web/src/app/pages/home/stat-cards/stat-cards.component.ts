@@ -11,7 +11,7 @@ import { DepartmentListComponent } from '../../modals/department-list/department
   styleUrls: ['./stat-cards.component.scss']
 })
 export class StatCardsComponent implements OnInit{
-  departmentAndCount:Array<{department:string, count:string}>
+  departmentAndCount:Array<{department:string, count:string, active:string, inactive:string}>
   department:string='';
   overallSalesCount:number;
   approvedSalesCount:number;
@@ -54,11 +54,14 @@ export class StatCardsComponent implements OnInit{
   getEmployeeCountByDept(){
     this._getDataService.getEmpCount().subscribe({
       next : res =>{
+        console.log(res);
         let departmentArr=res.employeeGroupCount;
         this.departmentAndCount=departmentArr.map((elem:any) => {
           return{
             department:elem._id.department,
-            count:elem.count
+            count:elem.count,
+            active:elem.active,
+            inactive:elem.inactive
           }
         });
         this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1);

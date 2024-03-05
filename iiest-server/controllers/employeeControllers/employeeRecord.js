@@ -122,8 +122,14 @@ exports.employeeDepartmentCount = async (req, res) => {
                     _id: {
                         department: '$department'
                     },
-                    count: {
+                    active: {
                         $sum: { $cond: { if: { $eq: ["$status", true] }, then: 1, else: 0 } }
+                    },
+                    inactive: {
+                        $sum: { $cond: { if: { $eq: ["$status", false] }, then: 1, else: 0 } }
+                    },
+                    count: {
+                        $sum: 1
                     }
                 }
             }
@@ -665,55 +671,55 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     }
                 },
                 {
-                  $project: {
-                    month: { $month: "$createdAt" },
-                    dayOfMonth: { $dayOfMonth: "$createdAt" }
-                  }
-                },
-                {
-                  $group: {
-                    _id: { month: "$month", dayOfMonth: "$dayOfMonth" },
-                    count: { $sum: 1 }
-                  }
-                },
-                {
-                  $group: {
-                    _id: "$_id.month",
-                    count: { $sum: "$count" },
-                    categories: {
-                      $push: {
-                        name: "$_id.dayOfMonth",
-                        value: "$count"
-                      }
+                    $project: {
+                        month: { $month: "$createdAt" },
+                        dayOfMonth: { $dayOfMonth: "$createdAt" }
                     }
-                  }
                 },
                 {
-                  $project: {
-                    name: {
-                      $switch: {
-                        branches: [
-                          { case: { $eq: ["$_id", 1] }, then: "January" },
-                          { case: { $eq: ["$_id", 2] }, then: "February" },
-                          { case: { $eq: ["$_id", 3] }, then: "March" },
-                          { case: { $eq: ["$_id", 4] }, then: "April" },
-                          { case: { $eq: ["$_id", 5] }, then: "May" },
-                          { case: { $eq: ["$_id", 6] }, then: "June" },
-                          { case: { $eq: ["$_id", 7] }, then: "July" },
-                          { case: { $eq: ["$_id", 8] }, then: "August" },
-                          { case: { $eq: ["$_id", 9] }, then: "September" },
-                          { case: { $eq: ["$_id", 10] }, then: "October" },
-                          { case: { $eq: ["$_id", 11] }, then: "November" },
-                          { case: { $eq: ["$_id", 12] }, then: "December" }
-                        ],
-                        default: "Unknown"
-                      }
-                    },
-                    value: "$count",
-                    categories: 1
-                  }
+                    $group: {
+                        _id: { month: "$month", dayOfMonth: "$dayOfMonth" },
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.month",
+                        count: { $sum: "$count" },
+                        categories: {
+                            $push: {
+                                name: "$_id.dayOfMonth",
+                                value: "$count"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        name: {
+                            $switch: {
+                                branches: [
+                                    { case: { $eq: ["$_id", 1] }, then: "January" },
+                                    { case: { $eq: ["$_id", 2] }, then: "February" },
+                                    { case: { $eq: ["$_id", 3] }, then: "March" },
+                                    { case: { $eq: ["$_id", 4] }, then: "April" },
+                                    { case: { $eq: ["$_id", 5] }, then: "May" },
+                                    { case: { $eq: ["$_id", 6] }, then: "June" },
+                                    { case: { $eq: ["$_id", 7] }, then: "July" },
+                                    { case: { $eq: ["$_id", 8] }, then: "August" },
+                                    { case: { $eq: ["$_id", 9] }, then: "September" },
+                                    { case: { $eq: ["$_id", 10] }, then: "October" },
+                                    { case: { $eq: ["$_id", 11] }, then: "November" },
+                                    { case: { $eq: ["$_id", 12] }, then: "December" }
+                                ],
+                                default: "Unknown"
+                            }
+                        },
+                        value: "$count",
+                        categories: 1
+                    }
                 }
-              ]);
+            ]);
         }
 
         res.status(200).json(monthWiseSale);
