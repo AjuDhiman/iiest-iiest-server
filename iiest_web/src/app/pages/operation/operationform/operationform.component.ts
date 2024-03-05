@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralSectionComponent } from './general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
-import { IconDefinition, faFilePdf, faFileImage } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFilePdf, faFileImage, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-operationform',
@@ -25,6 +25,7 @@ export class OperationformComponent implements OnInit {
   activeTab: string = 'form';
   faFilePdf: IconDefinition = faFilePdf;
   faFileImage:IconDefinition = faFileImage;
+  faDownload: IconDefinition = faDownload;
   documents: {name: string, src: string, format: string}[] = [];
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;

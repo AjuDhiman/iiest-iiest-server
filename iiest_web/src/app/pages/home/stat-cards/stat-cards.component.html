@@ -53,6 +53,14 @@
                     <h4 class="stats-type mb-1">{{obj.department}}</h4>
                 </div>
                 <div class="stats-figure">{{obj.count}}</div>
+                <div class="d-flex flex-row justify-content-between">
+                    <div class="text-xs">
+                        <span class="text-success">Active</span><br>{{obj.active}}
+                    </div>
+                    <div class="text-xs">
+                       <span class="text-danger">Inactive</span><br>{{obj.inactive}}
+                    </div>
+                </div>
 
             </div><!--//app-card-body-->
         </div><!--//app-card-->

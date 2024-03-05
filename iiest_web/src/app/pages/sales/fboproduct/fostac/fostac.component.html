@@ -1,6 +1,6 @@
 <form [formGroup]="fostac_training">
 <div class="row" >
-    <h6 class=" pull-left">Fostac Training</h6>
+    <h6 class="pull-left">Fostac Training</h6>
      <div class="col-md-3">
         <label for="fostac_service_name" class="form-label">Service Name<sup>*</sup></label>
         <select id="fostac_service_name" formControlName="fostac_service_name" [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_service_name')?.errors}"
