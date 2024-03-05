@@ -37,3 +37,11 @@
  .list-tr:hover .cell{
    background-color: #9392922f;
 }
+
+.btn-xs,
+ .btn-group-xs > .btn {
+   --bs-btn-padding-y: 0.175rem;
+   --bs-btn-padding-x: 0.35rem;
+   --bs-btn-font-size: 0.55rem;
+   --bs-btn-border-radius: var(--bs-border-radius-sm);
+ }

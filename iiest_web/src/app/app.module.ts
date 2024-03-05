@@ -67,6 +67,7 @@ import { CertificationSectionComponent } from './pages/operation/operationform/c
 import { LmsComponent } from './pages/lms/lms.component';
 import { CalendarComponent } from './pages/lms/calendar/calendar.component';
 import { ViewDocumentComponent } from './pages/modals/view-document/view-document.component';
+import { RecipientListComponent } from './pages/modals/recipient/recipient-list/recipient-list.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { ViewDocumentComponent } from './pages/modals/view-document/view-documen
     ConformationModalComponent,
     CalendarComponent,
     CertificationSectionComponent,
-    ViewDocumentComponent
+    ViewDocumentComponent,
+    RecipientListComponent
   ],
   imports: [
     BrowserModule,

@@ -14,10 +14,10 @@ export const clientType = ['General Client', 'Corporate Client'];
 export const paymentMode = ['Cash', 'Pay Page'];
 
 export const ownershipType = [
-   'propraitorship',
-   'partnership',
-   'board of directors'
-]
+   'Propraitorship',
+   'Partnership',
+   'Board of Directors'
+];
 
 export const licenceType = {
    'licenceCategory': ['New Licence', 'Renewal', 'Modified'],

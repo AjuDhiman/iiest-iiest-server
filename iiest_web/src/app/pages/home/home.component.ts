@@ -126,7 +126,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const department = 'Sales Department';
         const chartTitle = 'Product Sales Chart';
         const seriesName = 'Products';
-        const yAxisTitle = 'SalesCcount';
+        const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;

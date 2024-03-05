@@ -1,0 +1,21 @@
+.btn-xs {
+    margin-top: 5px;
+}
+
+.verify-icon {
+    position: absolute;
+    right: 22px;
+    top: 34px;
+}
+
+.is-verified {
+    border: 1px solid #198754;
+}
+
+.is-verified:focus, .is-verified:active {
+    outline: 4px solid #c5e1d4;
+}
+
+.verified-check{
+    color: #198754 !important;
+}
