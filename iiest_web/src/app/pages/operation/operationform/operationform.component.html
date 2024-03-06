@@ -68,7 +68,10 @@
             <div class="col-6 col-md-4 col-xl-3 col-xxl-2" *ngFor="let doc of documents">
               <div class="app-card app-card-doc shadow-sm h-100">
                 <div class="app-card-thumb-holder p-3">
-                  <span class="icon-holder">
+                  <div class="app-card-thumb" *ngIf="doc.format === 'image'">
+                    <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name">
+                  </div>
+                  <span class="icon-holder" *ngIf="doc.format !== 'image'">
                     <fa-icon class="fa-sm mx-2 text-primary cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                 </div>
@@ -103,3 +106,4 @@
     </div>
   </div>
 </div>
+

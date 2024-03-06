@@ -3,7 +3,8 @@ const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editE
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, func } = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
-const multer = require('multer')
+const multer = require('multer');
+const { getTopSalesPersons, getTopProducts } = require('../controllers/employeeControllers/statList');
 
 const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
@@ -34,5 +35,7 @@ router.get('/getareawisesaledata', authMiddleware, getAreaWiseSalesData);
 router.get('/getpersonwisesaledata', authMiddleware, getPersonWiseSalesData);
 router.get('/getclienttypesaledata', authMiddleware, getClientTypeSalesData);
 router.get('/getmothwisesale', authMiddleware, getMonthWiseSaleData);
+router.get('/gettopsalespersons', authMiddleware, getTopSalesPersons);
+router.get('/gettopproducts', authMiddleware, getTopProducts);
 
 module.exports = router;

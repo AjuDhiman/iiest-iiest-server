@@ -68,6 +68,7 @@ import { LmsComponent } from './pages/lms/lms.component';
 import { CalendarComponent } from './pages/lms/calendar/calendar.component';
 import { ViewDocumentComponent } from './pages/modals/view-document/view-document.component';
 import { RecipientListComponent } from './pages/modals/recipient/recipient-list/recipient-list.component';
+import { StatListsComponent } from './pages/home/stat-lists/stat-lists.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +112,8 @@ import { RecipientListComponent } from './pages/modals/recipient/recipient-list/
     CalendarComponent,
     CertificationSectionComponent,
     ViewDocumentComponent,
-    RecipientListComponent
+    RecipientListComponent,
+    StatListsComponent
   ],
   imports: [
     BrowserModule,

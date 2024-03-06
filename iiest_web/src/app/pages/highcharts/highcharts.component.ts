@@ -115,7 +115,62 @@ export class HighchartsComponent implements OnChanges {
           type: 'column',
           data: this.values,
           events: {
-            // click: 
+            click: this.clickEvent
+          }
+        }
+      ]
+    }
+  }
+
+  // --------Column Drill Down Chart--------
+  plotColumnDrillDownChart() {
+    this.chart = {
+      chart: {
+        type: 'column',
+        spacingBottom: -5,
+      },
+      title: {
+        text: undefined
+      },
+      credits: {
+        enabled: false
+      },
+     xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        title: {
+          text: this.chartData.yAxisTitle
+        }
+      },
+      plotOptions: {
+        column: {
+          colorByPoint: true,
+          // colors: this.columnColorShade
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+              textOutline: 'none'
+            }
+          }
+        },
+      },
+      scrollbar: {
+        enabled: true
+      },
+      series: [
+        {
+          name: this.chartData.seriesName,
+          type: 'column',
+          data: this.values,
+          events: {
+            click: () => {
+
+            }
           }
         }
       ],
@@ -129,52 +184,6 @@ export class HighchartsComponent implements OnChanges {
         series : this.drilldownData
       }
     }
-  }
-
-  // --------Column Drill Down Chart--------
-  plotDrillDownChart() {
-    this.chart = {
-      chart: {
-        type: 'column',
-        // ---------Edit chart spacing---------
-        spacingBottom: -5,
-        // spacingTop: 10,
-        // spacingLeft: 10,
-        // spacingRight: 10,
-      },
-      title: {
-        text: undefined
-      },
-      credits: {
-        enabled: false
-      },
-      xAxis: {
-        type: 'category'
-      },
-      yAxis: {
-        title: {
-          text: this.chartData.yAxisTitle
-        }
-      },
-      series: [{
-        type: 'column',
-        name: this.chartData.seriesName,
-        data: Object.keys(this.chartData.data).map(key => ({
-          name: key,
-          y: this.chartData.data[key],
-          drilldown: key,
-        }))
-      }],
-      drilldown: {
-        breadcrumbs: {
-          position: {
-            x: 13,
-            y: -48
-          }
-        },
-        // series: this.chartData.drillData
-      }
-    };
   }
 
   // -------Line Chart Function---------
@@ -360,17 +369,19 @@ export class HighchartsComponent implements OnChanges {
     // }
 
     switch (this.selectedChartType) {
-      case "column": this.plotColumnChart();
+      case "Column": 
+        if(this.chartData.isDrilldown) {
+          this.plotColumnDrillDownChart();
+        } else {
+          this.plotColumnChart();
+        }
         break;
-      case "line": this.plotLineChart();
+      case "Line": this.plotLineChart();
         break;
-      case "pie": this.plotPieChart();
+      case "Pie": this.plotPieChart();
         break;
-      case "area": this.plotAreaChart();
+      case "Area": this.plotAreaChart();
         break;
-      case "drilldown": this.plotDrillDownChart();
-        break;
-      // default: this.plotColumnChart();
     }
   }
 
@@ -464,6 +475,11 @@ export class HighchartsComponent implements OnChanges {
       userDept: this.parsedUser.department, 
       interval: this.intervalType,
       chartTitile: this.chartData.chartTitle
+    };
+    console.log(chartData);
+    if(chartData.chartTitile === 'Employee Count By Department') {
+      this.viewDepartmentData(chartData.userDept);
+      return;
     }
     this.viewChartData(chartData);
   }

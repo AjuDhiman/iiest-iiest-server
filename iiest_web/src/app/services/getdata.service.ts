@@ -183,6 +183,16 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getTopSalesPersons(): Observable<any>{
+    const url: string = `${this.url}/gettopsalespersons`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getTopProducts(): Observable<any>{
+    const url: string = `${this.url}/gettopproducts`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getKobData(): Observable<any> {
     const url: string = `${this.url}/getkobdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

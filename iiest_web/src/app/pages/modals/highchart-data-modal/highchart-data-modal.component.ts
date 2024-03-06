@@ -37,7 +37,7 @@ export class HighchartDataModalComponent {
 
   ngOnInit() {
     switch (this.chartData.chartTitile) {
-      case 'Sales Count Chart':
+      case 'Product Sales Chart':
         this.fetchAllFboData();
         break;
       case 'Area Wise Sales Chart': this.fetchFboDataByState();
@@ -47,6 +47,8 @@ export class HighchartDataModalComponent {
       case 'Customer Type Chart': this.fetchFboDataByClientType();
         break;
       case 'Sales Chart': this.monthWiseFilter();
+        break;
+      case 'Employee Sales Chart': this.employeeWiseFilter();
         break;
       }
   }
@@ -93,14 +95,12 @@ export class HighchartDataModalComponent {
       next: (res) => {
         if (res.salesInfo) {
           this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
-          if (this.chartData.interval === "tillNow") {
             if (this.chartData.salesCategory === 'Fostac') {
               this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
             } else {
               this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
             }
             this.salesDeptfilter();
-          }
         }
       },
       error: (err) => {
@@ -164,7 +164,6 @@ export class HighchartDataModalComponent {
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if(res.salesInfo) {
-          console.log(this.chartData)
           this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == this.chartData.filterValue);
           this.salesDeptfilter();
         }
@@ -175,7 +174,31 @@ export class HighchartDataModalComponent {
           this.registerService.signout();
         }
       }
-    })
+    });
+  }
+
+  employeeWiseFilter() {
+    this._getDataService.getSalesList().subscribe({
+      next: (res) => {
+        console.log(res);
+        if(res.salesInfo) {
+          this.specificDatas = res.salesInfo.filter((item: any) => 
+          {
+            if(item.employeeInfo) {
+              return item.employeeInfo.employee_name.toLowerCase() == this.chartData.filterValue.toLowerCase()
+            }
+            return 0;
+          });
+          this.salesDeptfilter();
+        }
+      },
+      error: (err) => {
+        let errorObj = err;
+        if (errorObj.userError) {
+          this.registerService.signout();
+        }
+      }
+    });
   }
 
   onTableDataChange(event: any) {
@@ -201,36 +224,6 @@ export class HighchartDataModalComponent {
         case "HR Department": this.filteredData = this.employeeList;
           break;
       }
-    }
-  }
-
-  filterByDuration(intervalType: string): string | void {
-    let now = new Date();
-
-    if (intervalType === "tillNow") {
-      return "tillNow";
-    } else if (intervalType === "year") {
-      let yearStr = now.getFullYear();
-      // Concatenate components to form desired date string
-      let formattedDate = yearStr.toString();
-      console.log(formattedDate);
-      return formattedDate;
-
-    } else if (intervalType === "month") {
-      let yearStr = now.getFullYear();
-      let monthStr = ('0' + (now.getMonth() + 1)).slice(-2); // Add leading zero if month is < 10
-      // Concatenate components to form desired date string
-      let formattedDate = yearStr + '-' + monthStr;
-      console.log(formattedDate);
-      return formattedDate;
-
-    } else if (intervalType === "quater") {
-      let yearStr = now.getFullYear();
-      let monthStr = ('0' + (now.getMonth() - 2)).slice(-2); // Add leading zero if month is < 10
-      // Concatenate components to form desired date string
-      let formattedDate = yearStr + '-' + monthStr + '-01';
-      console.log(formattedDate);
-      return formattedDate;
     }
   }
 }

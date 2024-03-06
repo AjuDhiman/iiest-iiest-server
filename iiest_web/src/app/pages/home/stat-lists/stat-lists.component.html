@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-12 col-lg-6"recto *ngIf="designation === 'Director'">
+        <div class="app-card app-card-stats-table h-100 shadow-sm">
+            <div class="app-card-header p-3">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-auto">
+                        <h4 class="app-card-title">Top Sales Persons</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="app-card-body p-3 p-lg-4">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0">
+                        <thead>
+                            <tr>
+                                <th class="meta">Person</th>
+                                <th class="meta stat-cell">Total Sales</th>
+                                <th class="meta stat-cell">Today Sales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let person of topSalesPersons">
+                                <td class="row-name">{{person.name}}</td>
+                                <td class="stat-cell">{{person.totalSales}}</td>
+                                <td class="stat-cell">{{person.todaySales}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6" *ngIf="designation === 'Director'">
+        <div class="app-card app-card-stats-table h-100 shadow-sm">
+            <div class="app-card-header p-3">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-auto">
+                        <h4 class="app-card-title">Top Products</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="app-card-body p-3 p-lg-4">
+                <div class="table-responsive">
+                    <table class="table table-borderless mb-0">
+                        <thead>
+                            <tr>
+                                <th class="meta">Product</th>
+                                <th class="meta stat-cell">Total Sale Count</th>
+                                <th class="meta stat-cell">Today Sales Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let product of topProducts">
+                                <td class="row-name">{{product.name}}</td>
+                                <td class="stat-cell">{{product.totalSalesCount}}</td>
+                                <td class="stat-cell">{{product.todaySalesCount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
