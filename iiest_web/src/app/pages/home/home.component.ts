@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   //User Related variables
   empName: String;
-  empDepartment: String;
+  empDepartment: string;
   empDesigantion: string;
   projectType: string;
 
@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getProductSaledata() {
     this._getDataService.getProductSaledata().subscribe({
       next: res => {
-        const chartType = 'column';
+        const chartType = 'Column';
         const department = 'Sales Department';
         const chartTitle = 'Product Sales Chart';
         const seriesName = 'Products';
@@ -138,11 +138,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   getAreaWiseSaleData() {
     this._getDataService.getAreaWiseSaleData().subscribe({
       next: res => {
-        const chartType = 'pie';
+        const chartType = 'Pie';
         const department = 'Sales Department';
         const chartTitle = 'Area Wise Sales Chart';
-        const seriesName = 'States';
-        const yAxisTitle = 'Sales Count';
+        const seriesName = 'India';
+        const yAxisTitle = 'India';
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;
@@ -156,11 +156,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   getMonthWisesaleData(){
     this._getDataService.getMonthWisesaleData().subscribe({
       next: res => {
-        const chartType = 'column';
+        const chartType = 'Column';
         const department = 'Sales Department';
         const chartTitle = 'Sales Chart';
-        const seriesName = 'sales';
-        const yAxisTitle = 'SalesCcount';
+        const seriesName = new Date().getFullYear().toString();
+        const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;
@@ -172,7 +172,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getPersonWiseSaleData(){
     this._getDataService.getPersonWiseSaleData().subscribe({
       next: res => {
-        const chartType = 'column';
+        const chartType = 'Column';
         const department = 'Director';
         const chartTitle = 'Employee Sales Chart';
         const seriesName = 'Employee Sales';
@@ -189,7 +189,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getClientTypeSaleData(){
     this._getDataService.getClientTypeSaleData().subscribe({
       next: res => {
-        const chartType = 'column';
+        const chartType = 'Column';
         const department = 'Sales department';
         const chartTitle = 'Customer Type Chart';
         const seriesName = 'Employee Sales';
@@ -207,7 +207,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._getDataService.getEmpHiringData().subscribe({
       next: res => {
         this.isChartDataAvailable = true;
-        const chartType = 'column';
+        const chartType = 'Column';
         const department = 'HR Department';
         const chartTitle = 'Customer Type Chart';
         const seriesName = 'Hiring Performance Chart';
@@ -222,7 +222,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   catchDeptCount($event: Array<{ department: string, count: number }>): void {
-    const chartType = 'column';
+    const chartType = 'Column';
     const department = 'HR department';
     const chartTitle = 'Employee Count By Department';
     const seriesName = 'Department';

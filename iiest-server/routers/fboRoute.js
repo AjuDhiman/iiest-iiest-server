@@ -26,7 +26,7 @@ router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 
 router.post('/fbo/addshopbyexcel/:id', authMiddleware, addShopByExcel); 
 router.put('/fbo/uploadebill/:id', authMiddleware, foscosDocuments.fields([{name: 'eBill', maxCount: 1}]), uploadEbill); //Router for adding e bill to shop model
 router.put('/fbo/uploadownerphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'ownerPhoto', maxCount: 1}]), uploadOwnerPhoto); //Router for adding owner photo to shop model
-router.put('/fbo/uploadshopphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'shopPhoto', maxCount: 1}]), uploadShopPhoto); //Router for adding shop photo to shop model
+router.put('/fbo/uploadshophoto/:id', authMiddleware, foscosDocuments.fields([{name: 'shopPhoto', maxCount: 1}]), uploadShopPhoto); //Router for adding shop photo to shop model
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);

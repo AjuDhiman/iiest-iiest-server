@@ -54,4 +54,4 @@ const getRecipientId = async(salesId, idNumber) => {
 
 module.exports = generatedInfo;
 
-module.exports = generateRecipientInfo;
+// module.exports = generateRecipientInfo;

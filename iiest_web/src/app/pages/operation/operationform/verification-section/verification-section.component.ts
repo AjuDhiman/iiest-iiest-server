@@ -62,16 +62,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   //Verification Reactive angular form
   verificationForm: FormGroup = new FormGroup({});
 
-  ownersDetails: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    aadhar_no: new FormControl(''),
-    address: new FormControl(''),
-    state: new FormControl(''),
-    district: new FormControl(''),
-    pincode: new FormControl(''),
-    aadhar_photo: new FormControl(''),
-  })
-
   fostacVerificationForm: FormGroup = new FormGroup({
     recipient_name: new FormControl(''),
     fbo_name: new FormControl(''),
@@ -109,7 +99,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     food_category: new FormControl(''),
     ownership_type: new FormControl(''),
     owner_num: new FormControl(''),
-    owner_details: new FormArray([]),//this property will contains array of details of every Owner
     operator_address: new FormControl(''),
   });
 
@@ -144,6 +133,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         break;
     }
 
+    console.log(this.verificationform['owner_details'].valueChanges);
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -169,7 +160,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   onVerify(): void {
-    console.log(this.ownerDetailsArray[0]);
+    console.log(this.ownerDetailsArray[1]);
     if (this.fieldVerifications.find((div: any) => div.nativeElement.getAttribute('valid') === 'false')) {
       this._toastrService.warning('Please verify all fields first')
       return
@@ -349,15 +340,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   setFormValidation(): void {
-    this.ownersDetails = this.formBuilder.group({
-      name: ['', Validators.required],
-      aadhar_no: ['', Validators.required],
-      address: ['', Validators.required],
-      state: ['', Validators.required],
-      district: ['', Validators.required],
-      pincode: ['', Validators.required],
-      aadhar_photo: ['', Validators.required],
-    });
 
     this.fostacVerificationForm = this.formBuilder.group({
       recipient_name: ['', Validators.required],
@@ -397,7 +379,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       food_items: ['', Validators.required],
       ownership_type: ['', Validators.required],
       owner_num: ['', Validators.required],
-      owner_details: this.formBuilder.array([this.ownersDetails]),
+      // owner_details: this.formBuilder.array([]),
       operator_address: ['', Validators.required],
     });
 
@@ -450,31 +432,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     for (let i = 0; i < value; i++) {
       this.indexArr.push(i);
     }
-  }
-
-  addOrdinalSuffix(number: number): string {
-    if (number === 11 || number === 12 || number === 13) {
-      return number + "th";
-    }
-
-    let lastDigit = number % 10;
-    let suffix = "";
-
-    switch (lastDigit) {
-      case 1:
-        suffix = "st";
-        break;
-      case 2:
-        suffix = "nd";
-        break;
-      case 3:
-        suffix = "rd";
-        break;
-      default:
-        suffix = "th";
-    }
-
-    return number + suffix;
   }
 
 }

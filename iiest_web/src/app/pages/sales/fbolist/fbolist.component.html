@@ -1,15 +1,15 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
-  <ul class="nav nav-pills w-100 d-flex justify-content-end my-0 py-0">
+  <ul class="nav nav-pills w-100 d-flex justify-content-start my-0 py-0">
     <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2 mx-1">
-      <a class="nav-link mx-1"  [ngClass]="{'active': activeTab==='fostac'}" (click)="toogleTabs('fostac')">Fostac</a>
-      <a class="nav-link mx-1"  [ngClass]="{'active': activeTab==='foscos'}" (click)="toogleTabs('foscos')">Foscos</a>
-      <a class="nav-link mx-1"  [ngClass]="{'active': activeTab==='hygiene'}" (click)="toogleTabs('hygiene')">Hygiene</a>
+      <a class="nav-link mx-1" style="cursor: pointer;"  [ngClass]="{'active': activeTab==='Fostac'}" (click)="toogleTabs('Fostac')">Fostac</a>
+      <a class="nav-link mx-1" style="cursor: pointer;"  [ngClass]="{'active': activeTab==='Foscos Training'}" (click)="toogleTabs('Foscos Training')">Foscos</a>
+      <a class="nav-link mx-1" style="cursor: pointer;"  [ngClass]="{'active': activeTab==='Hygiene'}" (click)="toogleTabs('Hygiene')">Hygiene</a>
     </li>
   </ul>
   <div class="container-xxl border border-1 rounded-3 pt-3">
     <div class="row g-3 mb-4 align-items-center justify-content-between">
       <div class="col-auto">
-        <h1 class="app-page-title mb-0">FBO List</h1>
+        <h1 class="app-page-title mb-0">FBO List <span style="text-transform: capitalize;">{{activeTab}} </span></h1>
       </div>
       <div class="col-auto">
         <div class="page-utilities">
@@ -73,8 +73,8 @@
                     <th class="cell">Customer ID</th>
                     <th class="cell">State</th>
                     <th class="cell">District</th>
-                    <th class="cell">Recipient No</th>
-                    <th class="cell">Shop No</th>
+                    <th class="cell" *ngIf="activeTab==='Fostac'">Recipient No</th>
+                    <th class="cell" *ngIf="activeTab === 'Foscos Training' || activeTab === 'Hygiene'">Shop No</th>
                     <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
                     <th class="cell">Sales Date</th>
                     <th class="cell text-center">Action</th>
@@ -84,15 +84,15 @@
                   <tr class="list-tr"
                     *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }">
                     <td class="cell"><span class="truncate">{{fbo.serialNumber}}</span></td>
-                    <td class="cell"><span class="truncate">{{fbo.fboInfo.fbo_name}}</span></td>
-                    <td class="cell"><span class="truncate">{{fbo.fboInfo.owner_name}}</span></td>
+                    <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.fbo_name}}</span></td>
+                    <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.owner_name}}</span></td>
                     <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                     <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
                     <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
-                    <td class="cell text-center"><span class="truncate selector"
+                    <td *ngIf="activeTab==='Fostac'" class="cell text-center"><span class="truncate selector"
                         (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')" title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
                         fbo.fostacInfo.recipient_no}}</span></td>
-                    <td class="cell text-center"><span class="truncate selector"
+                    <td *ngIf="activeTab === 'Foscos Training' || activeTab === 'Hygiene'" class="cell text-center"><span class="truncate selector"
                         (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')" title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
                         fbo.foscosInfo.shops_no}}</span></td>
                     <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"

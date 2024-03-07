@@ -143,11 +143,6 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getEmpSalesProdWise(): Observable<any> {
-    const url = `${this.url}/getempsalesprodwise`;
-    return this.http.get<any>(url).pipe(catchError(this.handleError));
-  }
-
   public getEmpHiringData(): Observable<any> {
     const url: string = `${this.url}/getemphiringdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -180,6 +175,21 @@ export class GetdataService {
 
   public getEmployeeUnderManager(): Observable<any>{
     const url: string = `${this.url}/getemployeeundermanager`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getEmpUnderManager(): Observable<any>{
+    const url: string = `${this.url}/getempundermanager`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getTopSalesPersons(): Observable<any>{
+    const url: string = `${this.url}/gettopsalespersons`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getTopProducts(): Observable<any>{
+    const url: string = `${this.url}/gettopproducts`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
