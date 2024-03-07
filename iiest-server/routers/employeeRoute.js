@@ -1,10 +1,11 @@
 const express = require('express');
 const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
-const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, func } = require('../controllers/employeeControllers/employeeRecord');
+const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
-const { getTopSalesPersons, getTopProducts } = require('../controllers/employeeControllers/statList');
+const { getTopSalesPersons, getTopProducts, getEmpUnderManager } = require('../controllers/employeeControllers/statList');
+const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData } = require('../controllers/employeeControllers/Highcharts');
 
 const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
@@ -27,7 +28,6 @@ router.get('/getuserimage/:id', authMiddleware, employeeImage);
 router.get('/getusersign/:id', authMiddleware, employeeSignature);
 router.post('/edituserfiles', authMiddleware, employeeFilesUpload.fields([{name: 'userImage', maxCount: 1}, {name: 'userSign', maxCount: 1}]), editEmployeeImages);
 router.get('/empcountbydept', authMiddleware, employeeDepartmentCount);
-router.get('/getempsalesprodwise', authMiddleware, empSalesProdWise);
 router.get('/getemphiringdata', authMiddleware, empHiringData);
 router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager);
 router.get('/getproductsaledata',authMiddleware, getProductSaleData);
@@ -37,5 +37,6 @@ router.get('/getclienttypesaledata', authMiddleware, getClientTypeSalesData);
 router.get('/getmothwisesale', authMiddleware, getMonthWiseSaleData);
 router.get('/gettopsalespersons', authMiddleware, getTopSalesPersons);
 router.get('/gettopproducts', authMiddleware, getTopProducts);
+router.get('/getempundermanager', authMiddleware, getEmpUnderManager);
 
 module.exports = router;

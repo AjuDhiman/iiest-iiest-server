@@ -17,6 +17,7 @@ export class FbolistComponent implements OnInit {
 
   createdBy: any;
   allFBOEntries: any;
+  filteredFBOEntries: any;
   selectedFilter: string = 'byOwner';
   searchQuery: string = '';
   filteredData: any;
@@ -33,7 +34,8 @@ export class FbolistComponent implements OnInit {
   pageNumber: number = 1;
   itemsNumber: number = 25;
 
-  activeTab: string = 'fostac';
+  activeTab: string = 'Fostac';
+
 
   isModal: boolean = false;
 
@@ -54,6 +56,11 @@ export class FbolistComponent implements OnInit {
       next: (res) => {
         if (res.salesInfo) {
           this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+          this.filteredFBOEntries = this.allFBOEntries.filter((item:any) => {
+            if(item.product_name.includes(this.activeTab)){
+              return item;
+            }
+            });
           this.filter();
           this.loading = false;
         }
@@ -69,18 +76,19 @@ export class FbolistComponent implements OnInit {
 
   filter(): void {
     if (!this.searchQuery) {
-      this.filteredData = this.allFBOEntries;
+      this.filteredData = this.filteredFBOEntries;
+      console.log(this.filteredFBOEntries);
     } else {
       switch (this.selectedFilter) {
-        case 'byOwner': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
-        case 'byDistrict': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byDistrict': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
-        case 'byName': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byName': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
-        case 'byCustomerID': this.filteredData = this.allFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
+        case 'byCustomerID': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
           break;
-        case 'byProduct': this.filteredData = this.allFBOEntries.filter((elem: any) => {
+        case 'byProduct': this.filteredData = this.filteredFBOEntries.filter((elem: any) => {
           if(elem.fboInfo.product_name.find((product: string) => product.toLowerCase().includes(this.searchQuery))){
             return true;
           } else {
@@ -170,8 +178,19 @@ export class FbolistComponent implements OnInit {
     modalRef.componentInstance.fboData = res;
   }
 
+  
   toogleTabs(tab: string){
     this.activeTab = tab;
-  }
+
+  this.filteredFBOEntries = this.allFBOEntries.filter((item:any) => {
+      if(item.product_name.includes(tab)){
+        return item;
+      }
+    });
+    this.filter();
+
+    console.log(this.filteredFBOEntries);
+     
+}
 
 }

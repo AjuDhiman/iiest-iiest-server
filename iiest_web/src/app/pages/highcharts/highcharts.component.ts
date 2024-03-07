@@ -38,7 +38,7 @@ export class HighchartsComponent implements OnChanges {
 
   Highcharts: typeof Highcharts = Highcharts;
 
-  intervalType: string = 'week';
+  intervalType: string  = '';
 
   noData: string = `<div>No data avilable </div> this ${this.intervalType}`;
 
@@ -265,7 +265,7 @@ export class HighchartsComponent implements OnChanges {
       },
       series: [
         {
-          name: 'sale count',
+          name: this.chartData.seriesName,
           type: 'pie',
           data: this.values,
           events: this.events
@@ -331,9 +331,7 @@ export class HighchartsComponent implements OnChanges {
   }
 
   ChangeInterval(event: any): void {
-    console.log(event);
     this.intervalType = event.target.value;
-    console.log(this.intervalType);
     this.plotChart();
   }
 
@@ -386,7 +384,6 @@ export class HighchartsComponent implements OnChanges {
   }
 
   formatIntervalType(type: string): string {
-    console.log(type);
     switch (type) {
       case 'halfYearly':
         return 'this Half Year'
@@ -417,10 +414,10 @@ export class HighchartsComponent implements OnChanges {
           drilldown: item.name
         }
       });
-      this.values = this.values.sort((a:any ,b: any) => a.y - b.y);
+      // this.values = this.values.sort((a:any ,b: any) => a.y - b.y);
       this.drilldownData = this.chartData.data.map((item: any) => {
         return {
-          type: this.selectedChartType,
+          type: this.selectedChartType.toLocaleLowerCase(),
           name: item.name,
           id: item.name,
           data: item.categories.map((e: any) => [e.name, e.value]),
@@ -455,7 +452,6 @@ export class HighchartsComponent implements OnChanges {
   }
 
   clickEvent = (e:any) => {
-    console.log(e);
     if(e.point.options.name){
       if (e.point.options.name === "Retail" || e.point.options.name === "Catering") {
         this.salesCategory = "Fostac";
@@ -476,7 +472,6 @@ export class HighchartsComponent implements OnChanges {
       interval: this.intervalType,
       chartTitile: this.chartData.chartTitle
     };
-    console.log(chartData);
     if(chartData.chartTitile === 'Employee Count By Department') {
       this.viewDepartmentData(chartData.userDept);
       return;

@@ -31,6 +31,8 @@ export class HighchartDataModalComponent {
   faXmark = faXmark;
   faCheck = faCheck;
 
+  loading: boolean = true;
+
   constructor(public activeModal: NgbActiveModal,
     private _getDataService: GetdataService,
     private registerService: RegisterService) { }
@@ -61,6 +63,7 @@ export class HighchartDataModalComponent {
         if (res.salesInfo) {
           this.specificDatas = res.salesInfo.filter((item: any) =>((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
           this.salesDeptfilter();
+          this.loading = false;
         }
       },
     })
@@ -84,6 +87,7 @@ export class HighchartDataModalComponent {
             }
           })
           this.salesDeptfilter();
+          this.loading = false;
         }
       },
     })
@@ -101,6 +105,7 @@ export class HighchartDataModalComponent {
               this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
             }
             this.salesDeptfilter();
+            this.loading = false;
         }
       },
       error: (err) => {
@@ -124,6 +129,7 @@ export class HighchartDataModalComponent {
         }).filter((value: any) => value !== null);
         this.filteredData = this.employeeList;
         this.showPagination = true;
+        this.loading = false;
       }
     })
   }
@@ -140,6 +146,7 @@ export class HighchartDataModalComponent {
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
+    this.loading = false;
   }
 
   salesDeptfilter(): void {
@@ -158,14 +165,16 @@ export class HighchartDataModalComponent {
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
+    this.loading= false;
   }
 
   monthWiseFilter(){
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if(res.salesInfo) {
-          this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == this.chartData.filterValue);
+          this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == (Number(this.chartData.filterValue) + 1) && new Date(item.createdAt).getMonth() == 10);
           this.salesDeptfilter();
+          this.loading=false;
         }
       },
       error: (err) => {
@@ -190,6 +199,7 @@ export class HighchartDataModalComponent {
             return 0;
           });
           this.salesDeptfilter();
+          this.loading = false;
         }
       },
       error: (err) => {

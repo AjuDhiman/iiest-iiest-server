@@ -141,8 +141,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         const chartType = 'Pie';
         const department = 'Sales Department';
         const chartTitle = 'Area Wise Sales Chart';
-        const seriesName = 'States';
-        const yAxisTitle = 'States';
+        const seriesName = 'India';
+        const yAxisTitle = 'India';
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;
@@ -159,7 +159,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const chartType = 'Column';
         const department = 'Sales Department';
         const chartTitle = 'Sales Chart';
-        const seriesName = 'sales';
+        const seriesName = new Date().getFullYear().toString();
         const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = false;
@@ -182,7 +182,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         const isDrillDown = false;
         const otherChartTypeOptions = ['']
         this.salesPersonChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
-        console.log(res);
       }
     });
   }
