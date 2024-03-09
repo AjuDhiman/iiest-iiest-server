@@ -3,15 +3,6 @@
 		<div class="mb-3 d-flex justify-content-between gap-3 chart-title-div">
 			<div class="text-uppercase fw-semibold app-card-title"><span class="chart-title">{{chartData.chartTitle}}</span></div>
 			<div style="margin-top: -2.5px;">
-				<!-- <select *ngIf="chartData?.showIntervalSelection" (change)="ChangeInterval($event)"
-					class="form-select form-select-sm d-inline-flex w-auto">
-					<option value="week" selected>This week</option>
-					<option value="month">This Month</option>
-					<option value="quater">This Quater</option>
-					<option value="halfYearly">This half Year</option>
-					<option value="year">This Financial Year</option>
-					<option value="tillNow">Till Now</option>
-				</select> -->
 				<select (change)="chartTypeEvent($event)" [(ngModel)]="selectedChartType"
 					class="form-select form-select-sm d-inline-flex w-auto">
 					<option class="text-capitalize" [value]="defaultChartType">{{ defaultChartType }}</option>

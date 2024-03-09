@@ -6,6 +6,7 @@ import { HighchartDataModalComponent } from '../modals/highchart-data-modal/high
 import { DepartmentListComponent } from '../modals/department-list/department-list.component';
 import drilldown from 'highcharts/modules/drilldown';
 import HighchartsMore from 'highcharts/highcharts-more';
+import Scrollbar from 'highcharts/modules/stock'
 // import HighchartsExporting from 'highcharts/modules/exporting';
 // import HC_exporting from 'highcharts/modules/export-data';
 
@@ -13,9 +14,7 @@ HighchartsMore(Highcharts);
 // HighchartsExporting(Highcharts);
 // HC_exporting(Highcharts);
 drilldown(Highcharts);
-
-
-import * as HighchartsScroll from 'highcharts/highstock'; // Import the scrollbar module/
+Scrollbar(Highcharts);
 
 @Component({
   selector: 'app-highcharts',
@@ -23,6 +22,8 @@ import * as HighchartsScroll from 'highcharts/highstock'; // Import the scrollba
   styleUrls: ['./highcharts.component.scss'],
 })
 export class HighchartsComponent implements OnChanges {
+
+  Highcharts: typeof Highcharts = Highcharts;
 
   chart: Highcharts.Options;
 
@@ -36,21 +37,15 @@ export class HighchartsComponent implements OnChanges {
 
   selectedChartType: string;
 
-  Highcharts: typeof Highcharts = Highcharts;
-
   intervalType: string  = '';
 
-  noData: string = `<div>No data avilable </div> this ${this.intervalType}`;
-
   isDataAvilable: boolean = true;
-
-  otherChartTypes: any;
-
-  drillDownInfo: any = {};
 
   drilldownData: any = {};
 
   defaultChartType: string = '';
+
+  isSrcollable: boolean = false; //var for deciding chart is scrollable or not
 
   events: any = {};
 
@@ -84,6 +79,15 @@ export class HighchartsComponent implements OnChanges {
       },
      xAxis: {
         type: 'category',
+        max: this.isSrcollable?10:null,
+        labels :{
+          style: {
+            width: 60,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }
+        }
       },
       yAxis: {
         title: {
@@ -93,7 +97,6 @@ export class HighchartsComponent implements OnChanges {
       plotOptions: {
         column: {
           colorByPoint: true,
-          // colors: this.columnColorShade
           dataLabels: {
             enabled: true,
             align: 'center',
@@ -107,7 +110,7 @@ export class HighchartsComponent implements OnChanges {
         },
       },
       scrollbar: {
-        enabled: true
+        enabled: this.isSrcollable,
       },
       series: [
         {
@@ -136,7 +139,8 @@ export class HighchartsComponent implements OnChanges {
         enabled: false
       },
      xAxis: {
-        type: 'category',
+        type: 'category', 
+        max: this.isSrcollable?10:null
       },
       yAxis: {
         title: {
@@ -160,7 +164,7 @@ export class HighchartsComponent implements OnChanges {
         },
       },
       scrollbar: {
-        enabled: true
+        enabled: this.isSrcollable
       },
       series: [
         {
@@ -200,7 +204,7 @@ export class HighchartsComponent implements OnChanges {
         enabled: false,
       },
       xAxis: {
-        type: 'category'
+        type: 'category',
       },
       yAxis: {
         title: {
@@ -402,19 +406,23 @@ export class HighchartsComponent implements OnChanges {
 
     this.checkNoData();
 
+    if(this.values.length >=10 ) {
+      this.isSrcollable = true;
+    } else {
+      this.isSrcollable = false;
+    }
+
   }
 
   checkkDrillDown(){
     if (this.chartData.isDrilldown) {
-      // this.categories = this.chartData.data.map((item: any) => item.name);
       this.values = this.chartData.data.map((item: any) => {
         return {
           name: item.name,
           y: item.value,
-          drilldown: item.name
+          drilldown: item.name,
         }
       });
-      // this.values = this.values.sort((a:any ,b: any) => a.y - b.y);
       this.drilldownData = this.chartData.data.map((item: any) => {
         return {
           type: this.selectedChartType.toLocaleLowerCase(),

@@ -78,12 +78,21 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.data = res;
     });
 
-    this.getProductSaledata();
-    this.getAreaWiseSaleData();
-    this.getMonthWisesaleData();
-    this.getPersonWiseSaleData();
-    this.getClientTypeSaleData();
-    this.getEmpHiringData();
+    // functions for forming input for highcharts from data comming from backend
+    if(this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department'){
+      this.getProductSaledata();
+      this.getAreaWiseSaleData();
+      this.getClientTypeSaleData();
+      this.getMonthWisesaleData();
+    }
+
+    if(this.empDesigantion === 'Director') {
+      this.getPersonWiseSaleData();
+    }
+
+    if(this.empDepartment === 'HR Department'){
+      this.getEmpHiringData();
+    }
 
     if (salesManagerRoles.includes(this.empDesigantion)) {
       this.getEmployeeUnderManager()
@@ -141,7 +150,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const chartType = 'Pie';
         const department = 'Sales Department';
         const chartTitle = 'Area Wise Sales Chart';
-        const seriesName = 'India';
+        const seriesName = 'State';
         const yAxisTitle = 'India';
         const data = res;
         const showIntervalSelection = false;

@@ -192,7 +192,7 @@ exports.getEmpUnderManager = async (req, res) => {
                     salesCount: "$salesCount"
                 }
             },
-            { $sort: { totalSales: -1, createdAt: -1 } }
+            { $sort: { salesAmmount: -1, createdAt: -1 } }
         ])
 
         res.status(200).json(empData);
