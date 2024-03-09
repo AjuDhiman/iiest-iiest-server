@@ -100,10 +100,16 @@
           </div><!--//table-responsive-->
         </div><!--//app-card-body-->
       </div><!--//app-card-->
-      <div *ngIf="showPagination===true" class="d-flex justify-content-end">
+      <div class="d-flex" [ngClass]="specificDatas?'justify-content-between':'justify-content-end'">
+        <div *ngIf="specificDatas" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of
+          {{specificDatas.length}}</div>
         <pagination-controls previousLabel="Prev" nextLabel="Next"
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div>
+      <!-- <div *ngIf="showPagination===true" class="d-flex justify-content-end">
+        <pagination-controls previousLabel="Prev" nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"></pagination-controls>
+      </div> -->
     </div>
   </div>
 </div>

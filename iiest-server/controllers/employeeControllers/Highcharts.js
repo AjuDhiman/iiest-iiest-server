@@ -376,11 +376,11 @@ exports.getMonthWiseSaleData = async (req, res) => {
             let yearStart,yearEnd;
 
             if(today.getMonth() > 2) {
-                yearStart = new Date(today.getFullYear(), 2, 1);
-                yearEnd = new Date(today.getFullYear() + 1, 2, 1);
+                yearStart = new Date(today.getFullYear(), 3, 1);
+                yearEnd = new Date(today.getFullYear() + 1, 3, 1);
             } else {
-                yearStart = new Date(today.getFullYear() - 1, 2, 1);
-                yearEnd = new Date(today.getFullYear(), 2, 1)
+                yearStart = new Date(today.getFullYear() - 1, 3, 1);
+                yearEnd = new Date(today.getFullYear(), 3, 1)
             }
 
             console.log(yearStart, yearEnd);
@@ -422,69 +422,81 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     }
                 },
                 {
+                    $unwind: "$categories"
+                },
+                {
+                    $sort: { "categories.name": 1 }
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        name: { $first: "$name" },
+                        value: { $first: "$value" },
+                        categories: { $push: "$categories" }
+                    }
+                },
+                {
                     $sort: { "_id": 1 }
                 }
             ]);
             
-              
 
         } else {
             monthWiseSale = await salesModel.aggregate([
                 {
                     $match: {
+                        "createdAt": {
+                            $gte: yearStart,
+                            $lt: yearEnd,
+                        },
                         "employeeInfo": req.user._id
                     }
                 },
                 {
-                    $project: {
-                        month: { $month: "$createdAt" },
-                        dayOfMonth: { $dayOfMonth: "$createdAt" }
-                    }
-                },
-                {
                     $group: {
-                        _id: { month: "$month", dayOfMonth: "$dayOfMonth" },
-                        count: { $sum: 1 }
+                        _id: {
+                            month: { $month: "$createdAt" },
+                            day: { $dayOfMonth: "$createdAt" }
+                        },
+                        total: { $sum: "$grand_total" }
                     }
                 },
                 {
                     $group: {
                         _id: "$_id.month",
-                        count: { $sum: "$count" },
+                        total: { $sum: "$total" },
                         categories: {
                             $push: {
-                                name: "$_id.dayOfMonth",
-                                value: "$count"
+                                name: { $toString: "$_id.day" },
+                                value: "$total"
                             }
                         }
                     }
                 },
                 {
                     $project: {
-                        name: {
-                            $switch: {
-                                branches: [
-                                    { case: { $eq: ["$_id", 1] }, then: "January" },
-                                    { case: { $eq: ["$_id", 2] }, then: "February" },
-                                    { case: { $eq: ["$_id", 3] }, then: "March" },
-                                    { case: { $eq: ["$_id", 4] }, then: "April" },
-                                    { case: { $eq: ["$_id", 5] }, then: "May" },
-                                    { case: { $eq: ["$_id", 6] }, then: "June" },
-                                    { case: { $eq: ["$_id", 7] }, then: "July" },
-                                    { case: { $eq: ["$_id", 8] }, then: "August" },
-                                    { case: { $eq: ["$_id", 9] }, then: "September" },
-                                    { case: { $eq: ["$_id", 10] }, then: "October" },
-                                    { case: { $eq: ["$_id", 11] }, then: "November" },
-                                    { case: { $eq: ["$_id", 12] }, then: "December" }
-                                ],
-                                default: "Unknown"
-                            }
-                        },
-                        value: "$count",
+                        name: "$_id",
+                        value: "$total",
                         categories: 1
                     }
                 },
-                { $sort: { "_id": 1, } }
+                {
+                    $unwind: "$categories"
+                },
+                {
+                    $sort: { "categories.name": 1 }
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        name: { $first: "$name" },
+                        value: { $first: "$value" },
+                        categories: { $push: "$categories" }
+                    }
+                },
+                {
+                    $sort: { "_id": 1 }
+                }
             ]);
         }
 
