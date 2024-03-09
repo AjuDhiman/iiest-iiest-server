@@ -13,12 +13,7 @@ import { DepartmentListComponent } from '../../modals/department-list/department
 export class StatCardsComponent implements OnInit{
   departmentAndCount:Array<{department:string, count:string, active:string, inactive:string}>
   department:string='';
-  overallSalesCount:number;
-  approvedSalesCount:number;
-  pendingSalesCount:number;
-  userApprovedSales:number;
-  userPendingSales:number;
-  userTotalSales:number;
+  updatedSales: any;
   faIndianRupeeSign = faIndianRupeeSign;
 
   @Output() emitDeptCount: EventEmitter<any> = new EventEmitter<any>
@@ -41,12 +36,7 @@ export class StatCardsComponent implements OnInit{
   getUserRecord() {
     this._getDataService.getUserRecord().subscribe({
       next: (res) => {
-        this.userTotalSales = res.overAllSales;
-        this.userPendingSales = res.pendingSales;
-        this.userApprovedSales = res.approvedSales;
-        this.pendingSalesCount = res.pendingSalesCount;
-        this.approvedSalesCount = res.approvedSalesCount;
-        this.overallSalesCount = res.overallSalesCount;
+        this.updatedSales = res;
       }
     })
   }

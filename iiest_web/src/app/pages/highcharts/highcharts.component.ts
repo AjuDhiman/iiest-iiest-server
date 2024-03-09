@@ -49,6 +49,8 @@ export class HighchartsComponent implements OnChanges {
 
   events: any = {};
 
+  drillName: string = '';
+
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
 
@@ -150,7 +152,6 @@ export class HighchartsComponent implements OnChanges {
       plotOptions: {
         column: {
           colorByPoint: true,
-          // colors: this.columnColorShade
           dataLabels: {
             enabled: true,
             align: 'center',
@@ -174,7 +175,7 @@ export class HighchartsComponent implements OnChanges {
           events: {
             click: () => {
 
-            }
+            },
           }
         }
       ],
@@ -217,6 +218,16 @@ export class HighchartsComponent implements OnChanges {
           marker: {
             enabled: true,
           },
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+              textOutline: 'none'
+            }
+          }
         },
       },
       series: [
@@ -411,6 +422,14 @@ export class HighchartsComponent implements OnChanges {
     } else {
       this.isSrcollable = false;
     }
+
+    // if(this.chartData.isDrilldown){
+    //   if(this.drilldownData.data.length >=10 ) {
+    //     this.isSrcollable = true;
+    //   } else {
+    //     this.isSrcollable = false;
+    //   }
+    // }
 
   }
 
