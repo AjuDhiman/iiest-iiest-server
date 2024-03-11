@@ -11,6 +11,7 @@ exports.employeeRecord = async (req, res) => {
         const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+
         let data = await salesModel.aggregate([
             {
                 $match: {
@@ -229,7 +230,35 @@ exports.employeeRecord = async (req, res) => {
             }
         ]);
 
-        console.log(data);
+        if(data.length === 0) {
+            data = [{
+                today: {
+                    totalSales: 0,
+                    pendingSales: 0,
+                    approvedSales: 0
+                },
+                this_Week: {
+                    totalSales: 0,
+                    pendingSales: 0,
+                    approvedSales: 0
+                },
+                this_month: {
+                    totalSales: 0,
+                    pendingSales: 0,
+                    approvedSales: 0
+                },
+                this_year: {
+                    totalSales: 0,
+                    pendingSales: 0,
+                    approvedSales: 0
+                },
+                till_now: {
+                    totalSales: 0,
+                    pendingSales: 0,
+                    approvedSales: 0
+                }
+            }];
+        }
 
         res.status(200).json(data)
     } catch (error) {

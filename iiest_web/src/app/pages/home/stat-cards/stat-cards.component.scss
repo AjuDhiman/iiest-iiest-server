@@ -1,6 +1,6 @@
 .sales-card-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(5, 1fr);
 }
 
 .sales-card {
@@ -27,13 +27,15 @@
     }
 }
 
-.sales-card:hover:hover {
+.sales-card:hover {
     -ms-transform: scale(1.1);
     /* IE 9 */
     -webkit-transform: scale(1.1);
     /* Safari 3-8 */
     transform: scale(1.04);
     z-index: 1;
+
+    color: #fff;
 
     background: #20809d;
 
@@ -51,6 +53,10 @@
 
     & .stats-success {
         color: rgb(255, 255, 255);
+    }
+
+    & .text-xs span {
+        color: #fff !important;
     }
 }
 

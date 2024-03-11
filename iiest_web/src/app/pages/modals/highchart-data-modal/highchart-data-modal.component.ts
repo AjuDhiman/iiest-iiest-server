@@ -3,6 +3,7 @@ import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { faMagnifyingGlass, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { months } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-highchart-data-modal',
@@ -172,7 +173,17 @@ export class HighchartDataModalComponent {
     this._getDataService.getSalesList().subscribe({
       next: (res) => {
         if(res.salesInfo) {
-          this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == (Number(this.chartData.filterValue) + 1) && new Date(item.createdAt).getMonth() == 10);
+          const filterValue : string[] = this.chartData.filterValue.split('-');
+          console.log(filterValue);
+          const day = filterValue[0];
+          const month = months.findIndex((item:string) => item === filterValue[1]);
+          let year = new Date().getFullYear();
+          if(month > 2){
+            year = year-1
+          }
+          console.log(day, month);
+
+          this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == Number(day) && new Date(item.createdAt).getMonth() == month && new Date(item.createdAt).getFullYear() == year);
           this.salesDeptfilter();
           this.loading=false;
         }

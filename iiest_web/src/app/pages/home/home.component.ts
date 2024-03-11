@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subscriber, Subscription, interval, skipLast } from 'rxjs';
+import { Observable, Subscriber, Subscription, concat, interval, skipLast } from 'rxjs';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { GetEmployee } from 'src/app/store/actions/employee.action';
 import { Employee } from '../../utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { chartData, salesManagerRoles, salesOfficersRoles } from 'src/app/utils/config';
+import { chartData, months, salesManagerRoles, salesOfficersRoles } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-home',
@@ -78,12 +78,21 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.data = res;
     });
 
-    this.getProductSaledata();
-    this.getAreaWiseSaleData();
-    this.getMonthWisesaleData();
-    this.getPersonWiseSaleData();
-    this.getClientTypeSaleData();
-    this.getEmpHiringData();
+    // functions for forming input for highcharts from data comming from backend
+    if(this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department'){
+      this.getProductSaledata();
+      this.getAreaWiseSaleData();
+      this.getClientTypeSaleData();
+      this.getMonthWisesaleData();
+    }
+
+    if(this.empDesigantion === 'Director') {
+      this.getPersonWiseSaleData();
+    }
+
+    if(this.empDepartment === 'HR Department'){
+      this.getEmpHiringData();
+    }
 
     if (salesManagerRoles.includes(this.empDesigantion)) {
       this.getEmployeeUnderManager()
@@ -141,7 +150,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const chartType = 'Pie';
         const department = 'Sales Department';
         const chartTitle = 'Area Wise Sales Chart';
-        const seriesName = 'India';
+        const seriesName = 'State';
         const yAxisTitle = 'India';
         const data = res;
         const showIntervalSelection = false;
@@ -156,14 +165,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   getMonthWisesaleData(){
     this._getDataService.getMonthWisesaleData().subscribe({
       next: res => {
-        const chartType = 'Column';
+        const chartType = 'Line';
         const department = 'Sales Department';
         const chartTitle = 'Sales Chart';
-        const seriesName = new Date().getFullYear().toString();
+        const seriesName = `${new Date().getFullYear() - 1}-${new Date().getFullYear()} `;
         const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;
+        for(let i = 0; i < data.length; i++){
+          const month = months[data[i].name - 1];
+          data[i].name = month;
+          for(let j = 0; j < data[i].categories.length; j++){
+            data[i].categories[j].name = `${data[i].categories[j].name}-${month}`;
+          }
+        }
         this.monthSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
       }
     });

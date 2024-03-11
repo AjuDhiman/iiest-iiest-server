@@ -15,6 +15,7 @@ export class StatListsComponent implements OnInit {
 
   thisMonth: string;
 
+  pageNumber: number = 1;
 
   @Input() department: string;
   @Input() designation: string;
@@ -62,5 +63,9 @@ export class StatListsComponent implements OnInit {
         this.empUnderManagerSale = res;
       }
     });
+  }
+
+  onTableDataChange(event: number) {
+    this.pageNumber = event;
   }
 }
