@@ -1,251 +1,257 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xxl">
-        <h1 class="app-page-title">Leave Management System</h1>
-        <div class="row gy-4">
-            <div class="col-lg-3">
-                <!-- Annual Leave -->
-                <div class="col-lg-12 mb-4 custom-border">
-                    <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start h-100"
-                        style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
-                        <div class="app-card-header p-3 border-bottom-0">
-                            <h4 class="app-card-title text-info">Annual Leave</h4>
-                        </div>
-                        <div class="app-card-body px-4 d-flex justify-content-between align-items-center  p-3">
-                            <div class="d-flex">
-                                <div class="annualleave_image"></div>
-                                <div class="p-3 mb-2 bg-white text-dark">{{ leave[0].annualLeave.available }}
-                                    <h6 class="app-card-title">Available</h6>
-                                </div>
-                                <div class="p-3 mb-2 bg-white text-dark">{{ leave[0].annualLeave.availed }}
-                                    <h6 class="app-card-title">Availed</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+	<div class="container-xxl">
+		<h1 class="app-page-title">Leave Management System</h1>
 
-                <!-- My Leave -->
-                <div class="col-lg-12 mb-4 ">
-                    <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start"
-                        style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
-                        <div class="app-card-header p-3 border-bottom-0">
-                            <h4 class="app-card-title text-primary ">My Leave </h4>
-                        </div>
-                        <div class="app-card-body px-4 w-100 d-flex justify-content-between align-items-center w-100 p-3">
-                            <div class="d-flex flex-grow-1 ">
-                                <div class=" myLeave_image"></div>
-                                <div class="p-3 mb-2 bg-white text-dark flex-grow-1">{{ leave[0].myLeave.available }}
-                                    <h6 class="app-card-title">Available</h6>
-                                </div>
-                                <div class="p-3 mb-2 bg-white text-dark flex-grow-1">{{ leave[0].myLeave.availed }}
-                                    <h6 class="app-card-title">Availed</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Restricted Holiday -->
-                <div class="col-lg-12 mb-4 custom-border">
-                    <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start"
-                        style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
-                        <div class="app-card-header p-3 border-bottom-0">
-                            <h4 class="app-card-title text-success">Restricted Holiday</h4>
-                        </div>
-                        <div class="app-card-body px-4 w-100 d-flex justify-content-between align-items-center w-100 p-3">
-                            <div class="d-flex flex-grow-1">
-                                <div class=" RH_image"></div>
-                                <div class="p-3 mb-2 bg-white text-dark  flex-grow-1">{{
-                                    leave[0].restrictedHoliday.available }}
-                                    <h6 class="app-card-title">Available</h6>
-                                </div>
-                                <div class="p-3 mb-2 bg-white text-dark  flex-grow-1">{{
-                                    leave[0].restrictedHoliday.availed }}
-                                    <h6 class="app-card-title">Availed</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+		<div class="row g-4 mb-4">
 
-            <div class="col-lg-9  calendar-section" [ngClass]="isCalendar !== true  ? 'd-none' : 'd-block'">
-                <div class="row">
-                    <div class="col-lg-8 p-0">
-                        <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
-                            <div class="app-card-header p-3 border-bottom-0">
-                                <div class="row align-items-center gx-3">
-                                    <div class="col-auto">
-                                        <h6 class="app-card-title text-xs text-danger mb-0">Select Your Leave Dates</h6>
-                                    </div>
-                                    <div class="col-auto bordered-content">
-                                        <button class="leftarrow" (click)="goToPreviousMonth()"></button>
-                                        <div class="month">{{showMonth}}</div>
-                                        <button class="rightarrow" (click)="goToNextMonth()"></button>
-                                    </div>
-                                    <div class="col-auto">
-                                        <h6 class="app-card-title text-xs text-muted ">By Leave Type</h6>
-                                    </div>
-                                </div>
-                                <div class="calendar m-4 border-bottom-0">
-                                    <div class="d-flex flex-row justify-content-around mb-4 border-bottom ">
-                                        <div *ngFor="let weekname of weekDays">{{weekname}}</div>
-                                    </div>
-                                    <div class="week" *ngFor="let week of calendar">
-                                        <div class="day rounded-circle m-3" [ngClass]="{'current':  (isCurrentDate === true && day == todayDate[2]),
-                                       'selected': isSelected(day), 
-                                       'unselected': !isSelected(day),
-                                       'select-mode-current': (isSelected(day) && isCurrentDate === true)
-                                        }" [ngStyle]="{'border':day > 0 ? '1px solid #ccc' : 'none' 
-                                     }" (click)="selectedDate(day)" *ngFor="let day of week">
-                                            {{ day }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 text-center">
-                                <div class="app-card-footer p-4 mt-auto">
-                                    <button type="button" class="btn btn-primary"
-                                        (click)="applySelection()">Apply</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 p-0">
+			<div class="col-12 col-lg-3 leave-type-section d-lg-block">
+				<!-- Annual Leave -->
+				<div class="col-lg-12 mb-4 custom-border">
+					<div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start h-100"
+						style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
+						<div class="app-card-header p-3 mb-2 border-bottom-0">
+							<h4 class="app-card-title text-info pb-3">Annual Leave</h4>
+							<div class="row justify-content-end">
+								<div class="col-lg-4 mb-3 d-flex align-items-center">
+									<div class="annualleave_image"></div>
+								</div>
+								<div class="col-lg-4 bg-white text-dark d-flex flex-column align-items-center Leave-count">
+									{{ leave[0].annualLeave.available }}
+									<h6 class="app-card-title Leave-type">Available</h6>
+								</div>
+								<div class="col-lg-4  bg-white text-dark d-flex flex-column align-items-center Leave-count">
+									{{leave[0].annualLeave.availed }}
+									<h6 class="app-card-title Leave-type ">Availed</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- My Leave -->
+				<div class="col-lg-12 mb-4 custom-border">
+					<div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start h-100"
+						style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
+						<div class="app-card-header p-3 mb-2 border-bottom-0">
+							<h4 class="app-card-title text-info pb-3">My Leave</h4>
+							<div class="row justify-content-end">
+								<div class="col-lg-4 mb-3  d-flex align-items-center">
+									<div class="myLeave_image"></div>
+								</div>
+								<div class="col-lg-4 bg-white text-dark d-flex flex-column align-items-center Leave-count">{{ leave[0].myLeave.available }}
+									<h6 class="app-card-title Leave-type">Available</h6>
+								</div>
+								<div class="col-lg-4  bg-white text-dark d-flex flex-column align-items-center Leave-count">
+									{{leave[0].myLeave.availed }}
+									<h6 class="app-card-title Leave-type">Availed</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Restricted Holiday -->
+				<div class="col-lg-12 mb-4 custom-border">
+					<div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start h-100"
+						style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
+						<div class="app-card-header p-3 mb-2 border-bottom-0">
+							<h4 class="app-card-title text-info pb-3">Restricted Holiday</h4>
+							<div class="row justify-content-end">
+								<div class="col-lg-4 mb-3  d-flex align-items-center">
+									<div class="RH_image"></div>
+								</div>
+								<div class="col-lg-4 bg-white text-dark d-flex flex-column align-items-center
+								Leave-count">{{ leave[0].restrictedHoliday.available }}
+									<h6 class="app-card-title Leave-type">Available</h6>
+								</div>
+								<div class="col-lg-4 bg-white text-dark d-flex flex-column align-items-center Leave-count">{{
+									leave[0].restrictedHoliday.availed }}
+									<h6 class="app-card-title Leave-type">Availed</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+ 			</div><!--//col-->
+              <!--calendar section-->
+			<div class="col-12 col-lg-6" [ngClass]="isCalendar !== true  ? 'd-none' : 'd-block'">
+				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+					<div class="app-card-header p-3  w-100">
+						<div class="row align-items-center gx-3">
+							<div class="col-lg-8">
+								<h6 class="app-card-title text-xs text-danger mb-0 ">Select Your Leave Dates</h6>
+							</div>
+							<div class="col-lg-4 d-flex px-0 ">
+								<button class="leftarrow" (click)="goToPreviousMonth()"></button>
+								<div class="month">{{showMonth}}</div>
+								<button class="rightarrow" (click)="goToNextMonth()"></button>
+							</div>
 
-                        <!--List Of Holidays-->
-                        <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
-                            <div class="app-card-header p-3 border-bottom">
-                                <div class="row align-items-center gx-3">
-                                    <div class="col-auto">
-                                        <h4 class="app-card-title">List Of Holidays</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="app-card-body p-0 overflow-auto" style="max-height: 560px;">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item holiday-item" *ngFor="let holiday of holidays">
-                                        <span class="holiday-date">{{holiday.day}}, {{holiday.date +
-                                            getDaySuffix(holiday.date)}} {{holiday.month}} {{holiday.year}}</span><br>
-                                        <span class="holiday-name">{{holiday.holiday}} ({{holiday.leave_type}})</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+						</div>
+					</div><!--//app-card-header-->
+					<div class="app-card-body p-3 w-100">
+						<ul class="list-inline mb-4 weekDays d-flex justify-content-between">
+							<li class="list-inline-item" *ngFor="let weekname of weekDays">{{weekname}}</li>
+						</ul>
+						<div class="p-0">
+							<div class="d-flex justify-content-between" *ngFor="let week of calendar">
+								<div class="day rounded-circle my-2" [ngClass]="{'current':  (isCurrentDate === true && day == todayDate[2]),
+							   'selected': isSelected(day), 
+							   'unselected': !isSelected(day),
+							   'select-mode-current': (isSelected(day) && isCurrentDate === true)
+								}" [ngStyle]="{'border':day > 0 ? '1px solid #ccc' : 'none' 
+							 }" (click)="selectedDate(day)" *ngFor="let day of week">
+									<span>{{ day }}</span>
+								</div>
+							</div>
+						</div>
+						<span class="lms-btn">
+							<button type="button" class="btn btn-primary" (click)="applySelection()">Apply</button>
+						</span>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+			<!--List of holidays-->
+			<div class="col-12 col-lg-3" [ngClass]="isCalendar !== true  ? 'd-none' : 'd-block'">
+				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+					<div class="app-card-header p-3 border-bottom-0">
+						<div class="row align-items-center gx-3">
+							<div class="col-auto">
+								<h4 class="app-card-title fw-bold">List Of Holidays</h4>
+							</div><!--//col-->
+						</div><!--//row-->
+					</div><!--//app-card-header-->
+					<div class="app-card-body p-0">
+						<div class="app-card-body p-0 overflow-auto" style="max-height: 500px;">
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item holiday-item" *ngFor="let holiday of holidays">
+									<span class="holiday-date fw-bold">{{holiday.day}}, {{holiday.date +
+										getDaySuffix(holiday.date)}} {{holiday.month}} {{holiday.year}}</span><br>
+									<span class="holiday-name text-secondary">{{holiday.holiday}} ({{holiday.leave_type}})</span>
+								</li>
+							</ul>
+						</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+			<!--Selected Leave Type -->
+			<div class="col-12 col-lg-9" [ngClass]="isApply === true  ? 'd-block' : 'd-none'">
+				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+					<form [formGroup]="leaveForm">
+						<div class="container">
+							<div class="row mb-4" style="border-bottom: 3px solid #eee;">
+								<div class="col-lg-8 bg-white">
+									<h3 class="app-card-title text-warning p-2 font-weight-bold">Total Leave Days</h3>
+								</div>
+								<div class="col-lg-2 bg-white text-warning border-start pr-1 Leave-count">
+									{{ leave[0].annualLeave.available }}
+									<h6 class="app-card-title text-muted Leave-type">Annual Leave</h6>
+								</div>
+								<div class="col-lg-2 bg-white text-warning border-start Leave-count">
+									{{ leave[0].myLeave.available }}
+									<h6 class="app-card-title text-muted Leave-type">MyLeave</h6>
+								</div>
+							</div>
 
-            <div class="col-lg-9 bg-white" [ngClass]="isApply === true  ? 'd-block' : 'd-none'">
-                <form [formGroup]="leaveForm">
-                    <div class="container">
-                        <div class="row mb-4"style="border-bottom: 3px solid #eee;">
-                            <div class="col-lg-8 bg-white">
-                                <h4 class="app-card-title text-warning ">
-                                    <fa-icon class="fa-lessThan" style="color: rgb(145, 142, 142)" [icon]="faLessThan"></fa-icon>
-                                    Total Leave Days
-                                </h4>
-                            </div>
-                            <div class="col-lg-2 bg-white text-warning border-start pr-1">
-                                {{ leave[0].annualLeave.available }}
-                                <h6 class="app-card-title text-muted">Annual Leave</h6>
-                            </div>
-                            <div class="col-lg-2 bg-white text-warning border-start">
-                                {{ leave[0].myLeave.available }}
-                                <h6 class="app-card-title text-muted">MyLeave</h6>
-                            </div>
-                        </div>
+							<!-- Add this code inside the form section -->
+							<div class="row mb-2" style="margin-left: 0px;" *ngIf="isApply">
+								<ng-container *ngFor="let selectedDate of selectedDatesWithLeaveType">
+									<div class="col-lg-6  col-md-6  mb-2 leave_area">
+										<div class="half_leave" (click)="toggleHalfLeave()">
+											<div class="HalfLeave_cricle"
+												[ngClass]="{ 'full-circle': halfDayLeave === 'full', 'left-half-circle': halfDayLeave === 'left', 
+												'right-half-circle': halfDayLeave === 'right' }">
+											</div>
+										</div>
+										<div class="leave_dayDate text-muted">
+											<span [ngClass]="{'bold-date': selectedDate.date}">
+												{{ selectedDate.date | date: 'dd MMM yyy' }}
+											</span>
+											{{ selectedDate.date | date: ' EEEE' }}
+										</div>
 
-                        <!-- Add this code inside the form section -->
-                        <div class="row mb-2 px-0" *ngIf="isApply">
-                            <ng-container *ngFor="let selectedDate of selectedDatesWithLeaveType">
-                                <div class="col-lg-6 mb-2 leave_area">
-                                    <div class="half_leave" (dblclick)="updateLeaves($event)">
-                                        <span class="fa-Sun">
-                                          <fa-icon [icon]="faSun" [style.color]="sunIconState === 'full' ? 'orange' : 'yellow'"></fa-icon>
-                                        </span>
-                                      </div>
-                                    <div class="leave_dayDate text-muted"> 
-                                        <span [ngClass]="{'bold-date': selectedDate.date}">
-                                            {{ selectedDate.date | date: 'dd MMM yyy' }}
-                                        </span>
-                                        {{ selectedDate.date | date: ' EEEE'  }}
-                                    </div>
-                                    
-                                    <div class ="leave_dropdown">
-                                        <select class="form-select leave_select" style="background: #eee;" (change)="updateLeaves($event)">
-                                            <option value="" disabled selected>Select Leave Type</option>
-                                            <option value="annual">Annual Leave</option>
-                                            <option value="my">My Leave</option>
-                                        </select>
-                                    </div>
-                                    <div class="leave_cancel">
-                                        <fa-icon class="fa-close" style="color: rgb(145, 142, 142); font-weight:normal;" [icon]="faClose"></fa-icon>
-                                    </div>
+										<div class="leave_dropdown">
+											<select class="form-select leave_select py-3"
+												aria-label="Default select example" (change)="updateLeaves($event)">
+												<option value="" disabled selected>Select Leave Type</option>
+												<option value="annual">Annual Leave</option>
+												<option value="my">My Leave</option>
+											</select>
+										</div>
+										<div class="leave_cancel" (click)="onCancelDate(selectedDate.date)">
+											<fa-icon class="fa-close" style="color: rgb(145, 142, 142);"
+												[icon]="faClose"></fa-icon>
+										</div>
 
-                                </div>
-                            </ng-container>
-                        </div>
+									</div>
+								</ng-container>
+							</div>
 
-                        <div class="row mb-2 p-0">
-                            <div class="col-lg-4 px-0"> 
-                                <div class="input-group">
-                                    <span class="input-group-text" style="background:#f5f2f2;">
-                                        <fa-icon class="fa-l" style="color: rgb(145, 142, 142); background: #f5f2f2; " [icon]="faUser"></fa-icon>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" formControlName="approverName"
-                                            placeholder="Approver Name" value="Approver"
-                                            style="background: #f5f2f2;">
-                                        <label for="approverName">Approver</label>
-                                    </div>
-                                </div>
-                            </div>
-                            
+							<div class="row mb-2">
+								<div class="col-lg-4 mb-md-2">
+									<div class="input-group">
+										<span class="input-group-text" style="background:#f5f2f2;">
+											<fa-icon class="fa-l"
+												style="color: rgb(145, 142, 142); background: #f5f2f2;"
+												[icon]="faUser"></fa-icon>
+										</span>
+										<div class="form-floating">
+											<input type="text" class="form-control" formControlName="approverName"
+												placeholder="Approver Name" value="Approver"
+												style="background: #f5f2f2;">
+											<label for="approverName">Approver</label>
+										</div>
+									</div>
+								</div>
 
-                            <div class="col-lg-4 py-0">
-                                <div class="input-group">
-                                    <span class="input-group-text" style="background:#f5f2f2;">
-                                        <fa-icon class="fa-l" style="color: rgb(145, 142, 142); background: #f5f2f2 ; " [icon]="faCopy"></fa-icon>
-                                    </span>
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" style="background: #f5f2f2;" formControlName="cc" placeholder="CC">
-                                    <label for="cc">cc</label>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 px-0">
-                                <div class="input-group">
-                                    <span class="input-group-text"style="background:#f5f2f2;">
-                                        <fa-icon class="fa-l" style="color: rgb(145, 142, 142); background: #f5f2f2;" [icon]="faPhone"></fa-icon>
-                                    </span>
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control"style="background: #f5f2f2;" formControlName="contactNumber"
-                                            placeholder="Contact Number">
-                                        <label for="contactNumber">Contact Number</label>
-                                    </div>
-                                </div>
-                            </div>
+								<div class="col-lg-4 col-md-6 mb-md-2">
+									<div class="input-group">
+										<span class="input-group-text" style="background:#f5f2f2;">
+											<fa-icon class="fa-l"
+												style="color: rgb(145, 142, 142); background: #f5f2f2 ; "
+												[icon]="faCopy"></fa-icon>
+										</span>
+										<div class="form-floating">
+											<input type="text" class="form-control" style="background: #f5f2f2;"
+												formControlName="cc" placeholder="CC">
+											<label for="cc">cc</label>
+										</div>
+									</div>
+								</div>
 
-                            <div class="col-lg-12 px-0">
-                                <label for="leaveReason" class="form-label"></label>
-                                <textarea class="form-control" id="leaveReason" style="background: #f5f2f2;" formControlName="leaveReason" rows="3"
-                                    placeholder="Provide your leave reason here"></textarea>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-lg-6 clickSubmit">
-                                <button type="button" class="btn btn-primary">SUBMIT</button>
-                            </div>
-                            <div class="col-lg-6">
-                                <button type="button" class="btn btn-secondary" (click)="onCancel()">CANCEL</button>
-                            </div>
-                        </div>
+								<div class="col-lg-4 col-md-6 mb-md-2">
+									<div class="input-group">
+										<span class="input-group-text" style="background:#f5f2f2;">
+											<fa-icon class="fa-l"
+												style="color: rgb(145, 142, 142); background: #f5f2f2;"
+												[icon]="faPhone"></fa-icon>
+										</span>
+										<div class="form-floating">
+											<input type="text" class="form-control" style="background: #f5f2f2;"
+												formControlName="contactNumber" placeholder="Contact Number">
+											<label for="contactNumber">Contact Number</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-12  mb-md-2">
+									<label for="leaveReason" class="form-label"></label>
+									<textarea class="form-control" id="leaveReason" style="background: #f5f2f2;"
+										formControlName="leaveReason" rows="3"
+										placeholder="Provide your leave reason here"></textarea>
+								</div>
+								<div class="row mb-2">
+									<div class="col-lg-6 clickSubmit">
+										<button type="button" class="btn btn-primary btn-sm btn-block">SUBMIT</button>
+									</div>
+									<div class="col-lg-6 clickCancel">
+										<button type="button" class="btn btn-secondary btn-sm btn-block"
+											(click)="onCancel()">CANCEL</button>
+									</div>
+								</div>
+							</div>
 
-                    </div>
-                </form>
-
-            </div>
-
-        </div>
-    </div>
+						</div>
+					</form>
+				</div><!--//col-->
+			</div><!--//app-card-->
+		</div><!--//row-->
+	</div>
 </div>
