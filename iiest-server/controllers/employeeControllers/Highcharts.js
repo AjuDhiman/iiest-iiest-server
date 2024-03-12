@@ -368,20 +368,20 @@ exports.getClientTypeSalesData = async (req, res) => {
 //api for month wise sales chart
 exports.getMonthWiseSaleData = async (req, res) => {
     try {
+        const today = new Date()
+        let yearStart, yearEnd;
+
+        if (today.getMonth() > 2) {
+            yearStart = new Date(today.getFullYear(), 3, 1);
+            yearEnd = new Date(today.getFullYear() + 1, 3, 1);
+        } else {
+            yearStart = new Date(today.getFullYear() - 1, 3, 1);
+            yearEnd = new Date(today.getFullYear(), 3, 1)
+        }
 
         let monthWiseSale
 
         if (req.user.designation === 'Director') {
-            const today = new Date()
-            let yearStart,yearEnd;
-
-            if(today.getMonth() > 2) {
-                yearStart = new Date(today.getFullYear(), 3, 1);
-                yearEnd = new Date(today.getFullYear() + 1, 3, 1);
-            } else {
-                yearStart = new Date(today.getFullYear() - 1, 3, 1);
-                yearEnd = new Date(today.getFullYear(), 3, 1)
-            }
 
             console.log(yearStart, yearEnd);
             monthWiseSale = await salesModel.aggregate([
@@ -396,20 +396,27 @@ exports.getMonthWiseSaleData = async (req, res) => {
                 {
                     $group: {
                         _id: {
+                            year: { $year: "$createdAt" },
                             month: { $month: "$createdAt" },
                             day: { $dayOfMonth: "$createdAt" }
                         },
-                        total: { $sum: "$grand_total" }
+                        total: { $sum: 1 }
                     }
                 },
                 {
                     $group: {
                         _id: "$_id.month",
+                        date: {$first: "$_id"},
                         total: { $sum: "$total" },
                         categories: {
                             $push: {
                                 name: { $toString: "$_id.day" },
-                                value: "$total"
+                                value: "$total",
+                                date: {
+                                    year: "$_id.year",
+                                    month: "$_id.month",
+                                    day: "$_id.day"
+                                }
                             }
                         }
                     }
@@ -418,6 +425,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     $project: {
                         name: "$_id",
                         value: "$total",
+                        date: "$date",
                         categories: 1
                     }
                 },
@@ -425,21 +433,25 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     $unwind: "$categories"
                 },
                 {
-                    $sort: { "categories.name": 1 }
+                    $sort: { "categories.date.day": 1 }
                 },
                 {
                     $group: {
                         _id: "$_id",
                         name: { $first: "$name" },
                         value: { $first: "$value" },
+                        date: { $first: "$date" },
                         categories: { $push: "$categories" }
                     }
                 },
                 {
-                    $sort: { "_id": 1 }
+                    $sort: {
+                        "date.year": 1,
+                        "date.month": 1
+                    }
                 }
             ]);
-            
+
 
         } else {
             monthWiseSale = await salesModel.aggregate([
@@ -455,20 +467,27 @@ exports.getMonthWiseSaleData = async (req, res) => {
                 {
                     $group: {
                         _id: {
+                            year: { $year: "$createdAt" },
                             month: { $month: "$createdAt" },
                             day: { $dayOfMonth: "$createdAt" }
                         },
-                        total: { $sum: "$grand_total" }
+                        total: { $sum: 1 }
                     }
                 },
                 {
                     $group: {
                         _id: "$_id.month",
+                        date: {$first: "$_id"},
                         total: { $sum: "$total" },
                         categories: {
                             $push: {
                                 name: { $toString: "$_id.day" },
-                                value: "$total"
+                                value: "$total",
+                                date: {
+                                    year: "$_id.year",
+                                    month: "$_id.month",
+                                    day: "$_id.day"
+                                }
                             }
                         }
                     }
@@ -477,6 +496,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     $project: {
                         name: "$_id",
                         value: "$total",
+                        date: "$date",
                         categories: 1
                     }
                 },
@@ -484,18 +504,22 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     $unwind: "$categories"
                 },
                 {
-                    $sort: { "categories.name": 1 }
+                    $sort: { "categories.date.day": 1 }
                 },
                 {
                     $group: {
                         _id: "$_id",
                         name: { $first: "$name" },
                         value: { $first: "$value" },
+                        date: { $first: "$date" },
                         categories: { $push: "$categories" }
                     }
                 },
                 {
-                    $sort: { "_id": 1 }
+                    $sort: {
+                        "date.year": 1,
+                        "date.month": 1
+                    }
                 }
             ]);
         }
@@ -505,4 +529,12 @@ exports.getMonthWiseSaleData = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" });
     }
+}
+
+function changeId(month) {
+    let updatedMonth;
+
+    updatedMonth = (month + 3) % 12;
+
+    return updatedMonth
 }

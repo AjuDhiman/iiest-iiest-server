@@ -69,6 +69,7 @@ import { CalendarComponent } from './pages/lms/calendar/calendar.component';
 import { ViewDocumentComponent } from './pages/modals/view-document/view-document.component';
 import { RecipientListComponent } from './pages/modals/recipient/recipient-list/recipient-list.component';
 import { StatListsComponent } from './pages/home/stat-lists/stat-lists.component';
+import { InrAmountPipe } from './pipes/inr-amount.pipe';
 
 @NgModule({
   declarations: [
@@ -113,7 +114,8 @@ import { StatListsComponent } from './pages/home/stat-lists/stat-lists.component
     CertificationSectionComponent,
     ViewDocumentComponent,
     RecipientListComponent,
-    StatListsComponent
+    StatListsComponent,
+    InrAmountPipe
   ],
   imports: [
     BrowserModule,

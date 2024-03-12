@@ -113,6 +113,7 @@ export class HighchartsComponent implements OnChanges {
       },
       scrollbar: {
         enabled: this.isSrcollable,
+        height: 5
       },
       series: [
         {

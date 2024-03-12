@@ -6,7 +6,10 @@ exports.getTopSalesPersons = async (req, res) => {
 
     try {
         const todayDate = new Date();
-        const startOfMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+        const startOfLastMonth = new Date(todayDate.getFullYear() - 1, todayDate.getMonth() - 1, 1);
+        const endOflastMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+
+        console.log(startOfLastMonth, endOflastMonth, 11);
 
         let topSalesPersons
 
@@ -32,7 +35,12 @@ exports.getTopSalesPersons = async (req, res) => {
                     salesAmmount: {
                         $sum: {
                             $cond: {
-                                if: { $gte: ["$createdAt", startOfMonth] },
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfLastMonth] },
+                                        { $lte: ["$createdAt", endOflastMonth] }
+                                    ]
+                                },
                                 then: '$grand_total',
                                 else: 0
                             }
@@ -41,7 +49,12 @@ exports.getTopSalesPersons = async (req, res) => {
                     salesCount: {
                         $sum: {
                             $cond: {
-                                if: { $gte: ["$createdAt", startOfMonth] },
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfLastMonth] },
+                                        { $lte: ["$createdAt", endOflastMonth] }
+                                    ]
+                                },
                                 then: 1,
                                 else: 0
                             }
@@ -71,35 +84,79 @@ exports.getTopSalesPersons = async (req, res) => {
 
 exports.getTopProducts = async (req, res) => {
 
+
     try {
         const todayDate = new Date();
-        const startOfMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
-        let topSalesPersons
+        const startOfLastMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
+        const endOflastMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+        const startOfLastHalf = new Date(todayDate.getFullYear(), todayDate.getMonth() - 6, 1);
+        
+        let topProducts
+
+        console.log(startOfLastHalf);
 
         if (req.user.designation !== "Director") {
             return res.status(204).json({ message: 'Only for Director' });
         }
 
-        topSalesPersons = await salesModel.aggregate([
+        topProducts = await salesModel.aggregate([
             {
                 $unwind: "$product_name"
             },
             {
                 $group: {
                     _id: "$product_name",
-                    salesAmmount: {
+                    salesAmountLastMonth: {
                         $sum: {
                             $cond: {
-                                if: { $gte: ["$createdAt", startOfMonth] },
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfLastMonth] },
+                                        { $lte: ["$createdAt", endOflastMonth] }
+                                    ]
+                                },
                                 then: "$grand_total",
                                 else: 0
                             }
                         }
                     },
-                    salesCount: {
+                    salesAmountLastHalf: {
                         $sum: {
                             $cond: {
-                                if: { $gte: ["$createdAt", startOfMonth] },
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfLastHalf] },
+                                        { $lte: ["$createdAt", endOflastMonth] }
+                                    ]
+                                },
+                                then: "$grand_total",
+                                else: 0
+                            }
+                        }
+                    },
+                    salesCountLastMonth: {
+                        $sum: {
+                            $cond: {
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfLastMonth] },
+                                        { $lte: ["$createdAt", endOflastMonth] }
+                                    ]
+                                },
+                                then: 1,
+                                else: 0
+                            }
+                        }
+                    },
+                    salesCountLastHalf: {
+                        $sum: {
+                            $cond: {
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfLastHalf] },
+                                        { $lte: ["$createdAt", endOflastMonth] }
+                                    ]
+                                },
                                 then: 1,
                                 else: 0
                             }
@@ -110,15 +167,22 @@ exports.getTopProducts = async (req, res) => {
             {
                 $project: {
                     name: "$_id",
-                    salesAmmount: "$salesAmmount",
-                    salesCount: "$salesCount"
+                    salesAmount: {
+                        lastMonth: "$salesAmountLastMonth",
+                        lastHalf: "$salesAmountLastHalf"
+                    },
+                    salesCount: {
+                        lastMonth: "$salesCountLastMonth",
+                        lastHalf: "$salesCountLastHalf"
+                    }
                 }
             },
-            { $sort: { totalSalesCount: -1, createdAt: -1 } },
+            { $sort: { salesCount: -1 } }, // Sorting by salesCount
             { $limit: 5 }
         ]);
+        
 
-        res.status(200).json(topSalesPersons)
+        res.status(200).json(topProducts)
 
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
