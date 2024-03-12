@@ -1,11 +1,13 @@
 <div class="row">
     <div class="col-12 col-lg-6 my-2" recto *ngIf="topSalesPersons">
         <div class="app-card app-card-stats-table h-100 shadow-sm">
+
             <div class="app-card-header p-3">
                 <div class="row justify-content-between align-items-center">
                     <div class="col-auto">
-                        <h4 class="app-card-title">Top Sales Persons of {{thisMonth}}</h4>
+                        <h4 class="app-card-title">Top Sales Persons of {{lastMonth}}</h4>
                     </div>
+                    
                 </div>
             </div>
             <div class="app-card-body p-3 p-lg-4">
@@ -20,7 +22,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let person of topSalesPersons">
-                                <td class="row-name cursor-pointer">{{person.name}}</td>
+                                <td class="row-name"><span class="cursor-pointer">{{person.name}}</span></td>
                                 <td class="stat-cell text-capitalize">{{person.salesAmmount | currency: 'INR'}}</td>
                                 <td class="stat-cell">{{person.salesCount}}</td>
                             </tr>
@@ -36,8 +38,12 @@
             <div class="app-card-header p-3">
                 <div class="row justify-content-between align-items-center">
                     <div class="col-auto">
-                        <h4 class="app-card-title">Top Products of {{thisMonth}}</h4>
+                        <h4 class="app-card-title">Top Products of {{selectedInterval=='lastMonth'?lastMonth:'Last 6 Months'}}</h4>
                     </div>
+                    <select [(ngModel)]="selectedInterval" class="form-select form-select-sm d-inline-flex w-auto mx-3">
+                        <option value="lastMonth">Last Month</option>
+                        <option value="lastHalf">Last Six Month</option>
+                    </select>
                 </div>
             </div>
             <div class="app-card-body p-3 p-lg-4">
@@ -52,9 +58,9 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let product of topProducts">
-                                <td class="row-name">{{product.name}}</td>
-                                <td class="stat-cell">{{product.salesAmmount | currency: 'INR'}}</td>
-                                <td class="stat-cell">{{product.salesCount}}</td>
+                                <td class="row-name"><span class="cursor-pointer">{{product.name}}</span></td>
+                                <td class="stat-cell">{{product.salesAmount[selectedInterval] }}</td>
+                                <td class="stat-cell">{{product.salesCount[selectedInterval]}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -68,7 +74,7 @@
             <div class="app-card-header p-3">
                 <div class="row justify-content-between align-items-center">
                     <div class="col-auto">
-                        <h4 class="app-card-title">Your Team Sales of {{thisMonth}}</h4>
+                        <h4 class="app-card-title">Your Team Sales of {{lastMonth}}</h4>
                     </div>
                 </div>
             </div>
@@ -77,24 +83,27 @@
                     <table class="table table-borderless mb-0">
                         <thead>
                             <tr>
-                                <th class="meta cursor-pointer">Name</th>
+                                <th class="meta">Name</th>
                                 <th class="meta stat-cell">Total Sales Ammount</th>
                                 <th class="meta stat-cell">Total Sales Count</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let person of empUnderManagerSale | paginate: { itemsPerPage: 5, currentPage: pageNumber }">
-                                <td class="row-name">{{person.name}}</td>
+                            <tr
+                                *ngFor="let person of empUnderManagerSale | paginate: { itemsPerPage: 5, currentPage: pageNumber }">
+                                <td class="row-name"><span class="cursor-pointer">{{person.name}}</span></td>
                                 <td class="stat-cell">{{person.salesAmmount | currency: 'INR'}}</td>
                                 <td class="stat-cell">{{person.salesCount}}</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="d-flex m-0 px-2 p-0 bottom" [ngClass]="empUnderManagerSale?'justify-content-between':'justify-content-end'">
-                        <div *ngIf="empUnderManagerSale" class="text-sm p-0 my-0" style="font-size: 14px;">{{empUnderManagerSale.length}} of
-                          {{empUnderManagerSale.length}}</div>
+                    <div class="d-flex m-0 px-2 p-0 bottom"
+                        [ngClass]="empUnderManagerSale?'justify-content-between':'justify-content-end'">
+                        <div *ngIf="empUnderManagerSale" class="text-sm p-0 my-0" style="font-size: 14px;">
+                            {{empUnderManagerSale.length}} of
+                            {{empUnderManagerSale.length}}</div>
                         <pagination-controls previousLabel="Prev" nextLabel="Next"
-                          (pageChange)="onTableDataChange($event)"></pagination-controls>
+                            (pageChange)="onTableDataChange($event)"></pagination-controls>
                     </div>
                 </div>
             </div>

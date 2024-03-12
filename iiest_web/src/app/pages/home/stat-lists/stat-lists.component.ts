@@ -2,6 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { months, salesManagerRoles } from 'src/app/utils/config';
 
+interface interval {
+  lastMonth: string,
+  lastHalf: string
+}
+
 @Component({
   selector: 'app-stat-lists',
   templateUrl: './stat-lists.component.html',
@@ -10,10 +15,12 @@ import { months, salesManagerRoles } from 'src/app/utils/config';
 export class StatListsComponent implements OnInit {
 
   topSalesPersons: Array<{name: string, salesAmmount: number, salesCount: number}>
-  topProducts: Array<{name: string, salesAmmount: number, salesCount: number}>;
+  topProducts: Array<{name: string, salesAmount: interval, salesCount: interval}>;
   empUnderManagerSale: Array<{name: string, salesAmmount: number, salesCount: number}>
 
-  thisMonth: string;
+  selectedInterval: 'lastMonth' | 'lastHalf' = 'lastMonth'
+
+  lastMonth: string;
 
   pageNumber: number = 1;
 
@@ -26,7 +33,7 @@ export class StatListsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.thisMonth = months[new Date().getMonth()]
+    this.lastMonth = months[(new Date().getMonth() - 1) % 12]
 
     this.getTopSalesPersons();
 

@@ -171,4 +171,4 @@ export class chartData {
 
 export const days: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
 
-export const months: string[] = ['January', 'Febuary', 'March', 'Aprail', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];

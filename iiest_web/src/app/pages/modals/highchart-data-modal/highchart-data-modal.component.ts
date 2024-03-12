@@ -181,9 +181,16 @@ export class HighchartDataModalComponent {
           if(month > 2){
             year = year-1
           }
-          console.log(day, month);
 
-          this.specificDatas = res.salesInfo.filter((item: any) => new Date(item.createdAt).getDate() == Number(day) && new Date(item.createdAt).getMonth() == month && new Date(item.createdAt).getFullYear() == year);
+          this.specificDatas = res.salesInfo.filter((item: any) => {
+            const saleDate = new Date(item.createdAt);
+            if(saleDate.getFullYear() == year && saleDate.getMonth() == month && (saleDate.getDate() == Number(day) + 1)){
+              console.log(year, saleDate.getFullYear());
+              return 1;
+            } else {
+              return 0;
+            }
+          });
           this.salesDeptfilter();
           this.loading=false;
         }
