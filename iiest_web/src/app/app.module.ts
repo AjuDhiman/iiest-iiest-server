@@ -29,6 +29,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { EmployeeState } from './store/state/employee.state';
+import { SalesState } from './store/state/sales.state';
 import { EditrecordComponent } from './pages/editrecord/editrecord.component';
 import { QrCodeModule } from 'ng-qrcode';
 import { Papa } from 'ngx-papaparse';
@@ -133,7 +134,7 @@ import { InrAmountPipe } from './pipes/inr-amount.pipe';
     FileSaverModule,
     HighchartsChartModule,
     //ngxs Modlues
-    NgxsModule.forRoot([EmployeeState]),
+    NgxsModule.forRoot([EmployeeState, SalesState]),
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxLoadingModule.forRoot({

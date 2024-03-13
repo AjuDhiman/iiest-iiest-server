@@ -51,6 +51,8 @@ export class HighchartsComponent implements OnChanges {
 
   drillName: string = '';
 
+  loading: boolean = true;
+
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
 
@@ -62,6 +64,7 @@ export class HighchartsComponent implements OnChanges {
       this.selectedChartType = this.chartData.chartType;
       this.defaultChartType = this.chartData.chartType;
       this.plotChart();
+      this.loading = false;
       // this.otherChartTypes = this.chartData.otherChartTypeOptions;
     }
   }
@@ -237,6 +240,55 @@ export class HighchartsComponent implements OnChanges {
           name: this.chartData.seriesName,
           data: this.values,
         },
+      ]
+    };
+  }
+
+  // --------Line Drill Down Chart--------
+  plotLineDrillDownChart() {
+    this.chart = {
+      chart: {
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+      },
+      title: {
+        text: undefined
+      },
+      credits: {
+        enabled: false,
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        title: {
+          text: this.chartData.yAxisTitle
+        },
+        min: 0
+      },
+      plotOptions: {
+        line: {
+          marker: {
+            enabled: true,
+          },
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+              textOutline: 'none'
+            }
+          }
+        },
+      },
+      series: [
+        {
+          type: 'line',
+          name: this.chartData.seriesName,
+          data: this.values,
+        },
       ],
       drilldown: {
         breadcrumbs: {
@@ -252,6 +304,46 @@ export class HighchartsComponent implements OnChanges {
 
   // -------Pie Chart Function---------
   plotPieChart() {
+    this.chart = {
+      chart: {
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+      },
+      title: {
+        text: undefined
+      },
+      credits: {
+        enabled: false,
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.y}',
+          },
+          showInLegend: true,
+        },
+      },
+      yAxis: {
+        title: {
+          text: null
+        }
+      },
+      series: [
+        {
+          name: this.chartData.seriesName,
+          type: 'pie',
+          data: this.values,
+          events: this.events
+        }
+      ]
+    };
+  }
+
+  // -------Pie Drill Down Chart Function---------
+  plotPieDrillDownChart(){
     this.chart = {
       chart: {
         // ---------Edit chart spacing---------
@@ -305,9 +397,6 @@ export class HighchartsComponent implements OnChanges {
       chart: {
         // ---------Edit chart spacing---------
         spacingBottom: -5,
-        // spacingTop: 10,
-        // spacingLeft: 10,
-        // spacingRight: 10,
       },
       credits: {
         enabled: false,
@@ -323,8 +412,66 @@ export class HighchartsComponent implements OnChanges {
       plotOptions: {
         area: {
           marker: {
-            enabled: false, // Disable markers on data points
+            enabled: true,
           },
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+             textOutline: 'none'
+            }
+          }
+        },
+      },
+      series: [
+        {
+          type: 'area',
+          name: this.chartData.seriesName,
+          data: this.values,
+        },
+      ]
+    };
+  }
+
+  // -------Area Drill Down Chart Function---------
+  plotAreaDrillDownChart() {
+    this.chart = {
+      chart: {
+        // ---------Edit chart spacing---------
+        spacingBottom: -5,
+      },
+      title: {
+        text: undefined
+      },
+      credits: {
+        enabled: false,
+      },
+      xAxis: {
+        type: 'category'
+      },
+      yAxis: {
+        title: {
+          text: this.chartData.yAxisTitle
+        },
+      },
+      plotOptions: {
+        area: {
+          marker: {
+            enabled: true,
+          },
+          dataLabels: {
+            enabled: true,
+            align: 'center',
+            verticalAlign: 'top',
+            inside: false,
+            color: 'black',
+            style: {
+             textOutline: 'none'
+            }
+          }
         },
       },
       series: [
@@ -368,6 +515,8 @@ export class HighchartsComponent implements OnChanges {
 
   plotChart() {
 
+    this.chart = {}
+
     this.initializeChartData();
 
     if (this.values.every(value => value === 0)) {
@@ -390,11 +539,26 @@ export class HighchartsComponent implements OnChanges {
           this.plotColumnChart();
         }
         break;
-      case "Line": this.plotLineChart();
+      case "Line":
+        if(this.chartData.isDrilldown) {
+          this.plotLineDrillDownChart();
+        } else {
+          this.plotLineChart();
+        }
         break;
-      case "Pie": this.plotPieChart();
+      case "Pie": 
+        if(this.chartData.isDrilldown) {
+          this.plotPieDrillDownChart()
+        } else {
+          this.plotAreaChart()
+        }
         break;
-      case "Area": this.plotAreaChart();
+      case "Area": 
+        if(this.chartData.isDrilldown){
+          this.plotAreaDrillDownChart()
+        } else {
+          this.plotAreaChart();
+        }
         break;
     }
   }
