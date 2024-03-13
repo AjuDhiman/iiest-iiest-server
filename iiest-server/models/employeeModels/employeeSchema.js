@@ -6,8 +6,8 @@ const employeeRegister = new Schema({
         type: Number, 
         unique: true,
         required: true,
-        min: 1000,
-        max: 9999
+        // min: 1000,
+        // max: 9999
     },
     employee_name: {
         type: String, 
