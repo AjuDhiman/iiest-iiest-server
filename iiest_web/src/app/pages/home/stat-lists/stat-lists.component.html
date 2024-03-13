@@ -23,7 +23,7 @@
                         <tbody>
                             <tr *ngFor="let person of topSalesPersons">
                                 <td class="row-name"><span class="cursor-pointer">{{person.name}}</span></td>
-                                <td class="stat-cell text-capitalize">{{person.salesAmmount | currency: 'INR'}}</td>
+                                <td class="stat-cell text-capitalize">{{person.salesAmmount | inrAmount}}</td>
                                 <td class="stat-cell">{{person.salesCount}}</td>
                             </tr>
                         </tbody>
@@ -59,7 +59,7 @@
                         <tbody>
                             <tr *ngFor="let product of topProducts">
                                 <td class="row-name"><span class="cursor-pointer">{{product.name}}</span></td>
-                                <td class="stat-cell">{{product.salesAmount[selectedInterval] }}</td>
+                                <td class="stat-cell">{{product.salesAmount[selectedInterval] | inrAmount}}</td>
                                 <td class="stat-cell">{{product.salesCount[selectedInterval]}}</td>
                             </tr>
                         </tbody>
@@ -92,7 +92,7 @@
                             <tr
                                 *ngFor="let person of empUnderManagerSale | paginate: { itemsPerPage: 5, currentPage: pageNumber }">
                                 <td class="row-name"><span class="cursor-pointer">{{person.name}}</span></td>
-                                <td class="stat-cell">{{person.salesAmmount | currency: 'INR'}}</td>
+                                <td class="stat-cell">{{person.salesAmmount | inrAmount}}</td>
                                 <td class="stat-cell">{{person.salesCount}}</td>
                             </tr>
                         </tbody>
@@ -110,3 +110,5 @@
         </div>
     </div>
 </div>
+
+<!-- <ngx-loading ></ngx-loading> -->
