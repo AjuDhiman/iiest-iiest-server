@@ -1,9 +1,10 @@
 <form [formGroup]="attendanceForm" class="row" (submit)="onSubmit()">
     <div class="d-flex justify-content-between">
         <h6>Attendance Section</h6>
-        <div class="status" [ngClass]="resultTextClass" style="font-size: large;">{{resultText}} <fa-icon [icon]="resultIcon"
+        <span class="status" [ngClass]="resultTextClass" style="font-size: x-small;" class="badge align-self-baseline">
+            {{resultText}} <fa-icon [icon]="resultIcon"
             class="fa-lg fa-regular ml-2"></fa-icon>
-        </div>
+        </span>
     </div>
 
     <div class="col-md-3">

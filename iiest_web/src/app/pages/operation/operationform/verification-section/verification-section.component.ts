@@ -16,10 +16,10 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   //general variables
   verified: boolean = false;
   verifiedStatus: boolean = false;
-  isPropraitor: boolean = false;
-  minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
-  ownersNum: number = 0; // this var is for deciding the no of owners in case of partnership or board of directors
-  indexArr: number[] = []; //this var is used for converting ownersNum to array of increasing num till ownerNum because we are using this with ngFor and ngFor works only with array
+  // isPropraitor: boolean = false;
+  // minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
+  // ownersNum: number = 0; // this var is for deciding the no of owners in case of partnership or board of directors
+  // indexArr: number[] = []; //this var is used for converting ownersNum to array of increasing num till ownerNum because we are using this with ngFor and ngFor works only with array
   ownerType: string = '';
 
   //icons
@@ -133,8 +133,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         break;
     }
 
-    console.log(this.verificationform['owner_details'].valueChanges);
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -155,12 +153,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     return this.verificationForm.controls;
   }
 
-  get ownerDetailsArray(): any {
-    return (this.verificationForm.get('owner_details') as FormArray).controls;
-  }
 
   onVerify(): void {
-    console.log(this.ownerDetailsArray[1]);
     if (this.fieldVerifications.find((div: any) => div.nativeElement.getAttribute('valid') === 'false')) {
       this._toastrService.warning('Please verify all fields first')
       return
@@ -264,6 +258,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
           this.verificationForm.patchValue({ username: res.verifedData.userName });
           this.verificationForm.patchValue({ password: res.verifedData.password });
+          this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'))
         } else {
           this.verifiedStatus = false;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
@@ -385,53 +380,53 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   }
 
-  onOwnershipTypeChange($event: any) {
-    if ($event.target.value === 'Propraitorship') {
-      this.verificationForm.patchValue({ owner_num: 1 });
-      this.isPropraitor = true;
-      this.minMembers = 1;
-      this.ownersNum = 1;
-      this.indexArr = []
-      for (let i = 0; i < this.ownersNum; i++) {
-        this.indexArr.push(i);
-      }
-    } else {
-      this.verificationForm.patchValue({ owner_num: 2 });
-      this.isPropraitor = false;
-      this.minMembers = 2;
-      this.ownersNum = 2;
-      this.indexArr = []
-      for (let i = 0; i < this.ownersNum; i++) {
-        this.indexArr.push(i);
-      }
-    }
+  // onOwnershipTypeChange($event: any) {
+  //   if ($event.target.value === 'Propraitorship') {
+  //     this.verificationForm.patchValue({ owner_num: 1 });
+  //     this.isPropraitor = true;
+  //     this.minMembers = 1;
+  //     this.ownersNum = 1;
+  //     this.indexArr = []
+  //     for (let i = 0; i < this.ownersNum; i++) {
+  //       this.indexArr.push(i);
+  //     }
+  //   } else {
+  //     this.verificationForm.patchValue({ owner_num: 2 });
+  //     this.isPropraitor = false;
+  //     this.minMembers = 2;
+  //     this.ownersNum = 2;
+  //     this.indexArr = []
+  //     for (let i = 0; i < this.ownersNum; i++) {
+  //       this.indexArr.push(i);
+  //     }
+  //   }
 
-    switch ($event.target.value) {
-      case 'Propraitorship':
-        this.ownerType = 'Propraitor'
-        break;
-      case 'Partnership':
-        this.ownerType = 'Partner'
-        break;
-      case 'Board of Directors':
-        this.ownerType = 'Director'
-        break;
-    }
-  }
+  //   switch ($event.target.value) {
+  //     case 'Propraitorship':
+  //       this.ownerType = 'Propraitor'
+  //       break;
+  //     case 'Partnership':
+  //       this.ownerType = 'Partner'
+  //       break;
+  //     case 'Board of Directors':
+  //       this.ownerType = 'Director'
+  //       break;
+  //   }
+  // }
 
-  onOwnerNumChange($event: any) {
-    let value;
-    if ($event.target.value > 20) {
-      this.verificationForm.patchValue({ owner_num: 20 });
-      value = 20;
-    } else {
-      value = $event.target.value;
-    }
-    this.ownersNum = value;
-    this.indexArr = [];
-    for (let i = 0; i < value; i++) {
-      this.indexArr.push(i);
-    }
-  }
+  // onOwnerNumChange($event: any) {
+  //   let value;
+  //   if ($event.target.value > 20) {
+  //     this.verificationForm.patchValue({ owner_num: 20 });
+  //     value = 20;
+  //   } else {
+  //     value = $event.target.value;
+  //   }
+  //   this.ownersNum = value;
+  //   this.indexArr = [];
+  //   for (let i = 0; i < value; i++) {
+  //     this.indexArr.push(i);
+  //   }
+  // }
 
 }

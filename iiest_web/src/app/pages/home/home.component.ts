@@ -8,6 +8,8 @@ import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { chartData, months, salesManagerRoles, salesOfficersRoles } from 'src/app/utils/config';
+import { SalesState } from 'src/app/store/state/sales.state';
+import { GetSales } from 'src/app/store/actions/sales.action';
 
 @Component({
   selector: 'app-home',
@@ -27,9 +29,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   employees: Employee;
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
+  @Select(SalesState.GetSalesList) sales$: Observable<any>;
+  @Select(SalesState.salesLoaded) salesLoaded$: Observable<boolean>
   empLoadedSub: Subscription;
+  salesLoadedSub: Subscription;
   msg: Subscription;
   data: any;
+  salesData: any;
 
   //product table related variables
   fssaiData: any;
@@ -54,7 +60,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   loading: boolean = true;
 
   //others
-  salesData: any;
   topSalesman: any = {};
 
   //roles arrays
@@ -74,23 +79,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     //these two methords belongs to employee redux store by the help of then we want to collec data all the employees and save it to the store
     this.getEmployees();
 
+    const observables: Observable<any>[] = [];
+
     this.employees$.subscribe(res => {
       this.data = res;
     });
 
+    this.sales$.subscribe({
+      next: res => {
+        this.salesData = res;
+        this.loading = false;
+      }
+    });
+
     // functions for forming input for highcharts from data comming from backend
-    if(this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department'){
+    if (this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department') {
       this.getProductSaledata();
       this.getAreaWiseSaleData();
       this.getClientTypeSaleData();
       this.getMonthWisesaleData();
     }
 
-    if(this.empDesigantion === 'Director') {
+    if (this.empDesigantion === 'Director') {
       this.getPersonWiseSaleData();
     }
 
-    if(this.empDepartment === 'HR Department'){
+    if (this.empDepartment === 'HR Department') {
       this.getEmpHiringData();
     }
 
@@ -100,6 +114,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     //------this function is for collecting data related to product table-------
     this.getProductData();
+
+    this.getSales();
   }
 
   getEmployees(): void {
@@ -157,15 +173,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         const isDrillDown = true;
         const otherChartTypeOptions = ['column']
         this.areaSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
-        this.loading = false;
+        // this.loading = false;
       }
     });
   }
-  
-  getMonthWisesaleData(){
+
+  getMonthWisesaleData() {
     this._getDataService.getMonthWisesaleData().subscribe({
       next: res => {
-        const chartType = 'Line';
+        const chartType = 'Area';
         const department = 'Sales Department';
         const chartTitle = 'Sales Chart';
         const seriesName = `${new Date().getFullYear() - 1}-${new Date().getFullYear()} `;
@@ -173,19 +189,21 @@ export class HomeComponent implements OnInit, OnDestroy {
         const data = res;
         const showIntervalSelection = false;
         const isDrillDown = true;
-        for(let i = 0; i < data.length; i++){
+        const otherChartTypeOptions = ['Line'];
+        for (let i = 0; i < data.length; i++) {
           const month = months[data[i].name - 1];
-          data[i].name = month;
-          for(let j = 0; j < data[i].categories.length; j++){
+          const year = data[i].date.year;
+          data[i].name = month + "-" + year;
+          for (let j = 0; j < data[i].categories.length; j++) {
             data[i].categories[j].name = `${data[i].categories[j].name}-${month}`;
           }
         }
-        this.monthSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+        this.monthSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
       }
     });
   }
 
-  getPersonWiseSaleData(){
+  getPersonWiseSaleData() {
     this._getDataService.getPersonWiseSaleData().subscribe({
       next: res => {
         const chartType = 'Column';
@@ -202,7 +220,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getClientTypeSaleData(){
+  getClientTypeSaleData() {
     this._getDataService.getClientTypeSaleData().subscribe({
       next: res => {
         const chartType = 'Column';
@@ -219,7 +237,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getEmpHiringData(){
+  getEmpHiringData() {
     this._getDataService.getEmpHiringData().subscribe({
       next: res => {
         this.isChartDataAvailable = true;
@@ -263,6 +281,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+  getSales() {
+    this.salesLoadedSub = this.salesLoaded$.subscribe(loadedSales => {
+      if (!loadedSales) {
+        this.store.dispatch(new GetSales());
+      }
+      // this.loading = false;
+    })
+  }
+
   //function for getting chart data by the help of apis ends
   getProductData(): void {
     this._getDataService.getProductData().subscribe({
@@ -279,6 +306,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.empLoadedSub.unsubscribe();
+    this.salesLoadedSub.unsubscribe();
   }
+
 
 }

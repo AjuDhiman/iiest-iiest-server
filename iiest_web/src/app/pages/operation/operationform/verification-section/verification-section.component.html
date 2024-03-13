@@ -3,12 +3,12 @@
   (ngSubmit)="onVerify()">
 
   <!-- form heading and status -->
-  <div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-between align-items-center">
     <h6>Verification Section</h6>
-    <div [ngClass]="verifiedStatus?'text-success':'text-warning'" style="font-size: large;">
+    <span [ngClass]="verifiedStatus?'bg-success':'bg-warning'" style="font-size: x-small;" class="badge align-self-baseline">
       {{verifiedStatus?'Verified':'In-Progress'}}
       <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation" class="fa-lg ml-2"></fa-icon>
-    </div>
+    </span>
   </div>
 
   <!-- form input fields -->
@@ -130,7 +130,7 @@
 
   </div>
 
-  <div class="col-md-3 position-relativs">
+  <div class="col-md-3 position-relative">
     <label for="aadhar_no" class="form-label">Aadhar no.</label><sup>*</sup>
     <input #aadhar_no valid="false" type="number" placeholder="Aadhar no." formControlName="aadhar_no"
       class="form-control form-control-sm" id="aadhar_no" [readOnly]="true"
@@ -414,7 +414,7 @@
       <label for="ownership_type" class="form-label select-label">Ownership Type</label><sup>*</sup>
       <select id="ownership_type" [ngClass]="{ 'is-invalid': verified && verificationform['ownership_type'].errors }"
         formControlName="ownership_type" [attr.disabled]="verifiedStatus"
-        class="form-select form-select-sm cursor-pointer" (change)="onOwnershipTypeChange($event)">
+        class="form-select form-select-sm cursor-pointer">
         <option value="" disabled selected>Select the Ownership Type</option>
         <option *ngFor="let type of ownershipType" [value]="type" style="text-transform: capitalize;">{{type}}</option>
       </select>
@@ -423,7 +423,7 @@
       </div>
     </div>
 
-    <div class="col-md-3">
+    <!-- <div class="col-md-3">
       <label for="owner_num" class="form-label">Number of Owners</label><sup>*</sup>
       <input type="number" [attr.min]="minMembers" placeholder="Number of Owners" formControlName="owner_num"
         class="form-control form-control-sm" id="owner_num" [readOnly]="verifiedStatus || isPropraitor || !verificationform['ownership_type'].value" step=1
@@ -432,7 +432,7 @@
       <div *ngIf="verified && verificationform['owner_num'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['owner_num'].errors['required']">Number Of Owners is required</div>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <div class="row mt-3">

@@ -5,13 +5,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class InrAmountPipe implements PipeTransform {
 
-  transform(amount: number): string {
-    if (amount == null || isNaN(amount)) {
+  transform(amount: string | number): string {
+    let amountNum = Number(amount);
+    if (amountNum == null || isNaN(Number(amountNum))) {
       return '';
     }
 
     // Convert the amount to string
-    let amountStr: string = amount.toFixed(2);
+    let amountStr: string = Number(amountNum).toFixed(2);
 
     // Split the amount into rupees and paise parts
     let [rupees, paise] = amountStr.split('.');
@@ -30,13 +31,20 @@ export class InrAmountPipe implements PipeTransform {
 
   private formatRupees(rupees: number): string {
     // Regular expression to add commas every three digits
-    const firstDigits = rupees.toString().split('').slice(0, -3).join('');
-    const lastDigits = rupees.toString().split('').slice(-3).join('');
+    const digitArr = rupees.toString().split('');
+
+    let formattedRupees: string;
     
     let regex = /\B(?=(\d{2})+(?!\d))/g;
-
-    // Break rupees into units and format with commas
-    let formattedRupees = '₹' + firstDigits.toString().replace(regex, ',') + ',' +  lastDigits;
+    if(digitArr.length > 3){
+      const firstDigits = digitArr.slice(0, -3).join('');
+      const lastDigits = digitArr.slice(-3).join('');
+  
+      // Break rupees into units and format with commas
+      formattedRupees = '₹' + firstDigits.toString().replace(regex, ',') + ',' +  lastDigits;
+    } else {
+      formattedRupees = '₹' + rupees.toString().replace(regex, ',');
+    }
 
     return formattedRupees;
   }

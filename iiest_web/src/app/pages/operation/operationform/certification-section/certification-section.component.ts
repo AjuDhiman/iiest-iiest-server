@@ -28,7 +28,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
 
   //result related variables and icons
   resultText: string = 'On-Going';
-  resultTextClass: string = 'text-warning';
+  resultTextClass: string = 'bg-warning';
   resultIcon: IconDefinition = faCircleExclamation;
   ticketClosingDate: string = '';
 
@@ -160,34 +160,34 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     if (this.attenSecResult) {
       if (this.attenSecResult !== 'Trained') {
         this.resultText = `${this.attenSecResult}`;
-        this.resultTextClass = 'text-danger';
+        this.resultTextClass = 'bg-danger';
         this.resultIcon = faCircleExclamation;
         this.isBtnDisble = true;
       } else {
         switch (ticketStatus) {
           case '':
             this.resultText = 'On-Going';
-            this.resultTextClass = 'text-warning';
+            this.resultTextClass = 'bg-warning';
             this.resultIcon = faCircleExclamation;
             break;
           case 'cancle':
             this.resultText = `Canceld on ${this.ticketClosingDate}`;
-            this.resultTextClass = 'text-danger';
+            this.resultTextClass = 'bg-danger';
             this.resultIcon = faCircleExclamation;
             break;
           case 'refund':
             this.resultText = `Refunded on ${this.ticketClosingDate}`;
-            this.resultTextClass = 'text-danger';
+            this.resultTextClass = 'bg-danger';
             this.resultIcon = faCircleExclamation;
             break;
           case 'reject':
             this.resultText = `Rejected on ${this.ticketClosingDate}`;
-            this.resultTextClass = 'text-danger';
+            this.resultTextClass = 'bg-danger';
             this.resultIcon = faCircleExclamation;
             break;
           case 'delivered':
             this.resultText = `Ticket Delivered on ${this.ticketClosingDate}`;
-            this.resultTextClass = 'text-success';
+            this.resultTextClass = 'bg-success';
             this.resultIcon = faCircleCheck;
             break;
         }
