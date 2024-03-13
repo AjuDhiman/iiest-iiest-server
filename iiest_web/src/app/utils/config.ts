@@ -8,6 +8,9 @@ export const waterTestFee = [0, 1500, 2000];
 //Fostac Process Amount
 export const processAmnt = [1200, 1500];
 //Client Type
+
+export const hraProcessingAmnt = 5000;
+
 export const clientType = ['General Client', 'Corporate Client'];
 
 //Payment Mode
@@ -24,8 +27,9 @@ export const licenceType = {
    'Duration': ['1', '2', '3', '4', '5']
 };
 export const serviceNames = {
-   "fostac": ["Retail", "Catering"],
-   "foscos": ["Registration", "State"]
+   "fostac": ["Retail", "Catering", "Others"],
+   "foscos": ["Registration", "State"],
+   "hygiene": ["Hygiene Rating Audit"]
 }
 
 

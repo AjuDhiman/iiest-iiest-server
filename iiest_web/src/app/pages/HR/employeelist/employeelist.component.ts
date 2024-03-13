@@ -25,11 +25,6 @@ export class EmployeelistComponent implements OnInit {
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
   empLoadedSub: Subscription;
 
-  //store related variables
-  // @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
-  // @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
-  // empLoadedSub: Subscription;
-
   //employee list table related variables
   allEmployees: any;
   filteredEmployees: any;
@@ -74,6 +69,7 @@ export class EmployeelistComponent implements OnInit {
   // this methord fetches the list of all employees from ngrx store
   fetchAllEmployees(): void {
     this.allEmployees = this._utililitesService.getData();
+    console.log(this.allEmployees);
     this.filter();
     if (this.allEmployees.length === 0) {
       this.getEmployees();

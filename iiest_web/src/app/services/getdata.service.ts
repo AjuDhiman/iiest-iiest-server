@@ -169,6 +169,7 @@ export class GetdataService {
   }
 
   public getMonthWisesaleData(): Observable<any> {
+    console.log(11);
     const url: string = `${this.url}/getmothwisesale`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }

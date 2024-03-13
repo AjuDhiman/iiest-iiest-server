@@ -1,23 +1,22 @@
 import { Injectable } from "@angular/core";
-import { Selector, Action, StateContext, State } from "@ngxs/store";
+import { Selector,Action, StateContext, State } from "@ngxs/store";
 import { GetdataService } from "src/app/services/getdata.service";
 import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
-import { sales } from "src/app/utils/registerinterface";
-import { GetSales } from "../actions/sales.action";
+import { DeleteSales, GetSales, UpdateSales } from "../actions/sales.action";
 
 //State Model
 export class SalesStateModel {
-    sales: sales[];
-    salesLoaded: boolean
+    sales : any;
+    salesLoaded : boolean
 }
 
 //State
 @State<SalesStateModel>({
-    name: 'sales',
-    defaults: {
-        sales: [],
-        salesLoaded: false
+    name : 'sales',
+    defaults :{
+        sales:[],
+        salesLoaded :false
     }
 })
 
@@ -25,23 +24,24 @@ export class SalesStateModel {
 
 export class SalesState {
     constructor(private _getDataService: GetdataService,
-        private _regitserService: RegisterService) { }
+                private _regitserService: RegisterService){}
 
     @Selector()
-    static GetSalesList(state: SalesStateModel) {
+    static GetSalesList(state:SalesStateModel){
         return state.sales;
     }
 
     //Get Loaded sales Info
     @Selector()
-    static salesLoaded(state: SalesStateModel) {
+    static salesLoaded(state:SalesStateModel){
         return state.salesLoaded;
     }
-
     @Action(GetSales)
-    getsales({ getState, setState }: StateContext<SalesStateModel>) {
-        return this._getDataService.getSalesList().pipe(tap(res => {
+    getSales({getState, setState}:StateContext<SalesStateModel>){
+        console.log('State Action');
+         this._getDataService.getSalesList().pipe(tap(res => {
             const state = getState();
+            console.log(res)
             setState({
                 ...state,
                 sales:res.salesInfo,
@@ -54,6 +54,32 @@ export class SalesState {
                     this._regitserService.signout();
                 }
             }
-        });
+        })
+        
+    }
+    @Action(UpdateSales)
+    updateSales({getState, setState}:StateContext<SalesStateModel>, {objId, payload}: UpdateSales){
+        
+        const state = getState();
+        const updatedSales = state.sales.map((sale: any)=>
+        sale._id === objId ? {...sale, ...payload} : sale
+        )
+
+        setState({
+            ...state,
+            sales: updatedSales
+        })
+    }
+
+    @Action(DeleteSales)
+    deleteSales({getState, setState}:StateContext<SalesStateModel>, {objId}: DeleteSales){
+
+        const state = getState();
+        const updatedSalesList = state.sales.filter((sale: any) => sale._id !== objId);
+
+        setState({
+            ...state,
+            sales: updatedSalesList
+        })
     }
 }
