@@ -1,31 +1,57 @@
 <form [formGroup]="hygiene_audit"> 
     <div class="row" >
         <h6 class=" pull-left">Hygiene Audit</h6>
+
         <div class="col-md-3">
-            <label for="spoc_person_name" class="form-label">Spoc Person Name<sup>*</sup></label>
-            <input id="spoc_person_name" formControlName="spoc_person_name" type="text"
-                [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('spoc_person_name')?.errors}"
-                class="form-control form-control-sm" placeholder="Spoc Person Name"/>
-            <div *ngIf="submitted && hygiene_audit.get('spoc_person_name')?.errors" class="invalid-feedback">
-                <div *ngIf="hygiene_audit.get('spoc_person_name')?.errors?.['required']">
-                    Spoc Person Name is Required
-                </div>
+            <label for="hygiene_service_name" class="form-label">Service Name<sup>*</sup></label>
+            <input id="hygiene_service_name" formControlName="hygiene_service_name" type="text" readonly
+            class="form-control form-control-sm" placeholder="Hygiene Rating Audit" />
+         </div>
+
+         <div class="col-md-3">
+            <label for="hygiene_processing_amount" class="form-label">Processing Amount <sup>*</sup></label>
+            <input id="hygiene_processing_amount" formControlName="hygiene_processing_amount" type="text" readonly
+                class="form-control form-control-sm" value="5000" />
+         </div>
+
+         <div class="col-md-3">
+            <label for="hygiene_client_type" class="form-label">Client Type<sup>*</sup></label>
+            <select id="hygiene_client_type" formControlName="hygiene_client_type" [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('hygiene_client_type')?.errors}"                  
+            (change)="clienttypeFun($event)" class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Client Type</option>
+                <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}</option>
+            </select>
+            <div *ngIf="submitted && hygiene_audit.get('hygiene_client_type')?.errors" class="invalid-feedback">
+                <div *ngIf="hygiene_audit.get('hygiene_client_type')?.errors?.['required']">Client type is required</div>
             </div>
         </div>
-        <!-- <div class="col-md-3">
-            <label for="fostac_service_name" class="form-label">Service Name<sup>*</sup></label>
-            <select id="fostac_service_name" formControlName="fostac_service_name"
-                [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_service_name')?.errors}"
-                class="form-select form-select-sm">
-                <option value="" disabled selected>Select the Service</option>
-                <option *ngFor="let servicename of serviceNames.fostac" [value]="servicename">{{servicename}}
-                </option>
-            </select>
-            <div *ngIf="submitted && fostac_training.get('fostac_service_name')?.errors" class="invalid-feedback">
-                <div *ngIf="fostac_training.get('fostac_service_name')?.errors?.['required']">Service is
-                    required
+        <div class="col-md-3">
+            <label for="shops_no" class="form-label">No. of Shops<sup>*</sup></label>
+            <input type="number" [attr.min]="minValue" step="1"
+                (change)="shopsCount($event)" placeholder="No. of shops"
+                [readonly]="isReadOnly" formControlName="shops_no"
+                class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('shops_no')?.errors}"
+                id="shops_no" group='hygiene' />
+            <div *ngIf="submitted && hygiene_audit.get('shops_no')?.errors" class="invalid-feedback">
+                <div *ngIf="hygiene_audit.get('shops_no')?.errors?.['required']">No. of Shops is
+                    required</div>
+            </div>
+        </div>
+    
+        <div class="col-md-3"> 
+            <label for="hygiene_total" class=" form-label">HRA Total Amount<sup>*</sup>
+                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+            <input type="number" placeholder="HRA Total Amount" formControlName="hygiene_total"
+                [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('hygiene_total')?.errors}"
+                class="form-control form-control-sm" id="hygiene_total" readonly />
+            <div *ngIf="submitted && hygiene_audit.get('hygiene_total')?.errors" class="invalid-feedback">
+                <div *ngIf="hygiene_audit.get('hygiene_total')?.errors?.['required']">HRA Total Amount
+                    Required
                 </div>
             </div>
-        </div> -->
+        </div> 
+
+
     </div>
 </form>

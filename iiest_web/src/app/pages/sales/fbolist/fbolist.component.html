@@ -1,127 +1,126 @@
-<div class="app-content pt-3 p-md-3 p-lg-4">
-  <ul class="nav nav-pills w-100 d-flex justify-content-start my-0 py-0">
-    <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2 mx-1">
-      <a class="nav-link mx-1" style="cursor: pointer;"  [ngClass]="{'active': activeTab==='Fostac'}" (click)="toogleTabs('Fostac')">Fostac</a>
-      <a class="nav-link mx-1" style="cursor: pointer;"  [ngClass]="{'active': activeTab==='Foscos Training'}" (click)="toogleTabs('Foscos Training')">Foscos</a>
-      <a class="nav-link mx-1" style="cursor: pointer;"  [ngClass]="{'active': activeTab==='Hygiene'}" (click)="toogleTabs('Hygiene')">Hygiene</a>
-    </li>
-  </ul>
-  <div class="container-xxl border border-1 rounded-3 pt-3">
-    <div class="row g-3 mb-4 align-items-center justify-content-between">
-      <div class="col-auto">
-        <h1 class="app-page-title mb-0">FBO List <span style="text-transform: capitalize;">{{activeTab}} </span></h1>
-      </div>
-      <div class="col-auto">
-        <div class="page-utilities">
-          <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
-              <option value=10>10</option>
-              <option value=25 selected>25</option>
-              <option value=50>50</option>
-              <option value=100>100</option>
-            </select>
-            <div class="col-auto">
-              <form class="form">
-                <div class="input-group" title="Search Employee">
-                  <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
-                    [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
-                </div>
-                <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
-                  class="form-control form-control-sm search-orders" (input)="onSearchChange()">
-              </form>
-            </div>
-            <div class="col-auto">
-              <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
-                <option value="byOwner">Search by Owner</option>
-                <option value="byName">Search by Name</option>
-                <option value="byCustomerID">Search by Customer ID</option>
-                <option value="byDistrict">Search by District</option>
-                <option valye="byProduct">Search by Product Name</option>
-
+<div class="app-content pt-3">
+  <div class="container-xxl">
+    <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
+      <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
+        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Fostac'}"
+          (click)="toogleTabs('Fostac')">Fostac</a>
+        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Foscos'}"
+          (click)="toogleTabs('Foscos')">Foscos</a>
+        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Hygiene'}"
+          (click)="toogleTabs('Hygiene')">Hygiene</a>
+      </li>
+    </ul>
+    <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
+      <div class="row g-3 mb-4 align-items-center justify-content-between">
+        <div class="col-auto">
+          <h1 class="app-page-title mb-0">FBO List <span style="text-transform: capitalize;">{{activeTab}} </span></h1>
+        </div>
+        <div class="col-auto">
+          <div class="page-utilities">
+            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+              <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
+                <option value=10>10</option>
+                <option value=25 selected>25</option>
+                <option value=50>50</option>
+                <option value=100>100</option>
               </select>
-            </div>
-            <div class="col-auto">
-              <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
-                [icon]="faFileCsv" title="Export as CSV"></fa-icon>
-              <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
-            </div>
-          </div><!--//row-->
-        </div><!--//table-utilities-->
-      </div><!--//col-auto-->
-    </div><!--//row-->
+              <div class="col-auto">
+                <form class="form">
+                  <div class="input-group" title="Search Employee">
+                    <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
+                      [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                  </div>
+                  <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                    class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+                </form>
+              </div>
+              <div class="col-auto">
+                <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter"
+                  (change)="onItemNumChange()">
+                  <option value="byOwner">Search by Owner</option>
+                  <option value="byName">Search by Name</option>
+                  <option value="byCustomerID">Search by Customer ID</option>
+                  <option value="byDistrict">Search by District</option>
+                  <option valye="byProduct">Search by Product Name</option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
+                  [icon]="faFileCsv" title="Export as CSV"></fa-icon>
+                <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
+              </div>
+            </div><!--//row-->
+          </div><!--//table-utilities-->
+        </div><!--//col-auto-->
+      </div><!--//row-->
 
-    <!--   
-  <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-    <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
-    <a class="flex-sm-fill text-sm-center nav-link"  id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
-    <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
-    <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
-</nav> -->
 
+      <div class="tab-content" id="orders-table-tab-content">
+        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+          <div class="app-card app-card-orders-table shadow-sm mb-5">
+            <div class="app-card-body">
+              <div class="table-responsive">
+                <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                  <thead>
+                    <tr>
+                      <th class="cell">S.No</th>
+                      <th class="cell">Fbo Name</th>
+                      <th class="cell">Owner</th>
+                      <th class="cell">Customer ID</th>
+                      <th class="cell">State</th>
+                      <th class="cell">District</th>
+                      <th class="cell" *ngIf="activeTab==='Fostac'">Recipient No</th>
+                      <th class="cell" *ngIf="activeTab === 'Foscos' || activeTab === 'Hygiene'">Shop No</th>
+                      <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
+                      <th class="cell">Sales Date</th>
+                      <th class="cell text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="filteredData">
+                    <tr class="list-tr"
+                      *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
+                      <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
+                      <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.fbo_name}}</span></td>
+                      <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.owner_name}}</span></td>
+                      <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
+                      <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
+                      <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
+                      <td *ngIf="activeTab==='Fostac'" class="cell text-center"><span class="truncate selector"
+                          (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')"
+                          title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
+                          fbo.fostacInfo.recipient_no}}</span></td>
+                      <td *ngIf="activeTab === 'Foscos' || activeTab === 'Hygiene'" class="cell text-center"><span
+                          class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')"
+                          title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
+                          fbo.foscosInfo.shops_no}}</span></td>
+                      <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"
+                            style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
+                      <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
+                      <td class="cell text-center">
+                        <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;"
+                          (click)="viewFboDetails(fbo)" [icon]="faEye" title="View Detail"></fa-icon>
+                        <!-- <fa-icon class="fa-l" (click)="editRecord(fbo)"style="margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon> -->
+                        <!-- <fa-icon class="fa-l" style="color: #c64115;" [icon]="faTrash" (click)="deleteFBO(fbo)"></fa-icon> -->
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="filteredData?.length==0">
+                    <tr>
+                      <td colspan="15" class="text-center fw-bold">----------------- No Data Found ----------------</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div><!--//table-responsive-->
 
-    <div class="tab-content" id="orders-table-tab-content">
-      <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-        <div class="app-card app-card-orders-table shadow-sm mb-5">
-          <div class="app-card-body">
-            <div class="table-responsive">
-              <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
-                <thead>
-                  <tr>
-                    <th class="cell">S.No</th>
-                    <th class="cell">Fbo Name</th>
-                    <th class="cell">Owner</th>
-                    <th class="cell">Customer ID</th>
-                    <th class="cell">State</th>
-                    <th class="cell">District</th>
-                    <th class="cell" *ngIf="activeTab==='Fostac'">Recipient No</th>
-                    <th class="cell" *ngIf="activeTab === 'Foscos Training' || activeTab === 'Hygiene'">Shop No</th>
-                    <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
-                    <th class="cell">Sales Date</th>
-                    <th class="cell text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody *ngIf="filteredData">
-                  <tr class="list-tr"
-                    *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }">
-                    <td class="cell"><span class="truncate">{{fbo.serialNumber}}</span></td>
-                    <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.fbo_name}}</span></td>
-                    <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.owner_name}}</span></td>
-                    <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
-                    <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
-                    <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
-                    <td *ngIf="activeTab==='Fostac'" class="cell text-center"><span class="truncate selector"
-                        (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')" title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
-                        fbo.fostacInfo.recipient_no}}</span></td>
-                    <td *ngIf="activeTab === 'Foscos Training' || activeTab === 'Hygiene'" class="cell text-center"><span class="truncate selector"
-                        (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')" title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
-                        fbo.foscosInfo.shops_no}}</span></td>
-                    <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"
-                          style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
-                    <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
-                    <td class="cell text-center">
-                      <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;"
-                        (click)="viewFboDetails(fbo)" [icon]="faEye" title="View Detail"></fa-icon>
-                      <!-- <fa-icon class="fa-l" (click)="editRecord(fbo)"style="margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon> -->
-                      <!-- <fa-icon class="fa-l" style="color: #c64115;" [icon]="faTrash" (click)="deleteFBO(fbo)"></fa-icon> -->
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody *ngIf="filteredData?.length==0">
-                  <tr>
-                    <td colspan="15" class="text-center fw-bold">----------------- No Data Found ----------------</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><!--//table-responsive-->
+            </div><!--//app-card-body-->
+          </div><!--//app-card-->
 
-          </div><!--//app-card-body-->
-        </div><!--//app-card-->
-
-        <div class="d-flex" [ngClass]="allFBOEntries?'justify-content-between':'justify-content-end'">
-          <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of
-            {{allFBOEntries.length}}</div>
-          <pagination-controls previousLabel="Prev" nextLabel="Next"
-            (pageChange)="onTableDataChange($event)"></pagination-controls>
+          <div class="d-flex" [ngClass]="allFBOEntries?'justify-content-between':'justify-content-end'">
+            <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filltred from ({{filteredFBOEntries.length}} {{activeTab}} cases of
+              {{allFBOEntries.length}})</div>
+            <pagination-controls previousLabel="Prev" nextLabel="Next"
+              (pageChange)="onTableDataChange($event)"></pagination-controls>
+          </div>
         </div>
       </div>
     </div>
