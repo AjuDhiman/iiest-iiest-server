@@ -48,11 +48,8 @@ export class DepartmentListComponent implements OnInit {
       next: res => {
         console.log(res);
         this.employeeList = res.employeeList.map((elem: any, index: number) => {
-          if (elem.status === true) {
-            return { ...elem, serialNumber: index + 1 };
-          } else {
-            return null;
-          }
+
+          return { ...elem, serialNumber: index + 1 };
         }).filter((value: any) => value !== null);
         this.filteredData = this.employeeList;
         this.showPagination = true;

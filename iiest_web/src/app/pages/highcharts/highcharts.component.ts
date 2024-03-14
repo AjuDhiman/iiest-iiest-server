@@ -665,7 +665,7 @@ export class HighchartsComponent implements OnChanges {
       chartTitile: this.chartData.chartTitle
     };
     if(chartData.chartTitile === 'Employee Count By Department') {
-      this.viewDepartmentData(chartData.userDept);
+      this.viewDepartmentData(chartData.filterValue);
       return;
     }
     this.viewChartData(chartData);

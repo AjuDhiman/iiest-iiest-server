@@ -3,11 +3,11 @@
 
         <!-- heading and form status -->
         <h6>Revert Section</h6>
-        <div class="status" [ngClass]="completedStatus?'text-success':'text-warning'" style="font-size: large;">
+        <span class="status badge align-self-baseline" [ngClass]="completedStatus?'bg-success':'bg-warning'" style="font-size: x-small;">
             {{completedStatus?'completed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
                 [icon]="completedStatus?faCircleCheck:faCircleExclamation">
             </fa-icon>
-        </div>
+        </span>
     </div>
 
     <div class="col-md-6 col-12">

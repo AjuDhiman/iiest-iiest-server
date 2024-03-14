@@ -25,7 +25,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
 
   //output event emitters
   @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>;
-
+  @Output() emitDocuments: EventEmitter<Array<{name:string, src: string, format: string}>> = new EventEmitter<Array<{name:string, src: string, format: string}>>
   //result related variables and icons
   resultText: string = 'On-Going';
   resultTextClass: string = 'bg-warning';
@@ -108,6 +108,11 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
           if (res.data.ticketStatus === 'delivered') {
             this.isUploadVisible = true;
             this.src = res.data.certificate;
+            this.emitDocuments.emit([{
+              name: 'Fostac Cerificate',
+              src: this.src,
+              format:'pdf'
+            }])
           } else {
             this.isUploadVisible = false;
           }
@@ -224,11 +229,6 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       }
     });
 
-  }
-
-  //this methords opens the view document modal for showing the certificate
-  showCertificate(): void {
-    const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
   }
 
   //this methord formats the date

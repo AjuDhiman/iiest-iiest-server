@@ -184,7 +184,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         next: res => {
           console.log(this.verificationForm);
           if (res.success) {
-            // this.verifiedStatus = true;
+            this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
             this.refreshAuditLog.emit();
@@ -374,59 +374,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       food_items: ['', Validators.required],
       ownership_type: ['', Validators.required],
       owner_num: ['', Validators.required],
-      // owner_details: this.formBuilder.array([]),
       operator_address: ['', Validators.required],
     });
 
   }
-
-  // onOwnershipTypeChange($event: any) {
-  //   if ($event.target.value === 'Propraitorship') {
-  //     this.verificationForm.patchValue({ owner_num: 1 });
-  //     this.isPropraitor = true;
-  //     this.minMembers = 1;
-  //     this.ownersNum = 1;
-  //     this.indexArr = []
-  //     for (let i = 0; i < this.ownersNum; i++) {
-  //       this.indexArr.push(i);
-  //     }
-  //   } else {
-  //     this.verificationForm.patchValue({ owner_num: 2 });
-  //     this.isPropraitor = false;
-  //     this.minMembers = 2;
-  //     this.ownersNum = 2;
-  //     this.indexArr = []
-  //     for (let i = 0; i < this.ownersNum; i++) {
-  //       this.indexArr.push(i);
-  //     }
-  //   }
-
-  //   switch ($event.target.value) {
-  //     case 'Propraitorship':
-  //       this.ownerType = 'Propraitor'
-  //       break;
-  //     case 'Partnership':
-  //       this.ownerType = 'Partner'
-  //       break;
-  //     case 'Board of Directors':
-  //       this.ownerType = 'Director'
-  //       break;
-  //   }
-  // }
-
-  // onOwnerNumChange($event: any) {
-  //   let value;
-  //   if ($event.target.value > 20) {
-  //     this.verificationForm.patchValue({ owner_num: 20 });
-  //     value = 20;
-  //   } else {
-  //     value = $event.target.value;
-  //   }
-  //   this.ownersNum = value;
-  //   this.indexArr = [];
-  //   for (let i = 0; i < value; i++) {
-  //     this.indexArr.push(i);
-  //   }
-  // }
 
 }
