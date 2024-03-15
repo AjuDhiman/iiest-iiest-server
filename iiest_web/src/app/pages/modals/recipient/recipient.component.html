@@ -39,8 +39,8 @@
         </div>
         <div class="col-md-4">
           <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
-          <input type="number" placeholder="Pincode" formControlName="pincode" class="form-control form-control-sm" id="pincode"
-            [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
+          <input type="number" placeholder="Pincode" formControlName="pincode" class="form-control form-control-sm"
+            id="pincode" [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
           <div *ngIf="submitted && recipient['pincode'].errors" class="invalid-feedback">
             <div *ngIf="recipient['pincode'].errors['required']">Pincode is required</div>
             <div *ngIf="recipient['pincode'].errors['pattern']">Pincode is invalid</div>
@@ -48,21 +48,21 @@
         </div>
         <div class="col-md-4">
           <label for="village" class="form-label">Village<sup>*</sup></label>
-          <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm" id="village"
-            [ngClass]="{ 'is-invalid': submitted && recipient['village'].errors }" />
+          <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm"
+            id="village" [ngClass]="{ 'is-invalid': submitted && recipient['village'].errors }" />
           <div *ngIf="submitted && recipient['village'].errors" class="invalid-feedback">
             <div *ngIf="recipient['village'].errors['required']">Village is required</div>
           </div>
         </div>
         <div class="col-md-4">
           <label for="tehsil" class="form-label">Tehsil<sup>*</sup></label>
-          <input type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm" id="tehsil"
-            [ngClass]="{ 'is-invalid': submitted && recipient['tehsil'].errors }" />
+          <input type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm"
+            id="tehsil" [ngClass]="{ 'is-invalid': submitted && recipient['tehsil'].errors }" />
           <div *ngIf="submitted && recipient['tehsil'].errors" class="invalid-feedback">
             <div *ngIf="recipient['tehsil'].errors['required']">Tehsil is required</div>
           </div>
         </div>
-        
+
         <div class="col-md-4">
           <label for="eBill" class="form-label">Electricity Bill (jpeg or png)<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event, 'eBill')" placeholder="Electricity Bill"
@@ -76,23 +76,26 @@
         </div>
         <div class="col-md-4">
           <label for="shop_photo" class="form-label">Shop's Photo (jpeg or png)<sup>*</sup></label>
-          <input type="file" (change)="onImageChangeFromFile($event, 'shopPhoto')" placeholder="Shop Photo(Name should be visible)"
-            formControlName="shop_photo" class="form-control form-control-sm" id="shop_photo"
+          <input type="file" (change)="onImageChangeFromFile($event, 'shopPhoto')"
+            placeholder="Shop Photo(Name should be visible)" formControlName="shop_photo"
+            class="form-control form-control-sm" id="shop_photo"
             [ngClass]="{ 'is-invalid': submitted && recipient['shop_photo'].errors }" />
           <div *ngIf="submitted && recipient['shop_photo'].errors" class="invalid-feedback">
             <div *ngIf="recipient['shop_photo'].errors['required']">Shop Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['shop_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+            <div *ngIf="recipient['shop_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files
               are allowed.</div>
           </div>
         </div>
         <div class="col-md-4">
           <label for="shop_photo" class="form-label">Owner's Photo (jpeg or png)<sup>*</sup></label>
-          <input type="file" (change)="onImageChangeFromFile($event, 'ownerPhoto')" placeholder="Owner Photo" formControlName="shop_photo"
-            class="form-control form-control-sm" id="shop_photo"
+          <input type="file" (change)="onImageChangeFromFile($event, 'ownerPhoto')" placeholder="Owner Photo"
+            formControlName="shop_photo" class="form-control form-control-sm" id="shop_photo"
             [ngClass]="{ 'is-invalid': submitted && recipient['shop_photo'].errors }" />
           <div *ngIf="submitted && recipient['shop_photo'].errors" class="invalid-feedback">
             <div *ngIf="recipient['shop_photo'].errors['required']">Owner Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['shop_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+            <div *ngIf="recipient['shop_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files
               are allowed.</div>
           </div>
         </div>
@@ -165,9 +168,11 @@
   [ngClass]="recipientCount!==listCount?'':'mt-3'">
   <div class="col-auto">
     <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">Recipient List
-      <small>({{fboData.fboInfo.fbo_name}})</small></h1>
+      <small>({{fboData.fboInfo.fbo_name}})</small>
+    </h1>
     <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">Shop List
-      <small>({{fboData.fboInfo.fbo_name}})</small></h1>
+      <small>({{fboData.fboInfo.fbo_name}})</small>
+    </h1>
   </div>
   <div class="col-auto">
     <div class="page-utilities">
@@ -192,7 +197,16 @@
   </div><!--//col-auto-->
 </div><!--//row-->
 
-<div class="tab-content mx-3" id="orders-table-tab-content">
+<app-recipient-list [serviceType]="serviceType" 
+  [recipientData]="recipientData" 
+  [shopData]="shopData"
+  [isfostac]="isfostac"
+  [showPagination]="showPagination"
+  ></app-recipient-list>
+
+<ngx-loading [show]="loading"></ngx-loading>
+
+<!-- <div class="tab-content mx-3" id="orders-table-tab-content">
   <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
     <div class="app-card app-card-orders-table shadow-sm mb-5">
       <div class="app-card-body">
@@ -215,9 +229,9 @@
                 <th class="cell">Shop Photo</th>
               </tr>
             </thead>
-            <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
+            <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'"> -->
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
-              <tr
+              <!-- <tr
                 *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
@@ -231,14 +245,13 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td> -->
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-                <td *ngIf="!isfostac" class="cell">
-                  <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                    <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                <!-- <td *ngIf="!isfostac" class="cell">
+                  <span class="truncate"> -->
+                    <!-- <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
                     </a>
                     <label [for]="'uploadEbill' + sr"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
@@ -248,27 +261,28 @@
 
                 <td>
                   <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
                     <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
                     </a>
                     <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
                         [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)" hidden>
+                    <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)"
+                      hidden>
                   </span>
                 </td>
 
                 <td>
-                  <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                      (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
+                  <span class="truncate"> 
+                    
                     <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                      <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
                     </a>
                     <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
                         [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)" hidden> 
+                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
+                      hidden>
                   </span>
                 </td>
               </tr>
@@ -280,13 +294,13 @@
               </tr>
             </tbody>
           </table>
-        </div><!--//table-responsive-->
+        </div>
 
-      </div><!--//app-card-body-->
-    </div><!--//app-card-->
+      </div>
+    </div>
     <div *ngIf="showPagination===true" class="d-flex justify-content-end">
       <pagination-controls previousLabel="Prev" nextLabel="Next"
         (pageChange)="onTableDataChange($event)"></pagination-controls>
     </div>
-    </div>
-    </div>
+  </div>
+</div> -->

@@ -31,6 +31,7 @@ export class RecipientComponent implements OnInit {
   recipientCount: number = 0;
   shopsCount: number;
   listCount: number;
+  loading: boolean = false;
 
   //icons
   faFileExcel: IconDefinition = faFileExcel;
@@ -107,6 +108,8 @@ export class RecipientComponent implements OnInit {
     //   return;
     // }
 
+    this.loading = true;
+
     this.fboID = this.fboData._id
 
     console.log(this.serviceType);
@@ -120,10 +123,12 @@ export class RecipientComponent implements OnInit {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');
             this.closeModal();
+            this.loading = false;
           }
         },
         error: (err) => {
           let errorObj = err.error;
+          this.loading = false;
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
@@ -153,14 +158,19 @@ export class RecipientComponent implements OnInit {
           if (res.success) {
             this._toastrService.success('', 'Record Added Successfully.');
             this.closeModal();
+            this.loading = false;
           }
         },
         error: (err) => {
+          this.loading = false;
           let errorObj = err.error;
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.addressErr) {
             this._toastrService.error('', 'This Address Already Exists.');
+          } else if (errorObj.pincodeErr) {
+            this._toastrService.error(errorObj.message, 'Invalid Pincode');
+            this.activeModal.close();
           }
         }
       })

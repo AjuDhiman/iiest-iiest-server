@@ -7,7 +7,7 @@
             <div class="col-auto">
                 <div class="page-utilities">
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-                        <div *ngIf="panelType==='Fostac Panel'" class="col-auto">
+                        <div *ngIf="panelType==='Fostac Panel'"class="col-auto">
                             <button class="btn btn-sm mx-1"
                                 [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
                                 (click)="setServiceType('Catering')">
@@ -53,7 +53,8 @@
                             </form>
                         </div>
                         <div class="col-auto">
-                            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter">
+                            <select class="form-select form-select-sm w-auto cursor-pointer"
+                                [(ngModel)]="selectedFilter">
                                 <option *ngIf="panelType=='Fostac Panel'" value="byRecipientName" selected>Search by
                                     Recipient Name</option>
                                 <option *ngIf="panelType=='Foscos Panel'" value="byOperatorName" selected>Search by
@@ -65,8 +66,9 @@
                             </select>
                         </div>
                         <div class="col-auto">
-                            <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
-                                [icon]="faFileCsv" title="Export as CSV"></fa-icon>
+                            <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer"
+                                style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"
+                                title="Export as CSV"></fa-icon>
                             <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
                         </div>
                     </div><!--//row-->
@@ -80,7 +82,7 @@
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
-                            <table *ngIf="panelType==='Fostac Panel'"
+                            <table *ngIf="panelType==='Fostac Panel' || panelType==='FSSAI Training Panel'"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
@@ -101,7 +103,8 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)" title="View Case">{{data.name}}</span></td>
+                                                (click)="collectResData(data._id)"
+                                                title="View Case">{{data.name}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
                                         <td class="cell"><span
@@ -145,23 +148,23 @@
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                                        <td  class="cell"><span
-                                                class="truncate text-capitalize selector"
+                                        <td class="cell"><span class="truncate text-capitalize selector"
                                                 (click)="collectResData(data._id)">{{data.operatorName}}</span></td>
-                                        <td  class="cell"><span
+                                        <td class="cell"><span
                                                 class="truncate text-capitalize selector">{{data.address}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
-                                        <td  class="cell"><span
+                                        <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
                                         </td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.foscos_total}}</span></td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
-                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData" class="cell">
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
+                                            class="cell">
                                             <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>

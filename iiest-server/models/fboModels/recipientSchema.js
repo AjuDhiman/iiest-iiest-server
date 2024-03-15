@@ -15,7 +15,7 @@ const recipientSchema = new Schema({
         max: 99999
     },
     name: {
-        type: String, 
+        type: String,
         required: true
     },
     phoneNo: {
@@ -33,7 +33,7 @@ const recipientSchema = new Schema({
         required: true,
         unique: true
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 const shopSchema = new Schema({
     salesInfo: {
@@ -42,11 +42,11 @@ const shopSchema = new Schema({
         required: true
     },
     operatorName: {
-        type: String, 
+        type: String,
         required: true
     },
     address: {
-        type: String, 
+        type: String,
         required: true,
     },
     pincode: {
@@ -60,6 +60,14 @@ const shopSchema = new Schema({
     tehsil: {
         type: String,
         required: true
+    },
+    state: {
+        type: String,
+        required: true,
+    },
+    district: {
+        type: String,
+        required: true,
     },
     eBillImage: {
         type: String,
@@ -79,7 +87,7 @@ const shopSchema = new Schema({
         //     return (!this.byExcel);
         // },
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 const recipientModel = mongoose.model('recipientDetails', recipientSchema);
 const shopModel = mongoose.model('shopDetails', shopSchema);

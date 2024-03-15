@@ -100,6 +100,7 @@ export const caseList_roles = [
    'Senior Project Associate',
    'Project Associate',
    'Project Coordinator',
+   'Technical Coordinator',
    ...master_roles
 ]
 
@@ -110,6 +111,17 @@ export const salesManagerRoles = [
    'Regional Deputy Manager(Sales)',
    'Area Manager(Sales)',
    'Assistant Area Manager'
+]
+
+export const batchListRoles = [
+   'Technical Coordinator',
+   ... master_roles
+]
+
+export const delhiTrainingLocations = [
+   "Delhi",
+   "Noida",
+   "Gurugram"
 ]
 
 export const salesOfficersRoles = [

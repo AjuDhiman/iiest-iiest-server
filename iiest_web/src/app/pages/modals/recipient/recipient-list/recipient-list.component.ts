@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faFile } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -11,14 +12,14 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./recipient-list.component.scss']
 })
 export class RecipientListComponent {
-  serviceType: string = '';
-  showPagination: boolean = false;
+  @Input() serviceType: string = '';
+  @Input() showPagination: boolean = false;
   pageNumber: number = 1;
-  isfostac: boolean = false;
-  isfoscos: boolean = false;
-  shopData: any;
-  recipientData:any;
-  faFile: IconDefinition;
+  @Input() isfostac: boolean = false;
+  @Input() isfoscos: boolean = false;
+  @Input() shopData: any;
+  @Input() recipientData:any;
+  faFile: IconDefinition = faFile;
 
   constructor(public activeModal: NgbActiveModal,
     private _registerService: RegisterService,

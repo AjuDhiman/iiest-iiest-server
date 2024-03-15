@@ -660,7 +660,7 @@ export class HighchartsComponent implements OnChanges {
     let chartData = {
       filterValue: e.point.options.name || e.point.category.toString() ,
       salesCategory: this.salesCategory,
-      userDept: this.parsedUser.department, 
+      userDept: this.chartData.department, 
       interval: this.intervalType,
       chartTitile: this.chartData.chartTitle
     };
