@@ -164,7 +164,7 @@ export class HighchartDataModalComponent {
       switch (this.selectedFilterSales) {
         case 'byOwner': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
-        case 'byDistrict': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byLocation': this.filteredData = this.specificDatas.filter((elem: any) =>  elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
         case 'byName': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
@@ -235,8 +235,10 @@ export class HighchartDataModalComponent {
     if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
+      console.log(this.chartData.userDept)
       switch (this.chartData.userDept) {
         case "Sales Department": this.salesDeptfilter();
+          console.log(11);
           break;
         case "HR Department": this.hrDeptfilter();
           break;

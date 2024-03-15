@@ -19,7 +19,7 @@ exports.caseList = async(req, res)=>{
             .exists()
             .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
-        }else if(employeePanel === 'Fostac Panel'){
+        }else if(employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel'){
 
             list = await recipientModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
@@ -41,7 +41,7 @@ exports.caseInfo = async(req, res)=>{
 
         let recipientInfo;
 
-        if(req.user.panel_type === 'Fostac Panel'){
+        if(req.user.panel_type === 'Fostac Panel' || req.user.panel_type === 'FSSAI Training Panel'){
           recipientInfo  = await recipientModel.findById(recipientId);
         }else if(req.user.panel_type === 'Foscos Panel'){
           recipientInfo = await shopModel.findById(recipientId);

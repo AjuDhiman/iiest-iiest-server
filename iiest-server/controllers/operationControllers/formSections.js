@@ -71,8 +71,16 @@ exports.foscosVerification = async(req, res) => {
         const {operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, food_items, operator_address, license_category, license_duration, foscos_total, sales_date, sales_person} = verifiedData;
 
         const addVerification = await foscosVerifyModel.create({operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address, fsmsCertificate: fsmsCertificate, selfDecOProp: selfDecOProp});
-        
-        console.log(1);
+
+         //this code is for tracking the CRUD operation regarding to a recipient
+
+         const prevVal = {}
+
+         const currentVal = addVerification;
+ 
+         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
+ 
+         // code for tracking ends
 
         if(!addVerification){
             success = false;

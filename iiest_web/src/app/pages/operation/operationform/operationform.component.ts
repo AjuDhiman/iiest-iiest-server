@@ -27,6 +27,7 @@ export class OperationformComponent implements OnInit {
   faFileImage:IconDefinition = faFileImage;
   faDownload: IconDefinition = faDownload;
   documents: {name: string, src: string, format: string}[] = [];
+  isTrainer:boolean = false;
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
 
@@ -108,19 +109,23 @@ export class OperationformComponent implements OnInit {
     let user:any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user); 
     let panelType = parsedUser.panel_type;
-    
+
     switch(panelType){
       case 'Fostac Panel':
-        this.productType = 'Fostac'
+        this.productType = 'Fostac';
         break;
       case 'Foscos Panel':
-        this.productType = 'Foscos'
+        this.productType = 'Foscos';
         break;
       case 'Hygiene Panel' :
-        this.productType = 'Hygiene'
+        this.productType = 'Hygiene';
+        break;
+      case 'FSSAI Training Panel':
+        this.productType = 'Fostac';
+        this.isTrainer = true;
         break;
       default:
-        this.productType = ''
+        this.productType = 'Fostac';
     }
   }
 

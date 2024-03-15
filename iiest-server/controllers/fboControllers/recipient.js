@@ -2,8 +2,9 @@ const { recipientModel, shopModel } = require('../../models/fboModels/recipientS
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const { logAudit } = require('../generalControllers/auditLogsControllers');
-const {generateRecipientInfo} = require('../../fbo/generateCredentials');
+const { generateRecipientInfo } = require('../../fbo/generateCredentials');
 const fs = require('fs');
+const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 
 exports.addRecipient = async (req, res) => {
 
@@ -36,6 +37,14 @@ exports.addRecipient = async (req, res) => {
                 console.log(idNumber, recipientId);
 
                 const addRecipient = await recipientModel.create({ salesInfo: req.params.id, id_num: idNumber, name: recipient.name, phoneNo: recipient.phoneNo, recipientId: recipientId, aadharNo: recipient.aadharNo });
+
+                // //code for approving sale after recipient's basic details are added
+
+                // const approvedSale = await salesModel.findOneAndUpdate({_id: req.params.id}, {checkStatus: 'Approved'});
+
+                // if(!approvedSale){
+                //     res.status(401).json({ approvedSaleErr: true })
+                // }
 
                 // this code is for tracking the the record related action of a recipient
 
@@ -76,8 +85,6 @@ exports.addShop = async (req, res) => {
 
         const { operatorName, address, pincode, village, tehsil, byExcel } = req.body;
 
-        console.log(req.body);
-
         if (!eBill) {
             success = false;
             return res.status(401).json({ success, ebillErr: true })
@@ -91,31 +98,31 @@ exports.addShop = async (req, res) => {
         if (!shopPhoto) {
             success = false;
             return res.status(401).json({ success, shopPhotoErr: true })
-        } 
+        }
 
         let state;
         let district;
 
-        // await fs.readFile('./assets/pincodes.json', 'utf8', async (err, data) => {
-        //     if(err){
-        //         // res.status(404).json({success, fileErr: true});
-        //     } else {
-        //         let pincodeData = await JSON.parse(data);
-        //         for(let i = 0; i < pincodeData.length; i++){
-        //             if(pincodeData[i].Pincode == pincode){
-        //                 console.log(pincodeData[i]);
-        //                 state = await pincodeData[i].State;
-        //                 district = await pincodeData[i].District;
-        //                 return;
-        //             }
-        //         }   
-        //     }
-        // })
+        let invalidPincode = true;
+        // Asynchronously read the file
+        await fs.readFile('./assets/pincodes.json','utf8', (err,data) => {
+            let pincodeData = JSON.parse(data);
+            for (let i = 0; i < pincodeData.length; i++) {
+            if (pincodeData[i].Pincode == pincode) {
+                invalidPincode = false;
+                console.log(pincodeData[i]);
+                state = pincodeData[i].State;
+                district = pincodeData[i].District;
+                break; // Exit loop once found
+            }
+        }
+        });
 
-        // console.log(state, district);
-        return;
+        if(invalidPincode){
+           res.status(401).json({success: false, pincodeErr: true, message:'Pincode Not Found'}) 
+        }
 
-        const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, byExcel });
+        const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, byExcel });
 
         if (addShop) {
             success = true
@@ -144,7 +151,7 @@ exports.addShopByExcel = async (req, res) => {
 
             // let { idNumber, recipientId } = await generateRecipientInfo(req.params.id);
 
-            const { operatorName, address, pincode, village, tehsil} = shop;
+            const { operatorName, address, pincode, village, tehsil } = shop;
 
             const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, pincode, village, tehsil, byExcel })
 
@@ -224,64 +231,64 @@ exports.showBill = async (req, res) => {
     }
 }
 
-exports.uploadEbill = async(req, res) => {
+exports.uploadEbill = async (req, res) => {
     try {
         let success = false;
 
         const eBill = req.files['eBill'];
 
-        const billUploaded = await shopModel.updateOne({_id: req.params.id}, { $set: {eBillImage: eBill[0].filename}});
+        const billUploaded = await shopModel.updateOne({ _id: req.params.id }, { $set: { eBillImage: eBill[0].filename } });
 
-        if(!billUploaded){
+        if (!billUploaded) {
             success = false;
-            res.status(404).json({success, randomErr: true});
+            res.status(404).json({ success, randomErr: true });
         }
 
         success = true;
-        res.status(200).json({success, billUploaded});
-    } catch(error) {
+        res.status(200).json({ success, billUploaded });
+    } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-exports.uploadOwnerPhoto = async(req, res) => {
+exports.uploadOwnerPhoto = async (req, res) => {
     try {
         let success = false;
 
         const ownerPhoto = req.files['ownerPhoto'];
 
-        const photoUploaded = await shopModel.updateOne({_id: req.params.id}, { $set: {ownerPhoto: ownerPhoto[0].filename}});
+        const photoUploaded = await shopModel.updateOne({ _id: req.params.id }, { $set: { ownerPhoto: ownerPhoto[0].filename } });
 
-        if(!photoUploaded){
+        if (!photoUploaded) {
             success = false;
-            res.status(404).json({success, randomErr: true});
+            res.status(404).json({ success, randomErr: true });
         }
 
         success = true;
-        res.status(200).json({success, photoUploaded});
-    } catch(error) {
+        res.status(200).json({ success, photoUploaded });
+    } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-exports.uploadShopPhoto = async(req, res) => {
+exports.uploadShopPhoto = async (req, res) => {
     try {
         let success = false;
 
         const shopPhoto = req.files['shopPhoto'];
 
-        const photoUploaded = await shopModel.updateOne({_id: req.params.id}, { $set: {shopPhoto: shopPhoto[0].filename}});
+        const photoUploaded = await shopModel.updateOne({ _id: req.params.id }, { $set: { shopPhoto: shopPhoto[0].filename } });
 
-        if(!photoUploaded){
+        if (!photoUploaded) {
             success = false;
-            res.status(404).json({success, randomErr: true});
+            res.status(404).json({ success, randomErr: true });
         }
 
         success = true;
-        res.status(200).json({success, photoUploaded});
-    } catch(error) {
+        res.status(200).json({ success, photoUploaded });
+    } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }

@@ -40,7 +40,7 @@ export class FbolistComponent implements OnInit {
   isModal: boolean = false;
 
   //loading
-  loading:boolean = true;
+  loading: boolean = true;
 
   constructor(private getDataService: GetdataService,
     private registerService: RegisterService,
@@ -56,11 +56,11 @@ export class FbolistComponent implements OnInit {
       next: (res) => {
         if (res.salesInfo) {
           this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
-          this.filteredFBOEntries = this.allFBOEntries.filter((item:any) => {
-            if(item.product_name.includes(this.activeTab)){
+          this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
+            if (item.product_name.includes(this.activeTab)) {
               return item;
             }
-            });
+          });
           this.filter();
           this.loading = false;
         }
@@ -89,7 +89,7 @@ export class FbolistComponent implements OnInit {
         case 'byCustomerID': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
           break;
         case 'byProduct': this.filteredData = this.filteredFBOEntries.filter((elem: any) => {
-          if(elem.fboInfo.product_name.find((product: string) => product.toLowerCase().includes(this.searchQuery))){
+          if (elem.fboInfo.product_name.find((product: string) => product.toLowerCase().includes(this.searchQuery))) {
             return true;
           } else {
             return false;
@@ -112,7 +112,7 @@ export class FbolistComponent implements OnInit {
     this.filter();
   }
 
-  onItemNumChange(){
+  onItemNumChange() {
     this.pageNumber = 1;
   }
 
@@ -178,19 +178,17 @@ export class FbolistComponent implements OnInit {
     modalRef.componentInstance.fboData = res;
   }
 
-  
-  toogleTabs(tab: string){
+
+  toogleTabs(tab: string) {
     this.activeTab = tab;
 
-  this.filteredFBOEntries = this.allFBOEntries.filter((item:any) => {
-      if(item.product_name.includes(tab)){
+    this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
+      if (item.product_name.includes(tab)) {
         return item;
       }
     });
     this.filter();
 
-    console.log(this.filteredFBOEntries);
-     
-}
+  }
 
 }

@@ -21,7 +21,7 @@
         <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-start-0 tabs"
           [ngClass]="{'d-grid': activeTab==='form'}">
           <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
-          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
+          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId" [isTrainer]="isTrainer"
             [productType]="productType" (emitCustomerId)="getCustomerId($event)" (emitSalesDate)="getSalesData($event)"
             (emitVerifiedID)="getVerifiedDataId($event)" (emitVerifiedStatus)="getVerifiedStatus($event)"
             (emitDocuments)="getDocuments($event)" (refreshAuditLog)="generalsec.getCaseNotes()">
@@ -29,7 +29,8 @@
 
           <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
           <app-enrollment-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [salesDate]="salesDate" [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId"
+            [ngClass]="{'d-none': !isTrainer}"
+            [salesDate]="salesDate" [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" 
             (emitEnrolledStatus)="getEnrolledStatus($event)" (emitEnrolledDataId)="getEnrolledDataId($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-enrollment-section>
@@ -40,7 +41,7 @@
 
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
           <app-attendance-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId"
+            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId" [ngClass]="{'d-none': !isTrainer}"
             (emitAttenanceStatus)="getAttendanceStatus($event)" (emitAttenSecResult)="getAttenSecResult($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
@@ -73,7 +74,7 @@
                     <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name">
                   </div>
                   <span class="icon-holder" *ngIf="doc.format !== 'image'">
-                    <fa-icon class="fa-sm mx-2 text-danger cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
+                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                 </div>
                 <div class="app-card-body p-3 has-card-actions">

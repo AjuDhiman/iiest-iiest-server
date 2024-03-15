@@ -71,6 +71,7 @@ import { ViewDocumentComponent } from './pages/modals/view-document/view-documen
 import { RecipientListComponent } from './pages/modals/recipient/recipient-list/recipient-list.component';
 import { StatListsComponent } from './pages/home/stat-lists/stat-lists.component';
 import { InrAmountPipe } from './pipes/inr-amount.pipe';
+import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import { InrAmountPipe } from './pipes/inr-amount.pipe';
     ViewDocumentComponent,
     RecipientListComponent,
     StatListsComponent,
-    InrAmountPipe
+    InrAmountPipe,
+    BatchListComponent
   ],
   imports: [
     BrowserModule,
