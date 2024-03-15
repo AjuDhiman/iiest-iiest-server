@@ -12,12 +12,7 @@ exports.employeeRecord = async (req, res) => {
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
 
-        let data = await salesModel.aggregate([
-            {
-                $match: {
-                    "employeeInfo": req.user._id
-                }
-            },
+        const pipeline = [
             {
                 $group: {
                     _id: 1,
@@ -197,7 +192,6 @@ exports.employeeRecord = async (req, res) => {
                         }
                     }
                 }
-
             },
             {
                 $project: {
@@ -227,10 +221,21 @@ exports.employeeRecord = async (req, res) => {
                         approvedSales: "$approved"
                     }
                 }
-            }
-        ]);
+            }];
 
-        if(data.length === 0) {
+        if (req.user.designation !== 'Director') {
+            pipeline.unshift(
+                {
+                    $match: {
+                        "employeeInfo": req.user._id
+                    }
+                }
+            );
+        }
+
+        let data = await salesModel.aggregate([pipeline]);
+
+        if (data.length === 0) {
             data = [{
                 today: {
                     totalSales: 0,
@@ -272,7 +277,7 @@ exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
-            salesInfo = await salesModel.find({}).populate([{ path: 'fboInfo' }, { path: 'employeeInfo' }]);
+            salesInfo = await salesModel.find({}).populate([{ path: 'fboInfo', options: { lean: true } }, { path: 'employeeInfo', options: { lean: true } }]).lean();
         } else {
             salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
         }
@@ -282,6 +287,47 @@ exports.employeeSalesData = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+// exports.salesData = async (req, res) => { api under development for getting optimized sales list
+//     try {
+
+//         let salesData = await salesModel.aggregate([
+//             {
+//                 $lookup: {
+//                     from: "fbo_registers",
+//                     localField: "fboInfo",
+//                     foreignField: "_id",
+//                     as: "fboInfo"
+//                 }
+//             },
+//             {
+//                 $unwind: "$fboInfo"
+//             },
+//             {
+//                 $replaceRoot: { newRoot: "$fboInfo" } // Replace the root with fboInfo
+//             },
+//             {
+//                 $project: {
+//                     _id: 1, // Exclude _id field
+//                     fbo_name: 1,
+//                     owner_name: 1,
+//                     customer_id: 1,
+//                     state: 1,
+//                     district: 1
+//                 }
+//             }
+//         ]);
+        
+//         // Now salesData contains plain JavaScript objects directly returned from the aggregation pipeline
+        
+
+//         res.status(200).json(salesData);
+
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({ message: "Internal Server Error" });
+//     }
+// }
 
 exports.employeeDepartmentCount = async (req, res) => {
 

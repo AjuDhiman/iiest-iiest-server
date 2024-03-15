@@ -229,7 +229,7 @@ exports.getPersonWiseSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $sort: { "name": 1 }
+                    $sort: { "value": -1 }
                 }
             ]);
         } else {
@@ -382,8 +382,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
         let monthWiseSale
 
         if (req.user.designation === 'Director') {
-
-            console.log(yearStart, yearEnd);
+            
             monthWiseSale = await salesModel.aggregate([
                 {
                     $match: {

@@ -2,8 +2,11 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { faMagnifyingGlass, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { months } from 'src/app/utils/config';
+import { Select } from '@ngxs/store';
+import { SalesState } from 'src/app/store/state/sales.state';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-highchart-data-modal',
@@ -23,14 +26,21 @@ export class HighchartDataModalComponent {
   intervalType: string;
   filterDate: string | void;
   fboSalesData: any;
-  faMagnifyingGlass = faMagnifyingGlass;
   isSearch: boolean = false;
   pageNumber: number = 1;
   itemsNumber: number = 10;
   employeeList: any;
   specificDatas: any;
-  faXmark = faXmark;
-  faCheck = faCheck;
+
+  //icons
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faXmark: IconDefinition = faXmark;
+  faCheck: IconDefinition = faCheck;
+
+  //these variable manges the state of th e sales store
+  @Select(SalesState.GetSalesList) sales$: Observable<any>;
+  @Select(SalesState.salesLoaded) salesLoaded$: Observable<boolean>
+  empLoadedSub: Subscription;
 
   loading: boolean = true;
 
@@ -59,23 +69,20 @@ export class HighchartDataModalComponent {
   // -------this function is work for sales chart data of state wise---------
   fetchFboDataByState(): void {
     console.log(this.chartData);
-    this._getDataService.getSalesList().subscribe({
-      next: (res) => {
-        if (res.salesInfo) {
-          this.specificDatas = res.salesInfo.filter((item: any) =>((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
-          this.salesDeptfilter();
-          this.loading = false;
-        }
-      },
+    this.sales$.subscribe(res => {
+      console.log(res);
+      this.specificDatas = res.filter((item: any) =>((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
+      this.salesDeptfilter();
+      this.loading = false;
     })
   }
 
   // -------this function is work for sales chart data of client type---------
   fetchFboDataByClientType(): void {
-    this._getDataService.getSalesList().subscribe({
+    this.sales$.subscribe({
       next: (res) => {
-        if (res.salesInfo) {
-          this.specificDatas = res.salesInfo.filter((item: any, index: number) => {
+        if (res) {
+          this.specificDatas = res.filter((item: any, index: number) => {
             if (item.fostacInfo) {
               if (item.fostacInfo.fostac_client_type === this.chartData.filterValue) {
                 return item;
@@ -96,14 +103,14 @@ export class HighchartDataModalComponent {
 
   // -------this function is work for sales department data acc to logged user--------
   fetchAllFboData(): void {
-    this._getDataService.getSalesList().subscribe({
+    this.sales$.subscribe({
       next: (res) => {
-        if (res.salesInfo) {
+        if (res) {
           this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
             if (this.chartData.salesCategory === 'Fostac') {
-              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
+              this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
             } else {
-              this.specificDatas = res.salesInfo.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
+              this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
             }
             this.salesDeptfilter();
             this.loading = false;
@@ -170,46 +177,37 @@ export class HighchartDataModalComponent {
   }
 
   monthWiseFilter(){
-    this._getDataService.getSalesList().subscribe({
-      next: (res) => {
-        if(res.salesInfo) {
-          const filterValue : string[] = this.chartData.filterValue.split('-');
-          console.log(filterValue);
-          const day = filterValue[0];
-          const month = months.findIndex((item:string) => item === filterValue[1]);
-          let year = new Date().getFullYear();
-          if(month > 2){
-            year = year-1
-          }
+    this.sales$.subscribe(res => {
+      if(res) {
+        const filterValue : string[] = this.chartData.filterValue.split('-');
+        console.log(filterValue);
+        const day = filterValue[0];
+        const month = months.findIndex((item:string) => item === filterValue[1]);
+        let year = new Date().getFullYear();
+        if(month > 2){
+          year = year-1
+        }
 
-          this.specificDatas = res.salesInfo.filter((item: any) => {
-            const saleDate = new Date(item.createdAt);
-            if(saleDate.getFullYear() == year && saleDate.getMonth() == month && (saleDate.getDate() == Number(day) + 1)){
-              console.log(year, saleDate.getFullYear());
-              return 1;
-            } else {
-              return 0;
-            }
-          });
-          this.salesDeptfilter();
-          this.loading=false;
-        }
-      },
-      error: (err) => {
-        let errorObj = err;
-        if (errorObj.userError) {
-          this.registerService.signout();
-        }
+        this.specificDatas = res.filter((item: any) => {
+          const saleDate = new Date(item.createdAt);
+          if(saleDate.getFullYear() == year && saleDate.getMonth() == month && (saleDate.getDate() == Number(day) + 1)){
+            console.log(year, saleDate.getFullYear());
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        this.salesDeptfilter();
+        this.loading=false;
       }
-    });
+    })
   }
 
   employeeWiseFilter() {
-    this._getDataService.getSalesList().subscribe({
+    this.sales$.subscribe({
       next: (res) => {
-        console.log(res);
-        if(res.salesInfo) {
-          this.specificDatas = res.salesInfo.filter((item: any) => 
+        if(res) {
+          this.specificDatas = res.filter((item: any) => 
           {
             if(item.employeeInfo) {
               return item.employeeInfo.employee_name.toLowerCase() == this.chartData.filterValue.toLowerCase()

@@ -1,7 +1,7 @@
 const express = require('express');
 const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
-const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager} = require('../controllers/employeeControllers/employeeRecord');
+const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, salesData} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { getTopSalesPersons, getTopProducts, getEmpUnderManager } = require('../controllers/employeeControllers/statList');
@@ -38,5 +38,6 @@ router.get('/getmothwisesale', authMiddleware, getMonthWiseSaleData);
 router.get('/gettopsalespersons', authMiddleware, getTopSalesPersons);
 router.get('/gettopproducts', authMiddleware, getTopProducts);
 router.get('/getempundermanager', authMiddleware, getEmpUnderManager);
+// router.get('/getsalesdata', salesData); // api in development for getting optimized sales list
 
 module.exports = router;

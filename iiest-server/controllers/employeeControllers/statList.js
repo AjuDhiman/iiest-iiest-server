@@ -6,10 +6,8 @@ exports.getTopSalesPersons = async (req, res) => {
 
     try {
         const todayDate = new Date();
-        const startOfLastMonth = new Date(todayDate.getFullYear() - 1, todayDate.getMonth() - 1, 1);
+        const startOfLastMonth = new Date(todayDate.getFullYear() , todayDate.getMonth() - 1, 1);
         const endOflastMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
-
-        console.log(startOfLastMonth, endOflastMonth, 11);
 
         let topSalesPersons
 
@@ -70,7 +68,7 @@ exports.getTopSalesPersons = async (req, res) => {
                     salesCount: "$salesCount",
                 }
             },
-            { $sort: { saleAmmount: -1, name: -1 } },
+            { $sort: { salesAmmount: -1, name: -1 } },
             { $limit: 5 }
         ]);
 
@@ -92,8 +90,6 @@ exports.getTopProducts = async (req, res) => {
         const startOfLastHalf = new Date(todayDate.getFullYear(), todayDate.getMonth() - 6, 1);
         
         let topProducts
-
-        console.log(startOfLastHalf);
 
         if (req.user.designation !== "Director") {
             return res.status(204).json({ message: 'Only for Director' });
@@ -177,7 +173,7 @@ exports.getTopProducts = async (req, res) => {
                     }
                 }
             },
-            { $sort: { salesCount: -1 } }, // Sorting by salesCount
+            { $sort: { "salesAmount": -1 } },
             { $limit: 5 }
         ]);
         

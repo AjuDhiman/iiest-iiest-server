@@ -5,7 +5,7 @@ import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { FbolistComponent } from '../../fbolist/fbolist.component';
-import { clientType, licenceType, paymentMode, waterTestFee } from 'src/app/utils/config';
+import { clientType, hraProcessingAmnt, licenceType, paymentMode, processAmnt, serviceNames, waterTestFee } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 
@@ -30,6 +30,7 @@ export class FbonewComponent implements OnInit {
   foscosFixedCharges: number
   foscosGST: number;
   fostacGST: number;
+  hygieneGST: number;
   editedData: any;
   parsedUserData: any;
   submitted = false;
@@ -53,6 +54,7 @@ export class FbonewComponent implements OnInit {
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
   fostac_processAmnt: number = 0;
   foscos_processAmnt: number = 0;
+  hygiene_processAmnt: number = 0;
   maxSelectedItems: number = 2;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
@@ -73,7 +75,7 @@ export class FbonewComponent implements OnInit {
 
 
   fostac_training: FormGroup = new FormGroup({
-    fostac_processing_amount: new FormControl(''),
+    fostac_processing_amount: new FormControl(hraProcessingAmnt),
     fostac_service_name: new FormControl(''), 
     fostac_client_type: new FormControl(''),
     recipient_no: new FormControl(''),
@@ -92,14 +94,10 @@ export class FbonewComponent implements OnInit {
   });
 
   hygiene_audit: FormGroup = new FormGroup({
-    spoc_person_name: new FormControl(''),
-    spoc_person_contact: new FormControl(''),
-    spoc_person_email: new FormControl(''),
-    spoc_person_designation: new FormControl(''),
-    hygiene_processing_amount: new FormControl(''),
     hygiene_service_name: new FormControl(''),
+    hygiene_processing_amount: new FormControl(''),
     hygiene_client_type: new FormControl(''),
-    shops_no: new FormControl(''),
+    shops_no: new FormControl(serviceNames['hygiene'][0]),
     hygiene_total: new FormControl('')
   })
 
@@ -156,15 +154,11 @@ export class FbonewComponent implements OnInit {
     });
 
     this.hygiene_audit = this.formBuilder.group({
-      spoc_person_name: new FormControl(''),
-      spoc_person_contact: new FormControl(''),
-      spoc_person_email: new FormControl(''),
-      spoc_person_designation: new FormControl(''),
-      hygiene_processing_amount: new FormControl(''),
-      hygiene_service_name: new FormControl(''),
-      hygiene_client_type: new FormControl(''),
-      shops_no: new FormControl(''),
-      hygiene_total: new FormControl('')
+      hygiene_service_name: [serviceNames['hygiene'][0],Validators.required],
+      hygiene_processing_amount: [hraProcessingAmnt,Validators.required],
+      hygiene_client_type: ['',Validators.required],
+      shops_no: ['',Validators.required],
+      hygiene_total: ['', Validators.required]
     });
 
     this.existingUserForm = this.existingFrom.group({
@@ -541,11 +535,15 @@ export class FbonewComponent implements OnInit {
 
   fostacTotalAmount(TotalAmnt: any) {
     this.fostac_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt });
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hygiene_processAmnt });
   }
   foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt });
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hygiene_processAmnt});
+  }
+  hygieneTotalAmount(TotalAmnt: any) {
+    this.hygiene_processAmnt = TotalAmnt;
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt});
   }
   foscosCharges(charges: any) {
     this.foscosFixedCharges = charges;
@@ -555,6 +553,9 @@ export class FbonewComponent implements OnInit {
   }
   fostacGSTAmount(gstAmount: any) {
     this.fostacGST = gstAmount
+  }
+  hygieneGSTAmount(gstAmount: any) {
+    this.hygieneGST = gstAmount
   }
 
   getAllocatedArea() {

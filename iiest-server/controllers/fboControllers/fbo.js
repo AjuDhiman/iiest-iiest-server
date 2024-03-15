@@ -1,5 +1,5 @@
 const pastFboSchema = require('../../models/historyModels/pastFboSchema');
-const generatedInfo = require('../../fbo/generateCredentials');
+const { generatedInfo } = require('../../fbo/generateCredentials');
 const invoiceDataHandler = require('../../fbo/generateInvoice');
 const fboPaymentSchema = require('../../models/fboModels/fboPaymentSchema');
 const fboModel = require('../../models/fboModels/fboSchema');

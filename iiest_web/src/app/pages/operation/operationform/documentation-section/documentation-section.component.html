@@ -3,7 +3,7 @@
 
         <!-- heading and form status -->
         <h6>Documentation Section</h6>
-        <div class="status" [ngClass]="filedStatus?'text-success':'text-warning'" style="font-size: large;">
+        <div class="status badge align-self-baseline" [ngClass]="filedStatus?'bg-success':'bg-warning'" style="font-size: x-small;">
             {{filedStatus?'Filed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
                 [icon]="filedStatus?faCircleCheck:faCircleExclamation">
             </fa-icon>

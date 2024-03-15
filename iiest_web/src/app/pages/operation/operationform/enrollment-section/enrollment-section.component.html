@@ -3,11 +3,11 @@
 
         <!-- heading and form status -->
         <h6>Enrollment Section</h6>
-        <div class="status" [ngClass]="enrolledStatus?'text-success':'text-warning'" style="font-size: large;">
+        <span class="status" [ngClass]="enrolledStatus?'bg-success':'bg-warning'" style="font-size: x-small;" class="badge align-self-baseline">
             {{enrolledStatus?'Enrolled':'Not-Enrolled'}} <fa-icon class="fa-lg fa-regular ml-2"
                 [icon]="enrolledStatus?faCircleCheck:faCircleExclamation">
             </fa-icon>
-        </div>
+        </span>
     </div>
 
     <!-- form input fields -->

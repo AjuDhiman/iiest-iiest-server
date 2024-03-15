@@ -2,7 +2,7 @@ const { recipientModel, shopModel } = require('../../models/fboModels/recipientS
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const { logAudit } = require('../generalControllers/auditLogsControllers');
-const generateRecipientInfo = require('../../fbo/generateCredentials');
+const {generateRecipientInfo} = require('../../fbo/generateCredentials');
 const fs = require('fs');
 
 exports.addRecipient = async (req, res) => {

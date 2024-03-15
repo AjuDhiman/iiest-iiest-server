@@ -18,7 +18,7 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   isAttendeeAbsent:boolean = false;
   marks: number = 0;
   resultText: string = 'Not Trained';
-  resultTextClass: string = 'text-warning';
+  resultTextClass: string = 'bg-warning';
   resultIcon: IconDefinition = faCircleExclamation;
 
   //icons
@@ -119,24 +119,24 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
   setAttendenceResult(): void{
     if(this.submittedStatus === false){
       this.resultText = 'Not-Trained';
-      this.resultTextClass = 'text-warning';
+      this.resultTextClass = 'bg-warning';
       this.resultIcon = faCircleExclamation;
       return;
     }
     else if(this.attendeeStatus === 'absent'){
       this.resultText = 'Absent';
-      this.resultTextClass = 'text-danger';
+      this.resultTextClass = 'bg-danger';
       this.resultIcon = faCircleExclamation;
       return;
     }
     else if(this.marks < 50){
       this.resultText = 'Not Qualified';
-      this.resultTextClass = 'text-danger';
+      this.resultTextClass = 'bg-danger';
       this.resultIcon = faCircleExclamation;
       return;
     }
     this.resultText = 'Trained';
-    this.resultTextClass = 'text-success';
+    this.resultTextClass = 'bg-success';
     this.resultIcon = faCircleCheck;
   }
 
