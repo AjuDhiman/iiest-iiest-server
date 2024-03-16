@@ -18,7 +18,7 @@ export class HighchartDataModalComponent {
   allFBOEntries: any;
   searchQuery: string = '';
   filteredData: any;
-  selectedFilterSales: string = 'byName';
+  selectedFilterSales: string = 'byFboName';
   selectedFilterHr: string = 'byEmployeeName';
   showPagination: boolean = false;
   filterValue: string;
@@ -162,13 +162,13 @@ export class HighchartDataModalComponent {
       this.filteredData = this.specificDatas;
     } else {
       switch (this.selectedFilterSales) {
-        case 'byOwner': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byOwner': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byDistrict': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byLocation': this.filteredData = this.specificDatas.filter((elem: any) => (elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())));
           break;
-        case 'byName': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byFboName': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byCustomerID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
+        case 'byCustomerID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery));
           break;
       }
     }

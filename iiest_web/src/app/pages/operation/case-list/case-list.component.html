@@ -187,8 +187,7 @@
 
                 <div class="d-flex" *ngIf="showPagination"
                     [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
-                    <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of
-                        {{totalCount}}</div>
+                    <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filtered from ({{totalCount}} Cases of {{totalCase}})</div>
                     <pagination-controls previousLabel="Prev" nextLabel="Next"
                         (pageChange)="onTableDataChange($event)"></pagination-controls>
                 </div>

@@ -20,6 +20,7 @@ export class DepartmentListComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass
   isSearch: boolean = false;
   filteredData: any;
+  empCount: number;
   faXmark = faXmark;
   faCheck = faCheck;
   constructor(public activeModal: NgbActiveModal,
@@ -52,6 +53,7 @@ export class DepartmentListComponent implements OnInit {
           return { ...elem, serialNumber: index + 1 };
         }).filter((value: any) => value !== null);
         this.filteredData = this.employeeList;
+        this.empCount = this.filteredData.length;
         this.showPagination = true;
       }
     })
