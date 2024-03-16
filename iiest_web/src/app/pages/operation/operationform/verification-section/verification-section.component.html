@@ -216,7 +216,7 @@
 
   <div class="row mt-3">
     <div class="col-6">
-      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus">Verify</button>
+      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isTrainer">Verify</button>
       <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please check all checkable
         fields before verifying)</span>
     </div>

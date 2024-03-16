@@ -207,7 +207,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._getDataService.getPersonWiseSaleData().subscribe({
       next: res => {
         const chartType = 'Column';
-        const department = 'Director';
+        const department = 'IT Department';
         const chartTitle = 'Employee Sales Chart';
         const seriesName = 'Employee Sales';
         const yAxisTitle = '';
@@ -224,7 +224,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._getDataService.getClientTypeSaleData().subscribe({
       next: res => {
         const chartType = 'Column';
-        const department = 'Sales department';
+        const department = 'Sales Department';
         const chartTitle = 'Customer Type Chart';
         const seriesName = 'Employee Sales';
         const yAxisTitle = 'Sales Count';

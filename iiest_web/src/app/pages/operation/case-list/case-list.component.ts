@@ -11,7 +11,7 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./case-list.component.scss']
 })
 export class CaseListComponent implements OnInit {
-  filteredData: any;
+  filteredData: any = [];
   isSearch: boolean = false;
   searchQuery: string;
   selectedFilter: string;
@@ -21,12 +21,12 @@ export class CaseListComponent implements OnInit {
   caseData: any;
   typeData: any;
   showPagination: boolean = false;
- 
+
   serviceType = '';
   totalCount: number = 0;
   totalCase: number = 0;
   panelType: string = '';
-  
+
   //loading var
   loading: boolean = true;
 
@@ -48,7 +48,9 @@ export class CaseListComponent implements OnInit {
     let timeout = setTimeout(() => {
       this.loading = false
     }, 5000);
-    this.getCasedata();
+    if (this.panelType !== 'FSSAI Training Panel') { // we will not call case list api in case of training panel beacuse in this case we are getting data from routre
+      this.getCasedata();
+    }
 
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
@@ -61,6 +63,13 @@ export class CaseListComponent implements OnInit {
       this.serviceType = 'Registration';
       this.selectedFilter = 'byOperatorName';
       this.activeTab = 'Registration';
+    } else if (this.panelType === 'FSSAI Training Panel') {
+      const state = window.history.state;
+      if (state) {
+        this.typeData = state.batchData;
+        console.log(this.typeData);
+        this.filter();
+      }
     }
   }
 
@@ -124,13 +133,13 @@ export class CaseListComponent implements OnInit {
     } else if (this.panelType === 'Foscos Panel') {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.foscosInfo.foscos_service_name === type);
     }
-    
-    if(this.searchQuery !== '') {
+
+    if (this.searchQuery !== '') {
       this.onSearchChange();
     }
     //for getting Total number of case based on type 
     this.totalCount = this.typeData.length;
-    if(this.searchQuery === '') {
+    if (this.searchQuery === '') {
       this.filteredData = this.typeData;
     }
   }
@@ -157,26 +166,24 @@ export class CaseListComponent implements OnInit {
 
           case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo.toString().includes(this.searchQuery.toString()))
             break;
-          
-            case 'byState': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()));
+
+          case 'byState': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
         }
       }
-      else if(this.panelType == 'Foscos Panel'){
+      else if (this.panelType == 'Foscos Panel') {
         switch (this.selectedFilter) {
-           case 'byOperatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          case 'byOperatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
-
           case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
-
           case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
         }
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
-    this.filteredData.sort((a: any, b: any) =>new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime() );
+    this.filteredData.sort((a: any, b: any) => new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime());
   }
 
 }

@@ -13,6 +13,7 @@ import { FbonewComponent } from './pages/sales/fboproduct/fbonew/fbonew.componen
 import { FbolistComponent } from './pages/sales/fbolist/fbolist.component';
 import { EmployeelistComponent } from './pages/HR/employeelist/employeelist.component';
 import { LmsComponent } from './pages/lms/lms.component';
+import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
+  { path: 'batchlist', component: BatchListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'caselist/operationform/:id', component: OperationformComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},

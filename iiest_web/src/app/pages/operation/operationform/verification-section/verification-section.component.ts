@@ -31,6 +31,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Input() productType: string = '';
 
+  @Input() isTrainer: boolean = false;
+
   //output variables
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 

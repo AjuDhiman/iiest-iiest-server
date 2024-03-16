@@ -1,98 +1,103 @@
 <div class="tab-content mx-3" id="orders-table-tab-content">
-    <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-      <div class="app-card app-card-orders-table shadow-sm mb-5">
-        <div class="app-card-body">
-          <div class="table-responsive">
-            <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
-              <thead>
-                <tr *ngIf="this.serviceType == 'fostac'">
-                  <th class="cell">S.No</th>
-                  <th class="cell">Recipient Name</th>
-                  <th class="cell">Phone</th>
-                  <th class="cell">Aadhar No.</th>
-                </tr>
-                <tr *ngIf="this.serviceType == 'foscos'">
-                  <th class="cell">S.No</th>
-                  <th class="cell">Operator Name</th>
-                  <th class="cell">Address</th>
-                  <th class="cell">Pincode</th>
-                  <th class="cell">Electricity Bill</th>
-                  <th class="cell">Owner Photo</th>
-                  <th class="cell">Shop Photo</th>
-                </tr>
-              </thead>
-              <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
-                <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
-                <tr
-                  *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
-                  <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
-                  <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
-                  <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.phoneNo}}</span></td>
-                  <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.aadharNo}}</span></td>
-                </tr>
-              </tbody>
-              <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
-                <tr
-                  *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
-                  <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
-                  <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
-                  <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
-                  <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
-                  <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-                  <td *ngIf="!isfostac" class="cell">
-                    <span class="truncate">
-                      <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+  <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+    <div class="app-card app-card-orders-table shadow-sm mb-5">
+      <div class="app-card-body">
+        <div class="table-responsive">
+          <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+            <thead>
+              <tr *ngIf="this.serviceType == 'fostac'">
+                <th class="cell">S.No</th>
+                <th class="cell">Recipient Name</th>
+                <th class="cell">Phone</th>
+                <th class="cell">Aadhar No.</th>
+              </tr>
+              <tr *ngIf="this.serviceType == 'foscos'">
+                <th class="cell">S.No</th>
+                <th class="cell">Operator Name</th>
+                <th class="cell">Address</th>
+                <th class="cell">Pincode</th>
+                <th class="cell">Electricity Bill</th>
+                <th class="cell">Owner Photo</th>
+                <th class="cell">Shop Photo</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
+              <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
+              <tr
+                *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
+                <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
+                <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
+                <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.phoneNo}}</span></td>
+                <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.aadharNo}}</span></td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
+              <tr
+                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
+                <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
+                <td *ngIf="!isfostac" class="cell">
+                  <span class="truncate">
+                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
                         (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                      <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
-                        <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
-                      </a>
-                      <label [for]="'uploadEbill' + sr"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
-                          [icon]="faFile"></fa-icon></label>
-                      <input type="file" [id]="'uploadEbill' + sr" (change)="uploadEbill($event, shops._id)" hidden>
-                    </span>
-                  </td>
-  
-                  <td>
-                    <span class="truncate">
-                      <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+                    <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <label [for]="'uploadEbill' + sr"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadEbill' + sr" (change)="uploadEbill($event, shops._id)" hidden>
+                  </span>
+                </td>
+
+                <td>
+                  <span class="truncate">
+                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
                         (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                      <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
-                        <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
-                      </a>
-                      <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
-                          [icon]="faFile"></fa-icon></label>
-                      <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)" hidden>
-                    </span>
-                  </td>
-  
-                  <td>
-                    <span class="truncate">
-                      <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+                    <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)"
+                      hidden>
+                  </span>
+                </td>
+
+                <td>
+                  <span class="truncate">
+                    <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
                         (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                      <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
-                        <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
-                      </a>
-                      <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
-                          [icon]="faFile"></fa-icon></label>
-                      <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)" hidden> 
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-              <tbody
-                *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos')">
-                <tr>
-                  <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
-                </tr>
-              </tbody>
-            </table>
-          </div><!--//table-responsive-->
-  
-        </div><!--//app-card-body-->
-      </div><!--//app-card-->
-      <div *ngIf="showPagination===true" class="d-flex justify-content-end">
-        <pagination-controls previousLabel="Prev" nextLabel="Next"
-          (pageChange)="onTableDataChange($event)"></pagination-controls>
-      </div>
-      </div>
-      </div>
+                    <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
+                      hidden>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+            <tbody
+              *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos')">
+              <tr>
+                <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!--//table-responsive-->
+
+      </div><!--//app-card-body-->
+    </div><!--//app-card-->
+    <div *ngIf="showPagination===true" class="d-flex justify-content-end">
+      <pagination-controls previousLabel="Prev" nextLabel="Next"
+        (pageChange)="onTableDataChange($event)"></pagination-controls>
+    </div>
+  </div>
+</div>

@@ -235,10 +235,13 @@ export class HighchartDataModalComponent {
     if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
+      console.log(this.chartData.userDept);
       switch (this.chartData.userDept) {
         case "Sales Department": this.salesDeptfilter();
           break;
         case "HR Department": this.hrDeptfilter();
+          break;
+        case "IT Department": this.salesDeptfilter();
           break;
       }
     }
@@ -248,6 +251,8 @@ export class HighchartDataModalComponent {
         case "Sales Department": this.filteredData = this.specificDatas;
           break;
         case "HR Department": this.filteredData = this.employeeList;
+          break;
+        case "IT Department": this.filteredData = this.specificDatas;
           break;
       }
     }
