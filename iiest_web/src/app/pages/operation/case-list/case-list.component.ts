@@ -14,15 +14,17 @@ export class CaseListComponent implements OnInit {
   filteredData: any = [];
   isSearch: boolean = false;
   searchQuery: string;
-  selectedFilter: string = 'byRecipientName';
+  selectedFilter: string;
   itemsNumber: number = 25;
   pageNumber: number = 1;
+  activeTab: string;
   caseData: any;
   typeData: any;
   showPagination: boolean = false;
 
   serviceType = '';
   totalCount: number = 0;
+  totalCase: number = 0;
   panelType: string = '';
 
   //loading var
@@ -46,7 +48,7 @@ export class CaseListComponent implements OnInit {
     let timeout = setTimeout(() => {
       this.loading = false
     }, 5000);
-    if(this.panelType !== 'FSSAI Training Panel'){ // we will not call case list api in case of training panel beacuse in this case we are getting data from routre
+    if (this.panelType !== 'FSSAI Training Panel') { // we will not call case list api in case of training panel beacuse in this case we are getting data from routre
       this.getCasedata();
     }
 
@@ -54,9 +56,13 @@ export class CaseListComponent implements OnInit {
     let parsedUser = JSON.parse(user);
     this.panelType = parsedUser.panel_type;
     if (this.panelType === 'Fostac Panel') {
-      this.serviceType = 'Catering'
+      this.serviceType = 'Catering';
+      this.selectedFilter = 'byRecipientName';
+      this.activeTab = 'Catering';
     } else if (this.panelType === 'Foscos Panel') {
-      this.serviceType = 'Registration'
+      this.serviceType = 'Registration';
+      this.selectedFilter = 'byOperatorName';
+      this.activeTab = 'Registration';
     } else if (this.panelType === 'FSSAI Training Panel') {
       const state = window.history.state;
       if (state) {
@@ -82,13 +88,12 @@ export class CaseListComponent implements OnInit {
     if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
+      this.filter();
     }
     else {
       this.isSearch = false;
+      this.filteredData = this.typeData;
     }
-    //  this.filteredData=this.typeData;
-    this.setServiceType("Registration");
-    this.filter();
   }
 
   onTableDataChange(event: any) {
@@ -100,6 +105,7 @@ export class CaseListComponent implements OnInit {
       next: res => {
         this.loading = false;
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+        this.totalCase = this.caseData.length;
         if (this.panelType === 'Fostac Panel') {
           this.setServiceType('Catering');
           this.filter();
@@ -121,7 +127,6 @@ export class CaseListComponent implements OnInit {
   setServiceType(type: string) {
     this.serviceType = type;
     this.pageNumber = 1;
-    this.searchQuery = '';
 
     if (this.panelType === 'Fostac Panel') {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
@@ -129,9 +134,14 @@ export class CaseListComponent implements OnInit {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.foscosInfo.foscos_service_name === type);
     }
 
+    if (this.searchQuery !== '') {
+      this.onSearchChange();
+    }
     //for getting Total number of case based on type 
     this.totalCount = this.typeData.length;
-    this.filteredData = this.typeData;
+    if (this.searchQuery === '') {
+      this.filteredData = this.typeData;
+    }
   }
 
   //method for opening operation form
@@ -143,7 +153,7 @@ export class CaseListComponent implements OnInit {
     if (!this.searchQuery) {
       this.filteredData = this.typeData;
     } else {
-      if (this.panelType = 'Fostac Panel') {
+      if (this.panelType == 'Fostac Panel') {
         switch (this.selectedFilter) {
           case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
@@ -163,12 +173,10 @@ export class CaseListComponent implements OnInit {
       }
       else if (this.panelType == 'Foscos Panel') {
         switch (this.selectedFilter) {
-          case 'byOpetatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          case 'byOperatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
-
           case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
-
           case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
         }

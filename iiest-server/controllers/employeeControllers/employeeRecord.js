@@ -9,6 +9,7 @@ exports.employeeRecord = async (req, res) => {
         const todayDate = new Date();
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
         const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());
+        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
 
@@ -82,6 +83,50 @@ exports.employeeRecord = async (req, res) => {
                                 if: {
                                     $and: [
                                         { $gte: ["$createdAt", startOfThisWeek] },
+                                        { $eq: ["$checkStatus", 'approved'] }
+                                    ]
+                                },
+                                then: '$grand_total',
+                                else: 0
+                            }
+                        }
+                    },
+                    prev_month_total: {
+                        $sum: {
+                            $cond: {
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfPrevMonth] },
+                                        { $lte: ["$createdAt", startOfThisMonth] }
+                                    ]
+                                },
+                                then: '$grand_total',
+                                else: 0
+                            }
+                        }
+                    },
+                    prev_month_pending: {
+                        $sum: {
+                            $cond: {
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfPrevMonth] },
+                                        { $lte: ["$createdAt", startOfThisMonth] },
+                                        { $eq: ["$checkStatus", 'pending'] }
+                                    ]
+                                },
+                                then: '$grand_total',
+                                else: 0
+                            }
+                        }
+                    },
+                    prev_month_approved: {
+                        $sum: {
+                            $cond: {
+                                if: {
+                                    $and: [
+                                        { $gte: ["$createdAt", startOfPrevMonth] },
+                                        { $lte: ["$createdAt", startOfThisMonth] },
                                         { $eq: ["$checkStatus", 'approved'] }
                                     ]
                                 },
@@ -205,6 +250,11 @@ exports.employeeRecord = async (req, res) => {
                         pendingSales: "$week_pending",
                         approvedSales: "$week_approved"
                     },
+                    prev_month: {
+                        totalSales: "$prev_month_total",
+                        pendingSales: "$prev_month_pending",
+                        approvedSales: "$prev_month_approved"
+                    },
                     this_month: {
                         totalSales: "$month_total",
                         pendingSales: "$month_pending",
@@ -317,9 +367,9 @@ exports.employeeSalesData = async (req, res) => {
 //                 }
 //             }
 //         ]);
-        
+
 //         // Now salesData contains plain JavaScript objects directly returned from the aggregation pipeline
-        
+
 
 //         res.status(200).json(salesData);
 
