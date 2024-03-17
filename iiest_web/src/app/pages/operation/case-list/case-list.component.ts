@@ -21,6 +21,9 @@ export class CaseListComponent implements OnInit {
   typeData: any;
   showPagination: boolean = false;
 
+  //condional var for deciding case list structure and logic for case list in case of trainers
+  forTraining: boolean = false;
+
   serviceType = '';
   totalCount: number = 0;
   panelType: string = '';
@@ -45,26 +48,14 @@ export class CaseListComponent implements OnInit {
   ngOnInit(): void {
     let timeout = setTimeout(() => {
       this.loading = false
-    }, 5000);
-    if(this.panelType !== 'FSSAI Training Panel'){ // we will not call case list api in case of training panel beacuse in this case we are getting data from routre
+    }, 4000);
+
+    this.initializeCaseList();
+
+    if (!this.forTraining) { // we will not call case list api in case of training beacuse in this case we are getting data from route
       this.getCasedata();
     }
 
-    let user: any = this._registerService.LoggedInUserData();
-    let parsedUser = JSON.parse(user);
-    this.panelType = parsedUser.panel_type;
-    if (this.panelType === 'Fostac Panel') {
-      this.serviceType = 'Catering'
-    } else if (this.panelType === 'Foscos Panel') {
-      this.serviceType = 'Registration'
-    } else if (this.panelType === 'FSSAI Training Panel') {
-      const state = window.history.state;
-      if (state) {
-        this.typeData = state.batchData;
-        console.log(this.typeData);
-        this.filter();
-      }
-    }
   }
 
   //Export To CSV
@@ -96,6 +87,7 @@ export class CaseListComponent implements OnInit {
   }
 
   getCasedata() {
+    console.log(11);
     this._getDataService.getCaseList().subscribe({
       next: res => {
         this.loading = false;
@@ -176,6 +168,26 @@ export class CaseListComponent implements OnInit {
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
     this.filteredData.sort((a: any, b: any) => new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime());
+  }
+
+  initializeCaseList() { // this methord set the initializtion of case list component baased of diffent conditions
+    let user: any = this._registerService.LoggedInUserData();
+    let parsedUser = JSON.parse(user);
+    this.panelType = parsedUser.panel_type;
+    if (this.panelType === 'Fostac Panel') {
+      this.serviceType = 'Catering'
+    } else if (this.panelType === 'Foscos Panel') {
+      this.serviceType = 'Registration'
+    }
+
+    const state = window.history.state;
+    console.log(state);
+    if (state && state.forTraining) {
+      this.forTraining = state.forTraining;
+      this.typeData = state.batchData.map((item: any) => item.verificationInfo.recipientInfo);
+      this.filter();
+      console.log(this.forTraining)
+    }
   }
 
 }

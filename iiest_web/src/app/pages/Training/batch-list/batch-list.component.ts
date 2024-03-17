@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPen, faSave } from '@fortawesome/free-solid-svg-icons';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { delhiTrainingLocations } from 'src/app/utils/config';
 
@@ -24,7 +24,11 @@ export class BatchListComponent implements OnInit{
 
   batchData: any;
 
+  editMode: boolean = false;
+
   faEye: IconDefinition = faEye;
+  faPen: IconDefinition = faPen;
+  faSave: IconDefinition = faSave;
 
   // table related vars
   pageNumber: number = 1;
@@ -52,18 +56,19 @@ export class BatchListComponent implements OnInit{
   }
 
   getCases(){
-    this._getDataService.getCaseList().subscribe({
+    this._getDataService.getBatchListData().subscribe({
       next: res => {
         console.log(res);
-        this.batchData = res.caseList
-                        .filter((item: any) => item.salesInfo && item.salesInfo.fboInfo.state.toLowerCase() === this.activeTab.toLowerCase())
+        this.batchData = res.batches
                         .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        
+        this.filteredData = this.batchData;
       }
     })
   }
 
-  showCaseList(){
-    this.router.navigate(['/caselist'], {state:{batchData: this.batchData}});
+  showCaseList(res: any){
+    this.router.navigate(['/caselist'], {state:{batchData: res, forTraining: true}});
   }
 
 }

@@ -32,6 +32,7 @@ const port = config.PORT || 3000;
 app.use('/iiest', require('./routers/employeeRoute.js'));
 app.use('/iiest', require('./routers/fboRoute.js'));
 app.use('/iiest', require('./routers/operationRoute.js'));
+// app.use('/iiest', require('./routers/trainingRoute.js'));
 
 connectToMongo();
 

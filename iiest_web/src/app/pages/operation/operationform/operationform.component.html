@@ -29,7 +29,6 @@
 
           <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
           <app-enrollment-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [ngClass]="{'d-none': !isTrainer}"
             [salesDate]="salesDate" [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" 
             (emitEnrolledStatus)="getEnrolledStatus($event)" (emitEnrolledDataId)="getEnrolledDataId($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
@@ -41,7 +40,7 @@
 
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
           <app-attendance-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId" [ngClass]="{'d-none': !isTrainer}"
+            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId"
             (emitAttenanceStatus)="getAttendanceStatus($event)" (emitAttenSecResult)="getAttenSecResult($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
