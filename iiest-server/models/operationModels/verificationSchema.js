@@ -9,7 +9,7 @@ const fostacVerification = new Schema({
     },
     recipientInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'recipientdetails',
+        ref: 'recipientDetails',
         required: true,
         unique: true
     },
@@ -50,7 +50,7 @@ const fostacVerification = new Schema({
     }
 }, {timestamps: true})
 
-const fostacVerifyModel = mongoose.model('fostac_verification', fostacVerification);
+const fostacVerifyModel = mongoose.model('fostac_verifications', fostacVerification);
 
 const foscosVerification = new Schema({
     operatorInfo: {

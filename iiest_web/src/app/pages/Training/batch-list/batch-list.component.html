@@ -3,8 +3,8 @@
         <div class="container-xxl">
             <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
                 <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
-                    <a *ngFor="let loc of delhiTrainingLoactions" class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab===loc}"
-                        (click)="toogleTabs(loc)">{{loc}}</a>
+                    <a *ngFor="let loc of delhiTrainingLoactions" class="nav-link mx-1" style="cursor: pointer;"
+                        [ngClass]="{'active': activeTab===loc}" (click)="toogleTabs(loc)">{{loc}}</a>
                 </li>
             </ul>
             <div class="border border-1 rounded-3 rounded-start-0 p-3">
@@ -82,12 +82,12 @@
                                         <thead>
                                             <tr>
                                                 <th class="cell">S.No</th>
-                                                <th class="cell">Batch No.</th>
-                                                <th class="cell">Training Date</th>
-                                                <th class="cell">Batch Size</th>
+                                                <th class="cell">Batch Code</th>
                                                 <th class="cell">No. of candidate</th>
                                                 <th class="cell">Status</th>
-                                                <th class="cell">Category</th>
+                                                <th class="cell">venue</th>
+                                                <th class="cell">Training Date</th>
+                                                <th class="cell">Trainer</th>
                                                 <th class="cell">View</th>
                                             </tr>
                                         </thead>
@@ -97,20 +97,31 @@
                                                 <td class="cell"><span
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                                 <td class="cell"><span class="truncate"
-                                                        title="View Case">{{batch.batch_no}}</span></td>
-                                                <td class="cell"><span class="truncate">{{batch.training_date}}</span>
+                                                        title="View Case">{{batch.batchCode}}</span></td>
+                                                <td class="cell"><span class="truncate">{{batch.candidateNo}}</span>
                                                 </td>
-                                                <td class="cell"><span class="truncate">{{50}}</span>
+                                                <td class="cell"><span class="truncate">{{batch.status}}</span>
                                                 </td>
-                                                <td class="cell"><span class="truncate">{{batch.recipient_no}}</span>
-                                                </td>
-                                                <td class="cell"><span class="truncate">On Going</span>
-                                                </td>
-                                                <td class="cell"><span class="truncate">{{serviceType}}</span>
+                                                <td class="cell"><span class="truncate">{{batch.status}}</span>
                                                 </td>
                                                 <td class="cell"><span class="truncate">
-                                                    <fa-icon class="text-primary selector" [icon]="faEye" (click)="showCaseList()"></fa-icon>
-                                                </span>
+                                                        <input type="datetime-local" class="form-control form-control-xs" [readOnly]="!editMode">
+                                                    </span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">
+                                                        <select name="" id="" class="form-select form-select-xs" [disabled]="!editMode">
+                                                            <option value="" disabled selected>Select Trainer</option>
+                                                        </select>
+                                                    </span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">
+                                                        <fa-icon class="text-primary selector" [icon]="faEye"
+                                                            (click)="showCaseList(batch.candidateDetails)"></fa-icon>
+                                                        <fa-icon *ngIf="!editMode" class="text-primary selector px-2" [icon]="faPen"
+                                                        (click)="editMode = true"></fa-icon>
+                                                        <fa-icon *ngIf="editMode" class="text-primary selector px-2" [icon]="faSave"
+                                                        (click)="editMode = false"></fa-icon>
+                                                    </span>
                                                 </td>
                                             </tr>
                                         </tbody>
