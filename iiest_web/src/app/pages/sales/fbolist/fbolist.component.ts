@@ -18,7 +18,7 @@ export class FbolistComponent implements OnInit {
   createdBy: any;
   allFBOEntries: any;
   filteredFBOEntries: any;
-  selectedFilter: string = 'byOwner';
+  selectedFilter: string = 'byFboName';
   searchQuery: string = '';
   filteredData: any;
   isSearch: boolean = false;
@@ -80,11 +80,11 @@ export class FbolistComponent implements OnInit {
       console.log(this.filteredFBOEntries);
     } else {
       switch (this.selectedFilter) {
-        case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byDistrict': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byLocation': this.filteredData = this.filteredFBOEntries.filter((elem: any) => (elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())));
           break;
-        case 'byName': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byFboName': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
         case 'byCustomerID': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
           break;

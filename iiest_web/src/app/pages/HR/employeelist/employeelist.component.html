@@ -45,19 +45,18 @@
                 <option value="byContact">Search by contact</option>
                 <option value="byLocation">Search by location</option>
 
-          </select>
-        </div>
-        <div class="col-auto">
-          <fa-icon (click)="exportToCsv()"  data-bs-toggle='tooltip' data-bs-placement='top' 
-          title='Export As CSV' class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
-            [icon]="faFileCsv"></fa-icon>
-          <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' 
-          title='Export As PDF' class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon>
-        </div>
-      </div><!--//row-->
-    </div><!--//table-utilities-->
-  </div><!--//col-auto-->
-</div><!--//row-->
+              </select>
+            </div>
+            <div class="col-auto">
+              <fa-icon (click)="exportToCsv()" data-bs-toggle='tooltip' data-bs-placement='top' title='Export As CSV'
+                class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"></fa-icon>
+              <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' title='Export As PDF'
+                class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon>
+            </div>
+          </div><!--//row-->
+        </div><!--//table-utilities-->
+      </div><!--//col-auto-->
+    </div><!--//row-->
 
     <div class="tab-content" id="orders-table-tab-content">
       <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
@@ -79,60 +78,66 @@
                     <th class="cell text-center">Action</th>
                     <!-- <th class="cell">Last Edit</th> -->
 
-              </tr>
-            </thead>
-            <tbody *ngIf="filteredEmployees?.length>0">
- 
-              <tr class="list-tr"
-                *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
-                <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
-                <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
-                <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
-                <td class="cell cursor-pointer">
-                   <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username" (cbOnSuccess)="copyNotification()"
-                    data-bs-toggle='tooltip' data-bs-placement='top' title='copy employee id' [icon]="faCopy"></fa-icon>
-                  <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='assign manager'> {{ employee.username}}</span>
-                </td>
-                <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
-                <td class="cell"><span class="truncate cursor-pointer">
-                    <fa-icon class="fa-l" style="margin-right: 5px;" 
-                    data-bs-toggle='tooltip' data-bs-placement='top' title='mail'
-                      [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
-                </td>
-                <td class="cell"><span class="truncate">{{employee.state}}</span></td>
-                <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
-                <td class="cell text-center">
-                  <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
-                  <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='active employee'></fa-icon>
-                  <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='inactive employee'></fa-icon>
-                </td>
-                <td class="cell text-end">
-                  <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='view employee'
-                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"></fa-icon>
-                  <fa-icon *ngIf="employee.department === 'Sales Department'" class="fa-l selector" (click)="allocate(employee, 'area')"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='allocate area'
-                    style="margin-right: 7px; color: #1957a9;" [icon]="faLocationPin"></fa-icon>
-                  <fa-icon class="fa-l selector" (click)="editRecord(employee)"
-                  data-bs-toggle='tooltip' data-bs-placement='top' title='edit'
-                    style="cursor:pointer; margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon>
-                  <!-- <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
+                  </tr>
+                </thead>
+                <tbody *ngIf="filteredEmployees?.length>0">
+
+                  <tr class="list-tr"
+                    *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                    <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
+                    <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
+                    <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
+                    <td class="cell cursor-pointer">
+                      <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username"
+                        (cbOnSuccess)="copyNotification()" data-bs-toggle='tooltip' data-bs-placement='top'
+                        title='copy employee id' [icon]="faCopy"></fa-icon>
+                      <span class="truncate px-2 selector" (click)="allocate(employee, 'manager')"
+                        data-bs-toggle='tooltip' data-bs-placement='top' title='assign manager'> {{
+                        employee.username}}</span>
+                    </td>
+                    <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
+                    <td class="cell"><span class="truncate cursor-pointer">
+                        <fa-icon class="fa-l" style="margin-right: 5px;" data-bs-toggle='tooltip'
+                          data-bs-placement='top' title='mail' [icon]="faEnvelope"></fa-icon>{{employee.email}}</span>
+                    </td>
+                    <td class="cell"><span class="truncate">{{employee.state}}</span></td>
+                    <td class="cell"><span class="truncate">{{employee.createdBy}}</span></td>
+                    <td class="cell text-center">
+                      <!-- <fa-icon class="fa-light fa-l" style="margin-right: 7px; color: #c64115;" [icon]="faXmark"></fa-icon> -->
+                      <fa-icon *ngIf="employee.status" class="fa-l" style="color: #138a25;" [icon]="faCheck"
+                        data-bs-toggle='tooltip' data-bs-placement='top' title='active employee'></fa-icon>
+                      <fa-icon *ngIf="!employee.status" class="fa-l" style="color: #c64115;" [icon]="faXmark"
+                        data-bs-toggle='tooltip' data-bs-placement='top' title='inactive employee'></fa-icon>
+                    </td>
+                    <td class="cell text-end">
+                      <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)" data-bs-toggle='tooltip'
+                        data-bs-placement='top' title='view employee' style="margin-right: 7px; color: #1957a9;"
+                        [icon]="faEye"></fa-icon>
+                      <fa-icon *ngIf="employee.department === 'Sales Department'" class="fa-l selector"
+                        (click)="allocate(employee, 'area')" data-bs-toggle='tooltip' data-bs-placement='top'
+                        title='allocate area' style="margin-right: 7px; color: #1957a9;"
+                        [icon]="faLocationPin"></fa-icon>
+                      <fa-icon class="fa-l selector" (click)="editRecord(employee)" data-bs-toggle='tooltip'
+                        data-bs-placement='top' title='edit' style="cursor:pointer; margin-right: 7px; color: #1957a9;"
+                        [icon]="faPencil"></fa-icon>
+                      <!-- <fa-icon class="fa-l" (click)="deleteEmployee(employee._id)" style="color: #c64115; cursor: pointer;"
                     [icon]="faTrash"></fa-icon> -->
-                </td>
-                <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
-              </tr>
-            </tbody>
-          </table>
-        </div><!--//table-responsive-->
+                    </td>
+                    <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div><!--//table-responsive-->
 
           </div><!--//app-card-body-->
         </div><!--//app-card-->
 
-    <div class="d-flex justify-content-between">
-      <div class="filtered-count">{{filteredEmployees.length}} of {{allEmployees.length}}</div>
-      <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onPageChange($event)">
-      </pagination-controls>
+        <div class="d-flex justify-content-between">
+          <div class="filtered-count">{{filteredEmployees.length}} filltred from({{empCountByStatus}} {{activeTab}} Employees of {{totalEmp}})</div>
+          <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onPageChange($event)">
+          </pagination-controls>
+        </div>
+      </div>
     </div>
+  </div>
+</div>

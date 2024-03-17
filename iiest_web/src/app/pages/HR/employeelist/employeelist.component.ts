@@ -33,6 +33,9 @@ export class EmployeelistComponent implements OnInit {
   pageNumber: number = 1;
   isSearch: boolean = false;
   isActive: boolean = true;
+  activeTab: string = 'Active';
+  empCountByStatus: number;
+  totalEmp: number;
   itemsNumber: number = 25;
 
   //icons
@@ -75,6 +78,7 @@ export class EmployeelistComponent implements OnInit {
       this.getEmployees();
       this.employees$.subscribe(res => {
         this.allEmployees = res;
+        this.totalEmp = this.allEmployees.length;
         this.filter();
       });
     }
@@ -85,6 +89,7 @@ export class EmployeelistComponent implements OnInit {
     if (!this.searchQuery) {
       this.isSearch = false;
       this.filteredEmployees = this.filterEmpByStatus(this.isActive);
+      this.empCountByStatus = this.filteredEmployees.length;
     } else {
       this.allEmployees = this.filterEmpByStatus(this.isActive);
       switch (this.selectedFilter) {
@@ -113,6 +118,11 @@ export class EmployeelistComponent implements OnInit {
 
   filterEmp(type: boolean) {
     this.isActive = type;
+    if(type === true) {
+      this.activeTab = 'Active'
+    } else {
+      this.activeTab = 'Inactive'
+    }
     this.fetchAllEmployees();
   }
 

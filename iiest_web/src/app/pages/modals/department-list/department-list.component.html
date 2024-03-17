@@ -71,7 +71,8 @@
 
         </div><!--//app-card-body-->
       </div><!--//app-card-->
-      <div *ngIf="showPagination===true" class="d-flex justify-content-end">
+      <div *ngIf="showPagination===true" class="d-flex justify-content-between">
+        <div class="filtered-count">{{filteredData.length}} of {{empCount}}</div>
         <pagination-controls previousLabel="Prev" nextLabel="Next"
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div>
