@@ -3,7 +3,8 @@
 
         <!-- heading and form status -->
         <h6>Documentation Section</h6>
-        <div class="status badge align-self-baseline" [ngClass]="filedStatus?'bg-success':'bg-warning'" style="font-size: x-small;">
+        <div class="status badge align-self-baseline" [ngClass]="filedStatus?'bg-success':'bg-warning'"
+            style="font-size: x-small;">
             {{filedStatus?'Filed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
                 [icon]="filedStatus?faCircleCheck:faCircleExclamation">
             </fa-icon>
@@ -32,9 +33,9 @@
 
     <div class="col-md-3">
         <label for="payment_amount" class="form-label">Payment Amount</label><sup>*</sup>
-        <input type="number" placeholder="Payment Amount" formControlName="payment_amount" class="form-control form-control-sm"
-            id="payment_amount" [ngClass]="{ 'is-invalid': filed  && filingform['payment_amount'].errors }"
-            [readOnly]="filedStatus">
+        <input type="number" placeholder="Payment Amount" formControlName="payment_amount"
+            class="form-control form-control-sm" id="payment_amount"
+            [ngClass]="{ 'is-invalid': filed  && filingform['payment_amount'].errors }" [readOnly]="filedStatus">
         <div *ngIf="filed && filingform['payment_amount'].errors" class="invalid-feedback">
             <div *ngIf="filingform['payment_amount'].errors['required']">Payment Amount is required</div>
         </div>
@@ -42,9 +43,9 @@
 
     <div class="col-md-3">
         <label for="payment_receipt" class="form-label">Payment Receipt</label><sup>*</sup>
-        <input type="file" placeholder="Payment Receipt" formControlName="payment_receipt" class="form-control form-control-sm"
-            id="payment_receipt" [ngClass]="{ 'is-invalid': filed  && filingform['payment_receipt'].errors }"
-            [readOnly]="filedStatus">
+        <input type="file" placeholder="Payment Receipt" formControlName="payment_receipt"
+            class="form-control form-control-sm" id="payment_receipt"
+            [ngClass]="{ 'is-invalid': filed  && filingform['payment_receipt'].errors }" [readOnly]="filedStatus">
         <div *ngIf="filed && filingform['payment_receipt'].errors" class="invalid-feedback">
             <div *ngIf="filingform['payment_receipt'].errors['required']">Payment Receipt is required</div>
         </div>
@@ -52,18 +53,33 @@
 
     <div class="col-md-3">
         <label for="payment_date" class="form-label">Payment Date</label><sup>*</sup>
-        <input type="date" placeholder="Payment Date" formControlName="payment_date" class="form-control form-control-sm"
-            id="payment_date" [ngClass]="{ 'is-invalid': filed  && filingform['payment_date'].errors }"
-            [readOnly]="filedStatus">
+        <input type="date" placeholder="Payment Date" formControlName="payment_date"
+            class="form-control form-control-sm" id="payment_date"
+            [ngClass]="{ 'is-invalid': filed  && filingform['payment_date'].errors }" [readOnly]="filedStatus">
         <div *ngIf="filed && filingform['payment_date'].errors" class="invalid-feedback">
             <div *ngIf="filingform['payment_date'].errors['required']">Payment Date is required</div>
         </div>
     </div>
 
+    <div class="col-md-6">
+        <label for="food_category" class="form-label">Select Documents to Upload<sup>*</sup></label>
+        <app-multi-select #multiSelect class="cursor-pointer" [options]="foscosDocuments"
+            [placeHolder]="'Select Documents'" (selectedArrayChange)="getSelectedDocs($event)"></app-multi-select>
+        <!-- <div *ngIf="verified && verificationform['food_category'].errors" class="invalid-feedback">
+                  <div *ngIf="verificationform['food_category'].errors">Food categories are required</div>
+                </div> -->
+    </div>
+
+
+    <div class="col-md-3">
+        <label for="payment_date" class="form-label">Upload Docs.</label><sup>*</sup>
+        <br>
+        <fa-icon [icon]="faFileArrowUp" class="fa-2xl text-primary" (click)="openDocumentationModal()"></fa-icon>
+    </div>
+
     <div class="row mt-3">
         <div class="col-6">
-            <button type="submit" class="btn btn-sm btn-primary"
-                [disabled]="!verifiedStatus || filedStatus">File
+            <button type="submit" class="btn btn-sm btn-primary" [disabled]="!verifiedStatus || filedStatus">File
             </button>
         </div>
     </div>

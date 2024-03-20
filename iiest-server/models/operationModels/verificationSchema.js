@@ -73,23 +73,11 @@ const foscosVerification = new Schema({
         required: true
     },
     ownershipType: {
-        type: Array,
-        required: true
-    },
-    foodItems: {
         type: String,
         required: true
     },
-    operatorAddress: {
-        type: String,
-        required: true
-    }, 
-    fsmsCertificate: {
-        type: String,
-        required: true
-    },
-    selfDecOProp: {
-        type: String,
+    Owners_num: {
+        type: Number,
         required: true
     }
 });

@@ -1,0 +1,49 @@
+<div class="modal-header bg-secondary">
+  <h6 class="modal-title text-white" id="modal-basic-title">Documents</h6>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+  <form>
+    <div class="row">
+      <h6>Upload Documents</h6>
+      <div class="col-md-4">
+        <label for="food_category" class="form-label">Documents<sup>*</sup></label>
+        <select class="form-select form-select-sm" (change)="getSelectedDoc($event)">
+          <option value="" disabled selected>Select Doc to Upload</option>
+          <Option *ngFor="let doc of docsArr">{{doc}}</Option>
+        </select>
+      </div>
+
+      <div class="col-md-4" *ngIf="selectedDoc">
+        <label class="form-label" [for]="changeNameFormat(selectedDoc)">{{selectedDoc}}</label>
+        <input type="file" class="form-control form-control-sm" [id]="changeNameFormat(selectedDoc)" />
+      </div>
+
+      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc">
+        <button type="submit" class="btn btn-sm btn-primary">Upload
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <hr>
+
+  <!-- <form [formGroup]="documentsForm">
+    <div class="row">
+      <h6>Upload Documents</h6>
+
+      <div class="col-md-4" *ngFor="let doc of selectedDocs">
+       <label class="form-label">{{doc}}<sup>*</sup></label>
+       <input type="file" class="form-control form-control-sm" [placeholder]="'Upload' + doc"
+       [formControlName]="changeNameFormat(doc)" >
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-6">
+            <button type="submit" class="btn btn-sm btn-primary">Upload
+            </button>
+        </div>
+    </div>
+    </div>
+  </form> -->
+</div>

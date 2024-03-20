@@ -17,7 +17,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   verified: boolean = false;
   verifiedStatus: boolean = false;
   // isPropraitor: boolean = false;
-  // minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
+  minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
   // ownersNum: number = 0; // this var is for deciding the no of owners in case of partnership or board of directors
   // indexArr: number[] = []; //this var is used for converting ownersNum to array of increasing num till ownerNum because we are using this with ngFor and ngFor works only with array
   ownerType: string = '';
@@ -97,12 +97,10 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     sales_date: new FormControl(''),
     sales_person: new FormControl(''),
     kob: new FormControl(''),
-    food_items: new FormControl(''),
     food_category: new FormControl(''),
     ownership_type: new FormControl(''),
-    owner_num: new FormControl(''),
-    operator_address: new FormControl(''),
-  });
+    owner_num: new FormControl(this.minMembers)
+    });
 
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
@@ -373,12 +371,19 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       sales_person: ['', Validators.required],
       kob: ['', Validators.required],
       food_category: ['', Validators.required],
-      food_items: ['', Validators.required],
       ownership_type: ['', Validators.required],
-      owner_num: ['', Validators.required],
-      operator_address: ['', Validators.required],
+      owner_num: [this.minMembers, Validators.required],
     });
 
+  }
+
+  onOwnershipTypeChanges($event: any) {
+    if($event.target.value === 'ropaitorship') {
+      this.minMembers=1;
+    } else {
+      this.minMembers=2;
+    }
+    this.verificationForm.patchValue({'owner_num': this.minMembers});
   }
 
 }

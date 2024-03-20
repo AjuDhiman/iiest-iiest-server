@@ -91,7 +91,9 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
           this._toastrService.success(res.message, 'Enrolled');
         },
         error: err => {
+          console.log(err.error);
           if (err.error.rollNoErr) this._toastrService.warning('Enrollment number already exsists');
+          if (err.error.openBatchErr) this._toastrService.warning(`A ${err.error.openBatchCategory} batch at ${err.error.openBatchLocation} already exsists on ${this.getFormatedDate(err.error.openBatchDate)}`);
         }
       })
   

@@ -40,7 +40,7 @@
 
 .btn-xs,
  .btn-group-xs > .btn {
-   --bs-btn-padding-y: 0.175rem;
+   --bs-btn-padding-y: 0.1rem;
    --bs-btn-padding-x: 0.35rem;
    --bs-btn-font-size: 0.55rem;
    --bs-btn-border-radius: var(--bs-border-radius-sm);
@@ -56,8 +56,8 @@
 
  .form-control-xs {
    min-height: calc(1.2em + 0.4rem + calc(var(--bs-border-width) * 2));
-   padding: 0.20rem 0.4rem;
-   font-size: 0.7rem;
+   padding: 0.175rem 0.35rem;
+   font-size: 0.625rem;
    border-radius: var(--bs-border-radius-sm);
  }
  .form-control-xs::-webkit-file-upload-button {
