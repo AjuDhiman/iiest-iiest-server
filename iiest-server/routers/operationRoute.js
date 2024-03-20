@@ -5,7 +5,7 @@ const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEn
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
 const { fostacDocuments } = require('../config/storage');
-const { trainingBatch, getTrainingBatchData } = require('../controllers/trainingControllers/trainingBatch');
+const { trainingBatch, getTrainingBatchData, updateBatch } = require('../controllers/trainingControllers/trainingBatch');
 
 const router = express.Router();
 
@@ -21,7 +21,6 @@ router.post('/fostacenrollment/:verifieddataid', authMiddleware, fostacEnrollmen
 router.get('/getfostacenrolleddata/:verifieddataid', authMiddleware, getFostacEnrolledData); // route for getting if a person is enrolled or not if enrolled then getting it's data
 router.post('/postopergendata/:recipientid', authMiddleware, postGenOperData);//route for adding data in genral section of operation form
 router.get('/getopergensecdata/:recipientid', authMiddleware, getGenOperData); // route for getting if a person general sec data in operation form
-// router.put('/updateopergensecdata/:recipientid', authMiddleware, updateGenOperData); // route for updating person's general sec data in operation form
 router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route for getting audit logs history of a particular recipient
 module.exports = router;
 router.post('/closeticket/:recipientid', authMiddleware,fostacDocuments.single('certificate'), ticketDelivery);
@@ -31,3 +30,4 @@ router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliv
 router.post('/fostacattendance/:enrolleddataid', authMiddleware, fostacAttendance)
 router.get('/getfostacattendata/:enrolleddataid', authMiddleware, getFostacAttenData); 
 router.get('/getbatchlistdata', authMiddleware, getTrainingBatchData) // route for getting batch list data
+router.put('/updatetraingbatch', updateBatch) // route for updating batch list data

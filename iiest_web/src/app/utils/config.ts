@@ -121,7 +121,7 @@ export const batchListRoles = [
 export const delhiTrainingLocations = [
    "Delhi",
    "Noida",
-   "Gurugram"
+   "Gurgaon"
 ]
 
 export const salesOfficersRoles = [
@@ -144,6 +144,41 @@ export const HrRoles = [
    'HR Coordinator',
    'Junior Executive(Admin & HR)',
    ...master_roles
+]
+
+export const foscosDocments = [
+   'FSMS Certificate',
+   'List of Directors', 
+   'List of Partners',
+   'List of Propraitors',
+   'Partnership Deed',
+   'NOC', //in case if rent aggrement is not on propraitor's name
+   'Self Decleration of Propraitorship',
+   'MOU',
+   'Form IX',
+   'Rent Aggrement',
+   'Pancard',
+   'Water Test Report',
+   'ICE',
+   'Recall Plan',
+   'List of Vehicle Registration Number',
+   'Sale Deed',
+   //for manufacturing KOBs
+   'Blue Print of Proessing Unit',
+   'List of Equipments',
+   'Photograph of Equipments',
+   'NOC From MCD',
+   'NOC From Manufacturer',
+   'Source of Raw Matireal',
+   'Others'
+]
+
+export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name: 'FSMS Cerificate',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   }
 ]
 
 // export const ourHolidays: any = [

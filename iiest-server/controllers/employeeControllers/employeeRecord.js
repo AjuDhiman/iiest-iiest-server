@@ -297,6 +297,11 @@ exports.employeeRecord = async (req, res) => {
                     pendingSales: 0,
                     approvedSales: 0
                 },
+                prev_month: {
+                    totalSales: 0,
+                    pendingSales: 0,
+                    approvedSales: 0
+                },
                 this_month: {
                     totalSales: 0,
                     pendingSales: 0,

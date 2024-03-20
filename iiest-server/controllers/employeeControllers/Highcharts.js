@@ -1,4 +1,5 @@
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
+const fboModel = require("../../models/fboModels/fboSchema");
 
 //api for product sales highchart
 exports.getProductSaleData = async (req, res) => {
@@ -536,4 +537,58 @@ function changeId(month) {
     updatedMonth = (month + 3) % 12;
 
     return updatedMonth
+}
+
+//api for sare wise sales highcharts
+exports.getAreaWiseFboData = async (req, res) => {
+    try {
+
+        let salesAreaWiseData
+        // if (req.user.designation === 'Director') {
+            salesAreaWiseData = await fboModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'employee_sales',
+                        localField: '_id',
+                        foreignField: 'fboInfo',
+                        as: 'sales'
+                    }
+                },
+                {
+                    $group: {
+                        _id: { state: "$state", district: "$district"},
+                        stateCount: { $sum: 1 },
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.state",
+                        stateCount: { $sum: "$stateCount" },
+                        districts: {
+                            $push: {
+                                name: "$_id.district",
+                                value: "$stateCount"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: "$_id",
+                        value: "$stateCount",
+                        categories: "$districts"
+                    }
+                },
+                {
+                    $sort: { "name": 1 }
+                }
+            ]);
+        // } 
+
+        res.status(200).json(salesAreaWiseData);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
 }

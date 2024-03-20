@@ -62,17 +62,11 @@ exports.foscosVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
-        const shopInfo = await shopModel.findOne({ _id: shopID }).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] });
+        const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
 
-        const fsmsCertificate = await generateFsms(verifiedData, shopInfo);
+        const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category });
 
-        const selfDecOProp = await generateSelfDecOProp(verifiedData, shopInfo);
-
-        const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, food_items, operator_address, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
-
-        const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address, fsmsCertificate: fsmsCertificate, selfDecOProp: selfDecOProp });
-
-        //this code is for tracking the CRUD operation regarding to a recipient
+        //this code is for tracking the CRUD operation regarding to a shop
 
         const prevVal = {}
 
@@ -158,6 +152,11 @@ exports.fostacEnrollment = async (req, res, next) => {
                 path: 'recipientInfo',
                 populate: {
                     path: 'salesInfo',
+                    populate: [
+                        {
+                            path: 'fboInfo'
+                        }
+                    ]
                 }
             });
 
@@ -189,7 +188,8 @@ exports.fostacEnrollment = async (req, res, next) => {
 
         if (enrollRecipient) {
             success = true;
-            req.enrollRecipient = {...enrollRecipient, verificationInfo: verifiedData };
+            req.enrollRecipient = enrollRecipient;
+            req.verificationInfo = verifiedData;
             return next();
         }
 

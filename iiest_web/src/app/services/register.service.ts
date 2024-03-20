@@ -102,6 +102,20 @@ export class RegisterService {
     const url = `${this.url}/login`;
     return this.http.post<any>(url, loginemployee).pipe(catchError(this.handleError));
   } 
+
+  public forgotPassword(email: string): Observable<any> {
+    const endpoint = `${this.url}/forgot-password`;
+    return this.http.post<any>(endpoint, { email }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public resetPassword( username : string, email: string, temporaryPassword: string, newPassword: string): Observable<any> {
+    const endpoint = `${this.url}/reset-password`;
+    return this.http.post<any>(endpoint, { username, email, temporaryPassword, newPassword }).pipe(
+      catchError(this.handleError)
+    );
+  }
   
   public deleteFbo(id: string, deletedBy: string): Observable<any> {
     const url = `${this.url}/deleteFbo/${id}`;
@@ -184,6 +198,14 @@ export class RegisterService {
       catchError(
         this.handleError
     ));
+  }
+
+  //for training batch
+  public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{
+    console.log(objId, editedData);
+    const url = `${this.url}/updatetraingbatch`;
+    console.log(url);
+    return this.http.put<any>(url, editedData).pipe(catchError(this.handleError));
   }
 
   public existingFboPayPage(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {

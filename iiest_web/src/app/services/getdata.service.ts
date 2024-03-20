@@ -210,6 +210,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getAreaWiseFboData(): Observable<any> { // for getting batchlist data from training
+    const url: string = `${this.url}/getareawisefbo`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   private handleError(err: HttpErrorResponse): Observable<never> {
     // just a test ... more could would go here
     return throwError(() => err);
