@@ -101,12 +101,18 @@ export class UserAccountComponent {
 
   changeImage($event:any){
     let image = $event.target.files[0];
+    const fileExt = $event.target.files[0].name;
+    const fileExtension = fileExt.split('.').pop()?.toLowerCase();
 
     if(image){
       let reader:FileReader = new FileReader()
       reader.onload = (e: any) => {
         // Set the image source to the base64 data URL
-        this.selectedImage = e.target.result;
+        if(fileExtension == "png" || fileExtension == "jpg" || fileExtension == "jpeg") {
+          this.selectedImage = e.target.result;
+        } else {
+          alert("Only .png, .jpg, .jpeg are allowed");
+        }
       };
       // Read the selected image as a data URL
       reader.readAsDataURL(image);

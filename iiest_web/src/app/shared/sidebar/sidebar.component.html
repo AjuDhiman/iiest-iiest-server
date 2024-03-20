@@ -4,7 +4,7 @@
         [ngClass]="isSidebarVisible? 'sidepanel-inner-visible' : 'sidepanel-inner-hidden'">
         <a id="sidepanel-close" (click)="sideBarToggleValue()" class="sidepanel-close d-xl-none">&times;</a>
         <div class="app-branding">
-            <a class="app-logo" [routerLink]="['/main']">
+            <a class="app-logo" [routerLink]="['/home']">
                 <img class="logo-icon me-2" [src]="userImage" alt="logo">
                 <span *ngIf="userData;" class="logo-text">{{ userData.employee_name
                     }}<span>{{userData.designation}}</span></span>
