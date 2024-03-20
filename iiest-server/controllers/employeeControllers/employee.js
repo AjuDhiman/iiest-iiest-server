@@ -12,6 +12,7 @@ const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
 
+
 exports.employeeRegister = async (req, res) => {
     try {
         const signature = req.files['empSignature'];
@@ -156,6 +157,83 @@ exports.employeeLogin = async (req, res) => {
         console.error(error);
         success = false;
         return res.status(500).json({ success, message: "Internal Server Error" });
+    }
+}
+function generateTemporaryPassword() {
+    // Generate a temporary password 
+    return Math.random().toString(36).slice(-8); 
+}
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await employeeSchema.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Generate temporary password
+        const temporaryPassword = generateTemporaryPassword();
+
+        // Hash temporary password
+        const hashedTemporaryPassword = await bcrypt.hash(temporaryPassword, 10);
+
+        user.temporaryPassword = hashedTemporaryPassword;
+
+        await user.save();
+
+        console.log('Temporary password sent successfully:', temporaryPassword);
+
+        // Set timeout to clear temporary password after 10 minutes
+        setTimeout(async () => {
+            user.temporaryPassword = null;
+            await user.save();
+            console.log('Temporary password cleared after 10 minutes');
+        }, 10 * 60 * 1000);
+
+        // Return success message and temporary password to the client
+        return res.status(200).json({ success: true, message: 'Temporary password sent successfully', temporaryPassword });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { username, email, temporaryPassword, newPassword } = req.body;
+
+        // Find employee by email
+        const user = await employeeSchema.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Check if the provided username matches the user's username
+        if (user.username !== username) {
+            return res.status(401).json({ success: false, message: 'Username is incorrect' });
+        }
+
+        // Compare temporary password
+        const passwordMatch = await bcrypt.compare(temporaryPassword, user.temporaryPassword);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ success: false, message: 'Temporary password is incorrect' });
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update employee's password and clear temporary password
+        user.password = hashedNewPassword;
+        user.temporaryPassword = null; 
+        await user.save();
+
+        return res.status(200).json({ success: true, message: 'Password reset successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
 
