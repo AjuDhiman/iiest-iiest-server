@@ -100,25 +100,11 @@ exports.addShop = async (req, res) => {
             return res.status(401).json({ success, shopPhotoErr: true })
         }
 
-        let state;
-        let district;
+        const {state, district} = await readPincodeFile(pincode);
 
-        let invalidPincode = true;
-        // Asynchronously read the file
-        await fs.readFile('./assets/pincodes.json','utf8', (err,data) => {
-            let pincodeData = JSON.parse(data);
-            for (let i = 0; i < pincodeData.length; i++) {
-            if (pincodeData[i].Pincode == pincode) {
-                invalidPincode = false;
-                console.log(pincodeData[i]);
-                state = pincodeData[i].State;
-                district = pincodeData[i].District;
-                break; // Exit loop once found
-            }
-        }
-        });
+        console.log(state, district);
 
-        if(invalidPincode){
+        if(state == '' && district == ''){
            res.status(401).json({success: false, pincodeErr: true, message:'Pincode Not Found'}) 
         }
 
@@ -293,3 +279,46 @@ exports.uploadShopPhoto = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+
+//function for reading pincode file and extracting state and didtrict from that file
+async function readPincodeFile(pincode) {
+    return new Promise((resolve, reject) => {
+        fs.readFile('./assets/pincodes.json', 'utf8', async (err, data) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            let pincodeData = JSON.parse(data);
+            let state, district;
+            let invalidPincode = true;
+
+            for (let i = 0; i < pincodeData.length; i++) {
+                if (pincodeData[i].Pincode == pincode) {
+                    invalidPincode = false;
+                    console.log(pincodeData[i]);
+                    state = pincodeData[i].State;
+                    district = pincodeData[i].District;
+                    break; // Exit loop once found
+                }
+            }
+
+            if (invalidPincode) {
+                reject("Invalid pincode");
+                return;
+            }
+
+            resolve({ state, district });
+        });
+    });
+}
+
+// async function main() {
+//     try {
+//         const { state, district } = await readPincodeFile(/* put your pincode here */);
+//         console.log(state, district);
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
