@@ -1,97 +1,154 @@
 <form [formGroup]="form" (ngSubmit)="loginForm()">
-<div class="modal-header bg-secondary">
-    <h6 class="modal-title text-white" id="modal-basic-title">Login form</h6>
-    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
-</div>
-<div *ngIf="error" class="alert alert-danger m-2" role="alert">
-    {{errorMgs}}
-  </div>
-<div class="modal-body">
-    <div class="mb-3">
-        <label for="username">Username</label>
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <fa-icon [icon]="fauser"></fa-icon>
-                </span>
-              </div>
-            <input
-                type="text"
-                id="username"
-                class="form-control form-control-sm"
-                placeholder="Username"
-                formControlName="username"
-                name="username"
-                [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"/>
+    <div class="modal-header bg-secondary">
+        <h6 class="modal-title text-white" id="modal-basic-title">Login form</h6>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close"
+            (click)="activeModal.dismiss()"></button>
+    </div>
+    <div *ngIf="error" class="alert alert-danger m-2" role="alert">
+        {{errorMgs}}
+    </div>
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="username">Username</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <fa-icon [icon]="fauser"></fa-icon>
+                    </span>
+                </div>
+                <input type="text" id="username" class="form-control form-control-sm" placeholder="Username"
+                    formControlName="username" name="username"
+                    [ngClass]="{ 'is-invalid': submitted && f['username'].errors }" />
                 <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
                     <div *ngIf="f['username'].errors['required']">Username is required</div>
                 </div>
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <label for="password">Password</label>
-        
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <fa-icon [icon]="falock"></fa-icon>
-                </span>
-              </div>
-            <input
-                type="password"
-                id="password"
-                class="form-control form-control-sm"
-                placeholder="Password"
-                formControlName="password"
-                name="password"
-                [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"/>
+        <div class="mb-3">
+            <label for="password">Password</label>
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <fa-icon [icon]="falock"></fa-icon>
+                    </span>
+                </div>
+                <input type="password" id="password" class="form-control form-control-sm" placeholder="Password"
+                    formControlName="password" name="password"
+                    [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" />
                 <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
                     <div *ngIf="f['password'].errors['required']">Password is required</div>
                 </div>
+            </div>
         </div>
     </div>
-</div>
-<div class="modal-footer text-left">
-    <button type="submit" class="btn btn-outline-dark">Login</button>
-    <a style="cursor: pointer;" (click)="openFpModal(fp)">Forgot Password?</a>
-</div>
+    <div class="modal-footer text-left">
+        <button type="submit" class="btn btn-outline-dark">Login</button>
+        <a style="cursor: pointer;" (click)="openFpModal(fp)">Forgot Password?</a>
+    </div>
 </form>
 
 <!--Forgot Password-->
 <ng-template #fp let-modal>
-    <form [formGroup]="formFp" (ngSubmit)="resetPassword()">
-    <div class="modal-content text-center">
-        <div class="modal-header bg-secondary">
-            <h6 class="modal-title text-white" id="modal-basic-title">Password Reset</h6>
-            <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="modal.close('Save click')"></button>
-        </div>
-        <div class="modal-body px-5">
-            <p class="py-2">
-                Enter your email address and we'll send you an email with instructions to reset your password.
-            </p>
-            <div class="form-outline mb-3">
-               <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">
-                        <fa-icon [icon]="faenvelope"></fa-icon>
-                    </span>
-                </div>
-                <input
-                    type="email"
-                    id="email"
-                    class="form-control form-control-sm"
-                    placeholder="Email"
-                    formControlName="email"
-                    name="email"
-                    [ngClass]="{ 'is-invalid': submittedFP && forgotPass['email'].errors }"/>
-                    <div *ngIf="submittedFP && forgotPass['email'].errors" class="invalid-feedback">
-                        <div class="text-start" *ngIf="forgotPass['email'].errors['required']">Email is required</div>
-                        <div class="text-start" *ngIf="forgotPass['email'].errors['email']">Email is invalid</div>
-                    </div>
-                </div>               
+    <form [formGroup]="formFp" (ngSubmit)="resetPassword(newPasswordModal)">
+        <div class="modal-content text-center">
+            <div class="modal-header bg-secondary">
+                <h6 class="modal-title text-white" id="modal-basic-title">Password Reset</h6>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close"
+                    (click)="modal.close('Save click')"></button>
             </div>
-            <button type="submit" class="btn btn-primary w-50">Reset password</button>
+            <div class="modal-body px-5">
+                <p class="py-2">
+                    Enter your email address and we'll send you an email with instructions to reset your password.
+                </p>
+                <div class="form-outline mb-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <fa-icon [icon]="faenvelope"></fa-icon>
+                            </span>
+                        </div>
+                        <input type="email" id="email" class="form-control form-control-sm" placeholder="Email"
+                            formControlName="email" name="email"
+                            [ngClass]="{ 'is-invalid': submittedFP && forgotPass['email'].errors }" />
+                        <div *ngIf="submittedFP && forgotPass['email'].errors" class="invalid-feedback">
+                            <div class="text-start" *ngIf="forgotPass['email'].errors['required']">Email is required
+                            </div>
+                            <div class="text-start" *ngIf="forgotPass['email'].errors['email']">Email is invalid</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-50">Reset password</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</ng-template>
+
+<!-- New Password Modal -->
+<ng-template #newPasswordModal let-modal>
+    <form [formGroup]="formNewPassword" (ngSubmit)="setNewPassword()">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h5 class="modal-title text-white" id="modal-basic-title">Set New Password</h5>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close"
+                    (click)="modal.dismiss('Save click')"></button>
+            </div>
+            <div class="modal-body px-5">
+                <p class="py-2">Please enter your temporary password received via email and enter your new password.</p>
+            <!----   <div *ngIf="temporaryPassword" class="mb-3">
+                    <p><strong>Temporary Password:</strong> {{ temporaryPassword }}</p>
+                </div>-->
+
+                   <!-- Username Field -->
+                   <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Username"
+                        formControlName="username"
+                        [ngClass]="{ 'is-invalid': submittedFP && fnp['username'].errors }" />
+                    <div *ngIf="submittedFP && fnp['username'].errors" class="invalid-feedback">
+                        <div *ngIf="fnp['username'].errors['required']">Username is required</div>
+                    </div>
+                </div>
+               <!---  Temporary Password Field -->
+                <div class="mb-3">
+                    <label for="temporaryPassword">Temporary Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="temporaryPassword"
+                            placeholder="Temporary Password" formControlName="temporaryPassword"
+                            [ngClass]="{ 'is-invalid': submittedFP && fnp['temporaryPassword'].errors }" />
+                    </div>
+                    <div *ngIf="submittedFP && fnp['temporaryPassword'].errors" class="invalid-feedback">
+                        <div *ngIf="fnp['temporaryPassword'].errors['required']">Temporary Password is required</div>
+                    </div>
+                </div>
+                <!-- New Password Field -->
+                <div class="mb-3">
+                    <label for="newPassword">New Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="newPassword" placeholder="New Password"
+                            formControlName="newPassword"
+                            [ngClass]="{ 'is-invalid': submittedFP && fnp['newPassword'].errors }" />
+                    </div>
+                    <div *ngIf="submittedFP && fnp['newPassword'].errors" class="invalid-feedback">
+                        <div *ngIf="fnp['newPassword'].errors['required']">New Password is required</div>
+                       <!-- <div *ngIf="fnp['newPassword'].errors['invalidPassword']">New Password must contain at least one letter and one symbol</div> -->
+                    </div>
+                </div>
+                <!-- Confirm Password Field -->
+                <div class="mb-3">
+                    <label for="confirmPassword ">Confirm New Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password"
+                            formControlName="confirmPassword"
+                            [ngClass]="{ 'is-invalid': submittedFP && fnp['confirmPassword'].errors }" />
+                    </div>
+                    <div *ngIf="submittedFP && fnp['confirmPassword'].errors" class="invalid-feedback">
+                        <div *ngIf="fnp['confirmPassword'].errors['required']">Confirm Password is required</div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Set New Password</button>
+                <!--<button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Close</button>-->
+            </div>
+        </div>
+    </form>
 </ng-template>

@@ -27,45 +27,8 @@
                                         Retail
                                     </button>
                                 </div>
-                                <!-- <div class="col-auto">
-                                <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber"
-                                    (click)="pageNumber=1">
-                                    <option value=10>10</option>
-                                    <option value=25 selected>25</option>
-                                    <option value=50>50</option>
-                                    <option value=100>100</option>
-    
-                                </select>
-                            </div> -->
-                                <!-- <div class="col-auto">
-                                <form class="form">
-                                    <div class="input-group">
-                                        <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
-                                            style="position: absolute; padding: 9px 10px;"
-                                            [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
-                                    </div>
-                                    <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
-                                        class="form-control form-control-sm search-orders" (input)="onSearchChange()">
-                                </form>
-                            </div> -->
-                                <!-- <div class="col-auto">
-                                <select class="form-select form-select-sm w-auto cursor-pointer"
-                                    [(ngModel)]="selectedFilter">
-                                    <option *ngIf="panelType=='Fostac Panel'" value="byRecipientName" selected>Search by
-                                        Recipient Name</option>
-                                    <option *ngIf="panelType=='Foscos Panel'" value="byOperatorName" selected>Search by
-                                        Operator Name</option>
-                                    <option value="byFboName">Search by Fbo Name</option>
-                                    <option value="byOwnerName">Search by Owner Name</option>
-                                    <option value="byContact">Search by Contact no.</option>
-                                    <option value="byState">Search by State</option>
-                                </select>
-                            </div> -->
-                                <!-- <div class="col-auto">
-                                <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer"
-                                    style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"
-                                    title="Export as CSV"></fa-icon>
-                            </div> -->
+                              
+                                
                             </div>
                         </div>
                     </div>
@@ -75,7 +38,7 @@
                     <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
                         aria-labelledby="orders-all-tab">
                         <div class="app-card app-card-orders-table shadow-sm mb-5">
-                            <div class="app-card-body">
+                            <form class="app-card-body" [formGroup]="updationForm" (submit)="onSubmit($event)">
                                 <div class="table-responsive">
                                     <table class="table app-table-hover table-striped mb-0 text-left"
                                         id="data-to-export">
@@ -91,25 +54,28 @@
                                                 <th class="cell">View</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr class="list-tr"
-                                                *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
-                                                <td class="cell"><span
+                                        <tbody class="accordion accordion-flush">
+                                            <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index"
+                                                class="list-tr accordion-header">
+                                                <td class="cell col-1"><span
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                                                <td class="cell"><span class="truncate"
+                                                <td class="cell col-1"><span class="truncate"
                                                         title="View Case">{{batch.batchCode}}</span></td>
-                                                <td class="cell"><span class="truncate">{{batch.candidateNo}}</span>
+                                                <td class="cell col-2"><span class="truncate">{{batch.candidateNo}}</span>
                                                 </td>
-                                                <td class="cell"><span class="truncate">{{batch.status}}</span>
+                                                <td class="cell col-1"><span class="truncate">{{batch.status}}</span>
                                                 </td>
-                                                <td class="cell"><span class="truncate">{{batch.status}}</span>
+                                                <td class="cell col-2"><span class="truncate">{{batch.location}} <br>
+                                                </span>
                                                 </td>
-                                                <td class="cell"><span class="truncate">
-                                                        <input type="datetime-local" class="form-control form-control-xs" [readOnly]="!editMode">
+                                                <td class="cell col-2"><span class="truncate">
+                                                    {{!editMode?getFormatedDate(batch.trainingDate):''}}
+                                                        <input *ngIf="editMode" type="date" [formControlName]="'training_date' + batch._id" class="form-control form-control-xs">
                                                     </span>
                                                 </td>
-                                                <td class="cell"><span class="truncate">
-                                                        <select name="" id="" class="form-select form-select-xs" [disabled]="!editMode">
+                                                <td class="cell col-2"><span class="truncate">
+                                                        {{!editMode?batch.trainer?batch.trainer:'N/A':''}}
+                                                        <select *ngIf="editMode" name="" class="form-select form-select-xs"  [formControlName]="'trainer' + batch._id">
                                                             <option value="" disabled selected>Select Trainer</option>
                                                         </select>
                                                     </span>
@@ -117,13 +83,48 @@
                                                 <td class="cell"><span class="truncate">
                                                         <fa-icon class="text-primary selector" [icon]="faEye"
                                                             (click)="showCaseList(batch.candidateDetails)"></fa-icon>
-                                                        <fa-icon *ngIf="!editMode" class="text-primary selector px-2" [icon]="faPen"
-                                                        (click)="editMode = true"></fa-icon>
-                                                        <fa-icon *ngIf="editMode" class="text-primary selector px-2" [icon]="faSave"
-                                                        (click)="editMode = false"></fa-icon>
+                                                        <fa-icon *ngIf="!editMode && batch.status !== 'Trained'" class="text-primary selector px-2"
+                                                            [icon]="faPen" (click)="openEditMode(batch._id)"></fa-icon>
+                                                        <button *ngIf="editMode" [id]="batch._id" class="btn mx-2 btn-primary btn-xs">save</button>
                                                     </span>
                                                 </td>
                                             </tr>
+                                            <!-- <div class=""> -->
+                                            <!-- <tr class="accordion-collapse" [ngClass]="{'collapse': editMode}" autocomplete="off" id="one"
+                                                [formGroup]="updationForm" (onSubmit)="editMode=true"
+                                                aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                                <td class="cell"><span class="truncate">33</span></td>
+                                                <td class="cell"><span class="truncate" title="View Case">33</span></td>
+                                                <td class="cell"><span class="truncate">22</span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">22</span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">12</span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">
+                                                    <div class="">
+                                                        <input type="datetime-local" class="form-control form-control-xs" formControlName="training_date">
+                                                    </div>
+                                                        
+                                                    </span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">
+                                                      \
+                                                    </span>
+                                                </td>
+                                                <td class="cell"><span class="truncate">
+                                                        <button class="btn btn-primary btn-sm" (click)="onSubmit()">save</button>
+                                                    </span>
+                                                </td>
+                                            </tr> -->
+                                            
+                                            <!-- </div> -->
+                                            <!-- <div id="flush-collapseOne" class="accordion-collapse"
+                                                aria-labelledby="flush-headingOne"
+                                                data-bs-parent="#accordionFlushExample"> -->
+
+                                            <!-- </div> -->
+
                                         </tbody>
                                         <tbody *ngIf="!filteredData || filteredData.length===0">
                                             <tr>
@@ -135,7 +136,7 @@
                                     </table>
                                 </div><!--//table-responsive-->
 
-                            </div><!--//app-card-body-->
+                            </form><!--//app-card-body-->
                         </div><!--//app-card-->
 
                         <div class="d-flex" *ngIf="showPagination"

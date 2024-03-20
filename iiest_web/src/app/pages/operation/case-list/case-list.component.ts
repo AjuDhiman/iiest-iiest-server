@@ -188,9 +188,13 @@ export class CaseListComponent implements OnInit {
     console.log(state);
     if (state && state.forTraining) {
       this.forTraining = state.forTraining;
-      this.typeData = state.batchData.map((item: any) => item.verificationInfo.recipientInfo);
+      this.typeData = state.batchData.map((item: any) => {
+        return {...item.verificationInfo.recipientInfo, enrollment_no: item.roll_no}
+      });
+      this.totalCount = this.typeData.length
       this.filter();
-      console.log(this.forTraining)
+      console.log(this.forTraining);
+      this.loading = false;
     }
   }
 
