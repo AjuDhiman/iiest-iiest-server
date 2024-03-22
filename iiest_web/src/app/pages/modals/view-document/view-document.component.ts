@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -6,12 +6,13 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './view-document.component.html',
   styleUrls: ['./view-document.component.scss']
 })
-export class ViewDocumentComponent {
+export class ViewDocumentComponent implements OnInit {
 
-  src: string = '';
+  doc: any;
 
-  constructor(public activeModal: NgbActiveModal
-    ) {
-      
-    }
+  constructor(public activeModal: NgbActiveModal) {
+
+  }
+  ngOnInit(): void {
+  }
 }

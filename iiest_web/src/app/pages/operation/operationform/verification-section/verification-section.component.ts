@@ -171,7 +171,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
             this.refreshAuditLog.emit();
-            this._toastrService.success('Resipient\'s information is Verified', 'Verified');
+            this._toastrService.success('Recipient\'s Information is Verified', 'Verified');
           }
         },
         error: err => {
@@ -188,7 +188,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
             this.refreshAuditLog.emit();
-            this._toastrService.success('Shop\'s information is Verified', 'Verified');
+            this._toastrService.success('Shop\'s Information is Verified', 'Verified');
           }
         }
       });
