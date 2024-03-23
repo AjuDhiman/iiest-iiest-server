@@ -171,6 +171,55 @@ export const foscosDocments = [
    'NOC From Manufacturer',
    'Source of Raw Matireal',
    'Others'
+];
+
+export const propratitorDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name: 'List of Propraitors',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Self Decleration of Propraitorship',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   }
+]
+
+export const partnershipDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name: 'List of Partnership',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Partnership Deed',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'FORM IX',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   }
+]
+
+export const boardODirectorDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name: 'List of Directors',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'MOU',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'FORM IX',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   }
 ]
 
 export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
@@ -179,17 +228,34 @@ export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutip
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
    }
+];
+
+export const manufacturingDoc: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name: 'Blue Print of Proessing Unit',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'List of Equipments',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Recall Plan',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Water Test Report', //if 
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   }
 ]
 
-// export const ourHolidays: any = [
-//    { date: '2024-01-25T08:12:11.000Z', name: 'public holiday' },
-//    { date: '2024-01-26T08:12:11.000Z', name: 'republic day' }
-// ]
-
 export const ourHolidays: Array<{ date: string, name: string }> = [
-   { date: '2024-01-25', name: 'public holiday' },
-   { date: '2024-01-26', name: 'republic day' },
-   { date: '2024-01-30', name: 'republic day' },
+   { date: '2024-01-26', name: 'Republic Day' },
+   { date: '2024-03-08', name: 'Mahashivratri' },
    { date: '2024-01-31', name: 'republic day' },
    { date: '2024-02-01', name: 'republic day' },
    { date: '2024-02-02', name: 'republic day' },

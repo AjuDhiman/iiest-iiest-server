@@ -4,8 +4,9 @@ const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/op
 const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData, foscosVerification, getFoscosVerifiedData } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
-const { fostacDocuments } = require('../config/storage');
+const { fostacDocuments, foscosDocuments } = require('../config/storage');
 const { trainingBatch, getTrainingBatchData, updateBatch } = require('../controllers/trainingControllers/trainingBatch');
+const { saveDocument, getDocList } = require('../controllers/operationControllers/documents');
 
 const router = express.Router();
 
@@ -25,6 +26,8 @@ router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route
 module.exports = router;
 router.post('/closeticket/:recipientid', authMiddleware,fostacDocuments.single('certificate'), ticketDelivery);
 router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliveryData)// route for getting ticket delivery data for a customer
+router.post('/savedocuments/:id', authMiddleware,  foscosDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
+router.get('/getdocs/:id', authMiddleware, getDocList);
 
 //routes for trainer
 router.post('/fostacattendance/:enrolleddataid', authMiddleware, fostacAttendance)

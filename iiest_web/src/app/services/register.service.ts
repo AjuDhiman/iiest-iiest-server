@@ -169,6 +169,7 @@ export class RegisterService {
   }
 
   public verifyFoscos(shopId: string, formInterface: foscosVerification){
+    console.log(formInterface);
     const url = `${this.url}/foscosverification/${shopId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
@@ -194,6 +195,15 @@ export class RegisterService {
 
   public submitAttenSec(enrId: string, formInterface: fostacAttendance){ // this service helps on posting data related to recipient attendance
     const url = `${this.url}/fostacattendance/${enrId}`
+       return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public saveDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savedocuments/${objId}`
+    console.log(objId, formInterface);
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
@@ -202,7 +212,6 @@ export class RegisterService {
 
   //for training batch
   public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{
-    console.log(objId, editedData);
     const url = `${this.url}/updatetraingbatch`;
     console.log(url);
     return this.http.put<any>(url, editedData).pipe(catchError(this.handleError));

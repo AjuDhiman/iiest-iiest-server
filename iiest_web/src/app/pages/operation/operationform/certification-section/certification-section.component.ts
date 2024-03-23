@@ -32,6 +32,8 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   resultIcon: IconDefinition = faCircleExclamation;
   ticketClosingDate: string = '';
 
+  formHeading: string = '';
+
   //booleans
   isBtnDisble: boolean = false;
   ticketClosed: boolean = false;
@@ -82,6 +84,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     });
 
     this.getTicketDiliverydata();
+    this.setFormHeading();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -244,6 +247,19 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       formattedDate = `${day}-${month}-${year}`;
     }
     return formattedDate;
+  }
+
+  setFormHeading(): void {
+    switch(this.projectType) {
+      case 'Fostac': 
+        this.formHeading = 'Certification';
+        break;
+      case 'Foscos': 
+        this.formHeading = 'Licensing';
+        break;
+      default: 
+        this.formHeading = '';
+    }
   }
 
 

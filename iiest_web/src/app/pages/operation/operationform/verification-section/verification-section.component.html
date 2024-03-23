@@ -473,9 +473,9 @@
 
     <div class="col-md-3">
       <label for="ownership_type" class="form-label select-label">Ownership Type</label><sup>*</sup>
-      <select id="ownership_type" [ngClass]="{ 'is-invalid': verified && verificationform['ownership_type'].errors }"
-        formControlName="ownership_type" (change)="onOwnershipTypeChanges($event)"
-        class="form-select form-select-sm cursor-pointer">
+      <select id="ownership_type"  formControlName="ownership_type"  (change)="onOwnershipTypeChanges($event)"
+       [ngClass]="{ 'is-invalid': verified && verificationform['ownership_type'].errors }"
+        class="form-select form-select-sm cursor-pointer" [attr.disabled]="verifiedStatus">
         <option value="" disabled selected>Select the Ownership Type</option>
         <option *ngFor="let type of ownershipType" [value]="type" style="text-transform: capitalize;">{{type}}</option>
       </select>
@@ -485,23 +485,21 @@
     </div>
 
     <div class="col-md-3">
-      <label for="owner_num" class="form-label">No. of Owners</label><sup>*</sup>
-      <input type="number" placeholder="No. of Owners" formControlName="owner_num"
-        class="form-control form-control-sm" id="owner_num" [readOnly]="true"
-        [ngClass]="{ 'is-invalid': verified && verificationform['owner_num'].errors }">
-      <div *ngIf="verified && verificationform['owner_num'].errors" class="invalid-feedback">
-        <div *ngIf="verificationform['owner_num'].errors['required']">No. of Owners is required</div>
+      <label for="owners_num" class="form-label">No. of Owners</label><sup>*</sup>
+      <input type="number" placeholder="No. of Owners" formControlName="owners_num"
+        class="form-control form-control-sm" id="owners_num" [readOnly]="verifiedStatus" (change)="onOwnersNumChange($event)"
+        [ngClass]="{ 'is-invalid': verified && verificationform['owners_num'].errors }">
+      <div *ngIf="verified && verificationform['owners_num'].errors" class="invalid-feedback">
+        <div *ngIf="verificationform['owners_num'].errors['required']">No. of Owners is required</div>
       </div>
     </div>
   </div>
 
   <div class="row mt-3">
     <div class="col-6">
-      <button type="submit" class="btn btn-sm btn-primary">Verify</button>
+      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus">Verify</button>
       <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please check all checkable
         fields before verifying)</span>
     </div>
   </div>
 </form>
-
-<ng-container></ng-container>

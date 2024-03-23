@@ -19,22 +19,14 @@ const foscosDocumentsStorage = multer.diskStorage({
     cb(null, 'documents/foscos');
   },
   filename: function (req, file, cb) {
-    cb(null, new Date().getTime() + '_' + file.fieldname + '.jpg');
+    cb(null, new Date().getTime() + '_' + file.fieldname + '.' + getExtention(file.originalname));
   }
 });
 
 const foscosDocuments = multer({ storage: foscosDocumentsStorage });
 
 function getExtention(fileName){
-  let ext = [];
-  for(let i = fileName.length - 1; i >= 0; i--) {
-    ext.unshift(fileName[i]);
-    if(fileName[i] === '.'){
-      break;
-    }
-  }
-
-  ext = ext.join('');
+  const ext = fileName.toString().split('.').pop();
   return ext
 }
 

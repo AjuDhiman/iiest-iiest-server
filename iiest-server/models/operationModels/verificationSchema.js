@@ -76,7 +76,7 @@ const foscosVerification = new Schema({
         type: String,
         required: true
     },
-    Owners_num: {
+    OwnersNum: {
         type: Number,
         required: true
     }

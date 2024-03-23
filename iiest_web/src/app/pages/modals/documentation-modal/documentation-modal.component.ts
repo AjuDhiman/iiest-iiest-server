@@ -1,8 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IconDefinition, faFilePdf, faTrash, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { GetdataService } from 'src/app/services/getdata.service';
+import { RegisterService } from 'src/app/services/register.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
-import { foscosDocments } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-documentation-modal',
@@ -11,36 +14,146 @@ import { foscosDocments } from 'src/app/utils/config';
 })
 export class DocumentationModalComponent implements OnInit {
 
-  foscosDocuments = foscosDocments
+  lastSelectedDoc: {name: string, allowedFormats: string[], mutipleDoc: boolean} = {name:'',allowedFormats:[] , mutipleDoc: false}; // this var will keep track of prev val of selected doc because we want it to be removed from from group if it deselected
 
-  selectedDoc: string = '';
+  selectedDoc: {name: string, allowedFormats: string[], mutipleDoc: boolean} = {name:'',allowedFormats:[] , mutipleDoc: false};
 
-  docsArr : string[] = [];
+  shopId: string;
 
-  documentsForm: FormGroup = new FormGroup({});
+  docsNameArr : string[] = [];
+
+  docsArr: any = [];
+
+  submitted: boolean = false;
+
+  docList: any = [];
+
+  format: string = '';
+
+  loading: boolean = false;
+
+  faFilePdf: IconDefinition = faFilePdf;
+  faTrash: IconDefinition = faTrash;
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  searchQuery: string = '';
+
+  docFile: File;
+
+  //table vars
+  itemsNumber: number = 5;
+  pageNumber: number = 1;
+  isSearch: boolean = false;
+  selectedFilter: string = 'byName';
+
+  @Output() reloadData: EventEmitter<void> = new EventEmitter<void>;
+
+  documentsForm: FormGroup = new FormGroup({
+  });
 
   @ViewChild(MultiSelectComponent) multiselect: MultiSelectComponent;
 
   constructor(public activeModal: NgbActiveModal,
+    private _registerService: RegisterService,
+    private _getDataService: GetdataService,
+    private _toastrService: ToastrService,
     public formBuilder: FormBuilder) {
 
   }
 
   ngOnInit(): void {
-    this.documentsForm = this.formBuilder.group({});
+    this.documentsForm = this.formBuilder.group({
+    });
   }
 
   onUpload(): void {
+    this.submitted = false;
+    if(this.documentsForm.invalid) {
+      return;
+    }
 
+    if(this.docList.find((item: any) => item.name === this.selectedDoc.name)) {
+      this._toastrService.info(`First delete, then upload`, `${this.selectedDoc.name} already exsists`)
+      return;
+    }
+
+    this.loading = true;
+
+    let formData = new FormData();
+
+    console.log(this.docsArr.find((item: any) => item.name.toString() == this.selectedDoc));
+
+    formData.append('name', this.selectedDoc.name);
+    formData.append('format', this.format);
+    formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
+
+    if(this.selectedDoc.mutipleDoc) {
+      (this.docFile as any).forEach((element: File) => {
+        formData.append('document', element);
+      });
+    } else {
+      formData.append('document', this.docFile);
+    }
+
+    if(this.shopId){
+      this._registerService.saveDocument(this.shopId, formData).subscribe({
+        next: res => {
+          if(res) {
+            this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
+            this.reloadData.emit();
+            this.loading = false;
+          }
+        }
+      });
+    }
+   
   }
 
   getSelectedDoc($event: any): void{ // methord for dynamically add and remove the form control in documents upload form
-    this.selectedDoc = $event.target.value;
+    this.lastSelectedDoc = this.selectedDoc;
+    this.selectedDoc = JSON.parse($event.target.value);
+    this.documentsForm.addControl(this.changeNameFormat(this.selectedDoc.name.toString()), this.formBuilder.control(''));
+    this.documentsForm.removeControl(this.changeNameFormat(this.lastSelectedDoc.name.toString()));
+  }
+
+  onFileUpload($event: any) {
+    if(this.selectedDoc.mutipleDoc){
+      this.docFile = $event.target.files;
+      return;
+    }
+
+    this.docFile = $event.target.files[0];
+    const ext = this.docFile.name.toString().split('.').pop();
+    console.log(ext);
+
+    if(ext === ('png' || 'jpg' || 'jpeg')) {
+      this.format = 'image';
+    } else if (ext === 'pdf') {
+      this.format = 'pdf'
+    }
+
+    console.log(this.format);
   }
 
   changeNameFormat(name:string): string { // this methord replaces " " by "_" in a string
     const updatedString: string = name.split(' ').join('_');
     return updatedString;
+  }
+
+  //table methord
+  onTableDataChange($event: number): void {
+    this.pageNumber = $event;
+  }
+
+  onSearchChange(){
+    if(this.searchQuery) {
+      this.isSearch = true;
+    } else {
+      this.isSearch = false;
+    }
+  }
+
+  onItemNumChange() {
+
   }
 
 }

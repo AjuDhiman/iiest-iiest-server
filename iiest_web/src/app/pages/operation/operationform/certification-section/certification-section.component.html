@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between">
 
         <!-- heading and form status -->
-        <h6>Certification Section</h6>
+        <h6>{{formHeading}} Section</h6>
         <span class="status badge align-self-baseline" style="font-size: x-small;"
             [ngClass]="resultTextClass">
             {{resultText}} 
@@ -60,6 +60,17 @@
         </ng-template>
 
     </div>
+
+    <div *ngIf="projectType==='Foscos'" class="col-md-3">
+        <label class="form-label">License Issue Date</label>
+        <input type="date" class="form-control form-control-sm">
+    </div>
+
+    <div *ngIf="projectType==='Foscos'" class="col-md-3">
+        <label class="form-label">License Expiry Date</label>
+        <input type="date" class="form-control form-control-sm" readOnly />
+    </div>
+
 
     <div class="row mt-3">
         <div class="col-6">

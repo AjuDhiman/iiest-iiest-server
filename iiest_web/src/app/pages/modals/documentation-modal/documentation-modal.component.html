@@ -3,23 +3,26 @@
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
-  <form>
+  <form (submit)="onUpload()" enctype="multipart/form-data">
     <div class="row">
-      <h6>Upload Documents</h6>
+
+      <h6>Upload Documents<span *ngIf="selectedDoc.mutipleDoc" class="text-xs"> (Note<sup>*</sup>: Select multiple
+          document and upload at the same time)</span></h6>
       <div class="col-md-4">
         <label for="food_category" class="form-label">Documents<sup>*</sup></label>
         <select class="form-select form-select-sm" (change)="getSelectedDoc($event)">
           <option value="" disabled selected>Select Doc to Upload</option>
-          <Option *ngFor="let doc of docsArr">{{doc}}</Option>
+          <Option *ngFor="let doc of docsArr" [value]="doc | json">{{doc.name}}</Option>
         </select>
       </div>
 
-      <div class="col-md-4" *ngIf="selectedDoc">
-        <label class="form-label" [for]="changeNameFormat(selectedDoc)">{{selectedDoc}}</label>
-        <input type="file" class="form-control form-control-sm" [id]="changeNameFormat(selectedDoc)" />
+      <div class="col-md-4" *ngIf="selectedDoc.name">
+        <label class="form-label" [for]="changeNameFormat(selectedDoc.name)">{{selectedDoc.name}}</label>
+        <input type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"
+          [id]="changeNameFormat(selectedDoc.name)" (change)="onFileUpload($event)" />
       </div>
 
-      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc">
+      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
         <button type="submit" class="btn btn-sm btn-primary">Upload
         </button>
       </div>
@@ -27,6 +30,102 @@
   </form>
 
   <hr>
+
+  <div class="tab-content " id="orders-table-tab-content">
+    <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+      <div class="row g-3 mb-4 align-items-center justify-content-between">
+        <div class="col-auto">
+          <h6>Document List</h6>
+        </div>
+        <div class="col-auto">
+          <div class="page-utilities">
+            <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+              <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
+                <option value=5 selected>5</option>
+                <option value=10>10</option>
+              </select>
+              <div class="col-auto">
+                <form class="form">
+                  <div class="input-group" title="Search Employee">
+                    <fa-icon [icon]="faMagnifyingGlass" class="fa-sm" style="position: absolute; padding: 9px 10px;"
+                      [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                  </div>
+                  <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                    class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+                </form>
+              </div>
+              <div class="col-auto">
+                <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter"
+                  (change)="onItemNumChange()">
+                  <option value="byName">Search by Name</option>
+                  <option value="byFormat">Search by Format</option>
+                </select>
+              </div>
+              <!-- <div class="col-auto">
+                <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
+                  [icon]="faFileCsv" title="Export as CSV"></fa-icon>
+              </div> -->
+            </div><!--//row-->
+          </div><!--//table-utilities-->
+        </div><!--//col-auto-->
+      </div><!--//row-->
+      <div class="app-card app-card-orders-table shadow-sm mb-5">
+        <div class="app-card-body">
+          <div class="table-responsive">
+            <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+              <thead>
+                <tr>
+                  <th class="cell col-1">S.No</th>
+                  <th class="cell col-3">Document Name</th>
+                  <th class="cell col-3">Format</th>
+                  <th class="cell col-3">Doc</th>
+                  <th class="cell col-2">Action</th>
+                  <!-- <th class="cell col-2">Action</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let doc of docList  | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
+                  <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
+                  <td class="cell"><span class="truncate">{{doc.name}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{doc.format}}</span></td>
+                  <td class="cell"><span class="truncate">
+                      <fa-icon *ngIf="doc.format === 'pdf'" [icon]="faFilePdf"
+                        class="fa-2xl text-success cursor-pointer"></fa-icon>
+                      <img class="cursor-pointers" *ngIf="doc.format === 'image'"
+                        [src]="'http://localhost:3000/' + doc.src" height="30" width="50" alt="">
+                    </span></td>
+                  <td class="cell"><span class="truncate">
+                      <fa-icon [icon]="faTrash" class="text-primary fa-lg cursor-pointer" title="Delete"></fa-icon>
+                    </span></td>
+                </tr>
+              </tbody>
+              <!-- <tbody >
+                <tr>
+                  <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------
+                  </td>
+                </tr>
+              </tbody> -->
+            </table>
+          </div><!--//table-responsive-->
+
+        </div><!--//app-card-body-->
+      </div><!--//app-card-->
+
+      <div class="d-flex" [ngClass]="docList?'justify-content-between':'justify-content-end'">
+        <div class="text-sm">
+          {{docList.length}} filtered from {{docList.length}}
+        </div>
+        <pagination-controls previousLabel="Prev" nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"></pagination-controls>
+      </div>
+      <!-- <div class="d-flex justify-content-between">
+        <div class="filtered-count"></div>
+        <pagination-controls previousLabel="Prev" nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"></pagination-controls>
+      </div> -->
+    </div>
+  </div>
 
   <!-- <form [formGroup]="documentsForm">
     <div class="row">
@@ -46,4 +145,5 @@
     </div>
     </div>
   </form> -->
+  <ngx-loading [show]="loading"></ngx-loading>
 </div>

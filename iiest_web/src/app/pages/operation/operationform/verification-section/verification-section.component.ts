@@ -36,6 +36,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   //output variables
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
+  @Output() emitVerifiedData: EventEmitter<any> = new EventEmitter<any>;
+
   @Output() emitSalesDate: EventEmitter<string> = new EventEmitter<string>;
 
   @Output() emitVerifiedStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
@@ -99,7 +101,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     kob: new FormControl(''),
     food_category: new FormControl(''),
     ownership_type: new FormControl(''),
-    owner_num: new FormControl(this.minMembers)
+    owners_num: new FormControl(this.minMembers)
     });
 
   constructor(private formBuilder: FormBuilder,
@@ -258,7 +260,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
           this.verificationForm.patchValue({ username: res.verifedData.userName });
           this.verificationForm.patchValue({ password: res.verifedData.password });
-          this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'))
+          this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'));
+          this.emitVerifiedData.emit(res.verifedData);
         } else {
           this.verifiedStatus = false;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
@@ -280,23 +283,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
           this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
           this.verificationForm.patchValue({ food_items: res.verifedData.foodItems });
-          console.log(res.verifedData)
-          this.emitDocuments.emit([{
-            name: 'FSMS Cerificate',
-            src: res.verifedData.fsmsCertificate,
-            format: 'pdf'
-          },
-          {
-            name: 'Self Declearation of Propraitorship',
-            src: res.verifedData.selfDecOProp,
-            format: 'pdf'
-          }
-          ]);
+          this.emitVerifiedData.emit(res.verifedData);
         } else {
           this.verifiedStatus = false;
         }
       }
-    })
+    });
   }
 
   getFormatedDate(date: string): string {
@@ -372,18 +364,30 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       kob: ['', Validators.required],
       food_category: ['', Validators.required],
       ownership_type: ['', Validators.required],
-      owner_num: [this.minMembers, Validators.required],
+      owners_num: [this.minMembers, Validators.required],
     });
 
   }
 
   onOwnershipTypeChanges($event: any) {
-    if($event.target.value === 'ropaitorship') {
+    console.log($event.target.value)
+    if($event.target.value === 'Propaitorship') {
       this.minMembers=1;
     } else {
       this.minMembers=2;
     }
-    this.verificationForm.patchValue({'owner_num': this.minMembers});
+    this.verificationForm.patchValue({'owners_num': this.minMembers});
+  }
+
+  onOwnersNumChange($event: any) {
+    let value = $event.target.value;
+    if(value < this.minMembers){
+      value = this.minMembers;
+    } else if (value > 20) {
+      value = 20;
+    }
+
+    this.verificationForm.patchValue({'owners_num': value});
   }
 
 }
