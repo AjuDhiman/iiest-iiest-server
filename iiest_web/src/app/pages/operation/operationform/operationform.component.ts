@@ -53,10 +53,6 @@ export class OperationformComponent implements OnInit {
 
   //this methord for geting recipient customer id 
   getCustomerId($event: any): void {
-<<<<<<< HEAD
-=======
-    console.log($event);
->>>>>>> e3cab2f4717bf24f80a2ce24780d48ea5e95e58a
     this.customerId = $event;
   }
 
