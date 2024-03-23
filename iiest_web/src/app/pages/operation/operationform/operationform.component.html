@@ -78,8 +78,8 @@
                   <div class="app-card-thumb" *ngIf="doc.format === 'image'">
                     <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name" (click)="viewDocument(doc)">
                   </div>
-                  <span class="icon-holder" *ngIf="doc.format !== 'image'">
-                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
+                  <span class="icon-holder" *ngIf="doc.format === 'pdf'">
+                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                 </div>
                 <div class="app-card-body p-3 has-card-actions">
