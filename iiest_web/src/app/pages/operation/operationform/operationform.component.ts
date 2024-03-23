@@ -3,12 +3,17 @@ import { ActivatedRoute } from '@angular/router';
 import { GeneralSectionComponent } from './general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
 import { IconDefinition, faFilePdf, faFileImage, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClient } from '@angular/common/http';
+import { UtilitiesService } from '../../../services/utilities.service';
 
 @Component({
   selector: 'app-operationform',
   templateUrl: './operationform.component.html',
   styleUrls: ['./operationform.component.scss']
 })
+
 export class OperationformComponent implements OnInit {
   //global variables 
   customerId: string;
@@ -34,7 +39,10 @@ export class OperationformComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private _registerService: RegisterService
+    private _registerService: RegisterService,
+    private modalService: NgbModal,
+    private http: HttpClient,
+    private _utilService: UtilitiesService
   ) {
   }
 
@@ -45,6 +53,10 @@ export class OperationformComponent implements OnInit {
 
   //this methord for geting recipient customer id 
   getCustomerId($event: any): void {
+<<<<<<< HEAD
+=======
+    console.log($event);
+>>>>>>> e3cab2f4717bf24f80a2ce24780d48ea5e95e58a
     this.customerId = $event;
   }
 
@@ -135,5 +147,45 @@ export class OperationformComponent implements OnInit {
 
   toogleTabs(tab: string) {
     this.activeTab = tab;
+  }
+
+  viewDocument(res: any): void {
+    const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.doc = res;
+  }
+
+  downloadDoc(documentId: string, contentType: string) {
+    // Make a request to the backend to download the document
+    this.http.get(`http://localhost:3000/${documentId}`, { responseType: 'blob' })
+      .subscribe((data: Blob) => {
+        // Create a Blob URL for the downloaded document
+        const downloadUrl = window.URL.createObjectURL(data);
+
+        // Determine the file extension based on content type
+        let fileExtension = '';
+        switch (contentType) {
+          case 'image/jpeg':
+            fileExtension = 'jpg';
+            break;
+          case 'image/png':
+            fileExtension = 'png';
+            break;
+          case 'application/pdf':
+            fileExtension = 'pdf';
+            break;
+          default:
+            fileExtension = 'file';
+            break;
+        }
+
+        // Create a link element and trigger the download
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `document_${documentId}`; // Set the filename with the appropriate file extension
+        link.click();
+
+        // Cleanup the Blob URL
+        window.URL.revokeObjectURL(downloadUrl);
+      });
   }
 }

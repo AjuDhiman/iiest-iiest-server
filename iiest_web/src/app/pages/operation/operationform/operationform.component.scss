@@ -25,3 +25,12 @@
     font-size: x-small;
     height: fit-content;
 }
+
+.thumb-image {
+    cursor: pointer;
+}
+
+.document-box {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}

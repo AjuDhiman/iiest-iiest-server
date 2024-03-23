@@ -64,15 +64,19 @@
         <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-start-0 tabs"
           [ngClass]="{'d-grid': activeTab==='documentation'}">
           <div class="">
-            <h6 class="my-0">Documents</h6>
+            <h6 class="my-0 d-flex justify-content-between">
+              <span>Documents</span>
+              <!-- <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download All Docs" (click)="downloadAllDoc(documents)"></fa-icon></span> -->
+              <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download All Docs"></fa-icon></span>
+            </h6>
           </div>
 
           <div class="row g-4 my-0">
-            <div class="col-6 col-md-4 col-xl-3 col-xxl-2" *ngFor="let doc of documents">
+            <div class="col-6 col-md-3 col-xl-2 col-xxl-2" *ngFor="let doc of documents">
               <div class="app-card app-card-doc shadow-sm h-100">
                 <div class="app-card-thumb-holder p-3">
                   <div class="app-card-thumb" *ngIf="doc.format === 'image'">
-                    <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name">
+                    <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name" (click)="viewDocument(doc)">
                   </div>
                   <span class="icon-holder" *ngIf="doc.format !== 'image'">
                     <fa-icon class="fa-sm mx-2 text-success cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
@@ -87,8 +91,8 @@
                         </li>
                     </ul>
                   </div>
-                  <a class="download-icon position-absolute" [href]="'http://localhost:3000/' + doc.src" [download]="doc.name + '.pdf'" target="_blank">
-                    <fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download"></fa-icon>
+                  <a class="download-icon position-absolute">
+                    <fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download" (click)="downloadDoc(doc.src, '')"></fa-icon>
                   </a>
                 </div>
               </div>
