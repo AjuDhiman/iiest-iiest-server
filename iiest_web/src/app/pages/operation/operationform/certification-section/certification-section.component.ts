@@ -70,8 +70,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     private modalService: NgbModal,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
-    private _getDataService: GetdataService,
-    private http: HttpClient) {
+    private _getDataService: GetdataService) {
 
   }
 
@@ -120,7 +119,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
             this.isUploadVisible = false;
           }
           this.ticketClosingDate = this.getFormatedDate(res.data.createdAt);
-          this.setCertificateResult(res.data.ticketStatus);;
+          this.setCertificateResult(res.data.ticketStatus);
         }
       }
     })
@@ -211,7 +210,9 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     const parsedUser = JSON.parse(user);
     const employeeId = parsedUser.employee_id
     modalRef.componentInstance.confirmationText = employeeId;
-    modalRef.componentInstance.actionFunc = this.connformationFunc
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      this.connformationFunc(confirmation);
+    });
   }
 
   //this methord uses the register service for posting form data to backend

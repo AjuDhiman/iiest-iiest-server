@@ -127,6 +127,11 @@ export class RegisterService {
     return this.http.delete<any>(url, {body: {deletedBy}}).pipe(catchError(this.handleError));
   } 
 
+  public deleteDoc(docInfo: string): Observable<any> {
+    const url = `${this.url}/deletedoc`;
+    return this.http.delete<any>(url, {body: {docInfo}}).pipe(catchError(this.handleError));
+  } 
+
   public updateEmployee(objId: string, employee: Employee, editedBy: string): Observable<any>{
     const url = `${this.url}/editEmployee/${objId}`;
     return this.http.put<any>(url, {...employee, editedBy}).pipe(catchError(this.handleError));

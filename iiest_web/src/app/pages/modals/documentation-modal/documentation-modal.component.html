@@ -75,20 +75,18 @@
             <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
               <thead>
                 <tr>
-                  <th class="cell col-1">S.No</th>
-                  <th class="cell col-3">Document Name</th>
-                  <th class="cell col-3">Format</th>
+                  <th class="cell col-2">S.No</th>
+                  <th class="cell col-4">Document Name</th>
                   <th class="cell col-3">Doc</th>
-                  <th class="cell col-2">Action</th>
+                  <th class="cell col-3">Action</th>
                   <!-- <th class="cell col-2">Action</th> -->
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  *ngFor="let doc of docList  | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
+                  *ngFor="let doc of filteredData  | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
                   <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{doc.name}}</span></td>
-                  <td class="cell"><span class="truncate text-capitalize">{{doc.format}}</span></td>
                   <td class="cell"><span class="truncate">
                       <fa-icon *ngIf="doc.format === 'pdf'" [icon]="faFilePdf"
                         class="fa-2xl text-success cursor-pointer"></fa-icon>
@@ -96,25 +94,30 @@
                         [src]="'http://localhost:3000/' + doc.src" height="30" width="50" alt="">
                     </span></td>
                   <td class="cell"><span class="truncate">
-                      <fa-icon [icon]="faTrash" class="text-primary fa-lg cursor-pointer" title="Delete"></fa-icon>
+                      <fa-icon [icon]="faTrash" class="text-primary fa-lg cursor-pointer selector" title="Delete"
+                      (click)="onDocDelete(doc)"></fa-icon>
+                      <fa-icon [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
+                      (click)="viewDocument(doc)"></fa-icon>
+                      <!-- <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
+                      ></fa-icon> -->
                     </span></td>
                 </tr>
               </tbody>
-              <!-- <tbody >
+              <tbody *ngIf="filteredData.length == 0">
                 <tr>
                   <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------
                   </td>
                 </tr>
-              </tbody> -->
+              </tbody>
             </table>
           </div><!--//table-responsive-->
 
         </div><!--//app-card-body-->
       </div><!--//app-card-->
 
-      <div class="d-flex" [ngClass]="docList?'justify-content-between':'justify-content-end'">
+      <div class="d-flex" [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
         <div class="text-sm">
-          {{docList.length}} filtered from {{docList.length}}
+          {{filteredData.length}} filtered from {{docList.length}}
         </div>
         <pagination-controls previousLabel="Prev" nextLabel="Next"
           (pageChange)="onTableDataChange($event)"></pagination-controls>

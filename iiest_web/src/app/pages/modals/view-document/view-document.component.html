@@ -3,10 +3,11 @@
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
 </div>
 <div class="modal-body">
+
     <div class="img-viewer" *ngIf="doc.format === 'image'">
         <img src="http://localhost:3000/{{doc.src}}" class="rounded float-left img-fluid" alt="User Document">
     </div>
     <div class="pdf-viewer" *ngIf="doc.format === 'pdf'">
-        <iframe src="http://localhost:3000/{{doc.src}}"></iframe>
+        <iframe [src]="pdfSrc"></iframe>
     </div>
 </div>

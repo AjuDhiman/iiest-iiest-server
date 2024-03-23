@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -12,7 +12,7 @@ export class ConformationModalComponent {
 
   confirmationText: string = '';
 
-  actionFunc: any;
+  actionFunc: EventEmitter<boolean> = new EventEmitter<boolean>;
 
   isTextMatches: boolean = false;
 
@@ -31,7 +31,7 @@ export class ConformationModalComponent {
 
   onSubmit(){
     if(this.isTextMatches){
-      this.actionFunc(this.isTextMatches);
+      this.actionFunc.emit(this.isTextMatches);
       this.activeModal.close();
     }
   }

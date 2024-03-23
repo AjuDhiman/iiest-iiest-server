@@ -26,6 +26,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   faCircleExclamation = faCircleExclamation;
   faCircleCheck = faCircleCheck;
 
+  //var related to loader
+  loading: boolean = false;
+
   // input variables
   @Input() candidateId: string = '';
 
@@ -165,6 +168,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     if (this.verificationForm.invalid) {
       return
     }
+    this.loading = true;
     if (this.productType === 'Fostac') {
       this._registerService.verifyFostac(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
@@ -173,6 +177,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
             this.refreshAuditLog.emit();
+            this.loading = false;
             this._toastrService.success('Recipient\'s Information is Verified', 'Verified');
           }
         },
@@ -190,6 +195,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
             this.refreshAuditLog.emit();
+            this.loading = false;
             this._toastrService.success('Shop\'s Information is Verified', 'Verified');
           }
         }
@@ -248,6 +254,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   getFostacVerifiedData(): void {
+    this.loading = true;
     this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
       next: res => {
         if (res) {
@@ -262,9 +269,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ password: res.verifedData.password });
           this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'));
           this.emitVerifiedData.emit(res.verifedData);
+          this.loading = false;
         } else {
           this.verifiedStatus = false;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
+          this.loading = false;
         }
       }
     });
