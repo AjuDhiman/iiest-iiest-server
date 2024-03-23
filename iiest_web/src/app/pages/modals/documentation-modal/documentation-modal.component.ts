@@ -203,7 +203,7 @@ export class DocumentationModalComponent implements OnInit {
   deleteDoc(confirmation: boolean, doc: any){
     if(confirmation){
       this.loading = true;
-      this._registerService.deleteDoc(doc).subscribe({
+      this._registerService.deleteDoc(this.shopId,doc).subscribe({
         next: res => {
           if(res.success) {
             this._toastrService.success(`${doc.name} Deleted Sucessfully`, 'Deleted');

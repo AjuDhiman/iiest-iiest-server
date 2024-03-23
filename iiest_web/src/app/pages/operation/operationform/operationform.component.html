@@ -78,11 +78,7 @@
                   <div class="app-card-thumb" *ngIf="doc.format === 'image'">
                     <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name" (click)="viewDocument(doc)">
                   </div>
-<<<<<<< HEAD
                   <span class="icon-holder" *ngIf="doc.format === 'pdf'">
-=======
-                  <span class="icon-holder" *ngIf="doc.format !== 'image'">
->>>>>>> 8e2e71a34f5dd63dbc98924ff80bb7906ecd6538
                     <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                 </div>

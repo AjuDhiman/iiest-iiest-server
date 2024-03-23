@@ -27,7 +27,7 @@ module.exports = router;
 router.post('/closeticket/:recipientid', authMiddleware,fostacDocuments.single('certificate'), ticketDelivery);
 router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliveryData)// route for getting ticket delivery data for a customer
 router.post('/savedocuments/:id', authMiddleware,  foscosDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
-router.delete('/deletedoc', authMiddleware, deleteDocs)// route for saving docs for a shop
+router.delete('/deletedoc/:id', authMiddleware, deleteDocs)// route for saving docs for a shop
 router.get('/getdocs/:id', authMiddleware, getDocList);
 
 //routes for trainer

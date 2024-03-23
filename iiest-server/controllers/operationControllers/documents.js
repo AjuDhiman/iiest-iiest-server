@@ -2,6 +2,7 @@ const { foscosDocuments } = require("../../config/storage");
 const docsModel = require("../../models/operationModels/documentsSchema");
 
 const fs = require('fs');
+const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 
 exports.saveDocument = async (req, res) => {
@@ -54,6 +55,8 @@ exports.deleteDocs = async (req, res) => {
 
         const doc = req.body.docInfo;
 
+        const shopId = req.params.id;
+
         const filePath = `./documents/foscos/${doc.src}`
 
         fs.unlink(filePath, (err, data) => {
@@ -73,8 +76,10 @@ exports.deleteDocs = async (req, res) => {
          const prevVal = deletedDoc
  
          const currentVal = {};
+
+         console.log(doc);
  
-         await logAudit(req.user._id, "shopsdetails", doc.handlerInfo, prevVal, currentVal, `${doc.name} deleted`);
+         await logAudit(req.user._id, "shopdetails", shopId, prevVal, currentVal, `${doc.name} deleted`);
  
          // code for tracking ends
 

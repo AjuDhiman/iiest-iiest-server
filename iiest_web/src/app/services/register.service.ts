@@ -127,8 +127,8 @@ export class RegisterService {
     return this.http.delete<any>(url, {body: {deletedBy}}).pipe(catchError(this.handleError));
   } 
 
-  public deleteDoc(docInfo: string): Observable<any> {
-    const url = `${this.url}/deletedoc`;
+  public deleteDoc(oid:string, docInfo: string): Observable<any> {
+    const url = `${this.url}/deletedoc/${oid}`;
     return this.http.delete<any>(url, {body: {docInfo}}).pipe(catchError(this.handleError));
   } 
 
