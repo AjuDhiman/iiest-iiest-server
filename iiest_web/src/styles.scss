@@ -47,8 +47,8 @@
  }
 
  .form-select-xs {
-   padding-top: 0.20rem;
-   padding-bottom: 0.20rem;
+   padding-top: 0.15rem;
+   padding-bottom: 0.15rem;
    padding-left: 0.4rem;
    font-size: 0.7rem;
    border-radius: var(--bs-border-radius-sm);
@@ -56,13 +56,13 @@
 
  .form-control-xs {
    min-height: calc(1.2em + 0.4rem + calc(var(--bs-border-width) * 2));
-   padding: 0.175rem 0.35rem;
+   padding: 0.15rem 0.35rem;
    font-size: 0.625rem;
    border-radius: var(--bs-border-radius-sm);
  }
  .form-control-xs::-webkit-file-upload-button {
-   padding: 0.20rem 0.4rem;
-   margin: -0.20rem -0.4rem;
+   padding: 0.15rem 0.4rem;
+   margin: -0.15rem -0.4rem;
    -webkit-margin-end: 0.4rem;
    margin-inline-end: 0.4rem;
  }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faEye, faPen, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPen, faSave, faCross, faCancel } from '@fortawesome/free-solid-svg-icons';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { days, delhiTrainingLocations, months } from 'src/app/utils/config';
@@ -29,6 +29,7 @@ export class BatchListComponent implements OnInit{
   faEye: IconDefinition = faEye;
   faPen: IconDefinition = faPen;
   faSave: IconDefinition = faSave;
+  faCancel: IconDefinition = faCancel;
 
   // table related vars
   pageNumber: number = 1;
@@ -95,6 +96,7 @@ export class BatchListComponent implements OnInit{
   }
 
   filterData(){
+    this.editMode = false;
     this.filteredData = this.batchData.filter((item: any) => item.category === this.serviceType && item.location === this.activeTab);
   }
 

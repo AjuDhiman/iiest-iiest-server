@@ -227,6 +227,11 @@ export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutip
       name: 'FSMS Cerificate',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
+   },
+   {
+      name: 'Pancard',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
    }
 ];
 
@@ -250,6 +255,57 @@ export const manufacturingDoc: Array<{name: string, allowedFormats: string[], mu
       name: 'Water Test Report', //if 
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
+   }
+];
+
+export const extraDoc: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name: 'Source or Procurement Plan for Milk',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Source of Raw Matireal',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'NOC From MDC',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'NOC From Manufacturer', 
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Analysis Report', 
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'IEC by DGFT', 
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Sale Deed', 
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'List of Vehicle Registration Number', 
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   }
+];
+
+export const otherDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+   {
+      name:'Others',
+      allowedFormats : ['png', 'jpg', 'jpeg', 'pdf'],
+      mutipleDoc: true
    }
 ]
 

@@ -12,6 +12,8 @@ export class ViewDocumentComponent implements OnInit {
   doc: any;
   pdfSrc: any;
 
+  activeSlide: number = 0;
+
   constructor(public activeModal: NgbActiveModal,
     private sanitizer: DomSanitizer) {
 
@@ -19,6 +21,24 @@ export class ViewDocumentComponent implements OnInit {
   ngOnInit(): void {
     if (this.doc !== 'image') {
       this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000/${this.doc.src}`);
+    }
+  }
+
+  next() {
+    const len: number = this.doc.src.length;
+
+    this.activeSlide ++;
+    if(this.activeSlide >= len){
+      this.activeSlide = 0;
+    }
+  }
+
+  prev() {
+    const len: number = this.doc.src.length;
+
+    this.activeSlide--;
+    if(this.activeSlide < 0){
+      this.activeSlide = (len - 1);
     }
   }
 }

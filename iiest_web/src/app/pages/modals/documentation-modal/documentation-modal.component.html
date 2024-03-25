@@ -16,13 +16,18 @@
         </select>
       </div>
 
-      <div class="col-md-4" *ngIf="selectedDoc.name">
-        <label class="form-label" [for]="changeNameFormat(selectedDoc.name)">{{selectedDoc.name}}</label>
-        <input type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"
-          [id]="changeNameFormat(selectedDoc.name)" (change)="onFileUpload($event)" />
+      <div class="col-md-4" *ngIf="isOtherDoc">
+        <label class="form-label" for="name">Name</label>
+        <input type="text" class="form-control form-control-sm" id="name" placeholder="Write Name of The Doc" />
       </div>
 
-      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
+      <div class="col-md-4" *ngIf="selectedDoc.name">
+        <label class="form-label" [for]="changeNameFormat(selectedDoc.name)">{{isOtherDoc?'File':selectedDoc.name}}</label>
+        <input #upload type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"
+          [id]="changeNameFormat(selectedDoc.name)" (change)="onFileChange($event)" />
+      </div>
+
+      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name" >
         <button type="submit" class="btn btn-sm btn-primary">Upload
         </button>
       </div>
@@ -88,16 +93,23 @@
                   <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{doc.name}}</span></td>
                   <td class="cell"><span class="truncate">
-                      <fa-icon *ngIf="doc.format === 'pdf'" [icon]="faFilePdf"
-                        class="fa-2xl text-success cursor-pointer"></fa-icon>
-                      <img class="cursor-pointers" *ngIf="doc.format === 'image'"
-                        [src]="'http://localhost:3000/' + doc.src" height="30" width="50" alt="">
-                    </span></td>
+                      <div *ngIf="doc.src.length == 1">
+                        <fa-icon *ngIf="doc.format === 'pdf'" [icon]="faFilePdf"
+                          class="fa-2xl text-success cursor-pointer"></fa-icon>
+                        <img class="cursor-pointers" *ngIf="doc.format === 'image'"
+                          [src]="'http://localhost:3000/' + doc.src" height="30" width="50" [alt]="doc.name">
+                      </div>
+                      <div *ngIf="doc.src.length > 1">
+                        <fa-icon *ngIf="doc.format === 'image'" [icon]="faFileImage"
+                          class="fa-2xl text-success cursor-pointer"></fa-icon>
+                      </div> 
+                    </span>
+                  </td>
                   <td class="cell"><span class="truncate">
                       <fa-icon [icon]="faTrash" class="text-primary fa-lg cursor-pointer selector" title="Delete"
-                      (click)="onDocDelete(doc)"></fa-icon>
+                        (click)="onDocDelete(doc)"></fa-icon>
                       <fa-icon [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
-                      (click)="viewDocument(doc)"></fa-icon>
+                        (click)="viewDocument(doc)"></fa-icon>
                       <!-- <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
                       ></fa-icon> -->
                     </span></td>

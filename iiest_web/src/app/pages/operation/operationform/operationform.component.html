@@ -36,7 +36,7 @@
 
           <app-documentation-section *ngIf="productType === 'Foscos'" [shopId]="candidateId"
             class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
-            [verifiedData]="verifiedData"
+            [verifiedData]="verifiedData" (refreshAuditLog)="generalsec.getCaseNotes()"
             (emitDocuments)="getDocuments($event)">
           </app-documentation-section>
 
@@ -75,10 +75,13 @@
             <div class="col-6 col-md-3 col-xl-2 col-xxl-2" *ngFor="let doc of documents">
               <div class="app-card app-card-doc shadow-sm h-100">
                 <div class="app-card-thumb-holder p-3">
-                  <div class="app-card-thumb" *ngIf="doc.format === 'image'">
+                  <div class="app-card-thumb" *ngIf="doc.format === 'image' && doc.src.length == 1">
                     <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name" (click)="viewDocument(doc)">
                   </div>
-                  <span class="icon-holder" *ngIf="doc.format === 'pdf'">
+                  <span class="icon-holder" *ngIf="doc.format === 'pdf' && doc.src.length == 1">
+                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
+                  </span>
+                  <span class="icon-holder" *ngIf="doc.src.length > 1">
                     <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                 </div>

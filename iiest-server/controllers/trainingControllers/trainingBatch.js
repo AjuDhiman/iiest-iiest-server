@@ -91,11 +91,9 @@ exports.updateBatch = async (req, res) => {
     console.log(11);
     try {
 
-        console.log(req);
-        return;
         const batchId = req.params.batchid;
 
-        const { training_date, trainer } = req.body;
+        const { training_date, trainer, venue } = req.body;
 
         let updatedBatch;
 
@@ -104,7 +102,11 @@ exports.updateBatch = async (req, res) => {
         }
 
         if(training_date) {
-            updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainer: trainer, trainingDate: training_date});
+            updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainingDate: training_date});
+        }
+
+        if(venue) {
+            updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {venue: venue});
         }
 
         res.status(200).json({success: true, batchInfo: updatedBatch});

@@ -26,11 +26,11 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   @Input() verifiedStatus: boolean;
 
   //output event emitters
-  @Output() emitEnrolledDataId:EventEmitter<string>= new EventEmitter<string>
+  @Output() emitEnrolledDataId:EventEmitter<string>= new EventEmitter<string>;
 
-  @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>
+  @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>;
 
-  @Output() emitEnrolledStatus:EventEmitter<boolean>= new EventEmitter<boolean>
+  @Output() emitEnrolledStatus:EventEmitter<boolean>= new EventEmitter<boolean>;
 
   //icons
   faCircleExclamation = faCircleExclamation
