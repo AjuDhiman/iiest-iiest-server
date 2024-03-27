@@ -19,6 +19,7 @@
                 <th class="cell">Electricity Bill</th>
                 <th class="cell">Owner Photo</th>
                 <th class="cell">Shop Photo</th>
+                <th class="cell">Aadhar</th>
               </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
@@ -79,6 +80,20 @@
                     <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
+                      hidden>
+                  </span>
+                </td>
+                <td>
+                  <span class="truncate">
+                    <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
+                        (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
+                    <a [href]="shops.aadharPhoto" [download]="shops.operatorName + '_aadharPhoto.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.aadharPhoto" class="fa-xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="!shops.aadharPhoto" class="fa-xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadAadharPhoto' + sr" (change)="uploadAadharphoto($event, shops._id)"
                       hidden>
                   </span>
                 </td>

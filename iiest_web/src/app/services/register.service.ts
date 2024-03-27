@@ -182,7 +182,7 @@ export class RegisterService {
     ));
   }
 
-  public enrollRecipient(verId: string, formInterface: fostacEnrollment){
+  public enrollRecipient(verId: string, formInterface: any){
     const url = `${this.url}/fostacenrollment/${verId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
@@ -217,7 +217,7 @@ export class RegisterService {
 
   //for training batch
   public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{
-    const url = `${this.url}/updatetraingbatch`;
+    const url = `${this.url}/updatetraingbatch/${objId}`;
     console.log(url);
     return this.http.put<any>(url, editedData).pipe(catchError(this.handleError));
   }

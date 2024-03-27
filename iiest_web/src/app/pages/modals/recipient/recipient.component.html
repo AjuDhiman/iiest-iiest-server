@@ -88,15 +88,26 @@
           </div>
         </div>
         <div class="col-md-4">
-          <label for="shop_photo" class="form-label">Owner's Photo (jpeg or png)<sup>*</sup></label>
+          <label for="owner_photo" class="form-label">Owner's Photo (jpeg or png)<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event, 'ownerPhoto')" placeholder="Owner Photo"
-            formControlName="shop_photo" class="form-control form-control-sm" id="shop_photo"
-            [ngClass]="{ 'is-invalid': submitted && recipient['shop_photo'].errors }" />
-          <div *ngIf="submitted && recipient['shop_photo'].errors" class="invalid-feedback">
-            <div *ngIf="recipient['shop_photo'].errors['required']">Owner Photo is required.(jpeg or png)</div>
-            <div *ngIf="recipient['shop_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+            formControlName="owner_photo" class="form-control form-control-sm" id="owner_photo"
+            [ngClass]="{ 'is-invalid': submitted && recipient['owner_photo'].errors }" />
+          <div *ngIf="submitted && recipient['owner_photo'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['owner_photo'].errors['required']">Owner Photo is required.(jpeg or png)</div>
+            <div *ngIf="recipient['owner_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
               files
               are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="aadhar_photo" class="form-label">Owner's Aadhar<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'aadharPhoto')" placeholder="Aadhar Photo"
+            formControlName="aadhar_photo" class="form-control form-control-sm" id="aadhar_photo" multiple
+            [ngClass]="{ 'is-invalid': submitted && recipient['aadhar_photo'].errors }" />
+          <div *ngIf="submitted && recipient['aadhar_photo'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['aadhar_photo'].errors['required']">Aadhar is required.(jpeg or png)</div>
+            <div *ngIf="recipient['aadhar_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files are allowed.</div>
           </div>
         </div>
       </div>
@@ -198,12 +209,8 @@
   </div><!--//col-auto-->
 </div><!--//row-->
 
-<app-recipient-list [serviceType]="serviceType" 
-  [recipientData]="recipientData" 
-  [shopData]="shopData"
-  [isfostac]="isfostac"
-  [showPagination]="showPagination"
-  ></app-recipient-list>
+<app-recipient-list [serviceType]="serviceType" [recipientData]="recipientData" [shopData]="shopData"
+  [isfostac]="isfostac" [showPagination]="showPagination"></app-recipient-list>
 
 <ngx-loading [show]="loading"></ngx-loading>
 
@@ -231,8 +238,8 @@
               </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'"> -->
-              <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
-              <!-- <tr
+<!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
+<!-- <tr
                 *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
@@ -247,10 +254,10 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td> -->
-                <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-                <!-- <td *ngIf="!isfostac" class="cell">
+<!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
+<!-- <td *ngIf="!isfostac" class="cell">
                   <span class="truncate"> -->
-                    <!-- <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
+<!-- <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
                       <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer"
                         [icon]="faFile"></fa-icon>
                     </a>
