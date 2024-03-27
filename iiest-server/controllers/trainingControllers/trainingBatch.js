@@ -28,9 +28,13 @@ exports.trainingBatch = async (req, res) => {
         if(state === 'Delhi') {
             location = 'Delhi';
         } else if(district === 'Gurgaon') {
-            location = 'Gurgaon'
+            location = 'Gurgaon';
         } else if(district === 'Gautam Buddha Nagar') {
-            location = 'Noida'
+            location = 'Noida';
+        } else if(district === 'Faridabad') {
+            location = 'Faridabad';
+        } else if(district === 'Ghaziabad') {
+            location = 'Ghaziabad';
         }
 
         if(!location) {

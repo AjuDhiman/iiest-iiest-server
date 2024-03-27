@@ -121,7 +121,9 @@ export const batchListRoles = [
 export const delhiTrainingLocations = [
    "Delhi",
    "Noida",
-   "Gurgaon"
+   "Gurgaon",
+   "Faridabad",
+   "Ghaziabad"
 ]
 
 export const salesOfficersRoles = [
@@ -231,7 +233,7 @@ export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutip
    {
       name: 'Pancard',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
-      mutipleDoc: false
+      mutipleDoc: true
    }
 ];
 

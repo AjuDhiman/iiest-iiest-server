@@ -77,7 +77,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="cell col-2"><span class="truncate">
-                                                        {{!editMode?getFormatedDate(batch.trainingDate):''}}
+                                                        {{!editMode?batch.trainingDate?getFormatedDate(batch.trainingDate):'N/A':''}}
                                                         <input *ngIf="editMode" type="datetime-local"
                                                             [formControlName]="'training_date' + batch._id"
                                                             class="form-control form-control-xs">
