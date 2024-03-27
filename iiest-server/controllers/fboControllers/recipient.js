@@ -82,6 +82,7 @@ exports.addShop = async (req, res) => {
         const eBill = req.files['eBill'];
         const ownerPhoto = req.files['ownerPhoto'];
         const shopPhoto = req.files['shopPhoto'];
+        const aadharPhoto = req.files['aadharPhoto'];
 
         const { operatorName, address, pincode, village, tehsil, byExcel } = req.body;
 
@@ -99,8 +100,13 @@ exports.addShop = async (req, res) => {
             success = false;
             return res.status(401).json({ success, shopPhotoErr: true })
         }
+       
+        if (!aadharPhoto) {
+            success = false;
+            return res.status(401).json({ success, aadharPhotoErr: true })
+        }
 
-        const {state, district} = await readPincodeFile(pincode);
+        const {state, district} = await readPincodeFile(pincode); //extract state and district on the basis of pincode
 
         console.log(state, district);
 
@@ -108,7 +114,9 @@ exports.addShop = async (req, res) => {
            res.status(401).json({success: false, pincodeErr: true, message:'Pincode Not Found'}) 
         }
 
-        const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, byExcel });
+        const aadharSrc = aadharPhoto.map((file) => file.filename); 
+
+        const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc, byExcel });
 
         if (addShop) {
             success = true
@@ -139,7 +147,9 @@ exports.addShopByExcel = async (req, res) => {
 
             const { operatorName, address, pincode, village, tehsil } = shop;
 
-            const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, pincode, village, tehsil, byExcel })
+            const { state, district } = await readPincodeFile(pincode);
+
+            const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, pincode, state, district, village, tehsil, byExcel });
 
             // this code is for tracking the the record related action of a recipient
 
@@ -280,8 +290,31 @@ exports.uploadShopPhoto = async (req, res) => {
     }
 }
 
+exports.uploadAadharPhoto = async (req, res) => {
+    try {
+        let success = false;
 
-//function for reading pincode file and extracting state and didtrict from that file
+        const aadharPhoto = req.files['aadharPhoto'];
+
+        const aadhar = aadharPhoto.map(file => file.filename)
+
+        const photoUploaded = await shopModel.updateOne({ _id: req.params.id }, { $set: { aadharPhoto: aadhar } });
+
+        if (!photoUploaded) {
+            success = false;
+            res.status(404).json({ success, randomErr: true });
+        }
+
+        success = true;
+        res.status(200).json({ success, photoUploaded });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+
+//function for reading pincode file and extracting state and district from that file
 async function readPincodeFile(pincode) {
     return new Promise((resolve, reject) => {
         fs.readFile('./assets/pincodes.json', 'utf8', async (err, data) => {
@@ -297,7 +330,6 @@ async function readPincodeFile(pincode) {
             for (let i = 0; i < pincodeData.length; i++) {
                 if (pincodeData[i].Pincode == pincode) {
                     invalidPincode = false;
-                    console.log(pincodeData[i]);
                     state = pincodeData[i].State;
                     district = pincodeData[i].District;
                     break; // Exit loop once found
@@ -313,12 +345,3 @@ async function readPincodeFile(pincode) {
         });
     });
 }
-
-// async function main() {
-//     try {
-//         const { state, district } = await readPincodeFile(/* put your pincode here */);
-//         console.log(state, district);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }

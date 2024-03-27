@@ -3,7 +3,7 @@
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
-  <form (submit)="onUpload()" enctype="multipart/form-data">
+  <form (submit)="onUpload()" [formGroup]="documentsForm" enctype="multipart/form-data">
     <div class="row">
 
       <h6>Upload Documents<span *ngIf="selectedDoc.mutipleDoc" class="text-xs"> (Note<sup>*</sup>: Select multiple
@@ -18,16 +18,18 @@
 
       <div class="col-md-4" *ngIf="isOtherDoc">
         <label class="form-label" for="name">Name</label>
-        <input type="text" class="form-control form-control-sm" id="name" placeholder="Write Name of The Doc" />
+        <input type="text" class="form-control form-control-sm" id="name" placeholder="Name of The Doc"
+          formControlName="name" />
       </div>
 
       <div class="col-md-4" *ngIf="selectedDoc.name">
-        <label class="form-label" [for]="changeNameFormat(selectedDoc.name)">{{isOtherDoc?'File':selectedDoc.name}}</label>
+        <label class="form-label"
+          [for]="changeNameFormat(selectedDoc.name)">{{isOtherDoc?'File':selectedDoc.name}}</label>
         <input #upload type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"
           [id]="changeNameFormat(selectedDoc.name)" (change)="onFileChange($event)" />
       </div>
 
-      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name" >
+      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
         <button type="submit" class="btn btn-sm btn-primary">Upload
         </button>
       </div>
@@ -63,7 +65,6 @@
                 <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilter"
                   (change)="onItemNumChange()">
                   <option value="byName">Search by Name</option>
-                  <option value="byFormat">Search by Format</option>
                 </select>
               </div>
               <!-- <div class="col-auto">
@@ -102,7 +103,7 @@
                       <div *ngIf="doc.src.length > 1">
                         <fa-icon *ngIf="doc.format === 'image'" [icon]="faFileImage"
                           class="fa-2xl text-success cursor-pointer"></fa-icon>
-                      </div> 
+                      </div>
                     </span>
                   </td>
                   <td class="cell"><span class="truncate">

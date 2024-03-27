@@ -150,14 +150,14 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   onTicketStatusChange($event: any): void {
     if ($event.target.value === 'delivered') {
       this.isUploadVisible = true;
-      if (this.attendanceStatus) {
-        this.isBtnDisble = false;
-      } else {
-        this.isBtnDisble = true;
-      }
     } else {
       this.isUploadVisible = false;
       this.isBtnDisble = false;
+    }
+    if (this.attenSecResult != 'Trained') {
+      this.isBtnDisble = false;
+    } else {
+      this.isBtnDisble = true;
     }
   }
 
@@ -228,7 +228,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
         console.log(res);
         this._toastrService.success('Ticket closed');
         this.ticketClosed = true;
-        this.ticketClosingDate = res.addTicket.createdAt;
+        this.ticketClosingDate = this.getFormatedDate(res.addTicket.createdAt);
         this.setCertificateResult(this.certificationform['ticket_status'].value);
       }
     });

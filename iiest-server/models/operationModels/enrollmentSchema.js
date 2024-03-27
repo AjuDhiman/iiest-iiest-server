@@ -14,10 +14,18 @@ const fostacEnrollment = new Schema({
         unique: true
     },
     tentative_training_date: {
-        type:String,
+        type: Date,
         require:true
     },
     fostac_training_date: {
+        type: [Date],
+        required: true
+    },
+    username: {
+        type:String,
+        require:true
+    },
+    password: {
         type:String,
         require:true
     },
@@ -25,6 +33,14 @@ const fostacEnrollment = new Schema({
         type:String,
         require:true,
         unique:true
+    },
+    venue: {
+        type: String,
+        required: true
+    },
+    trainer: {
+        type: String,
+        required: true
     }
     
 }, {timestamps: true})

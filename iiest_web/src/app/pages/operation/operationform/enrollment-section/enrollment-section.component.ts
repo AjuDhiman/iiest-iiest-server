@@ -17,20 +17,21 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   enrolled: boolean = false;
   enrolledStatus: boolean = false;
   ourHolidays = ourHolidays;
-  
+  loading: boolean = false;
+
   //input variables
   @Input() verifiedDataId: string;
 
-  @Input() salesDate: string;
+  @Input() verifiedData: any;
 
   @Input() verifiedStatus: boolean;
 
   //output event emitters
-  @Output() emitEnrolledDataId:EventEmitter<string>= new EventEmitter<string>;
+  @Output() emitEnrolledDataId: EventEmitter<string> = new EventEmitter<string>;
 
-  @Output() refreshAuditLog:EventEmitter<void>= new EventEmitter<void>;
+  @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>;
 
-  @Output() emitEnrolledStatus:EventEmitter<boolean>= new EventEmitter<boolean>;
+  @Output() emitEnrolledStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
 
   //icons
   faCircleExclamation = faCircleExclamation
@@ -40,8 +41,12 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
   enrollmentForm: FormGroup = new FormGroup({
     tentative_training_date: new FormControl(''),
     fostac_training_date: new FormControl(''),
+    username: new FormControl(''),
+    password: new FormControl(''),
     roll_no: new FormControl(''),
-  })
+    trainer: new FormControl(''),
+    venue: new FormControl('')
+  });
 
   constructor(private formBuilder: FormBuilder,
     private _getDataService: GetdataService,
@@ -54,7 +59,11 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     this.enrollmentForm = this.formBuilder.group({
       tentative_training_date: ['', Validators.required],
       fostac_training_date: ['', Validators.required],
-      roll_no: ['', Validators.required]
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+      roll_no: ['', Validators.required],
+      trainer: ['', Validators.required],
+      venue: ['', Validators.required]
     });
   }
 
@@ -65,9 +74,12 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
       }
     }
 
-    if (changes && changes['salesDate']) {
-      if (changes['salesDate'].currentValue) {
-        this.setTentativeTrainingDate(this.salesDate);
+    if (changes && changes['verifiedData']) {
+      if (changes['verifiedData'].currentValue) {
+        this.setTentativeTrainingDate(this.verifiedData.createdAt);
+        this.enrollmentForm.patchValue({ 'venue': this.verifiedData.batchData.venue });
+        this.enrollmentForm.patchValue({ 'trainer': this.verifiedData.batchData.trainer });
+        this.enrollmentForm.patchValue({ 'fostac_training_date': this.getFormatedDate(this.verifiedData.batchData.trainingDate.toString()) });
       }
     }
   }
@@ -81,39 +93,51 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     if (this.enrollmentForm.invalid) {
       return
     }
-    if(this.verifiedDataId){
-      this._registerService.enrollRecipient(this.verifiedDataId, this.enrollmentForm.value).subscribe({
+    this.loading = true;//starts the loading
+    if (this.verifiedDataId) {
+      const enrollmentData = {...this.enrollmentForm.value, batchInfo: this.verifiedData.batchInfo};
+      this._registerService.enrollRecipient(this.verifiedDataId, enrollmentData).subscribe({
         next: res => {
           this.enrolledStatus = true;
           this.emitEnrolledStatus.emit(this.enrolledStatus);
           this.emitEnrolledDataId.emit(res.enrolledId);
           this.refreshAuditLog.emit();
           this._toastrService.success(res.message, 'Enrolled');
+          this.loading = false;
         },
         error: err => {
           console.log(err.error);
           if (err.error.rollNoErr) this._toastrService.warning('Enrollment number already exsists');
           if (err.error.openBatchErr) this._toastrService.warning(`A ${err.error.openBatchCategory} batch at ${err.error.openBatchLocation} already exsists on ${this.getFormatedDate(err.error.openBatchDate)}`);
+          this.loading = false;
         }
       })
-  
+
     }
-    
+
   }
 
   getFostacEnrolledData() {
+    this.loading = true;
     this._getDataService.getFostacEnrolledData(this.verifiedDataId).subscribe({
       next: res => {
         if (res) {
+          console.log(res);
           // we want to update enrollment form's value if it's data exsists in database and disable it 
-          this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date.toString()) });
-          this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });      
+          this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date[0].toString()) });
+          this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });
+          this.enrollmentForm.patchValue({ username: res.enrolledData.username });
+          this.enrollmentForm.patchValue({ password: res.enrolledData.password });
+          this.enrollmentForm.patchValue({ trainer: res.enrolledData.trainer });
+          this.enrollmentForm.patchValue({ venue: res.enrolledData.venue });
           this.enrolledStatus = true;
           this.emitEnrolledStatus.emit(this.enrolledStatus);
           this.emitEnrolledDataId.emit(res.enrolledData._id);
+          this.loading = false;
         } else {
           this.enrolledStatus = false;
           this.emitEnrolledStatus.emit(this.enrolledStatus);
+          this.loading=false;
         }
       }
     });
@@ -127,7 +151,6 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
       date.setDate(date.getDate() + 1);
     }
     this.enrollmentForm.patchValue({ tentative_training_date: this.getFormatedDate(date.toString()) });
-    this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(date.toString()) });
   }
 
   getFormatedDate(date: string): string {

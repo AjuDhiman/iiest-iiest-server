@@ -1,23 +1,27 @@
 const { generatedBatchInfo } = require("../../Training/generateCredential");
-const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
+const { recipientModel } = require("../../models/fboModels/recipientSchema");
+const { fostacVerifyModel } = require("../../models/operationModels/verificationSchema");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
+const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 exports.trainingBatch = async (req, res) => {
     try {
 
         let success = false;
 
-        const enrollRecipient = req.enrollRecipient;
-
         const verificationInfo = req.verificationInfo;
 
-        const category = verificationInfo.recipientInfo.salesInfo.fostacInfo.fostac_service_name;
+        const recipientId = req.params.recipientid;
+
+        const recipientInfo = await recipientModel.findOne({_id: recipientId}).populate({path: 'salesInfo', populate: [{path: 'fboInfo'}, {path: 'employeeInfo'}]});
+
+        const category = recipientInfo.salesInfo.fostacInfo.fostac_service_name;
 
         const user = req.user;
         
-        const state = verificationInfo.recipientInfo.salesInfo.fboInfo.state;
+        const state = recipientInfo.salesInfo.fboInfo.state;
 
-        const district = verificationInfo.recipientInfo.salesInfo.fboInfo.district;
+        const district = recipientInfo.salesInfo.fboInfo.district;
 
         let location;
 
@@ -29,27 +33,30 @@ exports.trainingBatch = async (req, res) => {
             location = 'Noida'
         }
 
+        if(!location) {
+            console.log(verificationInfo);
+            await fostacVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
+            return res.status(401).json({success: false, locationErr: true})
+        }
+
+        let batchData;
+
         const openedBatch = await TrainingBatchModel.findOne({ status: 'open', category: category, location: location });
 
         if (openedBatch) {
 
-            if(enrollRecipient.fostac_training_date !== openedBatch.trainingDate.toISOString().slice(0,10)) {
-                await fostacEnrollmentModel.findByIdAndDelete(enrollRecipient._id);// delete recipient enrollment data if already created
-                return res.status(401).json({success: false, openBatchErr: true, openBatchDate: openedBatch.trainingDate, openBatchCategory: openedBatch.category, openBatchLocation: openedBatch.location});
-            }
-
-            if (openedBatch.candidateNo < 50) {
-                await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
+            if (openedBatch.candidateNo < 10) {
+                batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
                     {
                         $inc: { candidateNo: 1 },
-                        $push: { candidateDetails: enrollRecipient._id }
+                        $push: { candidateDetails: verificationInfo._id }
                     });
             } else {
                 //close the btach if candidate number is grater than or equal to 50
-                await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location},
+                batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location},
                     {
                         $inc: { candidateNo: 1 },
-                        $push: { candidateDetails: enrollRecipient._id },
+                        $push: { candidateDetails: verificationInfo._id },
                         status: 'completed'
                     });
             }
@@ -58,10 +65,11 @@ exports.trainingBatch = async (req, res) => {
             //open new batch if batch with particular requirement is closed 
             const batchInfo = await generatedBatchInfo();
 
-            await TrainingBatchModel.create({ operatorInfo: user._id, id_num: batchInfo.idNumber, status: 'open', category: category, batchCode:  batchInfo.generatedBatchCode, location: location, candidateNo: 1, candidateDetails: [enrollRecipient._id], trainingDate:enrollRecipient.fostac_training_date });
+            batchData = await TrainingBatchModel.create({ operatorInfo: user._id, id_num: batchInfo.idNumber, status: 'open', category: category, batchCode:  batchInfo.generatedBatchCode, location: location, candidateNo: 1, candidateDetails: [verificationInfo._id] });
         }
 
-        return res.status(200).json({ success, message: 'Enrolled recipient', enrolledId: enrollRecipient._id });
+        success = true;
+        return res.status(200).json({ success, verificationInfo: verificationInfo, batchData: batchData });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -72,7 +80,7 @@ exports.getTrainingBatchData = async (req, res) => {
     try {
         let success = false;
 
-        const batches = await TrainingBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'verificationInfo', populate: { path: 'recipientInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } } } });;
+        const batches = await TrainingBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'recipientInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } }  });;
 
         if (!batches) {
             return res.status(204).json({ message: 'Data Not Found' })
@@ -91,22 +99,42 @@ exports.updateBatch = async (req, res) => {
     console.log(11);
     try {
 
+        let success = false;
+
         const batchId = req.params.batchid;
 
         const { training_date, trainer, venue } = req.body;
 
-        let updatedBatch;
+        console.log(req.body)
 
-        if(trainer){
-            updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainer: trainer});
+        const batchPrevData = await TrainingBatchModel.findById(batchId);
+
+        const updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainer: trainer, venue: venue, trainingDate: training_date});
+
+        if(!updatedBatch) {
+            success = false;
+            return res.status(401).json({success: false, incompleteDataErr: true});
         }
 
-        if(training_date) {
-            updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainingDate: training_date});
-        }
+        const batchInfo = await updatedBatch.populate({path: 'candidateDetails'});
 
-        if(venue) {
-            updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {venue: venue});
+        for(let i = 0; i< batchInfo.candidateDetails.length; i++) {
+    
+            const prevVal = {}
+    
+            const currentVal = updatedBatch;
+
+            let action;
+            
+            if(batchPrevData.trainingDate){
+                action = `Fostac training date changed from ${getFormatedDate(batchPrevData.trainingDate)} to ${getFormatedDate(updatedBatch.trainingDate)}`
+            } else {
+                action = `Fostac training date(${getFormatedDate(updatedBatch.trainingDate)}) Given`
+            }
+    
+            await logAudit(req.user._id, "recipientdetails", batchInfo.candidateDetails[i].recipientInfo, prevVal, currentVal, action);
+    
+            // code for tracking ends
         }
 
         res.status(200).json({success: true, batchInfo: updatedBatch});
@@ -116,4 +144,14 @@ exports.updateBatch = async (req, res) => {
         res.status(500).json({message: 'Internal Server Error'});
     }
 
+}
+
+function getFormatedDate(date) {
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = months[originalDate.getMonth()];
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const formattedDate = `${day}-${month}-${year}`;
+    return formattedDate;
 }

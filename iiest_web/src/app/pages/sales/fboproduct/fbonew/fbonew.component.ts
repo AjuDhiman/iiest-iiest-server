@@ -569,10 +569,10 @@ export class FbonewComponent implements OnInit {
           // this.router.navigate(['/home']);
         } else {
           this.allocated_state = data.state;
+          console.log(data.district);
           this.allocated_district = data.district;
           this.allocated_pincodes = data.pincodes;
-          this.fboForm.patchValue({ state: this.allocated_state })
-          this.fboForm.patchValue({ district: this.allocated_district });
+          this.fboForm.patchValue({ state: this.allocated_state });
         }
       },
       error: (err) => {

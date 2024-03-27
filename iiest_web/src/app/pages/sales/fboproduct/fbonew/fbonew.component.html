@@ -115,7 +115,7 @@
                         <select type="string" placeholder="District" formControlName="district" id="district"
                             class="form-select form-select-sm cursor-pointer" autocomplete="off" 
                             [attr.disabled]="isExisting?true:null">
-                            <option value="" disabled selected>Select the Pincode</option>
+                            <option value="" disabled selected>Select the District</option>
                             <option *ngFor="let district of allocated_district" [value]="district">{{district}}</option>
                         </select>
                         <!-- <input id="district" 
