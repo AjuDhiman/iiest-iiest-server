@@ -96,10 +96,12 @@ export class CaseListComponent implements OnInit {
         this.totalCase = this.caseData.length;
         if (this.panelType === 'Fostac Panel') {
           this.setServiceType('Catering');
+          this.selectedFilter = "byRecipientName";
           this.filter();
         }
         else if (this.panelType === 'Foscos Panel') {
           this.setServiceType("Registration");
+          this.selectedFilter = "byOperatorName";
           this.filter();
         }
       },

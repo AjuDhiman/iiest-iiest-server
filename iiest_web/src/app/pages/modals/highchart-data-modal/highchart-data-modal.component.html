@@ -18,7 +18,7 @@
             </form>
           </div>
           <div class="col-auto" *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
-            <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilterSales">
+            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilterSales">
               <option value="byFboName">Search by FBO Name</option>
               <option value="byOwner">Search by Owner</option>
               <option value="byLocation">Search by Location</option>
