@@ -17,8 +17,7 @@ const trainingBatchSchema = new Schema({
         unique: true
     },
     trainer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'staff_registers',
+        type: String,
         // required: true
     },
     category: {
@@ -43,7 +42,7 @@ const trainingBatchSchema = new Schema({
     candidateDetails: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'fostac_enrollment',
+            ref: 'fostac_verifications',
             // unique: true
         }],
         required: true,

@@ -54,14 +54,16 @@ export class BatchListComponent implements OnInit{
     const id = $event.submitter.id;
     const training_date = this.updationForm.value[`training_date${id}`];
     const trainer = this.updationForm.value[`trainer${id}`];
+    const venue = this.updationForm.value[`venue${id}`];
 
     //update the training Batch 
-    this._registerService.updateTrainingBatch(id, {training_date, trainer});
+    this._registerService.updateTrainingBatch(id, {training_date, trainer, venue}).subscribe({
+      next: res => {
 
-    //remove control at last and hide theh form for particular batch
-    this.editMode = false;
-    this.updationForm.removeControl(`training_date${id}`);
-    this.updationForm.removeControl(`trainer${id}`);
+      }
+    });
+
+    this.closeEditMode(id);
   }
 
   toogleTabs(tab: string) {
@@ -75,7 +77,7 @@ export class BatchListComponent implements OnInit{
   }
 
   onTableDataChange($event:any) {
-
+    this.pageNumber = $event
   }
 
   getCases(){
@@ -84,9 +86,7 @@ export class BatchListComponent implements OnInit{
         console.log(res);
         this.batchData = res.batches
                         .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        console.log(this.batchData);
         this.filterData();
-        console.log(this.filteredData);
       }
     })
   }
@@ -100,10 +100,22 @@ export class BatchListComponent implements OnInit{
     this.filteredData = this.batchData.filter((item: any) => item.category === this.serviceType && item.location === this.activeTab);
   }
 
-  openEditMode(index: number) {
+  openEditMode(id: String, index: number) {
+    if(this.batchData[index].status !== 'Completed') {
+      return
+    }
     this.editMode = true;
-    this.updationForm.addControl(`training_date${index}`, this.formBuilder.control(''));
-    this.updationForm.addControl(`trainer${index}`, this.formBuilder.control(''))
+    this.updationForm.addControl(`training_date${id}`, this.formBuilder.control(this.batchData[index].trainingDate?this.batchData[index].trainingDate:''));
+    this.updationForm.addControl(`trainer${id}`, this.formBuilder.control(this.batchData[index].trainer?this.batchData[index].trainer:''));
+    this.updationForm.addControl(`venue${id}`, this.formBuilder.control(this.batchData[index].venue?this.batchData[index].venue:''));
+  }
+
+  closeEditMode(id: string) {
+    //remove control at last and hide theh form for particular batch
+    this.editMode = false;
+    this.updationForm.removeControl(`training_date${id}`);
+    this.updationForm.removeControl(`trainer${id}`);
+    this.updationForm.removeControl(`venue${id}`);
   }
 
   getFormatedDate(date: string): string {

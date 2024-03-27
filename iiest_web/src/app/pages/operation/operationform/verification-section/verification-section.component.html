@@ -192,33 +192,11 @@
 
   </div>
 
-  <div class="col-md-3">
-    <label for="username" class="form-label">Recipient Username</label><sup>*</sup>
-    <input type="text" placeholder="Recipient Username" formControlName="username" class="form-control form-control-sm"
-      id="username" [ngClass]="{ 'is-invalid': verified && verificationform['username'].errors}"
-      [readOnly]="verifiedStatus">
-    <div *ngIf="verified && verificationform['username'].errors" class="invalid-feedback">
-      <div *ngIf="verificationform['username'].errors['required']">Recipient's Username is required</div>
-    </div>
-
-  </div>
-
-  <div class="col-md-3">
-    <label for="password" class="form-label">Recipient Password</label><sup>*</sup>
-    <input type="text" placeholder="Recipient Password" formControlName="password" class="form-control form-control-sm"
-      id="password" [ngClass]="{ 'is-invalid': verified && verificationform['password'].errors }"
-      [readOnly]="verifiedStatus">
-    <div *ngIf="verified && verificationform['password'].errors" class="invalid-feedback">
-      <div *ngIf="verificationform['password'].errors['required']">Recipient's Password is required</div>
-    </div>
-
-  </div>
-
   <div class="row mt-3">
     <div class="col-6">
       <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isTrainer">Verify</button>
-      <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please check all checkable
-        fields before verifying)</span>
+      <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please verify all the
+        fields before submitting)</span>
     </div>
   </div>
   <ngx-loading></ngx-loading>
@@ -499,8 +477,8 @@
   <div class="row mt-3">
     <div class="col-6">
       <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus">Verify</button>
-      <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please check all checkable
-        fields before verifying)</span>
+      <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please verify all the
+        fields before submitting)</span>
     </div>
   </div>
   <ngx-loading [show]="loading"></ngx-loading>

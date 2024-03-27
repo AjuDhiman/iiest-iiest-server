@@ -21,15 +21,16 @@
         <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-start-0 tabs"
           [ngClass]="{'d-grid': activeTab==='form'}">
           <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
-          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId" [isTrainer]="isTrainer"
-            [productType]="productType" (emitCustomerId)="getCustomerId($event)" (emitSalesDate)="getSalesData($event)"
+          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
+            [isTrainer]="isTrainer" [productType]="productType" (emitCustomerId)="getCustomerId($event)"
             (emitVerifiedID)="getVerifiedDataId($event)" (emitVerifiedStatus)="getVerifiedStatus($event)"
-            (emitDocuments)="getDocuments($event)" (refreshAuditLog)="generalsec.getCaseNotes()" (emitVerifiedData)="getVerifiedData($event)">
+            (emitDocuments)="getDocuments($event)" (refreshAuditLog)="generalsec.getCaseNotes()"
+            (emitVerifiedData)="getVerifiedData($event)">
           </app-verification-section>
 
           <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
           <app-enrollment-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [salesDate]="salesDate" [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" 
+            [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" [verifiedData]="verifiedData"
             (emitEnrolledStatus)="getEnrolledStatus($event)" (emitEnrolledDataId)="getEnrolledDataId($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-enrollment-section>
@@ -67,7 +68,8 @@
             <h6 class="my-0 d-flex justify-content-between">
               <span>Documents</span>
               <!-- <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download All Docs" (click)="downloadAllDoc(documents)"></fa-icon></span> -->
-              <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download All Docs"></fa-icon></span>
+              <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload"
+                  title="Download All Docs"></fa-icon></span>
             </h6>
           </div>
 
@@ -76,13 +78,16 @@
               <div class="app-card app-card-doc shadow-sm h-100">
                 <div class="app-card-thumb-holder p-3">
                   <div class="app-card-thumb" *ngIf="doc.format === 'image' && doc.src.length == 1">
-                    <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name" (click)="viewDocument(doc)">
+                    <img class="thumb-image" [src]="'http://localhost:3000/' + doc.src" [alt]="doc.name"
+                      (click)="viewDocument(doc)">
                   </div>
                   <span class="icon-holder" *ngIf="doc.format === 'pdf' && doc.src.length == 1">
-                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
+                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)"
+                      [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                   <span class="icon-holder" *ngIf="doc.src.length > 1">
-                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
+                    <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)"
+                      [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
                   </span>
                 </div>
                 <div class="app-card-body p-3 has-card-actions">
@@ -90,12 +95,14 @@
                   <h4 class="app-doc-title truncate mb-0"><a>{{doc.name}}</a></h4>
                   <div class="app-doc-meta position-relative">
                     <ul class="list-unstyled mb-0">
-                      <li><span class="text-muted">Type:</span><span style="text-transform: capitalize;"> {{doc.format}}</span>
-                        </li>
+                      <li><span class="text-muted">Type:</span><span style="text-transform: capitalize;">
+                          {{doc.format}}</span>
+                      </li>
                     </ul>
                   </div>
                   <a class="download-icon position-absolute">
-                    <fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download" (click)="downloadDoc(doc.src, '')"></fa-icon>
+                    <fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download"
+                      (click)="downloadDoc(doc.src, '')"></fa-icon>
                   </a>
                 </div>
               </div>
@@ -116,4 +123,3 @@
     </div>
   </div>
 </div>
-
