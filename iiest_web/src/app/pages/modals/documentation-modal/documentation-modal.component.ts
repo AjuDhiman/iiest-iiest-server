@@ -126,7 +126,12 @@ export class DocumentationModalComponent implements OnInit {
 
     let formData = new FormData();
 
-    formData.append('name', this.selectedDoc.name);
+    if(this.isOtherDoc) {
+      formData.append('name', this.documentsForm.value.name);
+    } else {
+      formData.append('name', this.selectedDoc.name);
+    }
+
     formData.append('format', this.format);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
 
