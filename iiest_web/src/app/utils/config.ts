@@ -29,7 +29,7 @@ export const licenceType = {
 export const serviceNames = {
    "fostac": ["Retail", "Catering", "Others"],
    "foscos": ["Registration", "State"],
-   "hygiene": ["Hygiene Rating Audit"]
+   "HRA": ["HRA"]
 }
 
 
@@ -94,7 +94,7 @@ export const empRegister_roles = [
 
 export const caseList_roles = [
    'Regional Project Manager',
-   'deputy Regional Manager(Project)',
+   'Deputy Regional Manager(Project)',
    'Project Manager',
    'Deputy Training Manager',
    'Senior Project Associate',
@@ -102,7 +102,7 @@ export const caseList_roles = [
    'Project Coordinator',
    'Technical Coordinator',
    ...master_roles
-]
+];
 
 //roles array for showing highchart conditionally
 
@@ -111,7 +111,7 @@ export const salesManagerRoles = [
    'Regional Deputy Manager(Sales)',
    'Area Manager(Sales)',
    'Assistant Area Manager'
-]
+];
 
 export const batchListRoles = [
    'Technical Coordinator',

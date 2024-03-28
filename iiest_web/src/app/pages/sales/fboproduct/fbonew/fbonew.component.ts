@@ -265,8 +265,6 @@ export class FbonewComponent implements OnInit {
           if (res.success) {
             this._toastrService.success('', 'Record Edited Successfully');
             this.backToRegister();
-            //for reloading fbo list
-            this.fboList.fetchAllFboData()
           }
         }
       });
@@ -274,7 +272,7 @@ export class FbonewComponent implements OnInit {
       this.addFbo = this.fboForm.value;
       if(!this.isExisting){
         if (this.addFbo.payment_mode === 'Pay Page') {
-          this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
+          this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               window.location.href = res.message;
               //for reloading fbo list
@@ -302,7 +300,7 @@ export class FbonewComponent implements OnInit {
             }
           })
         } else if(this.addFbo.payment_mode === 'Cash') {
-          this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges).subscribe({
+          this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
@@ -335,7 +333,8 @@ export class FbonewComponent implements OnInit {
         }
       }else{
         if(this.addFbo.payment_mode === 'Cash'){
-          this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+          console.log(this.addFbo);
+          this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res)=>{
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
@@ -362,7 +361,7 @@ export class FbonewComponent implements OnInit {
             }
           })
         }else if(this.addFbo.payment_mode === 'Pay Page'){
-          this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+          this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res)=>{
               window.location.href = res.message
             }
@@ -423,6 +422,10 @@ export class FbonewComponent implements OnInit {
     this.fboForm.removeControl('fostac_training');
     this.fboForm.removeControl('foscos_training');
     this.fboForm.removeControl('hygiene_audit');
+    this.multiSelect.onReset();
+    this.isHygiene = false;
+    this.isFoscos = false;
+    this.isFostac = false;
   }
 
   getSelectedProduct($event: any) {

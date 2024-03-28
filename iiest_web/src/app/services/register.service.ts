@@ -22,17 +22,17 @@ export class RegisterService {
       ));
   }
 
-  public fboPayment(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number): Observable<any> {
+  public fboPayment(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST: number, foscosFixedCharge: number): Observable<any> {
     const url = `${this.url}/fbopayment/${objId}`;
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, hygieneGST, foscosFixedCharge}).pipe(
       catchError(
         this.handleError
       ));
   }
   
-  public addFbo(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number): Observable<any> {
+  public addFbo(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST: number, foscosFixedCharge: number): Observable<any> {
     const url = `${this.url}/fboregister/${objId}`
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST,hygieneGST, foscosFixedCharge}).pipe(
       catchError(
         this.handleError
     ));
@@ -157,9 +157,9 @@ export class RegisterService {
     return this.http.post<any>(url, certificate).pipe(catchError(this.handleError));
   }
 
-  public existingFboSale(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
+  public existingFboSale(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST:number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
     const url = `${this.url}/existingfbosale/${objId}`
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge, existingFboId}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, hygieneGST, foscosFixedCharge, existingFboId}).pipe(
       catchError(
         this.handleError
     ));
@@ -222,9 +222,9 @@ export class RegisterService {
     return this.http.put<any>(url, editedData).pipe(catchError(this.handleError));
   }
 
-  public existingFboPayPage(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
+  public existingFboPayPage(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST:number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
     const url = `${this.url}/existingfbo-paypage/${objId}`
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge, existingFboId}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, hygieneGST, foscosFixedCharge, existingFboId}).pipe(
       catchError(
         this.handleError
     ));
