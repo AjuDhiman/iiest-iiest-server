@@ -54,7 +54,7 @@ export class FbonewComponent implements OnInit {
   selected: any; // related to multi drop-down, remove it if are removing multi-dropdown component
   fostac_processAmnt: number = 0;
   foscos_processAmnt: number = 0;
-  hygiene_processAmnt: number = 0;
+  hra_processAmnt: number = 0;
   maxSelectedItems: number = 2;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
@@ -94,11 +94,11 @@ export class FbonewComponent implements OnInit {
   });
 
   hygiene_audit: FormGroup = new FormGroup({
-    hygiene_service_name: new FormControl(''),
-    hygiene_processing_amount: new FormControl(''),
-    hygiene_client_type: new FormControl(''),
-    shops_no: new FormControl(serviceNames['hygiene'][0]),
-    hygiene_total: new FormControl('')
+    hra_service_name: new FormControl(''),
+    hra_processing_amount: new FormControl(''),
+    hra_client_type: new FormControl(''),
+    shops_no: new FormControl(serviceNames['HRA'][0]),
+    hra_total: new FormControl('')
   })
 
   fboForm: FormGroup = new FormGroup({
@@ -154,11 +154,11 @@ export class FbonewComponent implements OnInit {
     });
 
     this.hygiene_audit = this.formBuilder.group({
-      hygiene_service_name: [serviceNames['hygiene'][0],Validators.required],
-      hygiene_processing_amount: [hraProcessingAmnt,Validators.required],
-      hygiene_client_type: ['',Validators.required],
+      hra_service_name: [serviceNames['HRA'][0],Validators.required],
+      hra_processing_amount: [hraProcessingAmnt,Validators.required],
+      hra_client_type: ['',Validators.required],
       shops_no: ['',Validators.required],
-      hygiene_total: ['', Validators.required]
+      hra_total: ['', Validators.required]
     });
 
     this.existingUserForm = this.existingFrom.group({
@@ -377,8 +377,17 @@ export class FbonewComponent implements OnInit {
     this._getFboGeneralData.getFboGeneralData().subscribe({
       next: (res) => {
         this.fboGeneralData = res.product_name;
-        this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }));
-        this.productList = Object.keys(res.product_name);
+        this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }))
+                                    .sort((item:any) => {
+                                      if(item.value.enabled){
+                                        return -1;
+                                      }
+                                      else {
+                                        return 1;
+                                      }
+                                    });
+        console.log(this.fboGeneralData);
+        this.productList = this.fboGeneralData.map((item:any) => item.key);
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
           this.processAmnts[productName] = product['processing_amount'];
@@ -425,14 +434,14 @@ export class FbonewComponent implements OnInit {
     this.isFostac = false;
     this.isFoscos = false;
     this.isHygiene = false;
-    if (this.productName.find((item: any) => item === 'Fostac Training')) {
+    if (this.productName.find((item: any) => item === 'Fostac')) {
       this.isFostac = true;
       this.fboForm.addControl('fostac_training', this.fostac_training);
     }
     else {
       this.fboForm.removeControl('fostac_training');
     }
-    if (this.productName.find((item: any) => item === 'Foscos Training')) {
+    if (this.productName.find((item: any) => item === 'Foscos')) {
       this.isFoscos = true;
       this.fboForm.addControl('foscos_training', this.foscos_training);
       this.fboForm.get('village')?.setValidators([Validators.required]);
@@ -447,7 +456,7 @@ export class FbonewComponent implements OnInit {
       this.fboForm.get('tehsil')?.clearValidators();
       this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
-    if (this.productName.find((item: any) => item === 'Hygiene Audit')) {
+    if (this.productName.find((item: any) => item === 'HRA')) {
       this.isHygiene = true;
       this.fboForm.addControl('hygiene_audit', this.hygiene_audit);
     }
@@ -535,14 +544,14 @@ export class FbonewComponent implements OnInit {
 
   fostacTotalAmount(TotalAmnt: any) {
     this.fostac_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hygiene_processAmnt });
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hra_processAmnt });
   }
   foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hygiene_processAmnt});
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hra_processAmnt});
   }
   hygieneTotalAmount(TotalAmnt: any) {
-    this.hygiene_processAmnt = TotalAmnt;
+    this.hra_processAmnt = TotalAmnt;
     this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt});
   }
   foscosCharges(charges: any) {

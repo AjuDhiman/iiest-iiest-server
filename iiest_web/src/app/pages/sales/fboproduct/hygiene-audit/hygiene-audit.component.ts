@@ -28,8 +28,8 @@ export class HygieneAuditComponent implements OnInit {
 
 // Processing Amount function for Calculating Hygiene total amount on basis of Processing Amount.
 processAmount() {
-  if (this.hygiene_audit.value.hygiene_client_type != '' && this.hygiene_audit.value.shops_no != '' &&
-  this.hygiene_audit.value.hygiene_processing_amount != '' && this.hygiene_audit.value.fostac_service_name !='') {
+  if (this.hygiene_audit.value.hra_client_type != '' && this.hygiene_audit.value.shops_no != '' &&
+  this.hygiene_audit.value.hra_processing_amount != '' && this.hygiene_audit.value.hygiene_service_name !='') {
     this.GSTandTotalAmnt(this.hygiene_audit.value.shops_no);
   }
 }
@@ -57,23 +57,23 @@ shopsCount($event: any) {
 }
 // GST Calculation on Processing Amount and No.of shops basis.
 GSTandTotalAmnt(param: number) {
-  let hygiene_processAmnt = this.hygiene_audit.value.hygiene_processing_amount * param
-  let GST_amount = hygiene_processAmnt * 18 / 100;
+  let hra_processAmnt = this.hygiene_audit.value.hra_processing_amount * param
+  let GST_amount = hra_processAmnt * 18 / 100;
   this.hygieneGSTAmount.emit(GST_amount);
-  this.hygieneTotalAmnt = Number(GST_amount) + hygiene_processAmnt;
+  this.hygieneTotalAmnt = Number(GST_amount) + hra_processAmnt;
   this.hygieneTotalAmount(this.hygieneTotalAmnt);
   return this.hygieneTotalAmnt;
 }
 //Set Hygiene Total and Emit hygiene Total to Parent Component FBO. 
 hygieneTotalAmount(amnt: number) {
-  this.hygiene_audit.patchValue({ 'hygiene_total': amnt });
+  this.hygiene_audit.patchValue({ 'hra_total': amnt });
   this.hygieneTotal.emit(amnt);
 }
 resetForm() {
   this.hygiene_audit.reset({
-    'hygiene_service_name': '',
-    'hygiene_processing_amount': '',
-    'hygiene_client_type': '', 
+    'hra_service_name': '',
+    'hra_processing_amount': '',
+    'hra_client_type': '', 
   });
 }
 

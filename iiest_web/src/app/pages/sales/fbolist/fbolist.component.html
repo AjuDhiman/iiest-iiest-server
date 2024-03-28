@@ -6,8 +6,8 @@
           (click)="toogleTabs('Fostac')">Fostac</a>
         <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Foscos'}"
           (click)="toogleTabs('Foscos')">Foscos</a>
-        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Hygiene'}"
-          (click)="toogleTabs('Hygiene')">Hygiene</a>
+        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='HRA'}"
+          (click)="toogleTabs('HRA')">HRA</a>
       </li>
     </ul>
     <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
@@ -69,7 +69,7 @@
                       <th class="cell">State</th>
                       <th class="cell">District</th>
                       <th class="cell" *ngIf="activeTab==='Fostac'">Recipient No</th>
-                      <th class="cell" *ngIf="activeTab === 'Foscos' || activeTab === 'Hygiene'">Shop No</th>
+                      <th class="cell" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No</th>
                       <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
                       <th class="cell">Sales Date</th>
                       <th class="cell text-center">Action</th>
@@ -88,7 +88,7 @@
                           (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')"
                           title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
                           fbo.fostacInfo.recipient_no}}</span></td>
-                      <td *ngIf="activeTab === 'Foscos' || activeTab === 'Hygiene'" class="cell text-center"><span
+                      <td *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'" class="cell text-center"><span
                           class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')"
                           title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
                           fbo.foscosInfo.shops_no}}</span></td>
