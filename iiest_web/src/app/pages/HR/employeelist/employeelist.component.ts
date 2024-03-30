@@ -72,7 +72,6 @@ export class EmployeelistComponent implements OnInit {
   // this methord fetches the list of all employees from ngrx store
   fetchAllEmployees(): void {
     this.allEmployees = this._utililitesService.getData();
-    console.log(this.allEmployees);
     this.filter();
     if (this.allEmployees.length === 0) {
       this.getEmployees();
@@ -95,7 +94,7 @@ export class EmployeelistComponent implements OnInit {
       switch (this.selectedFilter) {
         case 'byName': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
-        case 'byEMail': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.email.toLowerCase().includes(this.searchQuery.toLowerCase()))
+        case 'byEmail': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.email.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
         case 'byEmpId': this.filteredEmployees = this.allEmployees.filter((emp: any) => emp.employee_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
           break;
@@ -119,9 +118,11 @@ export class EmployeelistComponent implements OnInit {
   filterEmp(type: boolean) {
     this.isActive = type;
     if(type === true) {
-      this.activeTab = 'Active'
+      this.activeTab = 'Active';
+      this.pageNumber = 1;
     } else {
-      this.activeTab = 'Inactive'
+      this.activeTab = 'Inactive';
+      this.pageNumber = 1;
     }
     this.fetchAllEmployees();
   }

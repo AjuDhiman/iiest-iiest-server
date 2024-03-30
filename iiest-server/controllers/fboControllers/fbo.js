@@ -76,18 +76,22 @@ exports.fboPayReturn = async(req, res)=>{
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, foscosFixedCharge } = fetchedFormData;  
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge } = fetchedFormData;  
         
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
         let serviceArr = [];
 
         if(fostac_training){
-        serviceArr.push(fostac_training.fostac_service_name)
+        serviceArr.push(fostac_training.fostac_service_name);
         }
 
         if(foscos_training){
-        serviceArr.push(foscos_training.foscos_service_name)
+        serviceArr.push(foscos_training.foscos_service_name);
+        }
+
+        if(hygiene_audit){
+          serviceArr.push(hygiene_audit.hra_service_name);
         }
 
         let total_processing_amount = 0;
@@ -95,18 +99,23 @@ exports.fboPayReturn = async(req, res)=>{
         let waterTestFee = 0;
         let extraFee = 0;
 
-        if(product_name.includes('Fostac Training')){
+        if(product_name.includes('Fostac')){
         total_processing_amount += Number(fostac_training.fostac_processing_amount);
-        totalGST += fostacGST
+        totalGST += fostacGST;
         }
 
-        if(product_name.includes('Foscos Training')){
+        if(product_name.includes('Foscos')){
         total_processing_amount += Number(foscos_training.foscos_processing_amount);
         totalGST += foscosGST;
-        extraFee += foscosFixedCharge
+        extraFee += foscosFixedCharge;
         if(foscos_training.water_test_fee !== null){
-          waterTestFee += Number(foscos_training.water_test_fee)
+          waterTestFee += Number(foscos_training.water_test_fee);
           }
+        }
+
+        if(product_name.includes('HRA')){
+          total_processing_amount += Number(hygiene_audit.fostac_processing_amount);
+          totalGST += hygieneGST;
         }
 
         const fboEntry = await fboModel.create({
@@ -130,7 +139,7 @@ exports.fboPayReturn = async(req, res)=>{
           return res.status(401).json({success, message: "Data not entered in payment collection"});
         }
 
-        const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total, invoiceId: invoiceUploadStream.id});
+        const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo:hygiene_audit, payment_mode, grand_total, invoiceId: invoiceUploadStream.id});
 
         if(!selectedProductInfo){
           return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
@@ -202,7 +211,7 @@ exports.fboRegister = async (req, res) => {
         return res.status(404).json({success, noSignErr: true})
       }
 
-      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, gst_number, fostacGST, foscosGST, foscosFixedCharge } = req.body;
+      const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, fostacGST, foscosGST, hygieneGST, foscosFixedCharge } = req.body;
       
       const existing_owner_contact = await fboModel.findOne({ owner_contact });
       if (existing_owner_contact) {
@@ -226,11 +235,15 @@ exports.fboRegister = async (req, res) => {
       let serviceArr = [];
 
       if(fostac_training){
-        serviceArr.push(fostac_training.fostac_service_name)
+        serviceArr.push(fostac_training.fostac_service_name);
       }
 
       if(foscos_training){
-        serviceArr.push(foscos_training.foscos_service_name)
+        serviceArr.push(foscos_training.foscos_service_name);
+      }
+
+      if(hygiene_audit){
+        serviceArr.push(foscos_training.hra_service_name);
       }
 
       let total_processing_amount = 0;
@@ -238,18 +251,23 @@ exports.fboRegister = async (req, res) => {
       let waterTestFee = 0;
       let extraFee = 0;
 
-      if(product_name.includes('Fostac Training')){
+      if(product_name.includes('Fostac')){
         total_processing_amount += Number(fostac_training.fostac_processing_amount);
         totalGST += fostacGST
       }
 
-      if(product_name.includes('Foscos Training')){
+      if(product_name.includes('Foscos')){
         total_processing_amount += Number(foscos_training.foscos_processing_amount);
         totalGST += foscosGST;
-        extraFee += foscosFixedCharge
+        extraFee += foscosFixedCharge;
         if(foscos_training.water_test_fee !== null){
-          waterTestFee += Number(foscos_training.water_test_fee)
+          waterTestFee += Number(foscos_training.water_test_fee);
         }
+      }
+
+      if(product_name.includes('HRA')){
+        total_processing_amount += Number(hygiene_audit.hra_processing_amount);
+        totalGST += hygieneGST;
       }
 
       const invoiceBucket = createInvoiceBucket();
@@ -267,7 +285,7 @@ exports.fboRegister = async (req, res) => {
         return res.status(401).json({ success, randomErr: true })
       }
 
-      const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, payment_mode, grand_total, invoiceId: invoiceUploadStream.id});
+      const selectedProductInfo = await salesModel.create({employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, payment_mode, grand_total, invoiceId: invoiceUploadStream.id});
 
       if(!selectedProductInfo){
         success = false;

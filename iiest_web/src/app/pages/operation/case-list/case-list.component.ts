@@ -96,10 +96,12 @@ export class CaseListComponent implements OnInit {
         this.totalCase = this.caseData.length;
         if (this.panelType === 'Fostac Panel') {
           this.setServiceType('Catering');
+          this.selectedFilter = "byRecipientName";
           this.filter();
         }
         else if (this.panelType === 'Foscos Panel') {
           this.setServiceType("Registration");
+          this.selectedFilter = "byOperatorName";
           this.filter();
         }
       },
@@ -188,9 +190,13 @@ export class CaseListComponent implements OnInit {
     console.log(state);
     if (state && state.forTraining) {
       this.forTraining = state.forTraining;
-      this.typeData = state.batchData.map((item: any) => item.verificationInfo.recipientInfo);
+      this.typeData = state.batchData.map((item: any) => {
+        return {...item.recipientInfo }
+      });
+      this.totalCount = this.typeData.length
       this.filter();
-      console.log(this.forTraining)
+      console.log(this.forTraining);
+      this.loading = false;
     }
   }
 

@@ -2,35 +2,37 @@
     <div class="container-xxl border border-1 rounded-3 pt-3">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
-                <h1 class="app-page-title mb-0">Case List of</h1>
+                <h1 class="app-page-title mb-0">Case List of {{panelType.split(' ')[0]}} ({{serviceType}})</h1>
             </div>
             <div class="col-auto">
                 <div class="page-utilities">
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-                        <div *ngIf="panelType==='Fostac Panel'"class="col-auto">
-                            <button class="btn btn-sm mx-1"
-                                [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
-                                (click)="setServiceType('Catering')">
-                                Catering
-                            </button>
-                            <button class="btn btn-sm mx-1"
-                                [ngClass]="serviceType==='Retail'?'btn-primary':'btn-secondary'" type="button"
-                                (click)="setServiceType('Retail')">
-                                Retail
-                            </button>
-                        </div>
-                        <div *ngIf="panelType==='Foscos Panel'" class="col-auto">
-                            <button class="btn btn-sm mx-1"
-                                [ngClass]="serviceType==='Registration'?'btn-primary':'btn-secondary'" type="button"
-                                (click)="setServiceType('Registration')">
-                                Registration
-                            </button>
-                            <button class="btn btn-sm mx-1"
-                                [ngClass]="serviceType==='State'?'btn-primary':'btn-secondary'" type="button"
-                                (click)="setServiceType('State')">
-                                State
-                            </button>
-                        </div>
+                        <ng-container *ngIf="!forTraining">
+                            <div *ngIf="panelType==='Fostac Panel'" class="col-auto">
+                                <button class="btn btn-sm mx-1"
+                                    [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
+                                    (click)="setServiceType('Catering')">
+                                    Catering
+                                </button>
+                                <button class="btn btn-sm mx-1"
+                                    [ngClass]="serviceType==='Retail'?'btn-primary':'btn-secondary'" type="button"
+                                    (click)="setServiceType('Retail')">
+                                    Retail
+                                </button>
+                            </div>
+                            <div *ngIf="panelType==='Foscos Panel'" class="col-auto">
+                                <button class="btn btn-sm mx-1"
+                                    [ngClass]="serviceType==='Registration'?'btn-primary':'btn-secondary'" type="button"
+                                    (click)="setServiceType('Registration')">
+                                    Registration
+                                </button>
+                                <button class="btn btn-sm mx-1"
+                                    [ngClass]="serviceType==='State'?'btn-primary':'btn-secondary'" type="button"
+                                    (click)="setServiceType('State')">
+                                    State
+                                </button>
+                            </div>
+                        </ng-container>
                         <div class="col-auto">
                             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber"
                                 (click)="pageNumber=1">
@@ -115,7 +117,8 @@
                                                 class="truncate">{{data.salesInfo.fboInfo.district}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.state}}</span>
                                         </td>
-                                        <td *ngIf="forTraining" class="cell"><span class="truncate"></span>
+                                        <td *ngIf="forTraining" class="cell">{{data.enrollment_no}}<span
+                                                class="truncate"></span>
                                         </td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
@@ -193,7 +196,12 @@
 
                 <div class="d-flex" *ngIf="showPagination"
                     [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
-                    <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filtered from ({{totalCount}} Cases of {{totalCase}})</div>
+                    <div *ngIf="filteredData && !forTraining" class="text-sm" style="font-size: 13px;">
+                        {{filteredData.length}} filtered
+                        from ({{totalCount}} {{serviceType}} Cases of {{totalCase}} total)</div>
+                    <div *ngIf="filteredData && forTraining" class="text-sm" style="font-size: 13px;">
+                        {{filteredData.length}} filtered
+                        from {{totalCount}} {{serviceType}} Cases</div>
                     <pagination-controls previousLabel="Prev" nextLabel="Next"
                         (pageChange)="onTableDataChange($event)"></pagination-controls>
                 </div>

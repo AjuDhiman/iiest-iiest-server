@@ -17,3 +17,26 @@
     object-position: center;
     background-color: #e3e6e9;
 }
+
+@media (max-width: 992px) {
+    .employee-image {
+        height: 100px;
+        width: 100px;
+    }
+    .title, .data{
+        font-size:11px;
+        margin: 1px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-sec, .personalInfo-sec, .empInfo-sec {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+    .title, .data{
+        font-size:11px; 
+    }
+}

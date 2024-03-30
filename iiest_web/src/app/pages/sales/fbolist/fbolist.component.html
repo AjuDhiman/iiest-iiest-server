@@ -6,8 +6,8 @@
           (click)="toogleTabs('Fostac')">Fostac</a>
         <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Foscos'}"
           (click)="toogleTabs('Foscos')">Foscos</a>
-        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Hygiene'}"
-          (click)="toogleTabs('Hygiene')">Hygiene</a>
+        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='HRA'}"
+          (click)="toogleTabs('HRA')">HRA</a>
       </li>
     </ul>
     <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
@@ -69,7 +69,7 @@
                       <th class="cell">State</th>
                       <th class="cell">District</th>
                       <th class="cell" *ngIf="activeTab==='Fostac'">Recipient No</th>
-                      <th class="cell" *ngIf="activeTab === 'Foscos' || activeTab === 'Hygiene'">Shop No</th>
+                      <th class="cell" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No</th>
                       <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
                       <th class="cell">Sales Date</th>
                       <th class="cell text-center">Action</th>
@@ -79,19 +79,23 @@
                     <tr class="list-tr"
                       *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
                       <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                      <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.fbo_name}}</span></td>
-                      <td class="cell"><span class="truncate text-uppercase">{{fbo.fboInfo.owner_name}}</span></td>
+                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.fbo_name}}</span></td>
+                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.owner_name}}</span></td>
                       <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
-                      <td class="cell"><span class="truncate">{{fbo.fboInfo.state}}</span></td>
-                      <td class="cell"><span class="truncate">{{fbo.fboInfo.district}}</span></td>
+                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.state}}</span></td>
+                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.district}}</span></td>
                       <td *ngIf="activeTab==='Fostac'" class="cell text-center"><span class="truncate selector"
                           (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')"
                           title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
                           fbo.fostacInfo.recipient_no}}</span></td>
-                      <td *ngIf="activeTab === 'Foscos' || activeTab === 'Hygiene'" class="cell text-center"><span
+                      <td *ngIf="activeTab === 'Foscos'" class="cell text-center"><span
                           class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')"
                           title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
                           fbo.foscosInfo.shops_no}}</span></td>
+                      <td *ngIf="activeTab === 'HRA'" class="cell text-center"><span
+                          class="truncate selector" (click)="!fbo.hraInfo ? '' : recipient(fbo,'HRA')"
+                          title="Enter Shop Details">{{!fbo.hraInfo ? '-' :
+                          fbo.hraInfo.shops_no}}</span></td>
                       <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"
                             style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
                       <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
@@ -115,7 +119,8 @@
           </div><!--//app-card-->
 
           <div class="d-flex" [ngClass]="allFBOEntries?'justify-content-between':'justify-content-end'">
-            <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filltred from ({{filteredFBOEntries.length}} {{activeTab}} cases of
+            <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filtered from
+              ({{filteredFBOEntries.length}} {{activeTab}} Cases of
               {{allFBOEntries.length}})</div>
             <pagination-controls previousLabel="Prev" nextLabel="Next"
               (pageChange)="onTableDataChange($event)"></pagination-controls>

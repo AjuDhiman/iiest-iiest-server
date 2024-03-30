@@ -3,26 +3,26 @@
         <h6 class=" pull-left">Hygiene Audit</h6>
 
         <div class="col-md-3">
-            <label for="hygiene_service_name" class="form-label">Service Name<sup>*</sup></label>
-            <input id="hygiene_service_name" formControlName="hygiene_service_name" type="text" readonly
-            class="form-control form-control-sm" placeholder="Hygiene Rating Audit" />
+            <label for="hra_service_name" class="form-label">Service Name<sup>*</sup></label>
+            <input id="hra_service_name" formControlName="hra_service_name" type="text" readonly
+            class="form-control form-control-sm" placeholder="HRA" />
          </div>
 
          <div class="col-md-3">
-            <label for="hygiene_processing_amount" class="form-label">Processing Amount <sup>*</sup></label>
-            <input id="hygiene_processing_amount" formControlName="hygiene_processing_amount" type="text" readonly
+            <label for="hra_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+            <input id="hra_processing_amount" formControlName="hra_processing_amount" type="text" readonly
                 class="form-control form-control-sm" value="5000" />
          </div>
 
          <div class="col-md-3">
-            <label for="hygiene_client_type" class="form-label">Client Type<sup>*</sup></label>
-            <select id="hygiene_client_type" formControlName="hygiene_client_type" [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('hygiene_client_type')?.errors}"                  
+            <label for="hra_client_type" class="form-label">Client Type<sup>*</sup></label>
+            <select id="hra_client_type" formControlName="hra_client_type" [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('hygiene_client_type')?.errors}"                  
             (change)="clienttypeFun($event)" class="form-select form-select-sm">
                 <option value="" disabled selected>Select the Client Type</option>
                 <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}</option>
             </select>
-            <div *ngIf="submitted && hygiene_audit.get('hygiene_client_type')?.errors" class="invalid-feedback">
-                <div *ngIf="hygiene_audit.get('hygiene_client_type')?.errors?.['required']">Client type is required</div>
+            <div *ngIf="submitted && hygiene_audit.get('hra_client_type')?.errors" class="invalid-feedback">
+                <div *ngIf="hygiene_audit.get('hra_client_type')?.errors?.['required']">Client type is required</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -40,13 +40,13 @@
         </div>
     
         <div class="col-md-3"> 
-            <label for="hygiene_total" class=" form-label">HRA Total Amount<sup>*</sup>
+            <label for="hra_total" class=" form-label">HRA Total Amount<sup>*</sup>
                 <span style="font-size: x-small;">(18% GST Inc.)</span></label>
-            <input type="number" placeholder="HRA Total Amount" formControlName="hygiene_total"
-                [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('hygiene_total')?.errors}"
-                class="form-control form-control-sm" id="hygiene_total" readonly />
-            <div *ngIf="submitted && hygiene_audit.get('hygiene_total')?.errors" class="invalid-feedback">
-                <div *ngIf="hygiene_audit.get('hygiene_total')?.errors?.['required']">HRA Total Amount
+            <input type="number" placeholder="HRA Total Amount" formControlName="hra_total"
+                [ngClass]="{ 'is-invalid': submitted && hygiene_audit.get('hra_total')?.errors}"
+                class="form-control form-control-sm" id="hra_total" readonly />
+            <div *ngIf="submitted && hygiene_audit.get('hra_total')?.errors" class="invalid-feedback">
+                <div *ngIf="hygiene_audit.get('hra_total')?.errors?.['required']">HRA Total Amount
                     Required
                 </div>
             </div>

@@ -32,6 +32,8 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   resultIcon: IconDefinition = faCircleExclamation;
   ticketClosingDate: string = '';
 
+  formHeading: string = '';
+
   //booleans
   isBtnDisble: boolean = false;
   ticketClosed: boolean = false;
@@ -68,8 +70,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     private modalService: NgbModal,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
-    private _getDataService: GetdataService,
-    private http: HttpClient) {
+    private _getDataService: GetdataService) {
 
   }
 
@@ -82,6 +83,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     });
 
     this.getTicketDiliverydata();
+    this.setFormHeading();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -117,7 +119,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
             this.isUploadVisible = false;
           }
           this.ticketClosingDate = this.getFormatedDate(res.data.createdAt);
-          this.setCertificateResult(res.data.ticketStatus);;
+          this.setCertificateResult(res.data.ticketStatus);
         }
       }
     })
@@ -148,14 +150,14 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   onTicketStatusChange($event: any): void {
     if ($event.target.value === 'delivered') {
       this.isUploadVisible = true;
-      if (this.attendanceStatus) {
-        this.isBtnDisble = false;
-      } else {
-        this.isBtnDisble = true;
-      }
     } else {
       this.isUploadVisible = false;
       this.isBtnDisble = false;
+    }
+    if (this.attenSecResult != 'Trained') {
+      this.isBtnDisble = false;
+    } else {
+      this.isBtnDisble = true;
     }
   }
 
@@ -208,7 +210,9 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     const parsedUser = JSON.parse(user);
     const employeeId = parsedUser.employee_id
     modalRef.componentInstance.confirmationText = employeeId;
-    modalRef.componentInstance.actionFunc = this.connformationFunc
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      this.connformationFunc(confirmation);
+    });
   }
 
   //this methord uses the register service for posting form data to backend
@@ -224,7 +228,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
         console.log(res);
         this._toastrService.success('Ticket closed');
         this.ticketClosed = true;
-        this.ticketClosingDate = res.addTicket.createdAt;
+        this.ticketClosingDate = this.getFormatedDate(res.addTicket.createdAt);
         this.setCertificateResult(this.certificationform['ticket_status'].value);
       }
     });
@@ -244,6 +248,19 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       formattedDate = `${day}-${month}-${year}`;
     }
     return formattedDate;
+  }
+
+  setFormHeading(): void {
+    switch(this.projectType) {
+      case 'Fostac': 
+        this.formHeading = 'Certification';
+        break;
+      case 'Foscos': 
+        this.formHeading = 'Licensing';
+        break;
+      default: 
+        this.formHeading = '';
+    }
   }
 
 

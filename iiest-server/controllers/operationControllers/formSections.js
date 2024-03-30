@@ -8,31 +8,18 @@ const ticketDeliveryModel = require("../../models/operationModels/ticketDelivery
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 const sendDocumentMail = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
+const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 
-exports.fostacVerification = async (req, res) => {
+exports.fostacVerification = async (req, res, next) => {
     try {
 
         let success = false;
 
         const recipientId = req.params.recipientid;
 
-        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date, username, password } = req.body;
+        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date } = req.body;
 
-        const checkExistingMail = await fostacVerifyModel.findOne({ email });
-
-        if (checkExistingMail) {
-            success = false;
-            return res.status(401).json({ success, emailErr: true })
-        }
-
-        const checkUsername = await fostacVerifyModel.findOne({ userName: username })
-
-        if (checkUsername) {
-            success = false;
-            return res.status(401).json({ success, userNameErr: true })
-        }
-
-        const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, userName: username, password, salesDate: sales_date });
+        const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, salesDate: sales_date });
 
         //this code is for tracking the CRUD operation regarding to a recipient
 
@@ -46,7 +33,9 @@ exports.fostacVerification = async (req, res) => {
 
         if (basicFormAdd) {
             success = true
-            return res.status(200).json({ success, verifiedId: basicFormAdd._id });
+            req.verificationInfo = basicFormAdd;
+            next();
+            // return res.status(200).json({ success, verifiedId: basicFormAdd._id });
         }
 
     } catch (error) {
@@ -62,17 +51,13 @@ exports.foscosVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
-        const shopInfo = await shopModel.findOne({ _id: shopID }).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] });
+        console.log(verifiedData);
 
-        const fsmsCertificate = await generateFsms(verifiedData, shopInfo);
+        const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
 
-        const selfDecOProp = await generateSelfDecOProp(verifiedData, shopInfo);
+        const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num });
 
-        const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, food_items, operator_address, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
-
-        const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, foodItems: food_items, operatorAddress: operator_address, fsmsCertificate: fsmsCertificate, selfDecOProp: selfDecOProp });
-
-        //this code is for tracking the CRUD operation regarding to a recipient
+        //this code is for tracking the CRUD operation regarding to a shop
 
         const prevVal = {}
 
@@ -103,9 +88,19 @@ exports.getFostacVerifiedData = async (req, res) => {
 
         const verifedData = await fostacVerifyModel.findOne({ recipientInfo: recipientId });
 
+        if(!verifedData) {
+            return res.status(204).json({success: false, message: 'Not Verified yet'})
+        }
+
+        const batchData = await TrainingBatchModel.findOne({ 
+            candidateDetails: {
+                $in: verifedData._id,
+            }
+        });
+
         if (verifedData) {
             success = true;
-            return res.status(200).json({ success, message: 'verified recipient', verifedData });
+            return res.status(200).json({ success, message: 'verified recipient', verifedData, batchData });
         } else {
             return res.status(204).json({ success, message: 'Recipient is not verified' });
         }
@@ -136,13 +131,13 @@ exports.getFoscosVerifiedData = async (req, res) => {
 }
 
 //backend code for enrollment form
-exports.fostacEnrollment = async (req, res, next) => {
+exports.fostacEnrollment = async (req, res) => {
     try {
         let success = false;
 
         const verifiedDataId = req.params.verifieddataid;
 
-        const { tentative_training_date, fostac_training_date, roll_no } = req.body;
+        const { tentative_training_date, fostac_training_date, username, password, roll_no, trainer, venue } = req.body;
 
         const checkRollNo = await fostacEnrollmentModel.findOne({ roll_no });
 
@@ -151,37 +146,18 @@ exports.fostacEnrollment = async (req, res, next) => {
             return res.status(401).json({ success, rollNoErr: true });
         }
 
-        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, tentative_training_date, fostac_training_date, roll_no });
+        const enrollRecipient = await fostacEnrollmentModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, fostac_training_date: [fostac_training_date], tentative_training_date, roll_no, username, password, venue, trainer });
 
         const verifiedData = await fostacVerifyModel.findOne({ _id: verifiedDataId })
             .populate({
                 path: 'recipientInfo',
-                populate: {
-                    path: 'salesInfo',
-                }
             });
 
         //this code is for tracking the flow of data regarding to a recipient
 
-        // //this code is for tracking fostac training date and tentative training date
-
-        let trainingDateAction = '';
-
-        if (getFormatedDate(enrollRecipient.tentative_training_date) !== getFormatedDate(enrollRecipient.fostac_training_date)) {
-
-            trainingDateAction = `Date ${getFormatedDate(enrollRecipient.fostac_training_date)} is given instead of tentative training date(${getFormatedDate(enrollRecipient.tentative_training_date)})`
-
-        } else {
-
-            trainingDateAction = `Training Date(${getFormatedDate(enrollRecipient.fostac_training_date)}) is given`;
-
-        }
-
         const prevVal = {}
 
         const currentVal = enrollRecipient;
-
-        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo._id, prevVal, currentVal, trainingDateAction);
 
         await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo._id, prevVal, currentVal, "Recipient Enrolled");
 
@@ -189,8 +165,7 @@ exports.fostacEnrollment = async (req, res, next) => {
 
         if (enrollRecipient) {
             success = true;
-            req.enrollRecipient = {...enrollRecipient, verificationInfo: verifiedData };
-            return next();
+            return res.status(200).json({ success, message: 'Enrolled recipient', enrolledId: enrollRecipient._id });
         }
 
     } catch (error) {

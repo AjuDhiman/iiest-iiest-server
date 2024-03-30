@@ -128,6 +128,10 @@ const employeeRegister = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         // unique: true
+    },
+    temporaryPassword : {
+        type: String,
+        required: false
     }
 },{timestamps: true})
 

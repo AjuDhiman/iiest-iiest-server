@@ -181,6 +181,7 @@ export class FbolistComponent implements OnInit {
 
   toogleTabs(tab: string) {
     this.activeTab = tab;
+    this.pageNumber = 1;
 
     this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
       if (item.product_name.includes(tab)) {

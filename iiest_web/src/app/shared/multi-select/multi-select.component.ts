@@ -14,6 +14,7 @@ export class MultiSelectComponent implements OnChanges {
   isdropped = false;
   invalid: boolean = false;
   isDisplayEmpty: boolean = true;
+  popedElement: string|number = '';
 
   @Input()
   options: string[]|number[];
@@ -63,7 +64,7 @@ export class MultiSelectComponent implements OnChanges {
       this.selected.push(value);
     }
     else {
-      this.selected.splice(this.selected.indexOf(value), 1);
+      this.popedElement = this.selected.splice(this.selected.indexOf(value), 1)[0];
     }
 
     //we want to emit the array of all selected elements

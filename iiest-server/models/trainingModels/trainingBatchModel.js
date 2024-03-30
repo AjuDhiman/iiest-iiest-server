@@ -7,16 +7,19 @@ const trainingBatchSchema = new Schema({
         ref: 'staff_registers',
         required: true
     },
+    id_num: {
+        type: Number,
+        required: true
+    },
     batchCode: {
         type: String,
         required: true,
         unique: true
     },
-    // trainer: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'staff_registers',
-    //     required: true
-    // },
+    trainer: {
+        type: String,
+        // required: true
+    },
     category: {
         type: String,
         required: true
@@ -39,15 +42,15 @@ const trainingBatchSchema = new Schema({
     candidateDetails: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'fostac_enrollment',
-            unique: true
+            ref: 'fostac_verifications',
+            // unique: true
         }],
         required: true,
         validate: [arrayMaxLengthValidator, 'Candidate details array must contain at most 50 elements']
     },
     trainingDate: {
         type: Date,
-        required: true
+        // required: true
     }
 }, { timestamps: true });
 

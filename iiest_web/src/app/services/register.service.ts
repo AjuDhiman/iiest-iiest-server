@@ -22,17 +22,17 @@ export class RegisterService {
       ));
   }
 
-  public fboPayment(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number): Observable<any> {
+  public fboPayment(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST: number, foscosFixedCharge: number): Observable<any> {
     const url = `${this.url}/fbopayment/${objId}`;
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, hygieneGST, foscosFixedCharge}).pipe(
       catchError(
         this.handleError
       ));
   }
   
-  public addFbo(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number): Observable<any> {
+  public addFbo(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST: number, foscosFixedCharge: number): Observable<any> {
     const url = `${this.url}/fboregister/${objId}`
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST,hygieneGST, foscosFixedCharge}).pipe(
       catchError(
         this.handleError
     ));
@@ -102,6 +102,20 @@ export class RegisterService {
     const url = `${this.url}/login`;
     return this.http.post<any>(url, loginemployee).pipe(catchError(this.handleError));
   } 
+
+  public forgotPassword(email: string): Observable<any> {
+    const endpoint = `${this.url}/forgot-password`;
+    return this.http.post<any>(endpoint, { email }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public resetPassword( username : string, email: string, temporaryPassword: string, newPassword: string): Observable<any> {
+    const endpoint = `${this.url}/reset-password`;
+    return this.http.post<any>(endpoint, { username, email, temporaryPassword, newPassword }).pipe(
+      catchError(this.handleError)
+    );
+  }
   
   public deleteFbo(id: string, deletedBy: string): Observable<any> {
     const url = `${this.url}/deleteFbo/${id}`;
@@ -111,6 +125,11 @@ export class RegisterService {
   public deleteEmployee(id: string, deletedBy: string): Observable<any> {
     const url = `${this.url}/deleteEmployee/${id}`;
     return this.http.delete<any>(url, {body: {deletedBy}}).pipe(catchError(this.handleError));
+  } 
+
+  public deleteDoc(oid:string, docInfo: string): Observable<any> {
+    const url = `${this.url}/deletedoc/${oid}`;
+    return this.http.delete<any>(url, {body: {docInfo}}).pipe(catchError(this.handleError));
   } 
 
   public updateEmployee(objId: string, employee: Employee, editedBy: string): Observable<any>{
@@ -138,9 +157,9 @@ export class RegisterService {
     return this.http.post<any>(url, certificate).pipe(catchError(this.handleError));
   }
 
-  public existingFboSale(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
+  public existingFboSale(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST:number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
     const url = `${this.url}/existingfbosale/${objId}`
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge, existingFboId}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, hygieneGST, foscosFixedCharge, existingFboId}).pipe(
       catchError(
         this.handleError
     ));
@@ -155,6 +174,7 @@ export class RegisterService {
   }
 
   public verifyFoscos(shopId: string, formInterface: foscosVerification){
+    console.log(formInterface);
     const url = `${this.url}/foscosverification/${shopId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
@@ -162,7 +182,7 @@ export class RegisterService {
     ));
   }
 
-  public enrollRecipient(verId: string, formInterface: fostacEnrollment){
+  public enrollRecipient(verId: string, formInterface: any){
     const url = `${this.url}/fostacenrollment/${verId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
@@ -180,15 +200,31 @@ export class RegisterService {
 
   public submitAttenSec(enrId: string, formInterface: fostacAttendance){ // this service helps on posting data related to recipient attendance
     const url = `${this.url}/fostacattendance/${enrId}`
+       return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public saveDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savedocuments/${objId}`
+    console.log(objId, formInterface);
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
     ));
   }
 
-  public existingFboPayPage(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
+  //for training batch
+  public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{
+    const url = `${this.url}/updatetraingbatch/${objId}`;
+    console.log(url);
+    return this.http.put<any>(url, editedData).pipe(catchError(this.handleError));
+  }
+
+  public existingFboPayPage(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST:number, foscosFixedCharge: number, existingFboId: string): Observable<any> {
     const url = `${this.url}/existingfbo-paypage/${objId}`
-    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, foscosFixedCharge, existingFboId}).pipe(
+    return this.http.post<any>(url, {...addFbo, foscosGST, fostacGST, hygieneGST, foscosFixedCharge, existingFboId}).pipe(
       catchError(
         this.handleError
     ));

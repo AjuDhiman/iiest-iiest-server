@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -126,6 +126,15 @@ export class HeaderComponent implements OnInit {
       event.target.classList.toggle('show');
     }
   }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const targetElement = event.target as HTMLElement;
+    if ((!targetElement.closest('.app-user-dropdown'))) {
+      this.toggelShow = false;
+    }
+  }
+
   logout() {
     this._registerService.signout();
   }

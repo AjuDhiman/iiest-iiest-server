@@ -34,12 +34,12 @@ const salesSchema = new Schema({
             return this.product_name.includes('Foscos Training')
         }
     },
-    // hygieneInfo: {
-    //     type: Object,
-    //     required: function() {
-    //         return this.product_name.includes('Hygiene');
-    //     }
-    // },
+    hraInfo: {
+        type: Object,
+        required: function() {
+            return this.product_name.includes('HRA');
+        }
+    },
     payment_mode: {
         type: String, 
         required: true

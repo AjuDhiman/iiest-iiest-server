@@ -178,7 +178,7 @@
                         <div class="row">
                             <div class="col-md-3 title">Foscos Total <br><span
                                     style="font-size: x-small; font-weight: normal;">(18%
-                                    GST Inc.)</span></div>
+                                    GST Exc.)</span></div>
                             <div class="col-md-9 data">
                                 {{fboData.foscosInfo.foscos_total}} <fa-icon class="fa-l" style="color: #5d6778;"
                                     [icon]="faIndianRupeeSign"></fa-icon>
@@ -229,9 +229,58 @@
                         <div class="row">
                             <div class="col-md-3 title">Fostac Total<br><span
                                     style="font-size: x-small; font-weight: normal;">(18%
-                                    GST Inc.)</span></div>
+                                    GST Exc.)</span></div>
                             <div class="col-md-9 data">
                                 {{fboData.fostacInfo.fostac_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="fboData.hraInfo" class="row">
+                <div class="col-md title" style="color: #1957a9;">HRA Details</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Client Type</div>
+                            <div class="col-md-6 data">
+                                {{fboData.hraInfo.hra_client_type}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Processing Amount </div>
+                            <div class="col-md-6 data">
+                                {{fboData.hraInfo.hra_processing_amount}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Service Name</div>
+                            <div class="col-md-6 data">
+                                {{fboData.hraInfo.hra_service_name}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">No. of Shops </div>
+                            <div class="col-md-6 data">{{fboData.hraInfo.shops_no}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3 title">HRA Total<br><span
+                                    style="font-size: x-small; font-weight: normal;">(18%
+                                    GST Exc.)</span></div>
+                            <div class="col-md-9 data">
+                                {{fboData.hraInfo.hra_total}} <fa-icon class="fa-l" style="color: #5d6778;"
                                     [icon]="faIndianRupeeSign"></fa-icon>
                             </div>
                         </div>

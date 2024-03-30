@@ -17,7 +17,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   verified: boolean = false;
   verifiedStatus: boolean = false;
   // isPropraitor: boolean = false;
-  // minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
+  minMembers: number = 1; // this var is for deciding min no of owners in case of partnership or board of directors
   // ownersNum: number = 0; // this var is for deciding the no of owners in case of partnership or board of directors
   // indexArr: number[] = []; //this var is used for converting ownersNum to array of increasing num till ownerNum because we are using this with ngFor and ngFor works only with array
   ownerType: string = '';
@@ -25,6 +25,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   //icons
   faCircleExclamation = faCircleExclamation;
   faCircleCheck = faCircleCheck;
+
+  //var related to loader
+  loading: boolean = false;
 
   // input variables
   @Input() candidateId: string = '';
@@ -36,7 +39,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   //output variables
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
-  @Output() emitSalesDate: EventEmitter<string> = new EventEmitter<string>;
+  @Output() emitVerifiedData: EventEmitter<any> = new EventEmitter<any>;
 
   @Output() emitVerifiedStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
 
@@ -77,8 +80,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     pancard_no: new FormControl(''),
     fostac_total: new FormControl(''),
     sales_person: new FormControl(''),
-    username: new FormControl(''),
-    password: new FormControl('')
   });
 
   foscosVerificationForm: FormGroup = new FormGroup({
@@ -97,12 +98,10 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     sales_date: new FormControl(''),
     sales_person: new FormControl(''),
     kob: new FormControl(''),
-    food_items: new FormControl(''),
     food_category: new FormControl(''),
     ownership_type: new FormControl(''),
-    owner_num: new FormControl(''),
-    operator_address: new FormControl(''),
-  });
+    owners_num: new FormControl(this.minMembers)
+    });
 
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
@@ -165,6 +164,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     if (this.verificationForm.invalid) {
       return
     }
+    this.loading = true;
     if (this.productType === 'Fostac') {
       this._registerService.verifyFostac(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
@@ -172,12 +172,18 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
+            this.emitVerifiedData.emit({...res.verificationInfo, batchData: res.batchData});
             this.refreshAuditLog.emit();
-            this._toastrService.success('Resipient\'s information is Verified', 'Verified');
+            this.loading = false;
+            this._toastrService.success('Recipient\'s Information is Verified', 'Verified');
           }
         },
         error: err => {
-          this._toastrService.error(err.messsage, 'Can\'t Verify');
+          if(err.error.locationErr){
+            this._toastrService.error('Location not avilable');
+          } else {
+            this._toastrService.error(err.error.messsage, 'Can\'t Verify');
+          }
         }
       })
     } else if (this.productType === 'Foscos') {
@@ -188,9 +194,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           if (res.success) {
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
-            this.emitVerifiedID.emit(res.verifiedId);
+            this.emitVerifiedID.emit(res.verificationInfo._id);
+            this.emitVerifiedData.emit(res.verificationInfo);
             this.refreshAuditLog.emit();
-            this._toastrService.success('Shop\'s information is Verified', 'Verified');
+            this.loading = false;
+            this._toastrService.success('Shop\'s Information is Verified', 'Verified');
           }
         }
       });
@@ -212,7 +220,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
           this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
-          this.emitSalesDate.emit(res.populatedInfo.salesInfo.createdAt);
         } else if (this.productType === 'Foscos') {
           this.verificationForm.patchValue({ operator_name: res.populatedInfo.operatorName });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
@@ -228,18 +235,27 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.emitDocuments.emit([
             {
               name: 'Electricity Bill',
-              src: res.populatedInfo.eBillImage,
-              format: 'image'
+              src: [res.populatedInfo.eBillImage],
+              format: 'image',
+              multiplDoc: false
             },
             {
               name: 'Owner Photo',
-              src: res.populatedInfo.ownerPhoto,
-              format: 'image'
+              src: [res.populatedInfo.ownerPhoto],
+              format: 'image',
+              multipleDoc: false
             },
             {
               name: 'Shop Photo',
-              src: res.populatedInfo.shopPhoto,
-              format: 'image'
+              src: [res.populatedInfo.shopPhoto],
+              format: 'image',
+              multipleDoc: false
+            },
+            {
+              name: 'Aadhar',
+              src: res.populatedInfo.aadharPhoto,
+              format: 'image',
+              multipleDoc: true
             }
           ]);
         }
@@ -248,6 +264,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   getFostacVerifiedData(): void {
+    this.loading = true;
     this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
       next: res => {
         if (res) {
@@ -258,12 +275,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
           this.verificationForm.patchValue({ email: res.verifedData.email });
           this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
-          this.verificationForm.patchValue({ username: res.verifedData.userName });
-          this.verificationForm.patchValue({ password: res.verifedData.password });
-          this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'))
+          this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'));
+          this.emitVerifiedData.emit({...res.verifedData, batchData:res.batchData});
+          this.loading = false;
         } else {
           this.verifiedStatus = false;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
+          this.loading = false;
         }
       }
     });
@@ -282,23 +300,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
           this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
           this.verificationForm.patchValue({ food_items: res.verifedData.foodItems });
-          console.log(res.verifedData)
-          this.emitDocuments.emit([{
-            name: 'FSMS Cerificate',
-            src: res.verifedData.fsmsCertificate,
-            format: 'pdf'
-          },
-          {
-            name: 'Self Declearation of Propraitorship',
-            src: res.verifedData.selfDecOProp,
-            format: 'pdf'
-          }
-          ]);
+          this.emitVerifiedData.emit(res.verifedData);
         } else {
           this.verifiedStatus = false;
         }
       }
-    })
+    });
   }
 
   getFormatedDate(date: string): string {
@@ -352,8 +359,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       fostac_total: ['', Validators.required],
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],
-      username: ['', Validators.required],
-      password: ['', Validators.required]
     });
 
     this.foscosVerificationForm = this.formBuilder.group({
@@ -373,12 +378,31 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       sales_person: ['', Validators.required],
       kob: ['', Validators.required],
       food_category: ['', Validators.required],
-      food_items: ['', Validators.required],
       ownership_type: ['', Validators.required],
-      owner_num: ['', Validators.required],
-      operator_address: ['', Validators.required],
+      owners_num: [this.minMembers, Validators.required],
     });
 
+  }
+
+  onOwnershipTypeChanges($event: any) {
+    console.log($event.target.value)
+    if($event.target.value === 'Propaitorship') {
+      this.minMembers=1;
+    } else {
+      this.minMembers=2;
+    }
+    this.verificationForm.patchValue({'owners_num': this.minMembers});
+  }
+
+  onOwnersNumChange($event: any) {
+    let value = $event.target.value;
+    if(value < this.minMembers){
+      value = this.minMembers;
+    } else if (value > 20) {
+      value = 20;
+    }
+
+    this.verificationForm.patchValue({'owners_num': value});
   }
 
 }

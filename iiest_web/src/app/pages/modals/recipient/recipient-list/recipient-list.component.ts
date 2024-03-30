@@ -34,9 +34,9 @@ export class RecipientListComponent {
   }
 
   uploadEbill($event: any, shopId: string){
-    let file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
+    const file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+      this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
       return;
     }
     let formData: FormData = new FormData();
@@ -50,9 +50,9 @@ export class RecipientListComponent {
   }
 
   uploadOwnerPhoto($event: any, shopId: string){
-    let file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
+    const file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+      this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
       return;
     }
     let formData: FormData = new FormData();
@@ -66,13 +66,33 @@ export class RecipientListComponent {
   }
 
   uploadShopPhoto($event: any, shopId: string){
-    let file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
+    const file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+      this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
       return;
     }
     let formData: FormData = new FormData();
     formData.append('shopPhoto', file);
+    this._registerService.uploadShopPhoto(shopId, formData).subscribe({
+      next: res => {
+        this.activeModal.close();
+        this._toastrService.success('shopPhoto Uploaded')
+      }
+    })
+  }
+
+  uploadAadharphoto($event: any, shopId: string){
+    const files = $event.target.files;
+    const formData: FormData = new FormData();
+    
+    files.forEach((file:File) => {
+      if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+        this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
+        return;
+      }
+      formData.append('aadharPhoto', file);
+    });
+
     this._registerService.uploadShopPhoto(shopId, formData).subscribe({
       next: res => {
         this.activeModal.close();

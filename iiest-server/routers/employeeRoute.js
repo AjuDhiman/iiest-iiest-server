@@ -1,11 +1,11 @@
 const express = require('express');
-const { employeeRegister, employeeLogin, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
+const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, salesData} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { getTopSalesPersons, getTopProducts, getEmpUnderManager } = require('../controllers/employeeControllers/statList');
-const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData } = require('../controllers/employeeControllers/Highcharts');
+const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, getAreaWiseFboData } = require('../controllers/employeeControllers/Highcharts');
 
 const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
@@ -13,6 +13,8 @@ const employeeFilesUpload = multer({storage: employeeFilesStorage});
 
 router.post('/empregister', authMiddleware, employeeFilesUpload.fields([{name: 'empSignature', maxCount: 1}, {name: 'employeeImage', maxCount: 1}]), employeeRegister);
 router.post('/login', employeeLogin);
+router.post('/forgot-password', forgotPassword); 
+router.post('/reset-password', resetPassword);
 router.delete('/deleteEmployee/:id', authMiddleware, deleteEmployee);
 router.put('/editEmployee/:id', authMiddleware, editEmployee);
 router.get('/empgeneraldata', authMiddleware, employeeFormData);
@@ -39,5 +41,7 @@ router.get('/gettopsalespersons', authMiddleware, getTopSalesPersons);
 router.get('/gettopproducts', authMiddleware, getTopProducts);
 router.get('/getempundermanager', authMiddleware, getEmpUnderManager);
 // router.get('/getsalesdata', salesData); // api in development for getting optimized sales list
+
+// router.get('/getareawisefbo', authMiddleware , getAreaWiseFboData);
 
 module.exports = router;

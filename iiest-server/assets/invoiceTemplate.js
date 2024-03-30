@@ -55,7 +55,6 @@ const invoiceTemplate = async(fboInfo)=>{
             const signaturePrefix = 'data:image/png;base64,';
             const signaturebase64 = signatureBuffer.toString('base64');
             const signatureConverted = `${signaturePrefix}${signaturebase64}`;
-            console.log('Signature Converted ' + signatureConverted);
 
             resolve(`<!DOCTYPE html>
             <html lang="en">

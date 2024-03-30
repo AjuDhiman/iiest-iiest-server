@@ -104,9 +104,11 @@ export class RecipientComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    // if (this.recipientform.invalid) {
-    //   return;
-    // }
+    console.log(this.recipientform);
+
+    if (this.recipientform.invalid) {
+      return;
+    }
 
     this.loading = true;
 
@@ -115,8 +117,6 @@ export class RecipientComponent implements OnInit {
     console.log(this.serviceType);
 
     if (this.serviceType === 'fostac') {
-
-      console.log(5);
 
       this._registerService.addFboRecipent(this.fboID, [this.recipientform.value]).subscribe({
         next: (res) => {
@@ -141,7 +141,6 @@ export class RecipientComponent implements OnInit {
     } else if (this.serviceType === 'foscos') {
 
       let formData: any = new FormData()
-      console.log(6);
 
       formData.append('operatorName', this.recipientform.get('operatorName')?.value);
       formData.append('address', this.recipientform.get('address')?.value);
@@ -151,6 +150,10 @@ export class RecipientComponent implements OnInit {
       formData.append('eBill', this.ebillFile);
       formData.append('ownerPhoto', this.ownerPhotoFile);
       formData.append('shopPhoto', this.shopPhotoFile);
+
+      (this.aadharFile as any).forEach((file:File) => {
+        formData.append('aadharPhoto', file);
+      })
 
       console.log(1);
       this._registerService.addFboShop(this.fboID, formData).subscribe({
@@ -197,8 +200,8 @@ export class RecipientComponent implements OnInit {
           case 'shopPhoto':
             this.shopPhotoFile = file;
             break;
-          case 'aadhar':
-            this.aadharFile = file;
+          case 'aadharPhoto':
+            this.aadharFile = $event.target.files;
             break;
         }
         console.log(this.ebillFile, this.ownerPhotoFile, this.shopPhotoFile, this.aadharFile);
@@ -352,6 +355,7 @@ export class RecipientComponent implements OnInit {
             eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             owner_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             shop_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            aadhar_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
           });
         this.listCount = this.fboData.foscosInfo.shops_no;
         break;

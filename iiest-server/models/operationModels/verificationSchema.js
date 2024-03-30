@@ -35,15 +35,6 @@ const fostacVerification = new Schema({
         type: String, 
         required: true
     },
-    userName: {
-        type: String, 
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String, 
-        required: true
-    },
     salesDate: {
         type: Date, 
         required: true 
@@ -73,23 +64,11 @@ const foscosVerification = new Schema({
         required: true
     },
     ownershipType: {
-        type: Array,
-        required: true
-    },
-    foodItems: {
         type: String,
         required: true
     },
-    operatorAddress: {
-        type: String,
-        required: true
-    }, 
-    fsmsCertificate: {
-        type: String,
-        required: true
-    },
-    selfDecOProp: {
-        type: String,
+    OwnersNum: {
+        type: Number,
         required: true
     }
 });

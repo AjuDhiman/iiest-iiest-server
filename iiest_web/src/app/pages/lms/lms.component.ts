@@ -15,215 +15,127 @@ export class LmsComponent implements OnInit {
   showMonth: string;
   todayDate: any;
   isCurrentDate: boolean;
-  holidays: any = [{
-    "date": 6,
-    "month": "March",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Maharishi Dayanand Saraswati Jayanti",
-    "leave_type": "RH"
-  },
-  {
-    "date": 8,
-    "month": "March",
-    "year": 2024,
-    "day": "Friday",
-    "holiday": "Maha Shivratri",
-    "leave_type": "RH"
-  },
-  {
-    "date": 24,
-    "month": " March",
-    "year": 2024,
-    "day": "Sunday",
-    "holiday": "Holika Dahana",
-    "leave_type": "RH"
-  },
-  {
-    "date": 25,
-    "month": "March",
-    "year": 2024,
-    "day": "Monday",
-    "holiday": "Holi, Dolyatra ",
-    "leave_type": "RH"
-  },
-  {
-    "date": 29,
-    "month": "March",
-    "year": 2024,
-    "day": "Friday",
-    "holiday": "Good Friday",
-    "leave_type": "GH"
-  },
-
-  {
-    "date": 31,
-    "month": "March",
-    "year": 2024,
-    "day": "Sunday",
-    "holiday": "Easter Day",
-    "leave_type": "RH"
-  },
-  {
-    "date": 9,
-    "month": "April",
-    "year": 2024,
-    "day": "Tuesday",
-    "holiday": "Ugadi",
-    "leave_type": "RH"
-  },
-  {
-    "date": 10,
-    "month": "April",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Id-ul-Fitr",
-    "leave_type": "RH"
-  },
-  {
-    "date": 11,
-    "month": "April",
-    "year": 2024,
-    "day": "Thursday",
-    "holiday": "Ramzan",
-    "leave_type": "RH"
-  },
-  {
-    "date": 13,
-    "month": "April",
-    "year": 2024,
-    "day": "Saturday",
-    "holiday": "Vaisakhi",
-    "leave_type": "RH"
-  },
-  {
-    "date": 14,
-    "month": "April",
-    "year": 2024,
-    "day": "Sunday",
-    "holiday": "Dr Ambedkar Jayanti ",
-    "leave_type": "RH"
-  },
-  {
-    "date": 17,
-    "month": "April",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Rama Navami",
-    "leave_type": "GH"
-  },
-  {
-    "date": 21,
-    "month": "April",
-    "year": 2024,
-    "day": "Sunday",
-    "holiday": "Mahavir Jayanti",
-    "leave_type": "GH"
-  },
-  {
-    "date": 8,
-    "month": "May",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Rabindra Jayanti",
-    "leave_type": "RH"
-  },
-  {
-    "date": 23,
-    "month": "May",
-    "year": 2024,
-    "day": "Thursday",
-    "holiday": "Buddha Purnima",
-    "leave_type": "GH"
-  },
-  {
-    "date": 17,
-    "month": "June",
-    "year": 2024,
-    "day": "Monday",
-    "holiday": "Id-ul-Zuha(Bakrid)",
-    "leave_type": "GH"
-  },
-  {
-    "date": 17,
-    "month": "July",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Muharram",
-    "leave_type": "GH"
-  },
-  {
-    "date": 15,
-    "month": "August",
-    "year": 2024,
-    "day": "Thursday",
-    "holiday": "Independence Day",
-    "leave_type": "GH"
-  },
-  {
-    "date": 26,
-    "month": "August",
-    "year": 2024,
-    "day": "Monday",
-    "holiday": "Janamashtami (Vaishnva)",
-    "leave_type": "GH"
-  }
-    , {
-    "date": 7,
-    "month": "September",
-    "year": 2024,
-    "day": "Saturday",
-    "holiday": "Ganesh Chaturthi",
-    "leave_type": "RH"
-  },
-  {
-    "date": 16,
-    "month": "September",
-    "year": 2024,
-    "day": "Monday",
-    "holiday": "Eid-Milad",
-    "leave_type": "RH"
-  },
-  {
-    "date": 2,
-    "month": "October",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Gandhi Jaynthi",
-    "leave_type": "GH"
-  },
-  {
-    "date": 12,
-    "month": "October",
-    "year": 2024,
-    "day": "Saturday",
-    "holiday": "Dussehra",
-    "leave_type": "GH"
-  },
-  {
-    "date": 31,
-    "month": "October",
-    "year": 2024,
-    "day": "Thursday",
-    "holiday": "Diwali",
-    "leave_type": "GH"
-  },
-  {
-    "date": 15,
-    "month": "November",
-    "year": 2024,
-    "day": "Friday",
-    "holiday": " Guru Nanak's Birthday",
-    "leave_type": "GH"
-  },
-  {
-    "date": 25,
-    "month": "December",
-    "year": 2024,
-    "day": "Wednesday",
-    "holiday": "Christmas",
-    "leave_type": "GH"
-  }
+  holidays: any = [
+    {
+      "date": 26,
+      "month": "January",
+      "year": 2024,
+      "day": "Friday",
+      "holiday": "Republic Day",
+      "leave_type": "NH"
+    },
+    {
+      "date": 8,
+      "month": "March",
+      "year": 2024,
+      "day": "Friday",
+      "holiday": "Maha Shivratri",
+      "leave_type": "RH"
+    },
+    {
+      "date": 25,
+      "month": "March",
+      "year": 2024,
+      "day": "Monday",
+      "holiday": "Holi ",
+      "leave_type": "GH"
+    },
+    {
+      "date": 29,
+      "month": "March",
+      "year": 2024,
+      "day": "Friday",
+      "holiday": "Good Friday",
+      "leave_type": "GH"
+    },
+    {
+      "date": 9,
+      "month": "April",
+      "year": 2024,
+      "day": "Wednesday",
+      "holiday": "EId-ul-Fitr",
+      "leave_type": "GH"
+    },
+    {
+      "date": 17,
+      "month": "June",
+      "year": 2024,
+      "day": "Monday",
+      "holiday": "EId-ul-Zuha(Bakrid)",
+      "leave_type": "GH"
+    },
+    {
+      "date": 15,
+      "month": "August",
+      "year": 2024,
+      "day": "Thursday",
+      "holiday": "Independence Day",
+      "leave_type": "NH"
+    },
+    {
+      "date": 19,
+      "month": "August",
+      "year": 2024,
+      "day": "Monday",
+      "holiday": "Raksha Bandhan",
+      "leave_type": "RH"
+    },
+    {
+      "date": 26,
+      "month": "September",
+      "year": 2024,
+      "day": "Monday",
+      "holiday": "Janamashtami (Vaishnva)",
+      "leave_type": "RH"
+    },
+    {
+      "date": 2,
+      "month": "October",
+      "year": 2024,
+      "day": "Wednesday",
+      "holiday": "Gandhi Jayanti",
+      "leave_type": "NH"
+    },
+    {
+      "date": 12,
+      "month": "October",
+      "year": 2024,
+      "day": "Saturday",
+      "holiday": "Dussehra",
+      "leave_type": "RH"
+    },
+    {
+      "date": 1,
+      "month": "November",
+      "year": 2024,
+      "day": "Friday",
+      "holiday": "Diwali",
+      "leave_type": "GH"
+    },
+    {
+      "date": 2,
+      "month": "November",
+      "year": 2024,
+      "day": "Saturday",
+      "holiday": "Govardhan Pooja",
+      "leave_type": "GH"
+    },
+    {
+      "date": 3,
+      "month": "November",
+      "year": 2024,
+      "day": "Sunday",
+      "holiday": "Bahi Dooj",
+      "leave_type": "GH"
+    },
+    {
+      "date": 25,
+      "month": "December",
+      "year": 2024,
+      "day": "Wednesday",
+      "holiday": "Christmas",
+      "leave_type": "GH"
+    }
   ];
   leave: any = [{
     "annualLeave": {
