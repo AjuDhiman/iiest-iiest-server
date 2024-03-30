@@ -6,7 +6,7 @@ const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSc
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
-const sendDocumentMail = require("../../operations/sendMail");
+const { sendDocumentMail, sendVerificationMail } = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 
@@ -18,6 +18,20 @@ exports.fostacVerification = async (req, res, next) => {
         const recipientId = req.params.recipientid;
 
         const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date } = req.body;
+        
+        let clientdata = {
+            product: 'fostac',
+            recipientName: recipient_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            fatherName: father_name,
+            dob: dob,
+            address: address,
+            recipientContactNo: recipient_contact_no,
+            recipientEmail: email,
+            aadharNo: aadhar_no,
+            pancard: pancard_no
+        }
 
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, salesDate: sales_date });
 
@@ -29,13 +43,16 @@ exports.fostacVerification = async (req, res, next) => {
 
         logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
 
-        // code for tracking ends
+        // function to send mail to client after verification process
+        if(currentVal !== undefined) {
+            sendVerificationMail(clientdata);
+        }
 
+        // code for tracking ends
         if (basicFormAdd) {
             success = true
             req.verificationInfo = basicFormAdd;
             next();
-            // return res.status(200).json({ success, verifiedId: basicFormAdd._id });
         }
 
     } catch (error) {
@@ -55,6 +72,23 @@ exports.foscosVerification = async (req, res) => {
 
         const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
 
+        let clientData = {
+            product: 'foscos',
+            operatorName: operator_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            recipientEmail: email,
+            operatorContactNo: operator_contact_no,
+            address: address,
+            pincode: pincode,
+            village: village,
+            tehsil: tehsil,
+            licenseCategory: license_category,
+            licenseDuration: license_duration,
+            kindOfBusiness: kob,
+            foodCategory: food_category,
+        }
+
         const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num });
 
         //this code is for tracking the CRUD operation regarding to a shop
@@ -65,8 +99,12 @@ exports.foscosVerification = async (req, res) => {
 
         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
 
-        // code for tracking ends
+        // function to send mail to client after verification process
+        if(addVerification) {
+            sendVerificationMail(clientData);
+        }
 
+        // code for tracking ends
         if (!addVerification) {
             success = false;
             res.status(204).json({ success })
