@@ -88,10 +88,14 @@
                           (click)="!fbo.fostacInfo ? '' : recipient(fbo,'fostac')"
                           title="Enter Recipient Details">{{!fbo.fostacInfo ? '-' :
                           fbo.fostacInfo.recipient_no}}</span></td>
-                      <td *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'" class="cell text-center"><span
+                      <td *ngIf="activeTab === 'Foscos'" class="cell text-center"><span
                           class="truncate selector" (click)="!fbo.foscosInfo ? '' : recipient(fbo,'foscos')"
                           title="Enter Shop Details">{{!fbo.foscosInfo ? '-' :
                           fbo.foscosInfo.shops_no}}</span></td>
+                      <td *ngIf="activeTab === 'HRA'" class="cell text-center"><span
+                          class="truncate selector" (click)="!fbo.hraInfo ? '' : recipient(fbo,'HRA')"
+                          title="Enter Shop Details">{{!fbo.hraInfo ? '-' :
+                          fbo.hraInfo.shops_no}}</span></td>
                       <td class="cell text-center"><span class="truncate">{{fbo.grand_total}} <fa-icon class="fa-l"
                             style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></span></td>
                       <td class="cell"><span class="truncate">{{fbo.createdAt | date: 'shortDate'}}</span></td>
@@ -115,7 +119,8 @@
           </div><!--//app-card-->
 
           <div class="d-flex" [ngClass]="allFBOEntries?'justify-content-between':'justify-content-end'">
-            <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filtered from ({{filteredFBOEntries.length}} {{activeTab}} Cases of
+            <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filtered from
+              ({{filteredFBOEntries.length}} {{activeTab}} Cases of
               {{allFBOEntries.length}})</div>
             <pagination-controls previousLabel="Prev" nextLabel="Next"
               (pageChange)="onTableDataChange($event)"></pagination-controls>
