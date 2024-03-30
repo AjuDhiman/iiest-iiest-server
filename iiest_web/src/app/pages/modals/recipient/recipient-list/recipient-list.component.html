@@ -21,6 +21,15 @@
                 <th class="cell">Shop Photo</th>
                 <th class="cell">Aadhar</th>
               </tr>
+              <tr *ngIf="this.serviceType == 'HRA'">
+                <th class="cell">S.No</th>
+                <th class="cell">Manager Name</th>
+                <th class="cell">Manager Contact</th>
+                <th class="cell">Address</th>
+                <th class="cell">Pincode</th>
+                <th class="cell">Fostac Certificate</th>
+                <th class="cell">Foscos License</th>
+              </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
@@ -32,7 +41,7 @@
                 <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.aadharNo}}</span></td>
               </tr>
             </tbody>
-            <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
+            <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos' || serviceType === 'HRA'">
               <tr
                 *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>

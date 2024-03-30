@@ -1,6 +1,8 @@
 <div class="modal-header bg-secondary">
   <h6 *ngIf="this.serviceType === 'fostac'" class="modal-title text-white" id="modal-basic-title">Recipients</h6>
   <h6 *ngIf="this.serviceType === 'foscos'" class="modal-title text-white" id="modal-basic-title">Shops</h6>
+  <h6 *ngIf="this.serviceType === 'HRA'" class="modal-title text-white" id="modal-basic-title">Shops</h6>
+
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
@@ -144,6 +146,101 @@
       </div>
     </div>
     <!--Fostac FORM Ends-->
+    <!--HRA FORM Start -->
+    <div class="modal-body" *ngIf="this.serviceType === 'HRA'">
+      <div class="row">
+        <div class="col-md-4">
+          <label for="manager_name" class="form-label">Manager Name<sup>*</sup></label>
+          <input type="text" id="manager_name" class="form-control form-control-sm" placeholder="Manager Name"
+            formControlName="manager_name"
+            [ngClass]="{ 'is-invalid': submitted && recipient['manager_name'].errors }" />
+          <div *ngIf="submitted && recipient['manager_name'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['manager_name'].errors['required']">Manager Name is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="manager_contact" class="form-label">Manager Contact<sup>*</sup></label>
+          <input type="tel" id="manager_contact" class="form-control form-control-sm" placeholder="Manager Contact"
+            formControlName="manager_contact"
+            [ngClass]="{ 'is-invalid': submitted && recipient['manager_contact'].errors }" />
+          <div *ngIf="submitted && recipient['manager_contact'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['manager_contact'].errors['required']">Manager Contact is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="manager_email" class="form-label">Manager Email<sup>*</sup></label>
+          <input type="email" id="manager_email" class="form-control form-control-sm" placeholder="Manager Email"
+            formControlName="manager_email"
+            [ngClass]="{ 'is-invalid': submitted && recipient['manager_email'].errors }" />
+          <div *ngIf="submitted && recipient['manager_email'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['manager_email'].errors['required']">Manager Email is required</div>
+            <div *ngIf="recipient['manager_email'].errors['email']">Invalid email format</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="address" class="form-label">Address<sup>*</sup></label>
+          <input type="text" id="address" class="form-control form-control-sm" placeholder="Address"
+            formControlName="address" [ngClass]="{ 'is-invalid': submitted && recipient['address'].errors }" />
+          <div *ngIf="submitted && recipient['address'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['address'].errors['required']">Address is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
+          <input type="number" id="pincode" class="form-control form-control-sm" placeholder="Pincode"
+            formControlName="pincode" [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
+          <div *ngIf="submitted && recipient['pincode'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['pincode'].errors['required']">Pincode is required</div>
+            <div *ngIf="recipient['pincode'].errors['pattern']">Pincode is invalid</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="kob" class="form-label">KOB (Kind of Business)<sup>*</sup></label>
+          <input type="text" id="kob" class="form-control form-control-sm" placeholder="KOB (Kind of Business)"
+            formControlName="kob" [ngClass]="{ 'is-invalid': submitted && recipient['kob'].errors }" />
+          <div *ngIf="submitted && recipient['kob'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['kob'].errors['required']">KOB is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="food_handlers" class="form-label">Number of Food Handlers<sup>*</sup></label>
+          <input type="number" id="food_handlers" class="form-control form-control-sm"
+            placeholder="Number of Food Handlers" formControlName="food_handlers"
+            [ngClass]="{ 'is-invalid': submitted && recipient['food_handlers'].errors }" />
+          <div *ngIf="submitted && recipient['food_handlers'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['food_handlers'].errors['required']">Number of Food Handlers is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="fostac_certificate" class="form-label">Fostac Certificate (jpeg or png)<sup>*</sup></label>
+          <input type="file" id="fostac_certificate" class="form-control form-control-sm"
+            placeholder="Fostac Certificate" formControlName="fostac_certificate"
+            (change)="onImageChangeFromFile($event, 'fostac_certificate')"
+            [ngClass]="{ 'is-invalid': submitted && recipient['fostac_certificate'].errors }" />
+          <div *ngIf="submitted && recipient['fostac_certificate'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['fostac_certificate'].errors['required']">Fostac Certificate is required.(jpeg or png)
+            </div>
+            <div *ngIf="recipient['fostac_certificate'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or
+              .jpeg files
+              are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="foscos_license" class="form-label">Foscos License (jpeg or png)<sup>*</sup></label>
+          <input type="file" id="foscos_license" class="form-control form-control-sm" placeholder="Foscos License"
+            formControlName="foscos_license" (change)="onImageChangeFromFile($event, 'foscos_license')"
+            [ngClass]="{ 'is-invalid': submitted && recipient['foscos_license'].errors }" />
+          <div *ngIf="submitted && recipient['foscos_license'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['foscos_license'].errors['required']">Foscos License is required.(jpeg or png)</div>
+            <div *ngIf="recipient['foscos_license'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or
+              .jpeg
+              files
+              are allowed.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-footer text-left">
       <div>
         <!-- <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" /> -->
@@ -151,6 +248,9 @@
       <button *ngIf="this.serviceType === 'fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add
         Recipient</button>
       <button *ngIf="this.serviceType === 'foscos'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
+
+      <button *ngIf="this.serviceType === 'HRA'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
+
     </div>
   </form>
   <form [ngClass]="uploadExcel===false?'d-none':''" (submit)="submitExcel()" [formGroup]="excelForm">
@@ -212,7 +312,7 @@
 <app-recipient-list [serviceType]="serviceType" [recipientData]="recipientData" [shopData]="shopData"
   [isfostac]="isfostac" [showPagination]="showPagination"></app-recipient-list>
 
-<ngx-loading [show]="loading"></ngx-loading>
+<!--<ngx-loading [show]="loading"></ngx-loading>-->
 
 <!-- <div class="tab-content mx-3" id="orders-table-tab-content">
   <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">

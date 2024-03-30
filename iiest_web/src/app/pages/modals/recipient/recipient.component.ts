@@ -60,7 +60,18 @@ export class RecipientComponent implements OnInit {
     eBill: new FormControl(''),
     owner_photo: new FormControl(''),
     shop_photo: new FormControl(''),
-    aadhar_photo: new FormControl('')
+    aadhar_photo: new FormControl(''),
+  
+    // form controls for hra shops 
+    manager_name: new FormControl(''),
+    manager_contact: new FormControl(''),
+    manager_email: new FormControl(''),
+    // address: new FormControl(''),
+    // pincode: new FormControl(''),
+    kob: new FormControl(''),
+    food_handlers: new FormControl(''),
+    fostac_certificate: new FormControl(''),
+    foscos_license: new FormControl('')
   });
 
 
@@ -89,6 +100,7 @@ export class RecipientComponent implements OnInit {
     if (this.serviceType === 'foscos') {
       this.getSaleShopsList(this.fboData._id);
     }
+
 
     this.setFormValidation();
   }
@@ -151,7 +163,7 @@ export class RecipientComponent implements OnInit {
       formData.append('ownerPhoto', this.ownerPhotoFile);
       formData.append('shopPhoto', this.shopPhotoFile);
 
-      (this.aadharFile as any).forEach((file:File) => {
+      (this.aadharFile as any).forEach((file: File) => {
         formData.append('aadharPhoto', file);
       })
 
@@ -359,8 +371,21 @@ export class RecipientComponent implements OnInit {
           });
         this.listCount = this.fboData.foscosInfo.shops_no;
         break;
-    }
-
+       case "hra":
+        this.isfostac = false;
+        this.recipientform = this.formBuilder.group(
+          {
+            manager_name: ['', Validators.required],
+            manager_contact: ['', Validators.required],
+            manager_email: ['', [Validators.required, Validators.email]],
+            address: ['', Validators.required],
+            pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$') ]],
+            kob: ['', Validators.required],
+            food_handlers: ['', Validators.required],
+            fostac_certificate: ['',[ Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            foscos_license: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]]
+          });
+      }
     this.excelForm = this.formBuilder.group({
       excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
     });
@@ -374,9 +399,9 @@ export class RecipientComponent implements OnInit {
     })
   }
 
-  uploadEbill($event: any, shopId: string){
+  uploadEbill($event: any, shopId: string) {
     let file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
       this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
       return;
     }
@@ -390,9 +415,9 @@ export class RecipientComponent implements OnInit {
     })
   }
 
-  uploadOwnerPhoto($event: any, shopId: string){
+  uploadOwnerPhoto($event: any, shopId: string) {
     let file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
       this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
       return;
     }
@@ -406,9 +431,9 @@ export class RecipientComponent implements OnInit {
     })
   }
 
-  uploadShopPhoto($event: any, shopId: string){
+  uploadShopPhoto($event: any, shopId: string) {
     let file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
       this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
       return;
     }
