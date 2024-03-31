@@ -73,6 +73,30 @@ const foscosVerification = new Schema({
     }
 });
 
-const foscosVerifyModel = mongoose.model('foscos_verification', foscosVerification)
+const foscosVerifyModel = mongoose.model('foscos_verification', foscosVerification);
 
-module.exports = {fostacVerifyModel, foscosVerifyModel};
+const hraVerification = new Schema({
+    operatorInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
+        required: true
+    },
+    shopInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'recipientdetails',
+        required: true,
+        unique: true
+    },
+    kob: {
+        type: String,
+        required: true
+    },
+    handlerNum: {
+        type: Number,
+        required: true
+    }
+});
+
+const hraVerifyModel = mongoose.model('hra_verification', hraVerification);
+
+module.exports = {fostacVerifyModel, foscosVerifyModel, hraVerifyModel};

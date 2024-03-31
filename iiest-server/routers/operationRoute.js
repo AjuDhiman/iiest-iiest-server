@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
 const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/operationControllers/caseList');
-const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData, foscosVerification, getFoscosVerifiedData } = require('../controllers/operationControllers/formSections');
+const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData, foscosVerification, hraVerification, getFoscosVerifiedData } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
 const { fostacDocuments, foscosDocuments } = require('../config/storage');
@@ -15,6 +15,7 @@ router.get('/morecaseinfo/:recipientid', authMiddleware, caseInfo);
 router.get('/employeelistdeptwise/:dept',authMiddleware, employeeCountDeptWise);
 router.post('/fostacverification/:recipientid', authMiddleware, fostacVerification, trainingBatch);
 router.post('/foscosverification/:shopid', authMiddleware, foscosVerification);
+router.post('/hraverification/:shopid', authMiddleware, hraVerification);
 router.get('/getkobdata', authMiddleware, getKobData); // route for getting kob heirarchy from general datas in case of foscos
 router.get('/getfostacverifieddata/:recipientid', authMiddleware, getFostacVerifiedData); // route for getting if a person is verifed or not if verified then getting it's data
 router.get('/getfoscosverifieddata/:shopid',authMiddleware, getFoscosVerifiedData);

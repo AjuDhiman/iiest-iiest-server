@@ -103,6 +103,21 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     owners_num: new FormControl(this.minMembers)
     });
 
+    hraVerificationForm: FormGroup = new FormGroup({
+      manager_name: new FormControl(''),
+      fbo_name: new FormControl(''),
+      owner_name: new FormControl(''),
+      manager_contact_no: new FormControl(''),
+      email: new FormControl(''),
+      address: new FormControl(''),
+      pincode: new FormControl(''),
+      hra_total: new FormControl(''),
+      sales_date: new FormControl(''),
+      sales_person: new FormControl(''),
+      kob: new FormControl(''),
+      food_handler_no: new FormControl(''),
+      });
+
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
     private _getDataService: GetdataService,
@@ -187,14 +202,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         }
       })
     } else if (this.productType === 'Foscos') {
-      console.log('works');
       this._registerService.verifyFoscos(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
-          console.log(this.verificationForm);
           if (res.success) {
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
-            this.emitVerifiedID.emit(res.verificationInfo._id);
+            this.emitVerifiedID.emit(res.verifiiedId);
             this.emitVerifiedData.emit(res.verificationInfo);
             this.refreshAuditLog.emit();
             this.loading = false;

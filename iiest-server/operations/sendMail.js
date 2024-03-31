@@ -39,8 +39,8 @@ const sendVerificationMail = (clientData) => {
   if(clientData.product == 'fostac') {
 
     content = `<p>Hi ${clientData.recipientName},</p>
-    <p>IIEST wanted to inform you that the information you provided has been successfully verified. Thank you for your cooperation and prompt response throughout the verification process.</p>
-    <p>Here are the details you provided:</p>
+    <p>This mail is to inform you that the information you provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
+    <p>Kindly review the details you have provided below:</p>
     Trainee Name: ${clientData.recipientName}<br>
     Trainee father Name: ${clientData.fatherName}<br>
     Trainee Contact No: ${clientData.recipientContactNo}<br>
@@ -54,11 +54,11 @@ const sendVerificationMail = (clientData) => {
 
   } else if(clientData.product == 'foscos') {
 
-    content = `<p>Hi ${clientData.recipientName},</p>
-    <p>IIEST wanted to inform you that the information you provided has been successfully verified. Thank you for your cooperation and prompt response throughout the verification process.</p>
-    <p>Here are the details you provided:</p>
+    content = `<p>Hi ${clientData.ownerName},</p>
+    <p>This mail is to inform you that the information you provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
+    <p>Kindly review the details you have provided below:</p>
     FBO Name: ${clientData.fboName}<br>
-    Operator Name: ${clientData.OperatorName}<br>
+    Operator Name: ${clientData.operatorName}<br>
     Owner Name: ${clientData.ownerName}<br>
     Owner Contact No: ${clientData.operatorContactNo}<br>
     Address: ${clientData.address}<br>

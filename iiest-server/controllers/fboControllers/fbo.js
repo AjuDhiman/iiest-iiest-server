@@ -243,7 +243,7 @@ exports.fboRegister = async (req, res) => {
       }
 
       if(hygiene_audit){
-        serviceArr.push(foscos_training.hra_service_name);
+        serviceArr.push(hygiene_audit.hra_service_name);
       }
 
       let total_processing_amount = 0;
