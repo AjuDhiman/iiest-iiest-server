@@ -90,6 +90,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     email: new FormControl(''),
     address: new FormControl(''),
     pincode: new FormControl(''),
+    state: new FormControl(''),
+    district: new FormControl(''),
     village: new FormControl(''),
     tehsil: new FormControl(''),
     license_category: new FormControl(''),
@@ -192,12 +194,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         next: res => {
           console.log(this.verificationForm);
           if (res.success) {
+            this.loading = false;
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verificationInfo._id);
             this.emitVerifiedData.emit(res.verificationInfo);
             this.refreshAuditLog.emit();
-            this.loading = false;
             this._toastrService.success('Shop\'s Information is Verified', 'Verified');
           }
         }
@@ -227,6 +229,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ operator_contact_no: res.populatedInfo.salesInfo.fboInfo.owner_contact });
           this.verificationForm.patchValue({ email: res.populatedInfo.salesInfo.fboInfo.email });
           this.verificationForm.patchValue({ address: res.populatedInfo.address });
+          this.verificationForm.patchValue({ state: res.populatedInfo.state });
+          this.verificationForm.patchValue({ district: res.populatedInfo.district });
+          this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
+          this.verificationForm.patchValue({ village: res.populatedInfo.village });
+          this.verificationForm.patchValue({ tehsil: res.populatedInfo.tehsil });
           this.verificationForm.patchValue({ license_category: res.populatedInfo.salesInfo.foscosInfo.license_category });
           this.verificationForm.patchValue({ license_duration: res.populatedInfo.salesInfo.foscosInfo.license_duration });
           this.verificationForm.patchValue({ foscos_total: res.populatedInfo.salesInfo.foscosInfo.foscos_total });
@@ -299,7 +306,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
           this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
           this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
-          this.verificationForm.patchValue({ food_items: res.verifedData.foodItems });
           this.emitVerifiedData.emit(res.verifedData);
         } else {
           this.verifiedStatus = false;
@@ -368,6 +374,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       operator_contact_no: ['', Validators.required],
       email: ['', Validators.required],
       address: ['', Validators.required],
+      state: ['', Validators.required],
+      district: ['', Validators.required],
       pincode: ['', Validators.required],
       village: ['', Validators.required],
       tehsil: ['', Validators.required],
