@@ -8,7 +8,7 @@
 <!-- *ngIf="recipientData?.length==0" -->
 
 <div class="border-top border-dark-subtle" *ngIf="recipientCount!==listCount">
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+  <div *ngIf="serviceType !== 'HRA'" class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
     <div class="form-check form-switch">
       <input class="form-check-input cursor-pointer" type="checkbox" role="switch" (change)="ChangeFormType($event)"
         id="flexSwitchCheckDefault" />
@@ -215,7 +215,7 @@
           <label for="fostac_certificate" class="form-label">Fostac Certificate (jpeg or png)<sup>*</sup></label>
           <input type="file" id="fostac_certificate" class="form-control form-control-sm"
             placeholder="Fostac Certificate" formControlName="fostac_certificate"
-            (change)="onImageChangeFromFile($event, 'fostac_certificate')"
+            (change)="onImageChangeFromFile($event, 'fostacCerificate')"
             [ngClass]="{ 'is-invalid': submitted && recipient['fostac_certificate'].errors }" />
           <div *ngIf="submitted && recipient['fostac_certificate'].errors" class="invalid-feedback">
             <div *ngIf="recipient['fostac_certificate'].errors['required']">Fostac Certificate is required.(jpeg or png)
@@ -228,7 +228,7 @@
         <div class="col-md-4">
           <label for="foscos_license" class="form-label">Foscos License (jpeg or png)<sup>*</sup></label>
           <input type="file" id="foscos_license" class="form-control form-control-sm" placeholder="Foscos License"
-            formControlName="foscos_license" (change)="onImageChangeFromFile($event, 'foscos_license')"
+            formControlName="foscos_license" (change)="onImageChangeFromFile($event, 'foscosLicense')"
             [ngClass]="{ 'is-invalid': submitted && recipient['foscos_license'].errors }" />
           <div *ngIf="submitted && recipient['foscos_license'].errors" class="invalid-feedback">
             <div *ngIf="recipient['foscos_license'].errors['required']">Foscos License is required.(jpeg or png)</div>

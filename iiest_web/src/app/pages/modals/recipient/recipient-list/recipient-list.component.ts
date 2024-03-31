@@ -100,4 +100,36 @@ export class RecipientListComponent {
       }
     })
   }
+
+  uploadFostacCertificate($event: any, shopId: string){
+    const file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'application/pdf') {
+      this._toastrService.error('file type should be jpeg, jpg, png or pdf', 'Invalid file type');
+      return;
+    }
+    let formData: FormData = new FormData();
+    formData.append('fostacCertificate', file);
+    this._registerService.uploadFostacCertificate(shopId, formData).subscribe({
+      next: res => {
+        this.activeModal.close();
+        this._toastrService.success('fostacCertificate Uploaded')
+      }
+    })
+  }
+
+  uploadFoscosLicense($event: any, shopId: string){
+    const file = $event.target.files[0];
+    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'application/pdf') {
+      this._toastrService.error('file type should be jpeg, jpg, png or pdf', 'Invalid file type');
+      return;
+    }
+    let formData: FormData = new FormData();
+    formData.append('foscosLicense', file);
+    this._registerService.uploadFoscosLicense(shopId, formData).subscribe({
+      next: res => {
+        this.activeModal.close();
+        this._toastrService.success('foscosLicense Uploaded')
+      }
+    })
+  }
 }

@@ -1,8 +1,8 @@
-const { recipientModel, shopModel } = require('../../models/fboModels/recipientSchema')
+const { recipientModel, shopModel, hygieneShopModel } = require('../../models/fboModels/recipientSchema')
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const { logAudit } = require('../generalControllers/auditLogsControllers');
-const { generateRecipientInfo } = require('../../fbo/generateCredentials');
+const { generateRecipientInfo, generateHygieneShopInfo } = require('../../fbo/generateCredentials');
 const fs = require('fs');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 
@@ -133,6 +133,63 @@ exports.addShop = async (req, res) => {
 
 };
 
+exports.addHygieneShop = async (req, res) => {
+
+    try {
+
+        let success = false;
+
+        const fostacCertificate = req.files['fostacCertificate'];
+        const foscosLicense = req.files['foscosLicense'];
+
+        const { manager_name, manager_contact, manager_email, kob, food_handlers, address, pincode, byExcel } = req.body;
+
+        if (!fostacCertificate) {
+            success = false;
+            return res.status(401).json({ success, fostacCertificateErr: true })
+        }
+
+        if (!foscosLicense) {
+            success = false;
+            return res.status(401).json({ success, foscosLicenseErr: true })
+        }
+
+        const {state, district} = await readPincodeFile(pincode); //extract state and district on the basis of pincode
+
+        console.log(state, district);
+
+        if(state == '' && district == ''){
+           res.status(401).json({success: false, pincodeErr: true, message:'Pincode Not Found'}) 
+        }
+
+        const shopCustInfo = await generateHygieneShopInfo(req.params.id);
+
+        const addShop = await hygieneShopModel.create({ salesInfo: req.params.id, shopId: shopCustInfo.shopId, managerName: manager_name,managerContact: manager_contact, managerEmail: manager_email, kob, foodHandlersCount: food_handlers, address, state, district, pincode, fostacCertificate: fostacCertificate[0].filename, foscosLicense: foscosLicense[0].filename });
+
+        if (addShop) {
+            success = true;
+            return res.status(200).json({ success });
+        }
+
+        //code for tracking data operation data flow by auditing log starts 
+        const prevVal = {};
+
+        const currentVal = addShop;
+
+        const log = logAudit(req.user._id, "hygienes", addShop._id, prevVal, currentVal, "Shop Registered");
+        //code for tracking data operation data flow by auditing log ends
+
+        success = false;
+        res.status(404).json({ success, randomErr: true });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+
+};
+
+
 exports.addShopByExcel = async (req, res) => {
     try {
         let success = false;
@@ -188,6 +245,16 @@ exports.recipientsList = async (req, res) => {
 exports.shopsList = async (req, res) => {
     try {
         const shopsList = await shopModel.find({ salesInfo: req.params.id });
+        return res.status(200).json({ shopsList });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+exports.hygieneShopsList = async (req, res) => {
+    try {
+        const shopsList = await hygieneShopModel.find({ salesInfo: req.params.id });
         return res.status(200).json({ shopsList });
     } catch (error) {
         console.error(error);

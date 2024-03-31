@@ -68,11 +68,10 @@
                       <th class="cell">Customer ID</th>
                       <th class="cell">State</th>
                       <th class="cell">District</th>
-                      <th class="cell" *ngIf="activeTab==='Fostac'">Recipient No</th>
-                      <th class="cell" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No</th>
-                      <th class="cell">{{ activeTab === 'Fostac' ? 'Fostac Amount' : (activeTab === 'Foscos' ? 'Foscos
-                        Amount' : 'HRA Amount') }}</th>
-                      <th class="cell">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
+                      <th class="cell text-center" *ngIf="activeTab==='Fostac'">Recipient No</th>
+                      <th class="cell text-center" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No</th>
+                      <th class="cell text-center">{{ activeTab === 'Fostac' ? 'Fostac Amount' : (activeTab === 'Foscos' ? 'Foscos Amount' : 'HRA Amount') }}</th>
+                      <th class="cell text-center">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
                       <th class="cell">Sales Date</th>
                       <th class="cell text-center">Action</th>
                     </tr>
@@ -135,10 +134,9 @@
             <pagination-controls previousLabel="Prev" nextLabel="Next"
               (pageChange)="onTableDataChange($event)"></pagination-controls>
           </div>
+          <ngx-loading [show]="loading"></ngx-loading>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<ngx-loading [show]="loading"></ngx-loading>

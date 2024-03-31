@@ -44,6 +44,9 @@ export class RecipientComponent implements OnInit {
   shopPhotoFile: File;
   aadharFile: File;
 
+  fostacCertificate: File;
+  foscosLicense: File;
+
   //recipient reactive form this contains intialization of it's form control because we are using this form conditionally
   recipientform: FormGroup = new FormGroup({
     //form controls recipient
@@ -99,6 +102,10 @@ export class RecipientComponent implements OnInit {
 
     if (this.serviceType === 'foscos') {
       this.getSaleShopsList(this.fboData._id);
+    }
+
+    if(this.serviceType === 'HRA') {
+      this.getHygieneShopList(this.fboData._id);
     }
 
 
@@ -189,6 +196,31 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
+    } else if(this.serviceType === 'HRA') {
+      let formData = new FormData();
+
+      formData.append('manager_name', this.recipientform.get('manager_name')?.value);
+      formData.append('manager_contact', this.recipientform.get('mamager_contact')?.value);
+      formData.append('manager_email', this.recipientform.get('manager_email')?.value);
+      formData.append('address', this.recipientform.get('address')?.value);
+      formData.append('pincode', this.recipientform.get('pincode')?.value);
+      formData.append('kob', this.recipientform.get('kob')?.value);
+      formData.append('food_handlers', this.recipientform.get('food_handlers')?.value);
+      console.log(this.fostacCertificate, this.foscosLicense)
+      formData.append('fostacCertificate', this.fostacCertificate);
+      formData.append('foscosLicense', this.foscosLicense);
+
+      console.log(formData);
+
+      this._registerService.addHygieneShop(this.fboID, formData).subscribe({
+        next: res => {
+          if (res.success) {
+            this._toastrService.success('', 'Record Added Successfully.');
+            this.closeModal();
+            this.loading = false;
+          }
+        }
+      })
     }
   }
 
@@ -201,7 +233,7 @@ export class RecipientComponent implements OnInit {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
       console.log(file);
-      if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png") {
+      if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png" || file.type == "application/pdf") {
         switch (fileType) {
           case 'eBill':
             this.ebillFile = file;
@@ -215,8 +247,13 @@ export class RecipientComponent implements OnInit {
           case 'aadharPhoto':
             this.aadharFile = $event.target.files;
             break;
+          case 'fostacCerificate':
+            this.fostacCertificate = file;
+            break;
+          case 'foscosLicense':
+            this.foscosLicense = file;
+            break;
         }
-        console.log(this.ebillFile, this.ownerPhotoFile, this.shopPhotoFile, this.aadharFile);
       }
       else {
         //call validation
@@ -235,7 +272,7 @@ export class RecipientComponent implements OnInit {
           this.recipientCount = res.recipientsList.length;
         }
       }
-    })
+    });
   }
 
   getSaleShopsList(saleId: string): void {
@@ -247,8 +284,21 @@ export class RecipientComponent implements OnInit {
           this.shopsCount = res.shopsList.length;
         }
       }
-    })
+    });
 
+  }
+
+  getHygieneShopList(saleId: string) {
+    this.getDataServices.getHygieneSaleShops(saleId).subscribe({
+      next: res => {
+        console.log(res)
+        if (res.shopsList.length) {
+          this.shopData = res.shopsList
+          this.showPagination = true;
+          this.shopsCount = res.shopsList.length;
+        }
+      }
+    })
   }
   //by the help  of this function we can upload data as anexcel sheet, we used XLSX npm package in it
   onExcelUpload(event: any) {
@@ -399,51 +449,4 @@ export class RecipientComponent implements OnInit {
     })
   }
 
-  uploadEbill($event: any, shopId: string) {
-    let file = $event.target.files[0];
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
-      return;
-    }
-    let formData: FormData = new FormData();
-    formData.append('eBill', file);
-    this._registerService.uploadEbill(shopId, formData).subscribe({
-      next: res => {
-        this.activeModal.close();
-        this._toastrService.success('Ebill Uploaded')
-      }
-    })
-  }
-
-  uploadOwnerPhoto($event: any, shopId: string) {
-    let file = $event.target.files[0];
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
-      return;
-    }
-    let formData: FormData = new FormData();
-    formData.append('ownerPhoto', file);
-    this._registerService.uploadOwnerPhoto(shopId, formData).subscribe({
-      next: res => {
-        this.activeModal.close();
-        this._toastrService.success('Owner photo Uploaded')
-      }
-    })
-  }
-
-  uploadShopPhoto($event: any, shopId: string) {
-    let file = $event.target.files[0];
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      this._toastrService.error('file type should be jpeg or jpg', 'Invalid file type');
-      return;
-    }
-    let formData: FormData = new FormData();
-    formData.append('shopPhoto', file);
-    this._registerService.uploadShopPhoto(shopId, formData).subscribe({
-      next: res => {
-        this.activeModal.close();
-        this._toastrService.success('shopPhoto Uploaded')
-      }
-    })
-  }
 }

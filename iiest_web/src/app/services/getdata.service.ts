@@ -63,6 +63,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getHygieneSaleShops(salesId: String): Observable<any> {
+    const url = `${this.url}/hygienesaleshops/${salesId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getPostData(): Observable<any> {
     const url = `${this.url}/getpostdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

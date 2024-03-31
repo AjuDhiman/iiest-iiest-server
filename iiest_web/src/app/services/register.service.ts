@@ -57,6 +57,15 @@ export class RegisterService {
       ));
   }
 
+  public addHygieneShop(objId: string, formInterface: any): Observable<any> {
+    const url = `${this.url}/fbo/addhygieneshop/${objId}`;
+    formInterface.append('byExcel', false)
+    return this.http.post<any>(url, formInterface ).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   public addFboShopByExcel(objId: string, formInterface: any): Observable<any> {
     const url = `${this.url}/fbo/addshopbyexcel/${objId}`
     let shopData = {formInterface, byExcel: true}
@@ -84,6 +93,22 @@ export class RegisterService {
 
   public uploadShopPhoto(objId: string, formInterface: FormData): Observable<any> {
     const url = `${this.url}/fbo/uploadshophoto/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public uploadFostacCertificate(objId: string, formInterface: FormData): Observable<any> {
+    const url = `${this.url}/fbo/uploadfostaccertificate/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public uploadFoscosLicense(objId: string, formInterface: FormData): Observable<any> {
+    const url = `${this.url}/fbo/uploadfoscoslicense/${objId}`
     return this.http.put<any>(url, formInterface).pipe(
       catchError(
         this.handleError
