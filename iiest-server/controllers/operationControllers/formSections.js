@@ -6,7 +6,7 @@ const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSc
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
-const sendDocumentMail = require("../../operations/sendMail");
+const { sendDocumentMail, sendVerificationMail } = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 
@@ -21,6 +21,20 @@ exports.fostacVerification = async (req, res, next) => {
 
         const isEditMode = req.body.isEditMode;
 
+        let clientdata = {
+            product: 'fostac',
+            recipientName: recipient_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            fatherName: father_name,
+            dob: dob,
+            address: address,
+            recipientContactNo: recipient_contact_no,
+            recipientEmail: email,
+            aadharNo: aadhar_no,
+            pancard: pancard_no
+        }
+
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, salesDate: sales_date });
 
         //this code is for tracking the CRUD operation regarding to a recipient
@@ -31,13 +45,16 @@ exports.fostacVerification = async (req, res, next) => {
 
         logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
 
-        // code for tracking ends
+        // function to send mail to client after verification process
+        if (currentVal !== undefined) {
+            sendVerificationMail(clientdata);
+        }
 
+        // code for tracking ends
         if (basicFormAdd) {
             success = true
             req.verificationInfo = basicFormAdd;
             next();
-            // return res.status(200).json({ success, verifiedId: basicFormAdd._id });
         }
 
     } catch (error) {
@@ -53,9 +70,24 @@ exports.foscosVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
-        console.log(verifiedData);
-
         const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
+
+        let clientData = {
+            product: 'foscos',
+            operatorName: operator_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            recipientEmail: email,
+            operatorContactNo: operator_contact_no,
+            address: address,
+            pincode: pincode,
+            village: village,
+            tehsil: tehsil,
+            licenseCategory: license_category,
+            licenseDuration: license_duration,
+            kindOfBusiness: kob,
+            foodCategory: food_category,
+        }
 
         const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num });
 
@@ -67,15 +99,53 @@ exports.foscosVerification = async (req, res) => {
 
         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
 
-        // code for tracking ends
+        // function to send mail to client after verification process
+        if (addVerification) {
+            sendVerificationMail(clientData);
+        }
 
+        // code for tracking ends
         if (!addVerification) {
             success = false;
-            res.status(204).json({ success })
+            return res.status(204).json({ success });
         }
 
         success = true;
-        res.status(200).json({ success });
+        return res.status(200).json({ success });
+
+    } catch (error) {
+
+    }
+}
+
+exports.hraVerification = async (req, res) => {
+    try {
+        let success = false;
+
+        const shopID = req.params.shopid;
+
+        const verifiedData = req.body;
+
+        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person } = verifiedData;
+
+        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, handlerNum: food_handler_no });
+
+        //this code is for tracking the CRUD operation regarding to a shop
+
+        const prevVal = {}
+
+        const currentVal = addVerification;
+
+        logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
+
+        // code for tracking ends
+        if (!addVerification) {
+            success = false;
+            return res.status(204).json({ success });
+        }
+
+        success = true;
+        return res.status(200).json({ success });
 
     } catch (error) {
 
@@ -90,11 +160,11 @@ exports.getFostacVerifiedData = async (req, res) => {
 
         const verifedData = await fostacVerifyModel.findOne({ recipientInfo: recipientId });
 
-        if(!verifedData) {
-            return res.status(204).json({success: false, message: 'Not Verified yet'})
+        if (!verifedData) {
+            return res.status(204).json({ success: false, message: 'Not Verified yet' })
         }
 
-        const batchData = await TrainingBatchModel.findOne({ 
+        const batchData = await TrainingBatchModel.findOne({
             candidateDetails: {
                 $in: verifedData._id,
             }
