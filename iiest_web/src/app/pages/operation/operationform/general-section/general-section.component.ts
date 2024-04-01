@@ -52,6 +52,8 @@ export class GeneralSectionComponent implements OnInit {
       return;
     }
 
+    console.log(this.generalForm.value);
+
     this._registerService.postOperGenData(this.candidateId, this.generalForm.value).subscribe({
       next: res => {
         if (res) {
@@ -73,7 +75,6 @@ export class GeneralSectionComponent implements OnInit {
     this._getDataService.getOperGenSecData(this.candidateId).subscribe({
       next: res => {
         if (res) {
-          this.generalForm.patchValue({ recipient_status: res.genSecData.recipientStatus });
           this.formatofficerComments(res.genSecData);
         }
       }
@@ -123,6 +124,7 @@ export class GeneralSectionComponent implements OnInit {
   }
 
   formatofficerComments(notes: any) {
+    this.officerComments = [];
     notes.forEach((note: any) => {
       let comment = `${note.officerNote} (${note.operatorInfo.employee_name}) on ${this.getFormatedDate(note.createdAt.toString())} at ${this.getFormattedTime(note.createdAt)}\n`;
       this.officerComments.push(comment)

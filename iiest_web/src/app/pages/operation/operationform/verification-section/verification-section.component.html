@@ -203,8 +203,6 @@
 </form>
 
 
-
-
 <!-- Foscos verifiaction Form -->
 <form *ngIf="productType === 'Foscos'" [formGroup]="verificationForm" autocomplete="off" (ngSubmit)="onVerify()">
 
@@ -239,9 +237,8 @@
 
     <div class="col-md-3 position-relative">
       <label for="fbo_name" class="form-label">FBO name</label><sup>*</sup>
-      <input #fbo_name type="text" placeholder="FBO name" formControlName="fbo_name" 
-        class="form-control form-control-sm" valid="false"
-        id="fbo_name" [readOnly]="true"
+      <input #fbo_name type="text" placeholder="FBO name" formControlName="fbo_name"
+        class="form-control form-control-sm" valid="false" id="fbo_name" [readOnly]="true"
         [ngClass]="{ 'is-invalid': verified && verificationform['fbo_name'].errors , 'is-verified': fbo_name.getAttribute('valid') === 'true' ||verifiedStatus}">
       <div *ngIf="verified && verificationform['fbo_name'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['fbo_name'].errors['required']">FBO name is required</div>
@@ -257,8 +254,8 @@
 
     <div class="col-md-3 position-relative">
       <label for="owner_name" class="form-label">Owner name</label><sup>*</sup>
-      <input #owner_name type="text" placeholder="Owner Name" formControlName="owner_name" class="form-control form-control-sm"
-        id="owner_name" [readOnly]="true" valid="false"
+      <input #owner_name type="text" placeholder="Owner Name" formControlName="owner_name"
+        class="form-control form-control-sm" id="owner_name" [readOnly]="true" valid="false"
         [ngClass]="{ 'is-invalid': verified && verificationform['owner_name'].errors , 'is-verified': owner_name.getAttribute('valid') === 'true' || verifiedStatus}">
       <div *ngIf="verified && verificationform['owner_name'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['owner_name'].errors['required']">Owner name is required</div>
@@ -286,7 +283,8 @@
       </div>
 
       <!-- For Perticular field verification -->
-      <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="operator_contact_no.getAttribute('valid')"
+      <div class="verify-icon text-secondary" #fieldVerification
+        [attr.valid]="operator_contact_no.getAttribute('valid')"
         (click)="operator_contact_no.setAttribute('valid', 'true')"
         [ngClass]="{'verified-check':operator_contact_no.getAttribute('valid') === 'true' || verifiedStatus}">
         <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
@@ -296,8 +294,8 @@
     <div class="col-md-3 position-relative">
       <label #email for="email" class="form-label">E-mail</label><sup>*</sup>
       <input type="email" placeholder="E-mail" formControlName="email" class="form-control form-control-sm" id="email"
-      [ngClass]="{ 'is-invalid': verified && verificationform['email'].errors , 'is-verified': email.getAttribute('valid') === 'true' || verifiedStatus}" [readOnly]="verifiedStatus"
-        [readOnly]="true">
+        [ngClass]="{ 'is-invalid': verified && verificationform['email'].errors , 'is-verified': email.getAttribute('valid') === 'true' || verifiedStatus}"
+        [readOnly]="verifiedStatus" [readOnly]="true">
       <div *ngIf="verified && verificationform['email'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['email'].errors['required']">E-mail is required</div>
         <div *ngIf="verificationform['email'].errors['email']">E-mail is invalid</div>
@@ -331,8 +329,8 @@
     <div class="col-md-3 position-relative">
       <label for="pincode" class="form-label">Pincode</label><sup>*</sup>
       <input #pincode type="text" placeholder="pincode" formControlName="pincode" class="form-control form-control-sm"
-        valid = 'false'
-        id="address" [ngClass]="{ 'is-invalid': verified && verificationform['pincode'].errors , 'is-verified': pincode.getAttribute('valid') === 'true' || verifiedStatus}">
+        valid='false' id="address"
+        [ngClass]="{ 'is-invalid': verified && verificationform['pincode'].errors , 'is-verified': pincode.getAttribute('valid') === 'true' || verifiedStatus}">
       <div *ngIf="verified && verificationform['pincode'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['pincode'].errors['required']">Pincode is required</div>
       </div>
@@ -347,8 +345,9 @@
 
     <div class="col-md-3 position-relative">
       <label #village for="village" class="form-label">Village</label><sup>*</sup>
-      <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm" valid="false"
-        id="address" [ngClass]="{ 'is-invalid': verified && verificationform['village'].errors , 'is-verified': village.getAttribute('valid') === 'true' || verifiedStatus}">
+      <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm"
+        valid="false" id="address"
+        [ngClass]="{ 'is-invalid': verified && verificationform['village'].errors , 'is-verified': village.getAttribute('valid') === 'true' || verifiedStatus}">
       <div *ngIf="verified && verificationform['village'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['village'].errors['required']">Village is required</div>
       </div>
@@ -363,8 +362,10 @@
 
     <div class="col-md-3 position-relative">
       <label for="tehsil" class="form-label">Tehsil</label><sup>*</sup>
-      <input #tehsil type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm" id="address"
-      [ngClass]="{ 'is-invalid': verified && verificationform['tehsil'].errors , 'is-verified': tehsil.getAttribute('valid') === 'true' || verifiedStatus}" valid="false">
+      <input #tehsil type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm"
+        id="address"
+        [ngClass]="{ 'is-invalid': verified && verificationform['tehsil'].errors , 'is-verified': tehsil.getAttribute('valid') === 'true' || verifiedStatus}"
+        valid="false">
       <div *ngIf="verified && verificationform['tehsil'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['tehsil'].errors['required']">Tehsil is required</div>
       </div>
@@ -452,8 +453,8 @@
 
     <div class="col-md-3">
       <label for="ownership_type" class="form-label select-label">Ownership Type</label><sup>*</sup>
-      <select id="ownership_type"  formControlName="ownership_type"  (change)="onOwnershipTypeChanges($event)"
-       [ngClass]="{ 'is-invalid': verified && verificationform['ownership_type'].errors }"
+      <select id="ownership_type" formControlName="ownership_type" (change)="onOwnershipTypeChanges($event)"
+        [ngClass]="{ 'is-invalid': verified && verificationform['ownership_type'].errors }"
         class="form-select form-select-sm cursor-pointer" [attr.disabled]="verifiedStatus">
         <option value="" disabled selected>Select the Ownership Type</option>
         <option *ngFor="let type of ownershipType" [value]="type" style="text-transform: capitalize;">{{type}}</option>
@@ -465,8 +466,8 @@
 
     <div class="col-md-3">
       <label for="owners_num" class="form-label">No. of Owners</label><sup>*</sup>
-      <input type="number" placeholder="No. of Owners" formControlName="owners_num"
-        class="form-control form-control-sm" id="owners_num" [readOnly]="verifiedStatus" (change)="onOwnersNumChange($event)"
+      <input type="number" placeholder="No. of Owners" formControlName="owners_num" class="form-control form-control-sm"
+        id="owners_num" [readOnly]="verifiedStatus" (change)="onOwnersNumChange($event)"
         [ngClass]="{ 'is-invalid': verified && verificationform['owners_num'].errors }">
       <div *ngIf="verified && verificationform['owners_num'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['owners_num'].errors['required']">No. of Owners is required</div>
@@ -482,4 +483,204 @@
     </div>
   </div>
   <ngx-loading [show]="loading"></ngx-loading>
+</form>
+
+<!-- ----------HRA verification form---------- -->
+<form *ngIf="productType === 'HRA'" [formGroup]="verificationForm" autocomplete="off" class="row"
+  (ngSubmit)="onVerify()">
+
+  <!-- form heading and status -->
+  <div class="d-flex justify-content-between align-items-center">
+    <h6>Verification Section</h6>
+    <span [ngClass]="verifiedStatus?'bg-success':'bg-warning'" style="font-size: x-small;"
+      class="badge align-self-baseline">
+      {{verifiedStatus?'Verified':'In-Progress'}}
+      <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation" class="fa-lg ml-2"></fa-icon>
+    </span>
+  </div>
+
+  <!-- form input fields -->
+  <!-- for HRA Panel -->
+  <div class="col-md-3" style="position: relative;">
+    <label for="manager_name" class="form-label">Manager name</label><sup>*</sup>
+    <input #recipient_name id="manager_name" placeholder="Manager name" formControlName="manager_name"
+      class="form-control form-control-sm" type="text" valid='false' [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['manager_name'].errors , 'is-verified': recipient_name.getAttribute('valid') === 'true' || verifiedStatus}">
+    <div *ngIf="verified && verificationform['manager_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['manager_name'].errors['required']">Manager name is required</div>
+    </div>
+
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="recipient_name.getAttribute('valid')"
+      (click)="recipient_name.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':recipient_name.getAttribute('valid') === 'true' || verifiedStatus}">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
+
+  </div>
+
+  <div class="col-md-3 position-relative">
+    <label for="fbo_name" class="form-label">FBO name</label><sup>*</sup>
+    <input #fbo_name type="text" placeholder="FBO name" formControlName="fbo_name" class="form-control form-control-sm"
+      [attr.valid]='false' id="fbo_name" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['fbo_name'].errors, 'is-verified': fbo_name.getAttribute('valid') === 'true' || verifiedStatus }">
+    <div *ngIf="verified && verificationform['fbo_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['fbo_name'].errors['required']">FBO name is required</div>
+    </div>
+
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="fbo_name.getAttribute('valid')"
+      (click)="fbo_name.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':fbo_name.getAttribute('valid') === 'true' || verifiedStatus} ">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
+  </div>
+
+  <div class="col-md-3 position-relative">
+    <label for="owner_name" class="form-label">Owner name</label><sup>*</sup>
+    <input #owner_name type="text" placeholder="Owner Name" formControlName="owner_name"
+      class="form-control form-control-sm" id="owner_name" [readOnly]="true" [attr.valid]='false'
+      [ngClass]="{ 'is-invalid': verified && verificationform['owner_name'].errors, 'is-verified': owner_name.getAttribute('valid') === 'true' || verifiedStatus} ">
+    <div *ngIf="verified && verificationform['owner_name'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['owner_name'].errors['required']">Owner name is required</div>
+    </div>
+
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="owner_name.getAttribute('valid')"
+      (click)="owner_name.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':owner_name.getAttribute('valid') === 'true' || verifiedStatus}">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
+  </div>
+
+  <div class="col-md-3 position-relative">
+    <label for="address" class="form-label">Address</label><sup>*</sup>
+    <input #address type="text" placeholder="Address" formControlName="address" class="form-control form-control-sm"
+      id="address" [attr.valid]='false'
+      [ngClass]="{ 'is-invalid': verified && verificationform['address'].errors, 'is-verified': address.getAttribute('valid') === 'true' || verifiedStatus}"
+      [readOnly]="true">
+    <div *ngIf="verified && verificationform['address'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['address'].errors['required']">Address is required</div>
+    </div>
+
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="address.getAttribute('valid')"
+      (click)="address.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':address.getAttribute('valid') === 'true' || verifiedStatus}">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
+  </div>
+
+  <div class="col-md-3 position-relative">
+    <label for="pincode" class="form-label">Pincode</label><sup>*</sup>
+    <input #pincode type="text" placeholder="pincode" formControlName="pincode" class="form-control form-control-sm"
+      valid='false' id="address"
+      [ngClass]="{ 'is-invalid': verified && verificationform['pincode'].errors , 'is-verified': pincode.getAttribute('valid') === 'true' || verifiedStatus}">
+    <div *ngIf="verified && verificationform['pincode'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['pincode'].errors['required']">Pincode is required</div>
+    </div>
+
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="pincode.getAttribute('valid')"
+      (click)="pincode.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':pincode.getAttribute('valid') === 'true' || verifiedStatus}">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="manager_contact_no" class="form-label">Manager Contact No.</label><sup>*</sup>
+    <input type="text" valid="false" placeholder="Recipient contact no." formControlName="manager_contact_no"
+      class="form-control form-control-sm" id="manager_contact_no" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['manager_contact_no'].errors}">
+    <div *ngIf="verified && verificationform['manager_contact_no'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['manager_contact_no'].errors['required']">Recipient contact number is
+        required</div>
+      <div *ngIf="verificationform['manager_contact_no'].errors['pattern']">Recipient contact number is
+        invalid
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-md-3 position-relative">
+    <label #email for="email" class="form-label">E-mail</label><sup>*</sup>
+    <input type="email" placeholder="E-mail" formControlName="email" class="form-control form-control-sm" id="email"
+      [ngClass]="{ 'is-invalid': verified && verificationform['email'].errors , 'is-verified': email.getAttribute('valid') === 'true' || verifiedStatus}"
+      [readOnly]="verifiedStatus" [readOnly]="true">
+    <div *ngIf="verified && verificationform['email'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['email'].errors['required']">E-mail is required</div>
+      <div *ngIf="verificationform['email'].errors['email']">E-mail is invalid</div>
+    </div>
+
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="email.getAttribute('valid')"
+      (click)="email.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':email.getAttribute('valid') === 'true'|| verifiedStatus}">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="kob" class="form-label select-label">KOB</label><sup>*</sup>
+    <select id="kob" [ngClass]="{ 'is-invalid': verified && verificationform['kob'].errors }" formControlName="kob"
+      class="form-select form-select-sm cursor-pointer" (change)="onKobChange($event)" [attr.disabled]="verifiedStatus">
+      <option value="" disabled selected>Select the Kind of Business</option>
+      <option *ngFor="let kob of kobList" [value]="kob">{{kob}}</option>
+    </select>
+    <div *ngIf="verified && verificationform['kob'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['kob'].errors['required']">KOB is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3 position-relative">
+    <label for="food_handler_no" class="form-label">No. of Food Handlers</label><sup>*</sup>
+    <input #pincode type="text" placeholder="Enter no. of Food Handler" formControlName="food_handler_no"
+      class="form-control form-control-sm" valid='false' id="food_handler_no"
+      [ngClass]="{ 'is-invalid': verified && verificationform['food_handler_no'].errors , 'is-verified': pincode.getAttribute('valid') === 'true' || verifiedStatus}">
+    <div *ngIf="verified && verificationform['food_handler_no'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['food_handler_no'].errors['required']">No. of food handler is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3 ">
+    <label for="hra_total" class="form-label">HRA Total Amount</label><sup>*</sup>
+    <input type="number" placeholder="HRA Total Amount" formControlName="hra_total" class="form-control form-control-sm"
+      id="hra_name" [readOnly]="true" [ngClass]="{ 'is-invalid': verified && verificationform['hra_total'].errors}">
+    <div *ngIf="verified && verificationform['hra_total'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['hra_total'].errors['required']">HRA Total is required</div>
+    </div>
+
+  </div>
+
+  <div class="col-md-3">
+    <label for="sales_date" class="form-label">Sales date</label><sup>*</sup>
+    <input type="date" placeholder="Fostac Total Amount" formControlName="sales_date"
+      class="form-control form-control-sm" id="sale_date" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['sales_date'].errors}">
+    <div *ngIf="verified && verificationform['sales_date'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['sales_date'].errors['required']">Sales Date is required</div>
+    </div>
+
+  </div>
+
+  <div class="col-md-3">
+    <label for="sales_person" class="form-label">Sales executive</label><sup>*</sup>
+    <input type="text" placeholder="Sales Person" formControlName="sales_person" class="form-control form-control-sm"
+      id="sales_person" [readOnly]="true"
+      [ngClass]="{ 'is-invalid': verified && verificationform['sales_person'].errors }">
+    <div *ngIf="verified && verificationform['sales_person'].errors" class="invalid-feedback">
+      <div *ngIf="verificationform['sales_person'].errors['required']">Sales Person name is required</div>
+    </div>
+
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-6">
+      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isTrainer">Verify</button>
+      <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please verify all the
+        fields before submitting)</span>
+    </div>
+  </div>
+  <ngx-loading></ngx-loading>
 </form>

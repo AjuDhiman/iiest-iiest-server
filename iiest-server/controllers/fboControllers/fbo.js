@@ -81,17 +81,21 @@ exports.fboPayReturn = async(req, res)=>{
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
         let serviceArr = [];
+        let qty = 0;
 
         if(fostac_training){
         serviceArr.push(fostac_training.fostac_service_name);
+        qty += fostac_training.recipient_no;
         }
 
         if(foscos_training){
         serviceArr.push(foscos_training.foscos_service_name);
+        qty += foscos_training.shops_no;
         }
 
         if(hygiene_audit){
           serviceArr.push(hygiene_audit.hra_service_name);
+          qty += hygiene_audit.shops_no;
         }
 
         let total_processing_amount = 0;
@@ -114,7 +118,7 @@ exports.fboPayReturn = async(req, res)=>{
         }
 
         if(product_name.includes('HRA')){
-          total_processing_amount += Number(hygiene_audit.fostac_processing_amount);
+          total_processing_amount += Number(hygiene_audit.hra_processing_amount);
           totalGST += hygieneGST;
         }
 
@@ -145,7 +149,7 @@ exports.fboPayReturn = async(req, res)=>{
           return res.status(401).json({success, message: "Data not entered in employee_sales collection"});
         }
 
-        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
+        await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, grand_total, serviceArr, waterTestFee, new ObjectId(signatureFile), invoiceUploadStream);
 
         req.session.destroy((err)=>{
           if(err){
@@ -233,17 +237,21 @@ exports.fboRegister = async (req, res) => {
       const { idNumber, generatedCustomerId} = await generatedInfo();
 
       let serviceArr = [];
+      let qty = 0;
 
       if(fostac_training){
         serviceArr.push(fostac_training.fostac_service_name);
+        qty += fostac_training.recipient_no;
       }
 
       if(foscos_training){
         serviceArr.push(foscos_training.foscos_service_name);
+        qty += foscos_training.shops_no;
       }
 
       if(hygiene_audit){
-        serviceArr.push(foscos_training.hra_service_name);
+        serviceArr.push(hygiene_audit.hra_service_name);
+        qty += foscos_training.shops_no;
       }
 
       let total_processing_amount = 0;
@@ -292,7 +300,7 @@ exports.fboRegister = async (req, res) => {
         return res.status(401).json({ success, randomErr: true })
       }
 
-      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, total_processing_amount, extraFee, totalGST, grand_total, serviceArr, waterTestFee, signatureFile, invoiceUploadStream);
+      await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, grand_total, serviceArr, waterTestFee, signatureFile, invoiceUploadStream);
       success = true;
       return res.status(200).json({ success })
       

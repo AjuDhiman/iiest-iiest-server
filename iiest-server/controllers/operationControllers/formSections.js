@@ -6,9 +6,10 @@ const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSc
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
-const sendDocumentMail = require("../../operations/sendMail");
+const { sendDocumentMail, sendVerificationMail } = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
+const revertModel = require("../../models/operationModels/revertSchema");
 
 exports.fostacVerification = async (req, res, next) => {
     try {
@@ -17,7 +18,23 @@ exports.fostacVerification = async (req, res, next) => {
 
         const recipientId = req.params.recipientid;
 
-        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date } = req.body;
+        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date } = req.body.data;
+
+        const isEditMode = req.body.isEditMode;
+
+        let clientdata = {
+            product: 'fostac',
+            recipientName: recipient_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            fatherName: father_name,
+            dob: dob,
+            address: address,
+            recipientContactNo: recipient_contact_no,
+            recipientEmail: email,
+            aadharNo: aadhar_no,
+            pancard: pancard_no
+        }
 
         const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, salesDate: sales_date });
 
@@ -29,13 +46,16 @@ exports.fostacVerification = async (req, res, next) => {
 
         logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
 
-        // code for tracking ends
+        // function to send mail to client after verification process
+        if (currentVal !== undefined) {
+            sendVerificationMail(clientdata);
+        }
 
+        // code for tracking ends
         if (basicFormAdd) {
             success = true
             req.verificationInfo = basicFormAdd;
             next();
-            // return res.status(200).json({ success, verifiedId: basicFormAdd._id });
         }
 
     } catch (error) {
@@ -51,9 +71,24 @@ exports.foscosVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
-        console.log(verifiedData);
-
         const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
+
+        let clientData = {
+            product: 'foscos',
+            operatorName: operator_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            recipientEmail: email,
+            operatorContactNo: operator_contact_no,
+            address: address,
+            pincode: pincode,
+            village: village,
+            tehsil: tehsil,
+            licenseCategory: license_category,
+            licenseDuration: license_duration,
+            kindOfBusiness: kob,
+            foodCategory: food_category,
+        }
 
         const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num });
 
@@ -65,15 +100,53 @@ exports.foscosVerification = async (req, res) => {
 
         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
 
-        // code for tracking ends
+        // function to send mail to client after verification process
+        if (addVerification) {
+            sendVerificationMail(clientData);
+        }
 
+        // code for tracking ends
         if (!addVerification) {
             success = false;
-            res.status(204).json({ success })
+            return res.status(204).json({ success });
         }
 
         success = true;
-        res.status(200).json({ success });
+        return res.status(200).json({ success });
+
+    } catch (error) {
+
+    }
+}
+
+exports.hraVerification = async (req, res) => {
+    try {
+        let success = false;
+
+        const shopID = req.params.shopid;
+
+        const verifiedData = req.body;
+
+        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person } = verifiedData;
+
+        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, handlerNum: food_handler_no });
+
+        //this code is for tracking the CRUD operation regarding to a shop
+
+        const prevVal = {}
+
+        const currentVal = addVerification;
+
+        logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
+
+        // code for tracking ends
+        if (!addVerification) {
+            success = false;
+            return res.status(204).json({ success });
+        }
+
+        success = true;
+        return res.status(200).json({ success });
 
     } catch (error) {
 
@@ -88,11 +161,11 @@ exports.getFostacVerifiedData = async (req, res) => {
 
         const verifedData = await fostacVerifyModel.findOne({ recipientInfo: recipientId });
 
-        if(!verifedData) {
-            return res.status(204).json({success: false, message: 'Not Verified yet'})
+        if (!verifedData) {
+            return res.status(204).json({ success: false, message: 'Not Verified yet' })
         }
 
-        const batchData = await TrainingBatchModel.findOne({ 
+        const batchData = await TrainingBatchModel.findOne({
             candidateDetails: {
                 $in: verifedData._id,
             }
@@ -201,9 +274,9 @@ exports.postGenOperData = async (req, res) => {
 
         let success = false;
 
-        const { recipient_status, officer_note } = req.body;
+        const { officer_note } = req.body;
 
-        const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user._id, recipientInfo: recipientId, recipientStatus: recipient_status, officerNote: officer_note });
+        const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user._id, recipientInfo: recipientId, officerNote: officer_note });
 
         const prevVal = {}
 
@@ -217,6 +290,35 @@ exports.postGenOperData = async (req, res) => {
         }
 
     } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.fssaiRevert = async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
+        let success = false;
+
+        const { fssai_revert } = req.body;
+
+        const revert = await revertModel.create({ operatorInfo: req.user._id, shopInfo: id, fssaiRevert: fssai_revert });
+
+        const prevVal = {}
+
+        const currentVal = revert;
+
+        await logAudit(req.user._id, "shopdetails", id, prevVal, currentVal, "FSSAI Revert Updated");
+
+        if (revert) {
+            success = true
+            return res.status(200).json({ success })
+        }
+
+    } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
@@ -319,7 +421,7 @@ exports.ticketDelivery = async (req, res) => {
 
         const certificateFile = req.file;
 
-        const ticket_status = req.body.ticket_status;
+        const {ticket_status, issue_date} = req.body;
 
         if (!certificateFile && ticket_status === 'delivered') {
             success = false;
@@ -337,7 +439,7 @@ exports.ticketDelivery = async (req, res) => {
         let addTicket;
 
         if (ticket_status == 'delivered') {
-            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.filename });
+            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.filename, issueDate: issue_date });
             sendDocumentMail(verificationData.email, 'Fostac_Certificate.pdf', `${certificateFile.destination}/${certificateFile.filename}`);
         } else {
             addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status });
@@ -355,6 +457,7 @@ exports.ticketDelivery = async (req, res) => {
             return res.status(200).json({ success, addTicket });
         }
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
@@ -375,5 +478,29 @@ exports.getTicketDeliveryData = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getReverts = async(req, res) => {
+    try {
+
+        let success = false;
+
+        const id = req.params.id;
+
+        console.log(id);
+
+        const reverts = await revertModel.find({shopInfo: id}).populate({path: 'operatorInfo'});
+
+        if(reverts){
+            success=true;
+            res.status(200).json({success, reverts });
+        } else{
+            res.status(204);
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Internal Server Error"})
     }
 }

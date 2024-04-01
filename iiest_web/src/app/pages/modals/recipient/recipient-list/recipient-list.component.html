@@ -6,20 +6,29 @@
           <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
             <thead>
               <tr *ngIf="this.serviceType == 'fostac'">
-                <th class="cell">S.No</th>
-                <th class="cell">Recipient Name</th>
-                <th class="cell">Phone</th>
-                <th class="cell">Aadhar No.</th>
+                <th class="cell text-center">S.No</th>
+                <th class="cell text-center">Recipient Name</th>
+                <th class="cell text-center">Phone</th>
+                <th class="cell text-center">Aadhar No.</th>
               </tr>
               <tr *ngIf="this.serviceType == 'foscos'">
                 <th class="cell">S.No</th>
                 <th class="cell">Operator Name</th>
                 <th class="cell">Address</th>
                 <th class="cell">Pincode</th>
-                <th class="cell">Electricity Bill</th>
-                <th class="cell">Owner Photo</th>
-                <th class="cell">Shop Photo</th>
-                <th class="cell">Aadhar</th>
+                <th class="cell text-center">Electricity Bill</th>
+                <th class="cell text-center">Owner Photo</th>
+                <th class="cell text-center">Shop Photo</th>
+                <th class="cell text-center">Aadhar</th>
+              </tr>
+              <tr *ngIf="this.serviceType == 'HRA'">
+                <th class="cell">S.No</th>
+                <th class="cell">Manager Name</th>
+                <th class="cell">Manager Contact</th>
+                <th class="cell">Address</th>
+                <th class="cell">KOB</th>
+                <th class="cell text-center">Fostac Certificate</th>
+                <th class="cell text-center">Foscos License</th>
               </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
@@ -99,8 +108,43 @@
                 </td>
               </tr>
             </tbody>
+            <tbody *ngIf="shopData?.length>0 && serviceType === 'HRA'">
+              <tr
+                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerName}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerContact}}</span></td>
+                <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerEmail}}</span></td> -->
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.kob}}</span></td>
+                <td *ngIf="!isfostac" class="cell text-center">
+                  <span class="truncate">
+                    <a [href]="shops.fostacCerificate" [download]="shops.managerName+ '_ebill.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.fostacCertificate" class="fa-2xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <label [for]="'uploadFostacCertificate' + sr"> <fa-icon *ngIf="!shops.fostacCertificate" class="fa-2xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadFostacCertificate' + sr" (change)="uploadFostacCertificate($event, shops._id)" hidden>
+                  </span>
+                </td>
+
+                <td *ngIf="!isfostac" class="cell text-center">
+                  <span class="truncate">
+                    <a [href]="shops.foscosLicense" [download]="shops.managerName+ '_foscosLicense.jpg'" target="_blank">
+                      <fa-icon *ngIf="shops.foscosLicense" class="fa-2xl text-success cursor-pointer"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <label [for]="'uploadFoscosLicense' + sr"> <fa-icon *ngIf="!shops.foscosLicense" class="fa-2xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadFoscosLicense' + sr" (change)="uploadFoscosLicense($event, shops._id)"
+                      hidden>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
             <tbody
-              *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos')">
+              *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos') || (!showPagination && serviceType === 'HRA')">
               <tr>
                 <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
               </tr>

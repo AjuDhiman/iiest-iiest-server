@@ -25,10 +25,22 @@ const foscosDocumentsStorage = multer.diskStorage({
 
 const foscosDocuments = multer({ storage: foscosDocumentsStorage });
 
+
+const hraDocumentsStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'documents/hra');
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().getTime() + '_' + file.fieldname + '.' + getExtention(file.originalname));
+  }
+});
+
+const hraDocuments = multer({ storage: hraDocumentsStorage });
+
 function getExtention(fileName){
   const ext = fileName.toString().split('.').pop();
   return ext
 }
 
-module.exports = { fostacDocuments, foscosDocuments }
+module.exports = { fostacDocuments, foscosDocuments, hraDocuments }
 

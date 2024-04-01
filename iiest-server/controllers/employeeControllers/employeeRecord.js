@@ -7,11 +7,12 @@ exports.employeeRecord = async (req, res) => {
 
     try {
         const todayDate = new Date();
-        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
-        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());
-        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()).toISOString();
+        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay()).toISOString();
+        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1).toISOString();
+        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1).toISOString();
         const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+        console.log(startOfToday);
 
         const pipeline = [
             {

@@ -81,9 +81,64 @@ const shopSchema = new Schema({
     aadharPhoto: {
         type: [String],
     }
+}, { timestamps: true });
+
+const hygieneShopSchema = new Schema({
+    salesInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'employee_sales',
+        required: true
+    },
+    shopId: {
+        type: String,
+        required: true
+    },
+    managerName: {
+        type: String,
+        required: true
+    },
+    managerContact: {
+        type: String,
+        required: true
+    },
+    managerEmail: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+    pincode: {
+        type: Number,
+        required: true,
+    },
+    state: {
+        type: String,
+        required: true,
+    },
+    kob: {
+        type: String,
+        required: true,
+    },
+    foodHandlersCount: {
+        type: Number,
+        required: true,
+    },
+    district: {
+        type: String,
+        required: true,
+    },
+    fostacCertificate: {
+        type: String,
+    },
+    foscosLicense: {
+        type: String,
+    }
 }, { timestamps: true })
 
 const recipientModel = mongoose.model('recipientDetails', recipientSchema);
 const shopModel = mongoose.model('shopDetails', shopSchema);
+const hygieneShopModel = mongoose.model('hygiene', hygieneShopSchema)
 
-module.exports = { recipientModel, shopModel }
+module.exports = { recipientModel, shopModel, hygieneShopModel }
