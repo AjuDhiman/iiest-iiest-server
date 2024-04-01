@@ -9,6 +9,7 @@ const { logAudit } = require("../generalControllers/auditLogsControllers");
 const { sendDocumentMail, sendVerificationMail } = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
+const revertModel = require("../../models/operationModels/revertSchema");
 
 exports.fostacVerification = async (req, res, next) => {
     try {
@@ -273,9 +274,9 @@ exports.postGenOperData = async (req, res) => {
 
         let success = false;
 
-        const { recipient_status, officer_note } = req.body;
+        const { officer_note } = req.body;
 
-        const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user._id, recipientInfo: recipientId, recipientStatus: recipient_status, officerNote: officer_note });
+        const operGenSecAdd = await generalSectionModel.create({ operatorInfo: req.user._id, recipientInfo: recipientId, officerNote: officer_note });
 
         const prevVal = {}
 
@@ -289,6 +290,35 @@ exports.postGenOperData = async (req, res) => {
         }
 
     } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.fssaiRevert = async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
+        let success = false;
+
+        const { fssai_revert } = req.body;
+
+        const revert = await revertModel.create({ operatorInfo: req.user._id, shopInfo: id, fssaiRevert: fssai_revert });
+
+        const prevVal = {}
+
+        const currentVal = revert;
+
+        await logAudit(req.user._id, "shopdetails", id, prevVal, currentVal, "FSSAI Revert Updated");
+
+        if (revert) {
+            success = true
+            return res.status(200).json({ success })
+        }
+
+    } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
@@ -391,7 +421,7 @@ exports.ticketDelivery = async (req, res) => {
 
         const certificateFile = req.file;
 
-        const ticket_status = req.body.ticket_status;
+        const {ticket_status, issue_date} = req.body;
 
         if (!certificateFile && ticket_status === 'delivered') {
             success = false;
@@ -409,7 +439,7 @@ exports.ticketDelivery = async (req, res) => {
         let addTicket;
 
         if (ticket_status == 'delivered') {
-            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.filename });
+            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.filename, issueDate: issue_date });
             sendDocumentMail(verificationData.email, 'Fostac_Certificate.pdf', `${certificateFile.destination}/${certificateFile.filename}`);
         } else {
             addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status });
@@ -427,6 +457,7 @@ exports.ticketDelivery = async (req, res) => {
             return res.status(200).json({ success, addTicket });
         }
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
@@ -447,5 +478,29 @@ exports.getTicketDeliveryData = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getReverts = async(req, res) => {
+    try {
+
+        let success = false;
+
+        const id = req.params.id;
+
+        console.log(id);
+
+        const reverts = await revertModel.find({shopInfo: id}).populate({path: 'operatorInfo'});
+
+        if(reverts){
+            success=true;
+            res.status(200).json({success, reverts });
+        } else{
+            res.status(204);
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Internal Server Error"})
     }
 }

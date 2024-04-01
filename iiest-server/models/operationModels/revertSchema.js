@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const generalSection=new Schema({
+const revertSchema=new Schema({
     operatorInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
         required: true
     },
-    recipientInfo: {
+    shopInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'recipientdetails',
+        ref: 'shopdetails',
         required: true,
     },
-    officerNote:{
+    fssaiRevert:{
         type:String,
     }
 }, {timestamps: true});
 
-const generalSectionModel = mongoose.model('operation_general_section', generalSection);
+const revertModel = mongoose.model('revert', revertSchema);
 
-module.exports = generalSectionModel;
+module.exports = revertModel;

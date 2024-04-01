@@ -148,6 +148,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getReverts(candidateId: string): Observable<any> {
+    const url = `${this.url}/getreverts/${candidateId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getEmpHiringData(): Observable<any> {
     const url: string = `${this.url}/getemphiringdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

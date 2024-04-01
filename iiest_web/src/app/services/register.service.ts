@@ -223,6 +223,14 @@ export class RegisterService {
     ));
   }
 
+  public regiterRevert(shopId: string, formInterface: Object){
+    const url = `${this.url}/registerrevert/${shopId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
   public submitAttenSec(enrId: string, formInterface: fostacAttendance){ // this service helps on posting data related to recipient attendance
     const url = `${this.url}/fostacattendance/${enrId}`
        return this.http.post<any>(url, formInterface).pipe(

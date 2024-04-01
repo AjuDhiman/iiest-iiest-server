@@ -14,12 +14,12 @@
         <div class="">
           <label for="officer_chat" class="form-label">Fssai Comment<sup>*</sup></label>
           <div class="officer-comment-block">
-            <!-- <div *ngFor="let comment of officerComments" class="note">{{comment}}</div> -->
+            <div *ngFor="let revert of reverts" class="note">{{revert}}</div>
           </div>
         </div>
         <div class="">
           <label for="fssai_revert" class="form-label">Fssai Revert</label>
-          <input type="text" class="form-control form-control-sm" id="fssai_revert">
+          <input type="text" class="form-control form-control-sm" formControlName="fssai_revert" id="fssai_revert">
         </div>
       </div>
 
