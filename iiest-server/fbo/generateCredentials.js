@@ -1,6 +1,6 @@
 const salesModel = require('../models/employeeModels/employeeSalesSchema');
 const fboModel = require('../models/fboModels/fboSchema');
-const { recipientModel } = require('../models/fboModels/recipientSchema');
+const { recipientModel, shopModel, hygieneShopModel } = require('../models/fboModels/recipientSchema');
 
 const generateCustomerId = (randonNum)=>{
     let customerId = '';
@@ -52,4 +52,31 @@ const getRecipientId = async(salesId, idNumber) => {
     return recipientId;
 }
 
-module.exports = {generatedInfo, generateRecipientInfo};
+const generateHygieneShopInfo = async(salesId) => {
+  let isUnique = false;
+  let idNumber;
+
+  while(!isUnique){
+    idNumber = Math.floor(10000 + Math.random() * 9000);
+    const existingNumber = await hygieneShopModel.findOne({id_num : idNumber});
+    if(!existingNumber){
+      isUnique = true;
+    }
+  }
+
+  let shopId = await getHygieneShopId(salesId, idNumber);
+
+  return {idNumber, shopId};
+}
+
+const getHygieneShopId = async(salesId, idNumber) => {
+  let shopId = '';
+
+  const empSales = await salesModel.findOne({_id: salesId}).populate({path: 'fboInfo'});
+  
+  shopId = `${empSales.fboInfo.customer_id}/SP/${idNumber}`
+  
+  return shopId;
+}
+
+module.exports = {generatedInfo, generateRecipientInfo, generateHygieneShopInfo};

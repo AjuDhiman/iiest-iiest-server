@@ -133,6 +133,64 @@
                                 </tbody>
                             </table>
 
+                            <table *ngIf="panelType==='HRA Panel'"
+                                class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">S.No</th>
+                                        <th class="cell">Manager Name</th>
+                                        <th class="cell">Address</th>
+                                        <th class="cell">Fbo Name</th>
+                                        <th class="cell">Owner Name</th>
+                                        <th class="cell">KOB</th>
+                                        <th class="cell">HRA Total</th>
+                                        <!-- <th class="cell">State</th> -->
+                                        <th class="cell">Sales Executive</th>
+                                        <!-- <th class="cell">Stage</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
+                                        <td class="cell"><span
+                                                class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
+                                        <td class="cell"><span class="truncate text-capitalize selector"
+                                                (click)="collectResData(data._id)">{{data.operatorName}}</span></td>
+                                        <td class="cell"><span
+                                                class="truncate text-capitalize selector">{{data.address}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
+                                        <td class="cell"><span
+                                                class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
+                                        </td>
+                                        <td class="cell"><span
+                                                class="truncate">{{data.salesInfo.foscosInfo.foscos_total}}</span></td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
+                                            class="cell">
+                                            <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
+                                        </td> -->
+                                        <ng-template #noData>
+                                            <td class="cell">
+                                                <span class="truncate">-</span>
+                                            </td>
+                                        </ng-template>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="!filteredData || filteredData.length===0">
+                                    <tr>
+                                        <td colspan="15" class="text-center fw-bold">----------------- No Data Found
+                                            ----------------</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            
                             <table *ngIf="panelType==='Foscos Panel'"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>

@@ -1,4 +1,4 @@
-const { recipientModel, shopModel } = require('../../models/fboModels/recipientSchema');
+const { recipientModel, shopModel, hygieneShopModel } = require('../../models/fboModels/recipientSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 
 exports.caseList = async(req, res)=>{
@@ -17,12 +17,18 @@ exports.caseList = async(req, res)=>{
             .exists()
             .where('shopPhoto')
             .exists()
+            .where('aadharPhoto')
+            .exists()
             .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
         }else if(employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel'){
 
             list = await recipientModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
 
+        } else if (employeePanel === 'HRA Panel') {
+
+            list = await hygieneShopModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+            
         }
 
         return res.status(200).json({caseList: list})
