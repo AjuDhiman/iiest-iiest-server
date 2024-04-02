@@ -71,6 +71,8 @@ export class FbonewComponent implements OnInit {
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];
 
+  loading: boolean = false;
+
   @ViewChild(FbolistComponent)fboList: FbolistComponent;
 
 
@@ -258,14 +260,20 @@ export class FbonewComponent implements OnInit {
       return;
     }
 
+    this.loading = true;
+
     if (this.isEditMode) {
       this.editedData = this.fboForm.value;
       this._registerService.updateFbo(this.objId, this.editedData, `${this.userName}(${this.parsedUserData.employee_id})`).subscribe({
         next: (res) => {
+          this.loading = false;
           if (res.success) {
             this._toastrService.success('', 'Record Edited Successfully');
             this.backToRegister();
           }
+        },
+        error: err => {
+          this.loading = false;
         }
       });
     } else {
@@ -274,11 +282,11 @@ export class FbonewComponent implements OnInit {
         if (this.addFbo.payment_mode === 'Pay Page') {
           this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
+              this.loading = false;
               window.location.href = res.message;
-              //for reloading fbo list
-              this.fboList.fetchAllFboData()
             },
             error: (err) => {
+              this.loading = false;
               let errorObj = err.error;
               if (errorObj.userError) {
                 this._registerService.signout();
@@ -302,14 +310,14 @@ export class FbonewComponent implements OnInit {
         } else if(this.addFbo.payment_mode === 'Cash') {
           this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
+              this.loading = false;
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
                 this.backToRegister();
-                //for reloading fbo list
-                this.fboList.fetchAllFboData()
               }
             },
             error: (err) => {
+              this.loading = false;
               let errorObj = err.error;
               if (errorObj.userError) {
                 this._registerService.signout();
@@ -333,17 +341,16 @@ export class FbonewComponent implements OnInit {
         }
       }else{
         if(this.addFbo.payment_mode === 'Cash'){
-          console.log(this.addFbo);
           this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res)=>{
+              this.loading = false;
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
                 this.backToRegister();
-                //for reloading fbo list
-                this.fboList.fetchAllFboData()
               }
             },
             error: (err)=>{
+              this.loading = false;
               let errorObj = err.error
               if(errorObj.userError){
                 this._registerService.signout();
@@ -470,9 +477,14 @@ export class FbonewComponent implements OnInit {
   }
 
   backToRegister() {
-    this.submitted = false;
-    this.isEditMode = false;
-    this.fboForm.reset();
+    location.reload();
+    // this.submitted = false;
+    // this.isEditMode = false;
+    // this.isFoscos = false;
+    // this.isFostac = false;
+    // this.isHygiene = false;
+    // this.multiSelect.onReset();
+    // this.fboForm.reset();
   }
 
   isEditRecord(param: any) {

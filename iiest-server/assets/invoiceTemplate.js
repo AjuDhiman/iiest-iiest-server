@@ -2,48 +2,75 @@ const fboLogo = require("./iiestLogo");
 const fboStamp = require('./stamp');
 const { ToWords } = require('to-words');
 const { empSignBucket } = require("../config/buckets");
+const { ObjectId } = require("mongodb");
 
-const invoiceTemplate = async(fboInfo)=>{
 
-    console.log(fboInfo);
+const invoiceTemplate = async (fboInfo) => {
 
-    const servicesChosen = fboInfo.chosenServices;
+    const quantity = fboInfo.qty;
+    const rate = fboInfo.amount;
+    const subTotal = quantity * rate;
+
+    const invoiceType = fboInfo.businessType === "b2c" ? "C U S T O M E R" : "T A X";
+
+    let calculateTax = function (invoiceType, state) {
+        if (invoiceType === 'TAX') {
+            if (state === 'Delhi') {
+                return 'CGST   9%, SGST   9%';
+            } else {
+                return 'IGST   18%';
+            }
+        } else if (invoiceType === 'TAX' && state !== 'Delhi') {
+            return 'IGST   18%';
+        }
+        else {
+            return 'GST   18%';
+        }
+    };
+
+    // let serviceCode;
+
+    // switch(fboInfo.choosenServices) {
+
+    // }
 
     const signatureName = fboInfo.signatureName;
-
-    console.log(signatureName);
-
-    console.log(servicesChosen);
 
     const toWords = new ToWords({
         localeCode: 'en-IN',
         converterOptions: {
-          currency: true,
-          ignoreDecimal: false,
-          ignoreZeroCurrency: false,
-          doNotAddOnly: false,
-          currencyOptions: {
-            name: 'Rupee',
-            plural: 'Rupees',
-            symbol: '₹',
-            fractionalUnit: {
-              name: 'Paisa',
-              plural: 'Paise',
-              symbol: '',
-            },
-          }
+            currency: true,
+            ignoreDecimal: false,
+            ignoreZeroCurrency: false,
+            doNotAddOnly: false,
+            currencyOptions: {
+                name: 'Rupee',
+                plural: 'Rupees',
+                symbol: '₹',
+                fractionalUnit: {
+                    name: 'Paisa',
+                    plural: 'Paise',
+                    symbol: '',
+                },
+            }
         }
-      });
+    });
 
+    // const Invoice_Type; 
     const logoImg = fboLogo();
 
     const stampImg = fboStamp();
 
     let chunks = [];
 
-    const amountInWords = toWords.convert(fboInfo.totalAmount, {currency: true, ignoreZeroCurrency: true});
+    const amountInWords = toWords.convert(fboInfo.totalAmount, { currency: true, ignoreZeroCurrency: true });
     const signatureBucket = empSignBucket();
-    const signatureDownloadStream = signatureBucket.openDownloadStream(signatureName);
+    const signatureDownloadStream = signatureBucket.openDownloadStream(new ObjectId(signatureName));
+
+    signatureDownloadStream.on('error', () => {
+      success = false;
+      return res.status(200).json({ success, randomErr: true });
+    })
 
     return new Promise((resolve, reject) => {
         signatureDownloadStream.on('data', (chunk) => {
@@ -62,181 +89,260 @@ const invoiceTemplate = async(fboInfo)=>{
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Sales Slip</title>
+                <title>Document</title>
             </head>
+            <style>
+                body {
+                    width: 230mm;
+                    height: 100%;
+                    margin: 0 auto;
+                    padding: 0;
+                    font-size: 12pt;
+                    background: rgb(204, 204, 204);
+                }
             
-            <body style="margin: 0; padding: 30px 80px;">
+                * {
+                    box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                }
             
-                <header
-                    style="display: flex; justify-content: center; align-items: center; gap: 20px; padding: 0; margin: 0; box-sizing: border-box;"
-                    class="first-section">
-                    <div style="width: 110px; height: 110px; padding: 0; margin: 0; box-sizing: border-box;"
-                        class="image-container">
-                        <img src="${logoImg}" alt="IIEST LOGO"
-                            style="width: 100%; height: 100%; object-fit: cover; padding: 0; margin: 0; box-sizing: border-box;">
+                .main-page {
+                    width: 210mm;
+                    min-height: 297mm;
+                    margin: 10mm auto;
+                    background: white;
+                    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+                }
+            
+                .sub-page {
+                    padding: 1cm;
+                    height: 297mm;
+                }
+            
+                @page {
+                    size: A4;
+                    margin: 0;
+                }
+            
+                @media print {
+                    .heading {
+                        background-color: #000 !important;
+                        -webkit-print-color-adjust: exact;
+            
+                    }
+                }
+            
+                @media print {
+                    .heading {
+                        color: #f2f2f2 !important;
+                    }
+                }
+            
+                @media print {
+            
+                    html,
+                    body {
+                        width: 210mm;
+                        height: 297mm;
+                    }
+            
+                    .main-page {
+                        margin: 0;
+                        border: initial;
+                        border-radius: initial;
+                        width: initial;
+                        min-height: initial;
+                        box-shadow: initial;
+                        background: initial;
+                        page-break-after: always;
+                    }
+                }
+            
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+            
+                td {
+                    border: 1px solid black;
+                    padding: 5px;
+                }
+            
+                /* Set column widths */
+                td:first-child {
+                    width: 1fr;
+                }
+            
+                td:last-child {
+                    width: 2fr;
+                }
+            
+                table {
+                    margin-top: 25px;
+                    width: 100%;
+                    height: auto;
+                    border-collapse: collapse;
+                }
+            
+                th,
+                td {
+                    border: 1px solid #000;
+                    padding: 8px;
+                    text-align: center;
+                }
+            
+                th {
+                    background-color: #f2f2f2;
+                }
+            
+                tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+            
+                .main-container {
+                    display: flex;
+                    justify-content: space-between;
+                }
+            
+            
+                .heading {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #000;
+                    color: #f2f2f2;
+                    height: 30px;
+                    margin: 10px auto;
+                }
+            
+                .logo-section {
+                    display: inline-flex;
+                }
+            
+                img {
+                    align-items: flex-end;
+                    margin-left: 15%;
+                }
+            
+                .header {
+                    display: flex;
+                    text-align: center;
+                    color: #000;
+                    font-size: 10px;
+                }
+            </style>
+            
+            <body>
+                <div class="main-page">
+                    <div class="header">
+                        <h4 style="margin-left: 43%;">INVOICE</h4>
                     </div>
-                    <div style="text-align: center; padding: 0; margin: 0; box-sizing: border-box;" class="text-container">
-                        <h1
-                            style="padding: 0; margin: 0; box-sizing: border-box; border-bottom: 2px solid; padding-bottom: 0px;font-size: 36px;font-weight: 500;margin-bottom: 0;">
-                            औद्योगिक उद्यमिता और कौशल प्रशिक्षण महासंघ</h1>
-                        <p style="padding: 0; margin: 0; box-sizing: border-box; margin-top: 10px;font-size: 14px;">INDUSTRIAL
-                            INCUBATION OF ENTREPRENEURSHIP AND SKILL TRAINING FEDERATION</p>
-                    </div>
-                </header>
-                <div
-                    style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px;">
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; grid-column: span 1;">
-                        <div style="padding: 0; margin: 0; box-sizing: border-box; grid-row: 1;">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;">Corporate Office No-55, Opposite Metro Pillar
-                                No.6, Panchkulan Marg, Connaught Place, Delhi-110001.</p>
+            
+                    <div class="sub-page">
+                        <div class="heading">
+                            <h3>I I E S T&nbsp;&nbsp;&nbsp;F E D E R A T I O N</h3>
                         </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box; grid-row: 2;">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong
-                                    style="padding: 0; margin: 0; box-sizing: border-box;">Email:</strong> info@ilest.org, <strong
-                                    style="padding: 0; margin: 0; box-sizing: border-box;">Website:</strong> <a
-                                    style="padding: 0; margin: 0; box-sizing: border-box;" href="http://www.liest.org"
-                                    target="_blank">www.liest.org</a></p>
+                        <div class="logo-section">
+                            <p>
+                                Building no. 55, Panchkuian Road, Connaught Place, New Delhi, Delhi, 110001
+                                <br>
+                                Mobile No: +91-9599195097, 011-46081145
+                                <br>
+                                Website: www.iiestedu.org, Email ID: finance.iiest@gmail.com
+                            </p>
+                            <img src="${logoImg}" height=120 width=120 alt="iiest_logo"
+                                style="border: 2.5px solid black; border-radius: 60px; padding: 5px">
                         </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box; grid-row: 3; ">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong
-                                    style="padding: 0; margin: 0; box-sizing: border-box;">Landline No:</strong> 011-43511788
-                                <strong style="padding: 0; margin: 0; box-sizing: border-box;">Mobile No:</strong> +91-9910729809,
-                                9289310979</p>
+                        <br>
+                        <div class="heading">
+                            <h3>${invoiceType}&nbsp;&nbsp;&nbsp;I N V O I C E</h3>
                         </div>
-                    </div>
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; grid-column: span 1;">
-                        <div style="padding: 0; margin: 0; box-sizing: border-box; grid-row: 1;">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;">Center Office, Flat No. 102, 1st Floor, Plot
-                                13, Cyber Heights, Huda Layout, Beside NTR Trust Line Road No. 2, Banjara Hills, Hyderabad - 500034
+                        <h5>BILL TO:</h5>
+                        <div class="main-container" style="width:100vw>
+                                    <p style = " padding-right: 7px;">
+                            ${fboInfo.name}<br><br>
+                            ${fboInfo.address}
+                            <br><br>
+                            +91&nbsp;${fboInfo.contact}<br>
+                            ${fboInfo.email}
+                            <br />
+                            ${fboInfo.gstNumber || ''}
+                            </p>
+                            <table style="width: 50%;">
+                                <tr>
+                                    <td>Invoice #</td>
+                                    <td>${fboInfo.receiptNo}</td>
+                                </tr>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>FED/${fboInfo.code}</td>
+                                </tr>
+                                <tr>
+                                    <td>Invoice Date</td>
+                                    <td>${fboInfo.date} </td>
+                                </tr>
+                            </table>
+            
+                        </div>
+                        <table>
+                            <tr>
+                                <th>Particulars</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Total</th>
+                            </tr>
+                            <tr>
+                                <td>${fboInfo.description}</td>
+                                <td>${quantity}</td>
+                                <td>₹${rate}</td>
+                                <td>₹${subTotal}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-top: 0; border-bottom: 0;">Amount in Words: <br><br> ${amountInWords}</td>
+                                <th colspan="2">Subtotal</th>
+                                <td>₹${subTotal}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-top: 0; border-bottom: 0;"></td>
+                                <td colspan="2">${calculateTax(fboInfo.business_type, fboInfo.state)}</td>
+                                <td>₹${fboInfo.taxAmount}</td>
+                            </tr>
+                            <tr>
+                                <td style="border-top: 0;"></td>
+                                <th colspan="2">Total</th>
+                                <td>₹${fboInfo.totalAmount}</td>
+                            </tr>
+                        </table>
+            
+                        <div>
+                            <p>
+                                <b>Note: *Invoice is payable with in 2 days </b><br>
+            
                             </p>
                         </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box; grid-row: 2;">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong
-                                    style="padding: 0; margin: 0; box-sizing: border-box;">Mobile No:</strong> +91-9154150561,
-                                +91-9154150563</p>
-                        </div>
-                    </div>
-                </div>
-                <p class="head"
-                    style="padding: 0; margin: 0; box-sizing: border-box; font-weight: 700; font-size: 24px; text-align: center;">
-                    Food Safety Training and Certification (FoSTaC) TP ID - TPINT133</p>
-                <div
-                    style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px;">
-                    <div class="padding: 0; margin: 0; box-sizing: border-box; recipt-no">
-                        <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong
-                                style="padding: 0; margin: 0; box-sizing: border-box;">Receipt No: </strong>${fboInfo.receiptNo}</p>
-                    </div>
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-rows: repeat(2, auto); gap: 10px;">
-                        <div class="date" style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
-                            <div style="padding: 0; margin: 0; box-sizing: border-box; text-align: right;"><strong>Date: </strong>${fboInfo.date}</div>
-                            <div style="padding: 0; margin: 0; box-sizing: border-box;"></div>
-                        </div>
-                        <div class="place" style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
-                            <div style="padding: 0; margin: 0; box-sizing: border-box; text-align: right;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Place:</strong></div>
-                            <div style="padding: 0; margin: 0; box-sizing: border-box;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-rows: repeat(7, auto); gap: 10px; padding: 20px;">
-                    <div style="padding: 0; margin: 0; box-sizing: border-box;" class="name">
-                        <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Name of the Candidate: </strong>${fboInfo.name}</p>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 8fr 4fr; gap: 10px;">
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="address">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Address: </strong>${fboInfo.address}</p>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="contact">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Contact: </strong>${fboInfo.contact}</p>
-                        </div>
-                    </div>
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="fostac-program-type">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Fostac Program Type</strong></p>
-                        </div>
+                        <br>
+                        <br>
                         <div>
-                            <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="basicCatering" name="basicCatering" ${servicesChosen.includes('Catering') ? 'checked' : ''}>
-                            <label style="padding: 0; margin: 0; box-sizing: border-box;" for="basicCatering">Basic Catering</label>
+                            <b>Please make Invoice Payment in our Following Bank Account</b>
+                            <br />
+                            Account Name: IIEST FEDERATION <br>
+                            Bank Name: HDFC Bank <br>
+                            Account No: 50200038814644 <br>
+                            IFSC Code: HDFC0000313 <br>
+                            Branch Name: Connaught Circle <br>
+                            Account Type: Current
                         </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                            <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="basicRetail" name="basicRetail" ${servicesChosen.includes('Retail') ? 'checked' : ''}>
-                            <label style="padding: 0; margin: 0; box-sizing: border-box;" for="basicRetail">Basic Retail</label>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;"></div>
-                    </div>
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                        <div class="license-program-type" style="padding: 0; margin: 0; box-sizing: border-box;">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">License Program Type</strong></p>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                            <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="registration" name="registration" ${servicesChosen.includes('Registration') ? 'checked' : ''}>
-                            <label style="padding: 0; margin: 0; box-sizing: border-box;" for="registration" >Registration</label>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                            <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="state" name="state" ${servicesChosen.includes('State') ? 'checked' : ''}>
-                            <label style="padding: 0; margin: 0; box-sizing: border-box;" for="state">State</label>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;">
-                            <input style="padding: 0; margin: 0; box-sizing: border-box;" type="checkbox" id="sfhpEdpMembership" name="sfhpEdpMembership">
-                            <label style="padding: 0; margin: 0; box-sizing: border-box;" for="sfhpEdpMembership">SFHP/EDP/Membership</label>
-                        </div>
-                    </div>
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="date-of-training">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Date of Training </strong> </p>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="batch-code">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Batch Code </strong></p>
-                        </div>
-                    </div>
-                    <div style="padding: 0; margin: 0; box-sizing: border-box; display: grid; grid-template-columns: 7fr 5fr; gap: 10px;">
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="payment-mode">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">By Cash/Check/Paytm/UPI </strong> </p>
-                        </div>
-                        <div style="padding: 0; margin: 0; box-sizing: border-box;" class="transaction-id">
-                            <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Transaction ID: </strong>${fboInfo.transactionId}</p>
-                        </div>
-                    </div>
-                    <div class="total-amount-in-words" style="padding: 0; margin: 0; box-sizing: border-box;">
-                        <p style="padding: 0; margin: 0; box-sizing: border-box;"><strong style="padding: 0; margin: 0; box-sizing: border-box;">Total Amount in Words: </strong>${amountInWords}</p>
+                        <section style="position: relative; margin-left:75%">
+                            <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>
+                            <img src="${signatureConverted}" height=100 width=100 alt="iiest_stamp" style="position: absolute; top: 0; right:0">
+                            Authorized Signatory
+                        </section>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; box-sizing: border-box;">
-                    <div class="online-payment-detail" style="padding: 10px; box-sizing: border-box; ">
-                        <h3 style="margin: 0; padding: 0; box-sizing: border-box; text-decoration: underline;">Online Payment</h3>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;"><strong>IIEST Account No.:</strong> 50200038814644</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;"><strong>IFSC Code:</strong> HDFC0000313</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;"><strong>Bank name:</strong> HDFC Back</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;"><strong>Account Holder:</strong> IIEST Federation</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;"><strong>GST no.</strong> 07AADCI2920D1Z2</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;">Fee includes all above service charges.</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;">Fee is non refundable</p>
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;">Course fees details are avilable here</p>    
-                        <p style="margin: 0; padding: 0; box-sizing: border-box;"><a href="https://fostac.fssai.gov.in/index">https://fostac.fssai.gov.in/index</a></p>
-                    </div>
-                    <div style="padding: 0px; box-sizing: border-box;">
-                        <div style="border: 1px solid #000; display: grid; grid-template-columns: 1fr 1fr; margin-top: 5px;">
             
-                            <div style="border: 1px solid #000;text-align: center; padding: 10px;"><strong>Fostac Course fee</strong></div>
-                            <div style="border: 1px solid #000; text-align: center;  padding: 10px;"><strong>Amount</strong></div>
-                            <div style="border: 1px solid #000;text-align: center;  padding: 10px;">Amount</div>
-                            <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.amount}</div>
-                            <div style="border: 1px solid #000;  text-align: center;  padding: 10px;">CGST@9% <br> SGST@9%</div>
-                            <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.taxAmount}</div>
-                            ${fboInfo.extraFee !== 0 ? `<div style="border: 1px solid #000;  text-align: center;  padding: 10px;">Govt. Fee</div>
-                            <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.extraFee}</div> `: ''}
-                            <div style="border: 1px solid #000;  text-align: center;  padding: 10px;">Water Test Fee</div>
-                            <div style="border: 1px solid #000; text-align: center;  padding: 10px;">${fboInfo.waterTestFee !== 0 ? fboInfo.waterTestFee : 'Not Chosen'}</div>
-                            <div style="border: 1px solid #000;text-align: center;  padding: 10px;">Total</div>
-                            <div style="border: 1px solid #000;text-align: center;  padding: 10px;">${fboInfo.totalAmount}</div>
-                        
-                        </div>
-                    </div>
-                    <div style="padding-right: 40px; margin-top: 20px; position: relative; box-sizing: border-box; display: flex; justify-content: flex-end;">
-                        <img src="${stampImg}" alt="Stamp" style="width: 150px; height: 150px; object-fit: cover; margin: 0; padding: 0; box-sizing: border-box;">
-                        <img src="${signatureConverted}" height="150px" width="150px" alt="IIest Stamp">
-                    </div>
                 </div>
             </body>
+            
             </html>`);
         });
 
@@ -247,4 +353,5 @@ const invoiceTemplate = async(fboInfo)=>{
 }
 
 module.exports = invoiceTemplate;
+
 
