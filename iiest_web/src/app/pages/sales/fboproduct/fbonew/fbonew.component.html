@@ -12,9 +12,9 @@
                         (change)="existingUser($event)"> &nbsp;
                     <div class="d-inline m-0 p-0" style="position: relative;">
                         <input #searchElem *ngIf="isExisting" type="search" (input)="filterSearch($event)" name="search"
-                            formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off" />
+                            formControlName="searchUser" placeholder="Search" class="search-input col-6" autocomplete="off" />
                         <ul *ngIf="isExisting && !isSearchEmpty" class="search-suggestions">
-                            <li style="text-decoration: none;" class="d-flex"
+                            <li style="text-decoration: none; font-size: 10px;" class="d-flex"
                                 *ngFor="let searchSuggestion of searchSuggestions"
                                 (click)="fetchExistingUser(searchSuggestion)">
                                 {{searchSuggestion.fbo_name}}({{searchSuggestion.customer_id}})
@@ -235,6 +235,7 @@
         </ng-container>
 
     </div>
+    <ngx-loading [show]="loading"></ngx-loading>
 </div>
 <!-- <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xxl border border-1 rounded-3">

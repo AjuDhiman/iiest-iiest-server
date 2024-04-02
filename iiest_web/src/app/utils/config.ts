@@ -32,7 +32,12 @@ export const serviceNames = {
    "HRA": ["HRA"]
 }
 
-
+export const hraKob: string[] = [
+   'Meat Shop',
+   'Sweet Shop',
+   'Bakery Shop',
+   'Catering'
+]
 
 export const stateName = [
    'Andaman Nicobar', 'Andhra Pradesh',

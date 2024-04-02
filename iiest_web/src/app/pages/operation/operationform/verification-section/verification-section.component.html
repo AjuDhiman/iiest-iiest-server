@@ -503,17 +503,17 @@
   <!-- for HRA Panel -->
   <div class="col-md-3" style="position: relative;">
     <label for="manager_name" class="form-label">Manager name</label><sup>*</sup>
-    <input #recipient_name id="manager_name" placeholder="Manager name" formControlName="manager_name"
+    <input #manager_name id="manager_name" placeholder="Manager name" formControlName="manager_name"
       class="form-control form-control-sm" type="text" valid='false' [readOnly]="true"
-      [ngClass]="{ 'is-invalid': verified && verificationform['manager_name'].errors , 'is-verified': recipient_name.getAttribute('valid') === 'true' || verifiedStatus}">
+      [ngClass]="{ 'is-invalid': verified && verificationform['manager_name'].errors , 'is-verified': manager_name.getAttribute('valid') === 'true' || verifiedStatus}">
     <div *ngIf="verified && verificationform['manager_name'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['manager_name'].errors['required']">Manager name is required</div>
     </div>
 
     <!-- For Perticular field verification -->
-    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="recipient_name.getAttribute('valid')"
-      (click)="recipient_name.setAttribute('valid', 'true')"
-      [ngClass]="{'verified-check':recipient_name.getAttribute('valid') === 'true' || verifiedStatus}">
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="manager_name.getAttribute('valid')"
+      (click)="manager_name.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':manager_name.getAttribute('valid') === 'true' || verifiedStatus}">
       <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
     </div>
 
