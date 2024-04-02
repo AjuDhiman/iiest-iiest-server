@@ -49,7 +49,7 @@ exports.trainingBatch = async (req, res) => {
 
         if (openedBatch) {
 
-            if (openedBatch.candidateNo < 10) {
+            if (openedBatch.candidateNo < 9) {
                 batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
                     {
                         $inc: { candidateNo: 1 },
