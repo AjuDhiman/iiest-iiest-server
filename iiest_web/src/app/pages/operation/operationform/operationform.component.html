@@ -48,7 +48,8 @@
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
 
-          <app-revert-section *ngIf="productType === 'Foscos'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <app-revert-section *ngIf="productType === 'Foscos'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+          [customerId]="candidateId">
           </app-revert-section>
 
           <app-certification-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [candidateID]="candidateId"
