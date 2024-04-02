@@ -196,8 +196,11 @@
         </div>
         <div class="col-md-4">
           <label for="kob" class="form-label">KOB (Kind of Business)<sup>*</sup></label>
-          <input type="text" id="kob" class="form-control form-control-sm" placeholder="KOB (Kind of Business)"
-            formControlName="kob" [ngClass]="{ 'is-invalid': submitted && recipient['kob'].errors }" />
+          <select type="text" id="kob" class="form-select form-select-sm" placeholder="KOB (Kind of Business)"
+            formControlName="kob" [ngClass]="{ 'is-invalid': submitted && recipient['kob'].errors }" >
+            <option value="" selected disabled>Select the KOB</option>
+            <option *ngFor="let kob of hraKobs" value="kob">{{kob}}</option>
+          </select>
           <div *ngIf="submitted && recipient['kob'].errors" class="invalid-feedback">
             <div *ngIf="recipient['kob'].errors['required']">KOB is required</div>
           </div>
