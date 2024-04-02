@@ -33,7 +33,7 @@ export class BatchListComponent implements OnInit{
 
   // table related vars
   pageNumber: number = 1;
-  itemsNumber: number = 1;
+  itemsNumber: number = 10;
   showPagination: boolean = true;
 
   updationForm: FormGroup = new FormGroup({});
