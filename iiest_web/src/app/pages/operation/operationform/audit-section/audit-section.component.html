@@ -21,18 +21,23 @@
     </div>
 
     <div class="col-md-3">
-        <label for="summary_advisory_report" class="form-label">Summary Advisory Report</label><sup>*</sup>
-        <textarea name="summary_advisory_report" id="summary_advisory_report" class="form-control form-control-sm"></textarea>
-        <div *ngIf="auditform['summary_advisory_report'].errors" class="invalid-feedback">
-            <div *ngIf="auditform['summary_advisory_report'].errors['required']">Summary is required</div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
         <label for="advisory_report" class="form-label">Advisory Report</label><sup>*</sup>
         <input type="file" placeholder="Upload Report" class="form-control form-control-sm" id="advisory_report">
         <div *ngIf="auditform['advisory_report'].errors" class="invalid-feedback">
             <div *ngIf="auditform['advisory_report'].errors['required']">Advisory Report is required</div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-12">
+        <div class="">
+            <label for="summary_advisory_report" class="form-label">Summary Advisory Report<sup>*</sup></label>
+            <div class="officer-comment-block">
+                <div *ngFor="let comment of officerComments" class="note">{{comment}}</div>
+            </div>
+        </div>
+        <div class="">
+            <label for="summary_note" class="form-label">Summary Note</label>
+            <input type="text" class="form-control form-control-sm" id="officer_note" formControlName="summary_note">
         </div>
     </div>
 

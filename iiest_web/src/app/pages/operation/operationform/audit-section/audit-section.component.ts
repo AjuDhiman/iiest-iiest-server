@@ -25,6 +25,8 @@ export class AuditSectionComponent implements OnInit {
 
   @Input() verifiedStatus: boolean;
 
+  officerComments: string[] = [];
+
   //output event emitters
   @Output() emitScheduledDataId: EventEmitter<string> = new EventEmitter<string>;
 
@@ -39,7 +41,7 @@ export class AuditSectionComponent implements OnInit {
   //Fostac Enrollment Reactive form 
   auditForm: FormGroup = new FormGroup({
     audit_report: new FormControl(''),
-    summary_advisory_report: new FormControl(''),
+    summary_note: new FormControl(''),
     advisory_report: new FormControl(''),
   });
 
@@ -52,7 +54,7 @@ export class AuditSectionComponent implements OnInit {
   ngOnInit(): void {
     this.auditForm = this.formBuilder.group({
       audit_report: ['', Validators.required],
-      summary_advisory_report: ['', Validators.required],
+      summary_note: ['', Validators.required],
       advisory_report: ['', Validators.required],
       });
   }
