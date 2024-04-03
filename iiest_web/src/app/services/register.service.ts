@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification} from '../utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
 import { config } from '../utils/config'
@@ -201,6 +201,15 @@ export class RegisterService {
   public verifyFoscos(shopId: string, formInterface: foscosVerification){
     console.log(formInterface);
     const url = `${this.url}/foscosverification/${shopId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public verifyHra(shopId: string, formInterface: hraVerification){
+    console.log(formInterface);
+    const url = `${this.url}/hraverification/${shopId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError

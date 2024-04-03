@@ -6,7 +6,7 @@ const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSc
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
-const { sendDocumentMail, sendVerificationMail } = require("../../operations/sendMail");
+const { sendDocumentMail, sendVerificationMail, sendEnrollmentMail } = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 const revertModel = require("../../models/operationModels/revertSchema");
@@ -239,6 +239,7 @@ exports.fostacEnrollment = async (req, res) => {
 
         if (enrollRecipient) {
             success = true;
+            // sendEnrollmentMail(clientData);
             return res.status(200).json({ success, message: 'Enrolled recipient', enrolledId: enrollRecipient._id });
         }
 

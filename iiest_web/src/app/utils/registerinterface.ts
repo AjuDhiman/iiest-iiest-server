@@ -188,6 +188,20 @@ export interface foscosVerification {
   sales_person: string,
 }
 
+export interface hraVerification {
+  manager_name: string,
+  fbo_name: string,
+  owner_name: string,
+  manager_contact_no: string,
+  email: string,
+  address: string,
+  pincode: string,
+  kob: string,
+  hra_total: string,
+  sales_date: string,
+  sales_person: string,
+}
+
 export interface fostacEnrollment{
   tentative_training_date:Date,
   fostac_training_date: Date,

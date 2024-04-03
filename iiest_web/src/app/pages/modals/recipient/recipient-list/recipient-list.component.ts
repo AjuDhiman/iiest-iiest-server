@@ -5,6 +5,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
+import { HttpClient } from '@angular/common/http';
+import { ViewDocumentComponent } from '../../../modals/view-document/view-document.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-recipient-list',
@@ -24,7 +27,9 @@ export class RecipientListComponent {
   constructor(public activeModal: NgbActiveModal,
     private _registerService: RegisterService,
     private getDataServices: GetdataService,
-    private _toastrService: ToastrService) {
+    private _toastrService: ToastrService,
+    private http: HttpClient,
+    private modalService: NgbModal,) {
 
   }
 
@@ -131,5 +136,46 @@ export class RecipientListComponent {
         this._toastrService.success('foscosLicense Uploaded')
       }
     })
+  }
+
+  downloadDoc(documentId: string, contentType: string) {
+    console.log(this.shopData);
+    // Make a request to the backend to download the document
+    this.http.get(`http://localhost:3000/${documentId}`, { responseType: 'blob' })
+      .subscribe((data: Blob) => {
+        // Create a Blob URL for the downloaded document
+        const downloadUrl = window.URL.createObjectURL(data);
+
+        // Determine the file extension based on content type
+        let fileExtension = '';
+        switch (contentType) {
+          case 'image/jpeg':
+            fileExtension = 'jpg';
+            break;
+          case 'image/png':
+            fileExtension = 'png';
+            break;
+          case 'application/pdf':
+            fileExtension = 'pdf';
+            break;
+          default:
+            fileExtension = 'file';
+            break;
+        }
+
+        // Create a link element and trigger the download
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `document_${documentId}`; // Set the filename with the appropriate file extension
+        link.click();
+
+        // Cleanup the Blob URL
+        window.URL.revokeObjectURL(downloadUrl);
+      });
+  }
+
+  viewDocument(res: any): void {
+    const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.doc = res;
   }
 }

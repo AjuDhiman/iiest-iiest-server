@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
-import { ownershipType } from 'src/app/utils/config';
+import { hraKob, ownershipType } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-verification-section',
@@ -56,6 +56,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   kobData: any;
 
   kobList: string[] = [];
+
+  hraKob: string[] = hraKob;
 
   foodCategoryList: string[] = [];
 
@@ -162,6 +164,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         case 'Foscos':
           this.verificationForm = this.foscosVerificationForm;
           break;
+        case 'HRA':
+          this.verificationForm = this.hraVerificationForm;
+          break;
       }
     }
 
@@ -217,6 +222,20 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           }
         }
       });
+    } else if (this.productType === 'HRA') {
+      this._registerService.verifyHra(this.candidateId, this.verificationForm.value).subscribe({
+        next: res => {
+          if (res.success) {
+            this.loading = false;
+            this.verifiedStatus = true;
+            this.emitVerifiedStatus.emit(this.verifiedStatus);
+            this.emitVerifiedID.emit(res.verifiiedId);
+            this.emitVerifiedData.emit(res.verificationInfo);
+            this.refreshAuditLog.emit();
+            this._toastrService.success('Shop\'s Information is Verified', 'Verified');
+          }
+        }
+      });
     }
   }
 
@@ -224,6 +243,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   getMoreCaseInfo(): void {
     this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res) => {
+        console.log(res);
         if (this.productType === 'Fostac') {
           this.emitCustomerId.emit(res.populatedInfo.recipientId);
           this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
@@ -276,6 +296,35 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
               src: res.populatedInfo.aadharPhoto,
               format: 'image',
               multipleDoc: true
+            }
+          ]);
+        } else if(this.productType === 'HRA') {
+          this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
+          this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
+          this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
+          this.verificationForm.patchValue({ manager_contact_no: res.populatedInfo.managerContact });
+          this.verificationForm.patchValue({ email: res.populatedInfo.managerEmail });
+          this.verificationForm.patchValue({ address: res.populatedInfo.address });
+          this.verificationForm.patchValue({ state: res.populatedInfo.state });
+          this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
+          this.verificationForm.patchValue({ food_handler_no: res.populatedInfo.foodHandlersCount });
+          this.verificationForm.patchValue({ district: res.populatedInfo.district });
+          this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
+          this.verificationForm.patchValue({ hra_total: res.populatedInfo.salesInfo.hraInfo.hra_total });
+          this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
+          this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
+          this.emitDocuments.emit([
+            {
+              name: 'Fostac Certificate',
+              src: [res.populatedInfo.fostacCerificate],
+              format: 'image',
+              multiplDoc: false
+            },
+            {
+              name: 'Foscos License',
+              src: [res.populatedInfo.foscosLicense],
+              format: 'image',
+              multipleDoc: false
             }
           ]);
         }

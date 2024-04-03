@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+simport { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule} from '@angular/forms'
@@ -74,6 +74,8 @@ import { InrAmountPipe } from './pipes/inr-amount.pipe';
 import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
 import { DocumentationModalComponent } from './pages/modals/documentation-modal/documentation-modal.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
+import { SchedulingSectionComponent } from './pages/operation/operationform/scheduling-section/scheduling-section.component';
+import { AuditSectionComponent } from './pages/operation/operationform/audit-section/audit-section.component';
 
 @NgModule({
   declarations: [
@@ -123,6 +125,8 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
     BatchListComponent,
     DocumentationModalComponent,
     MainPageComponent
+    SchedulingSectionComponent,
+    AuditSectionComponent
   ],
   imports: [
     BrowserModule,

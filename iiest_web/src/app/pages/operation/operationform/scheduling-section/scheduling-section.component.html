@@ -1,0 +1,54 @@
+<form [formGroup]="schedulingForm" class="row" (submit)="onSchedule()">
+    <div class="d-flex justify-content-between">
+
+        <!-- heading and form status -->
+        <h6>Scheduling Section</h6>
+        <span class="status" [ngClass]="scheduledStatus?'bg-success':'bg-warning'" style="font-size: x-small;"
+            class="badge align-self-baseline">
+            {{scheduledStatus?'Scheduled':'Not-Scheduled'}} <fa-icon class="fa-lg fa-regular ml-2"
+                [icon]="scheduledStatus?faCircleCheck:faCircleExclamation">
+            </fa-icon>
+        </span>
+    </div>
+
+    <!-- form input fields -->
+    <div class="col-md-3">
+        <label for="tentative_audit_date" class="form-label">Tentative Audit Date</label><sup>*</sup>
+        <input type="date" placeholder="Tentative Audit Date" formControlName="tentative_audit_date"
+            class="form-control form-control-sm" id="tentative_audit_date" [readOnly]="true"
+            [ngClass]="{ 'is-invalid': scheduled && scheduleform['tentative_audit_date'].errors }">
+        <div *ngIf="scheduled && scheduleform['tentative_audit_date'].errors" class="invalid-feedback">
+            <div *ngIf="scheduleform['tentative_audit_date'].errors['required']">Tentative Audit Date is
+                required</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <label for="hra_book_date" class="form-label">HRA Book Date</label><sup>*</sup>
+        <input type="date" placeholder="HRA Book Date" formControlName="hra_book_date"
+            class="form-control form-control-sm" id="hra_book_date" [readOnly]="true"
+            [ngClass]="{ 'is-invalid': scheduled && scheduleform['hra_book_date'].errors }">
+        <div *ngIf="scheduled && scheduleform['hra_book_date'].errors" class="invalid-feedback">
+            <div *ngIf="scheduleform['hra_book_date'].errors['required']">HRA Book Date is required</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <label for="auditor_name" class="form-label">Auditor Name</label><sup>*</sup>
+        <input type="text" placeholder="Aduitor Name" formControlName="auditor_name"
+            class="form-control form-control-sm" id="auditor_name"
+            [ngClass]="{ 'is-invalid': scheduled && scheduleform['auditor_name'].errors}" [readOnly]="true">
+        <div *ngIf="scheduled && scheduleform['auditor_name'].errors" class="invalid-feedback">
+            <div *ngIf="scheduleform['auditor_name'].errors['required']">Trainer is required</div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-6">
+            <button type="submit" class="btn btn-sm btn-primary">Schedule
+            </button>
+        </div>
+    </div>
+
+    <ngx-loading [show]="loading"></ngx-loading>
+</form>

@@ -16,6 +16,15 @@
                         <div class="page-utilities">
                             <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                                 <div class="col-auto">
+                                    <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber"
+                                        (click)="pageNumber=1">
+                                        <option value=10>10</option>
+                                        <option value=25 selected>25</option>
+                                        <option value=50>50</option>
+                                        <option value=100>100</option>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
                                     <button class="btn btn-sm mx-1"
                                         [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
                                         (click)="setServiceType('Catering')">
