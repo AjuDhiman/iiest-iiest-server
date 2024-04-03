@@ -73,6 +73,7 @@ import { StatListsComponent } from './pages/home/stat-lists/stat-lists.component
 import { InrAmountPipe } from './pipes/inr-amount.pipe';
 import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
 import { DocumentationModalComponent } from './pages/modals/documentation-modal/documentation-modal.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +121,8 @@ import { DocumentationModalComponent } from './pages/modals/documentation-modal/
     StatListsComponent,
     InrAmountPipe,
     BatchListComponent,
-    DocumentationModalComponent
+    DocumentationModalComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,

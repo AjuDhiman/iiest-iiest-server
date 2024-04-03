@@ -95,7 +95,7 @@
                                         <th class="cell">Recipient Contact</th>
                                         <th class="cell">District</th>
                                         <th class="cell">State</th>
-                                        <th *ngIf="forTraining" class="cell">Enrollment No.</th>
+                                        <!-- <th *ngIf="forTraining" class="cell">Enrollment No.</th> -->
                                         <!-- <th class="cell">Type of Licence</th> -->
                                         <th class="cell">Sales Executive</th>
                                     </tr>
@@ -117,9 +117,9 @@
                                                 class="truncate">{{data.salesInfo.fboInfo.district}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.state}}</span>
                                         </td>
-                                        <td *ngIf="forTraining" class="cell">{{data.enrollment_no}}<span
+                                        <!-- <td *ngIf="forTraining" class="cell">{{data.enrollment_no}}<span
                                                 class="truncate"></span>
-                                        </td>
+                                        </td> -->
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
                                         </td>
