@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { ToastrService } from 'ngx-toastr';
-import { GetdataService } from 'src/app/services/getdata.service';
+import { faCircleCheck, faCircleExclamation, faFileArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
-import { ourHolidays } from 'src/app/utils/config';
+import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
 
 @Component({
   selector: 'app-audit-section',
@@ -17,6 +16,20 @@ export class AuditSectionComponent implements OnInit {
   audited: boolean = false;
   auditStatus: boolean = false;
   loading: boolean = false;
+  hraDocuments: any = [{
+    name: 'Medical',
+    allowedFormats: ['pdf', 'jpg', 'jpeg'],
+    mutipleDoc: false
+  },
+  {
+    name: 'Vansh',
+    allowedFormats: ['pdf', 'jpg', 'jpeg'],
+    mutipleDoc: false
+  }];
+
+  hraDocumentsName: string[] = [];
+
+  selectedDocs: string[] = []; //var for sending a selected list of doc to doc modal by selecting them in multi select
 
   //input variables
   @Input() verifiedDataId: string;
@@ -37,6 +50,7 @@ export class AuditSectionComponent implements OnInit {
   //icons
   faCircleExclamation = faCircleExclamation
   faCircleCheck = faCircleCheck;
+  faFileArrowUp = faFileArrowUp;
 
   //Fostac Enrollment Reactive form 
   auditForm: FormGroup = new FormGroup({
@@ -46,17 +60,17 @@ export class AuditSectionComponent implements OnInit {
   });
 
   constructor(private formBuilder: FormBuilder,
-    private _getDataService: GetdataService,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService) {
+    private ngbModal: NgbModal) {
   }
 
   ngOnInit(): void {
+    this.hraDocumentsName = this.hraDocuments.map((item: any) => item.name);
     this.auditForm = this.formBuilder.group({
       audit_report: ['', Validators.required],
       summary_note: ['', Validators.required],
       advisory_report: ['', Validators.required],
-      });
+    });
   }
 
   get auditform(): { [key: string]: AbstractControl } {
@@ -70,7 +84,7 @@ export class AuditSectionComponent implements OnInit {
     }
     this.loading = true;//starts the loading
     if (this.verifiedDataId) {
-      const auditeData = {...this.auditForm.value};
+      const auditeData = { ...this.auditForm.value };
       this._registerService.enrollRecipient(this.verifiedDataId, auditeData).subscribe({
         next: res => {
           this.auditStatus = true;
@@ -82,5 +96,14 @@ export class AuditSectionComponent implements OnInit {
         }
       })
     }
+  }
+
+  getSelectedDocs($event: string[]): void { // this methord set the selected doc by th help of multidoc
+    this.selectedDocs = $event;
+  }
+
+  openDocumentationModal() { //this methord opens the doc modal 
+    const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.docsArr = this.hraDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
   }
 }
