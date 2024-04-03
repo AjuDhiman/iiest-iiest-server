@@ -119,10 +119,12 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.kob}}</span></td>
                 <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
-                    <a [href]="shops.fostacCerificate" [download]="shops.managerName+ '_ebill.jpg'" target="_blank">
+                    <a><fa-icon *ngIf="shops.fostacCertificate" class="fa-2xl text-success cursor-pointer"
+                        [icon]="faFile" (click)="downloadDoc(shops.fostacCertificate, '')"></fa-icon></a>
+                    <!-- <a [href]="shops.fostacCerificate" [download]="shops.managerName+ '_ebill.jpg'" target="_blank">
                       <fa-icon *ngIf="shops.fostacCertificate" class="fa-2xl text-success cursor-pointer"
                         [icon]="faFile"></fa-icon>
-                    </a>
+                    </a> -->
                     <label [for]="'uploadFostacCertificate' + sr"> <fa-icon *ngIf="!shops.fostacCertificate" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadFostacCertificate' + sr" (change)="uploadFostacCertificate($event, shops._id)" hidden>
@@ -131,10 +133,8 @@
 
                 <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
-                    <a [href]="shops.foscosLicense" [download]="shops.managerName+ '_foscosLicense.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.foscosLicense" class="fa-2xl text-success cursor-pointer"
-                        [icon]="faFile"></fa-icon>
-                    </a>
+                    <a><fa-icon *ngIf="shops.foscosLicense" class="fa-2xl text-success cursor-pointer"
+                        [icon]="faFile" (click)="downloadDoc(shops.foscosLicense, '')"></fa-icon></a>
                     <label [for]="'uploadFoscosLicense' + sr"> <fa-icon *ngIf="!shops.foscosLicense" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadFoscosLicense' + sr" (change)="uploadFoscosLicense($event, shops._id)"

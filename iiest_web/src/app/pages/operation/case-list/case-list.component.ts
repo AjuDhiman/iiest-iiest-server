@@ -105,6 +105,11 @@ export class CaseListComponent implements OnInit {
           this.selectedFilter = "byOperatorName";
           this.filter();
         }
+        else if (this.panelType === 'HRA Panel') {
+          this.selectedFilter = "byManagerName";
+          this.typeData = this.caseData;
+          this.filter();
+        }
       },
       error: err => {
         let errorObj = err.error;
@@ -158,7 +163,7 @@ export class CaseListComponent implements OnInit {
           case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo.toString().includes(this.searchQuery.toString()))
             break;
 
-          case 'byState': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && (elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.salesInfo.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase())));
             break;
         }
       }

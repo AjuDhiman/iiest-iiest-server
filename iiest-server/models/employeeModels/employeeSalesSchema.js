@@ -54,7 +54,7 @@ const salesSchema = new Schema({
         required: true
     },
     invoiceId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: [mongoose.Schema.Types.ObjectId],
         required: true
     }
 }, {timestamps: true})

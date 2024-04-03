@@ -196,8 +196,11 @@
         </div>
         <div class="col-md-4">
           <label for="kob" class="form-label">KOB (Kind of Business)<sup>*</sup></label>
-          <input type="text" id="kob" class="form-control form-control-sm" placeholder="KOB (Kind of Business)"
-            formControlName="kob" [ngClass]="{ 'is-invalid': submitted && recipient['kob'].errors }" />
+          <select type="text" id="kob" class="form-select form-select-sm" placeholder="KOB (Kind of Business)"
+            formControlName="kob" [ngClass]="{ 'is-invalid': submitted && recipient['kob'].errors }">
+            <option value="" selected disabled>Select the KOB</option>
+            <option *ngFor="let kob of hraKobs" [value]="kob">{{kob}}</option>
+          </select>
           <div *ngIf="submitted && recipient['kob'].errors" class="invalid-feedback">
             <div *ngIf="recipient['kob'].errors['required']">KOB is required</div>
           </div>
@@ -243,7 +246,6 @@
 
     <div class="modal-footer text-left">
       <div>
-        <!-- <input type="file" style="display: none" #ExcelInput (change)="onExcelUpload($event)" /> -->
       </div>
       <button *ngIf="this.serviceType === 'fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add
         Recipient</button>
@@ -292,17 +294,8 @@
         <div class="col-auto">
         </div>
         <div class="col-auto">
-          <!-- <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilter">
-              <option value="byOwner">Search by owner</option>
-              <option value="byName">Search by name</option>
-              <option value="byContact">Search by contact</option>
-              <option value="byDistrict">Search by district</option>
-  
-            </select> -->
         </div>
         <div class="col-auto">
-          <!--  <fa-icon (click)="exportToCsv()" class="fa-2xl" style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"></fa-icon>
-            <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
         </div>
       </div><!--//row-->
     </div><!--//table-utilities-->
@@ -311,104 +304,3 @@
 
 <app-recipient-list [serviceType]="serviceType" [recipientData]="recipientData" [shopData]="shopData"
   [isfostac]="isfostac" [showPagination]="showPagination"></app-recipient-list>
-
-<!--<ngx-loading [show]="loading"></ngx-loading>-->
-
-<!-- <div class="tab-content mx-3" id="orders-table-tab-content">
-  <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-    <div class="app-card app-card-orders-table shadow-sm mb-5">
-      <div class="app-card-body">
-        <div class="table-responsive">
-          <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
-            <thead>
-              <tr *ngIf="this.serviceType == 'fostac'">
-                <th class="cell">S.No</th>
-                <th class="cell">Recipient Name</th>
-                <th class="cell">Phone</th>
-                <th class="cell">Aadhar No.</th>
-              </tr>
-              <tr *ngIf="this.serviceType == 'foscos'">
-                <th class="cell">S.No</th>
-                <th class="cell">Operator Name</th>
-                <th class="cell">Address</th>
-                <th class="cell">Pincode</th>
-                <th class="cell">Electricity Bill</th>
-                <th class="cell">Owner Photo</th>
-                <th class="cell">Shop Photo</th>
-              </tr>
-            </thead>
-            <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'"> -->
-<!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
-<!-- <tr
-                *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
-                <td *ngIf="isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
-                <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.name}}</span></td>
-                <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.phoneNo}}</span></td>
-                <td *ngIf="isfostac" class="cell"><span class="truncate">{{recipients.aadharNo}}</span></td>
-              </tr>
-            </tbody>
-            <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
-              <tr
-                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td> -->
-<!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-<!-- <td *ngIf="!isfostac" class="cell">
-                  <span class="truncate"> -->
-<!-- <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer"
-                        [icon]="faFile"></fa-icon>
-                    </a>
-                    <label [for]="'uploadEbill' + sr"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
-                        [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadEbill' + sr" (change)="uploadEbill($event, shops._id)" hidden>
-                  </span>
-                </td>
-
-                <td>
-                  <span class="truncate">
-                    <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer"
-                        [icon]="faFile"></fa-icon>
-                    </a>
-                    <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
-                        [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)"
-                      hidden>
-                  </span>
-                </td>
-
-                <td>
-                  <span class="truncate"> 
-                    
-                    <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer"
-                        [icon]="faFile"></fa-icon>
-                    </a>
-                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
-                        [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
-                      hidden>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-            <tbody
-              *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos')">
-              <tr>
-                <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-    <div *ngIf="showPagination===true" class="d-flex justify-content-end">
-      <pagination-controls previousLabel="Prev" nextLabel="Next"
-        (pageChange)="onTableDataChange($event)"></pagination-controls>
-    </div>
-  </div>
-</div> -->

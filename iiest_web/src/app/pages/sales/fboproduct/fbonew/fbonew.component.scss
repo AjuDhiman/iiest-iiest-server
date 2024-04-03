@@ -2,7 +2,7 @@
     position: absolute;
     top: 25px;
     left: 0; 
-    width:189px; 
+    width:315px; 
     background-color: white;
     border: 0.5px solid grey;
     border-radius: 5px;
@@ -10,6 +10,13 @@
     font-size: 14px;
     max-height: 150px;
     overflow-y: scroll;
+    text-align: center;
+    padding: 0;
+}
+
+.search-suggestions li {
+    margin-top: 4px;
+    text-transform: capitalize;
 }
 
 .search-input {

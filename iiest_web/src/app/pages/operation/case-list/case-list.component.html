@@ -2,7 +2,7 @@
     <div class="container-xxl border border-1 rounded-3 pt-3">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
-                <h1 class="app-page-title mb-0">Case List of {{panelType.split(' ')[0]}} ({{serviceType}})</h1>
+                <h1 class="app-page-title mb-0">Case List of {{panelType.split(' ')[0]}} {{serviceType?('(' + serviceType + ')'):''}}</h1>
             </div>
             <div class="col-auto">
                 <div class="page-utilities">
@@ -64,7 +64,7 @@
                                 <option value="byFboName">Search by Fbo Name</option>
                                 <option value="byOwnerName">Search by Owner Name</option>
                                 <option value="byContact">Search by Contact no.</option>
-                                <option value="byState">Search by State</option>
+                                <option value="byLocation">Search by Location</option>
                             </select>
                         </div>
                         <div class="col-auto">
@@ -143,6 +143,7 @@
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
                                         <th class="cell">KOB</th>
+                                        <th class="cell">No. of Food Handlers</th>
                                         <th class="cell">HRA Total</th>
                                         <!-- <th class="cell">State</th> -->
                                         <th class="cell">Sales Executive</th>
@@ -155,7 +156,7 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)">{{data.operatorName}}</span></td>
+                                                (click)="collectResData(data._id)">{{data.managerName}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate text-capitalize selector">{{data.address}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
@@ -163,12 +164,12 @@
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
+                                                class="truncate">{{data.kob}}</span>
                                         </td>
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.foscosInfo.foscos_total}}</span></td>
-                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
+                                                class="truncate">{{data.foodHandlersCount}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.hraInfo.hra_total}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
                                             <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>

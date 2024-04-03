@@ -129,8 +129,8 @@ export class OperationformComponent implements OnInit {
       case 'Foscos Panel':
         this.productType = 'Foscos';
         break;
-      case 'Hygiene Panel':
-        this.productType = 'Hygiene';
+      case 'HRA Panel':
+        this.productType = 'HRA';
         break;
       case 'FSSAI Training Panel':
         this.productType = 'Fostac';

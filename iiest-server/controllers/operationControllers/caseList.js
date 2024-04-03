@@ -43,7 +43,7 @@ exports.caseInfo = async(req, res)=>{
 
         let success = false;
         
-        const recipientId = req.params.recipientid
+        const recipientId = req.params.recipientid;
 
         let recipientInfo;
 
@@ -51,7 +51,9 @@ exports.caseInfo = async(req, res)=>{
           recipientInfo  = await recipientModel.findById(recipientId);
         }else if(req.user.panel_type === 'Foscos Panel'){
           recipientInfo = await shopModel.findById(recipientId);
-        }
+        }else if(req.user.panel_type === 'HRA Panel'){
+            recipientInfo = await hygieneShopModel.findById(recipientId);
+          }
 
         const moreInfo = await (await recipientInfo.populate('salesInfo')).populate(['salesInfo.employeeInfo', 'salesInfo.fboInfo']);
 

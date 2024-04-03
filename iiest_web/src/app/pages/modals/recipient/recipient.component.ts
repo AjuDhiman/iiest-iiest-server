@@ -9,6 +9,7 @@ import { faFileExcel, faFile, faDownload, IconDefinition } from '@fortawesome/fr
 import * as XLSX from 'xlsx'
 import { GetdataService } from 'src/app/services/getdata.service';
 import { fboRecipient } from 'src/app/utils/registerinterface';
+import { hraKob } from 'src/app/utils/config';
 @Component({
   selector: 'app-recipient',
   templateUrl: './recipient.component.html',
@@ -32,6 +33,8 @@ export class RecipientComponent implements OnInit {
   shopsCount: number;
   listCount: number;
   loading: boolean = false;
+
+  hraKobs = hraKob;
 
   //icons
   faFileExcel: IconDefinition = faFileExcel;

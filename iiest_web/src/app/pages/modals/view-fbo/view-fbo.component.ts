@@ -31,6 +31,8 @@ export class ViewFboComponent implements OnInit {
    //this.fulladdress =  "Village: "+ this.fboData.village+", Post-Office: "+ this.fboData.address+", Tehsil: "+ this.fboData.tehsil+", District: "+ this.fboData.district+", State: "+ this.fboData.state+", Pincode: "+ this.fboData.pincode+", "+ "India";
    this.fulladdress =  this.fboData.fboInfo.village+", "+ this.fboData.fboInfo.address+", "+ this.fboData.fboInfo.tehsil+", "+ this.fboData.fboInfo.district+", "+ this.fboData.fboInfo.state+", Pincode: "+ this.fboData.fboInfo.pincode+", "+ "India";
 
+   this.fulladdress = this.formatAddress(this.fulladdress);
+
    if(this.fboData.foscosInfo){
     this.calculateRemaningDays();
    }
@@ -90,6 +92,22 @@ export class ViewFboComponent implements OnInit {
     remainingDays = remainingDays % 12;
 
     this.remainingTime = `${remainingYear} Years ${remainingMonths} Months ${remainingDays} Days`
+  }
+
+  formatAddress(address: string): string {
+    let arr: Array<string> = address.toString().split('');
+
+    if(arr[0] == ','){
+      arr.shift();
+    }
+
+    for(let i: number = 0; i < arr.length; i++){
+    
+    }
+
+    const updateAddress: string = arr.join("");
+
+    return updateAddress;
   }
 
 }
