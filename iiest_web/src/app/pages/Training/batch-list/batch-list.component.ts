@@ -24,7 +24,7 @@ export class BatchListComponent implements OnInit{
 
   batchData: any;
 
-  editMode: boolean = false;
+  editMode: any = {};//this var is used in refrencing edit mode boolean of each batch, it's will take the form as {_id1(_id of batch): boolean}
 
   faEye: IconDefinition = faEye;
   faPen: IconDefinition = faPen;
@@ -83,9 +83,12 @@ export class BatchListComponent implements OnInit{
   getCases(){
     this._getDataService.getBatchListData().subscribe({
       next: res => {
-        console.log(res);
         this.batchData = res.batches
                         .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                        
+         this.batchData.forEach((batch: any) => { 
+          this.editMode[batch._id] = false;
+        });
         this.filterData();
       }
     })
@@ -96,23 +99,24 @@ export class BatchListComponent implements OnInit{
   }
 
   filterData(){
-    this.editMode = false;
+    this.resetEditMode();
     this.filteredData = this.batchData.filter((item: any) => item.category === this.serviceType && item.location === this.activeTab);
   }
 
-  openEditMode(id: String, index: number) {
-    if(this.batchData[index].status !== 'Completed') {
+  openEditMode(id: any, index: number) {
+    let selectedBatch = this.batchData.find((item: any) => item._id == id);
+    if(selectedBatch.status !== 'completed') {
       return
     }
-    this.editMode = true;
-    this.updationForm.addControl(`training_date${id}`, this.formBuilder.control(this.batchData[index].trainingDate?this.batchData[index].trainingDate:''));
-    this.updationForm.addControl(`trainer${id}`, this.formBuilder.control(this.batchData[index].trainer?this.batchData[index].trainer:''));
-    this.updationForm.addControl(`venue${id}`, this.formBuilder.control(this.batchData[index].venue?this.batchData[index].venue:''));
+    this.editMode[id] = true;
+    this.updationForm.addControl(`training_date${id}`, this.formBuilder.control(selectedBatch.trainingDate?selectedBatch.trainingDate:''));
+    this.updationForm.addControl(`trainer${id}`, this.formBuilder.control(selectedBatch.trainer?selectedBatch.trainer:''));
+    this.updationForm.addControl(`venue${id}`, this.formBuilder.control(selectedBatch.venue?selectedBatch.venue:''));
   }
 
   closeEditMode(id: string) {
     //remove control at last and hide theh form for particular batch
-    this.editMode = false;
+    this.resetEditMode();
     this.updationForm.removeControl(`training_date${id}`);
     this.updationForm.removeControl(`trainer${id}`);
     this.updationForm.removeControl(`venue${id}`);
@@ -130,6 +134,14 @@ export class BatchListComponent implements OnInit{
       formattedDate = `${day}-${month}-${year}`;
     }  
     return formattedDate;
+  }
+
+  resetEditMode() {
+    const keys: string[] = Object.keys(this.editMode);
+
+    keys.forEach((key: string) => {
+      this.editMode[key] = false;
+    });
   }
 
 

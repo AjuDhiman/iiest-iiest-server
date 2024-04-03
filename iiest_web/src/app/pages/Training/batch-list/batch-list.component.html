@@ -74,8 +74,8 @@
                                                 <td class="cell col-1"><span class="truncate">{{batch.status}}</span>
                                                 </td>
                                                 <td class="cell col-2"><span class="truncate">
-                                                        {{!editMode?batch.venue?batch.venue:'N/A':''}}
-                                                        <select *ngIf="editMode" name=""
+                                                        {{!editMode[batch._id]?batch.venue?batch.venue:'N/A':''}}
+                                                        <select *ngIf="editMode[batch._id]" name=""
                                                             class="form-select form-select-xs"
                                                             [formControlName]="'venue' + batch._id">
                                                             <option value="" disabled selected>Select Venue</option>
@@ -84,15 +84,15 @@
                                                     </span>
                                                 </td>
                                                 <td class="cell col-2"><span class="truncate">
-                                                        {{!editMode?batch.trainingDate?getFormatedDate(batch.trainingDate):'N/A':''}}
-                                                        <input *ngIf="editMode" type="datetime-local"
+                                                        {{!editMode[batch._id]?batch.trainingDate?getFormatedDate(batch.trainingDate):'N/A':''}}
+                                                        <input *ngIf="editMode[batch._id]" type="datetime-local"
                                                             [formControlName]="'training_date' + batch._id"
                                                             class="form-control form-control-xs">
                                                     </span>
                                                 </td>
                                                 <td class="cell col-2"><span class="truncate">
-                                                        {{!editMode?batch.trainer?batch.trainer:'N/A':''}}
-                                                        <select *ngIf="editMode" name=""
+                                                        {{!editMode[batch._id]?batch.trainer?batch.trainer:'N/A':''}}
+                                                        <select *ngIf="editMode[batch._id]" name=""
                                                             class="form-select form-select-xs"
                                                             [formControlName]="'trainer' + batch._id">
                                                             <option value="" disabled selected>Select Trainer</option>
@@ -103,12 +103,13 @@
                                                 <td class="cell"><span class="truncate">
                                                         <fa-icon class="text-primary selector" [icon]="faEye"
                                                             (click)="showCaseList(batch.candidateDetails)"></fa-icon>
-                                                        <fa-icon *ngIf="!editMode && batch.status === 'Completed'"
+                                                        
+                                                        <fa-icon *ngIf="!editMode[batch._id] && batch.status === 'completed'"
                                                             class="text-primary selector px-2" [icon]="faPen"
                                                             (click)="openEditMode(batch._id, i)"></fa-icon>
-                                                        <button *ngIf="editMode" [id]="batch._id"
+                                                        <button *ngIf="editMode[batch._id]" [id]="batch._id"
                                                             class="btn mx-2 btn-primary btn-xs">save</button>
-                                                        <fa-icon *ngIf="editMode" class="text-primary selector"
+                                                        <fa-icon *ngIf="editMode[batch._id]" class="text-primary selector"
                                                             [icon]="faCancel" (click)="closeEditMode(batch._id)"></fa-icon>
                                                     </span>
                                                 </td>
