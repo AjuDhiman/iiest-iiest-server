@@ -1,0 +1,227 @@
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" [routerLink]="['/main']">
+            <img class="logo" src="../../../assets/images/logo.png">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                <li class="nav-item navLinks">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4" [routerLink]="isToken ? ['/home'] : ['/']">
+                        <fa-icon class="fa-2x" [icon]="faHome"></fa-icon>
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item navLinks">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4" href="#about">
+                        <fa-icon class="fa-2x" [icon]="faCircleInfo"></fa-icon>
+                        About us
+                    </a>
+                </li>
+                <li *ngIf="!isToken" class="nav-item navLinks">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal()">
+                        <fa-icon class="fa-2x" [icon]="faSignIn"></fa-icon>
+                        Login
+                    </a>
+                </li>
+                <li class="nav-item navLinks">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4" href="#contact">
+                        <fa-icon class="fa-2x" [icon]="faPhone"></fa-icon>
+                        Contact Us
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Page Header-->
+<header class="masthead"
+    style="background-image: url('../../../assets/images/landing_img/home-bg.jpg'); position: relative;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1 class="mb-5">Connecting People with the Government</h1>
+                    <span class="subheading lh-sm">The Connect Login Portal serves as a game-changing tool for
+                        bussinesses,
+                        simplyfiying the complex landscape of industry compliance and goverenment regulations. By
+                        offering
+                        a unified, user friendly interface and wealth of features, it empower the companies to operate
+                        with
+                        confidence, knowing that they are align with all neccessary leagal requirements.
+
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="py-4 my-4 w-100 d-flex justify-content-center"
+        style="background-color:rgba(255, 255, 255, 0.0); height: 100px; position: absolute; bottom: 0px;">
+        <div class="d-flex justify-content-around w-75 align-items-center h-100" style="position: absolute; top: 0;">
+            <a class="pe-auto">
+                <div class="icon h-75 gap-1 w-25 justify-content-end d-flex flex-column-reverse align-items-center">
+                    <span style="color: white; font-size: 1.2rem;">Chapter</span>
+                    <fa-icon class="fa-3x fa-beat" [icon]="faLocationDot" style="color: #9d151d;"></fa-icon>
+                </div>
+            </a>
+            <a class="pe-auto" (click)="openModal()">
+                <div class="icon h-75 w-25 gap-1 justify-content-end d-flex flex-column-reverse align-items-center">
+                    <span style="color: white; font-size: 1.2rem;">Company </span>
+                    <fa-icon class="fa-3x fa-beat" [icon]="faBuilding" style="color: #9d151d;"></fa-icon>
+                </div>
+            </a>
+            <a class="pe-auto">
+                <div class="icon h-75 w-25  gap-1 justify-content-end d-flex flex-column-reverse align-items-center">
+                    <span style="color: white; font-size: 1.2rem;">Consumer </span>
+                    <fa-icon class="fa-3x fa-beat" [icon]="faPeopleGroup" style="color: #9d151d;"></fa-icon>
+                </div>
+            </a>
+        </div>
+    </div>
+</header>
+<!-- Main Content-->
+<div class="container px-4 px-lg-5" id="about" style="text-align: justify;">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post preview-->
+            <div class="post-preview">
+                <h2 class="post-title ">About IIEST Connect:</h2>
+            </div>
+            <div>
+                <!-- <h3><b>Welcome to IIEST Connect</b> – Bridging Dreams, Empowering Lives!</h3>
+
+            <p>
+                At IIEST Connect, we are more than just a website; we are the heartbeat of innovation and collaboration,
+                creating a digital bridge that connects Small and Medium Enterprises (SMEs) and the vibrant people of
+                India. Our platform is a testament to the power of connectivity, fostering dreams and empowering lives
+                across the nation.
+            </p> -->
+
+
+                <p>
+                    Established with the vision of fostering economic growth and inclusivity, IIEST Connect serves as a
+                    dynamic online hub that seamlessly links SMEs with the government of India. In a world where digital
+                    connections drive progress, IIEST Connect stands at the forefront, simplifying and enhancing the way
+                    businesses and government interact.
+                </p>
+
+                <p>
+                    <b class="aboutus-subhead">Our Digital Bridge:</b><br/>
+                    Designed with simplicity and effectiveness in mind, IIEST Connect serves as a smart solution for
+                    SMEs to
+                    integrate with government compliance without any technical hassle. It goes beyond being a mere
+                    platform;
+                    it's a digital ally for every business need of SMEs in our country. Think of it as a collaborative
+                    space
+                    where ease to do business can be achived.
+                </p>
+                
+                <p>
+                    <b class="aboutus-subhead">Explore IIEST Connect: </b><br/>
+                    <b>- Smart Solutions for SMEs: </b>Navigate government compliance effortlessly with our
+                    user-friendly platform. <br>
+                    <b>- Digital Community Hub:</b> Connect with businesses and individuals across India, creating a
+                    thriving 
+                    digital community. <br>
+                    <b>- Inclusive Business Ecosystem:</b> IIEST Connect is more than a website; it's an inclusive space
+                    where 
+                    businesses, big and small, coalesce to form a powerful economic ecosystem.
+                    <br>
+                </p>
+
+               
+                <p>
+                    <b class="aboutus-subhead">Join the Digital Revolution:</b><br>
+                    As we redefine the landscape of digital connectivity, we invite SMEs to join us
+                    on this transformative journey. IIEST Connect is more than a website; it's a digital conduit for
+                    collaboration, innovation, and shared success under national single window system.
+                </p>
+                <b>Thank you for considering IIEST Connect. Start connecting, start thriving!</b>
+
+                <b>Connect with Us:</b> <br>
+                [Include your website link]
+                [Follow us on Social Media: Include social media links]
+
+                <!-- <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
+                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
+                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
+                    that they are align with all neccessary leagal requiremnets.</p>
+                <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
+                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
+                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
+                    that they are align with all neccessary leagal requiremnets.</p>
+                <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
+                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
+                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
+                    that they are align with all neccessary leagal requiremnets.</p>
+                <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
+                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
+                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
+                    that they are align with all neccessary leagal requiremnets.</p> -->
+
+                <p class="post-meta">
+                    Posted by
+                    <a href="">IIEST</a>
+                    on September 24, 2023
+                </p>
+            </div>
+            <!-- Divider-->
+            <hr class="my-4" />
+        </div>
+    </div>
+</div>
+<!-- <div class="container px-4 px-lg-5 position-relative" id="contact"> -->
+<!--   <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7"> -->
+<!-- Post preview-->
+<!-- <div class="post-preview mb-4">
+                <h2 class="post-title">Contact us</h2>
+            </div> -->
+<app-contactusform id="contact"></app-contactusform>
+<!-- Divider-->
+<!-- <hr class="my-4" />
+        </div>
+    </div>-->
+<!-- </div>  -->
+<!-- Footer-->
+<footer class="border-top">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <ul class="list-inline text-center">
+                    <li class="list-inline-item">
+                        <a href="">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="small text-center text-muted fst-italic">Copyright &copy; 2024 All Rights Reserved By IIEST
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -73,6 +73,7 @@ import { StatListsComponent } from './pages/home/stat-lists/stat-lists.component
 import { InrAmountPipe } from './pipes/inr-amount.pipe';
 import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
 import { DocumentationModalComponent } from './pages/modals/documentation-modal/documentation-modal.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 import { SchedulingSectionComponent } from './pages/operation/operationform/scheduling-section/scheduling-section.component';
 import { AuditSectionComponent } from './pages/operation/operationform/audit-section/audit-section.component';
 
@@ -123,6 +124,7 @@ import { AuditSectionComponent } from './pages/operation/operationform/audit-sec
     InrAmountPipe,
     BatchListComponent,
     DocumentationModalComponent,
+    MainPageComponent,
     SchedulingSectionComponent,
     AuditSectionComponent
   ],

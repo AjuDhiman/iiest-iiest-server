@@ -10,6 +10,7 @@ const { sendDocumentMail, sendVerificationMail } = require("../../operations/sen
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 const revertModel = require("../../models/operationModels/revertSchema");
+const foscosFilingModel = require("../../models/operationModels/filingSecSchema");
 
 exports.fostacVerification = async (req, res, next) => {
     try {
@@ -271,6 +272,41 @@ exports.getFostacEnrolledData = async (req, res) => {
             return res.status(200).json({ success, message: 'Enrolled recipient', enrolledData });
         } else {
             return res.status(204).json({ success, message: 'Recipient is not enrolled' });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.foscosFiling = async (req, res) => {
+    try {
+        let success = false;
+
+        const verifiedDataId = req.params.verifieddataid;
+
+        const { username, password, payment_amount, payment_recipt, payment_date } = req.body;
+
+        const filing = await foscosFilingModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, paymentAmount: payment_amount, paymentDate: payment_date, paymentRecipt: payment_recipt, username, password });
+
+        const verifiedData = await foscosFilingModel.findOne({ _id: verifiedDataId })
+            .populate({
+                path: 'shopdetails',
+            });
+
+        //this code is for tracking the flow of data regarding to a recipient
+
+        const prevVal = {}
+
+        const currentVal = enrollRecipient;
+
+        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo._id, prevVal, currentVal, "Recipient Enrolled");
+
+        // code for tracking ends
+
+        if (enrollRecipient) {
+            success = true;
+            return res.status(200).json({ success, message: 'Enrolled recipient', enrolledId: enrollRecipient._id });
         }
 
     } catch (error) {

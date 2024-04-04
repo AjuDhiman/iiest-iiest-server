@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="listType">
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="container-xxl">
             <ul class="nav nav-pills w-100 d-flex flex-wrap justify-content-start m-0 p-0">
@@ -10,21 +10,21 @@
             <div class="border border-1 rounded-3 rounded-start-0 p-3">
                 <div class="row g-3 mb-4 align-items-center justify-content-between">
                     <div class="col-auto">
-                        <h1 class="app-page-title mb-0">Batch List of {{activeTab}}</h1>
+                        <h1 class="app-page-title mb-0">{{listType}} List of {{activeTab}}</h1>
                     </div>
                     <div class="col-auto">
                         <div class="page-utilities">
                             <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                                 <div class="col-auto">
-                                    <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber"
-                                        (click)="pageNumber=1">
+                                    <select class="form-select form-select-sm w-auto cursor-pointer"
+                                        [(ngModel)]="itemsNumber" (click)="pageNumber=1">
                                         <option value=10>10</option>
                                         <option value=25 selected>25</option>
                                         <option value=50>50</option>
                                         <option value=100>100</option>
                                     </select>
                                 </div>
-                                <div class="col-auto">
+                                <div class="col-auto" *ngIf="listType === 'Batch'">
                                     <button class="btn btn-sm mx-1"
                                         [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
                                         (click)="setServiceType('Catering')">
@@ -49,7 +49,7 @@
                                 <div class="table-responsive">
                                     <table class="table app-table-hover table-striped mb-0 text-left"
                                         id="data-to-export">
-                                        <thead>
+                                        <thead *ngIf="listType==='Batch'">
                                             <tr>
                                                 <th class="cell">S.No</th>
                                                 <th class="cell">Batch Code</th>
@@ -61,7 +61,18 @@
                                                 <th class="cell">View</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="accordion accordion-flush">
+                                        <thead *ngIf="listType==='Audit'">
+                                            <tr>
+                                                <th class="cell">S.No</th>
+                                                <th class="cell">Batch Code</th>
+                                                <th class="cell">No. of Audits</th>
+                                                <th class="cell">Status</th>
+                                                <th class="cell">Audit Date</th>
+                                                <th class="cell">Auditor</th>
+                                                <th class="cell">View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="accordion accordion-flush" *ngIf="listType==='Batch'">
                                             <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index"
                                                 class="list-tr accordion-header">
                                                 <td class="cell col-1"><span
@@ -103,14 +114,56 @@
                                                 <td class="cell"><span class="truncate">
                                                         <fa-icon class="text-primary selector" [icon]="faEye"
                                                             (click)="showCaseList(batch.candidateDetails)"></fa-icon>
-                                                        
-                                                        <fa-icon *ngIf="!editMode[batch._id] && batch.status === 'completed'"
+
+                                                        <fa-icon
+                                                            *ngIf="!editMode[batch._id] && batch.status === 'completed'"
                                                             class="text-primary selector px-2" [icon]="faPen"
                                                             (click)="openEditMode(batch._id, i)"></fa-icon>
                                                         <button *ngIf="editMode[batch._id]" [id]="batch._id"
                                                             class="btn mx-2 btn-primary btn-xs">save</button>
-                                                        <fa-icon *ngIf="editMode[batch._id]" class="text-primary selector"
-                                                            [icon]="faCancel" (click)="closeEditMode(batch._id)"></fa-icon>
+                                                        <fa-icon *ngIf="editMode[batch._id]"
+                                                            class="text-primary selector" [icon]="faCancel"
+                                                            (click)="closeEditMode(batch._id)"></fa-icon>
+                                                    </span>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                        <tbody class="accordion accordion-flush" *ngIf="listType==='Audit'">
+                                            <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index"
+                                                class="list-tr accordion-header">
+                                                <td class="cell col-1"><span
+                                                        class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
+                                                <td class="cell col-2"><span class="truncate" title="View Case">{{batch.batchCode}}</span></td>
+                                                <td class="cell col-1"><span class="truncate">{{batch.auditCount}}</span>
+                                                </td>
+                                                <td class="cell col-2"><span class="truncate">{{batch.status}}</span>
+                                                </td>
+                                                <td class="cell col-2"><span class="truncate">{{batch.auditDate}}</span>
+                                                </td>
+                                                <td class="cell col-2"><span class="truncate">
+                                                        {{!editMode[batch._id]?batch.auditor?batch.auditor:'N/A':''}}
+                                                        <select *ngIf="editMode[batch._id]" name=""
+                                                            class="form-select form-select-xs"
+                                                            [formControlName]="'venue' + batch._id">
+                                                            <option value="" disabled selected>Select Auditor</option>
+                                                            <option value="IIEST">IIEST</option>
+                                                        </select>
+                                                    </span>
+                                                </td>
+                                                <td class="cell col-1"><span class="truncate">
+                                                        <fa-icon class="text-primary selector" [icon]="faEye"
+                                                            (click)="showCaseList(batch.candidateDetails)"></fa-icon>
+
+                                                        <fa-icon
+                                                            *ngIf="!editMode[batch._id] && batch.status === 'completed'"
+                                                            class="text-primary selector px-2" [icon]="faPen"
+                                                            (click)="openEditMode(batch._id, i)"></fa-icon>
+                                                        <button *ngIf="editMode[batch._id]" [id]="batch._id"
+                                                            class="btn mx-2 btn-primary btn-xs">save</button>
+                                                        <fa-icon *ngIf="editMode[batch._id]"
+                                                            class="text-primary selector" [icon]="faCancel"
+                                                            (click)="closeEditMode(batch._id)"></fa-icon>
                                                     </span>
                                                 </td>
                                             </tr>

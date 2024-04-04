@@ -14,10 +14,12 @@ import { FbolistComponent } from './pages/sales/fbolist/fbolist.component';
 import { EmployeelistComponent } from './pages/HR/employeelist/employeelist.component';
 import { LmsComponent } from './pages/lms/lms.component';
 import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
   { path: 'main', component: LandingpageComponent},
+  { path: 'mainpage', component: MainPageComponent},
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
