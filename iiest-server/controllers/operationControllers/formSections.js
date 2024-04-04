@@ -6,7 +6,7 @@ const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSc
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
-const { sendDocumentMail, sendVerificationMail, sendEnrollmentMail } = require("../../operations/sendMail");
+const { sendDocumentMail, sendVerificationMail } = require("../../operations/sendMail");
 const { generateFsms, generateSelfDecOProp } = require("../../operations/generateDocuments");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 const revertModel = require("../../models/operationModels/revertSchema");
@@ -210,7 +210,14 @@ exports.fostacEnrollment = async (req, res) => {
 
         const verifiedDataId = req.params.verifieddataid;
 
-        const { tentative_training_date, fostac_training_date, username, password, roll_no, trainer, venue } = req.body;
+        const { tentative_training_date, fostac_training_date, username, password, roll_no, trainer, venue, email } = req.body;
+
+        let clientdata = {
+            product: 'fostac_enrollment',
+            fostacTrainingDate: fostac_training_date,
+            venue: venue,
+            recipientEmail: email
+        }
 
         const checkRollNo = await fostacEnrollmentModel.findOne({ roll_no });
 
@@ -233,6 +240,10 @@ exports.fostacEnrollment = async (req, res) => {
         const currentVal = enrollRecipient;
 
         await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo._id, prevVal, currentVal, "Recipient Enrolled");
+
+        if (currentVal !== undefined) {
+            sendVerificationMail(clientdata);
+        }
 
         // code for tracking ends
 
