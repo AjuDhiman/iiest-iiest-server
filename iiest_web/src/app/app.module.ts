@@ -1,4 +1,4 @@
-simport { NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule} from '@angular/forms'
@@ -124,7 +124,7 @@ import { AuditSectionComponent } from './pages/operation/operationform/audit-sec
     InrAmountPipe,
     BatchListComponent,
     DocumentationModalComponent,
-    MainPageComponent
+    MainPageComponent,
     SchedulingSectionComponent,
     AuditSectionComponent
   ],
