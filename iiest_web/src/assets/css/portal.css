@@ -182,6 +182,7 @@
  *::before,
  *::after {
    box-sizing: border-box;
+   font-family: 'Khand';
  }
  @media (prefers-reduced-motion: no-preference) {
    :root {
