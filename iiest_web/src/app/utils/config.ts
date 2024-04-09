@@ -1,5 +1,8 @@
+const testEnv = false;
+const prodEnv = false;
+
 export const config = {
-   API_URL: 'http://localhost:3000/iiest'
+   API_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000/iiest')
    // API_URL: 'https://iiest-server.onrender.com'
 }
 
