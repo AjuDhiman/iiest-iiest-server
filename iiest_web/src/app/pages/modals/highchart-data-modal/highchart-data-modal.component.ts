@@ -109,8 +109,10 @@ export class HighchartDataModalComponent {
           this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
             if (this.chartData.salesCategory === 'Fostac') {
               this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
-            } else {
+            } else if(this.chartData.salesCategory === 'Foscos') {
               this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
+            } else if(this.chartData.salesCategory === 'HRA') {
+              this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.hraInfo.hra_service_name === this.filterValue));
             }
             this.salesDeptfilter();
             this.loading = false;
@@ -184,14 +186,15 @@ export class HighchartDataModalComponent {
         const day = filterValue[0];
         const month = months.findIndex((item:string) => item === filterValue[1]);
         let year = new Date().getFullYear();
-        if(month > 2){
-          year = year-1
-        }
+        // if(month > 2){
+        //   year = year-1
+        // }
+
+        let saleDate = new Date(res[res.length - 1].createdAt);
 
         this.specificDatas = res.filter((item: any) => {
           const saleDate = new Date(item.createdAt);
-          if(saleDate.getFullYear() == year && saleDate.getMonth() == month && (saleDate.getDate() == Number(day) + 1)){
-            console.log(year, saleDate.getFullYear());
+          if(saleDate.getFullYear() == year && saleDate.getMonth() == month && (saleDate.getDate() == Number(day))){
             return 1;
           } else {
             return 0;
