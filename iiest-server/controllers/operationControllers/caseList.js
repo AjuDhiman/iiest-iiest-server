@@ -19,15 +19,25 @@ exports.caseList = async(req, res)=>{
             .exists()
             .where('aadharPhoto')
             .exists()
-            .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+            .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]})
+            .lean();
 
         }else if(employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel'){
 
-            list = await recipientModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+            list = await recipientModel.find({})
+            .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]})
+            .select('name phoneNo')
+            .lean();
 
         } else if (employeePanel === 'HRA Panel') {
 
-            list = await hygieneShopModel.find({}).populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]});
+            list = await hygieneShopModel.find({})
+            .where('fostacCertificate')
+            .exists()
+            .where('foscosLicense')
+            .exists()
+            .populate({ path: 'salesInfo', populate: [{ path: 'employeeInfo' }, {path: 'fboInfo'}]})
+            .lean();
             
         }
 
