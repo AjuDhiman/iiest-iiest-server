@@ -109,8 +109,6 @@ exports.updateBatch = async (req, res) => {
 
         const { training_date, trainer, venue } = req.body;
 
-        console.log(req.body)
-
         const batchPrevData = await TrainingBatchModel.findById(batchId);
 
         const updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainer: trainer, venue: venue, trainingDate: training_date});

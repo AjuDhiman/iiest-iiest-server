@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faEye, faPen, faSave, faCross, faCancel } from '@fortawesome/free-solid-svg-icons';
+import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { days, delhiTrainingLocations, months } from 'src/app/utils/config';
@@ -13,7 +14,6 @@ import { days, delhiTrainingLocations, months } from 'src/app/utils/config';
   styleUrls: ['./batch-list.component.scss']
 })
 export class BatchListComponent implements OnInit{
-  panelType: string;
   serviceType: string = 'Catering';
   activeTab: string = 'Delhi';
   filteredData: any;
@@ -23,6 +23,8 @@ export class BatchListComponent implements OnInit{
   typeData: any;
 
   batchData: any;
+
+  listType: string = '';
 
   editMode: any = {};//this var is used in refrencing edit mode boolean of each batch, it's will take the form as {_id1(_id of batch): boolean}
 
@@ -36,25 +38,49 @@ export class BatchListComponent implements OnInit{
   itemsNumber: number = 10;
   showPagination: boolean = true;
 
+  auditBatch = [
+    {
+      batchCode: 'batch/0098',
+      auditDate: '5th March',
+      auditor: 'Aditi',
+      status: 'completed',
+      auditCount: 2,
+      location: 'Delhi',
+      candidateDetails: [],
+    }
+  ]
+
   updationForm: FormGroup = new FormGroup({});
 
   constructor(private router: Router,
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
+    private _toastrService: ToastrService,
     private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
+    this.initializeListType();
     this.getCases();
     this.formBuilder.group({});
   }
 
+  get updationform(): { [key: string]: AbstractControl } {
+    return this.updationForm.controls;
+  }
+
+
   onSubmit($event:any) {
-    
+  
     const id = $event.submitter.id;
     const training_date = this.updationForm.value[`training_date${id}`];
     const trainer = this.updationForm.value[`trainer${id}`];
     const venue = this.updationForm.value[`venue${id}`];
+
+    if(training_date == '' || venue == '' || trainer == '') { //all of these 3 are required
+      this._toastrService.warning(`${!training_date?'Training Date':''},${!venue?'Venue':''},${!trainer?'Trainer':''}, is Required`)
+      return;
+    }
 
     //update the training Batch 
     this._registerService.updateTrainingBatch(id, {training_date, trainer, venue}).subscribe({
@@ -81,17 +107,24 @@ export class BatchListComponent implements OnInit{
   }
 
   getCases(){
-    this._getDataService.getBatchListData().subscribe({
-      next: res => {
-        this.batchData = res.batches
-                        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-                        
-         this.batchData.forEach((batch: any) => { 
-          this.editMode[batch._id] = false;
-        });
-        this.filterData();
-      }
-    })
+    if(this.listType === 'Batch') {
+      this._getDataService.getBatchListData().subscribe({
+        next: res => {
+          this.batchData = res.batches
+                          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                          
+           this.batchData.forEach((batch: any) => { 
+            this.editMode[batch._id] = false;
+          });
+          this.filterData();
+        }
+      });
+    } else if(this.listType === 'Audit') {
+      this.batchData = this.auditBatch;
+      console.log(this.batchData);
+      this.filterData();
+    }
+    
   }
 
   showCaseList(res: any){
@@ -100,7 +133,11 @@ export class BatchListComponent implements OnInit{
 
   filterData(){
     this.resetEditMode();
-    this.filteredData = this.batchData.filter((item: any) => item.category === this.serviceType && item.location === this.activeTab);
+    if(this.listType === 'Batch') {
+      this.filteredData = this.batchData.filter((item: any) => item.category === this.serviceType && item.location === this.activeTab);
+    } else if(this.listType === 'Audit') {
+      this.filteredData = this.batchData.filter((item: any) => item.location === this.activeTab);
+    }
   }
 
   openEditMode(id: any, index: number) {
@@ -138,11 +175,21 @@ export class BatchListComponent implements OnInit{
 
   resetEditMode() {
     const keys: string[] = Object.keys(this.editMode);
-
     keys.forEach((key: string) => {
       this.editMode[key] = false;
     });
   }
 
-
+  initializeListType(): void{
+    const user = this._registerService.LoggedInUserData();
+    const parsedUser = JSON.parse((user as string));
+    const panelType = parsedUser.panel_type;
+    console.log(panelType);
+    if(panelType === 'FSSAI Trainer Panel' || panelType === 'Fostac Panel') {
+      this.listType = 'Batch'
+    } else if(panelType === 'HRA Panel') {
+      this.listType = 'Audit'
+    }
+    console.log(this.listType);
+  }
 }

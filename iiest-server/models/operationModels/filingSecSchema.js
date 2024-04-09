@@ -21,15 +21,15 @@ const foscosFilingSchema = new Schema({
         type:String,
         require:true
     }, 
-    payment_amount: {
+    paymentAmount: {
         type:String,
         require:true,
     },
-    payment_amount: {
-        type: Number,
+    paymentDate: {
+        type: Date,
         required: true
     },
-    payment_recipt: {
+    paymentRecipt: {
         type: String,
         required: true
     }
@@ -37,5 +37,5 @@ const foscosFilingSchema = new Schema({
 }, {timestamps: true})
 
 
-const foscosFilingSchemaModel = mongoose.model('foscos_filing', foscosFilingSchema);
-module.exports = foscosFilingSchemaModel;
+const foscosFilingModel = mongoose.model('foscos_filing', foscosFilingSchema);
+module.exports = foscosFilingModel;

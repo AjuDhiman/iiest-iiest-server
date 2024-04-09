@@ -85,7 +85,7 @@ export class EmploymentComponent implements OnInit {
     return this.reportingManagerForm.controls;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
     this.registerService.registerArea(this.employee._id, this.areaAllocationForm.value).subscribe({
       next: (res) => {

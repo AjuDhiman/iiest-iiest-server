@@ -2,8 +2,9 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { DepartmentListComponent } from '../../modals/department-list/department-list.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-stat-cards',
@@ -14,13 +15,14 @@ export class StatCardsComponent implements OnInit{
   departmentAndCount:Array<{department:string, count:string, active:string, inactive:string}>
   department:string='';
   updatedSales: any;
-  faIndianRupeeSign = faIndianRupeeSign;
+  faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
 
   @Output() emitDeptCount: EventEmitter<any> = new EventEmitter<any>
 
 
   constructor(private _getDataService:GetdataService,
     private _registerService:RegisterService,
+    private _toastrService: ToastrService,
     private modalService: NgbModal){
   }
 
@@ -33,7 +35,7 @@ export class StatCardsComponent implements OnInit{
     this.department = loggedInUserData.department;
   }
 
-  getUserRecord() {
+  getUserRecord():void {
     this._getDataService.getUserRecord().subscribe({
       next: (res) => {
         this.updatedSales = res;
@@ -41,10 +43,9 @@ export class StatCardsComponent implements OnInit{
     })
   }
 
-  getEmployeeCountByDept(){
+  getEmployeeCountByDept(): void{
     this._getDataService.getEmpCount().subscribe({
       next : res =>{
-        console.log(res);
         let departmentArr=res.employeeGroupCount;
         this.departmentAndCount=departmentArr.map((elem:any) => {
           return{
@@ -59,15 +60,20 @@ export class StatCardsComponent implements OnInit{
 
       },
       error: err => {
-
+        this._toastrService.error(err.error.message);
       }
-      
     })
   }
 
-  viewDepartmentData(res:any){
+  viewDepartmentData(res:any): void{
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.department = res;
+  }
+
+  changeNameFormat(str:string): string {
+    let updatedStr: string =  str.toLocaleLowerCase().split(" ").join('_');
+    updatedStr = updatedStr.replace('&', 'and');
+    return updatedStr;
   }
 
 }

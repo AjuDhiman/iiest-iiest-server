@@ -649,12 +649,16 @@ export class HighchartsComponent implements OnChanges {
         this.salesCategory = "Fostac";
       } else if (e.point.options.name === "Registration" || e.point.options.name === "State") {
         this.salesCategory = "Foscos";
+      } else if (e.point.options.name === "HRA") {
+        this.salesCategory = "HRA";
       }
     } else if(e.point.category){
       if (e.point.category === "Retail" || e.point.category === "Catering") {
         this.salesCategory = "Fostac";
       } else if (e.point.category === "Registration" || e.point.options.name === "State") {
         this.salesCategory = "Foscos";
+      } else if (e.point.category === "HRA") {
+        this.salesCategory = "HRA";
       }
     }
     let chartData = {

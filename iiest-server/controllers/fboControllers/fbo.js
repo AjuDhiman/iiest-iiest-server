@@ -106,9 +106,10 @@ exports.fboPayReturn = async (req, res) => {
 
         const invoiceBucket = createInvoiceBucket();
 
-        const fileName = `${Date.now()}_${idNumber}.pdf`;
+        let fileName;
 
         if (product_name.includes('Fostac')) {
+          fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount += Number(fostac_training.fostac_processing_amount);
@@ -119,6 +120,7 @@ exports.fboPayReturn = async (req, res) => {
         }
 
         if (product_name.includes('Foscos')) {
+          fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount += Number(foscos_training.foscos_processing_amount);
@@ -130,6 +132,7 @@ exports.fboPayReturn = async (req, res) => {
         }
 
         if (product_name.includes('HRA')) {
+          fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount += Number(hygiene_audit.hra_processing_amount);
@@ -167,7 +170,7 @@ exports.fboPayReturn = async (req, res) => {
           }
         })
 
-        res.redirect('http://localhost:4200/fbo');
+        res.redirect('http://localhost:4200/#/fbo');
 
         sendInvoiceMail(email, invoiceData);
 
@@ -273,9 +276,10 @@ exports.fboRegister = async (req, res) => {
 
     const invoiceBucket = createInvoiceBucket();
 
-    const fileName = `${Date.now()}_${idNumber}.pdf`;
+    let fileName = `${Date.now()}_${idNumber}.pdf`;
 
     if (product_name.includes('Fostac')) {
+      fileName = `${Date.now()}_${idNumber}.pdf`;
       invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
       total_processing_amount = Number(fostac_training.fostac_processing_amount);
@@ -289,6 +293,7 @@ exports.fboRegister = async (req, res) => {
     }
 
     if (product_name.includes('Foscos')) {
+      fileName = `${Date.now()}_${idNumber}.pdf`;
       invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
       total_processing_amount = Number(foscos_training.foscos_processing_amount);
@@ -303,6 +308,7 @@ exports.fboRegister = async (req, res) => {
     }
 
     if (product_name.includes('HRA')) {
+      fileName = `${Date.now()}_${idNumber}.pdf`;
       invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
       total_processing_amount = Number(hygiene_audit.hra_processing_amount);
@@ -430,16 +436,16 @@ exports.saleInvoice = async (req, res) => {
 
     invoiceDownloadStream.on('data', (chunk) => {
       chunks.push(chunk);
-    })
+    });
 
     invoiceDownloadStream.on('end', () => {
       const invoiceBuffer = Buffer.concat(chunks);
       const invoicePrefix = 'data:application/pdf;base64,';
       const invoiceBase64 = invoiceBuffer.toString('base64');
-      const invoiceConverted = `${invoicePrefix}${invoiceBase64}`
-      success = true
+      const invoiceConverted = `${invoicePrefix}${invoiceBase64}`;
+      success = true;
       return res.status(200).json({ success, invoiceConverted })
-    })
+    });
 
   } catch (error) {
     console.error(error);

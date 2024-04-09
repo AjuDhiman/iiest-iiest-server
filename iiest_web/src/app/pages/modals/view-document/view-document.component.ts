@@ -19,8 +19,12 @@ export class ViewDocumentComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    if (this.doc !== 'image') {
-      this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000/${this.doc.src}`);
+    if (this.doc === 'pdf') {
+      if(this.doc.multipleDoc){
+        this.pdfSrc = this.doc.src.map((src:any) => this.sanitizer.bypassSecurityTrustResourceUrl(src));
+      } else {
+        this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000/${this.doc.src}`);
+      }
     }
   }
 

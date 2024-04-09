@@ -69,7 +69,7 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
     }
   }
 
-  onSubmit(){
+  onSubmit(): void{
     if(this.attendanceForm.invalid){
       return;
     }
@@ -87,8 +87,9 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
     })
   }
 
-  onAtendeeStatusChange($event:any){
-    if($event.target.value === 'absent'){
+  onAtendeeStatusChange(event: Event ): void{
+    const target = event.target as HTMLInputElement;
+    if(target.value === 'absent'){
       this.isAttendeeAbsent = true;
       this.attendanceForm.patchValue({marks:0});
     } else {
@@ -97,7 +98,7 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
     }
   }
 
-  getFostacAttendanceData(){
+  getFostacAttendanceData(): void{
     this._getDataService.getAttenSecData(this.enrolledDataId).subscribe({
       next: res => {
         if(res){

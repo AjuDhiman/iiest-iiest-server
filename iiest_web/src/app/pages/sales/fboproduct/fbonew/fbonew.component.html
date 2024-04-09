@@ -7,22 +7,18 @@
             </div>
             <div class="col-md-6 text-end">
                 <form [formGroup]="existingUserForm">
-                    <label for="existing" class="form-label p-1"> Existing User:</label><input type="checkbox"
-                        formControlName="existingUser" id="existing" class="align-middle cursor-pointer"
-                        (change)="existingUser($event)"> &nbsp;
-                    <div class="d-inline m-0 p-0" style="position: relative;">
-                        <input #searchElem *ngIf="isExisting" type="search" (input)="filterSearch($event)" name="search"
-                            formControlName="searchUser" placeholder="Search" class="search-input col-6" autocomplete="off" />
+                    <label for="existing" class="form-label p-1"> Existing User:</label>
+                    <input type="checkbox" formControlName="existingUser" id="existing" class="align-middle cursor-pointer" (change)="existingUser($event)"> &nbsp;
+                    <div class="d-inline m-0 p-0 position-relative">
+                        <input #searchElem *ngIf="isExisting" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off">
                         <ul *ngIf="isExisting && !isSearchEmpty" class="search-suggestions">
-                            <li style="text-decoration: none; font-size: 10px;" class="d-flex"
-                                *ngFor="let searchSuggestion of searchSuggestions"
-                                (click)="fetchExistingUser(searchSuggestion)">
-                                {{searchSuggestion.fbo_name}}({{searchSuggestion.customer_id}})
+                            <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions" (click)="fetchExistingUser(searchSuggestion)">
+                                <span class="fbo-name">{{searchSuggestion.fbo_name}}({{searchSuggestion.customer_id}})</span> 
                             </li>
                         </ul>
                     </div>
                 </form>
-            </div>
+            </div>  
             <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
                 <button type="submit" class="btn btn-sm btn-primary" (click)="backToRegister()">Register Form</button>
             </div>
