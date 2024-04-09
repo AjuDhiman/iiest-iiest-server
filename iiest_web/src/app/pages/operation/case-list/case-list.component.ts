@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -25,7 +25,7 @@ export class CaseListComponent implements OnInit {
   //condional var for deciding case list structure and logic for case list in case of trainers
   forTraining: boolean = false;
 
-  serviceType = '';
+  serviceType: string = '';
   totalCount: number = 0;
   totalCase: number = 0;
   panelType: string = '';
@@ -34,12 +34,12 @@ export class CaseListComponent implements OnInit {
   loading: boolean = true;
 
   //icons
-  faMagnifyingGlass = faMagnifyingGlass;
-  faFileCsv = faFileCsv;
-  faUpload = faUpload;
-  faDownload = faDownload;
-  faEye = faEye;
-  faFile = faFile;
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faFileCsv: IconDefinition = faFileCsv;
+  faUpload: IconDefinition = faUpload;
+  faDownload: IconDefinition = faDownload;
+  faEye: IconDefinition = faEye;
+  faFile: IconDefinition = faFile;
 
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
@@ -71,7 +71,7 @@ export class CaseListComponent implements OnInit {
     });
   }
 
-  onSearchChange() {
+  onSearchChange(): void {
     if (this.searchQuery) {
       this.pageNumber = 1;
       this.isSearch = true;
@@ -83,11 +83,11 @@ export class CaseListComponent implements OnInit {
     }
   }
 
-  onTableDataChange(event: any) {
+  onTableDataChange(event: number): void {
     this.pageNumber = event;
   }
 
-  getCasedata() {
+  getCasedata(): void {
     console.log(11);
     this._getDataService.getCaseList().subscribe({
       next: res => {
@@ -120,7 +120,7 @@ export class CaseListComponent implements OnInit {
     })
   }
 
-  setServiceType(type: string) {
+  setServiceType(type: string): void {
     this.serviceType = type;
     this.pageNumber = 1;
 
@@ -141,7 +141,7 @@ export class CaseListComponent implements OnInit {
   }
 
   //method for opening operation form
-  collectResData(id: string) {
+  collectResData(id: string): void {
     this.router.navigate(['caselist/operationform', id]);
   }
 
@@ -182,7 +182,7 @@ export class CaseListComponent implements OnInit {
     this.filteredData.sort((a: any, b: any) => new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime());
   }
 
-  initializeCaseList() { // this methord set the initializtion of case list component baased of diffent conditions
+  initializeCaseList(): void { // this methord set the initializtion of case list component baased of diffent conditions
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
     this.panelType = parsedUser.panel_type;

@@ -21,6 +21,7 @@ router.get('/getfostacverifieddata/:recipientid', authMiddleware, getFostacVerif
 router.get('/getfoscosverifieddata/:shopid',authMiddleware, getFoscosVerifiedData);
 router.post('/fostacenrollment/:verifieddataid', authMiddleware, fostacEnrollment);
 router.get('/getfostacenrolleddata/:verifieddataid', authMiddleware, getFostacEnrolledData); // route for getting if a person is enrolled or not if enrolled then getting it's data
+router.post('/foscosfiling/:verifieddataid', authMiddleware, getFostacEnrolledData); // route for filing the case for a foscos license
 router.post('/postopergendata/:recipientid', authMiddleware, postGenOperData);//route for adding data in genral section of operation form
 router.post('/registerrevert/:id', authMiddleware, fssaiRevert);//route for adding data in genral section of operation form
 router.get('/getopergensecdata/:recipientid', authMiddleware, getGenOperData); // route for getting if a person general sec data in operation form

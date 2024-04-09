@@ -5,7 +5,6 @@ import { IconDefinition, faCircleCheck, faCircleExclamation, faFile, faFilePdf, 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
-import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { days, months } from 'src/app/utils/config';
@@ -41,7 +40,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   submitted: boolean = false;
 
   // certifcate relatred variables
-  certificate: any; // variable for extracting cwertificate file while uploading
+  certificate: File| null; // variable for extracting cwertificate file while uploading
   src: string = ''; // src of the certificate coming from the backend
 
   //icons
@@ -63,7 +62,8 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   //certification form
   ceritificationForm: FormGroup = new FormGroup({
     ticket_status: new FormControl(''),
-    certificate: new FormControl('')
+    certificate: new FormControl(''),
+    issue_date: new FormControl('')
   });
 
   constructor(private formBulilder: FormBuilder,
@@ -79,7 +79,8 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     //setting validation for certification form
     this.ceritificationForm = this.formBulilder.group({
       ticket_status: [''],
-      certificate: []
+      certificate: [],
+      issue_date: ['']
     });
 
     this.getTicketDiliverydata();
@@ -126,8 +127,11 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   }
 
   //this methord assigns the file to certificate var in case of file upload
-  onFileSelected(event: any): void {
-    this.certificate = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const target: HTMLInputElement = (event.target as HTMLInputElement);
+    if(target.files) {
+      this.certificate = target.files[0];
+    }
     console.log(this.certificate);
   }
 
@@ -147,16 +151,15 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   }
 
   //this methord will handle the boolean logics for our component on the basis of ticket status
-  onTicketStatusChange($event: any): void {
-    if ($event.target.value === 'delivered') {
+  onTicketStatusChange($event: Event): void {
+    const target: HTMLInputElement = ($event.target as HTMLInputElement)
+    if (target.value === 'delivered') {
       this.isUploadVisible = true;
     } else {
       this.isUploadVisible = false;
       this.isBtnDisble = false;
     }
-    if (this.attenSecResult != 'Trained') {
-      this.isBtnDisble = false;
-    } else {
+    if (this.attenSecResult !== 'Trained') {
       this.isBtnDisble = true;
     }
   }
@@ -206,7 +209,11 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   ifNotDilivered(action: string): void {
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.action = action;
-    let user: any = this._registerService.LoggedInUserData();
+    let user: string| null = this._registerService.LoggedInUserData();
+    if(!user){
+      this._toastrService.error('Session Error');
+      return;
+    }
     const parsedUser = JSON.parse(user);
     const employeeId = parsedUser.employee_id
     modalRef.componentInstance.confirmationText = employeeId;
@@ -220,8 +227,13 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
 
     const formData = new FormData();
     console.log(this.certificate);
+    if(!this.certificate){
+      return;
+    }
     formData.append('ticket_status', this.certificationform['ticket_status'].value);
     formData.append('certificate', this.certificate);
+    formData.append('issue_date',this.certificationform['issue_date'].value);
+    console.log(formData);
 
     this._registerService.closeTicket(this.candidateID, formData).subscribe({
       next: res => {
@@ -230,6 +242,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
         this.ticketClosed = true;
         this.ticketClosingDate = this.getFormatedDate(res.addTicket.createdAt);
         this.setCertificateResult(this.certificationform['ticket_status'].value);
+        this.refreshAuditLog.emit();
       }
     });
 
@@ -257,6 +270,9 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
         break;
       case 'Foscos': 
         this.formHeading = 'Licensing';
+        break;
+      case 'HRA':
+        this.formHeading = 'Certification';
         break;
       default: 
         this.formHeading = '';
