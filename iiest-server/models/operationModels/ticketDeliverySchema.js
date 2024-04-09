@@ -13,21 +13,31 @@ const ticketDelivery = new Schema({
         required: true,
         unique: true
     },
-    ticketStatus : {
+    ticketStatus: {
         type: String,
         required: true
     },
     certificate: {
         type: String,
-        required: function() {
-           if(this.ticketStatus === 'delivered'){
-            return true;
-           } else {
-             return false;
-           }
+        required: function () {
+            if (this.ticketStatus === 'delivered') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
+    issueDate: {
+        type: Date,
+        required: function () {
+            if (this.ticketStatus === 'delivered') {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 const ticketDeliveryModel = mongoose.model('ticket_delivery', ticketDelivery);
 module.exports = ticketDeliveryModel;

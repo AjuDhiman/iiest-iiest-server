@@ -9,12 +9,10 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class ConformationModalComponent {
 
   action: string  = ''
-
   confirmationText: string = '';
+  isTextMatches: boolean = false;
 
   actionFunc: EventEmitter<boolean> = new EventEmitter<boolean>;
-
-  isTextMatches: boolean = false;
 
   constructor(public activeModal: NgbActiveModal){
     
