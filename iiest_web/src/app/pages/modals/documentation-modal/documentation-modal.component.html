@@ -22,14 +22,14 @@
           formControlName="name" />
       </div>
 
-      <div class="col-md-4" *ngIf="selectedDoc.name">
+      <div class="col-md-4" *ngIf="isUpoadAvilable">
         <label class="form-label"
           [for]="changeNameFormat(selectedDoc.name)">{{isOtherDoc?'File':selectedDoc.name}}</label>
-        <input #upload type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"
+        <input #uploadInput type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"
           [id]="changeNameFormat(selectedDoc.name)" (change)="onFileChange($event)" />
       </div>
 
-      <div class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
+      <div [ngClass]="{'py-2': isOtherDoc}" class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
         <button type="submit" class="btn btn-sm btn-primary">Upload
         </button>
       </div>
@@ -107,7 +107,7 @@
                     </span>
                   </td>
                   <td class="cell"><span class="truncate">
-                      <fa-icon [icon]="faTrash" class="text-primary fa-lg cursor-pointer selector" title="Delete"
+                      <fa-icon [icon]="faTrash" class="text-danger fa-lg cursor-pointer" title="Delete"
                         (click)="onDocDelete(doc)"></fa-icon>
                       <fa-icon [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
                         (click)="viewDocument(doc)"></fa-icon>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IconDefinition, faFilePdf, faTrash, faMagnifyingGlass, faEye, faDownload, faFileImage } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -26,6 +26,7 @@ export class DocumentationModalComponent implements OnInit {
   format: string = '';// by the help of this var we wil pass the format of the selectd doc to the backend
   loading: boolean = false; // var for opening and closing loader
   isOtherDoc: boolean = false;
+  isUpoadAvilable: boolean = false;
 
   filteredData: any = []; 
 
@@ -54,6 +55,8 @@ export class DocumentationModalComponent implements OnInit {
 
   @ViewChild(MultiSelectComponent) multiselect: MultiSelectComponent;
 
+  @ViewChild('uploadInput') uploadInput: ElementRef; 
+
   constructor(public activeModal: NgbActiveModal,
     private _registerService: RegisterService,
     private _getDataService: GetdataService,
@@ -74,6 +77,12 @@ export class DocumentationModalComponent implements OnInit {
   }
 
   getSelectedDoc($event: any): void{ // methord for dynamically add and remove the form control in documents upload form
+    this.isUpoadAvilable = false;
+    if(!this.selectedDoc){
+      this.isUpoadAvilable = false;
+      return;
+    }
+    this.isUpoadAvilable = true;
     this.lastSelectedDoc = this.selectedDoc;
     this.selectedDoc = JSON.parse($event.target.value);
     if(this.selectedDoc.name === 'Others') {
@@ -85,6 +94,7 @@ export class DocumentationModalComponent implements OnInit {
     }
     this.documentsForm.addControl(this.changeNameFormat(this.selectedDoc.name.toString()), this.formBuilder.control(''));
     this.documentsForm.removeControl(this.changeNameFormat(this.lastSelectedDoc.name.toString()));
+    console.log(this.uploadInput);
   }
 
   onFileChange($event: any) {
