@@ -58,9 +58,30 @@ exports.getProductSaleData = async (req, res) => {
                 },
                 {
                     $project: {
-                        name: { $cond: [{ $ifNull: ["$fostacInfo", false] }, "Fostac", "Foscos"] },
-                        service_name: { $ifNull: ["$fostacInfo.fostac_service_name", "$foscosInfo.foscos_service_name"] }
+                        name: {
+                            $cond: [
+                                { $ifNull: ["$fostacInfo", false] }, 
+                                "Fostac", 
+                                { $cond: [
+                                    { $ifNull: ["$foscosInfo", false] },
+                                    "Foscos",
+                                    "HRA"
+                                ]}
+                            ]
+                        },
+                        service_name: {
+                            $cond: [
+                                { $ifNull: ["$fostacInfo", false] }, 
+                                "$fostacInfo.fostac_service_name", 
+                                { $cond: [
+                                    { $ifNull: ["$foscosInfo", false] },
+                                    "$foscosInfo.foscos_service_name",
+                                    "$hraInfo.hra_service_name"
+                                ]}
+                            ]
+                        }
                     }
+                    
                 },
                 {
                     $group: {
@@ -377,7 +398,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
             yearEnd = new Date(today.getFullYear() + 1, 3, 1);
         } else {
             yearStart = new Date(today.getFullYear() - 1, 3, 1);
-            yearEnd = new Date(today.getFullYear(), 3, 1)
+            yearEnd = new Date(today.getFullYear(), 3, 1);
         }
 
         let monthWiseSale
