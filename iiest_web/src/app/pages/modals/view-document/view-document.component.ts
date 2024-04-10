@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
+import { IconDefinition, faDownload, faArrowAltCircleLeft, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { UtilitiesService } from '../../../services/utilities.service';
 
 @Component({
   selector: 'app-view-document',
@@ -9,13 +11,17 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ViewDocumentComponent implements OnInit {
 
+  faDownload: IconDefinition = faDownload;
+  faArrowAltCircleLeft: IconDefinition = faArrowAltCircleLeft;
+  faArrowAltCircleRight: IconDefinition = faArrowAltCircleRight;
   doc: any;
   pdfSrc: any;
 
   activeSlide: number = 0;
 
   constructor(public activeModal: NgbActiveModal,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private _utilService: UtilitiesService) {
 
   }
   ngOnInit(): void {
@@ -31,8 +37,8 @@ export class ViewDocumentComponent implements OnInit {
   next() {
     const len: number = this.doc.src.length;
 
-    this.activeSlide ++;
-    if(this.activeSlide >= len){
+    this.activeSlide++;
+    if (this.activeSlide >= len) {
       this.activeSlide = 0;
     }
   }
@@ -41,8 +47,14 @@ export class ViewDocumentComponent implements OnInit {
     const len: number = this.doc.src.length;
 
     this.activeSlide--;
-    if(this.activeSlide < 0){
+    if (this.activeSlide < 0) {
       this.activeSlide = (len - 1);
     }
   }
+
+  downloadDoc(documentId: any, contentType: any) {
+    console.log(typeof(documentId));
+    this._utilService.downloadDoc(documentId, contentType);
+  }
+
 }

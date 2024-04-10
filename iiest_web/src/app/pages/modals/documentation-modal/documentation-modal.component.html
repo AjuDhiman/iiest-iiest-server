@@ -22,7 +22,7 @@
           formControlName="name" />
       </div>
 
-      <div class="col-md-4" *ngIf="isUpoadAvilable">
+      <div class="col-md-4" *ngIf="selectedDoc.name">
         <label class="form-label"
           [for]="changeNameFormat(selectedDoc.name)">{{isOtherDoc?'File':selectedDoc.name}}</label>
         <input #uploadInput type="file" class="form-control form-control-sm" [multiple]="selectedDoc.mutipleDoc"

@@ -2,10 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneralSectionComponent } from './general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
-import { IconDefinition, faFilePdf, faFileImage, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFilePdf, faFileImage, faDownload, faFileZipper } from '@fortawesome/free-solid-svg-icons';
 import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClient } from '@angular/common/http';
 import { UtilitiesService } from '../../../services/utilities.service';
 
 @Component({
@@ -32,7 +31,9 @@ export class OperationformComponent implements OnInit {
   faFilePdf: IconDefinition = faFilePdf;
   faFileImage: IconDefinition = faFileImage;
   faDownload: IconDefinition = faDownload;
+  faFileZipper: IconDefinition = faFileZipper;
   documents: { name: string, src: string, format: string }[] = [];
+  allDocs: any;
   isTrainer: boolean = false;
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
@@ -41,7 +42,6 @@ export class OperationformComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private _registerService: RegisterService,
     private modalService: NgbModal,
-    private http: HttpClient,
     private _utilService: UtilitiesService
   ) {
   }
@@ -102,6 +102,7 @@ export class OperationformComponent implements OnInit {
         this.documents.push(item);
       }
     });
+    this.allDocs = this.documents.flatMap(doc => doc.src);
   }
 
   getFileIcon(type: string): IconDefinition {
@@ -150,38 +151,7 @@ export class OperationformComponent implements OnInit {
     modalRef.componentInstance.doc = res;
   }
 
-  downloadDoc(documentId: string, contentType: string): void {
-    // Make a request to the backend to download the document
-    this.http.get(`http://localhost:3000/${documentId}`, { responseType: 'blob' })
-      .subscribe((data: Blob) => {
-        // Create a Blob URL for the downloaded document
-        const downloadUrl = window.URL.createObjectURL(data);
-
-        // Determine the file extension based on content type
-        let fileExtension = '';
-        switch (contentType) {
-          case 'image/jpeg':
-            fileExtension = 'jpg';
-            break;
-          case 'image/png':
-            fileExtension = 'png';
-            break;
-          case 'application/pdf':
-            fileExtension = 'pdf';
-            break;
-          default:
-            fileExtension = 'file';
-            break;
-        }
-
-        // Create a link element and trigger the download
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `document_${documentId}`; // Set the filename with the appropriate file extension
-        link.click();
-
-        // Cleanup the Blob URL
-        window.URL.revokeObjectURL(downloadUrl);
-      });
+  downloadDoc(documentId: string, contentType: string) {
+    this._utilService.downloadDoc(documentId, contentType);
   }
 }

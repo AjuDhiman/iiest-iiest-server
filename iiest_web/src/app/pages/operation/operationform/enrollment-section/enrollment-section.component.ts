@@ -95,7 +95,8 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     }
     this.loading = true;//starts the loading
     if (this.verifiedDataId) {
-      const enrollmentData = {...this.enrollmentForm.value, batchInfo: this.verifiedData.batchInfo};
+      console.log(this.verifiedData);
+      const enrollmentData = { ...this.enrollmentForm.value, batchInfo: this.verifiedData.batchInfo, email: this.verifiedData.email };
       this._registerService.enrollRecipient(this.verifiedDataId, enrollmentData).subscribe({
         next: res => {
           this.enrolledStatus = true;
@@ -111,10 +112,8 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
           if (err.error.openBatchErr) this._toastrService.warning(`A ${err.error.openBatchCategory} batch at ${err.error.openBatchLocation} already exsists on ${this.getFormatedDate(err.error.openBatchDate)}`);
           this.loading = false;
         }
-      })
-
+      });
     }
-
   }
 
   getFostacEnrolledData() {
@@ -137,7 +136,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
         } else {
           this.enrolledStatus = false;
           this.emitEnrolledStatus.emit(this.enrolledStatus);
-          this.loading=false;
+          this.loading = false;
         }
       }
     });

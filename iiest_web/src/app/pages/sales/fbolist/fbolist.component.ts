@@ -77,7 +77,6 @@ export class FbolistComponent implements OnInit {
   filter(): void {
     if (!this.searchQuery) {
       this.filteredData = this.filteredFBOEntries;
-      console.log(this.filteredFBOEntries);
     } else {
       switch (this.selectedFilter) {
         case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
@@ -97,7 +96,6 @@ export class FbolistComponent implements OnInit {
         });
           break;
       }
-      console.log(this.filteredData);
     }
   }
 

@@ -3,7 +3,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 import { fbo_roles, empRegister_roles, caseList_roles } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { faUserPlus, faCalendar, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCalendarWeek, faCalendarDays, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,10 +15,11 @@ export class SidebarComponent {
   fboRoles = fbo_roles;
   employeeRoles = empRegister_roles;
   caseListRoles = caseList_roles;
-  userImage: string = '../../assets/logo-side.png';
+  userImage: string = 'assets/logo-side.png';
   userImageId: string;
   faUserPlus: IconDefinition = faUserPlus;
-  faCalendar: IconDefinition = faCalendar;
+  faCalendarDays: IconDefinition = faCalendarDays;
+  faCalendarWeek: IconDefinition = faCalendarWeek;
 
   @Input() sideBarToggle: boolean;
   @Input() isSidebarVisible: boolean;
@@ -57,6 +58,10 @@ export class SidebarComponent {
     this.isSidebarVisible = !this.isSidebarVisible;
   }
   getUserImage() {
+    if(!this.userImageId) {
+      this.userImage = 'assets/logo-side.png';
+      return;
+    }
     const rawUserData: any = this.registerService.LoggedInUserData();
     const parsedData: any = JSON.parse(rawUserData);
     this.getDataService.getUserImage(parsedData.employeeImage).subscribe({

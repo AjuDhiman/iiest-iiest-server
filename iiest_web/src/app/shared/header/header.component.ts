@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
   toggelSettings: boolean = false;
   toggelNotification: boolean = false;
   width: number = window.innerWidth;
-  userImage: string = '../../assets/logo-side.png';
+  userImage: string = 'assets/logo-side.png';
   userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;
@@ -54,17 +54,9 @@ export class HeaderComponent implements OnInit {
  
   blockMsg: boolean = true;
   empName: any;
+  userData: any;
   constructor(private _registerService: RegisterService,
   private getDataService: GetdataService) {
-    let isLoggedIn = this._registerService.isLoggedIn();
-    if (isLoggedIn) {
-      let loggedInUserData: any = this._registerService.LoggedInUserData();
-      loggedInUserData = JSON.parse(loggedInUserData);
-      this.userdata = loggedInUserData.employee_name;
-      this.empName = loggedInUserData.employee_name;
-      this.userImageId = loggedInUserData.employeeImage
-      this.getUserImage();
-    }
     if (this.width >= 1920) {
       this.isSideBar = true;
       this.isSidebarVisible = true;
@@ -82,7 +74,14 @@ export class HeaderComponent implements OnInit {
   ngOnInit() { 
     console.log(this.isSidebarVisible);
     this.getUserImage();
+    this.getUserData();
    }
+
+   getUserData() {
+    const rawUserData: any = this._registerService.LoggedInUserData()
+    this.userData = JSON.parse(rawUserData);
+  }
+
 
 //Window size
   onWindowResize(event: any) {
@@ -154,6 +153,10 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserImage(){
+    if(!this.userImageId) {
+      this.userImage = 'assets/logo-side.png';
+      return;
+    }
     this.getDataService.getUserImage(this.userImageId).subscribe({
       next: (res)=>{
         if(res.success){
@@ -161,7 +164,7 @@ export class HeaderComponent implements OnInit {
         }else if(res.defaulImage){
           this.userImage = res.defaulImage;
         }else if(res.noImage){
-          this.userImage = '../../assets/logo-side.png';
+          this.userImage = 'assets/logo-side.png';
         }
       }
     })

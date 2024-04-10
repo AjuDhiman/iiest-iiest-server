@@ -4,6 +4,7 @@ import { faCircleCheck, faCircleExclamation, faFileArrowUp } from '@fortawesome/
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
 import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
+import { hraDocuments } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-audit-section',
@@ -16,16 +17,6 @@ export class AuditSectionComponent implements OnInit {
   audited: boolean = false;
   auditStatus: boolean = false;
   loading: boolean = false;
-  hraDocuments: any = [{
-    name: 'Medical',
-    allowedFormats: ['pdf', 'jpg', 'jpeg'],
-    mutipleDoc: false
-  },
-  {
-    name: 'Vansh',
-    allowedFormats: ['pdf', 'jpg', 'jpeg'],
-    mutipleDoc: false
-  }];
 
   hraDocumentsName: string[] = [];
 
@@ -65,7 +56,7 @@ export class AuditSectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.hraDocumentsName = this.hraDocuments.map((item: any) => item.name);
+    this.hraDocumentsName = hraDocuments.map((item: any) => item.name);
     this.auditForm = this.formBuilder.group({
       audit_report: ['', Validators.required],
       summary_note: ['', Validators.required],
@@ -104,6 +95,6 @@ export class AuditSectionComponent implements OnInit {
 
   openDocumentationModal() { //this methord opens the doc modal 
     const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.docsArr = this.hraDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
+    modalRef.componentInstance.docsArr = hraDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
   }
 }

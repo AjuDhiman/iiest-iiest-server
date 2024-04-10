@@ -99,10 +99,14 @@
                     <div class="row">
                         <div class="col-md-4 title">Invoice</div>
                         <div class="col-md-8 data">
-                            <a class="download-link" (click)="viewInvoice()">
+                            <a *ngIf="isShowInvoice===true" class="download-link" (click)="viewInvoice()">
                                 <fa-icon class="fa-2xl text-success cursor-pointer" style="color: #5d6778;"
                                 [icon]="faFile" title="download"></fa-icon>
                             </a>
+                            <p class="text-danger" *ngIf="isShowInvoice===false">
+                                Digital invoice is not available before 31 March 2024
+                             </p>
+ 
                         </div>
                     </div>
                 </div>

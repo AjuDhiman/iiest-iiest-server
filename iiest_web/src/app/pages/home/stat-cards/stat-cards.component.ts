@@ -11,9 +11,9 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './stat-cards.component.html',
   styleUrls: ['./stat-cards.component.scss']
 })
-export class StatCardsComponent implements OnInit{
-  departmentAndCount:Array<{department:string, count:string, active:string, inactive:string}>
-  department:string='';
+export class StatCardsComponent implements OnInit {
+  departmentAndCount: Array<{ department: string, count: string, active: string, inactive: string }>
+  department: string = '';
   updatedSales: any;
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
 
@@ -55,9 +55,8 @@ export class StatCardsComponent implements OnInit{
             inactive:elem.inactive
           }
         });
-        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1);
+        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any) => a.department > b.department ? 1 : -1);
         this.emitDeptCount.emit(this.departmentAndCount);
-
       },
       error: err => {
         this._toastrService.error(err.error.message);
@@ -67,7 +66,7 @@ export class StatCardsComponent implements OnInit{
 
   viewDepartmentData(res:any): void{
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.department = res;
+    modalRef.componentInstance.department = res;
   }
 
   changeNameFormat(str:string): string {

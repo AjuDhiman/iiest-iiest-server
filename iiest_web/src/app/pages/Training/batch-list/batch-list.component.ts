@@ -128,7 +128,7 @@ export class BatchListComponent implements OnInit{
   }
 
   showCaseList(res: any){
-    this.router.navigate(['/caselist'], {state:{batchData: res, forTraining: true}});
+    this.router.navigate(['batchlist/caselist'], {state:{batchData: res, forTraining: true}});
   }
 
   filterData(){
