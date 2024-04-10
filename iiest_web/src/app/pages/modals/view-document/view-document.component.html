@@ -1,5 +1,15 @@
 <div class="modal-header bg-secondary">
     <h6 class="modal-title text-white" id="modal-basic-title">{{doc.name}}</h6>
+    <a class="download-icon">
+        <fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download"
+          (click)="downloadDoc(doc.src, '')"></fa-icon>
+      </a>
+      <a class="navigate-icon" *ngIf="doc.multipleDoc">
+        <fa-icon class="fa-md cursor-pointer m-1" [icon]="faArrowAltCircleLeft" title="Previous"
+          (click)="prev()"></fa-icon>
+        <fa-icon class="fa-md cursor-pointer m-1" [icon]="faArrowAltCircleRight" title="Next"
+          (click)="next()"></fa-icon>
+      </a>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
 </div>
 <div class="modal-body">
@@ -25,13 +35,13 @@
                 <img class="d-block w-100" [src]="'http://localhost:3000/' + src" alt="First slide">
             </div>
         </div>
-        <a class="carousel-control-prev" role="button" data-slide="prev" (click)="prev()">
+        <!-- <a class="carousel-control-prev" role="button" data-slide="prev" (click)="prev()">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
         </a>
         <a class="carousel-control-next" role="button" data-slide="next" (click)="next()">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
-        </a>
+        </a> -->
     </div>
 </div>

@@ -55,7 +55,7 @@
           </app-attendance-section>
 
           <app-revert-section *ngIf="productType === 'Foscos'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-          [customerId]="candidateId">
+            [customerId]="candidateId">
           </app-revert-section>
 
           <app-certification-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [candidateID]="candidateId"
@@ -75,8 +75,8 @@
             <h6 class="my-0 d-flex justify-content-between">
               <span>Documents</span>
               <!-- <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download All Docs" (click)="downloadAllDoc(documents)"></fa-icon></span> -->
-              <span><fa-icon class="fa-md cursor-pointer" [icon]="faDownload"
-                  title="Download All Docs"></fa-icon></span>
+              <span><fa-icon class="fa-xl cursor-pointer text-primary" [icon]="faFileZipper" title="Download All Docs"
+                  (click)="downloadDoc(allDocs, '')"></fa-icon></span>
             </h6>
           </div>
 
@@ -115,16 +115,6 @@
               </div>
             </div>
           </div>
-
-          <!-- <div class="doc-list row px-3 mx-3">
-            <div *ngFor="let doc of documents" class="col-md-3 my-2">
-              <label class="form-label">{{doc.name}}</label>
-              <br>
-              <a [href]="'http://localhost:3000/' + doc.src" [download]="doc.name + '.pdf'" target="_blank">
-                <fa-icon class="fa-2xl mx-2 text-primary cursor-pointer" [icon]="getFileIcon(doc.format)" title="Download Certificate"></fa-icon>
-              </a>
-            </div>
-          </div> -->
         </div>
       </div>
     </div>

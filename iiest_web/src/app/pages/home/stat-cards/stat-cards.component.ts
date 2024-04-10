@@ -10,18 +10,18 @@ import { DepartmentListComponent } from '../../modals/department-list/department
   templateUrl: './stat-cards.component.html',
   styleUrls: ['./stat-cards.component.scss']
 })
-export class StatCardsComponent implements OnInit{
-  departmentAndCount:Array<{department:string, count:string, active:string, inactive:string}>
-  department:string='';
+export class StatCardsComponent implements OnInit {
+  departmentAndCount: Array<{ department: string, count: string, active: string, inactive: string }>
+  department: string = '';
   updatedSales: any;
   faIndianRupeeSign = faIndianRupeeSign;
 
   @Output() emitDeptCount: EventEmitter<any> = new EventEmitter<any>
 
 
-  constructor(private _getDataService:GetdataService,
-    private _registerService:RegisterService,
-    private modalService: NgbModal){
+  constructor(private _getDataService: GetdataService,
+    private _registerService: RegisterService,
+    private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -41,33 +41,30 @@ export class StatCardsComponent implements OnInit{
     })
   }
 
-  getEmployeeCountByDept(){
+  getEmployeeCountByDept() {
     this._getDataService.getEmpCount().subscribe({
-      next : res =>{
+      next: res => {
         console.log(res);
-        let departmentArr=res.employeeGroupCount;
-        this.departmentAndCount=departmentArr.map((elem:any) => {
-          return{
-            department:elem._id.department,
-            count:elem.count,
-            active:elem.active,
-            inactive:elem.inactive
+        let departmentArr = res.employeeGroupCount;
+        this.departmentAndCount = departmentArr.map((elem: any) => {
+          return {
+            department: elem._id.department,
+            count: elem.count,
+            active: elem.active,
+            inactive: elem.inactive
           }
         });
-        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any)=> a.department > b.department ? 1 : -1);
+        this.departmentAndCount = this.departmentAndCount.sort((a: any, b: any) => a.department > b.department ? 1 : -1);
         this.emitDeptCount.emit(this.departmentAndCount);
-
       },
       error: err => {
-
       }
-      
     })
   }
 
-  viewDepartmentData(res:any){
+  viewDepartmentData(res: any) {
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.department = res;
+    modalRef.componentInstance.department = res;
   }
 
 }

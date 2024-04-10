@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IconDefinition, faFilePdf, faTrash, faMagnifyingGlass, faEye, faDownload, faFileImage } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -16,18 +16,21 @@ import { ViewDocumentComponent } from '../view-document/view-document.component'
 })
 export class DocumentationModalComponent implements OnInit {
 
-  lastSelectedDoc: {name: string, allowedFormats: string[], mutipleDoc: boolean} = {name:'',allowedFormats:[] , mutipleDoc: false}; // this var will keep track of prev val of selected doc because we want it to be removed from from group if it deselected
-  selectedDoc: {name: string, allowedFormats: string[], mutipleDoc: boolean} = {name:'',allowedFormats:[] , mutipleDoc: false};
+  @ViewChild('upload') uploadInput: ElementRef;
+
+  lastSelectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false }; // this var will keep track of prev val of selected doc because we want it to be removed from from group if it deselected
+  selectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false };
   shopId: string;
 
   docsArr: any = [];
   submitted: boolean = false;
+  clearInputCount: number = 1;
   docList: any = []; //list of uploaded docs
   format: string = '';// by the help of this var we wil pass the format of the selectd doc to the backend
   loading: boolean = false; // var for opening and closing loader
   isOtherDoc: boolean = false;
 
-  filteredData: any = []; 
+  filteredData: any = [];
 
   faFilePdf: IconDefinition = faFilePdf;
   faTrash: IconDefinition = faTrash;
@@ -73,22 +76,28 @@ export class DocumentationModalComponent implements OnInit {
     return this.documentsForm.controls;
   }
 
-  getSelectedDoc($event: any): void{ // methord for dynamically add and remove the form control in documents upload form
+  getSelectedDoc($event: any): void { // methord for dynamically add and remove the form control in documents upload form
+    if (this.clearInputCount > 1) {
+      this.uploadInput.nativeElement.value = '';
+    }
+    this.clearInputCount++;
     this.lastSelectedDoc = this.selectedDoc;
     this.selectedDoc = JSON.parse($event.target.value);
-    if(this.selectedDoc.name === 'Others') {
+
+    if (this.selectedDoc.name === 'Others') {
       this.documentsForm.addControl('name', this.formBuilder.control(''));
       this.isOtherDoc = true;
-    } else if(this.lastSelectedDoc && this.lastSelectedDoc.name === 'Others'){
+    } else if (this.lastSelectedDoc && this.lastSelectedDoc.name === 'Others') {
       this.isOtherDoc = false;
       this.documentsForm.removeControl('name');
     }
+    
     this.documentsForm.addControl(this.changeNameFormat(this.selectedDoc.name.toString()), this.formBuilder.control(''));
     this.documentsForm.removeControl(this.changeNameFormat(this.lastSelectedDoc.name.toString()));
   }
 
   onFileChange($event: any) {
-    if(this.selectedDoc.mutipleDoc){
+    if (this.selectedDoc.mutipleDoc) {
       this.docFile = $event.target.files;
       $event.target.files.forEach((file: File) => {
         const ext = file.name.toString().split('.').pop();
@@ -103,7 +112,7 @@ export class DocumentationModalComponent implements OnInit {
     this.docFile = $event.target.files[0];
     const ext = this.docFile.name.toString().split('.').pop();
 
-    if(ext === 'png' || ext === 'jpg' || ext === 'jpeg') {
+    if (ext === 'png' || ext === 'jpg' || ext === 'jpeg') {
       this.format = 'image';
     } else if (ext === 'pdf') {
       this.format = 'pdf'
@@ -113,11 +122,11 @@ export class DocumentationModalComponent implements OnInit {
 
   onUpload(): void {
     this.submitted = false;
-    if(this.documentsForm.invalid) {
+    if (this.documentsForm.invalid) {
       return;
     }
 
-    if(this.docList.find((item: any) => item.name === this.selectedDoc.name)) {
+    if (this.docList.find((item: any) => item.name === this.selectedDoc.name)) {
       this._toastrService.info(`First delete, then upload`, `${this.selectedDoc.name} already exsists`)
       return;
     }
@@ -126,7 +135,7 @@ export class DocumentationModalComponent implements OnInit {
 
     let formData = new FormData();
 
-    if(this.isOtherDoc) {
+    if (this.isOtherDoc) {
       formData.append('name', this.documentsForm.value.name);
     } else {
       formData.append('name', this.selectedDoc.name);
@@ -135,7 +144,7 @@ export class DocumentationModalComponent implements OnInit {
     formData.append('format', this.format);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
 
-    if(this.selectedDoc.mutipleDoc) {
+    if (this.selectedDoc.mutipleDoc) {
       (this.docFile as any).forEach((element: File) => {
         formData.append('document', element);
       });
@@ -143,10 +152,10 @@ export class DocumentationModalComponent implements OnInit {
       formData.append('document', this.docFile);
     }
 
-    if(this.shopId){
+    if (this.shopId) {
       this._registerService.saveDocument(this.shopId, formData).subscribe({
         next: res => {
-          if(res) {
+          if (res) {
             this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
             this.reloadData.emit();
             this.getDocList();
@@ -155,7 +164,7 @@ export class DocumentationModalComponent implements OnInit {
         }
       });
     }
-   
+
   }
 
   viewDocument(res: any): void { //opens the view doc modal
@@ -163,7 +172,7 @@ export class DocumentationModalComponent implements OnInit {
     modalRef.componentInstance.doc = res;
   }
 
-  onDocDelete(doc:any){ // this methord opens the confirmation doc if you want to delecte some doc 
+  onDocDelete(doc: any) { // this methord opens the confirmation doc if you want to delecte some doc 
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.action = `Delete ${doc.name}`;
     let user: any = this._registerService.LoggedInUserData();
@@ -175,39 +184,39 @@ export class DocumentationModalComponent implements OnInit {
     });
   }
 
-  deleteDoc(confirmation: boolean, doc: any){ // methord for deleting doc if confirmation comes true from confirmation modal this also creates audit log
-    if(confirmation){
+  deleteDoc(confirmation: boolean, doc: any) { // methord for deleting doc if confirmation comes true from confirmation modal this also creates audit log
+    if (confirmation) {
       this.loading = true;
-      this._registerService.deleteDoc(this.shopId,doc).subscribe({
+      this._registerService.deleteDoc(this.shopId, doc).subscribe({
         next: res => {
-          if(res.success) {
+          if (res.success) {
             this._toastrService.success(`${doc.name} Deleted Sucessfully`, 'Deleted');
             this.reloadData.emit();
             this.getDocList();
-            this.loading=false;
+            this.loading = false;
           }
         }
       })
     }
   }
 
-  getDocList():void {
+  getDocList(): void {
     this._getDataService.getDocs(this.shopId).subscribe({
       next: res => {
-        this.docList=res.docs;
+        this.docList = res.docs;
         console.log(this.docList);
-        this.filteredData=this.docList;
+        this.filteredData = this.docList;
       }
     })
   }
 
-   //table methords
-   onTableDataChange($event: number): void {
+  //table methords
+  onTableDataChange($event: number): void {
     this.pageNumber = $event;
   }
 
-  onSearchChange(){
-    if(this.searchQuery) {
+  onSearchChange() {
+    if (this.searchQuery) {
       this.isSearch = true;
     } else {
       this.isSearch = false;
@@ -216,7 +225,7 @@ export class DocumentationModalComponent implements OnInit {
   }
 
   onItemNumChange() {
-  
+
   }
 
   filter(): void {
@@ -247,8 +256,8 @@ export class DocumentationModalComponent implements OnInit {
       return null;
     };
   }
-  
-  changeNameFormat(name:string): string { // this methord replaces " " by "_" in a string
+
+  changeNameFormat(name: string): string { // this methord replaces " " by "_" in a string
     const updatedString: string = name.split(' ').join('_');
     return updatedString;
   }

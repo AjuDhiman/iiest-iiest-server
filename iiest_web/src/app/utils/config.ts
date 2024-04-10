@@ -120,7 +120,7 @@ export const salesManagerRoles = [
 
 export const batchListRoles = [
    'Technical Coordinator',
-   ... master_roles
+   ...master_roles
 ]
 
 export const delhiTrainingLocations = [
@@ -155,7 +155,7 @@ export const HrRoles = [
 
 export const foscosDocments = [
    'FSMS Certificate',
-   'List of Directors', 
+   'List of Directors',
    'List of Partners',
    'List of Propraitors',
    'Partnership Deed',
@@ -180,7 +180,60 @@ export const foscosDocments = [
    'Others'
 ];
 
-export const propratitorDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const hraDocuments = [
+   {
+      name: 'Water Test Report',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Medical Certificates',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Cooking Temp Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Food Chilling Temp Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Food Holding Temp Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Food Transport Vehicle Inspection Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Incoming Material Inspection Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Personal Cleanliness Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Thawing Temp Format',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   },
+   {
+      name: 'Photos',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: true
+   }
+];
+
+export const propratitorDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'List of Propraitors',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
@@ -193,7 +246,7 @@ export const propratitorDocs: Array<{name: string, allowedFormats: string[], mut
    }
 ]
 
-export const partnershipDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const partnershipDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'List of Partnership',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
@@ -211,7 +264,7 @@ export const partnershipDocs: Array<{name: string, allowedFormats: string[], mut
    }
 ]
 
-export const boardODirectorDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const boardODirectorDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'List of Directors',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
@@ -229,7 +282,7 @@ export const boardODirectorDocs: Array<{name: string, allowedFormats: string[], 
    }
 ]
 
-export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const mandatoryDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'FSMS Cerificate',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
@@ -242,7 +295,7 @@ export const mandatoryDocs: Array<{name: string, allowedFormats: string[], mutip
    }
 ];
 
-export const manufacturingDoc: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const manufacturingDoc: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'Blue Print of Proessing Unit',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
@@ -265,7 +318,7 @@ export const manufacturingDoc: Array<{name: string, allowedFormats: string[], mu
    }
 ];
 
-export const extraDoc: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const extraDoc: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'Source or Procurement Plan for Milk',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
@@ -282,36 +335,36 @@ export const extraDoc: Array<{name: string, allowedFormats: string[], mutipleDoc
       mutipleDoc: true
    },
    {
-      name: 'NOC From Manufacturer', 
+      name: 'NOC From Manufacturer',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
    },
    {
-      name: 'Analysis Report', 
+      name: 'Analysis Report',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
    },
    {
-      name: 'IEC by DGFT', 
+      name: 'IEC by DGFT',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
    },
    {
-      name: 'Sale Deed', 
+      name: 'Sale Deed',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
    },
    {
-      name: 'List of Vehicle Registration Number', 
+      name: 'List of Vehicle Registration Number',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: false
    }
 ];
 
-export const otherDocs: Array<{name: string, allowedFormats: string[], mutipleDoc: boolean}> = [
+export const otherDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
-      name:'Others',
-      allowedFormats : ['png', 'jpg', 'jpeg', 'pdf'],
+      name: 'Others',
+      allowedFormats: ['png', 'jpg', 'jpeg', 'pdf'],
       mutipleDoc: true
    }
 ]
@@ -336,14 +389,14 @@ export class chartData {
    showIntervalSelection: boolean;
    otherChartTypeOptions: string[];
 
-   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: any, isDrilldown:boolean, showIntervalSelection = false, otherChartTypeOptions: string[] = []) {
+   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: any, isDrilldown: boolean, showIntervalSelection = false, otherChartTypeOptions: string[] = []) {
       this.chartType = chartType;
       this.department = department;
       this.chartTitle = chartTitle;
       this.seriesName = seriesName;
       this.yAxisTitle = yAxisTitle;
       this.data = data;
-      this.isDrilldown = isDrilldown 
+      this.isDrilldown = isDrilldown
       this.showIntervalSelection = showIntervalSelection;
       this.otherChartTypeOptions = otherChartTypeOptions;
    }

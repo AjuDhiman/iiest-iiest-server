@@ -5,7 +5,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { HttpClient } from '@angular/common/http';
 import { ViewDocumentComponent } from '../../../modals/view-document/view-document.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -21,14 +20,13 @@ export class RecipientListComponent {
   @Input() isfostac: boolean = false;
   @Input() isfoscos: boolean = false;
   @Input() shopData: any;
-  @Input() recipientData:any;
+  @Input() recipientData: any;
   faFile: IconDefinition = faFile;
 
   constructor(public activeModal: NgbActiveModal,
     private _registerService: RegisterService,
     private getDataServices: GetdataService,
     private _toastrService: ToastrService,
-    private http: HttpClient,
     private modalService: NgbModal,) {
 
   }
@@ -38,9 +36,9 @@ export class RecipientListComponent {
     // this.filter();
   }
 
-  uploadEbill($event: any, shopId: string){
+  uploadEbill($event: any, shopId: string) {
     const file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
       this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
       return;
     }
@@ -54,9 +52,9 @@ export class RecipientListComponent {
     })
   }
 
-  uploadOwnerPhoto($event: any, shopId: string){
+  uploadOwnerPhoto($event: any, shopId: string) {
     const file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
       this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
       return;
     }
@@ -70,9 +68,9 @@ export class RecipientListComponent {
     })
   }
 
-  uploadShopPhoto($event: any, shopId: string){
+  uploadShopPhoto($event: any, shopId: string) {
     const file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
       this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
       return;
     }
@@ -86,12 +84,12 @@ export class RecipientListComponent {
     })
   }
 
-  uploadAadharphoto($event: any, shopId: string){
+  uploadAadharphoto($event: any, shopId: string) {
     const files = $event.target.files;
     const formData: FormData = new FormData();
-    
-    files.forEach((file:File) => {
-      if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+
+    files.forEach((file: File) => {
+      if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
         this._toastrService.error('file type should be jpeg, jpg or png', 'Invalid file type');
         return;
       }
@@ -106,9 +104,9 @@ export class RecipientListComponent {
     })
   }
 
-  uploadFostacCertificate($event: any, shopId: string){
+  uploadFostacCertificate($event: any, shopId: string) {
     const file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'application/pdf') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'application/pdf') {
       this._toastrService.error('file type should be jpeg, jpg, png or pdf', 'Invalid file type');
       return;
     }
@@ -122,9 +120,9 @@ export class RecipientListComponent {
     })
   }
 
-  uploadFoscosLicense($event: any, shopId: string){
+  uploadFoscosLicense($event: any, shopId: string) {
     const file = $event.target.files[0];
-    if(file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'application/pdf') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png' && file.type !== 'application/pdf') {
       this._toastrService.error('file type should be jpeg, jpg, png or pdf', 'Invalid file type');
       return;
     }
@@ -138,44 +136,14 @@ export class RecipientListComponent {
     })
   }
 
-  downloadDoc(documentId: string, contentType: string) {
-    console.log(this.shopData);
-    // Make a request to the backend to download the document
-    this.http.get(`http://localhost:3000/${documentId}`, { responseType: 'blob' })
-      .subscribe((data: Blob) => {
-        // Create a Blob URL for the downloaded document
-        const downloadUrl = window.URL.createObjectURL(data);
-
-        // Determine the file extension based on content type
-        let fileExtension = '';
-        switch (contentType) {
-          case 'image/jpeg':
-            fileExtension = 'jpg';
-            break;
-          case 'image/png':
-            fileExtension = 'png';
-            break;
-          case 'application/pdf':
-            fileExtension = 'pdf';
-            break;
-          default:
-            fileExtension = 'file';
-            break;
-        }
-
-        // Create a link element and trigger the download
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `document_${documentId}`; // Set the filename with the appropriate file extension
-        link.click();
-
-        // Cleanup the Blob URL
-        window.URL.revokeObjectURL(downloadUrl);
-      });
-  }
-
   viewDocument(res: any): void {
+    let obj = {
+      name: "HRA Document",
+      src: [ res.toString() ],
+      format: "image",
+      multipleDoc: false
+    }
     const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.doc = res;
+    modalRef.componentInstance.doc = obj;
   }
 }

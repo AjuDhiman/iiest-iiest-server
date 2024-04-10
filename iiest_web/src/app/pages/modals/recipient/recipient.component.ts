@@ -424,7 +424,7 @@ export class RecipientComponent implements OnInit {
           });
         this.listCount = this.fboData.foscosInfo.shops_no;
         break;
-       case "hra":
+       case "HRA":
         this.isfostac = false;
         this.recipientform = this.formBuilder.group(
           {

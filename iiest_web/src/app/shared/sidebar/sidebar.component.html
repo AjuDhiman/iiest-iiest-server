@@ -180,9 +180,21 @@
                     [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
                     <a class="nav-link" [routerLink]="['/batchlist']">
                         <span class="nav-icon">
-                            <fa-icon class="fa-xl" [icon]="faCalendar"></fa-icon>
+                            <fa-icon class="fa-xl" [icon]="faCalendarWeek"></fa-icon>
                         </span>
                         <span class="nav-link-text">Training Calender</span>
+                    </a>
+                </li>
+                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: false }"
+                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                    [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
+                    <a class="nav-link" [routerLink]="['/auditlist']">
+                        <span class="nav-icon">
+                            <fa-icon class="fa-xl" [icon]="faCalendarDays"></fa-icon>
+                        </span>
+                        <span class="nav-link-text">Audit Calender</span>
                     </a>
                 </li>
             </ul>

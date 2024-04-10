@@ -3,7 +3,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 import { fbo_roles, empRegister_roles, caseList_roles } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { faUserPlus, faCalendar, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCalendarWeek, faCalendarDays, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,7 +18,8 @@ export class SidebarComponent {
   userImage: string = '../../assets/logo-side.png';
   userImageId: string;
   faUserPlus: IconDefinition = faUserPlus;
-  faCalendar: IconDefinition = faCalendar;
+  faCalendarDays: IconDefinition = faCalendarDays;
+  faCalendarWeek: IconDefinition = faCalendarWeek;
 
   @Input() sideBarToggle: boolean;
   @Input() isSidebarVisible: boolean;
