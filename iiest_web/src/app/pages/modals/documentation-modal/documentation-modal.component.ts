@@ -16,8 +16,6 @@ import { ViewDocumentComponent } from '../view-document/view-document.component'
 })
 export class DocumentationModalComponent implements OnInit {
 
-  @ViewChild('upload') uploadInput: ElementRef;
-
   lastSelectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false }; // this var will keep track of prev val of selected doc because we want it to be removed from from group if it deselected
   selectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false };
   shopId: string;
@@ -57,6 +55,8 @@ export class DocumentationModalComponent implements OnInit {
 
   @ViewChild(MultiSelectComponent) multiselect: MultiSelectComponent;
 
+  @ViewChild('uploadInput') uploadInput: ElementRef; 
+
   constructor(public activeModal: NgbActiveModal,
     private _registerService: RegisterService,
     private _getDataService: GetdataService,
@@ -94,6 +94,7 @@ export class DocumentationModalComponent implements OnInit {
     
     this.documentsForm.addControl(this.changeNameFormat(this.selectedDoc.name.toString()), this.formBuilder.control(''));
     this.documentsForm.removeControl(this.changeNameFormat(this.lastSelectedDoc.name.toString()));
+    console.log(this.uploadInput);
   }
 
   onFileChange($event: any) {

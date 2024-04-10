@@ -471,6 +471,8 @@ exports.ticketDelivery = async (req, res) => {
 
         const {ticket_status, issue_date} = req.body;
 
+        console.log(req.body);
+
         if (!certificateFile && ticket_status === 'delivered') {
             success = false;
             return res.status(401).json({ success, fileErr: true });

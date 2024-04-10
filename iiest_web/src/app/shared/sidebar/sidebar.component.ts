@@ -15,7 +15,7 @@ export class SidebarComponent {
   fboRoles = fbo_roles;
   employeeRoles = empRegister_roles;
   caseListRoles = caseList_roles;
-  userImage: string = '../../assets/logo-side.png';
+  userImage: string = 'assets/logo-side.png';
   userImageId: string;
   faUserPlus: IconDefinition = faUserPlus;
   faCalendarDays: IconDefinition = faCalendarDays;
@@ -58,6 +58,10 @@ export class SidebarComponent {
     this.isSidebarVisible = !this.isSidebarVisible;
   }
   getUserImage() {
+    if(!this.userImageId) {
+      this.userImage = 'assets/logo-side.png';
+      return;
+    }
     const rawUserData: any = this.registerService.LoggedInUserData();
     const parsedData: any = JSON.parse(rawUserData);
     this.getDataService.getUserImage(parsedData.employeeImage).subscribe({

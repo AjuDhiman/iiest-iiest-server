@@ -57,42 +57,42 @@ export class OperationformComponent implements OnInit {
   }
 
   //this methord catch sales date from verification section which we will pass in enrollment section
-  getSalesData($event: string) {
+  getSalesData($event: string): void {
     this.salesDate = $event;
   }
 
   // this methord catch verification Id from verification section which we will pass in enrollment section
-  getVerifiedDataId($event: string) {
+  getVerifiedDataId($event: string): void {
     this.verifiedDataId = $event;
   }
 
   // this methord catch verification data from verification section 
-  getVerifiedData($event: string) {
+  getVerifiedData($event: string): void {
     this.verifiedData = $event;
   }
 
   // this methord catch verification sataus from verification section which we will pass in enrollment section
-  getVerifiedStatus($event: boolean) {
+  getVerifiedStatus($event: boolean): void {
     this.verifiedStatus = $event
   }
 
   // this methord catch enrollment Id from Enrollment section which we will pass in Attendance section
-  getEnrolledDataId($event: string) {
+  getEnrolledDataId($event: string): void {
     this.enrolledDataId = $event;
   }
 
   // this methord catch enrollment status from Enrollment section which we will pass in Attendance section
-  getEnrolledStatus($event: boolean) {
+  getEnrolledStatus($event: boolean): void {
     this.enrolledStatus = $event;
   }
 
   // this methord catch attendance status from Attendance section which we will pass in Certification section
-  getAttendanceStatus($event: boolean) {
+  getAttendanceStatus($event: boolean): void {
     this.attendanceStatus = $event;
   }
 
   // this methord catch attendance status from Attendance section which we will pass in Certification section
-  getAttenSecResult($event: string) {
+  getAttenSecResult($event: string): void {
     this.attenSecResult = $event;
   }
 
@@ -105,7 +105,7 @@ export class OperationformComponent implements OnInit {
     this.allDocs = this.documents.flatMap(doc => doc.src);
   }
 
-  getFileIcon(type: string) {
+  getFileIcon(type: string): IconDefinition {
     let fileIcon: IconDefinition = faFilePdf;
     switch (type) {
       case 'pdf':
@@ -118,7 +118,7 @@ export class OperationformComponent implements OnInit {
     return fileIcon
   }
 
-  getUserProductType() {
+  getUserProductType(): void {
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
     let panelType = parsedUser.panel_type;
@@ -142,7 +142,7 @@ export class OperationformComponent implements OnInit {
     }
   }
 
-  toogleTabs(tab: string) {
+  toogleTabs(tab: string): void {
     this.activeTab = tab;
   }
 

@@ -99,7 +99,7 @@
                     <div class="row">
                         <div class="col-md-4 title">Invoice</div>
                         <div class="col-md-8 data">
-                            <a class="download-link" [href]="invoice" download="invoice.pdf" *ngIf="isShowInvoice===true">
+                            <a *ngIf="isShowInvoice===true" class="download-link" (click)="viewInvoice()">
                                 <fa-icon class="fa-2xl text-success cursor-pointer" style="color: #5d6778;"
                                 [icon]="faFile" title="download"></fa-icon>
                             </a>
@@ -273,7 +273,7 @@
 
                     <div class="col-md-4">
                         <div class="row">
-                            <div class="col-md-6 title">No. of Shops </div>
+                            <div class="col-md-6 title">No. of Shops</div>
                             <div class="col-md-6 data">{{fboData.hraInfo.shops_no}}</div>
                         </div>
                     </div>

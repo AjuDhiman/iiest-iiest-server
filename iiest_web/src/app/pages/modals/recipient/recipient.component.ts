@@ -126,8 +126,6 @@ export class RecipientComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    console.log(this.recipientform);
-
     if (this.recipientform.invalid) {
       return;
     }
@@ -135,8 +133,6 @@ export class RecipientComponent implements OnInit {
     this.loading = true;
 
     this.fboID = this.fboData._id
-
-    console.log(this.serviceType);
 
     if (this.serviceType === 'fostac') {
 
@@ -177,7 +173,6 @@ export class RecipientComponent implements OnInit {
         formData.append('aadharPhoto', file);
       })
 
-      console.log(1);
       this._registerService.addFboShop(this.fboID, formData).subscribe({
         next: (res) => {
           if (res.success) {
@@ -209,11 +204,8 @@ export class RecipientComponent implements OnInit {
       formData.append('pincode', this.recipientform.get('pincode')?.value);
       formData.append('kob', this.recipientform.get('kob')?.value);
       formData.append('food_handlers', this.recipientform.get('food_handlers')?.value);
-      console.log(this.fostacCertificate, this.foscosLicense)
       formData.append('fostacCertificate', this.fostacCertificate);
       formData.append('foscosLicense', this.foscosLicense);
-
-      console.log(formData);
 
       this._registerService.addHygieneShop(this.fboID, formData).subscribe({
         next: res => {
@@ -235,7 +227,6 @@ export class RecipientComponent implements OnInit {
   onImageChangeFromFile($event: any, fileType: string) {
     if ($event.target.files && $event.target.files[0]) {
       let file = $event.target.files[0];
-      console.log(file);
       if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png" || file.type == "application/pdf") {
         switch (fileType) {
           case 'eBill':
@@ -294,7 +285,6 @@ export class RecipientComponent implements OnInit {
   getHygieneShopList(saleId: string) {
     this.getDataServices.getHygieneSaleShops(saleId).subscribe({
       next: res => {
-        console.log(res)
         if (res.shopsList.length) {
           this.shopData = res.shopsList
           this.showPagination = true;

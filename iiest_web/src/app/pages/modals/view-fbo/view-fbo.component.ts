@@ -3,6 +3,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faIndianRupeeSign, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
 import { GetdataService } from 'src/app/services/getdata.service';
+import { ViewDocumentComponent } from '../view-document/view-document.component';
 
 @Component({
   selector: 'app-view-fbo',
@@ -22,8 +23,10 @@ export class ViewFboComponent implements OnInit {
   isShowInvoice: boolean;
   invoice: string = '';
   remainingTime: string = '';
+  invoiceArr: any = [];
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
+    private ngbModal: NgbModal
   ) {
   }
 
@@ -51,7 +54,7 @@ export class ViewFboComponent implements OnInit {
     if (date1 > date2) {
       return true;
     } else {
-      return false
+      return false;
     }
   }
 
@@ -61,21 +64,25 @@ export class ViewFboComponent implements OnInit {
 
   getInvoice() {
     if (this.isShowInvoice) {
-      this.getDataServices.getInvoice(this.fboData.invoiceId).subscribe({
-        next: (res) => {
-          this.invoice = res.invoiceConverted;
-        },
-        error(err) {
-          let errorObj = err.error;
-          if (errorObj.userError) {
+      this.invoiceArr = [];
+      this.fboData.invoiceId.forEach((invoice: string) => {
+        this.getDataServices.getInvoice(invoice).subscribe({
+          next: (res) => {
+            this.invoice = res.invoiceConverted;
+            this.invoiceArr.push(this.invoice);
+          },
+          error(err) {
+            let errorObj = err.error;
+            if (errorObj.userError) {
 
-          } else if (errorObj.randomErr) {
+            } else if (errorObj.randomErr) {
 
-          } else if (errorObj.oldInvoiceErr) {
+            } else if (errorObj.oldInvoiceErr) {
 
-          }
-        },
-      })
+            }
+          },
+        })
+      });
     }
   }
 
@@ -128,4 +135,13 @@ export class ViewFboComponent implements OnInit {
     return updateAddress;
   }
 
+  viewInvoice(): void {
+    const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'xl', backdrop: 'static' });
+    modalRef.componentInstance.doc = {
+      name: 'Invoice',
+      format: 'pdf',
+      src: this.invoiceArr,
+      multipleDoc: true
+    }
+  }
 }

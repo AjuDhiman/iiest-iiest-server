@@ -1,5 +1,8 @@
+const testEnv = false;
+const prodEnv = false;
+
 export const config = {
-   API_URL: 'http://localhost:3000/iiest'
+   API_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000/iiest')
    // API_URL: 'https://iiest-server.onrender.com'
 }
 
@@ -15,6 +18,60 @@ export const clientType = ['General Client', 'Corporate Client'];
 
 //Payment Mode
 export const paymentMode = ['Cash', 'Pay Page'];
+
+export const auditers = [
+   'Aditi',
+   'Umar'
+];
+
+export const trainers = [
+   'Aditi',
+   'Amit Khanna',
+   'Vijay Saini',
+   'Vinay Kumar Stphene',
+   'Yashwanth Murthy',
+   'Yashodha Devi Palkna',
+   'Harshvardhan Tmrakr',
+   'Praduman Kumar'
+];
+
+export const venues = [
+   {
+      name: 'IIEST',
+      vendor: 'IIEST',
+      location: 'Delhi'
+   },
+   {
+      name: 'Imperial Banquet',
+      vendor: 'Greenvilley',
+      location: 'Gurugram'
+   },
+   {
+      name: 'Indian Resort and Restaurant',
+      vendor: 'Indian Resort and Restaurant',
+      location: 'Faridabad'
+   },
+   {
+      name: 'Hotel Howdy',
+      vendor: 'Hotel Howdy',
+      location: 'Faridabad'
+   },
+   {
+      name: 'Radient Hospitality',
+      vendor: 'Radient Hospitality',
+      location: 'Noida'
+   },
+   {
+      name: 'Hotel Samrath',
+      vendor: 'Perfect Celebrations',
+      location: 'Kaushambi'
+   },
+   {
+      name: 'Yo Food',
+      vendor: 'Parky HVAC India Pvt. Ltd.',
+      location: 'Delhi'
+   },
+]
 
 export const ownershipType = [
    'Propraitorship',

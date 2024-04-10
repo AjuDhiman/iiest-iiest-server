@@ -61,9 +61,9 @@
 
     </div>
 
-    <div *ngIf="projectType==='Foscos'" class="col-md-3">
-        <label class="form-label">License Issue Date</label>
-        <input type="date" class="form-control form-control-sm">
+    <div class="col-md-3" *ngIf="isUploadVisible">
+        <label class="form-label" for="issue_date">{{projectType === 'Foscos'?'License':'Certificate'}} Issue Date</label>
+        <input type="date" class="form-control form-control-sm" id="issue_date" formControlName="issue_date"/>
     </div>
 
     <div *ngIf="projectType==='Foscos'" class="col-md-3">
