@@ -34,6 +34,7 @@ export class SidebarComponent {
     this.getUserData();
     this.getUserImage();
     // this.getUserImage();
+    console.log(this.userData);
   }
 
   toggelStyle: object = {

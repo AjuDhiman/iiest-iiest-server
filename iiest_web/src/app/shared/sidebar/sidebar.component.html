@@ -29,174 +29,180 @@
                         <span class="nav-link-text">Home</span>
                     </a>
                 </li>
-                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Employee Register':''">
-                    <a class="nav-link" [routerLink]="['/empregister']">
-                        <span class="nav-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" color=""
-                                fill="currentColor" class="" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-                                <path
-                                    d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
-                            </svg>
-                            <!-- <fa-icon [icon]="faUserPlus"></fa-icon> -->
-                        </span>
-                        <span class="nav-link-text">Employee Register</span>
-                    </a>
-                </li>
-                <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Fbo Register':''">
-                    <a class="nav-link" [routerLink]="['/fbo']">
-                        <span class="nav-icon">
-                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
-                                viewBox="0 0 96.000000 96.000000" preserveAspectRatio="xMidYMid meet">
+                <span *ngIf="userData">
+                    <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Employee Register':''">
+                        <a class="nav-link" [routerLink]="['/empregister']">
+                            <span class="nav-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="23px" height="23px" color=""
+                                    fill="currentColor" class="" viewBox="0 0 16 16">
+                                    <path
+                                        d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                                    <path
+                                        d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
+                                </svg>
+                                <!-- <fa-icon [icon]="faUserPlus"></fa-icon> -->
+                            </span>
+                            <span class="nav-link-text">Employee Register</span>
+                        </a>
+                    </li>
+                    <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Fbo Register':''">
+                        <a class="nav-link" [routerLink]="['/fbo']">
+                            <span class="nav-icon">
+                                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
+                                    viewBox="0 0 96.000000 96.000000" preserveAspectRatio="xMidYMid meet">
 
-                                <g transform="translate(0.000000,96.000000) scale(0.100000,-0.100000)"
-                                    fill="currentColor" stroke="none">
-                                    <path
-                                        d="M415 906 c-130 -58 -153 -245 -42 -343 88 -77 216 -42 268 72 71 156 -79 336 -226 271z m125 -45 c42 -22 80 -90 80 -141 0 -78 -71 -160 -140 -160 -69 0 -140 82 -140 160 0 78 71 160 140 160 14 0 41 -8 60 -19z" />
-                                    <path
-                                        d="M380 467 c-116 -33 -212 -112 -265 -217 -37 -72 -37 -116 -1 -146 27 -24 30 -24 214 -22 158 3 187 5 187 18 0 13 -29 15 -187 18 -174 2 -188 4 -198 22 -23 44 63 184 147 238 111 71 239 79 355 24 57 -27 118 -73 118 -89 0 -4 -33 -41 -73 -82 -63 -65 -77 -86 -97 -144 -29 -89 -22 -96 67 -67 62 21 77 31 176 129 120 120 129 142 80 193 -30 31 -68 36 -98 14 -18 -13 -23 -11 -59 21 -63 58 -153 94 -244 99 -45 2 -95 -1 -122 -9z m498 -149 c23 -23 11 -44 -73 -128 l-85 -85 -27 28 -28 27 85 85 c84 84 105 96 128 73z m-195 -239 c-5 -4 -20 -11 -35 -14 -31 -8 -34 -1 -18 41 l11 27 24 -23 c14 -13 22 -27 18 -31z" />
-                                </g>
-                            </svg>
-                            <!-- <fa-icon [icon]="faUserPlus"></fa-icon> -->
-                        </span>
-                        <span class="nav-link-text">Fbo Register</span>
-                    </a>
-                </li>
-                <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Fbo List':''">
-                    <a class="nav-link" [routerLink]="['/fbolist']">
-                        <span class="nav-icon">
-                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
-                                viewBox="0 0 64.000000 64.000000" preserveAspectRatio="xMidYMid meet">
+                                    <g transform="translate(0.000000,96.000000) scale(0.100000,-0.100000)"
+                                        fill="currentColor" stroke="none">
+                                        <path
+                                            d="M415 906 c-130 -58 -153 -245 -42 -343 88 -77 216 -42 268 72 71 156 -79 336 -226 271z m125 -45 c42 -22 80 -90 80 -141 0 -78 -71 -160 -140 -160 -69 0 -140 82 -140 160 0 78 71 160 140 160 14 0 41 -8 60 -19z" />
+                                        <path
+                                            d="M380 467 c-116 -33 -212 -112 -265 -217 -37 -72 -37 -116 -1 -146 27 -24 30 -24 214 -22 158 3 187 5 187 18 0 13 -29 15 -187 18 -174 2 -188 4 -198 22 -23 44 63 184 147 238 111 71 239 79 355 24 57 -27 118 -73 118 -89 0 -4 -33 -41 -73 -82 -63 -65 -77 -86 -97 -144 -29 -89 -22 -96 67 -67 62 21 77 31 176 129 120 120 129 142 80 193 -30 31 -68 36 -98 14 -18 -13 -23 -11 -59 21 -63 58 -153 94 -244 99 -45 2 -95 -1 -122 -9z m498 -149 c23 -23 11 -44 -73 -128 l-85 -85 -27 28 -28 27 85 85 c84 84 105 96 128 73z m-195 -239 c-5 -4 -20 -11 -35 -14 -31 -8 -34 -1 -18 41 l11 27 24 -23 c14 -13 22 -27 18 -31z" />
+                                    </g>
+                                </svg>
+                                <!-- <fa-icon [icon]="faUserPlus"></fa-icon> -->
+                            </span>
+                            <span class="nav-link-text">Fbo Register</span>
+                        </a>
+                    </li>
+                    <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Fbo List':''">
+                        <a class="nav-link" [routerLink]="['/fbolist']">
+                            <span class="nav-icon">
+                                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
+                                    viewBox="0 0 64.000000 64.000000" preserveAspectRatio="xMidYMid meet">
 
-                                <g transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)"
-                                    fill="currentColor" stroke="none">
-                                    <path
-                                        d="M263 620 c-24 -14 -54 -20 -115 -22 l-83 -3 0 -285 0 -285 255 0 255 0 0 285 0 285 -83 3 c-61 2 -91 8 -115 22 -41 25 -73 25 -114 0z m90 -11 c36 -19 67 -51 67 -71 0 -16 -10 -18 -100 -18 -99 0 -100 0 -100 24 0 19 11 31 43 50 47 29 59 31 90 15z m-150 -48 c-4 -14 -15 -21 -42 -23 l-36 -3 0 -225 0 -225 155 -3 155 -2 43 43 42 43 -2 185 -3 184 -36 3 c-27 2 -38 9 -42 23 -5 17 0 19 59 19 l64 0 0 -270 0 -270 -240 0 -240 0 0 270 0 270 64 0 c59 0 64 -2 59 -19z m2 -51 c4 -6 53 -10 115 -10 62 0 111 4 115 10 3 6 19 10 36 10 l29 0 0 -169 0 -170 -37 -3 c-36 -3 -38 -5 -41 -40 l-3 -38 -140 0 -139 0 0 210 0 210 29 0 c17 0 33 -4 36 -10z m275 -353 c0 -2 -9 -12 -20 -22 -19 -18 -20 -17 -20 3 0 15 6 22 20 22 11 0 20 -2 20 -3z" />
-                                    <path d="M304 589 c-10 -17 13 -36 27 -22 12 12 4 33 -11 33 -5 0 -12 -5 -16 -11z" />
-                                    <path
-                                        d="M160 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path
-                                        d="M210 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path
-                                        d="M260 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path
-                                        d="M310 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path
-                                        d="M360 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path
-                                        d="M410 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path
-                                        d="M460 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
-                                    <path d="M198 383 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
-                                    <path
-                                        d="M260 370 c0 -6 40 -10 100 -10 60 0 100 4 100 10 0 6 -40 10 -100 10 -60 0 -100 -4 -100 -10z" />
-                                    <path d="M198 323 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
-                                    <path
-                                        d="M260 310 c0 -6 33 -10 80 -10 47 0 80 4 80 10 0 6 -33 10 -80 10 -47 0 -80 -4 -80 -10z" />
-                                    <path d="M198 263 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
-                                    <path
-                                        d="M260 250 c0 -6 37 -10 90 -10 53 0 90 4 90 10 0 6 -37 10 -90 10 -53 0 -90 -4 -90 -10z" />
-                                    <path d="M198 203 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
-                                    <path
-                                        d="M260 190 c0 -5 18 -10 40 -10 22 0 40 5 40 10 0 6 -18 10 -40 10 -22 0 -40 -4 -40 -10z" />
-                                </g>
-                            </svg>
-                        </span>
-                        <span class="nav-link-text">Fbo List</span>
-                    </a>
-                </li>
-                <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Employee List':''"
-                    data-bs-custom-class="custom-tooltip">
-                    <a class="nav-link" [routerLink]="['/emplist']">
-                        <span class="nav-icon">
-                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
-                                viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
+                                    <g transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)"
+                                        fill="currentColor" stroke="none">
+                                        <path
+                                            d="M263 620 c-24 -14 -54 -20 -115 -22 l-83 -3 0 -285 0 -285 255 0 255 0 0 285 0 285 -83 3 c-61 2 -91 8 -115 22 -41 25 -73 25 -114 0z m90 -11 c36 -19 67 -51 67 -71 0 -16 -10 -18 -100 -18 -99 0 -100 0 -100 24 0 19 11 31 43 50 47 29 59 31 90 15z m-150 -48 c-4 -14 -15 -21 -42 -23 l-36 -3 0 -225 0 -225 155 -3 155 -2 43 43 42 43 -2 185 -3 184 -36 3 c-27 2 -38 9 -42 23 -5 17 0 19 59 19 l64 0 0 -270 0 -270 -240 0 -240 0 0 270 0 270 64 0 c59 0 64 -2 59 -19z m2 -51 c4 -6 53 -10 115 -10 62 0 111 4 115 10 3 6 19 10 36 10 l29 0 0 -169 0 -170 -37 -3 c-36 -3 -38 -5 -41 -40 l-3 -38 -140 0 -139 0 0 210 0 210 29 0 c17 0 33 -4 36 -10z m275 -353 c0 -2 -9 -12 -20 -22 -19 -18 -20 -17 -20 3 0 15 6 22 20 22 11 0 20 -2 20 -3z" />
+                                        <path
+                                            d="M304 589 c-10 -17 13 -36 27 -22 12 12 4 33 -11 33 -5 0 -12 -5 -16 -11z" />
+                                        <path
+                                            d="M160 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path
+                                            d="M210 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path
+                                            d="M260 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path
+                                            d="M310 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path
+                                            d="M360 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path
+                                            d="M410 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path
+                                            d="M460 460 c0 -11 5 -20 10 -20 6 0 10 9 10 20 0 11 -4 20 -10 20 -5 0 -10 -9 -10 -20z" />
+                                        <path d="M198 383 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
+                                        <path
+                                            d="M260 370 c0 -6 40 -10 100 -10 60 0 100 4 100 10 0 6 -40 10 -100 10 -60 0 -100 -4 -100 -10z" />
+                                        <path d="M198 323 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
+                                        <path
+                                            d="M260 310 c0 -6 33 -10 80 -10 47 0 80 4 80 10 0 6 -33 10 -80 10 -47 0 -80 -4 -80 -10z" />
+                                        <path d="M198 263 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
+                                        <path
+                                            d="M260 250 c0 -6 37 -10 90 -10 53 0 90 4 90 10 0 6 -37 10 -90 10 -53 0 -90 -4 -90 -10z" />
+                                        <path d="M198 203 c-20 -5 -23 -18 -8 -28 12 -7 40 12 40 26 0 9 -4 10 -32 2z" />
+                                        <path
+                                            d="M260 190 c0 -5 18 -10 40 -10 22 0 40 5 40 10 0 6 -18 10 -40 10 -22 0 -40 -4 -40 -10z" />
+                                    </g>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Fbo List</span>
+                        </a>
+                    </li>
+                    <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Employee List':''"
+                        data-bs-custom-class="custom-tooltip">
+                        <a class="nav-link" [routerLink]="['/emplist']">
+                            <span class="nav-icon">
+                                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
+                                    viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
 
-                                <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)"
-                                    fill="currentColor" stroke="none">
-                                    <path
-                                        d="M160 415 c0 -37 4 -65 10 -65 6 0 10 25 10 55 l0 55 90 0 90 0 0 -50 0 -50 50 0 50 0 0 -140 0 -140 -70 0 c-40 0 -70 -4 -70 -10 0 -6 33 -10 80 -10 l80 0 0 158 0 158 -53 52 -53 52 -107 0 -107 0 0 -65z m255 -5 l29 -30 -32 0 c-29 0 -32 3 -32 30 0 17 1 30 3 30 2 0 16 -13 32 -30z" />
-                                    <path
-                                        d="M121 323 c-27 -23 -31 -105 -8 -150 24 -46 22 -52 -27 -73 -41 -17 -66 -43 -66 -69 0 -7 50 -11 150 -11 100 0 150 4 150 11 0 26 -25 52 -66 69 -48 21 -51 28 -30 68 13 25 21 82 17 124 -1 18 -53 48 -81 48 -10 0 -27 -8 -39 -17z m86 -23 c17 -15 20 -27 16 -62 -3 -24 -12 -53 -19 -65 -8 -12 -14 -29 -14 -38 0 -22 -40 -19 -40 3 0 9 -7 26 -15 36 -18 24 -20 117 -3 134 18 18 52 15 75 -8z m-51 -234 c-6 -24 -11 -26 -62 -26 -64 0 -63 10 4 44 51 27 68 21 58 -18z m139 -16 c4 -6 -14 -10 -48 -10 -47 0 -55 3 -65 24 -18 41 4 48 59 21 26 -14 50 -29 54 -35z" />
-                                </g>
-                            </svg>
-                        </span>
-                        <span class="nav-link-text">Employee List</span>
-                    </a>
-                </li>
-                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
-                    <a class="nav-link" [routerLink]="['/caselist']">
-                        <span class="nav-icon">
-                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
-                                viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
+                                    <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)"
+                                        fill="currentColor" stroke="none">
+                                        <path
+                                            d="M160 415 c0 -37 4 -65 10 -65 6 0 10 25 10 55 l0 55 90 0 90 0 0 -50 0 -50 50 0 50 0 0 -140 0 -140 -70 0 c-40 0 -70 -4 -70 -10 0 -6 33 -10 80 -10 l80 0 0 158 0 158 -53 52 -53 52 -107 0 -107 0 0 -65z m255 -5 l29 -30 -32 0 c-29 0 -32 3 -32 30 0 17 1 30 3 30 2 0 16 -13 32 -30z" />
+                                        <path
+                                            d="M121 323 c-27 -23 -31 -105 -8 -150 24 -46 22 -52 -27 -73 -41 -17 -66 -43 -66 -69 0 -7 50 -11 150 -11 100 0 150 4 150 11 0 26 -25 52 -66 69 -48 21 -51 28 -30 68 13 25 21 82 17 124 -1 18 -53 48 -81 48 -10 0 -27 -8 -39 -17z m86 -23 c17 -15 20 -27 16 -62 -3 -24 -12 -53 -19 -65 -8 -12 -14 -29 -14 -38 0 -22 -40 -19 -40 3 0 9 -7 26 -15 36 -18 24 -20 117 -3 134 18 18 52 15 75 -8z m-51 -234 c-6 -24 -11 -26 -62 -26 -64 0 -63 10 4 44 51 27 68 21 58 -18z m139 -16 c4 -6 -14 -10 -48 -10 -47 0 -55 3 -65 24 -18 41 4 48 59 21 26 -14 50 -29 54 -35z" />
+                                    </g>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Employee List</span>
+                        </a>
+                    </li>
+                    <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Case List':''"
+                        data-bs-custom-class="custom-tooltip">
+                        <a class="nav-link" [routerLink]="['/caselist']">
+                            <span class="nav-icon">
+                                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
+                                    viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
 
-                                <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)"
-                                    fill="currentColor" stroke="none">
-                                    <path
-                                        d="M24 437 c-2 -7 -3 -80 -2 -162 l3 -150 83 -3 c62 -2 82 -6 82 -17 0 -8 -12 -15 -27 -17 -20 -2 -29 -9 -31 -25 -3 -22 -1 -23 77 -23 102 0 109 19 9 22 l-73 2 68 3 c68 4 96 23 32 23 -24 0 -35 5 -35 15 0 10 10 15 34 15 19 0 38 4 41 10 4 6 -38 10 -119 10 -119 0 -126 1 -126 20 0 19 7 20 139 20 83 0 142 4 146 10 4 6 -45 10 -139 10 l-146 0 0 115 0 115 210 0 210 0 0 -114 c0 -68 4 -117 10 -121 7 -4 10 36 8 122 l-3 128 -223 3 c-176 2 -224 0 -228 -11z" />
-                                    <path
-                                        d="M132 388 c-15 -15 -16 -64 -2 -73 20 -13 9 -41 -20 -52 -54 -20 -35 -33 50 -33 67 0 78 2 74 15 -4 8 -17 18 -30 21 -24 6 -33 37 -14 49 18 11 11 64 -9 75 -25 13 -34 13 -49 -2z" />
-                                    <path
-                                        d="M280 360 c0 -6 28 -10 65 -10 37 0 65 4 65 10 0 6 -28 10 -65 10 -37 0 -65 -4 -65 -10z" />
-                                    <path
-                                        d="M280 310 c0 -6 28 -10 65 -10 37 0 65 4 65 10 0 6 -28 10 -65 10 -37 0 -65 -4 -65 -10z" />
-                                    <path
-                                        d="M280 260 c0 -6 28 -10 65 -10 37 0 65 4 65 10 0 6 -28 10 -65 10 -37 0 -65 -4 -65 -10z" />
-                                    <path
-                                        d="M351 186 c-87 -48 -50 -186 49 -186 51 0 100 49 100 99 0 75 -83 124 -149 87z m104 -31 c50 -49 15 -135 -55 -135 -41 0 -80 39 -80 80 0 70 86 105 135 55z" />
-                                    <path
-                                        d="M413 112 c-19 -24 -24 -25 -42 -14 -17 10 -21 10 -21 -1 0 -6 10 -18 22 -26 20 -12 24 -11 50 20 15 19 28 37 28 42 0 14 -15 5 -37 -21z" />
-                                </g>
-                            </svg>
-                        </span>
-                        <span class="nav-link-text">Case List</span>
-                    </a>
-                </li>
-                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
-                    <a class="nav-link" [routerLink]="['/batchlist']">
-                        <span class="nav-icon">
-                            <fa-icon class="fa-xl" [icon]="faCalendarWeek"></fa-icon>
-                        </span>
-                        <span class="nav-link-text">Training Calender</span>
-                    </a>
-                </li>
-                <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: false }"
-                    [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
-                    [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                    [title]="!isSidebarVisible && largeDisplay?'Case List':''" data-bs-custom-class="custom-tooltip">
-                    <a class="nav-link" [routerLink]="['/auditlist']">
-                        <span class="nav-icon">
-                            <fa-icon class="fa-xl" [icon]="faCalendarDays"></fa-icon>
-                        </span>
-                        <span class="nav-link-text">Audit Calender</span>
-                    </a>
-                </li>
+                                    <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)"
+                                        fill="currentColor" stroke="none">
+                                        <path
+                                            d="M24 437 c-2 -7 -3 -80 -2 -162 l3 -150 83 -3 c62 -2 82 -6 82 -17 0 -8 -12 -15 -27 -17 -20 -2 -29 -9 -31 -25 -3 -22 -1 -23 77 -23 102 0 109 19 9 22 l-73 2 68 3 c68 4 96 23 32 23 -24 0 -35 5 -35 15 0 10 10 15 34 15 19 0 38 4 41 10 4 6 -38 10 -119 10 -119 0 -126 1 -126 20 0 19 7 20 139 20 83 0 142 4 146 10 4 6 -45 10 -139 10 l-146 0 0 115 0 115 210 0 210 0 0 -114 c0 -68 4 -117 10 -121 7 -4 10 36 8 122 l-3 128 -223 3 c-176 2 -224 0 -228 -11z" />
+                                        <path
+                                            d="M132 388 c-15 -15 -16 -64 -2 -73 20 -13 9 -41 -20 -52 -54 -20 -35 -33 50 -33 67 0 78 2 74 15 -4 8 -17 18 -30 21 -24 6 -33 37 -14 49 18 11 11 64 -9 75 -25 13 -34 13 -49 -2z" />
+                                        <path
+                                            d="M280 360 c0 -6 28 -10 65 -10 37 0 65 4 65 10 0 6 -28 10 -65 10 -37 0 -65 -4 -65 -10z" />
+                                        <path
+                                            d="M280 310 c0 -6 28 -10 65 -10 37 0 65 4 65 10 0 6 -28 10 -65 10 -37 0 -65 -4 -65 -10z" />
+                                        <path
+                                            d="M280 260 c0 -6 28 -10 65 -10 37 0 65 4 65 10 0 6 -28 10 -65 10 -37 0 -65 -4 -65 -10z" />
+                                        <path
+                                            d="M351 186 c-87 -48 -50 -186 49 -186 51 0 100 49 100 99 0 75 -83 124 -149 87z m104 -31 c50 -49 15 -135 -55 -135 -41 0 -80 39 -80 80 0 70 86 105 135 55z" />
+                                        <path
+                                            d="M413 112 c-19 -24 -24 -25 -42 -14 -17 10 -21 10 -21 -1 0 -6 10 -18 22 -26 20 -12 24 -11 50 20 15 19 28 37 28 42 0 14 -15 5 -37 -21z" />
+                                    </g>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Case List</span>
+                        </a>
+                    </li>
+                    <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Case List':''"
+                        data-bs-custom-class="custom-tooltip">
+                        <a class="nav-link" [routerLink]="['/batchlist']">
+                            <span class="nav-icon">
+                                <fa-icon class="fa-xl" [icon]="faCalendarWeek"></fa-icon>
+                            </span>
+                            <span class="nav-link-text">Training Calender</span>
+                        </a>
+                    </li>
+                    <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+                        [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+                        [title]="!isSidebarVisible && largeDisplay?'Case List':''"
+                        data-bs-custom-class="custom-tooltip">
+                        <a class="nav-link" [routerLink]="['/auditlist']">
+                            <span class="nav-icon">
+                                <fa-icon class="fa-xl" [icon]="faCalendarDays"></fa-icon>
+                            </span>
+                            <span class="nav-link-text">Audit Calender</span>
+                        </a>
+                    </li>
+                </span>
             </ul>
         </nav>
 
