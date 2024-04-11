@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { IconDefinition, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { DepartmentListComponent } from '../../modals/department-list/department-list.component';
+import { DepartmentListComponent } from 'src/app/pages/modals/department-list/department-list.component';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

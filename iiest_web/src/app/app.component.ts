@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { RegisterService } from './services/register.service';
-import { HeaderComponent } from './shared/header/header.component';
+import { RegisterService } from 'src/app/services/register.service';
+import { HeaderComponent } from 'src/app/shared/header/header.component';
 
 @Component({
   selector: 'app-root',

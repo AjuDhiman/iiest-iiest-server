@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification} from '../utils/registerinterface';
+import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification} from 'src/app/utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
-import { config } from '../utils/config'
+import { config } from 'src/app/utils/config'
 import { Router } from '@angular/router';
 
 @Injectable({

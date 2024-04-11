@@ -3,7 +3,7 @@ import { Selector,Action, StateContext, State } from "@ngxs/store";
 import { GetdataService } from "src/app/services/getdata.service";
 import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
-import { DeleteSales, GetSales, UpdateSales } from "../actions/sales.action";
+import { DeleteSales, GetSales, UpdateSales } from "src/app/store/actions/sales.action";
 
 //State Model
 export class SalesStateModel {

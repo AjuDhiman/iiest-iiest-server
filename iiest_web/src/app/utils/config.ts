@@ -2,8 +2,9 @@ const testEnv = false;
 const prodEnv = false;
 
 export const config = {
-   API_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000/iiest')
+   API_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000/iiest'),
    // API_URL: 'https://iiest-server.onrender.com'
+   DOC_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
 }
 
 //Water test Fee

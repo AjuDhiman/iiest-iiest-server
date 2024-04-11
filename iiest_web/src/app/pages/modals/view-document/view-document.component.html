@@ -16,11 +16,11 @@
 
     <div *ngIf="!doc.multipleDoc" class="">
         <div class="img-viewer" *ngIf="doc.format === 'image'">
-            <img [src]="'http://localhost:3000/' + doc.src" class="rounded float-left img-fluid" alt="User Document">
+            <img [src]="DOC_URL + '/' + doc.src" class="rounded float-left img-fluid" alt="User Document">
         </div>
         <div class="pdf-viewer" *ngIf="doc.format === 'pdf'">
             <!-- <iframe [src]="pdfSrc"></iframe> -->
-            <pdf-viewer [src]="'http://localhost:3000/' + doc.src" style="height: 100%; width: 100%;" ></pdf-viewer>
+            <pdf-viewer [src]="DOC_URL + '/' + doc.src" style="height: 100%; width: 100%;" ></pdf-viewer>
         </div>
     </div>
 
@@ -33,7 +33,7 @@
         <div class="carousel-inner">
             <div *ngFor="let src of doc.src; let i = index" class="carousel-item"
                 [ngClass]="{'active': activeSlide == i}">
-                <img class="d-block w-100" [src]="'http://localhost:3000/' + src" alt="First slide">
+                <img class="d-block w-100" [src]="DOC_URL + '/' + src" alt="First slide">
             </div>
         </div>
         <!-- <a class="carousel-control-prev" role="button" data-slide="prev" (click)="prev()">

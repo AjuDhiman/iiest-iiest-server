@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { LandingpageComponent } from './pages/landingpage/landingpage.component'
-import { authGuard } from './shared/gaurds/auth.guard';
-import { routeGuard } from './shared/gaurds/route.guard';
-import { fbo_roles, empRegister_roles, caseList_roles } from './utils/config';
-import { UserAccountComponent } from './pages/user-account/user-account.component';
-import { CaseListComponent } from './pages/operation/case-list/case-list.component';
-import { OperationformComponent } from './pages/operation/operationform/operationform.component';
-import { SignupComponent } from './pages/HR/signup/signup.component';
-import { FbonewComponent } from './pages/sales/fboproduct/fbonew/fbonew.component';
-import { FbolistComponent } from './pages/sales/fbolist/fbolist.component';
-import { EmployeelistComponent } from './pages/HR/employeelist/employeelist.component';
-import { LmsComponent } from './pages/lms/lms.component';
-import { BatchListComponent } from './pages/Training/batch-list/batch-list.component';
-import { MainPageComponent } from './pages/main-page/main-page.component';
+import { HomeComponent } from 'src/app/pages/home/home.component';
+import { LandingpageComponent } from 'src/app/pages/landingpage/landingpage.component'
+import { authGuard } from 'src/app/shared/gaurds/auth.guard';
+import { routeGuard } from 'src/app/shared/gaurds/route.guard';
+import { fbo_roles, empRegister_roles, caseList_roles } from 'src/app/utils/config';
+import { UserAccountComponent } from 'src/app/pages/user-account/user-account.component';
+import { CaseListComponent } from 'src/app/pages/operation/case-list/case-list.component';
+import { OperationformComponent } from 'src/app/pages/operation/operationform/operationform.component';
+import { SignupComponent } from 'src/app/pages/HR/signup/signup.component';
+import { FbonewComponent } from 'src/app/pages/sales/fboproduct/fbonew/fbonew.component';
+import { FbolistComponent } from 'src/app/pages/sales/fbolist/fbolist.component';
+import { EmployeelistComponent } from 'src/app/pages/HR/employeelist/employeelist.component';
+import { LmsComponent } from 'src/app/pages/lms/lms.component';
+import { BatchListComponent } from 'src/app/pages/Training/batch-list/batch-list.component';
+import { MainPageComponent } from 'src/app/pages/main-page/main-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route

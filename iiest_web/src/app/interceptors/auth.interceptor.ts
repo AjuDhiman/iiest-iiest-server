@@ -7,7 +7,7 @@ import {
   HttpResponse
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RegisterService } from '../services/register.service';
+import { RegisterService } from 'src/app/services/register.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

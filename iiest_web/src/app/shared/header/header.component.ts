@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
-import { SidebarComponent } from '../sidebar/sidebar.component';
+import { SidebarComponent } from 'src/app/shared/sidebar/sidebar.component';
 import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({

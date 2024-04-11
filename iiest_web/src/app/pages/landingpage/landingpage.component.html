@@ -1,9 +1,20 @@
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-light" id="mainNav"
+    style="background: linear-gradient(to left, #00173c, #011c4d); padding: 0; border-bottom: 0.5px solid #112f5d;">
     <div class="container">
-        <a class="navbar-brand" [routerLink]="['/main']">
+        <!-- <a class="navbar-brand" [routerLink]="['/main']">
             <img class="logo" src="../../../assets/images/logo.png">
+        </a> -->
+         <!-- <a class="navbar-brand" [routerLink]="['/main']">
+            <img class="" src="" height="50px">
+        </a> -->
+        <a class="navbar-brand" [routerLink]="['/main']">
+            <img class="" src="https://www.nsws.gov.in/s3fs/2022-11/State%20Approval.svg" height="50px">
         </a>
+        <div class="text" style="display: inline; color: white; font-size:x-small;">
+            <h6 style="font-size: medium;">States</h6>
+            Under National Single Window System
+        </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
@@ -12,57 +23,89 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto py-4 py-lg-0">
                 <li class="nav-item navLinks">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4" [routerLink]="isToken ? ['/home'] : ['/']">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4">
+                        <fa-icon class="fa-2x fa-beat" [icon]="faLocationDot" style="color: #9d151d;"></fa-icon>
+                        Chapter
+                    </a>
+                    <!-- <a class="nav-link px-lg-3 py-3 py-lg-4" [routerLink]="isToken ? ['/home'] : ['/']">
                         <fa-icon class="fa-2x" [icon]="faHome"></fa-icon>
                         Home
-                    </a>
+                    </a> -->
                 </li>
                 <li class="nav-item navLinks">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4" href="#about">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal()">
+                        <fa-icon class="fa-2x fa-beat" [icon]="faBuilding" style="color: #9d151d;"></fa-icon>
+                        Company
+                    </a>
+                    <!-- <a class="nav-link px-lg-3 py-3 py-lg-4" href="#about">
                         <fa-icon class="fa-2x" [icon]="faCircleInfo"></fa-icon>
                         About us
-                    </a>
+                    </a> -->
                 </li>
-                <li *ngIf="!isToken" class="nav-item navLinks">
+                <!-- <li *ngIf="!isToken" class="nav-item navLinks">
+                    
                     <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal()">
                         <fa-icon class="fa-2x" [icon]="faSignIn"></fa-icon>
                         Login
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item navLinks">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4" href="#contact">
+                    <a class="nav-link px-lg-3 py-3 py-lg-4">
+                        <fa-icon class="fa-2x fa-beat" [icon]="faPeopleGroup" style="color: #9d151d;"></fa-icon>
+                        Consumer
+                    </a>
+                    <!-- <a class="nav-link px-lg-3 py-3 py-lg-4" href="#contact">
                         <fa-icon class="fa-2x" [icon]="faPhone"></fa-icon>
                         Contact Us
+                    </a> -->
+                </li>
+                <li class="nav-item">
+                    <a id="login-button">
+                        Login
                     </a>
                 </li>
+
             </ul>
         </div>
     </div>
 </nav>
 <!-- Page Header-->
-<header class="masthead"
-    style="background-image: url('../../../assets/images/landing_img/home-bg.jpg'); position: relative;">
-    <div class="container position-relative px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="site-heading">
-                    <h1 class="mb-5">Connecting People with the Government</h1>
-                    <span class="subheading lh-sm">The Connect Login Portal serves as a game-changing tool for
-                        bussinesses,
-                        simplyfiying the complex landscape of industry compliance and goverenment regulations. By
-                        offering
-                        a unified, user friendly interface and wealth of features, it empower the companies to operate
-                        with
-                        confidence, knowing that they are align with all neccessary leagal requirements.
-
-                    </span>
-                </div>
-            </div>
-        </div>
+<!-- rgba(2, 27, 77, 0.87), #010e28) -->
+<header class="" id=""
+    style="position: relative; background: linear-gradient(to left, rgba(17, 47, 106, 0.467), #5674b04a); z-index: 10;">
+    <div class="" style="width: 100%; top: 0; position: relative; z-index: 0;">
+        <div class="" style="position: absolute; z-index: 11; width: 100%; height: 100%;background: linear-gradient(to left, rgba(17, 47, 106, 0.467), #5674b04a);"></div>
+        <video #backgroundVidRef [autoplay]="true" [muted]="true" [loop]="true" preload="auto"
+        style="width: 100%;">
+            <source src="assets/images/landing_img/map26.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
+    <div class="head-content"
+        style="padding: 0 5%; display: flex; justify-content: space-between; align-items: start; position: absolute; top: 0; height: 100%; width: 100%; z-index: 10; margin-top: 200px">
+        <div class="" style="width: 35%; color: white;">
+        <h1 class="head-text">
+            Connecting <span style="color: #FF9933; font-weight: bold;">People</span> with the <span
+                style="color: #138808; font-weight: bold; line-height: 1.3;">Government</span>
+        </h1>
+        <p style="font-size: 24px;">
+            <span style="
+                color: #F8BD39;
+                border-bottom: 1px dashed #F8BD39;
+            ">Connecting</span> 15000+ SMEs
+        </p>
+    </div>
+    <div class="onboard-sec">
+        <div class="web-logo">
+            <img class="" src="assets/images/landing_img/baharat-logo.png" width="200px">
+        </div>
+        <button class="onboard-btn">ONBOARD</button>
+    </div>
+    </div>
+
     <div class="py-4 my-4 w-100 d-flex justify-content-center"
         style="background-color:rgba(255, 255, 255, 0.0); height: 100px; position: absolute; bottom: 0px;">
-        <div class="d-flex justify-content-around w-75 align-items-center h-100" style="position: absolute; top: 0;">
+        <!-- <div class="d-flex justify-content-around w-75 align-items-center h-100" style="position: absolute; top: 0;">
             <a class="pe-auto">
                 <div class="icon h-75 gap-1 w-25 justify-content-end d-flex flex-column-reverse align-items-center">
                     <span style="color: white; font-size: 1.2rem;">Chapter</span>
@@ -81,7 +124,7 @@
                     <fa-icon class="fa-3x fa-beat" [icon]="faPeopleGroup" style="color: #9d151d;"></fa-icon>
                 </div>
             </a>
-        </div>
+        </div> -->
     </div>
 </header>
 <!-- Main Content-->
@@ -93,14 +136,18 @@
                 <h2 class="post-title ">About IIEST Connect:</h2>
             </div>
             <div>
-                <!-- <h3><b>Welcome to IIEST Connect</b> – Bridging Dreams, Empowering Lives!</h3>
+                <!-- <h3><b>Welcome to IIEST Connect</b> – Bridging Dreams, Empowering Lives!</h3> -->
 
-            <p>
-                At IIEST Connect, we are more than just a website; we are the heartbeat of innovation and collaboration,
-                creating a digital bridge that connects Small and Medium Enterprises (SMEs) and the vibrant people of
-                India. Our platform is a testament to the power of connectivity, fostering dreams and empowering lives
-                across the nation.
-            </p> -->
+                <p>
+                    The Connect Login Portal serves as a game-changing tool for
+                    bussinesses,
+                    simplyfiying the complex landscape of industry compliance and goverenment regulations. By
+                    offering
+                    a unified, user friendly interface and wealth of features, it empower the companies to operate
+                    with
+                    confidence, knowing that they are align with all neccessary leagal requirements.
+
+                </p>
 
 
                 <p>
@@ -111,7 +158,7 @@
                 </p>
 
                 <p>
-                    <b class="aboutus-subhead">Our Digital Bridge:</b><br/>
+                    <b class="aboutus-subhead">Our Digital Bridge:</b><br />
                     Designed with simplicity and effectiveness in mind, IIEST Connect serves as a smart solution for
                     SMEs to
                     integrate with government compliance without any technical hassle. It goes beyond being a mere
@@ -120,21 +167,21 @@
                     space
                     where ease to do business can be achived.
                 </p>
-                
+
                 <p>
-                    <b class="aboutus-subhead">Explore IIEST Connect: </b><br/>
+                    <b class="aboutus-subhead">Explore IIEST Connect: </b><br />
                     <b>- Smart Solutions for SMEs: </b>Navigate government compliance effortlessly with our
                     user-friendly platform. <br>
                     <b>- Digital Community Hub:</b> Connect with businesses and individuals across India, creating a
-                    thriving 
+                    thriving
                     digital community. <br>
                     <b>- Inclusive Business Ecosystem:</b> IIEST Connect is more than a website; it's an inclusive space
-                    where 
+                    where
                     businesses, big and small, coalesce to form a powerful economic ecosystem.
                     <br>
                 </p>
 
-               
+
                 <p>
                     <b class="aboutus-subhead">Join the Digital Revolution:</b><br>
                     As we redefine the landscape of digital connectivity, we invite SMEs to join us
@@ -147,27 +194,8 @@
                 [Include your website link]
                 [Follow us on Social Media: Include social media links]
 
-                <!-- <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
-                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
-                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
-                    that they are align with all neccessary leagal requiremnets.</p>
-                <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
-                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
-                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
-                    that they are align with all neccessary leagal requiremnets.</p>
-                <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
-                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
-                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
-                    that they are align with all neccessary leagal requiremnets.</p>
-                <p>The Connect Login Portal serves as a game-changing tool for bussinesses, simplyfiying the complex
-                    landscape of industry compliance and goverenment regulations.By offering a unified, user friendly
-                    interface and wealth of features, it emapower the companies to operate with confidence, knowing
-                    that they are align with all neccessary leagal requiremnets.</p> -->
-
                 <p class="post-meta">
-                    Posted by
-                    <a href="">IIEST</a>
-                    on September 24, 2023
+                    Get, Sustain, Grow
                 </p>
             </div>
             <!-- Divider-->
