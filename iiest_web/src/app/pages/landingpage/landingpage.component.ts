@@ -1,17 +1,15 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from 'src/app/pages/login/login.component';
+import { LoginComponent } from '../login/login.component';
 import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInfo, faPhone} from '@fortawesome/free-solid-svg-icons';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
+import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component';
 
 @Component({
   selector: 'app-landingpage',
   templateUrl: './landingpage.component.html',
   styleUrls: ['./landingpage.component.scss'],
-  host: {
-    "(window:resize)": "onWindowResize($event)"
-  }
 })
 export class LandingpageComponent implements OnInit, AfterViewInit {
 
@@ -25,7 +23,7 @@ export class LandingpageComponent implements OnInit, AfterViewInit {
   isToken:boolean = false;
 
   @ViewChild('backgroundVidRef') backgroundVidRef: ElementRef;
-  @ViewChild('headRef') headRef: ElementRef;
+  // @ViewChild('headRef') headRef: ElementRef;
   
 constructor(
   private modalService: NgbModal,
@@ -34,13 +32,13 @@ constructor(
   
 }
 ngOnInit(): void {
-}
-
-ngAfterViewInit(): void {
-  this.headRef.nativeElement.style.height = this.backgroundVidRef.nativeElement.style.height;
   const bodyElement = document.body;
   bodyElement.classList.remove('app');
   this.isToken = this._resiterService.isLoggedIn();
+}
+
+ngAfterViewInit(): void {
+  // this.headRef.nativeElement.style.height = this.backgroundVidRef.nativeElement.style.height;
 }
 openModal(){
   if(!this.isToken){
@@ -50,8 +48,8 @@ openModal(){
   }
 }
 
-onWindowResize($event: any): void {
-   this.headRef.nativeElement.style.height = this.backgroundVidRef.nativeElement.style.height;
+openOnboardModal(){
+  this.modalService.open(OnboardModalComponent,{ size: 'md', backdrop: 'static' });
 }
 
 

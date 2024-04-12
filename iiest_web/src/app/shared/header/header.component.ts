@@ -72,7 +72,6 @@ export class HeaderComponent implements OnInit {
     }
   }
   ngOnInit() { 
-    console.log(this.isSidebarVisible);
     this.getUserImage();
     this.getUserData();
    }

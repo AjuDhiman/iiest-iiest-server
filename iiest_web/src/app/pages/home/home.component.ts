@@ -276,7 +276,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   getEmployeeUnderManager() {
     this._getDataService.getEmployeeUnderManager().subscribe({
       next: res => {
-        console.log(res);
       }
     })
   }

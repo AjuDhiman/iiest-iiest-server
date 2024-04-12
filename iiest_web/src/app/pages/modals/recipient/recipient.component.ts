@@ -125,6 +125,7 @@ export class RecipientComponent implements OnInit {
   //Form Submit Methode
   onSubmit(): void {
     this.submitted = true;
+    console.log(this.recipientform);
 
     if (this.recipientform.invalid) {
       return;
@@ -198,7 +199,7 @@ export class RecipientComponent implements OnInit {
       let formData = new FormData();
 
       formData.append('manager_name', this.recipientform.get('manager_name')?.value);
-      formData.append('manager_contact', this.recipientform.get('mamager_contact')?.value);
+      formData.append('manager_contact', this.recipientform.get('manager_contact')?.value);
       formData.append('manager_email', this.recipientform.get('manager_email')?.value);
       formData.append('address', this.recipientform.get('address')?.value);
       formData.append('pincode', this.recipientform.get('pincode')?.value);
