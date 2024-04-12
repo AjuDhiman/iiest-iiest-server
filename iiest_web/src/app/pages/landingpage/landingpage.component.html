@@ -1,76 +1,37 @@
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light" id="mainNav"
-    style="background: linear-gradient(to left, #00173c, #011c4d); padding: 0; border-bottom: 0.5px solid #112f5d;">
-    <div class="container">
-        <!-- <a class="navbar-brand" [routerLink]="['/main']">
-            <img class="logo" src="../../../assets/images/logo.png">
-        </a> -->
-         <!-- <a class="navbar-brand" [routerLink]="['/main']">
-            <img class="" src="" height="50px">
-        </a> -->
-        <a class="navbar-brand" [routerLink]="['/main']">
-            <img class="" src="https://www.nsws.gov.in/s3fs/2022-11/State%20Approval.svg" height="50px">
-        </a>
-        <div class="text" style="display: inline; color: white; font-size:x-small;">
-            <h6 style="font-size: medium;">States</h6>
-            Under National Single Window System
+<nav class="main-nav">
+    <div class="nav-logo">
+        <img src="assets/images/landing_img/baharat-logo.png" alt="Connect Bharat Logo">
+    </div>
+    <div class="approvals">
+        <div class="state-approvals">
+            <img class="" src="https://www.nsws.gov.in/s3fs/2022-11/State%20Approval.svg" height="70px">
+            <div class="approvals-text">
+                <span style="font-size: large;">States</span><br/>
+                <span  style="font-size: smaller;">Under National Single Window System</span>
+            </div>
         </div>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
-            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            Menu
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                <li class="nav-item navLinks">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4">
-                        <fa-icon class="fa-2x fa-beat" [icon]="faLocationDot" style="color: #9d151d;"></fa-icon>
-                        Chapter
-                    </a>
-                    <!-- <a class="nav-link px-lg-3 py-3 py-lg-4" [routerLink]="isToken ? ['/home'] : ['/']">
-                        <fa-icon class="fa-2x" [icon]="faHome"></fa-icon>
-                        Home
-                    </a> -->
-                </li>
-                <li class="nav-item navLinks">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal()">
-                        <fa-icon class="fa-2x fa-beat" [icon]="faBuilding" style="color: #9d151d;"></fa-icon>
-                        Company
-                    </a>
-                    <!-- <a class="nav-link px-lg-3 py-3 py-lg-4" href="#about">
-                        <fa-icon class="fa-2x" [icon]="faCircleInfo"></fa-icon>
-                        About us
-                    </a> -->
-                </li>
-                <!-- <li *ngIf="!isToken" class="nav-item navLinks">
-                    
-                    <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal()">
-                        <fa-icon class="fa-2x" [icon]="faSignIn"></fa-icon>
-                        Login
-                    </a>
-                </li> -->
-                <li class="nav-item navLinks">
-                    <a class="nav-link px-lg-3 py-3 py-lg-4">
-                        <fa-icon class="fa-2x fa-beat" [icon]="faPeopleGroup" style="color: #9d151d;"></fa-icon>
-                        Consumer
-                    </a>
-                    <!-- <a class="nav-link px-lg-3 py-3 py-lg-4" href="#contact">
-                        <fa-icon class="fa-2x" [icon]="faPhone"></fa-icon>
-                        Contact Us
-                    </a> -->
-                </li>
-                <li class="nav-item">
-                    <a id="login-button">
-                        Login
-                    </a>
-                </li>
-
-            </ul>
-        </div>
+    </div>
+    <div class="login">
+        <ul>
+            <li>
+                <fa-icon class="fa-2xl login-icons" [icon]="faLocationDot"></fa-icon>
+                 Kendra
+            </li>
+            <li  (click)="openModal()">
+                <fa-icon class="fa-2xl login-icons" [icon]="faBuilding"></fa-icon>
+                 Company
+            </li>
+            <li>
+                <fa-icon class="fa-2xl login-icons" [icon]="faPeopleGroup"></fa-icon>
+                 Consumer
+            </li>
+        </ul>
     </div>
 </nav>
 <!-- Page Header-->
 <!-- rgba(2, 27, 77, 0.87), #010e28) -->
+
 <header class="" id=""
     style="position: relative; background: linear-gradient(to left, rgba(17, 47, 106, 0.467), #5674b04a); z-index: 10;">
     <div class="" style="width: 100%; top: 0; position: relative; z-index: 0;">
@@ -81,19 +42,19 @@
             Your browser does not support the video tag.
         </video>
     </div>
-    <div class="head-content"
-        style="padding: 0 5%; display: flex; justify-content: space-between; align-items: start; position: absolute; top: 0; height: 100%; width: 100%; z-index: 10; margin-top: 200px">
+    <div class="head-content">
         <div class="" style="width: 35%; color: white;">
         <h1 class="head-text">
             Connecting <span style="color: #FF9933; font-weight: bold;">People</span> with the <span
                 style="color: #138808; font-weight: bold; line-height: 1;">Government</span>
         </h1>
-        <p class="connecting" >
+        <br>
+        <h4 class="h4-text" >
             <span style="
                 color: #F8BD39;
                 border-bottom: 1px dashed #F8BD39;
             ">Connecting</span> 15000+SMEs
-        </p>
+        </h4>
     </div>
     <div class="onboard-sec">
         <div class="web-logo">
@@ -166,12 +127,8 @@
                     it's a digital ally for every business need of SMEs in our country. Think of it as a collaborative
                     space
                     where ease to do business can be achived.
-                </p>
-
-                <p>
                     <b class="aboutus-subhead">Explore IIEST Connect: </b><br />
                     <b>- Smart Solutions for SMEs: </b>Navigate government compliance effortlessly with our
-                    user-friendly platform. <br>
                     <b>- Digital Community Hub:</b> Connect with businesses and individuals across India, creating a
                     thriving
                     digital community. <br>

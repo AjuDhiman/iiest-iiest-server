@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { config } from '../utils/config';
+import { config } from 'src/app/utils/config';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, throwError } from 'rxjs';
@@ -10,7 +10,8 @@ import * as JSZip from 'jszip';
   providedIn: 'root'
 })
 export class UtilitiesService {
-  url = config.API_URL
+  url = config.API_URL;
+  DOC_URL = config.DOC_URL;
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -31,7 +32,7 @@ export class UtilitiesService {
   }
 
   public downloadFile(fileType: String): void {
-    const fileURL = `../assets/${fileType}.xlsx`;
+    const fileURL = `assets/${fileType}.xlsx`;
     this.http.get(fileURL, { responseType: 'blob' }).subscribe((res: Blob) => {
       const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `${fileType}.xlsx`);
@@ -49,7 +50,7 @@ export class UtilitiesService {
 
     if (documentIds.length <= 1) {
       const documentId = documentIds;
-      this.http.get(`http://localhost:3000/${documentId}`, { responseType: 'blob' }).subscribe((data: Blob) => {
+      this.http.get(`${this.DOC_URL}/${documentId}`, { responseType: 'blob' }).subscribe((data: Blob) => {
         const downloadUrl = window.URL.createObjectURL(data);
 
         // Create a link element and trigger the download
@@ -65,7 +66,7 @@ export class UtilitiesService {
       // Fetch and add each document to the zip file
       await Promise.all(documentIds.map(async (documentId, index) => {
         const contentType = contentTypes[index];
-        const response = await this.http.get(`http://localhost:3000/${documentId}`, { responseType: 'blob' }).toPromise();
+        const response = await this.http.get(`${this.DOC_URL}/${documentId}`, { responseType: 'blob' }).toPromise();
 
         if (response instanceof Blob) {
           zip.file(`document_${documentId}`, response, { binary: true });

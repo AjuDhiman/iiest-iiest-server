@@ -51,7 +51,7 @@ const foscosVerification = new Schema({
     },
     shopInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'recipientdetails',
+        ref: 'shopDetails',
         required: true,
         unique: true
     },
@@ -83,16 +83,12 @@ const hraVerification = new Schema({
     },
     shopInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'recipientdetails',
+        ref: 'shopdetails',
         required: true,
         unique: true
     },
-    kob: {
-        type: String,
-        required: true
-    },
-    handlerNum: {
-        type: Number,
+    auditDate: {
+        type: Date,
         required: true
     }
 });

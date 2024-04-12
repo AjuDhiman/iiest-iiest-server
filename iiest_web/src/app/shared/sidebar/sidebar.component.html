@@ -30,8 +30,8 @@
                     </a>
                 </li>
                 <span *ngIf="userData">
-                    <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf="userData && employeeRoles.includes(userData.designation)" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Employee Register':''">
@@ -49,8 +49,8 @@
                             <span class="nav-link-text">Employee Register</span>
                         </a>
                     </li>
-                    <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf=" userData && fboRoles.includes(userData.designation)" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Fbo Register':''">
@@ -72,8 +72,8 @@
                             <span class="nav-link-text">Fbo Register</span>
                         </a>
                     </li>
-                    <li *ngIf="fboRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf="userData && fboRoles.includes(userData.designation)" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Fbo List':''">
@@ -120,8 +120,8 @@
                             <span class="nav-link-text">Fbo List</span>
                         </a>
                     </li>
-                    <li *ngIf="employeeRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf="userData && employeeRoles.includes(userData.designation)" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Employee List':''"
@@ -143,8 +143,8 @@
                             <span class="nav-link-text">Employee List</span>
                         </a>
                     </li>
-                    <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation)" class="nav-item"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Case List':''"
@@ -176,8 +176,8 @@
                             <span class="nav-link-text">Case List</span>
                         </a>
                     </li>
-                    <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation) &&( userData.panel_type==='Fostac Panel' && userData.panel_type==='FSSAI Training Panel')"
+                        class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Case List':''"
@@ -189,8 +189,8 @@
                             <span class="nav-link-text">Training Calender</span>
                         </a>
                     </li>
-                    <li *ngIf="caseListRoles.includes(userData.designation)" class="nav-item" routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: false }"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation) && userData.panel_type==='HRA Panel'"
+                        class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
                         [title]="!isSidebarVisible && largeDisplay?'Case List':''"

@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators'
-import { config } from '../utils/config'
+import { config } from 'src/app/utils/config'
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 
@@ -128,8 +128,18 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getHraVerifedData(candidateId: string): Observable<any> {
+    const url = `${this.url}/gethraverifieddata/${candidateId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getFostacEnrolledData(verifiedDataId: string): Observable<any> {
     const url = `${this.url}/getfostacenrolleddata/${verifiedDataId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getFoscosFiledData(verifiedDataId: string): Observable<any> {
+    const url = `${this.url}/getfoscosfileddata/${verifiedDataId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

@@ -1,6 +1,7 @@
 const { generatedBatchInfo } = require("../../Training/generateCredential");
-const { recipientModel } = require("../../models/fboModels/recipientSchema");
-const { fostacVerifyModel } = require("../../models/operationModels/verificationSchema");
+const AuditBatchModel = require("../../models/auditModels/auditBatchModel");
+const { recipientModel, hygieneShopModel } = require("../../models/fboModels/recipientSchema");
+const { fostacVerifyModel, hraVerifyModel } = require("../../models/operationModels/verificationSchema");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 
@@ -49,7 +50,7 @@ exports.trainingBatch = async (req, res) => {
 
         if (openedBatch) {
 
-            if (openedBatch.candidateNo < 9) {
+            if (openedBatch.candidateNo < 99) {
                 batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
                     {
                         $inc: { candidateNo: 1 },
@@ -146,6 +147,78 @@ exports.updateBatch = async (req, res) => {
         res.status(500).json({message: 'Internal Server Error'});
     }
 
+}
+
+exports.auditBatch = async (req, res) => {
+    try {
+
+        let success = false;
+
+        const {state, district, food_handler_no, audit_date} = req.body
+
+        const verificationInfo = req.verificationInfo;
+
+        const shopId = req.params.shopid;
+
+        // const shopInfo = await hygieneShopModel.findOne({_id: shopId}).populate({path: 'salesInfo', populate: [{path: 'fboInfo'}, {path: 'employeeInfo'}]});
+
+        const user = req.user;
+
+        let location;
+
+        if(state === 'Delhi') {
+            location = 'Delhi';
+        } else if(district === 'Gurgaon') {
+            location = 'Gurgaon';
+        } else if(district === 'Gautam Buddha Nagar') {
+            location = 'Noida';
+        } else if(district === 'Faridabad') {
+            location = 'Faridabad';
+        } else if(district === 'Ghaziabad') {
+            location = 'Ghaziabad';
+        }
+
+        if(!location) {
+            console.log(verificationInfo);
+            await hraVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
+            return res.status(401).json({success: false, locationErr: true})
+        }
+
+        let batchData;
+
+        const openedBatch = await AuditBatchModel.findOne({ status: 'open', location: location });
+
+        if (openedBatch) {
+
+            if (openedBatch.candidateNo < 9) {
+                batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
+                    {
+                        $inc: { candidateNo: 1 },
+                        $push: { candidateDetails: verificationInfo._id }
+                    });
+            } else {
+                //close the btach if candidate number is grater than or equal to 50
+                batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location},
+                    {
+                        $inc: { candidateNo: 1 },
+                        $push: { candidateDetails: verificationInfo._id },
+                        status: 'completed'
+                    });
+            }
+
+        } else {
+            //open new batch if batch with particular requirement is closed 
+            const batchInfo = await generatedBatchInfo();
+
+            batchData = await TrainingBatchModel.create({ operatorInfo: user._id, id_num: batchInfo.idNumber, status: 'open', category: category, batchCode:  batchInfo.generatedBatchCode, location: location, candidateNo: 1, candidateDetails: [verificationInfo._id] });
+        }
+
+        success = true;
+        return res.status(200).json({ success, verificationInfo: verificationInfo, batchData: batchData });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
 }
 
 function getFormatedDate(date) {

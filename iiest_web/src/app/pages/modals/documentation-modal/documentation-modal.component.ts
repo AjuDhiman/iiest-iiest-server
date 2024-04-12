@@ -6,8 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
-import { ConformationModalComponent } from '../conformation-modal/conformation-modal.component';
-import { ViewDocumentComponent } from '../view-document/view-document.component';
+import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
+import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
 
 @Component({
   selector: 'app-documentation-modal',

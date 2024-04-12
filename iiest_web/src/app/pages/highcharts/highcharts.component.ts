@@ -2,8 +2,8 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import * as Highcharts from 'highcharts';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
-import { HighchartDataModalComponent } from '../modals/highchart-data-modal/highchart-data-modal.component';
-import { DepartmentListComponent } from '../modals/department-list/department-list.component';
+import { HighchartDataModalComponent } from 'src/app/pages/modals/highchart-data-modal/highchart-data-modal.component';
+import { DepartmentListComponent } from 'src/app/pages/modals/department-list/department-list.component';
 import drilldown from 'highcharts/modules/drilldown';
 import HighchartsMore from 'highcharts/highcharts-more';
 import Scrollbar from 'highcharts/modules/stock'

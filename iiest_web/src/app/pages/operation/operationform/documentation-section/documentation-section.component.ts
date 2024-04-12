@@ -36,30 +36,13 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   faCircleExclamation = faCircleExclamation;
   faFileArrowUp = faFileArrowUp;
 
-  //Filing Reactive form 
-  filingForm: FormGroup = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
-    payment_amount: new FormControl(''),
-    payment_recipt: new FormControl(''),
-    payment_date: new FormControl('')
-  });
-
   constructor(private formBuilder: FormBuilder,
     private _getDataService: GetdataService,
     private ngbModal: NgbModal) {
 
   }
 
-  ngOnInit(): void { //setting form validation
-    this.filingForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
-      payment_amount: ['', Validators.required],
-      payment_receipt: ['', Validators.required],
-      payment_date: ['', Validators.required],
-    });
-
+  ngOnInit(): void { 
     this.getDocs();
   }
 
@@ -67,10 +50,6 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
     if (changes && changes['verifiedData'] && changes['verifiedData'].currentValue) {
       this.getParticularDocs();
     }
-  }
-
-  get filingform(): { [key: string]: AbstractControl } {
-    return this.filingForm.controls;
   }
 
   onFile() {

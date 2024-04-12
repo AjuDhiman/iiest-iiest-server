@@ -3,7 +3,7 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscriber, Subscription, concat, interval, skipLast } from 'rxjs';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { GetEmployee } from 'src/app/store/actions/employee.action';
-import { Employee } from '../../utils/registerinterface';
+import { Employee } from 'src/app/utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
@@ -276,7 +276,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   getEmployeeUnderManager() {
     this._getDataService.getEmployeeUnderManager().subscribe({
       next: res => {
-        console.log(res);
       }
     })
   }

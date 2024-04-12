@@ -8,9 +8,9 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ExportAsModule } from 'ngx-export-as';
-import { MultiSelectComponent } from './multi-select/multi-select.component';
-import { ViewDocumentComponent } from '../pages/modals/view-document/view-document.component';
-import { InrAmountPipe } from '../pipes/inr-amount.pipe';
+import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
+import { InrAmountPipe } from 'src/app/pipes/inr-amount.pipe';
 
 
 

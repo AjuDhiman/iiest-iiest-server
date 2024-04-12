@@ -1,7 +1,7 @@
 const fboModel = require("../../models/fboModels/fboSchema");
 const { recipientModel, shopModel } = require("../../models/fboModels/recipientSchema");
 const fostacAttendanceModel = require("../../models/operationModels/attenSecSchema");
-const { fostacVerifyModel, foscosVerifyModel } = require("../../models/operationModels/verificationSchema");
+const { fostacVerifyModel, foscosVerifyModel, hraVerifyModel } = require("../../models/operationModels/verificationSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
@@ -48,7 +48,7 @@ exports.fostacVerification = async (req, res, next) => {
         logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
 
         // function to send mail to client after verification process
-        if (currentVal !== undefined) {
+        if (basicFormAdd !== undefined) {
             sendVerificationMail(clientdata);
         }
 
@@ -116,11 +116,11 @@ exports.foscosVerification = async (req, res) => {
         return res.status(200).json({ success });
 
     } catch (error) {
-
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
-exports.hraVerification = async (req, res) => {
+exports.hraVerification = async (req, res, next) => {
     try {
         let success = false;
 
@@ -128,9 +128,9 @@ exports.hraVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
-        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person } = verifiedData;
+        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, state, district, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person, audit_date } = verifiedData;
 
-        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, handlerNum: food_handler_no });
+        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, auditDate: audit_date });
 
         //this code is for tracking the CRUD operation regarding to a shop
 
@@ -146,11 +146,15 @@ exports.hraVerification = async (req, res) => {
             return res.status(204).json({ success });
         }
 
-        success = true;
-        return res.status(200).json({ success });
+        req.verificationInfo = addVerification;
+        next();
+
+        // success = true;
+        // return res.status(200).json({ success });
 
     } catch (error) {
-
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
@@ -194,9 +198,29 @@ exports.getFoscosVerifiedData = async (req, res) => {
 
         if (verifedData) {
             success = true;
-            return res.status(200).json({ success, message: 'verified recipient', verifedData });
+            return res.status(200).json({ success, message: 'Verified Shop', verifedData });
         } else {
-            return res.status(204).json({ success, message: 'Recipient is not verified' });
+            return res.status(204).json({ success, message: 'Shop is not verified' });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getHraVerifiedData = async (req, res) => {
+    try {
+        let success = false;
+
+        const shopId = req.params.shopid;
+
+        const verifedData = await hraVerifyModel.findOne({ shopInfo: shopId });
+
+        if (verifedData) {
+            success = true;
+            return res.status(200).json({ success, message: 'Verified Shop', verifedData });
+        } else {
+            return res.status(204).json({ success, message: 'Shop is not verified' });
         }
 
     } catch (error) {
@@ -285,28 +309,53 @@ exports.foscosFiling = async (req, res) => {
 
         const verifiedDataId = req.params.verifieddataid;
 
-        const { username, password, payment_amount, payment_recipt, payment_date } = req.body;
+        const receipt = req.files.payment_receipt;
 
-        const filing = await foscosFilingModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, paymentAmount: payment_amount, paymentDate: payment_date, paymentRecipt: payment_recipt, username, password });
+        const { username, password, payment_amount, payment_date } = req.body;
 
-        const verifiedData = await foscosFilingModel.findOne({ _id: verifiedDataId })
+        const filing = await foscosFilingModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, paymentAmount: payment_amount, paymentDate: payment_date, paymentReceipt: receipt[0].filename, username, password });
+
+        const verifiedData = await foscosVerifyModel.findOne({ _id: verifiedDataId })
             .populate({
-                path: 'shopdetails',
+                path: 'shopInfo',
             });
 
         //this code is for tracking the flow of data regarding to a recipient
 
         const prevVal = {}
 
-        const currentVal = enrollRecipient;
+        const currentVal = filing;
 
-        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo._id, prevVal, currentVal, "Recipient Enrolled");
+        await logAudit(req.user._id, "shopdetails", verifiedData.shopInfo._id, prevVal, currentVal, "Filing Completed");
 
         // code for tracking ends
 
-        if (enrollRecipient) {
+        if (filing) {
             success = true;
-            return res.status(200).json({ success, message: 'Enrolled recipient', enrolledId: enrollRecipient._id });
+            return res.status(200).json({ success, message: 'Filing Completed', filedId: filing._id });
+        }
+
+        return res.status(401).json({ success, message: 'Error' });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.getFoscosFiledData = async (req, res) => {
+    try {
+        let success = false;
+
+        const verifiedDataId = req.params.verifieddataid;
+
+        const filedData = await foscosFilingModel.findOne({ verificationInfo: verifiedDataId });
+
+        if (filedData) {
+            success = true;
+            return res.status(200).json({ success, message: 'Filed', filedData });
+        } else {
+            return res.status(204).json({ success, message: 'Not Filed' });
         }
 
     } catch (error) {

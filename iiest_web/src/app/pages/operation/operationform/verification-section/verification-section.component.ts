@@ -115,11 +115,14 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       email: new FormControl(''),
       address: new FormControl(''),
       pincode: new FormControl(''),
+      state: new FormControl(''),
+      district: new FormControl(''),
       hra_total: new FormControl(''),
       sales_date: new FormControl(''),
       sales_person: new FormControl(''),
       kob: new FormControl(''),
       food_handler_no: new FormControl(''),
+      audit_date: new FormControl('')
       });
 
   constructor(private formBuilder: FormBuilder,
@@ -151,6 +154,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
         this.getFoscosVerifiedData()
         break;
+      
+      case 'HRA': 
+        this.verificationForm = this.hraVerificationForm;
+        this.getHraVerifiedData();
+       break;
     }
 
   }
@@ -299,6 +307,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             }
           ]);
         } else if(this.productType === 'HRA') {
+          console.log(res);
           this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
@@ -316,7 +325,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.emitDocuments.emit([
             {
               name: 'Fostac Certificate',
-              src: [res.populatedInfo.fostacCerificate],
+              src: [res.populatedInfo.fostacCertificate],
               format: 'image',
               multiplDoc: false
             },
@@ -369,6 +378,23 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
           this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
           this.emitVerifiedData.emit(res.verifedData);
+          this.emitVerifiedStatus.emit(this.verifiedStatus);
+        } else {
+          this.verifiedStatus = false;
+        }
+      }
+    });
+  }
+
+  getHraVerifiedData() {
+    this._getDataService.getHraVerifedData(this.candidateId).subscribe({
+      next: res => {
+        console.log(res);
+        if (res) {
+          this.verifiedStatus = true;
+          this.verificationForm.patchValue({ audit_date: this.getFormatedDate(res.verifedData.auditDate.toString()) });
+          this.emitVerifiedData.emit(res.verifedData);
+          this.emitVerifiedStatus.emit(this.verifiedStatus);
         } else {
           this.verifiedStatus = false;
         }
@@ -451,6 +477,24 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       ownership_type: ['', Validators.required],
       owners_num: [this.minMembers, Validators.required],
     });
+
+    this.hraVerificationForm = this.formBuilder.group({
+      manager_name: ['', Validators.required],
+      fbo_name: ['', Validators.required],
+      owner_name: ['', Validators.required],
+      manager_contact_no: ['', Validators.required],
+      email: ['', Validators.required],
+      address: ['', Validators.required],
+      state: ['', Validators.required],
+      district: ['', Validators.required],
+      pincode: ['', Validators.required],
+      hra_total: ['', Validators.required],
+      sales_date: ['', Validators.required],
+      sales_person: ['', Validators.required],
+      kob: ['', Validators.required],
+      food_handler_no: ['', Validators.required],
+      audit_date: ['', Validators.required]
+    })
 
   }
 
