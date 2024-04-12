@@ -4,7 +4,7 @@ const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/op
 const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData, foscosVerification, hraVerification, getFoscosVerifiedData, fssaiRevert, getReverts } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
-const { fostacDocuments, foscosDocuments } = require('../config/storage');
+const { fostacDocuments, foscosDocuments, hraDocuments } = require('../config/storage');
 const { trainingBatch, getTrainingBatchData, updateBatch } = require('../controllers/trainingControllers/trainingBatch');
 const { saveDocument, getDocList, deleteDocs } = require('../controllers/operationControllers/documents');
 
@@ -31,7 +31,8 @@ router.get('/getreverts/:id', authMiddleware, getReverts); // route for getting 
 module.exports = router;
 router.post('/closeticket/:recipientid', authMiddleware,fostacDocuments.single('certificate'), ticketDelivery);
 router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliveryData)// route for getting ticket delivery data for a customer
-router.post('/savedocuments/:id', authMiddleware,  foscosDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
+router.post('/savefoscosdocuments/:id', authMiddleware,  foscosDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
+router.post('/savehradocuments/:id', authMiddleware,  hraDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
 router.delete('/deletedoc/:id', authMiddleware, deleteDocs)// route for saving docs for a shop
 router.get('/getdocs/:id', authMiddleware, getDocList);
 

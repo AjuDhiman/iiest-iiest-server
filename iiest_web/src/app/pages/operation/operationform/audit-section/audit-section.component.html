@@ -40,7 +40,12 @@
         <fa-icon [icon]="faFileArrowUp" class="fa-2xl text-primary" (click)="openDocumentationModal()"></fa-icon>
     </div>
 
-    <div class="col-md-6 col-12">
+    <div class="col-md-3">
+        <label for="summary_note" class="form-label">Summary Advisort Report</label><sup>*</sup>
+        <textarea formControlName="summary_note" id="summary_note" class="form-control form-control-sm"></textarea>
+    </div>
+
+    <!-- <div class="col-md-6 col-12">
         <div class="">
             <label for="summary_advisory_report" class="form-label">Summary Advisory Report<sup>*</sup></label>
             <div class="officer-comment-block">
@@ -51,7 +56,7 @@
             <label for="summary_note" class="form-label">Summary Note</label>
             <input type="text" class="form-control form-control-sm" id="officer_note" formControlName="summary_note">
         </div>
-    </div>
+    </div> -->
 
     <div class="row mt-3">
         <div class="col-6">

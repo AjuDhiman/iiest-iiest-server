@@ -46,8 +46,8 @@ export class AuditSectionComponent implements OnInit {
   //Fostac Enrollment Reactive form 
   auditForm: FormGroup = new FormGroup({
     audit_report: new FormControl(''),
-    summary_note: new FormControl(''),
     advisory_report: new FormControl(''),
+    summary_note: new FormControl(''),
   });
 
   constructor(private formBuilder: FormBuilder,
@@ -59,8 +59,8 @@ export class AuditSectionComponent implements OnInit {
     this.hraDocumentsName = hraDocuments.map((item: any) => item.name);
     this.auditForm = this.formBuilder.group({
       audit_report: ['', Validators.required],
-      summary_note: ['', Validators.required],
       advisory_report: ['', Validators.required],
+      summary_note: ['', Validators.required],
     });
   }
 
@@ -69,24 +69,26 @@ export class AuditSectionComponent implements OnInit {
   }
 
   onAudit() {
+    console.log("Hit");
     this.audited = true;
-    if (this.auditForm.invalid) {
-      return
-    }
+    // if (this.auditForm.invalid) {
+    //   return
+    // }
     this.loading = true;//starts the loading
-    if (this.verifiedDataId) {
+    // if (this.verifiedDataId) {
       const auditeData = { ...this.auditForm.value };
-      this._registerService.enrollRecipient(this.verifiedDataId, auditeData).subscribe({
-        next: res => {
-          this.auditStatus = true;
-          this.loading = false;
-        },
-        error: err => {
-          console.log(err.error);
-          this.loading = false;
-        }
-      })
-    }
+      console.log(auditeData);
+      // this._registerService.enrollRecipient(this.verifiedDataId, auditeData).subscribe({
+      //   next: res => {
+      //     this.auditStatus = true;
+      //     this.loading = false;
+      //   },
+      //   error: err => {
+      //     console.log(err.error);
+      //     this.loading = false;
+      //   }
+      // });
+    // }
   }
 
   getSelectedDocs($event: string[]): void { // this methord set the selected doc by th help of multidoc
@@ -97,4 +99,5 @@ export class AuditSectionComponent implements OnInit {
     const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.docsArr = hraDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
   }
+
 }

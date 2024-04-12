@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const docSchema = new Schema({
     handlerInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'shop_details',
+        ref: String,
         required: true
     },
     name: {
