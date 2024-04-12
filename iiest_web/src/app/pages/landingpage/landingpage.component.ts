@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from '../login/login.component';
 import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInfo, faPhone} from '@fortawesome/free-solid-svg-icons';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
+import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component';
 
 @Component({
   selector: 'app-landingpage',
   templateUrl: './landingpage.component.html',
-  styleUrls: ['./landingpage.component.scss']
+  styleUrls: ['./landingpage.component.scss'],
 })
-export class LandingpageComponent implements OnInit {
+export class LandingpageComponent implements OnInit, AfterViewInit {
 
   faPeopleGroup = faPeopleGroup;
   faBuilding = faBuilding;
@@ -19,25 +20,37 @@ export class LandingpageComponent implements OnInit {
   faSignIn = faSignIn;
   faCircleInfo = faCircleInfo;
   faPhone = faPhone;
-  isToken:boolean;
+  isToken:boolean = false;
+
+  @ViewChild('backgroundVidRef') backgroundVidRef: ElementRef;
+  // @ViewChild('headRef') headRef: ElementRef;
+  
 constructor(
   private modalService: NgbModal,
   private _resiterService: RegisterService,
   private router: Router){
-  const bodyElement = document.body;
-  bodyElement.classList.remove('app');
-  this.isToken = this._resiterService.isLoggedIn();
   
 }
 ngOnInit(): void {
+  const bodyElement = document.body;
+  bodyElement.classList.remove('app');
+  this.isToken = this._resiterService.isLoggedIn();
+}
 
+ngAfterViewInit(): void {
+  // this.headRef.nativeElement.style.height = this.backgroundVidRef.nativeElement.style.height;
 }
 openModal(){
   if(!this.isToken){
    this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });
   }else{
-      this.router.navigateByUrl('/home')
+      this.router.navigateByUrl('/home');
   }
 }
+
+openOnboardModal(){
+  this.modalService.open(OnboardModalComponent,{ size: 'md', backdrop: 'static' });
+}
+
 
 }

@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FbonewComponent } from './fboproduct/fbonew/fbonew.component';
-import { FbolistComponent } from './fbolist/fbolist.component';
-import { FoscosComponent } from './fboproduct/foscos/foscos.component';
-import { FostacComponent } from './fboproduct/fostac/fostac.component';
-import { HygieneAuditComponent } from './fboproduct/hygiene-audit/hygiene-audit.component';
+import { FbonewComponent } from 'src/app/pages/sales/fboproduct/fbonew/fbonew.component';
+import { FbolistComponent } from 'src/app/pages/sales/fbolist/fbolist.component';
+import { FoscosComponent } from 'src/app/pages/sales/fboproduct/foscos/foscos.component';
+import { FostacComponent } from 'src/app/pages/sales/fboproduct/fostac/fostac.component';
+import { HygieneAuditComponent } from 'src/app/pages/sales/fboproduct/hygiene-audit/hygiene-audit.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { RecipientComponent } from '../modals/recipient/recipient.component';
-import { RecipientListComponent } from '../modals/recipient/recipient-list/recipient-list.component';
-import { ViewFboComponent } from '../modals/view-fbo/view-fbo.component';
+import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.component';
+import { RecipientListComponent } from 'src/app/pages/modals/recipient/recipient-list/recipient-list.component';
+import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.component';
 
 
 

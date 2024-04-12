@@ -1,74 +1,95 @@
-<form [formGroup]="revertForm" class="row" (submit)="onUpdate()">
-    <div class="d-flex justify-content-between">
-
-        <!-- heading and form status -->
-        <h6>Filing & Revert Section</h6>
-        <span class="status badge align-self-baseline" [ngClass]="completedStatus?'bg-success':'bg-warning'" style="font-size: x-small;">
-            {{completedStatus?'completed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
-                [icon]="completedStatus?faCircleCheck:faCircleExclamation">
-            </fa-icon>
-        </span>
-    </div>
-
-    <div class="col-md-6 col-12">
-        <div class="">
-          <label for="officer_chat" class="form-label">Fssai Comment<sup>*</sup></label>
-          <div class="officer-comment-block">
-            <div *ngFor="let revert of reverts" class="note">{{revert}}</div>
-          </div>
-        </div>
-        <div class="">
-          <label for="fssai_revert" class="form-label">Fssai Revert</label>
-          <input type="text" class="form-control form-control-sm" formControlName="fssai_revert" id="fssai_revert">
-        </div>
-      </div>
-
-      <div class="col-md-3">
-        <fa-icon [icon]="faFileArrowUp"></fa-icon>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-6">
-            <button type="submit" class="btn btn-sm btn-primary"
-                [disabled]="">Update
-            </button>
-        </div>
-    </div>
-</form>
-
-<!-- <form [formGroup]="revertForm" class="row" (submit)="onUpdate()">
+<form [formGroup]="filingForm" class="row" (submit)="onFile()" enctype="multipart/form-data">
   <div class="d-flex justify-content-between">
 
-      <h6>Filing & Revert Section</h6>
-      <span class="status badge align-self-baseline" [ngClass]="completedStatus?'bg-success':'bg-warning'" style="font-size: x-small;">
-          {{completedStatus?'completed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
-              [icon]="completedStatus?faCircleCheck:faCircleExclamation">
-          </fa-icon>
-      </span>
+    <!-- heading and form status -->
+    <h6>Filing & Revert Section</h6>
+    <span class="status badge align-self-baseline" [ngClass]="filedStatus?'bg-success':'bg-warning'"
+      style="font-size: x-small;">
+      {{filedStatus?'Filed':'Under-Process'}} <fa-icon class="fa-lg fa-regular ml-2"
+        [icon]="filedStatus?faCircleCheck:faCircleExclamation">
+      </fa-icon>
+    </span>
   </div>
 
-  <div class="col-md-6 col-12">
-      <div class="">
-        <label for="officer_chat" class="form-label">Fssai Comment<sup>*</sup></label>
-        <div class="officer-comment-block">
-          <div *ngFor="let revert of reverts" class="note">{{revert}}</div>
-        </div>
-      </div>
-      <div class="">
-        <label for="fssai_revert" class="form-label">Fssai Revert</label>
-        <input type="text" class="form-control form-control-sm" formControlName="fssai_revert" id="fssai_revert">
+  <div class="col-md-3">
+    <label for="username" class="form-label">Username</label><sup>*</sup>
+    <input type="text" placeholder="Username" formControlName="username" class="form-control form-control-sm"
+      id="username" [ngClass]="{ 'is-invalid': filed  && filingform['username'].errors }" [readOnly]="filedStatus">
+    <div *ngIf="filed && filingform['username'].errors" class="invalid-feedback">
+      <div *ngIf="filingform['username'].errors['required']">Username is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="password" class="form-label">Password</label><sup>*</sup>
+    <input type="text" placeholder="Password" formControlName="password" class="form-control form-control-sm"
+      id="password" [ngClass]="{ 'is-invalid': filed  && filingform['password'].errors }" [readOnly]="filedStatus">
+    <div *ngIf="filed && filingform['password'].errors" class="invalid-feedback">
+      <div *ngIf="filingform['password'].errors['required']">Password is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="payment_amount" class="form-label">Payment Amount</label><sup>*</sup>
+    <input type="number" placeholder="Payment Amount" formControlName="payment_amount"
+      class="form-control form-control-sm" id="payment_amount"
+      [ngClass]="{ 'is-invalid': filed  && filingform['payment_amount'].errors }" [readOnly]="filedStatus">
+    <div *ngIf="filed && filingform['payment_amount'].errors" class="invalid-feedback">
+      <div *ngIf="filingform['payment_amount'].errors['required']">Payment Amount is required</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <label for="payment_receipt" class="form-label">Payment Receipt</label><sup>*</sup>
+    <input *ngIf="!filedStatus"  type="file" placeholder="Payment Receipt" formControlName="payment_receipt"
+      class="form-control form-control-sm" id="payment_receipt" (change)="onReceiptUpload($event)"
+      [ngClass]="{ 'is-invalid': filed  && filingform['payment_receipt'].errors }" [readOnly]="filedStatus">
+      <br *ngIf="filedStatus" >
+    <fa-icon *ngIf="filedStatus" (click)="viewReceipt()" class="text-primary fa-2xl cursor-pointer" [icon]="faFilePdf"></fa-icon>
+    <div *ngIf="filed && filingform['payment_receipt'].errors" class="invalid-feedback">
+      <div *ngIf="filingform['payment_receipt'].errors['required']">Payment Receipt is required</div>
+      <div *ngIf="filingform['payment_receipt'].errors['invalidFileType']">Invalid file only .png files are allowed.
       </div>
     </div>
+  </div>
 
-    <div class="col-md-3">
-      <fa-icon [icon]="faFileArrowUp"></fa-icon>
+  <div class="col-md-3">
+    <label for="payment_date" class="form-label">Payment Date</label><sup>*</sup>
+    <input type="date" placeholder="Payment Date" formControlName="payment_date" class="form-control form-control-sm"
+      id="payment_date" [ngClass]="{ 'is-invalid': filed  && filingform['payment_date'].errors }"
+      [readOnly]="filedStatus">
+    <div *ngIf="filed && filingform['payment_date'].errors" class="invalid-feedback">
+      <div *ngIf="filingform['payment_date'].errors['required']">Payment Date is required</div>
+    </div>
   </div>
 
   <div class="row mt-3">
-      <div class="col-6">
-          <button type="submit" class="btn btn-sm btn-primary"
-              [disabled]="">Update
-          </button>
-      </div>
+    <div class="col-6">
+      <button type="submit" class="btn btn-sm btn-primary" [disabled]="!verifiedStatus || filedStatus">File
+      </button>
+    </div>
   </div>
-</form> -->
+</form>
+
+<form [formGroup]="revertForm" class="row my-2" (submit)="onUpdate()">
+
+  <div class="col-md-6 col-12">
+    <div class="">
+      <label for="officer_chat" class="form-label">Fssai Comment<sup>*</sup></label>
+      <div class="officer-comment-block">
+        <div *ngFor="let revert of reverts" class="note">{{revert}}</div>
+      </div>
+    </div>
+    <div class="">
+      <label for="fssai_revert" class="form-label">Fssai Revert</label>
+      <input type="text" class="form-control form-control-sm" formControlName="fssai_revert" id="fssai_revert">
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-6">
+      <button type="submit" class="btn btn-sm btn-primary" [disabled]="">Update
+      </button>
+    </div>
+  </div>
+</form>

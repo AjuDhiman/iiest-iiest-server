@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GeneralSectionComponent } from './general-section/general-section.component';
+import { GeneralSectionComponent } from 'src/app/pages/operation/operationform/general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
 import { IconDefinition, faFilePdf, faFileImage, faDownload, faFileZipper } from '@fortawesome/free-solid-svg-icons';
-import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
+import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UtilitiesService } from '../../../services/utilities.service';
+import { UtilitiesService } from 'src/app/services/utilities.service';
+import { config } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-operationform',
@@ -35,6 +36,8 @@ export class OperationformComponent implements OnInit {
   documents: { name: string, src: string, format: string }[] = [];
   allDocs: any;
   isTrainer: boolean = false;
+
+  DOC_URL: string = config.DOC_URL;
 
   @ViewChild(GeneralSectionComponent) generalsec: GeneralSectionComponent;
 

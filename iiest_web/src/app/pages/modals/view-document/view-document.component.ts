@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IconDefinition, faDownload, faArrowAltCircleLeft, faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
-import { UtilitiesService } from '../../../services/utilities.service';
+import { UtilitiesService } from 'src/app/services/utilities.service';
+import { config } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-view-document',
@@ -17,6 +18,8 @@ export class ViewDocumentComponent implements OnInit {
   doc: any;
   pdfSrc: any;
 
+  DOC_URL = config.DOC_URL;
+
   activeSlide: number = 0;
 
   constructor(public activeModal: NgbActiveModal,
@@ -29,7 +32,7 @@ export class ViewDocumentComponent implements OnInit {
       if(this.doc.multipleDoc){
         this.pdfSrc = this.doc.src.map((src:any) => this.sanitizer.bypassSecurityTrustResourceUrl(src));
       } else {
-        this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000/${this.doc.src}`);
+        this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(`DOC_URL/${this.doc.src}`);
       }
     }
   }

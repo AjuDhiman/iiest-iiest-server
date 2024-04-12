@@ -3,7 +3,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faIndianRupeeSign, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { ViewDocumentComponent } from '../view-document/view-document.component';
+import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
 
 @Component({
   selector: 'app-view-fbo',

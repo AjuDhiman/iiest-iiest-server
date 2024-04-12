@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { loginEmployee, forgotPassword, } from '../../utils/registerinterface'
-import { RegisterService } from '../../services/register.service';
+import { loginEmployee, forgotPassword, } from 'src/app/utils/registerinterface'
+import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';

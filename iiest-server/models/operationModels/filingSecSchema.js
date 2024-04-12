@@ -29,7 +29,7 @@ const foscosFilingSchema = new Schema({
         type: Date,
         required: true
     },
-    paymentRecipt: {
+    paymentReceipt: {
         type: String,
         required: true
     }

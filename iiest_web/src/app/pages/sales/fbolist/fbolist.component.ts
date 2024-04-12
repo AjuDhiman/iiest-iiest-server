@@ -4,8 +4,8 @@ import { RegisterService } from 'src/app/services/register.service';
 import { faEye, faPencil, faTrash, faEnvelope, faXmark, faMagnifyingGlass, faFileCsv, faFilePdf, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { RecipientComponent } from '../../modals/recipient/recipient.component';
-import { ViewFboComponent } from '../../modals/view-fbo/view-fbo.component';
+import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.component';
+import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.component';
 
 @Component({
   selector: 'app-fbolist',
