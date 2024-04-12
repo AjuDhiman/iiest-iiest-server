@@ -35,7 +35,8 @@
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-enrollment-section>
 
-          <app-scheduling-section *ngIf="productType === 'HRA'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <app-scheduling-section *ngIf="productType === 'HRA'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+          [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData">
           </app-scheduling-section>
 
           <app-audit-section *ngIf="productType === 'HRA'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
@@ -55,7 +56,7 @@
           </app-attendance-section>
 
           <app-revert-section *ngIf="productType === 'Foscos'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [customerId]="candidateId">
+            [customerId]="candidateId" [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData">
           </app-revert-section>
 
           <app-certification-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [candidateID]="candidateId"

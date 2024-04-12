@@ -224,6 +224,14 @@ export class RegisterService {
     ));
   }
 
+  public filefoscos(verId: string, formInterface: FormData){
+    const url = `${this.url}/foscosfilling/${verId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
   public postOperGenData(recId: string, formInterface: operGeneralSection){
     const url = `${this.url}/postopergendata/${recId}`
     return this.http.post<any>(url, formInterface).pipe(

@@ -84,8 +84,8 @@ function getProductSpecificData(product, qty, prodDetails, extraFee) {
     let code = '';
     switch (product) {
         case 'Fostac':
-            description = `<b>Fostac Training Services</b><br/>
-                              Fostac Training(No. of Candidates-${qty})`;
+            description = `<b>Capacity Building Training Services</b><br/>
+                            Training of ${qty} Candidates`;
             code = `TR-CB`;
             break;
         case 'Foscos':
