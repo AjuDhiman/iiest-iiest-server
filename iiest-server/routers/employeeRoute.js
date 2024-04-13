@@ -20,7 +20,7 @@ router.put('/editEmployee/:id', authMiddleware, editEmployee);
 router.get('/empgeneraldata', authMiddleware, employeeFormData);
 router.get('/allemployees', authMiddleware, allEmployeesData);
 router.get('/getpostdata', authMiddleware, getPostData); 
-router.get('/employeeRecord', authMiddleware, employeeRecord);
+router.get('/employeeRecord', employeeRecord);
 router.get('/getPincodesData/:stateName', authMiddleware, getPincodesData);
 router.get('/employeesaleslist', authMiddleware, employeeSalesData);
 router.post('/registerarea/:id', authMiddleware, areaAllocation);

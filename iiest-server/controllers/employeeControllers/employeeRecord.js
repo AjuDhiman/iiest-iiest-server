@@ -2,332 +2,171 @@ const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
 
-
 exports.employeeRecord = async (req, res) => {
-
     try {
         const todayDate = new Date();
-        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()).toISOString();
-        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay()).toISOString();
-        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1).toISOString();
-        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1).toISOString();
+        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());
+        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
+        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
-        console.log(startOfToday);
 
         const pipeline = [
             {
-                $group: {
-                    _id: 1,
-                    today_total: {
-                        $sum: {
-                            $cond: {
-                                if: { $gte: ["$createdAt", startOfToday] },
-                                then: '$grand_total',
-                                else: 0
+                $facet: {
+                    today: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfToday },
+                             
                             }
-                        }
-                    },
-                    today_pending: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfToday] },
-                                        { $eq: ["$checkStatus", 'pending'] }
-                                    ]
+                        },
+                        {
+                            $group: {
+                                _id: 1,
+                                total: { $sum: "$grand_total" },
+                                pending: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
+                                    }
                                 },
-                                then: '$grand_total',
-                                else: 0
+                                approved: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
+                                    }
+                                }
                             }
                         }
-                    },
-                    today_approved: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfToday] },
-                                        { $eq: ["$checkStatus", 'approved'] }
-                                    ]
+                    ],
+                    this_week: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfThisWeek },
+                             
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: 2,
+                                total: { $sum: "$grand_total" },
+                                pending: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
+                                    }
                                 },
-                                then: '$grand_total',
-                                else: 0
+                                approved: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
+                                    }
+                                }
                             }
                         }
-                    },
-                    week_total: {
-                        $sum: {
-                            $cond: {
-                                if: { $gte: ["$createdAt", startOfThisWeek] },
-                                then: '$grand_total',
-                                else: 0
+                    ],
+                    this_month: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfThisMonth },
+                             
                             }
-                        }
-                    },
-                    week_pending: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfThisWeek] },
-                                        { $eq: ["$checkStatus", 'pending'] }
-                                    ]
+                        },
+                        {
+                            $group: {
+                                _id: 3,
+                                total: { $sum: "$grand_total" },
+                                pending: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
+                                    }
                                 },
-                                then: '$grand_total',
-                                else: 0
+                                approved: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
+                                    }
+                                }
                             }
                         }
-                    },
-                    week_approved: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfThisWeek] },
-                                        { $eq: ["$checkStatus", 'approved'] }
-                                    ]
+                    ],
+                    prev_month: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfPrevMonth, $lt: startOfThisMonth },
+                             
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: 4,
+                                total: { $sum: "$grand_total" },
+                                pending: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "pending"] }, then: "$grand_total", else: 0 }
+                                    }
                                 },
-                                then: '$grand_total',
-                                else: 0
+                                approved: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "approved"] }, then: "$grand_total", else: 0 }
+                                    }
+                                }
                             }
                         }
-                    },
-                    prev_month_total: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfPrevMonth] },
-                                        { $lte: ["$createdAt", startOfThisMonth] }
-                                    ]
+                    ],
+                    this_year: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfThisYear },
+                             
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: 5,
+                                total: { $sum: "$grand_total" },
+                                pending: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
+                                    }
                                 },
-                                then: '$grand_total',
-                                else: 0
+                                approved: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
+                                    }
+                                }
                             }
                         }
-                    },
-                    prev_month_pending: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfPrevMonth] },
-                                        { $lte: ["$createdAt", startOfThisMonth] },
-                                        { $eq: ["$checkStatus", 'pending'] }
-                                    ]
+                    ],
+                    till_now: [
+                        {
+                            $group: {
+                                _id: 6,
+                                total: { $sum: "$grand_total" },
+                                pending: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
+                                    }
                                 },
-                                then: '$grand_total',
-                                else: 0
+                                approved: {
+                                    $sum: {
+                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
+                                    }
+                                }
                             }
                         }
-                    },
-                    prev_month_approved: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfPrevMonth] },
-                                        { $lte: ["$createdAt", startOfThisMonth] },
-                                        { $eq: ["$checkStatus", 'approved'] }
-                                    ]
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    month_total: {
-                        $sum: {
-                            $cond: {
-                                if: { $gte: ["$createdAt", startOfThisMonth] },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    month_pending: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfThisMonth] },
-                                        { $eq: ["$checkStatus", 'pending'] }
-                                    ]
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    month_approved: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfThisMonth] },
-                                        { $eq: ["$checkStatus", 'approved'] }
-                                    ]
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    year_total: {
-                        $sum: {
-                            $cond: {
-                                if: { $gte: ["$createdAt", startOfThisYear] },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    year_pending: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfThisYear] },
-                                        { $eq: ["$checkStatus", 'pending'] }
-                                    ]
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    year_approved: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $and: [
-                                        { $gte: ["$createdAt", startOfThisYear] },
-                                        { $eq: ["$checkStatus", 'approved'] }
-                                    ]
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    total: {
-                        $sum: "$grand_total"
-                    },
-                    pending: {
-                        $sum: {
-                            $cond: {
-                                if: {
-                                    $eq: ["$checkStatus", 'pending']
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    },
-                    approved: {
-                        $sum: {
-                            $cond: {
-                                if: {
-
-                                    $eq: ["$checkStatus", 'approved']
-
-                                },
-                                then: '$grand_total',
-                                else: 0
-                            }
-                        }
-                    }
+                    ],
                 }
-            },
-            {
-                $project: {
-                    today: {
-                        totalSales: "$today_total",
-                        pendingSales: "$today_pending",
-                        approvedSales: "$today_approved"
-                    },
-                    this_Week: {
-                        totalSales: "$week_total",
-                        pendingSales: "$week_pending",
-                        approvedSales: "$week_approved"
-                    },
-                    prev_month: {
-                        totalSales: "$prev_month_total",
-                        pendingSales: "$prev_month_pending",
-                        approvedSales: "$prev_month_approved"
-                    },
-                    this_month: {
-                        totalSales: "$month_total",
-                        pendingSales: "$month_pending",
-                        approvedSales: "$month_approved"
-                    },
-                    this_year: {
-                        totalSales: "$year_total",
-                        pendingSales: "$year_pending",
-                        approvedSales: "$year_approved"
-                    },
-                    till_now: {
-                        totalSales: "$total",
-                        pendingSales: "$pending",
-                        approvedSales: "$approved"
-                    }
-                }
-            }];
+            }
+        ];
 
-        if (req.user.designation !== 'Director') {
-            pipeline.unshift(
-                {
-                    $match: {
-                        "employeeInfo": req.user._id
-                    }
-                }
-            );
-        }
+        const data = await salesModel.aggregate(pipeline);
 
-        let data = await salesModel.aggregate([pipeline]);
-
-        if (data.length === 0) {
-            data = [{
-                today: {
-                    totalSales: 0,
-                    pendingSales: 0,
-                    approvedSales: 0
-                },
-                this_Week: {
-                    totalSales: 0,
-                    pendingSales: 0,
-                    approvedSales: 0
-                },
-                prev_month: {
-                    totalSales: 0,
-                    pendingSales: 0,
-                    approvedSales: 0
-                },
-                this_month: {
-                    totalSales: 0,
-                    pendingSales: 0,
-                    approvedSales: 0
-                },
-                this_year: {
-                    totalSales: 0,
-                    pendingSales: 0,
-                    approvedSales: 0
-                },
-                till_now: {
-                    totalSales: 0,
-                    pendingSales: 0,
-                    approvedSales: 0
-                }
-            }];
-        }
-
-        res.status(200).json(data)
+        res.status(200).json(data);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
+};
 
 
-}
+
 
 exports.employeeSalesData = async (req, res) => {
     try {
