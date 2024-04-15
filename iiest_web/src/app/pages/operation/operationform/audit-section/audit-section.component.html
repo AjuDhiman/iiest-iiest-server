@@ -14,17 +14,21 @@
     <!-- form input fields -->
     <div class="col-md-3">
         <label for="audit_report" class="form-label">Audit Report</label><sup>*</sup>
-        <input type="file" placeholder="Upload Report" class="form-control form-control-sm" id="audit_report">
-        <div *ngIf="auditform['audit_report'].errors" class="invalid-feedback">
+        <input type="file" placeholder="Upload Audit Report" formControlName="audit_report"
+            class="form-control form-control-sm" id="audit_report"
+            [ngClass]="{ 'is-invalid': audited && auditform['audit_report'].errors }">
+        <div *ngIf="audited && auditform['audit_report'].errors" class="invalid-feedback">
             <div *ngIf="auditform['audit_report'].errors['required']">Audit Report is required</div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <label for="advisory_report" class="form-label">Advisory Report</label><sup>*</sup>
-        <input type="file" placeholder="Upload Report" class="form-control form-control-sm" id="advisory_report">
-        <div *ngIf="auditform['advisory_report'].errors" class="invalid-feedback">
-            <div *ngIf="auditform['advisory_report'].errors['required']">Advisory Report is required</div>
+        <label for="advisory_report" class="form-label">Audit Report</label><sup>*</sup>
+        <input type="file" placeholder="Upload Advisory Report" formControlName="advisory_report"
+            class="form-control form-control-sm" id="advisory_report"
+            [ngClass]="{ 'is-invalid': audited && auditform['advisory_report'].errors }">
+        <div *ngIf="audited && auditform['advisory_report'].errors" class="invalid-feedback">
+            <div *ngIf="auditform['advisory_report'].errors['required']">Audit Report is required</div>
         </div>
     </div>
 
@@ -37,7 +41,7 @@
     <div class="col-md-3">
         <label for="payment_date" class="form-label">Upload Docs.</label><sup>*</sup>
         <br>
-        <fa-icon [icon]="faFileArrowUp" class="fa-2xl text-primary" (click)="openDocumentationModal()"></fa-icon>
+        <fa-icon [icon]="faFileArrowUp" class="fa-2xl text-primary cursor-pointer" (click)="openDocumentationModal()"></fa-icon>
     </div>
 
     <div class="col-md-3">

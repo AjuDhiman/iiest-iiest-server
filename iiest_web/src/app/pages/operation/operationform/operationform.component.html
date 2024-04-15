@@ -39,7 +39,9 @@
           [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData">
           </app-scheduling-section>
 
-          <app-audit-section *ngIf="productType === 'HRA'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <app-audit-section *ngIf="productType === 'HRA'" [shopId]="candidateId"
+          class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
+          [verifiedData]="verifiedData" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
           </app-audit-section>
 
           <app-documentation-section *ngIf="productType === 'Foscos'" [shopId]="candidateId"

@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
 import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
 import { hraDocuments } from 'src/app/utils/config';
+import { GetdataService } from 'src/app/services/getdata.service';
 
 @Component({
   selector: 'app-audit-section',
@@ -19,14 +20,13 @@ export class AuditSectionComponent implements OnInit {
   loading: boolean = false;
 
   hraDocumentsName: string[] = [];
-
+  docList: any = []; //list of already uploaded doc
   selectedDocs: string[] = []; //var for sending a selected list of doc to doc modal by selecting them in multi select
 
   //input variables
+  @Input() shopId: string;
   @Input() verifiedDataId: string;
-
   @Input() verifiedData: any;
-
   @Input() verifiedStatus: boolean;
 
   officerComments: string[] = [];
@@ -43,7 +43,7 @@ export class AuditSectionComponent implements OnInit {
   faCircleCheck = faCircleCheck;
   faFileArrowUp = faFileArrowUp;
 
-  //Fostac Enrollment Reactive form 
+  //HRA Audit Section form 
   auditForm: FormGroup = new FormGroup({
     audit_report: new FormControl(''),
     advisory_report: new FormControl(''),
@@ -52,6 +52,7 @@ export class AuditSectionComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
+    private _getDataService: GetdataService,
     private ngbModal: NgbModal) {
   }
 
@@ -60,22 +61,33 @@ export class AuditSectionComponent implements OnInit {
     this.auditForm = this.formBuilder.group({
       audit_report: ['', Validators.required],
       advisory_report: ['', Validators.required],
-      summary_note: ['', Validators.required],
+      // summary_note: ['', Validators.required],
     });
+    this.getDocs();
   }
 
   get auditform(): { [key: string]: AbstractControl } {
     return this.auditForm.controls;
   }
 
+  getDocs(): void { //methord for getting uploaed doc list from backend for passing it to doc modal and doc-tab
+    this._getDataService.getDocs(this.shopId).subscribe({
+      next: res => {
+        this.docList = res.docs; 
+        this.refreshAuditLog.emit();
+      }
+    });
+  }
+
   onAudit() {
     console.log("Hit");
     this.audited = true;
-    // if (this.auditForm.invalid) {
-    //   return
-    // }
+    if (this.auditForm.invalid) {
+      return;
+    }
     this.loading = true;//starts the loading
-    // if (this.verifiedDataId) {
+    console.log(this.verifiedDataId);
+    if (this.verifiedDataId) {
       const auditeData = { ...this.auditForm.value };
       console.log(auditeData);
       // this._registerService.enrollRecipient(this.verifiedDataId, auditeData).subscribe({
@@ -88,7 +100,7 @@ export class AuditSectionComponent implements OnInit {
       //     this.loading = false;
       //   }
       // });
-    // }
+    }
   }
 
   getSelectedDocs($event: string[]): void { // this methord set the selected doc by th help of multidoc
@@ -98,6 +110,12 @@ export class AuditSectionComponent implements OnInit {
   openDocumentationModal() { //this methord opens the doc modal 
     const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.docsArr = hraDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
+    modalRef.componentInstance.shopId = this.shopId;
+    modalRef.componentInstance.docList = this.docList;
+    modalRef.componentInstance.reloadData.subscribe(() => {
+      this.getDocs();
+      modalRef.componentInstance.docList = this.docList;
+    });
   }
 
 }

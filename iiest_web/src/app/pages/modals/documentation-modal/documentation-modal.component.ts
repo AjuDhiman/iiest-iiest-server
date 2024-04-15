@@ -175,7 +175,7 @@ export class DocumentationModalComponent implements OnInit {
           }
         });
       } else if(this.panelType === "HRA Panel") {
-        this._registerService.saveHraDocument("6616655e8d93adeabfe8f8af", formData).subscribe({
+        this._registerService.saveHraDocument(this.shopId, formData).subscribe({
           next: res => {
             if (res) {
               this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
