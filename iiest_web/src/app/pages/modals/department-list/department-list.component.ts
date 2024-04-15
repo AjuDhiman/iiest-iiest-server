@@ -24,6 +24,7 @@ export class DepartmentListComponent implements OnInit {
   faXmark = faXmark;
   faCheck = faCheck;
   loading: boolean = false;
+  dataNotAvilable: boolean = true;
   constructor(public activeModal: NgbActiveModal,
     private _getDataService: GetdataService) {
 
@@ -44,6 +45,9 @@ export class DepartmentListComponent implements OnInit {
         }).filter((value: any) => value !== null);
         this.filteredData = this.employeeList;
         this.empCount = this.filteredData.length;
+        if(this.empCount){
+          this.dataNotAvilable = false;
+        }
         this.showPagination = true;
       }, 
       error: err => {
@@ -80,5 +84,6 @@ export class DepartmentListComponent implements OnInit {
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
+    this.filteredData.length ? this.dataNotAvilable = false : this.dataNotAvilable = true;
   }
 }
