@@ -133,6 +133,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.loading = true;
 
     this.setFormValidation();
 
@@ -209,6 +210,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           }
         },
         error: err => {
+          this.loading = false;
           if(err.error.locationErr){
             this._toastrService.error('Location not avilable');
           } else {
@@ -342,7 +344,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   getFostacVerifiedData(): void {
-    this.loading = true;
     this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
       next: res => {
         if (res) {

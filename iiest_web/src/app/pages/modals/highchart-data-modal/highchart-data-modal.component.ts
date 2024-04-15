@@ -155,7 +155,7 @@ export class HighchartDataModalComponent {
           break;
       }
     }
-    this.filteredData.length ? this.showPagination = true : this.showPagination = false;
+    this.filteredData ? this.showPagination = true : this.showPagination = false;
     this.loading = false;
   }
 
@@ -174,7 +174,7 @@ export class HighchartDataModalComponent {
           break;
       }
     }
-    this.filteredData.length ? this.showPagination = true : this.showPagination = false;
+    this.filteredData ? this.showPagination = true : this.showPagination = false;
     this.loading= false;
   }
 

@@ -36,7 +36,7 @@ export const trainers = [
    'Praduman Kumar'
 ];
 
-export const venues = [
+export const venues: {name: string, vendor: string, location: string}[] = [
    {
       name: 'IIEST',
       vendor: 'IIEST',
@@ -430,10 +430,19 @@ export const otherDocs: Array<{ name: string, allowedFormats: string[], mutipleD
 export const ourHolidays: Array<{ date: string, name: string }> = [
    { date: '2024-01-26', name: 'Republic Day' },
    { date: '2024-03-08', name: 'Mahashivratri' },
-   { date: '2024-01-31', name: 'republic day' },
-   { date: '2024-02-01', name: 'republic day' },
-   { date: '2024-02-02', name: 'republic day' },
-   { date: '2024-02-03', name: 'republic day' }
+   { date: '2024-04-25', name: 'Holi' },
+   { date: '2024-04-29', name: 'Good Friday' },
+   { date: '2024-04-11', name: 'Eid Al-Fitr' },
+   { date: '2024-06-11', name: 'Eid Al-Zuha(Bakrid)'},
+   { date: '2024-08-15', name: 'Independence Day'},
+   { date: '2024-08-19', name: 'Raksha Bandhan'},
+   { date: '2024-09-26', name: 'Janmashtami'},
+   { date: '2024-10-02', name: 'Gandhi Jayanti'},
+   { date: '2024-10-12', name: 'Dussehra'},
+   { date: '2024-11-01', name: 'Diwali'},
+   { date: '2024-11-02', name: 'Govardhan Pooja'},
+   { date: '2024-11-03', name: 'Bhai Dooj'},
+   { date: '2024-12-25', name: 'Christmas'},
 ]
 
 export class chartData {

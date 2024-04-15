@@ -13,8 +13,8 @@ import { HeaderComponent } from 'src/app/shared/header/header.component';
 export class AppComponent implements OnInit {
   title = 'iiest_new';
   showHeader: boolean = true;
-  empName: string;
-  loggedInUserData: any;
+  empName: string = '';
+  loggedInUserData: any = {};
   isToken:boolean;
   isSidebarVisible = false;
   largeDisplay= false;

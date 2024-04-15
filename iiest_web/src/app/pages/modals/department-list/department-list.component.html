@@ -60,7 +60,7 @@
                   </td>
                 </tr>
               </tbody>
-              <tbody *ngIf="filteredData?.length==0">
+              <tbody *ngIf="!filteredData">
                 <tr>
                   <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------
                   </td>
@@ -77,4 +77,5 @@
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div>
     </div>
+    <ngx-loading [show]="loading"></ngx-loading>
   </div>
