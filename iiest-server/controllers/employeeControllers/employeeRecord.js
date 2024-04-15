@@ -18,7 +18,6 @@ exports.employeeRecord = async (req, res) => {
                         {
                             $match: {
                                 createdAt: { $gte: startOfToday },
-                             
                             }
                         },
                         {
@@ -155,6 +154,14 @@ exports.employeeRecord = async (req, res) => {
                 }
             }
         ];
+
+        if(req.user.designation !== 'Director'){
+            pipeline.unshift({
+                $match: {
+                    employeeInfo: req.user._id,
+                }
+            });
+        }
 
         const data = await salesModel.aggregate(pipeline);
 
