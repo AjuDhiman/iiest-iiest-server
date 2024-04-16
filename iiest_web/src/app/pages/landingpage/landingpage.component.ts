@@ -21,6 +21,7 @@ export class LandingpageComponent implements OnInit, AfterViewInit {
   faCircleInfo = faCircleInfo;
   faPhone = faPhone;
   isToken:boolean = false;
+  isMobileNav:boolean = false;
 
   @ViewChild('backgroundVidRef') backgroundVidRef: ElementRef;
   // @ViewChild('headRef') headRef: ElementRef;
@@ -32,19 +33,23 @@ constructor(
   
 }
 ngOnInit(): void {
-  const bodyElement = document.body;
-  bodyElement.classList.remove('app');
-  this.isToken = this._resiterService.isLoggedIn();
+ 
 }
 
 ngAfterViewInit(): void {
   // this.headRef.nativeElement.style.height = this.backgroundVidRef.nativeElement.style.height;
+   const bodyElement = document.body;
+  bodyElement.classList.remove('app');
+  this.isToken = this._resiterService.isLoggedIn();
 }
+
 openModal(){
   if(!this.isToken){
    this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });
   }else{
-      this.router.navigateByUrl('/home');
+    const bodyElement = document.body;
+    bodyElement.classList.add('app');
+    this.router.navigateByUrl('/home');
   }
 }
 

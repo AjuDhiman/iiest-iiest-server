@@ -17,6 +17,7 @@ export class UserAccountComponent {
   selectedSign:string = '';
   imageObj: any;
   signObj: any;
+  loading:boolean = false;
   updateProfileForm:FormGroup = new FormGroup({
     userImage:new FormControl(''),
     userSign:new FormControl('')
@@ -56,9 +57,11 @@ export class UserAccountComponent {
     formData.append('userSign', this.signObj);
 
     const filesSelect: any = formData;
-
+ 
+    this.loading = true;
     this.registerService.editEmployeeFiles(filesSelect).subscribe({
       next: (res)=>{
+        this.loading = false;
         if(res.success){
           this.registerService.replaceToken(res);
           location.reload();
@@ -66,6 +69,7 @@ export class UserAccountComponent {
         }
       },
       error: (err)=>{
+        this.loading = false;
         let errorObj = err.error
         if(errorObj.editImageErr){
           this.toastrService.error('', 'Something went wrong with image. Please try again');

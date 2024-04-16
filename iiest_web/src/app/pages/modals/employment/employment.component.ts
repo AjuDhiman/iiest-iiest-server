@@ -35,7 +35,9 @@ export class EmploymentComponent implements OnInit {
   @Input() employee: any;
   @Input() type: any;
 
-  allManagers: any[] = []
+  allManagers: any[] = [];
+
+  loading: boolean = false;//var for loader
 
   areaAllocationForm: FormGroup = new FormGroup({
     state: new FormControl(''),
@@ -136,8 +138,10 @@ export class EmploymentComponent implements OnInit {
     this.pincodes = [];
     this.multiSelect.onReset();
     let distinctDistrict: any = [];
+    this.loading = true;
     this._getdataService.getPincodesData(this.state).subscribe({
       next: (res) => {
+        this.loading = false;
         this.pincodesData = res;
         console.log(this.pincodesData);
         this.pincodesData.forEach((obj: any) => {
@@ -150,6 +154,7 @@ export class EmploymentComponent implements OnInit {
         })
       },
       error: (err) => {
+        this.loading = false;
         let errorObj = err.error
         // if (errorObj.userError) {
         //   this._registerService.signout();

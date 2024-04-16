@@ -10819,10 +10819,10 @@ header.masthead .post-heading .meta a {
 }
 
 .onboard-btn {
-  font-size: 1.125rem;
+  font-size: 1.2rem;
   border: 1px solid #6AC977;
   border-radius: 2.5px;
-  padding: 7px 22px;
+  padding: 2px 12px;
   background-color: #6AC977;
   color: white;
   text-shadow: 0px 1px 0 #3d9249;
@@ -10865,6 +10865,23 @@ header.masthead .post-heading .meta a {
 
   & img {
     width: 200px;
+  }
+}
+
+.web-header-logo{
+  background: white;
+  height: 250px; 
+  width: 250px;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  border-radius: 50%;
+  border-style: double;  
+  border-width: 3px;             
+  border-color: #010e28, rgb(255, 255, 255); 
+
+  & img {
+    width: 150px;
   }
 }
 
@@ -11039,4 +11056,347 @@ header.masthead .post-heading .meta a {
   .head-text{
     font-size: 2rem;
   }
+
+}
+
+
+  .parent-container {
+    position: relative;
+}
+
+// .head-content {
+//   padding: 0 5%;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: start;
+//   position: absolute;
+//   top: 0;
+//   height: 100%;
+//   width: 100%;
+//   z-index: 10;
+//   margin-top: 200px;
+// }
+
+
+
+// @media (min-width: 475px) {
+//   h1.head-text{
+//     font-size: 20px;
+//   }
+//   div.head-content{
+//     margin-top: 65px;
+//   }
+
+//   .web-logo {
+//     width: 115px;
+//     height: 115px;
+//   }
+
+//   .web-logo img {
+//     width: 100px;
+//   }
+    
+// }
+
+/* Default styles */
+.head-content {
+  padding: 0 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  margin-top: 200px;
+}
+
+.h4-text {
+  font-size: 24px;
+}
+
+#sub-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: inherit;
+  align-items: center;
+  justify-content: space-between;
+}
+
+ #navbarResponsive {
+  width: 100%;
+  display: flex;
+}
+
+.web-header-logo{
+  width: 75px;
+  height: 75px;
+  margin-left: 65px;
+  padding: 2px 7px;
+}
+
+.web-header-logo img {
+  width: 60px;
+}
+
+.main-nav{
+  display: flex;
+  padding: 10px 5% ;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background:linear-gradient(to left, #00173c, #011c4d), #fff;
+  position:absolute;
+  width: 100%;
+  z-index: 100;
+}
+
+.nav-logo{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: white;
+  border: 3px double #010e28, rgb(255, 255, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-logo img {
+  width: 70px;
+}
+
+.approvals{
+  margin-right: 80px;
+}
+
+.state-approvals{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// .approvals-text{
+
+// }
+
+
+.login ul{
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:30px ;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.login ul li {
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.login ul li:hover{
+  color: #9d151d;
+}
+
+.login-icons {
+   color: #9d151d;
+   cursor: pointer;
+}
+
+@media only screen and (max-width: 992px) {
+  
+  div.head-content {
+   
+    margin-top:145px; 
+  } 
+
+  #sub-container {
+    display: none;
+  }
+  .onboard-sec{
+    gap: 20px;
+  }
+  .onboard-btn {
+    font-size: 0.9rem;
+    border: 1px solid #6AC977;
+   
+    padding: 1px 5px;
+    
+    font-weight: normal;
+   
+    margin-left: 0.3rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.09);
+
+  }
+  h1.head-text{
+        font-size: 18px;
+      }
+  .web-logo {
+            width: 175px;
+            height: 175px;
+            border-width: 9px;             
+            border-style: double;
+          }
+        
+  .web-logo img {
+            width: 150px;
+  }
+
+  .web-header-logo{
+    width: 75px;
+    height: 75px;
+    margin-left: 3%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    padding: 2px 5px;
+  }
+  
+  .web-header-logo img {
+    max-width: 60px;
+    font-weight: 600;
+    height: auto;
+  }
+  
+}
+
+
+
+
+
+/* Media query for small screens */
+@media only screen and (max-width: 768px) {
+  div.head-content {
+   
+    margin-top:80px; 
+  } 
+
+  #sub-container {
+    display: none;
+  }
+  .onboard-sec{
+    gap: 18px;
+  }
+  .onboard-btn {
+    font-size: 0.7rem;
+    border: 1px solid #6AC977;
+   
+    padding: 1px 5px;
+    
+    font-weight: normal;
+   
+    margin-left: 0.3rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.09);
+
+  }
+  h1.head-text{
+        font-size: 16px;
+      }
+  .web-logo {
+            width: 115px;
+            height: 115px;
+            border-width: 6px;             
+            border-style: double;
+          }
+        
+  .web-logo img {
+            width: 95px;
+  }
+
+  .web-header-logo{
+    width: 40px;
+    height: 40px;
+    margin-left: 5%;
+    padding: 2px 5px;
+  }
+  
+  .web-header-logo img {
+    max-width: 35px;
+    font-weight: 600;
+    height: auto;
+  }
+
+  .nav-logo{
+    width: 40px;
+    height: 40px;
+  }
+  
+  .nav-logo img {
+    width: 35px;
+  }
+  
+  .login ul{
+    gap:20px ;
+  }
+  
+  .login-icons {
+     color: #9d151d;
+     font-size: 16px
+  }
+  
+  .approvals{
+    display: none;
+  }
+
+}
+
+/* Media query for large screens */
+@media only screen and (max-width: 280px) {
+  div.head-content {
+   
+    margin-top:45px; 
+  } 
+
+  #sub-container {
+    display: none;
+  }
+  .onboard-sec{
+    gap: 9px;
+  }
+  .onboard-btn {
+    font-size: 0.5rem;
+    border: 1px solid #6AC977;
+   
+    padding: 1px 5px;
+    
+    font-weight: normal;
+   
+    margin-left: 0.3rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.09);
+
+  }
+  h1.head-text{
+        font-size: 13px;
+      }
+  h4.h4-text {
+    font-size: 11px;
+    font-weight: 00;
+  }
+  .web-logo {
+            width: 80px;
+            height: 80px;
+            border-width: 5px;             
+            border-style: double;
+          }
+        
+  .web-logo img {
+            width: 65px;
+  }
+
+  .web-header-logo{
+    width: 30px;
+    height: 30px;
+    margin: 2px 2px;
+    padding: 2px 5px;
+  }
+  
+  .web-header-logo img {
+    max-width: 20px;
+    font-weight: 600;
+    height: auto;
+  }
+  
+
 }

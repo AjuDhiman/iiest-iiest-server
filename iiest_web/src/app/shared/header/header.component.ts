@@ -57,6 +57,10 @@ export class HeaderComponent implements OnInit {
   userData: any;
   constructor(private _registerService: RegisterService,
   private getDataService: GetdataService) {
+  
+  }
+  ngOnInit() { 
+    this.getUserData();
     if (this.width >= 1920) {
       this.isSideBar = true;
       this.isSidebarVisible = true;
@@ -70,15 +74,13 @@ export class HeaderComponent implements OnInit {
     else{
       this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: true});
     }
-  }
-  ngOnInit() { 
-    this.getUserImage();
-    this.getUserData();
    }
 
    getUserData() {
     const rawUserData: any = this._registerService.LoggedInUserData()
     this.userData = JSON.parse(rawUserData);
+    this.userImageId = this.userData.employeeImage;
+    this.getUserImage();
   }
 
 

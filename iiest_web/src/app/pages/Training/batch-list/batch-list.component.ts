@@ -6,7 +6,7 @@ import { faEye, faPen, faSave, faCross, faCancel } from '@fortawesome/free-solid
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { days, delhiTrainingLocations, months } from 'src/app/utils/config';
+import { days, delhiTrainingLocations, months, trainers, venues } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-batch-list',
@@ -18,6 +18,8 @@ export class BatchListComponent implements OnInit{
   activeTab: string = 'Delhi';
   filteredData: any;
   delhiTrainingLoactions = delhiTrainingLocations;
+  trainers: string[] = trainers;
+  venues: {name: string, vendor: string, location: string}[] = venues;
   totalCount: number = 1;
 
   typeData: any;

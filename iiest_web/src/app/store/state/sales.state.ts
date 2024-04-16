@@ -38,10 +38,8 @@ export class SalesState {
     }
     @Action(GetSales)
     getSales({getState, setState}:StateContext<SalesStateModel>){
-        console.log('State Action');
          this._getDataService.getSalesList().pipe(tap(res => {
             const state = getState();
-            console.log(res)
             setState({
                 ...state,
                 sales:res.salesInfo,

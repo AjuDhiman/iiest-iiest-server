@@ -426,7 +426,7 @@ exports.employeeImage = async (req, res) => {
 
         imageDownloadStream.on('error', () => {
             success = false;
-            return res.status(200).json({ success, defaultImage: '../../../assets/logo-side.png' })
+            return res.status(200).json({ success, defaultImage: 'assets/logo-side.png' })
         })
 
         let chunks = [];

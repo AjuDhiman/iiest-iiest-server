@@ -44,7 +44,7 @@
                   <th class="cell">Status</th>
                 </tr>
               </thead>
-              <tbody *ngIf="employeeList?.length>0">
+              <tbody *ngIf="!dataNotAvilable">
                 <tr
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                   <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
@@ -60,7 +60,7 @@
                   </td>
                 </tr>
               </tbody>
-              <tbody *ngIf="filteredData?.length==0">
+              <tbody *ngIf="dataNotAvilable">
                 <tr>
                   <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------
                   </td>
@@ -71,10 +71,11 @@
 
         </div><!--//app-card-body-->
       </div><!--//app-card-->
-      <div *ngIf="showPagination===true" class="d-flex justify-content-between">
+      <div *ngIf="!dataNotAvilable" class="d-flex justify-content-between">
         <div class="filtered-count">{{filteredData.length}} of {{empCount}}</div>
         <pagination-controls previousLabel="Prev" nextLabel="Next"
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div>
     </div>
+    <ngx-loading [show]="loading"></ngx-loading>
   </div>
