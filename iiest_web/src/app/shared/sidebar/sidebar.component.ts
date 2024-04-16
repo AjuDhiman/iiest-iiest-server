@@ -49,8 +49,10 @@ export class SidebarComponent {
   getUserData() {
     const rawUserData: any = this.registerService.LoggedInUserData()
     this.userData = JSON.parse(rawUserData);
-    this.userImageId = this.userData.employeeImage;
-    this.getUserImage();
+    if(this.userData) {
+      this.userImageId = this.userData.employeeImage;
+      this.getUserImage();
+    }
   }
   sideBarToggleValue() {
     this.sideBarToggleUpdate.emit(false);

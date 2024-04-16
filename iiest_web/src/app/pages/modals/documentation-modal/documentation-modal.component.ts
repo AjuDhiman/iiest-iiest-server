@@ -19,6 +19,7 @@ export class DocumentationModalComponent implements OnInit {
   lastSelectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false }; // this var will keep track of prev val of selected doc because we want it to be removed from from group if it deselected
   selectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false };
   shopId: string;
+  panelType: string;
 
   docsArr: any = [];
   submitted: boolean = false;
@@ -67,6 +68,7 @@ export class DocumentationModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getUserProductType();
     this.documentsForm = this.formBuilder.group({
     });
     this.filteredData = this.docList;
@@ -120,6 +122,12 @@ export class DocumentationModalComponent implements OnInit {
     }
   }
 
+  getUserProductType(): void {
+    let user: any = this._registerService.LoggedInUserData();
+    let parsedUser = JSON.parse(user);
+    this.panelType = parsedUser.panel_type;
+  }
+
 
   onUpload(): void {
     this.submitted = false;
@@ -143,6 +151,7 @@ export class DocumentationModalComponent implements OnInit {
     }
 
     formData.append('format', this.format);
+    formData.append('panelType', this.panelType);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
 
     if (this.selectedDoc.mutipleDoc) {
@@ -154,16 +163,29 @@ export class DocumentationModalComponent implements OnInit {
     }
 
     if (this.shopId) {
-      this._registerService.saveDocument(this.shopId, formData).subscribe({
-        next: res => {
-          if (res) {
-            this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
-            this.reloadData.emit();
-            this.getDocList();
-            this.loading = false;
+      if(this.panelType === "Foscos Panel") {
+        this._registerService.saveFoscosDocument(this.shopId, formData).subscribe({
+          next: res => {
+            if (res) {
+              this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
+              this.reloadData.emit();
+              this.getDocList();
+              this.loading = false;
+            }
           }
-        }
-      });
+        });
+      } else if(this.panelType === "HRA Panel") {
+        this._registerService.saveHraDocument(this.shopId, formData).subscribe({
+          next: res => {
+            if (res) {
+              this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
+              this.reloadData.emit();
+              this.getDocList();
+              this.loading = false;
+            }
+          }
+        });
+      }
     }
 
   }

@@ -10,10 +10,19 @@ exports.saveDocument = async (req, res) => {
 
         const file = req.files['document'];
         const id = req.params.id;
-        const { name, format, multipleDoc } = req.body;
+        const { name, format, multipleDoc, panelType } = req.body;
+        let ref = '';
+
+        if(panelType === "Foscos Panel") {
+            ref = "shopdetails";
+        } else if(panelType === "HRA Panel") {
+            ref = "hygienes";
+        };
+
+        console.log(panelType);
 
         const src = file.map(item => item.filename);
-        const uploadedDoc = await docsModel.create({ handlerInfo: id, name: name, format: format, multipleDoc: multipleDoc, src: src })
+        const uploadedDoc = await docsModel.create({ handlerInfo: id, ref: ref, name: name, format: format, multipleDoc: multipleDoc, src: src })
 
         if (!uploadedDoc) {
             res.status(401).json({ success: false, message: 'Document Saving Error' })

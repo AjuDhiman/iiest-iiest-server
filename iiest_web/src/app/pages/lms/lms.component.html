@@ -9,9 +9,9 @@
 				<div class="col-lg-12 mb-4 custom-border">
 					<div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start h-100"
 						style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
-						<div class="app-card-header p-3 mb-2 border-bottom-0">
+						<div class="app-card-header p-3 mb-2 border-bottom-0 leave-card">
 							<h4 class="app-card-title text-info pb-3">Annual Leave</h4>
-							<div class="row justify-content-end">
+							<div class="row availed-card">
 								<div class="col-lg-4 mb-3 d-flex align-items-center">
 									<div class="annualleave_image"></div>
 								</div>
@@ -33,7 +33,7 @@
 						style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
 						<div class="app-card-header p-3 mb-2 border-bottom-0">
 							<h4 class="app-card-title text-info pb-3">My Leave</h4>
-							<div class="row justify-content-end">
+							<div class="row availed-card">
 								<div class="col-lg-4 mb-3  d-flex align-items-center">
 									<div class="myLeave_image"></div>
 								</div>
@@ -54,7 +54,7 @@
 						style="background:rgb(246, 242, 242); border-right: 10px solid rgb(181, 181, 181);">
 						<div class="app-card-header p-3 mb-2 border-bottom-0">
 							<h4 class="app-card-title text-info pb-3">Restricted Holiday</h4>
-							<div class="row justify-content-end">
+							<div class="row availed-card">
 								<div class="col-lg-4 mb-3  d-flex align-items-center">
 									<div class="RH_image"></div>
 								</div>
@@ -75,11 +75,11 @@
 			<div class="col-12 col-lg-6" [ngClass]="isCalendar !== true  ? 'd-none' : 'd-block'">
 				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
 					<div class="app-card-header p-3  w-100">
-						<div class="row align-items-center gx-3">
-							<div class="col-lg-8">
+						<div class="row align-items-center gx-3 select-date-card">
+							<div class="col-lg-8 mt-2">
 								<h6 class="app-card-title text-xs text-danger mb-0 ">Select Your Leave Dates</h6>
 							</div>
-							<div class="col-lg-4 d-flex px-0 ">
+							<div class="col-lg-4 d-flex px-0 mt-2">
 								<button class="leftarrow" (click)="goToPreviousMonth()"></button>
 								<div class="month">{{showMonth}}</div>
 								<button class="rightarrow" (click)="goToNextMonth()"></button>
@@ -119,10 +119,10 @@
 							</div><!--//col-->
 						</div><!--//row-->
 					</div><!--//app-card-header-->
-					<div class="app-card-body p-0">
+					<div class="app-card-body p-0 w-100">
 						<div class="app-card-body p-0 overflow-auto" style="max-height: 500px;">
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item holiday-item" *ngFor="let holiday of holidays">
+								<li class="list-group-item holiday-item text-center" *ngFor="let holiday of holidays">
 									<span class="holiday-date fw-bold">{{holiday.day}}, {{holiday.date +
 										getDaySuffix(holiday.date)}} {{holiday.month}} {{holiday.year}}</span><br>
 									<span class="holiday-name text-secondary">{{holiday.holiday}} ({{holiday.leave_type}})</span>
@@ -137,15 +137,15 @@
 				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
 					<form [formGroup]="leaveForm">
 						<div class="container">
-							<div class="row mb-4" style="border-bottom: 3px solid #eee;">
-								<div class="col-lg-8 bg-white">
+							<div class="row mb-4 leave-count-card" style="border-bottom: 3px solid #eee;">
+								<div class="col-lg-8 bg-white pt-1">
 									<h3 class="app-card-title text-warning p-2 font-weight-bold">Total Leave Days</h3>
 								</div>
-								<div class="col-lg-2 bg-white text-warning border-start pr-1 Leave-count">
+								<div class="col-lg-2 bg-white text-warning border-start pr-1 leave-count">
 									{{ leave[0].annualLeave.available }}
 									<h6 class="app-card-title text-muted Leave-type">Annual Leave</h6>
 								</div>
-								<div class="col-lg-2 bg-white text-warning border-start Leave-count">
+								<div class="col-lg-2 bg-white text-warning border-start leave-count">
 									{{ leave[0].myLeave.available }}
 									<h6 class="app-card-title text-muted Leave-type">MyLeave</h6>
 								</div>
@@ -164,7 +164,7 @@
 										<div class="leave_dayDate text-muted">
 											<span [ngClass]="{'bold-date': selectedDate.date}">
 												{{ selectedDate.date | date: 'dd MMM yyy' }}
-											</span>
+											</span><br />
 											{{ selectedDate.date | date: ' EEEE' }}
 										</div>
 
