@@ -19,8 +19,8 @@ const generalData = new Schema({
         required: true
     },
     kob: {
-        typeof: Array,
-        // required: true
+        type: Array,
+        required: true
     }
 })
 

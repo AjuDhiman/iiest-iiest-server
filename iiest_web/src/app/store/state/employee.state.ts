@@ -40,10 +40,8 @@ export class EmployeeState {
     }
     @Action(GetEmployee)
     getEmployees({getState, setState}:StateContext<EmployeeStateModel>){
-        console.log('State Action');
          this._getDataService.getEmployeeData().pipe(tap(res => {
             const state = getState();
-            console.log(res)
             setState({
                 ...state,
                 employees:res.employeesData,
@@ -58,32 +56,7 @@ export class EmployeeState {
             }
         })
         
-       /*  this._getDataService.getGenericData().subscribe( {
-            next: (res) => { 
-              console.log(res)
-            },
-            error: (err) => {
-              let errorObj = err.error
-              this.error = true;
-              this.errorMgs = errorObj.message
-            },
-            complete: () =>{ 
-              //console.info('complete')
-            } 
-        }) */
-        // this._getDataService.getPincodesData().subscribe( {
-        //     next: (res) => { 
-        //       console.log(res)
-        //     },
-        //     error: (err) => {
-        //       let errorObj = err.error
-        //     //   this.error = true;
-        //     //   this.errorMgs = errorObj.message
-        //     },
-        //     complete: () =>{ 
-        //       //console.info('complete')
-        //     } 
-        // }) 
+     
     }
     @Action(UpdateEmployee)
     updateEmployee({getState, setState}:StateContext<EmployeeStateModel>, {objId, payload}: UpdateEmployee){

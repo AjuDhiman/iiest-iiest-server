@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class StatCardsComponent implements OnInit {
   departmentAndCount: Array<{ department: string, count: string, active: string, inactive: string }>
   department: string = '';
-  updatedSales: any;
+  salesData: any;
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
 
   @Output() emitDeptCount: EventEmitter<any> = new EventEmitter<any>
@@ -38,7 +38,7 @@ export class StatCardsComponent implements OnInit {
   getUserRecord():void {
     this._getDataService.getUserRecord().subscribe({
       next: (res) => {
-        this.updatedSales = res;
+        this.salesData = res[0];
       }
     })
   }
@@ -69,7 +69,7 @@ export class StatCardsComponent implements OnInit {
     modalRef.componentInstance.department = res;
   }
 
-  changeNameFormat(str:string): string {
+  changeNameFormat(str:any): string {
     let updatedStr: string =  str.toLocaleLowerCase().split(" ").join('_');
     updatedStr = updatedStr.replace('&', 'and');
     return updatedStr;

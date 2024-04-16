@@ -176,7 +176,7 @@
                             <span class="nav-link-text">Case List</span>
                         </a>
                     </li>
-                    <li *ngIf="userData && caseListRoles.includes(userData.designation) &&( userData.panel_type==='Fostac Panel' && userData.panel_type==='FSSAI Training Panel')"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation) &&( userData.panel_type==='Fostac Panel' || userData.panel_type==='FSSAI Training Panel')"
                         class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
@@ -189,7 +189,7 @@
                             <span class="nav-link-text">Training Calender</span>
                         </a>
                     </li>
-                    <li *ngIf="userData && caseListRoles.includes(userData.designation) && userData.panel_type==='HRA Panel'"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation) && (userData.panel_type==='HRA Panel' || userData.panel_type==='FSSAI Training Panel')"
                         class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"

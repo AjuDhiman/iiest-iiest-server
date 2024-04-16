@@ -181,10 +181,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   getMonthWisesaleData() {
     this._getDataService.getMonthWisesaleData().subscribe({
       next: res => {
+        let yearStart: Number;
+        let yearEnd: Number;
+        let today: Date = new Date();
+        if(today.getMonth() < 3){
+          yearStart = today.getFullYear()-1;
+          yearEnd = today.getFullYear();
+        } else {
+          yearStart = today.getFullYear();
+          yearEnd = today.getFullYear() + 1;
+        }
         const chartType = 'Area';
         const department = 'Sales Department';
         const chartTitle = 'Sales Chart';
-        const seriesName = `${new Date().getFullYear() - 1}-${new Date().getFullYear()} `;
+        const seriesName = `${yearStart}-${yearEnd} `;
         const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = false;

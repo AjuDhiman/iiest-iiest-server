@@ -32,9 +32,6 @@ export class SidebarComponent {
 
   ngOnInit(): void {
     this.getUserData();
-    this.getUserImage();
-    // this.getUserImage();
-    console.log(this.userData);
   }
 
   toggelStyle: object = {
@@ -52,6 +49,10 @@ export class SidebarComponent {
   getUserData() {
     const rawUserData: any = this.registerService.LoggedInUserData()
     this.userData = JSON.parse(rawUserData);
+    if(this.userData) {
+      this.userImageId = this.userData.employeeImage;
+      this.getUserImage();
+    }
   }
   sideBarToggleValue() {
     this.sideBarToggleUpdate.emit(false);

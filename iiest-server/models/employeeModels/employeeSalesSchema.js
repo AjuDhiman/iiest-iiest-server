@@ -50,7 +50,7 @@ const salesSchema = new Schema({
         default: 'Pending'
     },
     grand_total: {
-        type: String,
+        type: Number,
         required: true
     },
     invoiceId: {

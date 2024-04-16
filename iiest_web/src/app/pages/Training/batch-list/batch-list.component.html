@@ -90,7 +90,7 @@
                                                             class="form-select form-select-xs"
                                                             [formControlName]="'venue' + batch._id">
                                                             <option value="" disabled selected>Select Venue</option>
-                                                            <option value="IIEST">IIEST</option>
+                                                            <option *ngFor="let venue of venues" [value]="venue['name']">{{venue['name']}}</option>
                                                         </select>
                                                     </span>
                                                 </td>
@@ -107,7 +107,7 @@
                                                             class="form-select form-select-xs"
                                                             [formControlName]="'trainer' + batch._id">
                                                             <option value="" disabled selected>Select Trainer</option>
-                                                            <option value="Manisha Kumari">Manisha Kumari</option>
+                                                            <option *ngFor="let trainer of trainers" [value]="trainer">{{trainer}}</option>
                                                         </select>
                                                     </span>
                                                 </td>

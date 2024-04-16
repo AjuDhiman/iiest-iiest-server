@@ -43,9 +43,9 @@ export class LoginComponent implements OnInit {
   submitted = false;
   submittedFP = false;
   error: boolean = false;
-  errorMgs: string;
-  temporaryPassword: string;
-  newPasswordModal: any;
+  errorMgs: string = '';
+  temporaryPassword: string = '';
+  newPasswordModal: any = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -103,6 +103,8 @@ export class LoginComponent implements OnInit {
         next: (res) => {
           this._registerService.storeToken(res);
           this.activeModal.close();
+          const bodyElement = document.body;
+          bodyElement.classList.add('app');
           this.route.navigateByUrl('/home')
         },
         error: (err) => {
