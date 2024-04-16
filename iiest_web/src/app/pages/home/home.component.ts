@@ -149,7 +149,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: res => {
         const chartType = 'Column';
         const department = 'Sales Department';
-        const chartTitle = 'Product Sales Chart';
+        const chartTitle = 'Product Wise Sales';
         const seriesName = 'Products';
         const yAxisTitle = 'Sales Count';
         const data = res;
@@ -165,7 +165,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: res => {
         const chartType = 'Pie';
         const department = 'Sales Department';
-        const chartTitle = 'Area Wise Sales Chart';
+        const chartTitle = 'Area Wise Sales';
         const seriesName = 'State';
         const yAxisTitle = 'India';
         const data = res;
@@ -193,7 +193,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
         const chartType = 'Area';
         const department = 'Sales Department';
-        const chartTitle = 'Sales Chart';
+        const chartTitle = 'Sales Graph';
         const seriesName = `${yearStart}-${yearEnd} `;
         const yAxisTitle = 'Sales Count';
         const data = res;
@@ -218,7 +218,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: res => {
         const chartType = 'Column';
         const department = 'IT Department';
-        const chartTitle = 'Employee Sales Chart';
+        const chartTitle = 'Sales Employee Performence';
         const seriesName = 'Employee Sales';
         const yAxisTitle = '';
         const data = res;
@@ -235,7 +235,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: res => {
         const chartType = 'Column';
         const department = 'Sales Department';
-        const chartTitle = 'Customer Type Chart';
+        const chartTitle = 'Customer Type';
         const seriesName = 'Employee Sales';
         const yAxisTitle = 'Sales Count';
         const data = res;
@@ -253,7 +253,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.isChartDataAvailable = true;
         const chartType = 'Column';
         const department = 'HR Department';
-        const chartTitle = 'Customer Type Chart';
+        const chartTitle = 'Hirings';
         const seriesName = 'Hiring Performance Chart';
         const yAxisTitle = 'Department';
         const data = res;
@@ -268,7 +268,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   catchDeptCount($event: Array<{ department: string, count: number }>): void {
     const chartType = 'Column';
     const department = 'HR department';
-    const chartTitle = 'Employee Count By Department';
+    const chartTitle = 'Operation Person Performance';
     const seriesName = 'Department';
     const yAxisTitle = 'Employee Count';
     const data = $event.map((item: { department: string, count: number }) => {

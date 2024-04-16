@@ -50,18 +50,18 @@ export class HighchartDataModalComponent {
 
   ngOnInit() {
     switch (this.chartData.chartTitile) {
-      case 'Product Sales Chart':
+      case 'Product Wise Sales':
         this.fetchAllFboData();
         break;
-      case 'Area Wise Sales Chart': this.fetchFboDataByState();
+      case 'Area Wise Sales': this.fetchFboDataByState();
         break;
       case 'Employee Count By Department': this.getDepartmentdata();
         break;
-      case 'Customer Type Chart': this.fetchFboDataByClientType();
+      case 'Customer Type': this.fetchFboDataByClientType();
         break;
-      case 'Sales Chart': this.monthWiseFilter();
+      case 'Sales Graph': this.monthWiseFilter();
         break;
-      case 'Employee Sales Chart': this.employeeWiseFilter();
+      case 'Sales Employee Performence': this.employeeWiseFilter();
         break;
       }
   }

@@ -7,10 +7,12 @@ import { DepartmentListComponent } from 'src/app/pages/modals/department-list/de
 import drilldown from 'highcharts/modules/drilldown';
 import HighchartsMore from 'highcharts/highcharts-more';
 import Scrollbar from 'highcharts/modules/stock'
+import HighchartsAccessibility from 'highcharts/modules/accessibility';
 // import HighchartsExporting from 'highcharts/modules/exporting';
 // import HC_exporting from 'highcharts/modules/export-data';
 
 HighchartsMore(Highcharts);
+HighchartsAccessibility(Highcharts);
 // HighchartsExporting(Highcharts);
 // HC_exporting(Highcharts);
 drilldown(Highcharts);
