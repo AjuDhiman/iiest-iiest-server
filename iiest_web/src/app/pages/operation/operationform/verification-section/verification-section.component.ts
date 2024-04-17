@@ -133,7 +133,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.loading = true;
 
     this.setFormValidation();
 
@@ -213,6 +212,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.loading = false;
           if(err.error.locationErr){
             this._toastrService.error('Location not avilable');
+          } else if(err.error.emailErr) {
+            this._toastrService.error('This email already exists');
           } else {
             this._toastrService.error(err.error.messsage, 'Can\'t Verify');
           }
@@ -253,7 +254,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   getMoreCaseInfo(): void {
     this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
       next: (res) => {
-        console.log(res);
         if (this.productType === 'Fostac') {
           this.emitCustomerId.emit(res.populatedInfo.recipientId);
           this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
@@ -309,7 +309,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             }
           ]);
         } else if(this.productType === 'HRA') {
-          console.log(res);
           this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
@@ -369,7 +368,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   getFoscosVerifiedData() {
     this._getDataService.getFoscosVerifedData(this.candidateId).subscribe({
       next: res => {
-        console.log(res);
         if (res) {
           this.verifiedStatus = true;
           this.multiSelect.isDisplayEmpty = false;
@@ -390,7 +388,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   getHraVerifiedData() {
     this._getDataService.getHraVerifedData(this.candidateId).subscribe({
       next: res => {
-        console.log(res);
         if (res) {
           this.verifiedStatus = true;
           this.verificationForm.patchValue({ audit_date: this.getFormatedDate(res.verifedData.auditDate.toString()) });
@@ -427,7 +424,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     this.foodCategoryList = [];
     this.multiSelect.onReset();
     this.kobData.forEach((kob: any) => {
-      console.log($event.target.value, kob.name);
       if (kob.name === $event.target.value) {
         this.foodCategoryList = kob.food_category;
       }
@@ -500,7 +496,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   onOwnershipTypeChanges($event: any) {
-    console.log($event.target.value)
     if($event.target.value === 'Propaitorship') {
       this.minMembers=1;
     } else {

@@ -23,6 +23,12 @@ exports.fostacVerification = async (req, res, next) => {
 
         const isEditMode = req.body.isEditMode;
 
+        const checkEmail = await fostacVerifyModel.findOne({email: email});
+
+        if(checkEmail) {
+            return res.status(401).json({ success: false, emailErr: true });
+        }
+
         let clientdata = {
             product: 'fostac',
             recipientName: recipient_name,
@@ -140,6 +146,26 @@ exports.hraVerification = async (req, res, next) => {
 
         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
 
+        let clientData = {
+            product: 'hra',
+            managerName: manager_name,
+            fboName: fbo_name,
+            ownerName: owner_name,
+            recipientEmail: email,
+            managerContactNo: manager_contact_no,
+            address: address,
+            foodHandlerNo: food_handler_no,
+            pincode: pincode,
+            village: village,
+            tehsil: tehsil,
+            kindOfBusiness: kob,
+            auditDate: audit_date
+        }
+
+        if (addVerification) {
+            sendVerificationMail(clientData);
+        }
+
         // code for tracking ends
         if (!addVerification) {
             success = false;
@@ -237,12 +263,6 @@ exports.fostacEnrollment = async (req, res) => {
 
         const { tentative_training_date, fostac_training_date, username, password, roll_no, trainer, venue, email } = req.body;
 
-        let clientdata = {
-            product: 'fostac_enrollment',
-            fostacTrainingDate: fostac_training_date,
-            venue: venue,
-            recipientEmail: email
-        }
 
         const checkRollNo = await fostacEnrollmentModel.findOne({ roll_no });
 
@@ -257,6 +277,14 @@ exports.fostacEnrollment = async (req, res) => {
             .populate({
                 path: 'recipientInfo',
             });
+
+        let clientdata = {
+            product: 'fostac_enrollment',
+            recipientName: verifiedData.recipientInfo.name,
+            fostacTrainingDate: fostac_training_date,
+            venue: venue,
+            recipientEmail: email
+        }
 
         //this code is for tracking the flow of data regarding to a recipient
 
@@ -518,9 +546,7 @@ exports.ticketDelivery = async (req, res) => {
 
         const certificateFile = req.file;
 
-        const {ticket_status, issue_date} = req.body;
-
-        console.log(req.body);
+        const { ticket_status, issue_date } = req.body;
 
         if (!certificateFile && ticket_status === 'delivered') {
             success = false;
@@ -580,26 +606,24 @@ exports.getTicketDeliveryData = async (req, res) => {
     }
 }
 
-exports.getReverts = async(req, res) => {
+exports.getReverts = async (req, res) => {
     try {
 
         let success = false;
 
         const id = req.params.id;
 
-        console.log(id);
+        const reverts = await revertModel.find({ shopInfo: id }).populate({ path: 'operatorInfo' });
 
-        const reverts = await revertModel.find({shopInfo: id}).populate({path: 'operatorInfo'});
-
-        if(reverts){
-            success=true;
-            res.status(200).json({success, reverts });
-        } else{
+        if (reverts) {
+            success = true;
+            res.status(200).json({ success, reverts });
+        } else {
             res.status(204);
         }
-        
+
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message: "Internal Server Error"})
+        return res.status(500).json({ message: "Internal Server Error" })
     }
 }

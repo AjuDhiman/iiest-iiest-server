@@ -256,8 +256,17 @@ export class RegisterService {
     ));
   }
 
-  public saveDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
-    const url = `${this.url}/savedocuments/${objId}`
+  public saveFoscosDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savefoscosdocuments/${objId}`
+    console.log(objId, formInterface);
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public saveHraDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savehradocuments/${objId}`
     console.log(objId, formInterface);
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
