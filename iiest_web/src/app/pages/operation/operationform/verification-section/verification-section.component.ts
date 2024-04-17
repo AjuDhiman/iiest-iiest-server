@@ -133,7 +133,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.loading = true;
 
     this.setFormValidation();
 
