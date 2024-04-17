@@ -95,7 +95,6 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     }
     this.loading = true;//starts the loading
     if (this.verifiedDataId) {
-      console.log(this.verifiedData);
       const enrollmentData = { ...this.enrollmentForm.value, batchInfo: this.verifiedData.batchInfo, email: this.verifiedData.email };
       this._registerService.enrollRecipient(this.verifiedDataId, enrollmentData).subscribe({
         next: res => {
@@ -107,7 +106,6 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
           this.loading = false;
         },
         error: err => {
-          console.log(err.error);
           if (err.error.rollNoErr) this._toastrService.warning('Enrollment number already exsists');
           if (err.error.openBatchErr) this._toastrService.warning(`A ${err.error.openBatchCategory} batch at ${err.error.openBatchLocation} already exsists on ${this.getFormatedDate(err.error.openBatchDate)}`);
           this.loading = false;
@@ -121,7 +119,6 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     this._getDataService.getFostacEnrolledData(this.verifiedDataId).subscribe({
       next: res => {
         if (res) {
-          console.log(res);
           // we want to update enrollment form's value if it's data exsists in database and disable it 
           this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date[0].toString()) });
           this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });
