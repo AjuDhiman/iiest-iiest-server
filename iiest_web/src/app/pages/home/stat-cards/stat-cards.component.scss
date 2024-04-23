@@ -8,7 +8,7 @@
     transition: transform 0.8s;
 
     & .stats-type {
-        font-size: 16px;
+        font-size: 11px;
         height: 15px;
         vertical-align: middle;
         word-wrap: break-word;
@@ -71,7 +71,7 @@
     transition: transform 0.8s;
 
     & .stats-type {
-        font-size: 12px;
+        font-size: 13px;
         height: 40px;
         vertical-align: middle;
         word-wrap: break-word;
@@ -92,7 +92,7 @@
 }
 
 .icons-element {
-    height: 50px;
+    height: 60px;
     width: 50px;
     object-fit: fill;
     filter: grayscale(100%) sepia(100%) saturate(5000%) hue-rotate(206deg);
@@ -173,4 +173,9 @@
 
 .text-xs {
     font-size: 12px;
+}
+.bgimage{
+   // border:2px solid black;
+    width: 100%;
+    
 }
