@@ -2,8 +2,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { faMagnifyingGlass, faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { months } from 'src/app/utils/config';
+import { faMagnifyingGlass, faCheck, faXmark, IconDefinition, faL } from '@fortawesome/free-solid-svg-icons';
+import { Months, days, months } from 'src/app/utils/config';
 import { Select } from '@ngxs/store';
 import { SalesState } from 'src/app/store/state/sales.state';
 import { Observable, Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ export class HighchartDataModalComponent {
   allFBOEntries: any;
   searchQuery: string = '';
   filteredData: any;
-  selectedFilterSales: string = 'byFboName';
+  selectedFilterSales: string = 'generalsearch';
   selectedFilterHr: string = 'byEmployeeName';
   showPagination: boolean = false;
   filterValue: string;
@@ -31,6 +31,7 @@ export class HighchartDataModalComponent {
   itemsNumber: number = 10;
   employeeList: any;
   specificDatas: any;
+  isRepetCustData: boolean = false;
 
   //icons
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
@@ -63,15 +64,18 @@ export class HighchartDataModalComponent {
         break;
       case 'Sales Employee Performence': this.employeeWiseFilter();
         break;
-      }
+      case 'Repeated Customers': this.repeatedCustomerFilter();
+        break;
+    }
+
+    console.log(this.filteredData);
   }
 
   // -------this function is work for sales chart data of state wise---------
   fetchFboDataByState(): void {
-    console.log(this.chartData);
     this.sales$.subscribe(res => {
       console.log(res);
-      this.specificDatas = res.filter((item: any) =>((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
+      this.specificDatas = res.filter((item: any) => ((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
       this.salesDeptfilter();
       this.loading = false;
     })
@@ -84,12 +88,17 @@ export class HighchartDataModalComponent {
         if (res) {
           this.specificDatas = res.filter((item: any, index: number) => {
             if (item.fostacInfo) {
-              if (item.fostacInfo.fostac_client_type === this.chartData.filterValue) {
+              if (item.fostacInfo.fostac_client_type === this.chartData.filterValue && item.product_name.includes(this.chartData.interval)) {
                 return item;
               }
             }
             if (item.foscosInfo) {
-              if (item.foscosInfo.foscos_client_type === this.chartData.filterValue) {
+              if (item.foscosInfo.foscos_client_type === this.chartData.filterValue && item.product_name.includes(this.chartData.interval)) {
+                return item;
+              }
+            }
+            if (item.hraInfo) {
+              if (item.hraInfo.hra_client_type === this.chartData.filterValue && item.product_name.includes(this.chartData.interval)) {
                 return item;
               }
             }
@@ -103,19 +112,20 @@ export class HighchartDataModalComponent {
 
   // -------this function is work for sales department data acc to logged user--------
   fetchAllFboData(): void {
+
     this.sales$.subscribe({
       next: (res) => {
         if (res) {
           this.filterValue = this.chartData.filterValue.charAt(0).toUpperCase() + this.chartData.filterValue.slice(1);
-            if (this.chartData.salesCategory === 'Fostac') {
-              this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
-            } else if(this.chartData.salesCategory === 'Foscos') {
-              this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
-            } else if(this.chartData.salesCategory === 'HRA') {
-              this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.hraInfo.hra_service_name === this.filterValue));
-            }
-            this.salesDeptfilter();
-            this.loading = false;
+          if (this.chartData.salesCategory === 'Fostac') {
+            this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.fostacInfo.fostac_service_name === this.filterValue));
+          } else if (this.chartData.salesCategory === 'Foscos') {
+            this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
+          } else if (this.chartData.salesCategory === 'HRA') {
+            this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.hraInfo.hra_service_name === this.filterValue));
+          }
+          this.salesDeptfilter();
+          this.loading = false;
         }
       },
       error: (err) => {
@@ -160,10 +170,21 @@ export class HighchartDataModalComponent {
   }
 
   salesDeptfilter(): void {
+    this.filterByInterval();
     if (!this.searchQuery) {
       this.filteredData = this.specificDatas;
     } else {
       switch (this.selectedFilterSales) {
+        case 'generalsearch':
+          this.filteredData = this.specificDatas.
+            filter(
+              (elem: any) => (elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+                elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                elem.fboInfo.customer_id.includes(this.searchQuery)
+            );
+          break;
         case 'byOwner': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
         case 'byLocation': this.filteredData = this.specificDatas.filter((elem: any) => (elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())));
@@ -175,33 +196,36 @@ export class HighchartDataModalComponent {
       }
     }
     this.filteredData ? this.showPagination = true : this.showPagination = false;
-    this.loading= false;
+    this.loading = false;
   }
 
-  monthWiseFilter(){
+  monthWiseFilter() {
     this.sales$.subscribe(res => {
-      if(res) {
-        const filterValue : string[] = this.chartData.filterValue.split('-');
+      if (res) {
+        console.log(days.indexOf(this.chartData.filterValue));
+        const filterValue: string[] = this.chartData.filterValue.split('-');
         console.log(filterValue);
         const day = filterValue[0];
-        const month = months.findIndex((item:string) => item === filterValue[1]);
+        const month = months.findIndex((item: string) => item === filterValue[1]);
         let year = new Date().getFullYear();
-        // if(month > 2){
-        //   year = year-1
-        // }
+
+        switch (this.chartData.interval) {
+          case 'This_Week':
+            this.specificDatas = res.filter((item: any) => new Date(item.createdAt).getUTCDay() === days.indexOf(filterValue[0]));
+            break;
+          case 'This_Month':
+            this.specificDatas = res.filter((item: any) => new Date(item.createdAt).getUTCDate() === Number(filterValue[0]));
+            break;
+          case 'This_Year':
+            this.specificDatas = res.filter((item: any) => new Date(item.createdAt).getUTCMonth() === Months.indexOf(filterValue[0]));
+            break;
+        }
+
+        console.log(this.specificDatas);
 
         let saleDate = new Date(res[res.length - 1].createdAt);
-
-        this.specificDatas = res.filter((item: any) => {
-          const saleDate = new Date(item.createdAt);
-          if(saleDate.getFullYear() == year && saleDate.getMonth() == month && (saleDate.getDate() == Number(day))){
-            return 1;
-          } else {
-            return 0;
-          }
-        });
         this.salesDeptfilter();
-        this.loading=false;
+        this.loading = false;
       }
     })
   }
@@ -209,10 +233,9 @@ export class HighchartDataModalComponent {
   employeeWiseFilter() {
     this.sales$.subscribe({
       next: (res) => {
-        if(res) {
-          this.specificDatas = res.filter((item: any) => 
-          {
-            if(item.employeeInfo) {
+        if (res) {
+          this.specificDatas = res.filter((item: any) => {
+            if (item.employeeInfo) {
               return item.employeeInfo.employee_name.toLowerCase() == this.chartData.filterValue.toLowerCase()
             }
             return 0;
@@ -259,5 +282,155 @@ export class HighchartDataModalComponent {
           break;
       }
     }
+  }
+
+  // Method to calculate the processing amount for each row
+  calculateProcessingAmount(employee: any): number {
+    let processingAmount = 0;
+
+
+    if (employee.product_name) {
+      // Calculate processing amount based on the product name
+      employee.product_name.forEach((product: any) => {
+
+        if (product == "Fostac") {
+          processingAmount += employee.fostacInfo.fostac_processing_amount * employee.fostacInfo.recipient_no;
+        }
+        if (product == "Foscos") {
+          let watertest = 0;
+          if (employee.foscosInfo.water_test_fee != 0) {
+            watertest = employee.foscosInfo.water_test_fee - 1200;
+          }
+
+          processingAmount += (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
+        }
+        if (product == "HRA") {
+          processingAmount += employee.hraInfo.hra_processing_amount * employee.hraInfo.shops_no;
+        }
+      });
+    }
+
+    return processingAmount;
+  }
+
+  filterByInterval() {
+    const today = new Date()
+    let yearStart, yearEnd;
+    const todayDate = new Date();
+    const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+    // const startOfToday = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate(), 0, 0, 0));
+    const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
+    const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
+    const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
+    const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
+    if(this.chartData.chartTitile === 'Repeated Customers'){
+      switch (this.chartData.interval) {
+        case 'today':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfToday.getTime());
+          break
+        case 'This_Week':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfThisWeek.getTime());
+          break
+        case 'This_Month':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfThisMonth.getTime());
+          break
+        case 'Prev_Month':
+          this.specificDatas = this.specificDatas.filter((item: any) => (new Date(item.lastSaleDate).getTime() > startOfPrevMonth.getTime())
+            && (new Date(item.createdAt).getTime() < startOfThisMonth.getTime()));
+          break
+        case 'This_Year':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfThisYear.getTime());
+          break
+      }
+    } else {
+      switch (this.chartData.interval) {
+        case 'today':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.createdAt).getTime() > startOfToday.getTime());
+          break
+        case 'This_Week':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.createdAt).getTime() > startOfThisWeek.getTime());
+          break
+        case 'This_Month':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.createdAt).getTime() > startOfThisMonth.getTime());
+          break
+        case 'Prev_Month':
+          this.specificDatas = this.specificDatas.filter((item: any) => (new Date(item.createdAt).getTime() > startOfPrevMonth.getTime())
+            && (new Date(item.createdAt).getTime() < startOfThisMonth.getTime()));
+          break
+        case 'This_Year':
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.createdAt).getTime() > startOfThisYear.getTime());
+          break
+      }
+    }
+    
+  }
+
+  repeatedCustomerFilter() {
+    this.isRepetCustData = true;
+    this.sales$.subscribe(res => {
+      let distinctCustomers: string[] = [];
+      let consolidatedData: any = [];
+      res.sort((a:any, b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      res.forEach((item: any) => {
+        if (!distinctCustomers.includes(item.fboInfo.customer_id)) {
+          consolidatedData.push({ ...item, repetition_count: 1, lastSaleDate: item.createdAt });
+          distinctCustomers.push(item.fboInfo.customer_id);
+        } else {
+          let index = consolidatedData.findIndex((elem: any) => elem.fboInfo.customer_id === item.fboInfo.customer_id);
+          if(new Date(item.createdAt).getTime() > new Date(item.lastSaleDate).getTime()){
+            item.lastSaleDate = item.createdAt;
+          }
+          consolidatedData[index].repetition_count++;
+        }
+      });
+      if (this.chartData.interval === 'This_Year') {
+        this.specificDatas = consolidatedData.filter((item: any) => new Date(item.lastSaleDate).getUTCMonth() == Months.indexOf(this.chartData.filterValue));
+      } else if (this.chartData.interval === 'Till_Now') {
+        this.specificDatas = consolidatedData.filter((item: any) => new Date(item.lastSaleDate).getUTCFullYear() == this.chartData.filterValue);
+      }
+
+      this.specificDatas = this.specificDatas.filter((item: any) => {
+        let count = 0;
+        if(item.repetition_count > 1){
+          console.log(new Date(item.createdAt).getUTCFullYear(), item.createdAt, new Date(item.createdAt).getFullYear(), count++);
+            return 1
+        } else {
+          return 0
+        }
+       
+      });
+
+      this.salesDeptfilter();
+      this.loading = false;
+    })
+  }
+
+  getFormattedSalesDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    let suffix = "";
+    if (day === 1 || day === 21 || day === 31) {
+      suffix = "st";
+    } else if (day === 2 || day === 22) {
+      suffix = "nd";
+    } else if (day === 3 || day === 23) {
+      suffix = "rd";
+    } else {
+      suffix = "th";
+    }
+    return `${day}${suffix} ${month} ${year}`;
+  }
+
+  viewCustomerSales(customerId: string): void {
+    if (this.chartData.chartTitile != 'Repeated Customers') {
+      return;
+    }
+    this.sales$.subscribe(res => {
+      this.isRepetCustData = false;
+      this.specificDatas = res.filter((item: any) => item.fboInfo.customer_id == customerId);
+      this.salesDeptfilter();
+    });
   }
 }

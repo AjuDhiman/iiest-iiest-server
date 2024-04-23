@@ -11,6 +11,83 @@ exports.employeeRecord = async (req, res) => {
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
 
+        const pipeLineArr = [
+            {
+                $group: {
+                    _id: 3,
+                    totalProcessingAmount: {
+                        $sum: {
+                            $sum: [
+                                { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                {
+                                    $add: [
+                                        {
+                                            $cond: [
+                                                { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] },
+                                                { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
+                                                0 // Otherwise, leave it as 0
+                                            ]
+                                        },
+                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    pending: {
+                        $sum: {
+                            $cond: {
+                                if: { $eq: ["$checkStatus", "Pending"] }, then: {
+                                    $sum: [
+                                        { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                        { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                        {
+                                            $add: [
+                                                {
+                                                    $cond: [
+                                                        { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] },
+                                                        { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
+                                                        0 // Otherwise, leave it as 0
+                                                    ]
+                                                },
+                                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                            ]
+                                        }
+                                    ]
+                                }, else: 0
+                            }
+                        }
+                    },
+                    approved: {
+                        $sum: {
+                            $cond: {
+                                if: { $eq: ["$checkStatus", "Approved"] }, then: {
+                                    $sum: [
+                                        { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                        { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                        {
+                                            $add: [
+                                                {
+                                                    $cond: [
+                                                        { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] },
+                                                        { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
+                                                        0 // Otherwise, leave it as 0
+                                                    ]
+                                                },
+                                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                            ]
+                                        }
+                                    ]
+                                }, else: 0
+                            }
+                        }
+                    }
+
+                }
+            }
+        ];
+
         const pipeline = [
             {
                 $facet: {
@@ -20,142 +97,48 @@ exports.employeeRecord = async (req, res) => {
                                 createdAt: { $gte: startOfToday },
                             }
                         },
-                        {
-                            $group: {
-                                _id: 1,
-                                total: { $sum: "$grand_total" },
-                                pending: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
-                                    }
-                                },
-                                approved: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
-                                    }
-                                }
-                            }
-                        }
+                        ...pipeLineArr
                     ],
                     this_week: [
                         {
                             $match: {
                                 createdAt: { $gte: startOfThisWeek },
-                             
                             }
                         },
-                        {
-                            $group: {
-                                _id: 2,
-                                total: { $sum: "$grand_total" },
-                                pending: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
-                                    }
-                                },
-                                approved: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
-                                    }
-                                }
-                            }
-                        }
+                        ...pipeLineArr
                     ],
                     this_month: [
                         {
                             $match: {
                                 createdAt: { $gte: startOfThisMonth },
-                             
                             }
                         },
-                        {
-                            $group: {
-                                _id: 3,
-                                total: { $sum: "$grand_total" },
-                                pending: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
-                                    }
-                                },
-                                approved: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
-                                    }
-                                }
-                            }
-                        }
+                        ...pipeLineArr
                     ],
                     prev_month: [
                         {
                             $match: {
                                 createdAt: { $gte: startOfPrevMonth, $lt: startOfThisMonth },
-                             
                             }
                         },
-                        {
-                            $group: {
-                                _id: 4,
-                                total: { $sum: "$grand_total" },
-                                pending: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "pending"] }, then: "$grand_total", else: 0 }
-                                    }
-                                },
-                                approved: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "approved"] }, then: "$grand_total", else: 0 }
-                                    }
-                                }
-                            }
-                        }
+                        ...pipeLineArr
                     ],
                     this_year: [
                         {
                             $match: {
                                 createdAt: { $gte: startOfThisYear },
-                             
                             }
                         },
-                        {
-                            $group: {
-                                _id: 5,
-                                total: { $sum: "$grand_total" },
-                                pending: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
-                                    }
-                                },
-                                approved: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
-                                    }
-                                }
-                            }
-                        }
+                        ...pipeLineArr
                     ],
                     till_now: [
-                        {
-                            $group: {
-                                _id: 6,
-                                total: { $sum: "$grand_total" },
-                                pending: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Pending"] }, then: "$grand_total", else: 0 }
-                                    }
-                                },
-                                approved: {
-                                    $sum: {
-                                        $cond: { if: { $eq: ["$checkStatus", "Approved"] }, then: "$grand_total", else: 0 }
-                                    }
-                                }
-                            }
-                        }
+                        ...pipeLineArr
                     ],
                 }
             }
         ];
 
-        if(req.user.designation !== 'Director'){
+        if (req.user.designation !== 'Director') {
             pipeline.unshift({
                 $match: {
                     employeeInfo: req.user._id,

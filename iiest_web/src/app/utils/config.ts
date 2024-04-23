@@ -2,9 +2,9 @@ const testEnv = false;
 const prodEnv = false;
 
 export const config = {
-   API_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000/iiest'),
+   API_URL: prodEnv?'https://prod':(testEnv?'http://54.235.121.184:3001/iiest':'http://localhost:3000/iiest'),
    // API_URL: 'https://iiest-server.onrender.com'
-   DOC_URL: prodEnv?'https://prod':(testEnv?'https://test':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
+   DOC_URL: prodEnv?'https://prod':(testEnv?'http://54.235.121.184':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
 }
 
 //Water test Fee
@@ -454,17 +454,19 @@ export class chartData {
    data: any;
    isDrilldown: any;
    showIntervalSelection: boolean;
+   selectedInterval: string;
    otherChartTypeOptions: string[];
 
-   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: any, isDrilldown: boolean, showIntervalSelection = false, otherChartTypeOptions: string[] = []) {
+   constructor(chartType: string = 'column', department: string, chartTitle: string, seriesName: string, yAxisTitle: string, data: any, isDrilldown: boolean, showIntervalSelection = false, selectedInterval = '', otherChartTypeOptions: string[] = []) {
       this.chartType = chartType;
       this.department = department;
       this.chartTitle = chartTitle;
       this.seriesName = seriesName;
       this.yAxisTitle = yAxisTitle;
       this.data = data;
-      this.isDrilldown = isDrilldown
+      this.isDrilldown = isDrilldown;
       this.showIntervalSelection = showIntervalSelection;
+      this.selectedInterval = selectedInterval;
       this.otherChartTypeOptions = otherChartTypeOptions;
    }
 }
@@ -472,3 +474,5 @@ export class chartData {
 export const days: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
 
 export const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+
+export const Months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

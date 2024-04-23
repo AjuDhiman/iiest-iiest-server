@@ -4,8 +4,8 @@ const { employeeFormData, getPostData, getPincodesData } = require('../controlle
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, salesData} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
-const { getTopSalesPersons, getTopProducts, getEmpUnderManager } = require('../controllers/employeeControllers/statList');
-const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, getAreaWiseFboData } = require('../controllers/employeeControllers/Highcharts');
+const { getTopSalesPersons, getTopProducts, getEmpUnderManager, mostRepeatedCustomer } = require('../controllers/employeeControllers/statList');
+const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, getAreaWiseFboData, getRepeactCustomerData, getData } = require('../controllers/employeeControllers/Highcharts');
 
 const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
@@ -35,13 +35,14 @@ router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager);
 router.get('/getproductsaledata',authMiddleware, getProductSaleData);
 router.get('/getareawisesaledata', authMiddleware, getAreaWiseSalesData);
 router.get('/getpersonwisesaledata', authMiddleware, getPersonWiseSalesData);
-router.get('/getclienttypesaledata', authMiddleware, getClientTypeSalesData);
+router.get('/getclienttypesaledata', authMiddleware , getClientTypeSalesData);
 router.get('/getmothwisesale', authMiddleware, getMonthWiseSaleData);
 router.get('/gettopsalespersons', authMiddleware, getTopSalesPersons);
+router.get('/getmostrepeatedcust', mostRepeatedCustomer);
+router.get('/getrepeatedcustdata',authMiddleware, getRepeactCustomerData);
 router.get('/gettopproducts', authMiddleware, getTopProducts);
 router.get('/getempundermanager', authMiddleware, getEmpUnderManager);
+router.get('/getdata', getData);
 // router.get('/getsalesdata', salesData); // api in development for getting optimized sales list
-
-// router.get('/getareawisefbo', authMiddleware , getAreaWiseFboData);
 
 module.exports = router;

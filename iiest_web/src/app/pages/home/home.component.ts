@@ -7,7 +7,7 @@ import { Employee } from 'src/app/utils/registerinterface';
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { RegisterService } from 'src/app/services/register.service';
 import { faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { chartData, months, salesManagerRoles, salesOfficersRoles } from 'src/app/utils/config';
+import { Months, chartData, days, months, salesManagerRoles, salesOfficersRoles } from 'src/app/utils/config';
 import { SalesState } from 'src/app/store/state/sales.state';
 import { GetSales } from 'src/app/store/actions/sales.action';
 
@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clientTypeChartData: chartData;
   empHiringChartData: chartData;
   salesPersonChartData: chartData;
+  repetedCustChartData: chartData;
 
   //condtional variables
   isNameVisible: boolean = false;
@@ -98,6 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.getAreaWiseSaleData();
       this.getClientTypeSaleData();
       this.getMonthWisesaleData();
+      this.getRepeatedCustomerData();
     }
 
     if (this.empDesigantion === 'Director') {
@@ -140,7 +142,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.dnone = false;
         this.msg.unsubscribe()
       }
-    })
+    });
   }
 
   //functions for fetching data from backend and passing them to highcharts
@@ -151,11 +153,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         const department = 'Sales Department';
         const chartTitle = 'Product Wise Sales';
         const seriesName = 'Products';
-        const yAxisTitle = 'Sales Count';
+        const yAxisTitle = 'Sales Amount';
         const data = res;
-        const showIntervalSelection = false;
+        const showIntervalSelection = true;
+        const selectedInterval: string = 'This_Year';
         const isDrillDown = true;
-        this.productSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+        this.productSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
       }
     });
   }
@@ -169,10 +172,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         const seriesName = 'State';
         const yAxisTitle = 'India';
         const data = res;
-        const showIntervalSelection = false;
+        const showIntervalSelection = true;
+        const selectedInterval: string = 'This_Year';
         const isDrillDown = true;
         const otherChartTypeOptions = ['column']
-        this.areaSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+        this.areaSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
         // this.loading = false;
       }
     });
@@ -191,24 +195,27 @@ export class HomeComponent implements OnInit, OnDestroy {
           yearStart = today.getFullYear();
           yearEnd = today.getFullYear() + 1;
         }
-        const chartType = 'Area';
+        const chartType = 'Line';
         const department = 'Sales Department';
         const chartTitle = 'Sales Graph';
         const seriesName = `${yearStart}-${yearEnd} `;
         const yAxisTitle = 'Sales Count';
         const data = res;
-        const showIntervalSelection = false;
-        const isDrillDown = true;
-        const otherChartTypeOptions = ['Line'];
-        for (let i = 0; i < data.length; i++) {
-          const month = months[data[i].name - 1];
-          const year = data[i].date.year;
-          data[i].name = month + "-" + year;
-          for (let j = 0; j < data[i].categories.length; j++) {
-            data[i].categories[j].name = `${data[i].categories[j].name}-${month}`;
-          }
-        }
-        this.monthSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, otherChartTypeOptions);
+        const showIntervalSelection = true;
+        const selectedInterval: string = 'This_Year';
+        const isDrillDown = false;
+        const otherChartTypeOptions = ['Area'];
+        console.log(data);
+        data['This_Week'].forEach((item:any) => {
+          item.name = days[item.name-1];
+        });
+        data['This_Month'].forEach((item:any) => {
+          item.name = `${item.name}-${Months[new Date().getMonth()]}`;
+        });
+        data['This_Year'].forEach((item:any) => {
+          item.name = Months[item.name-1];
+        });
+        this.monthSalesChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
       }
     });
   }
@@ -222,10 +229,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         const seriesName = 'Employee Sales';
         const yAxisTitle = '';
         const data = res;
-        const showIntervalSelection = false;
+        const showIntervalSelection = true;
+        const selectedInterval: string = 'This_Year';
         const isDrillDown = false;
-        const otherChartTypeOptions = ['']
-        this.salesPersonChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+        const otherChartTypeOptions = [''];
+        this.salesPersonChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
       }
     });
   }
@@ -239,10 +247,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         const seriesName = 'Employee Sales';
         const yAxisTitle = 'Sales Count';
         const data = res;
-        const showIntervalSelection = false;
+        const showIntervalSelection = true;
         const isDrillDown = false;
-        const otherChartTypeOptions = ['']
-        this.clientTypeChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+        const otherChartTypeOptions = [''];
+        const selectedInterval: string = 'Fostac';
+        this.clientTypeChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
       }
     });
   }
@@ -260,7 +269,29 @@ export class HomeComponent implements OnInit, OnDestroy {
         const showIntervalSelection = false;
         const isDrillDown = false;
         const otherChartTypeOptions = ['']
-        this.empHiringChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection);
+        const selectedInterval: string = 'This_Year';
+        this.empHiringChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
+      }
+    });
+  }
+
+  getRepeatedCustomerData() {
+    this._getDataService.getRepeatedCustomerData().subscribe({
+      next: res => {
+        const chartType = 'Pie';
+        const department = 'Sales Department';
+        const chartTitle = 'Repeated Customers';
+        const seriesName = 'Repeated Customers';
+        const yAxisTitle = 'Count';
+        const data = res;
+        const showIntervalSelection = true;
+        const selectedInterval: string = 'This_Year';
+        const isDrillDown = false;
+        const otherChartTypeOptions = [''];
+        data['This_Year'].forEach((item:any) => {
+          item.name = Months[item.name-1]
+        })
+        this.repetedCustChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
       }
     });
   }
@@ -278,9 +309,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     })
     const showIntervalSelection = false;
+    const selectedInterval: string = 'This_Year';
     const isDrillDown = false;
     const otherChartTypeOptions = [''];
-    this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown);
+    this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown,selectedInterval );
   }
 
   getEmployeeUnderManager() {

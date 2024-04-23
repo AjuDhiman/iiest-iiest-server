@@ -47,8 +47,8 @@
 			<div class="col-12 col-lg-6 mb-3" *ngIf="empDepartment==='HR Department' || empDepartment=='IT Department'">
 				<app-highcharts [chartData]="deptData"></app-highcharts>
 			</div>
-			<div class="col-12 col-lg-6 mb-3" *ngIf="empDepartment==='HR Department' || empDepartment=='IT Department' && isChartDataAvailable===true">
-				<app-highcharts [chartData]="empHiringChartData"></app-highcharts>
+			<div class="col-12 col-lg-6 mb-3" *ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
+				<app-highcharts [chartData]="repetedCustChartData"></app-highcharts>
 			</div>
 		</div>
 
