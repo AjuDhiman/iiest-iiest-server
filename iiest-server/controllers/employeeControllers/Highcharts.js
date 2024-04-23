@@ -3,6 +3,9 @@ const fboModel = require("../../models/fboModels/fboSchema");
 
 //api for product sales highchart
 exports.getProductSaleData = async (req, res) => {
+    const todayDate = new Date();
+    const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
+    const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
     try {
 
         let productSaleData;
@@ -11,15 +14,76 @@ exports.getProductSaleData = async (req, res) => {
 
             productSaleData = await salesModel.aggregate([
                 {
-                    $project: {
-                        name: { $cond: [{ $ifNull: ["$fostacInfo", false] }, "Fostac", "Foscos"] },
-                        service_name: { $ifNull: ["$fostacInfo.fostac_service_name", "$foscosInfo.foscos_service_name"] }
+                    $match: {
+                        createdAt: { $gte: startOfThisMonth }
                     }
                 },
                 {
+                    $project: {
+                        name: {
+                            $cond: [
+                                { $ifNull: ["$fostacInfo", false] },
+                                "Fostac",
+                                {
+                                    $cond: [
+                                        { $ifNull: ["$foscosInfo", false] },
+                                        "Foscos",
+                                        "HRA"
+                                    ]
+                                }
+                            ]
+                        },
+                        service: {
+                            $cond: [
+                                { $ifNull: ["$fostacInfo", false] },
+                                {
+                                    name: "$fostacInfo.fostac_service_name",
+                                    amt: {
+                                        $multiply: [
+                                            { $toInt: "$fostacInfo.fostac_processing_amount" },
+                                            { $toInt: "$fostacInfo.recipient_no" }
+                                        ]
+                                    }
+                                },
+                                {
+                                    $cond: [
+                                        { $ifNull: ["$foscosInfo", false] },
+                                        {
+                                            name: "$foscosInfo.foscos_service_name",
+                                            amt: {
+                                                $add: [
+                                                    {
+                                                        $multiply: [
+                                                            { $toInt: "$foscosInfo.foscos_processing_amount" },
+                                                            { $toInt: "$foscosInfo.shops_no" }
+                                                        ]
+                                                    },
+                                                    { $toInt: "$foscosInfo.water_test_fee" }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            name: "$hraInfo.hra_service_name",
+                                            amt: {
+                                                $multiply: [
+                                                    { $toInt: "$hraInfo.hra_processing_amount" },
+                                                    { $toInt: "$hraInfo.shops_no" }
+                                                ]
+                                            },
+                                            processing_amt: "$hraInfo.hra_processing_amount",
+                                            qty: "$hraInfo.shops_no"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+
+                },
+                {
                     $group: {
-                        _id: { name: "$name", category: "$service_name", date: "$createdAt" },
-                        value: { $sum: 1 }
+                        _id: { name: "$name", category: "$service.name" },
+                        value: { $sum: "$service.amt" }
                     }
                 },
                 {
@@ -29,11 +93,7 @@ exports.getProductSaleData = async (req, res) => {
                         categories: {
                             $push: {
                                 name: "$_id.category",
-                                value: "$value",
-                                // modalData: {
-                                //     headers: ['Sale Date'],
-                                //     values: ['$name']
-                                // }
+                                value: "$value"
                             }
                         }
                     }
@@ -54,39 +114,90 @@ exports.getProductSaleData = async (req, res) => {
         } else {
             productSaleData = await salesModel.aggregate([
                 {
-                    $match: { "employeeInfo": req.user._id } // Filter based on the employeeInfo property
+                    $match: {
+                        "employeeInfo": req.user._id,
+                        createdAt: { $gte: startOfThisMonth }
+                    } // Filter based on the employeeInfo property
                 },
                 {
                     $project: {
                         name: {
                             $cond: [
-                                { $ifNull: ["$fostacInfo", false] }, 
-                                "Fostac", 
-                                { $cond: [
-                                    { $ifNull: ["$foscosInfo", false] },
-                                    "Foscos",
-                                    "HRA"
-                                ]}
+                                { $ifNull: ["$fostacInfo", false] },
+                                "Fostac",
+                                {
+                                    $cond: [
+                                        { $ifNull: ["$foscosInfo", false] },
+                                        "Foscos",
+                                        "HRA"
+                                    ]
+                                }
                             ]
                         },
-                        service_name: {
+                        service: {
                             $cond: [
-                                { $ifNull: ["$fostacInfo", false] }, 
-                                "$fostacInfo.fostac_service_name", 
-                                { $cond: [
-                                    { $ifNull: ["$foscosInfo", false] },
-                                    "$foscosInfo.foscos_service_name",
-                                    "$hraInfo.hra_service_name"
-                                ]}
+                                { $ifNull: ["$fostacInfo", false] },
+                                {
+                                    name: "$fostacInfo.fostac_service_name",
+                                    amt: {
+                                        $multiply: [
+                                            { $toInt: "$fostacInfo.fostac_processing_amount" },
+                                            { $toInt: "$fostacInfo.recipient_no" },
+                                        ]
+                                    }
+                                },
+                                {
+                                    $cond: [
+                                        { $ifNull: ["$foscosInfo", false] },
+                                        {
+                                            name: "$foscosInfo.foscos_service_name",
+                                            amt: {
+                                                $add: [
+                                                    {
+                                                        $multiply: [
+                                                            { $toInt: "$foscosInfo.foscos_processing_amount" },
+                                                            { $toInt: "$foscosInfo.shops_no" }
+                                                        ]
+                                                    },
+                                                    {
+                                                        $subtract: [
+                                                            { $toInt: "$foscosInfo.water_test_fee" },
+                                                            {
+                                                                $cond: {
+                                                                    if: {
+                                                                        $eq: [{ $toInt: "$foscosInfo.water_test_fee" }, 0]
+                                                                    },
+                                                                    then: 0,
+                                                                    else: 1200
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            name: "$hraInfo.hra_service_name",
+                                            amt: {
+                                                $multiply: [
+                                                    { $toInt: "$hraInfo.hra_processing_amount" },
+                                                    { $toInt: "$hraInfo.shops_no" }
+                                                ]
+                                            },
+                                            processing_amt: "$hraInfo.hra_processing_amount",
+                                            qty: "$hraInfo.shops_no"
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     }
-                    
+
                 },
                 {
                     $group: {
-                        _id: { name: "$name", category: "$service_name" },
-                        value: { $sum: 1 }
+                        _id: { name: "$name", category: "$service.name" },
+                        value: { $sum: "$service.amt" }
                     }
                 },
                 {
@@ -117,6 +228,7 @@ exports.getProductSaleData = async (req, res) => {
         res.status(200).json(productSaleData);
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -404,7 +516,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
         let monthWiseSale
 
         if (req.user.designation === 'Director') {
-            
+
             monthWiseSale = await salesModel.aggregate([
                 {
                     $match: {
@@ -427,7 +539,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
                 {
                     $group: {
                         _id: "$_id.month",
-                        date: {$first: "$_id"},
+                        date: { $first: "$_id" },
                         total: { $sum: "$total" },
                         categories: {
                             $push: {
@@ -498,7 +610,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
                 {
                     $group: {
                         _id: "$_id.month",
-                        date: {$first: "$_id"},
+                        date: { $first: "$_id" },
                         total: { $sum: "$total" },
                         categories: {
                             $push: {
@@ -566,45 +678,45 @@ exports.getAreaWiseFboData = async (req, res) => {
 
         let salesAreaWiseData
         // if (req.user.designation === 'Director') {
-            salesAreaWiseData = await fboModel.aggregate([
-                {
-                    $lookup: {
-                        from: 'employee_sales',
-                        localField: '_id',
-                        foreignField: 'fboInfo',
-                        as: 'sales'
-                    }
-                },
-                {
-                    $group: {
-                        _id: { state: "$state", district: "$district"},
-                        stateCount: { $sum: 1 },
-                    }
-                },
-                {
-                    $group: {
-                        _id: "$_id.state",
-                        stateCount: { $sum: "$stateCount" },
-                        districts: {
-                            $push: {
-                                name: "$_id.district",
-                                value: "$stateCount"
-                            }
+        salesAreaWiseData = await fboModel.aggregate([
+            {
+                $lookup: {
+                    from: 'employee_sales',
+                    localField: '_id',
+                    foreignField: 'fboInfo',
+                    as: 'sales'
+                }
+            },
+            {
+                $group: {
+                    _id: { state: "$state", district: "$district" },
+                    stateCount: { $sum: 1 },
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id.state",
+                    stateCount: { $sum: "$stateCount" },
+                    districts: {
+                        $push: {
+                            name: "$_id.district",
+                            value: "$stateCount"
                         }
                     }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        name: "$_id",
-                        value: "$stateCount",
-                        categories: "$districts"
-                    }
-                },
-                {
-                    $sort: { "name": 1 }
                 }
-            ]);
+            },
+            {
+                $project: {
+                    _id: 0,
+                    name: "$_id",
+                    value: "$stateCount",
+                    categories: "$districts"
+                }
+            },
+            {
+                $sort: { "name": 1 }
+            }
+        ]);
         // } 
 
         res.status(200).json(salesAreaWiseData);
