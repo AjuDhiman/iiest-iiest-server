@@ -3,20 +3,26 @@
 		<div class="mb-3 d-flex justify-content-between gap-3 chart-title-div">
 			<div class="text-uppercase fw-semibold app-card-title"><span class="chart-title"
 					*ngIf="chartData">{{chartData.chartTitle}}</span></div>
-			<div style="margin-top: -2.5px;">
-				<select (change)="chartTypeEvent($event)" [(ngModel)]="selectedChartType" *ngIf="chartData"
-					class="form-select form-select-sm d-inline-flex w-auto">
+			<div style="margin-top: -2.5px;" class="d-flex gap-2">
+				<select *ngIf="chartData && chartData.showIntervalSelection" (change)="ChangeInterval($event)" [(ngModel)]="intervalType"
+					class="form-select form-select-sm d-inline-flex">
+					<!-- <option class="text-capitalize" [value]="defaultChartType">{{ defaultChartType }}</option> -->
+					<option class="text-capitalize" *ngFor="let option of intervalList; let i = index"
+						[value]="option">{{ changeNameFormat(option) }}</option>
+				</select>
+				<!-- <select (change)="chartTypeEvent($event)" [(ngModel)]="selectedChartType" *ngIf="chartData"
+					class="form-select form-select-sm d-inline-flex">
 					<option class="text-capitalize" [value]="defaultChartType">{{ defaultChartType }}</option>
 					<option class="text-capitalize" *ngFor="let option of chartData.otherChartTypeOptions"
 						[value]="option">{{ option }}</option>
-				</select>
+				</select> -->
 			</div>
 		</div>
 		<hr />
 		<div class="chart-container position-relative">
 			<div class="" *ngIf="chartData">
-				<highcharts-chart *ngIf="isDataAvilable; else noData" [Highcharts]="Highcharts" [options]="chart"
-					style="width: 100%; display: block;">
+				<highcharts-chart #highchart *ngIf="isDataAvilable; else noData" [Highcharts]="Highcharts" [options]="chart"
+					style="width: 100%; display: block;" (chartInstance)="onChartInstance($event)" >
 				</highcharts-chart>
 			</div>
 

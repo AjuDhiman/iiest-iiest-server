@@ -1,5 +1,5 @@
 <div class="modal-header bg-secondary" *ngIf="chartData">
-  <h6 class="modal-title text-white" id="modal-basic-title">{{chartData.filterValue.toUpperCase()}}</h6>
+  <h6 class="modal-title text-white" id="modal-basic-title">{{chartData.filterValue.toString().toUpperCase()}}</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
 </div>
 <div class="modal-body" *ngIf="chartData">
@@ -19,6 +19,7 @@
           </div>
           <div class="col-auto" *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilterSales">
+              <option value="generalsearch">General Search</option>
               <option value="byFboName">Search by FBO Name</option>
               <option value="byOwner">Search by Owner</option>
               <option value="byLocation">Search by Location</option>
@@ -48,8 +49,12 @@
                   <th class="cell">Owner Name</th>
                   <th class="cell">Customer ID</th>
                   <th class="cell">Contact no.</th>
+                  <th *ngIf="!isRepetCustData" class="cell">Product Name</th>
+                  <th *ngIf="!isRepetCustData" class="cell">Processing Amount</th>
+                  <th *ngIf="isRepetCustData" class="cell">Repetition Count</th>
                   <th class="cell">District</th>
                   <th class="cell">State</th>
+                  <th *ngIf="!isRepetCustData" class="cell">Sales Date</th>
                 </tr>
               </thead>
               <thead *ngIf="chartData.userDept==='HR Department'">
@@ -64,15 +69,20 @@
                 </tr>
               </thead>
               <tbody *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
-                <tr
+                <tr (click)="viewCustomerSales(employee.fboInfo.customer_id)"
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
-                  <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
-                  <td class="cell"><span class="truncate">{{employee.fboInfo.fbo_name}}</span></td>
-                  <td class="cell"><span class="truncate">{{employee.fboInfo.owner_name}}</span></td>
-                  <td class="cell"><span class="truncate">{{employee.fboInfo.customer_id}}</span></td>
-                  <td class="cell"><span class="truncate">{{employee.fboInfo.owner_contact}}</span></td>
-                  <td class="cell"><span class="truncate">{{employee.fboInfo.district}}</span></td>
-                  <td class="cell"><span class="truncate">{{employee.fboInfo.state}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.fbo_name.toLowerCase()}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_name.toLowerCase()}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.customer_id}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
+                  <td *ngIf="!isRepetCustData" class="cell"><span class="truncate text-capitalize">{{employee.product_name.join(', ') + 
+                    ((employee.fboInfo.foscosInfo && employee.fboInfo.foscosInfo.water_test_fee)?', Water Test':'')}}</span></td>
+                  <td *ngIf="!isRepetCustData" class="cell"><span class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
+                  <td *ngIf="isRepetCustData" class="cell"><span class="truncate text-capitalize">{{employee.repetition_count}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.district.toLowerCase()}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.state.toLowerCase()}}</span></td>
+                  <td *ngIf="!isRepetCustData" class="cell"><span class="truncate">{{ getFormattedSalesDate(employee.createdAt) }}</span></td>
                 </tr>
               </tbody>
               <tbody *ngIf="employeeList?.length>0 && chartData.userDept==='HR Department'">

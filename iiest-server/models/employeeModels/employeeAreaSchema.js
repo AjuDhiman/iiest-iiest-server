@@ -28,4 +28,4 @@ const areaAllocationSchema = new Schema({
 }, {timestamps: true})
 
 const areaAllocationModel = mongoose.model('allocated_area', areaAllocationSchema);
-module.exports = areaAllocationModel
+module.exports = areaAllocationModel;

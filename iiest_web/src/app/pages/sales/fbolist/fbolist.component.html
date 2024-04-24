@@ -80,8 +80,8 @@
                     <tr class="list-tr"
                       *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
                       <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.fbo_name}}</span></td>
-                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.owner_name}}</span></td>
+                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span></td>
+                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.owner_name.toLowerCase()}}</span></td>
                       <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                       <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.state}}</span></td>
                       <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.district}}</span></td>

@@ -39,11 +39,6 @@ export class MultiSelectComponent implements OnChanges {
       // 'options' has changed
       this.initializeAll();
     }
-
-    // if (changes['options'] && changes['isDisabled'].currentValue) {
-    //   // 'isDisabled' has changed
-      
-    // }
   }
 
   initializeAll(): void {
@@ -70,7 +65,7 @@ export class MultiSelectComponent implements OnChanges {
     //we want to emit the array of all selected elements
     this.selectedArrayChange.emit(this.selected);
     
-   this.checkIfEmpty()
+    this.checkIfEmpty()
 
     event.stopPropagation();
   }

@@ -38,6 +38,7 @@ export class StatCardsComponent implements OnInit {
   getUserRecord():void {
     this._getDataService.getUserRecord().subscribe({
       next: (res) => {
+        console.log(res);
         this.salesData = res[0];
       }
     })

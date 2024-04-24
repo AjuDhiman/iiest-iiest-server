@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterService } from 'src/app/services/register.service';
@@ -39,7 +39,7 @@ export class HighchartsComponent implements OnChanges {
 
   selectedChartType: string;
 
-  intervalType: string  = '';
+  intervalType: string = '';
 
   isDataAvilable: boolean = true;
 
@@ -55,6 +55,12 @@ export class HighchartsComponent implements OnChanges {
 
   loading: boolean = true;
 
+  intervalList: string[] = [];
+
+  chartInstance:any;
+
+  @ViewChild('highchart') highchartRef: any;
+
   constructor(private modalService: NgbModal,
     private _registerService: RegisterService) { }
 
@@ -65,6 +71,10 @@ export class HighchartsComponent implements OnChanges {
     if (changes && changes['chartData'] && changes['chartData'].currentValue) {
       this.selectedChartType = this.chartData.chartType;
       this.defaultChartType = this.chartData.chartType;
+      if (this.chartData.showIntervalSelection) {
+        this.intervalList = Object.keys(this.chartData.data);
+        this.intervalType = this.chartData.selectedInterval;
+      }
       this.plotChart();
       this.loading = false;
       // this.otherChartTypes = this.chartData.otherChartTypeOptions;
@@ -84,10 +94,10 @@ export class HighchartsComponent implements OnChanges {
       credits: {
         enabled: false
       },
-     xAxis: {
+      xAxis: {
         type: 'category',
-        max: this.isSrcollable?10:null,
-        labels :{
+        max: this.isSrcollable ? 10 : null,
+        labels: {
           style: {
             width: 60,
             whiteSpace: 'nowrap',
@@ -126,7 +136,7 @@ export class HighchartsComponent implements OnChanges {
           type: 'column',
           data: this.values,
           events: {
-            click: this.clickEvent
+            click: this.clickEvent,
           }
         }
       ]
@@ -146,9 +156,9 @@ export class HighchartsComponent implements OnChanges {
       credits: {
         enabled: false
       },
-     xAxis: {
-        type: 'category', 
-        max: this.isSrcollable?10:null
+      xAxis: {
+        type: 'category',
+        max: this.isSrcollable ? 10 : null
       },
       yAxis: {
         title: {
@@ -161,6 +171,7 @@ export class HighchartsComponent implements OnChanges {
           dataLabels: {
             enabled: true,
             align: 'center',
+            format: '₹{y:.1f}',
             verticalAlign: 'top',
             inside: false,
             color: 'black',
@@ -192,7 +203,7 @@ export class HighchartsComponent implements OnChanges {
             y: -48
           }
         },
-        series : this.drilldownData
+        series: this.drilldownData
       }
     }
   }
@@ -241,6 +252,9 @@ export class HighchartsComponent implements OnChanges {
           type: 'line',
           name: this.chartData.seriesName,
           data: this.values,
+          events: {
+            click: this.clickEvent
+          }
         },
       ]
     };
@@ -299,7 +313,7 @@ export class HighchartsComponent implements OnChanges {
             y: -48
           }
         },
-        series : this.drilldownData
+        series: this.drilldownData
       }
     };
   }
@@ -338,14 +352,16 @@ export class HighchartsComponent implements OnChanges {
           name: this.chartData.seriesName,
           type: 'pie',
           data: this.values,
-          events: this.events
+          events:{
+            click: this.clickEvent
+          } 
         }
       ]
     };
   }
 
   // -------Pie Drill Down Chart Function---------
-  plotPieDrillDownChart(){
+  plotPieDrillDownChart() {
     this.chart = {
       chart: {
         // ---------Edit chart spacing---------
@@ -388,7 +404,7 @@ export class HighchartsComponent implements OnChanges {
             y: -48
           }
         },
-        series : this.drilldownData
+        series: this.drilldownData
       }
     };
   }
@@ -423,7 +439,7 @@ export class HighchartsComponent implements OnChanges {
             inside: false,
             color: 'black',
             style: {
-             textOutline: 'none'
+              textOutline: 'none'
             }
           }
         },
@@ -471,7 +487,7 @@ export class HighchartsComponent implements OnChanges {
             inside: false,
             color: 'black',
             style: {
-             textOutline: 'none'
+              textOutline: 'none'
             }
           }
         },
@@ -490,12 +506,21 @@ export class HighchartsComponent implements OnChanges {
             y: -48
           }
         },
-        series : this.drilldownData
+        series: this.drilldownData
       }
     };
   }
 
   ChangeInterval(event: any): void {
+    if(this.chart.drilldown) {
+      this.chart.drilldown = undefined;
+    }
+
+    if(this.chart.series){
+      console.log(this.highchartRef.chart.drilldownLevels);
+      console.log(this.chart);
+    }
+    
     this.intervalType = event.target.value;
     this.plotChart();
   }
@@ -511,7 +536,7 @@ export class HighchartsComponent implements OnChanges {
   }
 
   viewChartData(res: any): void {
-    const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(HighchartDataModalComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.chartData = res;
   }
 
@@ -530,33 +555,33 @@ export class HighchartsComponent implements OnChanges {
     }
 
     // if(this.chartData.isDrillDown){
-      
+
     // }
 
     switch (this.selectedChartType) {
-      case "Column": 
-        if(this.chartData.isDrilldown) {
+      case "Column":
+        if (this.chartData.isDrilldown) {
           this.plotColumnDrillDownChart();
         } else {
           this.plotColumnChart();
         }
         break;
       case "Line":
-        if(this.chartData.isDrilldown) {
+        if (this.chartData.isDrilldown) {
           this.plotLineDrillDownChart();
         } else {
           this.plotLineChart();
         }
         break;
-      case "Pie": 
-        if(this.chartData.isDrilldown) {
+      case "Pie":
+        if (this.chartData.isDrilldown) {
           this.plotPieDrillDownChart()
         } else {
-          this.plotAreaChart()
+          this.plotPieChart()
         }
         break;
-      case "Area": 
-        if(this.chartData.isDrilldown){
+      case "Area":
+        if (this.chartData.isDrilldown) {
           this.plotAreaDrillDownChart()
         } else {
           this.plotAreaChart();
@@ -579,12 +604,12 @@ export class HighchartsComponent implements OnChanges {
   }
 
   initializeChartData() {
-    
+
     this.checkkDrillDown();
 
     this.checkNoData();
 
-    if(this.values.length >=10 ) {
+    if (this.values.length >= 10) {
       this.isSrcollable = true;
     } else {
       this.isSrcollable = false;
@@ -600,16 +625,21 @@ export class HighchartsComponent implements OnChanges {
 
   }
 
-  checkkDrillDown(){
+  checkkDrillDown() {
+    let data = this.chartData.data;
+    if (this.chartData.showIntervalSelection) {
+      data = this.chartData.data[this.intervalType];
+    }
+    console.log(data);
     if (this.chartData.isDrilldown) {
-      this.values = this.chartData.data.map((item: any) => {
+      this.values = data.map((item: any) => {
         return {
           name: item.name,
           y: item.value,
           drilldown: item.name,
         }
       });
-      this.drilldownData = this.chartData.data.map((item: any) => {
+      this.drilldownData = data.map((item: any) => {
         return {
           type: this.selectedChartType.toLocaleLowerCase(),
           name: item.name,
@@ -617,7 +647,7 @@ export class HighchartsComponent implements OnChanges {
           data: item.categories.map((e: any) => [e.name, e.value]),
           point: {
             events: {
-              click : this.clickEvent
+              click: this.clickEvent
             }
           }
         }
@@ -625,17 +655,17 @@ export class HighchartsComponent implements OnChanges {
       this.events = {}
       // this.drilldownData = this.drilldownData.sort((a:any, b:any) => a.name - b.name);
     } else {
-      this.values = this.chartData.data.map((item: any) => {
+      this.values = data.map((item: any) => {
         return {
           name: item.name,
-          y: item.value, 
+          y: item.value,
         }
       });
     }
 
   }
 
-  checkNoData(){
+  checkNoData() {
     if (this.values.every(value => value === 0)) {
       this.values = [];
       this.isDataAvilable = false;
@@ -645,8 +675,8 @@ export class HighchartsComponent implements OnChanges {
     }
   }
 
-  clickEvent = (e:any) => {
-    if(e.point.options.name){
+  clickEvent = (e: any) => {
+    if (e.point.options.name) {
       if (e.point.options.name === "Retail" || e.point.options.name === "Catering") {
         this.salesCategory = "Fostac";
       } else if (e.point.options.name === "Registration" || e.point.options.name === "State") {
@@ -654,7 +684,7 @@ export class HighchartsComponent implements OnChanges {
       } else if (e.point.options.name === "HRA") {
         this.salesCategory = "HRA";
       }
-    } else if(e.point.category){
+    } else if (e.point.category) {
       if (e.point.category === "Retail" || e.point.category === "Catering") {
         this.salesCategory = "Fostac";
       } else if (e.point.category === "Registration" || e.point.options.name === "State") {
@@ -664,16 +694,27 @@ export class HighchartsComponent implements OnChanges {
       }
     }
     let chartData = {
-      filterValue: e.point.options.name || e.point.category.toString() ,
+      filterValue: e.point.options.name || e.point.category.toString(),
       salesCategory: this.salesCategory,
-      userDept: this.chartData.department, 
+      userDept: this.chartData.department,
       interval: this.intervalType,
       chartTitile: this.chartData.chartTitle
     };
-    if(chartData.chartTitile === 'Employee Count By Department') {
+    if (chartData.chartTitile === 'Employee Count By Department') {
       this.viewDepartmentData(chartData.filterValue);
       return;
     }
     this.viewChartData(chartData);
+  }
+
+  onChartInstance($event: any): void {
+    this.chartInstance = $event;
+  }
+
+  changeNameFormat(inputStr: string): string{
+    const strArr: string[] = inputStr.split('_');
+    strArr.forEach((str: string) => str[0].toUpperCase());
+    const convertedStr:string = strArr.join(' ');
+    return convertedStr;
   }
 }

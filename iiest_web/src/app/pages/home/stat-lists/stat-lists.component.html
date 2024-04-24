@@ -2,7 +2,7 @@
     <div class="col-12 col-lg-6 my-2" recto *ngIf="topSalesPersons">
         <div class="app-card app-card-stats-table h-100 shadow-sm">
 
-            <div class="app-card-header p-3">
+            <div class="app-card-header p-3" style="height: 64px;">
                 <div class="row justify-content-between align-items-center">
                     <div class="col-auto">
                         <h4 class="app-card-title">Top Sales Persons of {{lastMonth}}</h4>
@@ -15,16 +15,18 @@
                     <table class="table table-borderless mb-0">
                         <thead>
                             <tr>
-                                <th class="meta">Name</th>
-                                <th class="meta stat-cell">Total Sales Ammount</th>
+                                <th class="meta">Sales Person Name</th>
+                                <th class="meta stat-cell">Total Sales Amount</th>
                                 <th class="meta stat-cell">Total Sales Count</th>
+                                <th class="meta stat-cell">Employee Location</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let person of topSalesPersons">
-                                <td class="row-name"><span class="cursor-pointer">{{person.name}}</span></td>
+                                <td class="row-name"><span class="cursor-pointer text-capitalize">{{person.name.toLowerCase()}}</span></td>
                                 <td class="stat-cell text-capitalize">{{person.salesAmmount | inrAmount}}</td>
                                 <td class="stat-cell">{{person.salesCount}}</td>
+                                <td class="stat-cell">{{person.location}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -52,15 +54,17 @@
                         <thead>
                             <tr>
                                 <th class="meta cursor-pointer">Product</th>
-                                <th class="meta stat-cell">Total Sale Ammount</th>
+                                <th class="meta stat-cell">Total Sale Amount</th>
                                 <th class="meta stat-cell">Total Sales Count</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let product of topProducts">
+                                <ng-container *ngIf="product.salesCount[selectedInterval] != '0'" >
                                 <td class="row-name"><span class="cursor-pointer">{{product.name}}</span></td>
                                 <td class="stat-cell">{{product.salesAmount[selectedInterval] | inrAmount}}</td>
                                 <td class="stat-cell">{{product.salesCount[selectedInterval]}}</td>
+                            </ng-container>
                             </tr>
                         </tbody>
                     </table>

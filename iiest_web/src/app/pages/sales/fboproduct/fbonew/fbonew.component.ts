@@ -435,6 +435,7 @@ export class FbonewComponent implements OnInit {
   }
 
   getSelectedProduct($event: any) {
+    console.log($event);
 
     this.productName = $event;
     this.fboForm.patchValue({ product_name: this.productName })
@@ -443,14 +444,14 @@ export class FbonewComponent implements OnInit {
     this.isFostac = false;
     this.isFoscos = false;
     this.isHygiene = false;
-    if (this.productName.find((item: any) => item === 'Fostac')) {
+    if (this.productName.includes('Fostac')) {
       this.isFostac = true;
       this.fboForm.addControl('fostac_training', this.fostac_training);
     }
     else {
       this.fboForm.removeControl('fostac_training');
     }
-    if (this.productName.find((item: any) => item === 'Foscos')) {
+    if (this.productName.includes('Foscos')) {
       this.isFoscos = true;
       this.fboForm.addControl('foscos_training', this.foscos_training);
       this.fboForm.get('village')?.setValidators([Validators.required]);
@@ -465,7 +466,7 @@ export class FbonewComponent implements OnInit {
       this.fboForm.get('tehsil')?.clearValidators();
       this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
-    if (this.productName.find((item: any) => item === 'HRA')) {
+    if (this.productName.includes('HRA')) {
       this.isHygiene = true;
       this.fboForm.addControl('hygiene_audit', this.hygiene_audit);
     }

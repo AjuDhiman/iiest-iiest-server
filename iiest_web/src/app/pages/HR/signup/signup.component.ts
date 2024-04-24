@@ -42,6 +42,7 @@ export class SignupComponent implements OnInit {
   post_types: string[] = [];
   departments: string[] = [];
   designations: string[] = [];
+  loading: boolean = false;
   //New Variables for pincode data
   stateName=stateName
   cities:string[]=[];
@@ -164,6 +165,7 @@ export class SignupComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+    this.loading = true;
 
     this.form.value.dob = this.datePipe.transform(this.form.value.dob, 'yyyy-MM-dd');
     this.form.value.doj = this.datePipe.transform(this.form.value.doj, 'yyyy-MM-dd');
@@ -263,6 +265,9 @@ export class SignupComponent implements OnInit {
             case errorObj.randomErr: this._toastrService.error('', 'Some Error Occurred. Please Try Again.');
               break;
           }
+        },
+        complete: () => {
+          this.loading = false; // stop loading on completion either error or resolve
         }
       });
     }
@@ -392,6 +397,7 @@ export class SignupComponent implements OnInit {
     let state = this.f['state'].value;
     this.cities=[];
     this.f['city'].setValue('');
+    this.loading=true;
     this._getdataService.getPincodesData(state).subscribe({
       next: (res) => {
         let pincodesData = res;
@@ -406,6 +412,9 @@ export class SignupComponent implements OnInit {
         // if (errorObj.userError) {
         //   this._registerService.signout();
         // }
+      },
+      complete: () => {
+        this.loading = false;
       }
     }
     )

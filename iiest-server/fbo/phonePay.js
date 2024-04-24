@@ -1,7 +1,17 @@
 const axios = require('axios');
 const sha256 = require('sha256');
 const uniqid = require('uniqid');
+const productionBaseUrl = 'https://api.phonepe.com/apis/pg/v1/';
+const sandboxBaseUrl = 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/';
 
+// Determine whether you're in production or sandbox environment
+const isProduction = false; // Change this value as needed based on your environment
+
+// Define the base URL based on the environment
+const baseUrl = isProduction ? productionBaseUrl : sandboxBaseUrl;
+
+// Concatenate the base URL with the endpoint
+const endpoint = 'pay'; // Modify this if your endpoint varies
 const payRequest = (grandTotal, res, redirectUrl)=>{
 
   let tx_uuid =  uniqid();
@@ -31,7 +41,7 @@ const payRequest = (grandTotal, res, redirectUrl)=>{
   let sha256_val = sha256(string);
   let checksum = sha256_val + '###' + saltIndex;
 
-  axios.post('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', {
+  axios.post(`${baseUrl}${endpoint}`, {
     'request': base64String
   }, {
     headers: {

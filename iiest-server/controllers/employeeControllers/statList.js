@@ -1,5 +1,7 @@
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 const reportingManagerModel = require("../../models/employeeModels/reportingManagerSchema");
+const fboModel = require("../../models/fboModels/fboSchema");
+const { fboFormData } = require("../generalControllers/generalData");
 
 
 exports.getTopSalesPersons = async (req, res) => {
@@ -26,6 +28,25 @@ exports.getTopSalesPersons = async (req, res) => {
             },
             {
                 $unwind: "$employeeInfo"
+            },
+            {
+                $lookup: {
+                    from: "allocated_area",
+                    localField: "employeeInfo._id",
+                    foreignField: "employeeInfo",
+                    as: "allocated_area"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$allocated_area",
+                    preserveNullAndEmptyArrays: true // Preserve documents with empty foreign fields
+                }
+            },
+            {
+                $match: {
+                    allocated_area: { $exists: true } // Filter out documents with empty foreign fields
+                }
             },
             {
                 $group: {
@@ -57,7 +78,8 @@ exports.getTopSalesPersons = async (req, res) => {
                                 else: 0
                             }
                         }
-                    }
+                    },
+                    location:  {$first: "$allocated_area.state"}
                 }
             },
             {
@@ -66,15 +88,24 @@ exports.getTopSalesPersons = async (req, res) => {
                     name: "$_id.person",
                     salesAmmount: "$salesAmmount",
                     salesCount: "$salesCount",
+                    location: "$location"
+                }
+            },
+            {
+                $match: {
+                    salesCount: { $gt: 0 }
                 }
             },
             { $sort: { salesAmmount: -1, name: -1 } },
             { $limit: 5 }
         ]);
 
+        console.log(topSalesPersons);
+
         res.status(200).json(topSalesPersons)
 
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 
@@ -258,5 +289,55 @@ exports.getEmpUnderManager = async (req, res) => {
         res.status(200).json(empData);
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+exports.mostRepeatedCustomer = async(req, res) => {
+    try{
+
+        const pipeline = [
+
+        ]
+
+        const mostRepeatedCustomer = await salesModel.aggregate(
+            [
+                {
+                    $lookup: {
+                        from: "fbo_registers",
+                        localField: "fboInfo",
+                        foreignField: "_id",
+                        as: "fbo"
+                    }
+                },
+                {
+                    $unwind: "$fbo"
+                },
+                {
+                    $group: {
+                        _id: {
+                            customer_id: "$fbo.customer_id",
+                            name: "$fbo.fbo_name"
+                        },
+                        total: { $sum: 1}
+                    }
+                },
+                {
+                    $project: {
+                        name: "$_id.name",
+                        repetition_count: "$total"
+                    }
+                },
+                {
+                    $sort: {
+                        repetition_count: -1
+                    }
+                }
+            ]
+        );
+
+        res.status(200).json(mostRepeatedCustomer);
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({message: 'Internal Server Error'});
     }
 }

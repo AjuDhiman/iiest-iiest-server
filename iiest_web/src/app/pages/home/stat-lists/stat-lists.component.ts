@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { months, salesManagerRoles } from 'src/app/utils/config';
+import { Months, salesManagerRoles } from 'src/app/utils/config';
 
 interface interval {
   lastMonth: string,
@@ -14,7 +14,7 @@ interface interval {
 })
 export class StatListsComponent implements OnInit {
 
-  topSalesPersons: Array<{name: string, salesAmmount: number, salesCount: number}>
+  topSalesPersons: Array<{name: string, salesAmmount: number, salesCount: number, location: string}>
   topProducts: Array<{name: string, salesAmount: interval, salesCount: interval}>;
   empUnderManagerSale: Array<{name: string, salesAmmount: number, salesCount: number}>
 
@@ -33,7 +33,7 @@ export class StatListsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.lastMonth = months[(new Date().getMonth() - 1) % 12]
+    this.lastMonth = Months[(new Date().getMonth() - 1) % 12]
 
     this.getTopSalesPersons();
 
