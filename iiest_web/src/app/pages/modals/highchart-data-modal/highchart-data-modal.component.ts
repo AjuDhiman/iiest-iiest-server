@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faMagnifyingGlass, faCheck, faXmark, IconDefinition, faL } from '@fortawesome/free-solid-svg-icons';
 import { Months, days, months } from 'src/app/utils/config';
 import { Select } from '@ngxs/store';
@@ -47,7 +47,8 @@ export class HighchartDataModalComponent {
 
   constructor(public activeModal: NgbActiveModal,
     private _getDataService: GetdataService,
-    private registerService: RegisterService) { }
+    private registerService: RegisterService,
+    private _modalService: NgbModal) { }
 
   ngOnInit() {
     switch (this.chartData.chartTitile) {
@@ -65,6 +66,8 @@ export class HighchartDataModalComponent {
       case 'Sales Employee Performence': this.employeeWiseFilter();
         break;
       case 'Repeated Customers': this.repeatedCustomerFilter();
+        break;
+      case 'Customer Data': this.viewCustomerData();
         break;
     }
 
@@ -323,7 +326,7 @@ export class HighchartDataModalComponent {
     const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
     const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
     const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
-    if(this.chartData.chartTitile === 'Repeated Customers'){
+    if (this.chartData.chartTitile === 'Repeated Customers') {
       switch (this.chartData.interval) {
         case 'today':
           this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfToday.getTime());
@@ -362,7 +365,7 @@ export class HighchartDataModalComponent {
           break
       }
     }
-    
+
   }
 
   repeatedCustomerFilter() {
@@ -370,14 +373,14 @@ export class HighchartDataModalComponent {
     this.sales$.subscribe(res => {
       let distinctCustomers: string[] = [];
       let consolidatedData: any = [];
-      res.sort((a:any, b:any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      res.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       res.forEach((item: any) => {
         if (!distinctCustomers.includes(item.fboInfo.customer_id)) {
           consolidatedData.push({ ...item, repetition_count: 1, lastSaleDate: item.createdAt });
           distinctCustomers.push(item.fboInfo.customer_id);
         } else {
           let index = consolidatedData.findIndex((elem: any) => elem.fboInfo.customer_id === item.fboInfo.customer_id);
-          if(new Date(item.createdAt).getTime() > new Date(item.lastSaleDate).getTime()){
+          if (new Date(item.createdAt).getTime() > new Date(item.lastSaleDate).getTime()) {
             item.lastSaleDate = item.createdAt;
           }
           consolidatedData[index].repetition_count++;
@@ -391,13 +394,13 @@ export class HighchartDataModalComponent {
 
       this.specificDatas = this.specificDatas.filter((item: any) => {
         let count = 0;
-        if(item.repetition_count > 1){
+        if (item.repetition_count > 1) {
           console.log(new Date(item.createdAt).getUTCFullYear(), item.createdAt, new Date(item.createdAt).getFullYear(), count++);
-            return 1
+          return 1
         } else {
           return 0
         }
-       
+
       });
 
       this.salesDeptfilter();
@@ -427,9 +430,21 @@ export class HighchartDataModalComponent {
     if (this.chartData.chartTitile != 'Repeated Customers') {
       return;
     }
+    const chartData = {
+      filterValue: customerId,
+      salesCategory: "",
+      userDept: "Sales Department",
+      interval: "till_now",
+      chartTitile: "Customer Data"
+    };
+    const modalRef = this._modalService.open(HighchartDataModalComponent, { size: 'xl', backdrop: 'static' });
+    modalRef.componentInstance.chartData = chartData;
+  }
+
+  viewCustomerData(): void {
     this.sales$.subscribe(res => {
       this.isRepetCustData = false;
-      this.specificDatas = res.filter((item: any) => item.fboInfo.customer_id == customerId);
+      this.specificDatas = res.filter((item: any) => item.fboInfo.customer_id === this.chartData.filterValue);
       this.salesDeptfilter();
     });
   }
