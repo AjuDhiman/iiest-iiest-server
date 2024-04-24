@@ -12,7 +12,7 @@ const fboSchema = new Schema({
         unique: true,
         required: true,
         min: 10000,
-        max: 99999
+        max: 999999
     },
     fbo_name: {
         type: String,
@@ -25,12 +25,10 @@ const fboSchema = new Schema({
     owner_contact: {
         type: Number,
         required: true,
-        unique: true
     },
     email: {
         type: String,
         required: true,
-        unique: true
     },
     state: {
         type: String,
@@ -51,7 +49,6 @@ const fboSchema = new Schema({
     customer_id: {
         type: String, 
         required: true,
-        unique: true
     },
     createdBy: {
         type: String, 

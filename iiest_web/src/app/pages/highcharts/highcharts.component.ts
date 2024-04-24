@@ -57,7 +57,11 @@ export class HighchartsComponent implements OnChanges {
 
   intervalList: string[] = [];
 
-  chartInstance:any;
+  chartInstance: any;
+
+  chartCallback: Highcharts.ChartCallbackFunction = function (chart): void {
+    chart.redraw();
+  };
 
   @ViewChild('highchart') highchartRef: any;
 
@@ -352,9 +356,9 @@ export class HighchartsComponent implements OnChanges {
           name: this.chartData.seriesName,
           type: 'pie',
           data: this.values,
-          events:{
+          events: {
             click: this.clickEvent
-          } 
+          }
         }
       ]
     };
@@ -512,15 +516,17 @@ export class HighchartsComponent implements OnChanges {
   }
 
   ChangeInterval(event: any): void {
-    if(this.chart.drilldown) {
-      this.chart.drilldown = undefined;
-    }
+    // if (this.chart.drilldown) {
+    //   this.chart.drilldown = undefined;
+    // }
 
-    if(this.chart.series){
-      console.log(this.highchartRef.chart.drilldownLevels);
-      console.log(this.chart);
-    }
-    
+    // if (this.chart.series) {
+    //   console.log(this.highchartRef.chart.drilldownLevels);
+    //   console.log(this.chart);
+    // }
+
+    // this.chartCallback(this.highchartRef.chart)
+
     this.intervalType = event.target.value;
     this.plotChart();
   }
@@ -711,10 +717,10 @@ export class HighchartsComponent implements OnChanges {
     this.chartInstance = $event;
   }
 
-  changeNameFormat(inputStr: string): string{
+  changeNameFormat(inputStr: string): string {
     const strArr: string[] = inputStr.split('_');
     strArr.forEach((str: string) => str[0].toUpperCase());
-    const convertedStr:string = strArr.join(' ');
+    const convertedStr: string = strArr.join(' ');
     return convertedStr;
   }
 }

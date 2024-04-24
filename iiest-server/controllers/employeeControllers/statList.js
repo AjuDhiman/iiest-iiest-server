@@ -3,8 +3,8 @@ const reportingManagerModel = require("../../models/employeeModels/reportingMana
 const fboModel = require("../../models/fboModels/fboSchema");
 const { fboFormData } = require("../generalControllers/generalData");
 
-
-exports.getTopSalesPersons = async (req, res) => {
+//function
+exports.getTopSalesPersons = async (req, res) => { 
 
     try {
         const todayDate = new Date();
@@ -29,25 +29,25 @@ exports.getTopSalesPersons = async (req, res) => {
             {
                 $unwind: "$employeeInfo"
             },
-            {
-                $lookup: {
-                    from: "allocated_area",
-                    localField: "employeeInfo._id",
-                    foreignField: "employeeInfo",
-                    as: "allocated_area"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$allocated_area",
-                    preserveNullAndEmptyArrays: true // Preserve documents with empty foreign fields
-                }
-            },
-            {
-                $match: {
-                    allocated_area: { $exists: true } // Filter out documents with empty foreign fields
-                }
-            },
+            // {
+            //     $lookup: {
+            //         from: "allocated_area",
+            //         localField: "employeeInfo._id",
+            //         foreignField: "employeeInfo",
+            //         as: "allocated_area"
+            //     }
+            // },
+            // {
+            //     $unwind: {
+            //         path: "$allocated_area",
+            //         preserveNullAndEmptyArrays: true // Preserve documents with empty foreign fields
+            //     }
+            // },
+            // {
+            //     $match: {
+            //         allocated_area: { $exists: true } // Filter out documents with empty foreign fields
+            //     }
+            // },
             {
                 $group: {
                     _id: { person: "$employeeInfo.employee_name" },
@@ -79,7 +79,7 @@ exports.getTopSalesPersons = async (req, res) => {
                             }
                         }
                     },
-                    location:  {$first: "$allocated_area.state"}
+                    // location:  {$first: "$allocated_area.state"}
                 }
             },
             {
@@ -88,7 +88,7 @@ exports.getTopSalesPersons = async (req, res) => {
                     name: "$_id.person",
                     salesAmmount: "$salesAmmount",
                     salesCount: "$salesCount",
-                    location: "$location"
+                    // location: "$location"
                 }
             },
             {
@@ -295,9 +295,13 @@ exports.getEmpUnderManager = async (req, res) => {
 exports.mostRepeatedCustomer = async(req, res) => {
     try{
 
-        const pipeline = [
+        // const pipeline = [
 
-        ]
+        // ]
+
+        if (req.user.designation !== "Director") {
+            return res.status(204).json({ message: 'Only for Director' });
+        }
 
         const mostRepeatedCustomer = await salesModel.aggregate(
             [
@@ -331,6 +335,9 @@ exports.mostRepeatedCustomer = async(req, res) => {
                     $sort: {
                         repetition_count: -1
                     }
+                },
+                { 
+                    $limit: 10
                 }
             ]
         );

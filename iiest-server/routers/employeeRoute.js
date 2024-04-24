@@ -38,11 +38,11 @@ router.get('/getpersonwisesaledata', authMiddleware, getPersonWiseSalesData);
 router.get('/getclienttypesaledata', authMiddleware , getClientTypeSalesData);
 router.get('/getmothwisesale', authMiddleware, getMonthWiseSaleData);
 router.get('/gettopsalespersons', authMiddleware, getTopSalesPersons);
-router.get('/getmostrepeatedcust', mostRepeatedCustomer);
+router.get('/getmostrepeatedcust', authMiddleware, mostRepeatedCustomer);
 router.get('/getrepeatedcustdata',authMiddleware, getRepeactCustomerData);
 router.get('/gettopproducts', authMiddleware, getTopProducts);
 router.get('/getempundermanager', authMiddleware, getEmpUnderManager);
-router.get('/getdata', getData);
+// router.get('/getdata', getData);
 // router.get('/getsalesdata', salesData); // api in development for getting optimized sales list
 
 module.exports = router;

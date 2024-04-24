@@ -13,7 +13,7 @@ const generatedInfo = async()=>{
     let idNumber;
 
     while (!isUnique) {
-      idNumber = Math.floor(10000 + Math.random() * 90000);
+      idNumber = Math.floor(10000 + Math.random() * 900000);
       const existingNumber = await fboModel.findOne({ id_num: idNumber });
       if (!existingNumber) {
         isUnique = true;
