@@ -14,6 +14,11 @@ const fboSchema = new Schema({
         min: 10000,
         max: 999999
     },
+    boInfo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'bo_registers',
+        required: true
+    },
     fbo_name: {
         type: String,
         required: true

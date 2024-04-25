@@ -10,6 +10,7 @@ const { createInvoiceBucket, empSignBucket } = require('../../config/buckets');
 const payRequest = require('../../fbo/phonePay');
 const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
 const sendInvoiceMail = require('../../fbo/sendMail');
+const boModel = require('../../models/BoModels/boSchema');
 
 exports.fboPayment = async (req, res) => {
   try {
@@ -43,16 +44,6 @@ exports.fboPayment = async (req, res) => {
     const createrId = req.params.id
     req.session.fboFormData = { ...formBody, createrObjId: createrId, signatureFile };
 
-    const existing_owner_contact = await fboModel.findOne({ owner_contact: formBody.owner_contact });
-    if (existing_owner_contact) {
-      return res.status(401).json({ success, contactErr: true });
-    }
-
-    const existing_email = await fboModel.findOne({ email: formBody.email });
-    if (existing_email) {
-      return res.status(401).json({ success, emailErr: true });
-    }
-
     const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
 
     if (!pincodeCheck) {
@@ -77,7 +68,7 @@ exports.fboPayReturn = async (req, res) => {
 
         const fetchedFormData = req.session.fboFormData;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge } = fetchedFormData;
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = fetchedFormData;
 
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
@@ -114,7 +105,7 @@ exports.fboPayReturn = async (req, res) => {
 
           total_processing_amount += Number(fostac_training.fostac_processing_amount);
           totalGST += fostacGST;
-          
+
           const qty = fostac_training.recipient_no;
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream));
         }
@@ -143,7 +134,7 @@ exports.fboPayReturn = async (req, res) => {
         }
 
         const fboEntry = await fboModel.create({
-          employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+          employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, boInfo
         });
 
         if (!fboEntry) {
@@ -231,17 +222,7 @@ exports.fboRegister = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, fostacGST, foscosGST, hygieneGST, foscosFixedCharge } = req.body;
-
-    const existing_owner_contact = await fboModel.findOne({ owner_contact });
-    if (existing_owner_contact) {
-      return res.status(401).json({ success, contactErr: true });
-    }
-
-    const existing_email = await fboModel.findOne({ email });
-    if (existing_email) {
-      return res.status(401).json({ success, emailErr: true });
-    }
+    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = req.body;
 
     const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
@@ -322,7 +303,7 @@ exports.fboRegister = async (req, res) => {
     }
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
     });
 
     if (!fboEntry) {
@@ -403,13 +384,25 @@ exports.editFbo = async (req, res) => {
 //Controller to get all FBO List
 exports.registerdFBOList = async (req, res) => {
   try {
-    const fboList = await fboModel.find();
+    const fboList = await fboModel.find().populate({path: 'boInfo'});
     return res.status(200).json({ fboList });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+exports.registerdBOList = async (req, res) => {
+  try {
+    const boList = await boModel.find();
+    return res.status(200).json({ boList });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
 
 exports.saleInvoice = async (req, res) => {
   try {
@@ -450,5 +443,115 @@ exports.saleInvoice = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+exports.getClientList = async (req, res) => {
+  try {
+
+    const todayDate = new Date();
+    const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(),0,0, 1);
+    const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
+    const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
+    const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'fbo_registers',
+          localField: 'fboInfo',
+          foreignField: '_id',
+          as: 'fbo'
+        }
+      },
+      {
+        $unwind: "$fbo"
+      },
+      {
+        $group: {
+          _id: {
+            owner_name: "$fbo.owner_name",
+            customer_id: "$fbo.customer_id"
+          },
+          total: { $sum: 1 },
+          salesDates: {
+            $push: "$createdAt"
+          },
+          lastSalesDate: {
+            $max: "$createdAt"
+          }
+        }
+      },
+      {
+        $sort: {
+          total: -1
+        }
+      },
+      {
+        $facet: {
+          This_Year: [
+            {
+              $match: {
+                lastSalesDate: { $gte: startOfThisYear },
+              }
+            },
+            {
+              $addFields: { // Create a new field representing the day of the week
+                month: { $month: "$lastSalesDate" }
+              }
+            },
+            {
+              $group: {
+                _id: "$month",
+                total: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                name: "$_id",
+                value: "$total"
+              }
+            },
+            {
+              $sort: {
+                name: 1
+              }
+            }
+          ],
+          Till_Now: [
+            {
+              $addFields: { // Create a new field representing the day of the week
+                year: { $year: "$lastSalesDate" }
+              }
+            },
+            {
+              $group: {
+                _id: "$year",
+                total: { $sum: 1 }
+              },
+            },
+            {
+              $project: {
+                name: "$_id",
+                value: "$total"
+              }
+            },
+            {
+              $sort: {
+                name: 1
+              }
+            }
+          ]
+        }
+      }
+    ];
+
+    const clientList = await salesModel.aggregate(pipeline);
+
+    return res.status(200).json(clientList[0]);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 }

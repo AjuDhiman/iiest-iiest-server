@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { FostacComponent } from 'src/app/pages/sales/fboproduct/fostac/fostac.component';
-import { FoscosComponent } from 'src/app/pages/sales/fboproduct/foscos/foscos.component';
+import { FostacComponent } from '../fostac/fostac.component';
+import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
-import { FbolistComponent } from 'src/app/pages/sales/fbolist/fbolist.component';
+import { FbolistComponent } from '../../fbolist/fbolist.component';
 import { clientType, hraProcessingAmnt, licenceType, paymentMode, processAmnt, serviceNames, waterTestFee } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -15,6 +15,8 @@ import { RegisterService } from 'src/app/services/register.service';
   templateUrl: './fbonew.component.html',
   styleUrls: ['./fbonew.component.scss']
 })
+
+
 export class FbonewComponent implements OnInit {
   @ViewChild(FostacComponent, { static: false }) fostacChildComponent: FostacComponent;
   @ViewChild(FoscosComponent, { static: false }) foscosChildComponent: FoscosComponent;
@@ -58,11 +60,23 @@ export class FbonewComponent implements OnInit {
   maxSelectedItems: number = 2;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
+  isExistingFbo: boolean;
+  isExistingBo: boolean;
   existingUserForm: FormGroup;
+  existingUserFboForm: FormGroup;
+  existingUserBoForm: FormGroup;
+  fboFieldName: string = "FBO Name";
+  fboPlaceholder: string = "FBO Name";
+  formName: string = "BO"
   //New Variables by vansh on 5-01-23 for exsisting 
   searchSuggestions: any;
+  searchSuggestionsOnBo: any;
   isSearchEmpty = true;
+  isSearchEmptyFBO = true;
+  isSearchEmptyBO = true;
   @ViewChild('searchElem') searchElem: any;
+  @ViewChild('searchElemFBO') searchElemFBO: any;
+  @ViewChild('searchElemBO') searchElemBO: any;
   //New Variables by vansh on 12-01-2023 for allocted area detection for a employee
   allocated_district: string = '';
   allocated_state: string = '';
@@ -72,6 +86,8 @@ export class FbonewComponent implements OnInit {
   existingFbos: Object[];
 
   loading: boolean = false;
+  // new varable by chandan
+  existingbos: Object[];
 
   @ViewChild(FbolistComponent)fboList: FbolistComponent;
 
@@ -104,8 +120,12 @@ export class FbonewComponent implements OnInit {
   })
 
   fboForm: FormGroup = new FormGroup({
+    boInfo: new FormControl(''),
     fbo_name: new FormControl(''),
     owner_name: new FormControl(''),
+    business_entity: new FormControl(''),
+    business_category: new FormControl(''),// form control added by chandan for business_Owner
+    business_ownership_type: new FormControl(''), // form control added for business_Owner
     owner_contact: new FormControl(''),
     email: new FormControl(''),
     state: new FormControl(''),
@@ -128,7 +148,10 @@ export class FbonewComponent implements OnInit {
     private _getFboGeneralData: GetdataService,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
-    private existingFrom: FormBuilder
+    private existingFrom: FormBuilder,
+    private existingFboFrom: FormBuilder,
+    private existingBoFrom: FormBuilder
+
   ) {
     this.getFboGeneralData();
   }
@@ -163,15 +186,32 @@ export class FbonewComponent implements OnInit {
       hra_total: ['', Validators.required]
     });
 
-    this.existingUserForm = this.existingFrom.group({
-      existingUser: [''],
+    
+
+    this.existingUserFboForm = this.existingFboFrom.group({
+      existingUserFbo: [''],
       searchUser: ['', Validators.required]
     })
 
+    this.existingUserBoForm = this.existingBoFrom.group({
+      existingUserBo: [''],
+      searchUser: ['', Validators.required]
+    })
+
+    // this.existingUserForm = this.existingFrom.group({
+    //   existingUser: [''],
+    //   searchUser: ['', Validators.required]
+    // })
+
+
     this.fboForm = this.formBuilder.group(
       {
+        boInfo: ['', Validators.required],
         fbo_name: ['', Validators.required],
         owner_name: ['', Validators.required],
+        business_entity: ['', Validators.required],
+        business_category: [''],
+        business_ownership_type: [''],
         owner_contact: ['',
           [
             Validators.required,
@@ -185,8 +225,8 @@ export class FbonewComponent implements OnInit {
         state: [this.allocated_state, Validators.required],
         district: [this.allocated_district, Validators.required],
         address: ['', Validators.required],
-        village: ['', Validators.required],
-        tehsil: ['', Validators.required],
+        village: [''],
+        tehsil: [''],
         pincode: ['', Validators.required],
         product_name: [[], Validators.required],
         business_type: ['b2c', Validators.required],
@@ -194,62 +234,165 @@ export class FbonewComponent implements OnInit {
         createdBy: ['', Validators.required],
         grand_total: ['', Validators.required],
       });
-
-    this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` })
+    this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     this.getAllocatedArea();
+    this.getboGeneralData();
   }
+    
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
   }
-
 
   setRequired() {
     return [Validators.required];
   }
 
-  existingUser($event: any) {
-    this.isExisting = $event.target.checked
+//  existingUserFbo($event: any) {
+//    this.isExistingFbo = $event.target.checked
+//   }
+
+//   existingUserBo($event: any) {
+//     this.isExistingBo = $event.target.checked
+//    }
+
+
+existingUserFbo($event: any) {
+  if ($event.target.checked) {
+    this.isExistingFbo = true;
+    this.isExistingBo = false;
+    this.fboFieldName = "FBO Name";
+    this.fboPlaceholder = "Enter FBO Name";
+    this.existingUserBoForm.reset();
+  } else {
+   
+    this.isExistingFbo = false;
+    this.fboFieldName = "FBO Name";
+    this.fboPlaceholder = "Enter FBO Name";
   }
+}
+
+existingUserBo($event: any) {
+  if ($event.target.checked) {
+    this.isExistingBo = true;
+    this.isExistingFbo = false;
+    this.fboFieldName = "Business Entity";
+    this.fboPlaceholder = "Enter Business Entity";
+  } else {
+    this.isExistingBo = false;
+    this.fboFieldName = "FBO Name";
+    this.fboPlaceholder = "Enter FBO Name";
+  }
+}
+
+resetForm(type: string) {
+  if (type === 'fbo') {
+      this.isExistingBo = false; 
+      this.fboForm.reset();
+      this.fbo['state'].setValue(this.allocated_state);
+      this.fbo['business_type'].setValue('b2c') 
+      this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
+  } else if (type === 'bo') {
+      this.isExistingFbo = false; 
+      this.fboForm.reset(); 
+      this.fbo['state'].setValue(this.allocated_state);
+      this.fbo['business_type'].setValue('b2c')
+      this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
+  }
+  this.isFoscos = false;
+  this.isFostac = false;
+  this.isHygiene = false;
+  this.fbo['district'].setValue('');
+  this.fbo['pincode'].setValue('');
+  this.fbo['payment_mode'].setValue('');
+  this.fostac_training.patchValue({fostac_client_type: ''});
+  this.foscos_training.patchValue({foscos_client_type: ''});
+  this.foscos_training.patchValue({foscos_service_name: ''});
+  this.fostac_training.patchValue({fostac_service_name: ''});
+  this.fostac_training.patchValue({fostac_processing_amount: ''});
+  this.foscos_training.patchValue({foscos_processing_amount: ''});
+  this.foscos_training.patchValue({license_category: ''});
+  this.foscos_training.patchValue({license_duration: ''});
+  this.foscos_training.patchValue({water_test_fee: ''});
+  this.hygiene_audit.patchValue({hra_processing_amount: 5000});
+  this.hygiene_audit.patchValue({hra_service_name: 'HRA'});
+  this.hygiene_audit.patchValue({hra_client_type: ''});
+  this.multiSelect.onReset();
+}
 
   filterSearch(event: any) {
     let value = event.target.value
     if (value !== '') {
-      this.isSearchEmpty = false;
+      this.isSearchEmptyFBO = false;
     }
     else {
-      this.isSearchEmpty = true;
+      this.isSearchEmptyFBO = true;
+      return
+    }
+    let regex = new RegExp(value, "i") 
+    this.searchSuggestions = this.existingFbos.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.owner_name));
+  }
+
+  filterSearchOnBo(event: any) {
+    let value = event.target.value
+    if (value !== '') {
+      this.isSearchEmptyBO = false;
+    }
+    else {
+      this.isSearchEmptyBO = true;
       return
     }
     let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
-    this.searchSuggestions = this.existingFbos.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.customer_id));
+    this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => regex.test(obj.owner_name) || regex.test(obj.customer_id));
   }
 
+  
   fetchExistingUser(fboObj: any) {
-    this.existingFboId = fboObj.customer_id
-    this.searchElem.nativeElement.value = ''
-    this.isSearchEmpty = true;
-    this.fbo['fbo_name'];
-    this.fbo['fbo_name'].setValue(fboObj.fbo_name);
-    this.fbo['owner_name'].setValue(fboObj.owner_name);
-    this.fbo['owner_contact'].setValue(fboObj.owner_contact);
-    this.fbo['email'].setValue(fboObj.email);
-    this.fbo['address'].setValue(fboObj.address);
-    this.fbo['village'].setValue(fboObj.village);
-    this.fbo['tehsil'].setValue(fboObj.tehsil);
-    this.fbo['district'].setValue(fboObj.district);
-    this.fbo['state'].setValue(fboObj.state);
-    this.fbo['pincode'].setValue(fboObj.pincode);
-    this.fbo['business_type'].setValue(fboObj.business_type);
-    if (fboObj.business_type === 'b2b') {
-      this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
-      this.need_gst_number = true;
+      this.existingFboId = fboObj.customer_id
+      this.searchElemFBO.nativeElement.value = ''
+      this.isSearchEmptyFBO = true;
+      this.fbo['fbo_name'].setValue(fboObj.fbo_name);
+      this.fbo['owner_name'].setValue(fboObj.owner_name);
+      this.fbo['owner_contact'].setValue(fboObj.owner_contact);
+      this.fbo['business_entity'].setValue(fboObj.boInfo.business_entity);
+      this.fbo['business_category'].setValue(fboObj.boInfo.business_category);
+      this.fbo['business_ownership_type'].setValue(fboObj.boInfo.business_ownership_type);
+      this.fbo['email'].setValue(fboObj.email);
+      this.fbo['address'].setValue(fboObj.address);
+      this.fbo['village'].setValue(fboObj.village);
+      this.fbo['tehsil'].setValue(fboObj.tehsil);
+      this.fbo['district'].setValue(fboObj.district);
+      this.fbo['boInfo'].setValue(fboObj.boInfo._id);
+      this.fbo['state'].setValue(fboObj.state);
+      this.fbo['pincode'].setValue(fboObj.pincode);
+      this.fbo['business_type'].setValue(fboObj.business_type);
+      if (fboObj.business_type === 'b2b') {
+        this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
+        this.need_gst_number = true;
+      }
+      if (fboObj.business_type === 'b2c') {
+        this.fboForm.removeControl('gst_number');
+        this.need_gst_number;
+      }
     }
-    if (fboObj.business_type === 'b2c') {
-      this.fboForm.removeControl('gst_number');
-      this.need_gst_number;
+  
+
+    fetchExistingBo(fboObj: any) {
+      
+      this.existingFboId = fboObj.customer_id
+      this.searchElemBO.nativeElement.value = ''
+      this.isSearchEmptyBO = true;
+      console.log(fboObj);
+      this.fbo['owner_name'].setValue(fboObj.owner_name);
+      this.fbo['business_entity'].setValue(fboObj.business_entity);
+      this.fbo['business_category'].setValue(fboObj.business_category);
+      this.fbo['business_ownership_type'].setValue(fboObj.business_ownership_type);
+      this.fbo['owner_contact'].setValue(fboObj.contact_no);
+      this.fbo['email'].setValue(fboObj.email);
+      this.fbo['boInfo'].setValue(fboObj._id);
     }
-  }
+  
+
   //Form Submit Method
   onSubmit() {
 
@@ -278,7 +421,7 @@ export class FbonewComponent implements OnInit {
       });
     } else {
       this.addFbo = this.fboForm.value;
-      if(!this.isExisting){
+      if(!this.isExistingFbo){
         if (this.addFbo.payment_mode === 'Pay Page') {
           this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
@@ -392,6 +535,7 @@ export class FbonewComponent implements OnInit {
                                         return 1;
                                       }
                                     });
+        console.log(this.fboGeneralData);
         this.productList = this.fboGeneralData.map((item:any) => item.key);
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
@@ -409,11 +553,26 @@ export class FbonewComponent implements OnInit {
     // for getting fbo lists
     this._getFboGeneralData.getFbolist().subscribe({
       next: (res) => {
+        console.log(res);
         this.existingFbos = res.fboList;
       },
       error: (err) => {
       }
     })
+  }
+
+   //Get bo General Data
+   getboGeneralData() {
+     
+    this._getFboGeneralData.getbolist().subscribe({
+      next: (res) => {
+        this.existingbos = res.boList;
+        console.log(this.existingbos);
+      },
+      error: (err) => {
+      }
+    })
+
   }
 
   //Reset the form
@@ -454,16 +613,15 @@ export class FbonewComponent implements OnInit {
     if (this.productName.includes('Foscos')) {
       this.isFoscos = true;
       this.fboForm.addControl('foscos_training', this.foscos_training);
-      this.fboForm.get('village')?.setValidators([Validators.required]);
+      // this.fboForm.get('village')?.setValidators([Validators.required]);
+      this.fboForm.get('village')?.clearValidators();
       this.fboForm.get('village')?.updateValueAndValidity();
-      this.fboForm.get('tehsil')?.setValidators([Validators.required]);
+      this.fboForm.get('tehsil')?.clearValidators();
       this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
     else {
       this.fboForm.removeControl('foscos_training');
-      this.fboForm.get('village')?.clearValidators();
       this.fboForm.get('village')?.updateValueAndValidity();
-      this.fboForm.get('tehsil')?.clearValidators();
       this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
     if (this.productName.includes('HRA')) {
@@ -530,6 +688,9 @@ export class FbonewComponent implements OnInit {
     if (val === 'foscos') {
       this.foscosChildComponent.resetForms();
     }
+    // if (val === 'HRA') {
+    //   this.hraChildComponent.resetForms();
+    // }
   }
 
 
@@ -541,7 +702,7 @@ export class FbonewComponent implements OnInit {
         this.need_gst_number = true;
         this.fboForm.addControl('gst_number', new FormControl('', Validators.required));
       }
-      else if (businessType === 'b2c') { // If we have business type b2b then we want to remove gst number form control
+      else if (businessType === 'b2c') { // If we have business type b2c then we want to remove gst number form control
         this.need_gst_number = false;
         this.fboForm.removeControl('gst_number');
       }
@@ -593,12 +754,14 @@ export class FbonewComponent implements OnInit {
           // this.router.navigate(['/home']);
         } else {
           this.allocated_state = data.state;
+          console.log(data.district);
           this.allocated_district = data.district;
           this.allocated_pincodes = data.pincodes;
           this.fboForm.patchValue({ state: this.allocated_state });
         }
       },
       error: (err) => {
+
 
       }
     })
