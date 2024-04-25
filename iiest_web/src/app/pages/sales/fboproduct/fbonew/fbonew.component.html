@@ -11,7 +11,7 @@
                         <label for="isExistingFbo" class="form-label p-1">Existing FBO:</label>
                         <input type="checkbox"  formControlName="existingUserFbo" id="isExistingFbo" class="align-middle cursor-pointer" (change)="existingUserFbo($event)" (change)="resetForm('fbo')">
                         <div class="d-inline m-0 p-0 position-relative">
-                            <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off">
+                            <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off" class="w-100">
                             <ul *ngIf="isExistingFbo && !isSearchEmptyFBO" class="search-suggestions">
                                 <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions" (click)="fetchExistingUser(searchSuggestion)">
                                     <span class="fbo-name">{{searchSuggestion.fbo_name}}({{searchSuggestion.owner_name}})</span>
@@ -24,7 +24,7 @@
                         <label for="isExistingBo" class="form-label p-1">Existing BO:</label>
                         <input type="checkbox"  formControlName="existingUserBo" id="isExistingBo" class="align-middle cursor-pointer" (change)="existingUserBo($event)" (change)="resetForm('bo')">
                         <div class="d-inline m-0 p-0 position-relative">
-                            <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off">
+                            <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off" class="w-100">
                             <ul *ngIf="isExistingBo && !isSearchEmptyBO" class="search-suggestions">
                                 <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo" (click)="fetchExistingBo(searchSuggestion)">
                                     <span class="fbo-name">{{searchSuggestion.owner_name}}({{searchSuggestion.customer_id}})</span>
