@@ -59,10 +59,6 @@ export class HighchartsComponent implements OnChanges {
 
   chartInstance: any;
 
-  chartCallback: Highcharts.ChartCallbackFunction = function (chart): void {
-    chart.redraw();
-  };
-
   @ViewChild('highchart') highchartRef: any;
 
   constructor(private modalService: NgbModal,
@@ -527,8 +523,16 @@ export class HighchartsComponent implements OnChanges {
 
     // this.chartCallback(this.highchartRef.chart)
 
-    this.intervalType = event.target.value;
-    this.plotChart();
+    if(this.highchartRef && this.highchartRef.chart){
+      let chart = this.highchartRef.chart;
+      if(chart.drilldownLevels){
+        console.log(chart.drilldownLevels && chart.drilldownLevels.length != 0);
+        chart.drillUp();
+      }
+    }
+  
+      this.intervalType = event.target.value;
+      this.plotChart();
   }
 
   chartTypeEvent(event: any): void {
@@ -547,8 +551,6 @@ export class HighchartsComponent implements OnChanges {
   }
 
   plotChart() {
-
-    this.chart = {}
 
     this.initializeChartData();
 
