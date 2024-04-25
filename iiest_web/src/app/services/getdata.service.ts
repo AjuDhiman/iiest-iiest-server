@@ -218,6 +218,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getMostRepeatedCust(): Observable<any>{
+    const url: string = `${this.url}/getmostrepeatedcust`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getKobData(): Observable<any> {
     const url: string = `${this.url}/getkobdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
