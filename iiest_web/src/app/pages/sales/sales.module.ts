@@ -9,6 +9,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.component';
 import { RecipientListComponent } from 'src/app/pages/modals/recipient/recipient-list/recipient-list.component';
 import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.component';
+import { ClientListComponent } from './client-list/client-list.component';
 
 
 
@@ -21,7 +22,8 @@ import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.compone
     FbolistComponent,
     RecipientComponent,
     RecipientListComponent,
-    ViewFboComponent
+    ViewFboComponent,
+    ClientListComponent
   ],
   imports: [
     CommonModule,

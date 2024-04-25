@@ -16,3 +16,33 @@
 .onboard-form input::placeholder{
     color: white;
 }
+
+
+.onboard-form select {
+    background: transparent;
+    color: white;
+    outline-color: white !important;
+    font-size: small;
+    padding:0.375rem 0.75rem;
+    line-height: 2;
+    cursor: pointer;
+
+}
+
+.onboard-form select option {
+    background: linear-gradient(to left, #00173c, #011c4d);
+    background: #011c4d;
+    color: white;
+    font-size: medium;
+    padding: 8px 10px;
+    cursor: pointer !important;
+   
+  
+}
+
+
+.onboard-form select option:hover {
+    background: #112f5d;
+  
+}
+

@@ -77,6 +77,11 @@ export class GetdataService {
     const url = `${this.url}/allfbolist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
+  
+  public getbolist(): Observable<any> {
+    const url = `${this.url}/allbolist`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
 
   public getUserRecord(): Observable<any> {
     const url = `${this.url}/employeeRecord`;
@@ -254,5 +259,11 @@ export class GetdataService {
   private handleError(err: HttpErrorResponse): Observable<never> {
     // just a test ... more could would go here
     return throwError(() => err);
+  }
+  
+  // for getting business_owner information
+  public getboDetails(): Observable<any> {
+    const url: string = `${this.url}/getbodata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 }

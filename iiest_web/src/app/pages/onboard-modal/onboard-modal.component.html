@@ -1,29 +1,68 @@
+
+
 <div class="modal-header bg-Portal">
     <h6 class="modal-title text-white" id="modal-basic-title">BUSINESS</h6>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
-</div>
-<!-- style="background:linear-gradient(rgba(2, 27, 77, 0.87), #010e28)" -->
+</div> 
+
 <div class="modal-body" style="background:linear-gradient(rgba(2, 27, 77, 0.87), #010e28); color: white; border-top: #112f5d;">
 
-    <form class="onboard-form">
+    <form [formGroup]="businessForm" class="onboard-form" (ngSubmit)="submitForm()">
         <div class="row">
-            <div class="col-md-12 my-2">
-                <label class="form-label">BO Name<sup>*</sup> </label>
-                <input id="fboname" type="text" class="form-control" placeholder="BO Name">
-            </div>
-            <div class="col-md-12 my-2">
-                <label class="form-label">Owner Name<sup>*</sup> </label>
-                <input type="text" class="form-control" placeholder="Owner Name">
-            </div>
-            <div class="col-md-12 my-2">
-                <label class="form-label">Contact No.<sup>*</sup> </label>
-                <input type="number" class="form-control" placeholder="Contact No.">
-            </div>
-            <div class="col-md-12 my-2">
-                <label class="form-label">Email<sup>*</sup> </label>
-                <input type="email" class="form-control" placeholder="Email">
-            </div>
-        </div>
-    </form>
+          <div class="col-md-12 my-2">
+            <label class="form-label">Business Owner Name<sup>*</sup> </label>
+            <input formControlName="owner_name" type="text" class="form-control" placeholder="Business Owner Name">
+            <div *ngIf="businessForm?.get('owner_name')?.invalid && businessForm?.get('owner_name')?.touched" class="text-danger">Owner Name is required</div>
+            <!-- <div *ngIf="submitted && function['owner_name'].errors"></div> -->
 
-</div>
+          </div>
+          <div class="col-md-12 my-2">
+            <label class="form-label">Business Entity<sup>*</sup> </label>
+            <input formControlName="business_entity"  type="text" class="form-control" placeholder="Business Entity">
+            <div *ngIf="businessForm?.get('business_entity')?.invalid && businessForm?.get('business_entity')?.touched" class="text-danger">Business Entity is required</div>
+            <!-- <div *ngIf="submitted && function['business_entity'].errors"></div> -->
+          </div>
+          <div class="col-md-12 my-2">
+            <label class="form-label">Business Category<sup>*</sup></label>
+            <div class="select-wrapper" >
+                <select  class="form-control" formControlName="business_category">
+                    <option value="" selected disabled hidden>Select Business Category &#9662;</option>
+                    <option value="Food Business Operator">Food Business Operator</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div *ngIf="businessForm?.get('business_category')?.invalid && businessForm?.get('business_category')?.touched" class="text-danger">Business Category is required</div>
+            <!-- <div *ngIf="submitted && function['business_category'].errors"></div> -->
+        </div>
+        <div class="col-md-12 my-2">
+            <label class="form-label">Business Type<sup>*</sup></label>
+            <div class="select-wrapper">
+                <select class="form-control" formControlName="business_ownership_type">
+                    <option value="" selected disabled hidden>Select Business Type &#9662;</option>
+                    <option value="Single Shop Owner">Single Shop Owner</option>
+                    <option value="Multi Shop Owner">Multi Shop Owner</option>
+                </select>
+            </div>
+            <div *ngIf="businessForm?.get('business_ownership_type')?.invalid && businessForm?.get('business_ownership_type')?.touched" class="text-danger">Business Type is required</div>
+            <!-- <div *ngIf="submitted && function['business_type'].errors"></div> -->
+        </div>
+          <div class="col-md-12 my-2">
+            <label class="form-label">Contact No.<sup>*</sup> </label>
+            <input formControlName="contact_no"type="text" class="form-control" placeholder="Contact No">
+            <div *ngIf="businessForm?.get('contact_no')?.invalid && businessForm?.get('contact_no')?.touched" class="text-danger">Contact No is required</div>
+            <!-- <div *ngIf="submitted && function['contact_no'].errors"></div> -->
+          </div>
+          <div class="col-md-12 my-2">
+            <label class="form-label">Email<sup>*</sup> </label>
+            <input formControlName="email" type="text" class="form-control" placeholder="Email">
+            <div *ngIf="businessForm?.get('email')?.invalid && businessForm?.get('email')?.touched" class="text-danger">Email is required</div>
+            <!-- <div *ngIf="submitted && function['email'].errors"></div> -->
+          </div>
+        </div>
+        <div class="col-md-12 my-2">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+</div>      
+
+  

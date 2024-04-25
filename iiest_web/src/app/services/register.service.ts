@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification} from 'src/app/utils/registerinterface';
+import { Employee,bo, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification} from 'src/app/utils/registerinterface';
 import { Observable, throwError} from 'rxjs';
 import { catchError} from 'rxjs/operators'
 import { config } from 'src/app/utils/config'
@@ -114,6 +114,16 @@ export class RegisterService {
         this.handleError
       ));
   }
+
+  //This service is written by chandan kumar for Business Owner
+  public addbo(formInterface: any): Observable<any> {
+    const url = `${this.url}/boregister`
+    return this.http.post<any>(url, {...formInterface}).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
 
   public editEmployeeFiles(editForm: editUserFiles):  Observable<any> {
     const url = `${this.url}/edituserfiles`

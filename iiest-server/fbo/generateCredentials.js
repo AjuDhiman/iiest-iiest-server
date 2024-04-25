@@ -1,11 +1,34 @@
 const salesModel = require('../models/employeeModels/employeeSalesSchema');
 const fboModel = require('../models/fboModels/fboSchema');
 const { recipientModel, shopModel, hygieneShopModel } = require('../models/fboModels/recipientSchema');
+const boModel = require('../models/BoModels/boSchema')
 
-const generateCustomerId = (randonNum)=>{
+let generateCustomerId = (randonNum)=>{
     let customerId = '';
     customerId = `IIEST/${randonNum}`;
     return customerId
+}
+
+let generateMemberId = (randonNum)=>{
+  let customerId = '';
+  customerId = `IIEST/MB/${randonNum}`;
+  return customerId
+}
+
+const generateUniqueId = async() => {
+  let isUnique = false;
+  let idNumber;
+
+  while(!isUnique) {
+    idNumber = Math.floor(100000 + Math.random() * 900000);
+    const existingNumber = await boModel.findOne({id_num: idNumber});
+    if(!existingNumber) {
+      isUnique = true;
+    }
+  }
+
+  const generatedUniqueCustomerId = generateMemberId(idNumber);
+  return {idNumber, generatedUniqueCustomerId}
 }
 
 const generatedInfo = async()=>{
@@ -79,4 +102,4 @@ const getHygieneShopId = async(salesId, idNumber) => {
   return shopId;
 }
 
-module.exports = {generatedInfo, generateRecipientInfo, generateHygieneShopInfo};
+module.exports = {generateUniqueId, generatedInfo, generateRecipientInfo, generateHygieneShopInfo};

@@ -44,6 +44,15 @@ export interface forgotPassword {
   email: string;
 }
 
+export interface bo {  //This interface is written bu Chandan Kumaar for Business Owner
+  bo_name: string,
+  b_entity: string,
+  b_category: string,
+  b_type: string,
+  bo_contact: number,
+  bo_email: string
+}
+
 export interface fbo {
   fbo_name: string;
   owner_name: string;

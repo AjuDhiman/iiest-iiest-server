@@ -1,13 +1,14 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, addHygieneShop, hygieneShopsList } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { foscosDocuments, hraDocuments } = require('../config/storage');
+const { createBusinessOwner, getAllBusinessOwners } = require('../controllers/boControllers/bo');
 
-const eBillStorage = multer.memoryStorage()
+const eBillStorage = multer.memoryStorage() 
 const eBillUpload = multer({storage: eBillStorage});
 
 const router = express.Router();
@@ -36,5 +37,9 @@ router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)
 router.post('/existingfbo-pay-return', existingFboPayReturn);
+router.get('/getclientlist', getClientList)
+router.post('/boregister',authMiddleware, createBusinessOwner );
+router.get('/getbodata', authMiddleware, getAllBusinessOwners);
+router.get('/allbolist', authMiddleware, registerdBOList); 
 
 module.exports = router;
