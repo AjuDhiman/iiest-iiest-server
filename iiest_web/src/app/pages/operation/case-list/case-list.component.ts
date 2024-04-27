@@ -48,9 +48,6 @@ export class CaseListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let timeout = setTimeout(() => {
-      this.loading = false
-    }, 4000);
 
     this.initializeCaseList();
 
@@ -88,10 +85,8 @@ export class CaseListComponent implements OnInit {
   }
 
   getCasedata(): void {
-    console.log(11);
     this._getDataService.getCaseList().subscribe({
       next: res => {
-        console.log(res);
         this.loading = false;
         this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
         this.totalCase = this.caseData.length;

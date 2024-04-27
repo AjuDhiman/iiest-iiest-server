@@ -13,7 +13,8 @@
     <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
       <div class="row g-3 mb-4 align-items-center justify-content-between">
         <div class="col-auto">
-          <h1 class="app-page-title mb-0">Sales List Of <span style="text-transform: capitalize;">{{activeTab}} </span></h1>
+          <h1 class="app-page-title mb-0">Sales List Of <span style="text-transform: capitalize;">{{activeTab}} </span>
+          </h1>
         </div>
         <div class="col-auto">
           <div class="page-utilities">
@@ -44,10 +45,9 @@
                 </select>
               </div>
               <div class="col-auto">
-                <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
+                <!-- <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
                   [icon]="faFileCsv" title="Export as CSV"></fa-icon>
-                <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
-              </div>
+              </div> -->
             </div><!--//row-->
           </div><!--//table-utilities-->
         </div><!--//col-auto-->
@@ -70,8 +70,11 @@
                       <th class="cell">District</th>
                       <th class="cell text-center" *ngIf="activeTab==='Fostac'">Recipient No</th>
                       <th class="cell text-center" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No</th>
-                      <th class="cell text-center">{{ activeTab === 'Fostac' ? 'Fostac Amount' : (activeTab === 'Foscos' ? 'Foscos Amount' : 'HRA Amount') }}</th>
-                      <th class="cell text-center">Total Amount<span style="font-size: x-small;">(18% GST Included)</span></th>
+                      <th class="cell text-center">Processing Amount</th>
+                      <th class="cell text-center">{{ activeTab === 'Fostac' ? 'Fostac Amount' : (activeTab === 'Foscos'
+                        ? 'Foscos Amount' : 'HRA Amount') }}</th>
+                      <th class="cell text-center">Total Amount<span style="font-size: x-small;">(18% GST
+                          Included + Govt. Fee)</span></th>
                       <th class="cell">Sales Date</th>
                       <th class="cell text-center">Action</th>
                     </tr>
@@ -80,8 +83,10 @@
                     <tr class="list-tr"
                       *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
                       <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span></td>
-                      <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.owner_name.toLowerCase()}}</span></td>
+                      <td class="cell"><span
+                          class="truncate text-capitlize">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span></td>
+                      <td class="cell"><span
+                          class="truncate text-capitlize">{{fbo.fboInfo.owner_name.toLowerCase()}}</span></td>
                       <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                       <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.state}}</span></td>
                       <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.district}}</span></td>
@@ -97,11 +102,13 @@
                           (click)="!fbo.hraInfo ? '' : recipient(fbo,'HRA')" title="Enter Shop Details">{{!fbo.hraInfo ?
                           '-' :
                           fbo.hraInfo.shops_no}}</span></td>
+                      <td class="cell text-center">
+                        <span class="truncate">{{ calculateProcessingAmount(fbo) | inrAmount}}</span>
                       <td *ngIf="activeTab === 'Fostac'" class="cell text-center">
                         <span class="truncate">{{ fbo.fostacInfo.fostac_total | inrAmount}}</span>
                       </td>
                       <td *ngIf="activeTab === 'Foscos'" class="cell text-center">
-                        <span class="truncate">{{ fbo.foscosInfo.foscos_total | inrAmount }}</span>
+                        <span class="truncate">{{ calculateFoscosProcessingAmount(fbo) | inrAmount }}</span>
                       </td>
                       <td *ngIf="activeTab === 'HRA'" class="cell text-center">
                         <span class="truncate">{{ fbo.hraInfo.hra_total | inrAmount }}</span>

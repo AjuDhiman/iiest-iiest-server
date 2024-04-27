@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { faMagnifyingGlass, faCheck, faXmark, IconDefinition, faL, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faCheck, faXmark, IconDefinition, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { Months, days, months } from 'src/app/utils/config';
 import { Select } from '@ngxs/store';
 import { SalesState } from 'src/app/store/state/sales.state';
@@ -27,13 +27,14 @@ export class HighchartDataModalComponent {
   filterDate: string | void;
   fboSalesData: any;
   isSearch: boolean = false;
-  pageNumber: number = 1;
+  pageNumber1: number = 1;
   itemsNumber: number = 10;
   employeeList: any;
   specificDatas: any;
   isRepetCustData: boolean = false;
   sortedField: string = '';
   sortingOrder: 'asc' | 'desc' = 'asc';
+  designation: string;
 
   //icons
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
@@ -55,6 +56,10 @@ export class HighchartDataModalComponent {
     private _modalService: NgbModal) { }
 
   ngOnInit() {
+    const loggedInUserData: any = this.registerService.LoggedInUserData();
+    const parsedData = JSON.parse(loggedInUserData);
+    this.designation = parsedData.designation;
+
     switch (this.chartData.chartTitile) {
       case 'Product Wise Sales':
         this.fetchAllFboData();
@@ -75,7 +80,7 @@ export class HighchartDataModalComponent {
         break;
     }
 
-    if(this.isRepetCustData){
+    if (this.isRepetCustData) {
       this.sortBy('last_sale_date', 'desc');
     } else {
       this.sortBy('sales_date', 'desc');
@@ -204,6 +209,8 @@ export class HighchartDataModalComponent {
           break;
         case 'byCustomerID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery));
           break;
+        case 'bySalesOfficer': this.filteredData = this.specificDatas.filter((elem: any) => elem.employeeInfo.employee_name.toLowerCase().includes(this.searchQuery));
+          break;
       }
     }
     this.filteredData ? this.showPagination = true : this.showPagination = false;
@@ -265,12 +272,12 @@ export class HighchartDataModalComponent {
   }
 
   onTableDataChange(event: any) {
-    this.pageNumber = event;
+    this.pageNumber1 = event;
   }
 
   onSearchChange() {
     if (this.searchQuery) {
-      this.pageNumber = 1;
+      this.pageNumber1 = 1;
       this.isSearch = true;
       console.log(this.chartData.userDept);
       switch (this.chartData.userDept) {
@@ -462,76 +469,76 @@ export class HighchartDataModalComponent {
     this.sortedField = field;
     this.sortingOrder = order;
 
-    switch(this.sortedField){
+    switch (this.sortedField) {
       case 'fbo_name':
-        this.filteredData.sort((a:any, b: any) => {
-          if(order === 'asc') {
-            if(b.fboInfo.fbo_name > a.fboInfo.fbo_name){
+        this.filteredData.sort((a: any, b: any) => {
+          if (order === 'asc') {
+            if (b.fboInfo.fbo_name > a.fboInfo.fbo_name) {
               return -1
-            } else if(b.fboInfo.fbo_name < a.fboInfo.fbo_name) {
+            } else if (b.fboInfo.fbo_name < a.fboInfo.fbo_name) {
               return 1
             } else {
               return 0;
             }
           } else {
-            if(b.fboInfo.fbo_name > a.fboInfo.fbo_name){
+            if (b.fboInfo.fbo_name > a.fboInfo.fbo_name) {
               return 1
-            } else if(a.fboInfo.fbo_name < b.fboInfo.fbo_name) {
+            } else if (a.fboInfo.fbo_name < b.fboInfo.fbo_name) {
               return -1
             } else {
               return 0;
             }
           }
         })
-      break;
+        break;
       case 'owner_name':
-        this.filteredData.sort((a:any, b: any) => {
-          if(order === 'asc') {
-            if(a.fboInfo.owner_name > b.fboInfo.owner_name){
+        this.filteredData.sort((a: any, b: any) => {
+          if (order === 'asc') {
+            if (a.fboInfo.owner_name > b.fboInfo.owner_name) {
               return -1
-            } else if(a.fboInfo.owner_name < b.fboInfo.owner_name) {
+            } else if (a.fboInfo.owner_name < b.fboInfo.owner_name) {
               return 1
             } else {
               return 0;
             }
           } else {
-            if(a.fboInfo.owner_name > b.fboInfo.owner_name){
+            if (a.fboInfo.owner_name > b.fboInfo.owner_name) {
               return 1
-            } else if(a.fboInfo.owner_name < b.fboInfo.owner_name) {
+            } else if (a.fboInfo.owner_name < b.fboInfo.owner_name) {
               return -1
             } else {
               return 0;
             }
           }
         })
-      break;
+        break;
       case 'repetition_count':
-        this.filteredData.sort((a:any, b: any) => {
-          if(order === 'asc') {
+        this.filteredData.sort((a: any, b: any) => {
+          if (order === 'asc') {
             return a.repetition_count - b.repetition_count;
           } else {
             return b.repetition_count - a.repetition_count;
           }
         })
-      break;
+        break;
       case 'last_sale_date':
-        this.filteredData.sort((a:any, b: any) => {
-          if(order === 'asc') {
+        this.filteredData.sort((a: any, b: any) => {
+          if (order === 'asc') {
             return new Date(a.lastSaleDate).getTime() - new Date(b.lastSaleDate).getTime();
           } else {
             return new Date(b.lastSaleDate).getTime() - new Date(a.lastSaleDate).getTime();
           }
         })
-      break;
+        break;
       case 'sales_date':
-        this.filteredData.sort((a:any, b: any) => {
-          if(order === 'asc') {
+        this.filteredData.sort((a: any, b: any) => {
+          if (order === 'asc') {
             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
           } else {
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           }
         })
-      break;
+        break;
     }
   }
 }

@@ -5,6 +5,7 @@ import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInf
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-landingpage',
@@ -29,6 +30,7 @@ export class LandingpageComponent implements OnInit, AfterViewInit {
   constructor(
     private modalService: NgbModal,
     private _resiterService: RegisterService,
+    private _toastrService: ToastrService,
     private router: Router) {
 
   }
@@ -53,7 +55,13 @@ export class LandingpageComponent implements OnInit, AfterViewInit {
     }
   }
 
+  //methord opens the onboard ,modal if user if user is loggedin this runs on click of onboard button on landing page view
   openOnboardModal() {
-    this.modalService.open(OnboardModalComponent, { size: 'md', backdrop: 'static' });
+    if (!this.isToken) {
+      this._toastrService.info('Login Required')
+      this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });
+    } else {
+      this.modalService.open(OnboardModalComponent, { size: 'md', backdrop: 'static' });
+    }
   }
 }

@@ -258,6 +258,10 @@ export class FbonewComponent implements OnInit {
 
 existingUserFbo($event: any) {
   if ($event.target.checked) {
+    this.loading = true;
+    if(this.existingFbos){
+      this.loading = false;
+    }
     this.isExistingFbo = true;
     this.isExistingBo = false;
     this.fboFieldName = "FBO Name";
@@ -553,6 +557,7 @@ resetForm(type: string) {
     // for getting fbo lists
     this._getFboGeneralData.getFbolist().subscribe({
       next: (res) => {
+        this.loading = false;
         console.log(res);
         this.existingFbos = res.fboList;
       },
@@ -598,7 +603,7 @@ resetForm(type: string) {
 
     this.productName = $event;
     this.fboForm.patchValue({ product_name: this.productName })
-    var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key))
+    var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key));
 
     this.isFostac = false;
     this.isFoscos = false;

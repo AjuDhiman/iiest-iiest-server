@@ -21,6 +21,7 @@
             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilterSales">
               <option value="generalsearch">General Search</option>
               <option value="byFboName">Search by FBO Name</option>
+              <option *ngIf="designation === 'Director'" value="bySalesOfficer">Search by Sales Officer</option>
               <option value="byOwner">Search by Owner</option>
               <option value="byLocation">Search by Location</option>
               <option value="byCustomerID">Search by Customer ID</option>
@@ -45,7 +46,7 @@
               <thead *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr>
                   <th class="cell">S.No</th>
-                  <th class="cell ">FBO Name
+                  <th class="cell">FBO Name
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
                       (click)="sortBy('fbo_name', 'asc')"
                       [ngClass]="{'selected-arrow': sortedField === 'fbo_name' && sortingOrder === 'asc'}"></fa-icon>
@@ -75,11 +76,10 @@
                   <th class="cell">State</th>
                   <th *ngIf="!isRepetCustData" class="cell">Sales Date
                     <fa-icon style="margin-left: 5px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
-                    (click)="sortBy('sales_date', 'asc')"
-                    [ngClass]="{'selected-arrow': sortedField === 'sales_date' && sortingOrder === 'asc'}"></fa-icon>
-                  <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown"
-                    (click)="sortBy('sales_date', 'desc')"
-                    [ngClass]="{'selected-arrow': sortedField === 'sales_date' && sortingOrder === 'desc'}"></fa-icon>
+                      (click)="sortBy('sales_date', 'asc')"
+                      [ngClass]="{'selected-arrow': sortedField === 'sales_date' && sortingOrder === 'asc'}"></fa-icon>
+                    <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" (click)="sortBy('sales_date', 'desc')"
+                      [ngClass]="{'selected-arrow': sortedField === 'sales_date' && sortingOrder === 'desc'}"></fa-icon>
                   </th>
                   <th *ngIf="isRepetCustData" class="cell text-center">Last Sale Date
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
@@ -89,6 +89,7 @@
                       (click)="sortBy('last_sale_date', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'last_sale_date' && sortingOrder === 'desc'}"></fa-icon>
                   </th>
+                  <th *ngIf="designation === 'Director'" class="cell">Sales Officer</th>
                 </tr>
               </thead>
               <thead *ngIf="chartData.userDept==='HR Department'">
@@ -105,12 +106,12 @@
               <tbody
                 *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr (click)="viewCustomerSales(employee.fboInfo.customer_id)"
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
-                  <td class="cell"><span class="truncate text-capitalize">{{sr+itemsNumber*(pageNumber-1)+1}}</span>
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber1 }; let sr = index">
+                  <td class="cell"><span class="truncate text-capitalize">{{sr+itemsNumber*(pageNumber1-1)+1}}</span>
                   </td>
-                  <td class="cell"><span
+                  <td class="cell col-2"><span
                       class="truncate text-capitalize">{{employee.fboInfo.fbo_name.toLowerCase()}}</span></td>
-                  <td class="cell"><span
+                  <td class="cell col-2"><span
                       class="truncate text-capitalize">{{employee.fboInfo.owner_name.toLowerCase()}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.customer_id}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
@@ -121,21 +122,23 @@
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span
-                      class="truncate text-capitalize">{{employee.repetition_count}}</span></td>
+                      class="truncate text-capitalize col-2">{{employee.repetition_count}}</span></td>
                   <td class="cell"><span
                       class="truncate text-capitalize">{{employee.fboInfo.district.toLowerCase()}}</span></td>
                   <td class="cell"><span
                       class="truncate text-capitalize">{{employee.fboInfo.state.toLowerCase()}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span class="truncate">{{
                       getFormattedSalesDate(employee.createdAt) }}</span></td>
-                  <td *ngIf="isRepetCustData" class="cell"><span class="truncate">{{
+                  <td *ngIf="isRepetCustData" class="cell col-2"><span class="truncate">{{
                       getFormattedSalesDate(employee.lastSaleDate) }}</span></td>
+                  <td *ngIf="designation === 'Director'"
+                  class="cell"><span class="truncate">{{employee.employeeInfo.employee_name }}</span></td>
                 </tr>
               </tbody>
               <tbody *ngIf="employeeList?.length>0 && chartData.userDept==='HR Department'">
                 <tr
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
-                  <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber1 }; let sr = index">
+                  <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber1-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.contact_no}}</span></td>
