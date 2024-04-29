@@ -26,7 +26,7 @@ export class FostacComponent implements OnInit {
   // Processing Amount function for Calculating Fostac total amount on basis of Processing Amount.
   processAmount() {
     if (this.fostac_training.value.fostac_client_type != '' && this.fostac_training.value.recipient_no != '' &&
-    this.fostac_training.value.fostac_processing_amount != '' && this.fostac_training.value.fostac_service_name !='') {
+      this.fostac_training.value.fostac_processing_amount != '' && this.fostac_training.value.fostac_service_name != '') {
       this.GSTandTotalAmnt(this.fostac_training.value.recipient_no);
     }
   }
@@ -45,6 +45,14 @@ export class FostacComponent implements OnInit {
       let TotalAmnt = this.GSTandTotalAmnt(this.minValue)
       this.fostac_training.patchValue({ 'recipient_no': this.minValue });
       this.fostacTotalAmount(TotalAmnt);
+    }
+  }
+
+  //This methord caculates gst and total in case of service change
+  onServiceSelect(): void {
+    if (this.fostac_training.value.recipient_no != '') {
+      console.log(this.fostac_training.value.recipient_no);
+      this.GSTandTotalAmnt(this.fostac_training.value.recipient_no);
     }
   }
 
@@ -74,10 +82,10 @@ export class FostacComponent implements OnInit {
     this.fostac_training.reset({
       'fostac_service_name': '',
       'fostac_processing_amount': '',
-      'fostac_client_type': '', 
+      'fostac_client_type': '',
     }); // Resetting the form values
     // Additionally, you might want to mark the form as pristine and untouched
-    let amnt=0;
+    let amnt = 0;
     this.fostacTotalAmount(amnt);
     this.fostac_training.markAsPristine();
     this.fostac_training.markAsUntouched();
