@@ -81,7 +81,7 @@
                   </thead>
                   <tbody *ngIf="filteredData">
                     <tr class="list-tr"
-                      *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i = index">
+                      *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'sales-list' }; let i = index">
                       <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                       <td class="cell"><span
                           class="truncate text-capitlize">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span></td>
@@ -138,7 +138,7 @@
             <div *ngIf="allFBOEntries" class="text-sm" style="font-size: 14px;">{{filteredData.length}} filtered from
               ({{filteredFBOEntries.length}} {{activeTab}} Cases of
               {{allFBOEntries.length}})</div>
-            <pagination-controls previousLabel="Prev" nextLabel="Next"
+            <pagination-controls previousLabel="Prev" nextLabel="Next" id="sales-list"
               (pageChange)="onTableDataChange($event)"></pagination-controls>
           </div>
           <ngx-loading [show]="loading"></ngx-loading>

@@ -46,7 +46,7 @@
               </thead>
               <tbody *ngIf="!dataNotAvilable">
                 <tr
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'department-list' }; let sr = index">
                   <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
                   <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
@@ -73,7 +73,7 @@
       </div><!--//app-card-->
       <div *ngIf="!dataNotAvilable" class="d-flex justify-content-between">
         <div class="filtered-count">{{filteredData.length}} of {{empCount}}</div>
-        <pagination-controls previousLabel="Prev" nextLabel="Next"
+        <pagination-controls previousLabel="Prev" nextLabel="Next" id="department-list"
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div>
     </div>

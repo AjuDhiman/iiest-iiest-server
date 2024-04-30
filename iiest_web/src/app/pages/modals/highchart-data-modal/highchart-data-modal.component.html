@@ -106,7 +106,7 @@
               <tbody
                 *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr (click)="viewCustomerSales(employee.fboInfo.customer_id)"
-                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber1 }; let sr = index">
+                  *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber1, id: chartData.chartTitile.split(' ').join('-') }; let sr = index">
                   <td class="cell"><span class="truncate text-capitalize">{{sr+itemsNumber*(pageNumber1-1)+1}}</span>
                   </td>
                   <td class="cell col-2"><span
@@ -117,8 +117,7 @@
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{employee.product_name.join(', ') +
-                      ((employee.fboInfo.foscosInfo && employee.fboInfo.foscosInfo.water_test_fee)?', Water
-                      Test':'')}}</span></td>
+                      ((employee.fboInfo.foscosInfo && employee.fboInfo.foscosInfo.water_test_fee)?', Water Test':'')}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span
@@ -163,11 +162,11 @@
       <div class="d-flex" [ngClass]="specificDatas?'justify-content-between':'justify-content-end'">
         <div *ngIf="specificDatas" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of
           {{specificDatas.length}}</div>
-        <pagination-controls previousLabel="Prev" nextLabel="Next"
+        <pagination-controls previousLabel="Prev" nextLabel="Next" [id]="chartData.chartTitile.split(' ').join('-')"
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div>
       <!-- <div *ngIf="showPagination===true" class="d-flex justify-content-end">
-        <pagination-controls previousLabel="Prev" nextLabel="Next"
+        <pagination-controls previousLabel="Prev" nextLabel="Next" [id]="chartData.chartTitile.split(' ').join('-')"
           (pageChange)="onTableDataChange($event)"></pagination-controls>
       </div> -->
     </div>

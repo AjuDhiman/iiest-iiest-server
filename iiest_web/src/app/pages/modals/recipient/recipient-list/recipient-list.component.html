@@ -34,7 +34,7 @@
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
               <tr
-                *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
+                *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber , id: 'recipient-list'}; let sr = index">
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.name}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.phoneNo}}</span></td>
@@ -43,7 +43,7 @@
             </tbody>
             <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
               <tr
-                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
+                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber, id:'recipient-list' }; let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
@@ -110,7 +110,7 @@
             </tbody>
             <tbody *ngIf="shopData?.length>0 && serviceType === 'HRA'">
               <tr
-                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber }; let sr = index">
+                *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber , id: 'recipient-list' }; let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+1}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerName}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerContact}}</span></td>
@@ -155,7 +155,7 @@
       </div><!--//app-card-body-->
     </div><!--//app-card-->
     <div *ngIf="showPagination===true" class="d-flex justify-content-end">
-      <pagination-controls previousLabel="Prev" nextLabel="Next"
+      <pagination-controls previousLabel="Prev" nextLabel="Next" id="recipient-list"
         (pageChange)="onTableDataChange($event)"></pagination-controls>
     </div>
   </div>

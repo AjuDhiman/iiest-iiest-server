@@ -73,7 +73,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="accordion accordion-flush" *ngIf="listType==='Batch'">
-                                            <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index"
+                                            <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id:'batch-list' }; let i=index"
                                                 class="list-tr accordion-header">
                                                 <td class="cell col-1"><span
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
@@ -130,7 +130,7 @@
 
                                         </tbody>
                                         <tbody class="accordion accordion-flush" *ngIf="listType==='Audit'">
-                                            <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index"
+                                            <tr *ngFor="let batch of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'batch-list' }; let i=index"
                                                 class="list-tr accordion-header">
                                                 <td class="cell col-1"><span
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
@@ -222,7 +222,7 @@
                             <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}}
                                 of
                                 {{totalCount}}</div>
-                            <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            <pagination-controls previousLabel="Prev" nextLabel="Next" id="batch-list"
                                 (pageChange)="onTableDataChange($event)"></pagination-controls>
                         </div>
                     </div>
