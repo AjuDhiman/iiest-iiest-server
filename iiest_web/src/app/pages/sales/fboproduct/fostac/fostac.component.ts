@@ -15,7 +15,7 @@ export class FostacComponent implements OnInit {
   processAmnts = processAmnt;
   clientType = clientType;
   minValue: number = 1;
-  isReadOnly: boolean = false;
+  isReadOnly: boolean = true;
   fostacTotalAmnt: number;
   fostac_training: FormGroup;
   constructor(private rootFormGroup: FormGroupDirective) { }
