@@ -1,68 +1,87 @@
-
-
 <div class="modal-header bg-Portal">
-    <h6 class="modal-title text-white" id="modal-basic-title">BUSINESS</h6>
-    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
-</div> 
+  <h6 class="modal-title text-white" id="modal-basic-title">BUSINESS</h6>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
+</div>
 
-<div class="modal-body" style="background:linear-gradient(rgba(2, 27, 77, 0.87), #010e28); color: white; border-top: #112f5d;">
+<div class="modal-body"
+  style="background:linear-gradient(rgba(2, 27, 77, 0.87), #010e28); color: white; border-top: #112f5d;">
 
-    <form [formGroup]="businessForm" class="onboard-form" (ngSubmit)="submitForm()">
-        <div class="row">
-          <div class="col-md-12 my-2">
-            <label class="form-label">Business Owner Name<sup>*</sup> </label>
-            <input formControlName="owner_name" type="text" class="form-control" placeholder="Business Owner Name">
-            <div *ngIf="businessForm?.get('owner_name')?.invalid && businessForm?.get('owner_name')?.touched" class="text-danger">Owner Name is required</div>
-            <!-- <div *ngIf="submitted && function['owner_name'].errors"></div> -->
+  <form [formGroup]="businessForm" class="onboard-form" (ngSubmit)="submitForm()">
+    <div class="row">
+      <div class="col-md-12 my-2">
+        <label for="owner_name" class="form-label">Business Owner Name<sup>*</sup> </label>
+        <input type="text" formControlName="owner_name" type="text" class="form-control"
+          placeholder="Business Owner Name"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['owner_name'].errors)}" id="owner_name" />
+        <div *ngIf="submitted && businessform['owner_name'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['owner_name'].errors['required']">Business Owner Name is
+            Required</div>
+        </div>
 
-          </div>
-          <div class="col-md-12 my-2">
-            <label class="form-label">Business Entity<sup>*</sup> </label>
-            <input formControlName="business_entity"  type="text" class="form-control" placeholder="Business Entity">
-            <div *ngIf="businessForm?.get('business_entity')?.invalid && businessForm?.get('business_entity')?.touched" class="text-danger">Business Entity is required</div>
-            <!-- <div *ngIf="submitted && function['business_entity'].errors"></div> -->
-          </div>
-          <div class="col-md-12 my-2">
-            <label class="form-label">Business Category<sup>*</sup></label>
-            <div class="select-wrapper" >
-                <select  class="form-control" formControlName="business_category">
-                    <option value="" selected disabled hidden>Select Business Category &#9662;</option>
-                    <option value="Food Business Operator">Food Business Operator</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <div *ngIf="businessForm?.get('business_category')?.invalid && businessForm?.get('business_category')?.touched" class="text-danger">Business Category is required</div>
-            <!-- <div *ngIf="submitted && function['business_category'].errors"></div> -->
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="business_entity" class="form-label">Business Entity<sup>*</sup> </label>
+        <input formControlName="business_entity" type="text" class="form-control" placeholder="Business Entity"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['business_entity'].errors)}" id="business_entity">
+        <div *ngIf="submitted && businessform['business_entity'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['business_entity'].errors['required']">Business Entity is
+            Required</div>
         </div>
-        <div class="col-md-12 my-2">
-            <label class="form-label">Business Type<sup>*</sup></label>
-            <div class="select-wrapper">
-                <select class="form-control" formControlName="business_ownership_type">
-                    <option value="" selected disabled hidden>Select Business Type &#9662;</option>
-                    <option value="Single Shop Owner">Single Shop Owner</option>
-                    <option value="Multi Shop Owner">Multi Shop Owner</option>
-                </select>
-            </div>
-            <div *ngIf="businessForm?.get('business_ownership_type')?.invalid && businessForm?.get('business_ownership_type')?.touched" class="text-danger">Business Type is required</div>
-            <!-- <div *ngIf="submitted && function['business_type'].errors"></div> -->
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="business_category" class="form-label">Business Category<sup>*</sup></label>
+        <div class="select-wrapper">
+          <select class="form-control" formControlName="business_category" id="business_category"
+            [ngClass]="{ 'is-invalid': (submitted && businessform['business_category'].errors)}" id="business_category">
+            <option value="" selected disabled hidden>Select Business Category &#9662;</option>
+            <option value="Food Business Operator">Food Business Operator</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
-          <div class="col-md-12 my-2">
-            <label class="form-label">Contact No.<sup>*</sup> </label>
-            <input formControlName="contact_no"type="text" class="form-control" placeholder="Contact No">
-            <div *ngIf="businessForm?.get('contact_no')?.invalid && businessForm?.get('contact_no')?.touched" class="text-danger">Contact No is required</div>
-            <!-- <div *ngIf="submitted && function['contact_no'].errors"></div> -->
-          </div>
-          <div class="col-md-12 my-2">
-            <label class="form-label">Email<sup>*</sup> </label>
-            <input formControlName="email" type="text" class="form-control" placeholder="Email">
-            <div *ngIf="businessForm?.get('email')?.invalid && businessForm?.get('email')?.touched" class="text-danger">Email is required</div>
-            <!-- <div *ngIf="submitted && function['email'].errors"></div> -->
-          </div>
+        <div *ngIf="submitted && businessform['business_category'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['business_category'].errors['required']">Business Category Name is
+            Required</div>
         </div>
-        <div class="col-md-12 my-2">
-          <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="business_ownership_type" class="form-label">Business Type<sup>*</sup></label>
+        <div class="select-wrapper">
+          <select class="form-control" formControlName="business_ownership_type" id="business_ownership_type"
+            [ngClass]="{ 'is-invalid': (submitted && businessform['business_ownership_type'].errors)}">
+            <option value="" selected disabled hidden>Select Business Type &#9662;</option>
+            <option value="Single Shop Owner">Single Shop Owner</option>
+            <option value="Multi Shop Owner">Multi Shop Owner</option>
+          </select>
         </div>
-      </form>
-</div>      
-
-  
+        <div *ngIf="submitted && businessform['business_ownership_type'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['business_ownership_type'].errors['required']">Business Type is
+            Required</div>
+        </div>
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="contact_no" class="form-label">Contact No.<sup>*</sup> </label>
+        <input formControlName="contact_no" type="text" class="form-control" placeholder="Contact No" id="contact_no"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['contact_no'].errors)}">
+        <div *ngIf="submitted && businessform['contact_no'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['contact_no'].errors['required']">Contact No. is
+            Required</div>
+            <div *ngIf="businessform['contact_no'].errors['pattern']">Invalid Contact No.</div>
+        </div>
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="email" class="form-label">Email<sup>*</sup> </label>
+        <input formControlName="email" type="text" class="form-control" placeholder="Email" id="email"
+        [ngClass]="{ 'is-invalid': (submitted && businessform['email'].errors)}">
+        <div *ngIf="submitted && businessform['email'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['email'].errors['required']">Email is
+            Required</div>
+            <div *ngIf="businessform['email'].errors['email']">Invalid Emai.</div>
+        </div>
+        <!-- <div *ngIf="submitted && function['email'].errors"></div> -->
+      </div>
+    </div>
+    <div class="col-md-12 my-2">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>

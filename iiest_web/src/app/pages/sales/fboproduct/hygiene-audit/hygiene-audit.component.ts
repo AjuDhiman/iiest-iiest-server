@@ -15,7 +15,7 @@ export class HygieneAuditComponent implements OnInit {
   processAmnts = processAmnt;
   clientType = clientType;
   minValue: number = 1;
-  isReadOnly: boolean = false;
+  isReadOnly: boolean = true;
   hygieneTotalAmnt:number;
 
   hygiene_audit: FormGroup;

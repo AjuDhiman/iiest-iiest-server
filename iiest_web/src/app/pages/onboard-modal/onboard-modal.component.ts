@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 // import { GetdataService } from 'src/app/services/getdata.service';
@@ -11,11 +11,18 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./onboard-modal.component.scss']
 })
 export class OnboardModalComponent implements OnInit {
-  businessForm: FormGroup;
+  businessForm: FormGroup = new FormGroup({
+    owner_name: new FormControl(''),
+    business_entity: new FormControl(''),
+    business_category: new FormControl(''),
+    business_ownership_type: new FormControl(''),
+    contact_no: new FormControl(''),
+    email: new FormControl('')
+  });
 
   submitted = false;
 
-  constructor(private fb: FormBuilder, 
+  constructor(private formBuilder: FormBuilder, 
     private _registerService: RegisterService, 
     public activeModal: NgbActiveModal, 
     private _toasterService: ToastrService) { }
@@ -24,12 +31,12 @@ export class OnboardModalComponent implements OnInit {
     this.initForm();
   }
 
-  get function(): { [key: string]: AbstractControl } {
+  get businessform(): { [key: string]: AbstractControl } {
     return this.businessForm.controls;
   }
 
   initForm(): void {
-    this.businessForm = this.fb.group({
+    this.businessForm = this.formBuilder.group({
       owner_name: ['', Validators.required],
       business_entity: ['', Validators.required],
       business_category: ['', Validators.required],
@@ -42,23 +49,23 @@ export class OnboardModalComponent implements OnInit {
    
 
   submitForm(): void {
-    if (this.businessForm.valid) {
-      this.submitted = true;
-      const formData = this.businessForm.value;
-      console.log(formData);
-      // this._toasterService.success('You Are Successfully Onboarded', '', { timeOut: 1500, easeTime: 700});
-      
-      this._registerService.addbo(this.businessForm.value).subscribe({
-        next: res => {
-          this._toasterService.success(res.message);
-
-        }
-      })
-
-      this.activeModal.close();
-    } else {
-      this.markFormTouched(this.businessForm);
+    this.submitted = true;
+    if (this.businessForm.invalid) {
+      return;
     }
+
+    const formData = this.businessForm.value;
+    console.log(formData);
+    // this._toasterService.success('You Are Successfully Onboarded', '', { timeOut: 1500, easeTime: 700});
+    
+    this._registerService.addbo(this.businessForm.value).subscribe({
+      next: res => {
+        this._toasterService.success(res.message);
+
+      }
+    })
+
+    this.activeModal.close();
   }
 
  
@@ -67,14 +74,4 @@ export class OnboardModalComponent implements OnInit {
     this.businessForm.reset();
   }
 
-
-  markFormTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach(control => {
-      if (control instanceof FormGroup) {
-        this.markFormTouched(control);
-      } else {
-        control.markAsTouched();
-      }
-    });
-  }
 }

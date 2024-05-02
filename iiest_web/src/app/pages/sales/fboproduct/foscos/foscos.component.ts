@@ -19,7 +19,7 @@ export class FoscosComponent implements OnInit {
   licenceType = licenceType;
   serviceNames = serviceNames;
   minValue: number = 1;
-  isReadOnly: boolean = false;
+  isReadOnly: boolean = true;
   foscosTotalAmnt: number;
   foscos_training: FormGroup;
   fixedCharge: number;

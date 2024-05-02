@@ -67,12 +67,12 @@
                                 <option value="byLocation">Search by Location</option>
                             </select>
                         </div>
-                        <div class="col-auto">
+                        <!-- <div class="col-auto">
                             <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer"
                                 style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"
                                 title="Export as CSV"></fa-icon>
-                            <!-- <fa-icon class="fa-2xl" style="margin: 7px 7px; color: #c64115;" [icon]="faFilePdf"></fa-icon> -->
-                        </div>
+                           
+                        </div> -->
                     </div><!--//row-->
                 </div><!--//table-utilities-->
             </div><!--//col-auto-->
@@ -102,26 +102,26 @@
                                 </thead>
                                 <tbody>
                                     <tr class="list-tr"
-                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'case-list' }; let i=index">
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
                                                 (click)="collectResData(data._id)"
-                                                title="View Case">{{data.name}}</span></td>
+                                                title="View Case text-capitalize">{{data.name.toLowerCase()}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.district}}</span></td>
-                                        <td class="cell"><span class="truncate">{{data.salesInfo.fboInfo.state}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.district.toLowerCase()}}</span></td>
+                                        <td class="cell"><span class="truncate text-capitalize">{{data.salesInfo.fboInfo.state.toLowerCase()}}</span>
                                         </td>
                                         <!-- <td *ngIf="forTraining" class="cell">{{data.enrollment_no}}<span
                                                 class="truncate"></span>
                                         </td> -->
                                         <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -156,13 +156,13 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)">{{data.managerName}}</span></td>
+                                                (click)="collectResData(data._id)">{{data.managerName.toLowerCase()}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize selector">{{data.address}}</span></td>
+                                                class="truncate text-capitalize selector">{{data.address.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.kob}}</span>
                                         </td>
@@ -172,7 +172,7 @@
                                                 class="truncate">{{data.salesInfo.hraInfo.hra_total}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
-                                            <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
+                                            <span class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
                                         </td> -->
@@ -213,14 +213,14 @@
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                                        <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)">{{data.operatorName}}</span></td>
+                                        <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
+                                                (click)="collectResData(data._id)">{{data.operatorName.toLowerCase()}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize selector">{{data.address}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.owner_name}}</span></td>
+                                                class="truncate text-capitalize">{{data.address.toLowerCase()}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
                                         </td>
@@ -230,7 +230,7 @@
                                                 class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
-                                            <span class="truncate">{{data.salesInfo.employeeInfo.employee_name}}</span>
+                                            <span class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
                                         </td> -->
@@ -262,7 +262,7 @@
                         {{filteredData.length}} filtered
                         from {{totalCount}} {{serviceType}} Cases</div>
                     <pagination-controls previousLabel="Prev" nextLabel="Next"
-                        (pageChange)="onTableDataChange($event)"></pagination-controls>
+                        (pageChange)="onTableDataChange($event)" id="case-list"></pagination-controls>
                 </div>
             </div>
         </div>

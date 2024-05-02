@@ -89,12 +89,12 @@ export class FbonewComponent implements OnInit {
   // new varable by chandan
   existingbos: Object[];
 
-  @ViewChild(FbolistComponent)fboList: FbolistComponent;
+  @ViewChild(FbolistComponent) fboList: FbolistComponent;
 
 
   fostac_training: FormGroup = new FormGroup({
     fostac_processing_amount: new FormControl(hraProcessingAmnt),
-    fostac_service_name: new FormControl(''), 
+    fostac_service_name: new FormControl(''),
     fostac_client_type: new FormControl(''),
     recipient_no: new FormControl(''),
     fostac_total: new FormControl('')
@@ -179,14 +179,14 @@ export class FbonewComponent implements OnInit {
     });
 
     this.hygiene_audit = this.formBuilder.group({
-      hra_service_name: [serviceNames['HRA'][0],Validators.required],
-      hra_processing_amount: [hraProcessingAmnt,Validators.required],
-      hra_client_type: ['',Validators.required],
-      shops_no: ['',Validators.required],
+      hra_service_name: [serviceNames['HRA'][0], Validators.required],
+      hra_processing_amount: [hraProcessingAmnt, Validators.required],
+      hra_client_type: ['', Validators.required],
+      shops_no: ['', Validators.required],
       hra_total: ['', Validators.required]
     });
 
-    
+
 
     this.existingUserFboForm = this.existingFboFrom.group({
       existingUserFbo: [''],
@@ -238,7 +238,7 @@ export class FbonewComponent implements OnInit {
     this.getAllocatedArea();
     this.getboGeneralData();
   }
-    
+
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
   }
@@ -247,77 +247,81 @@ export class FbonewComponent implements OnInit {
     return [Validators.required];
   }
 
-//  existingUserFbo($event: any) {
-//    this.isExistingFbo = $event.target.checked
-//   }
+  //  existingUserFbo($event: any) {
+  //    this.isExistingFbo = $event.target.checked
+  //   }
 
-//   existingUserBo($event: any) {
-//     this.isExistingBo = $event.target.checked
-//    }
+  //   existingUserBo($event: any) {
+  //     this.isExistingBo = $event.target.checked
+  //    }
 
 
-existingUserFbo($event: any) {
-  if ($event.target.checked) {
-    this.isExistingFbo = true;
-    this.isExistingBo = false;
-    this.fboFieldName = "FBO Name";
-    this.fboPlaceholder = "Enter FBO Name";
-    this.existingUserBoForm.reset();
-  } else {
-   
-    this.isExistingFbo = false;
-    this.fboFieldName = "FBO Name";
-    this.fboPlaceholder = "Enter FBO Name";
+  existingUserFbo($event: any) {
+    if ($event.target.checked) {
+      this.loading = true;
+      if (this.existingFbos) {
+        this.loading = false;
+      }
+      this.isExistingFbo = true;
+      this.isExistingBo = false;
+      this.fboFieldName = "FBO Name";
+      this.fboPlaceholder = "Enter FBO Name";
+      this.existingUserBoForm.reset();
+    } else {
+
+      this.isExistingFbo = false;
+      this.fboFieldName = "FBO Name";
+      this.fboPlaceholder = "Enter FBO Name";
+    }
   }
-}
 
-existingUserBo($event: any) {
-  if ($event.target.checked) {
-    this.isExistingBo = true;
-    this.isExistingFbo = false;
-    this.fboFieldName = "Business Entity";
-    this.fboPlaceholder = "Enter Business Entity";
-  } else {
-    this.isExistingBo = false;
-    this.fboFieldName = "FBO Name";
-    this.fboPlaceholder = "Enter FBO Name";
+  existingUserBo($event: any) {
+    if ($event.target.checked) {
+      this.isExistingBo = true;
+      this.isExistingFbo = false;
+      this.fboFieldName = "Business Entity";
+      this.fboPlaceholder = "Enter Business Entity";
+    } else {
+      this.isExistingBo = false;
+      this.fboFieldName = "FBO Name";
+      this.fboPlaceholder = "Enter FBO Name";
+    }
   }
-}
 
-resetForm(type: string) {
-  if (type === 'fbo') {
-      this.isExistingBo = false; 
+  resetForm(type: string) {
+    if (type === 'fbo') {
+      this.isExistingBo = false;
       this.fboForm.reset();
-      this.fbo['state'].setValue(this.allocated_state);
-      this.fbo['business_type'].setValue('b2c') 
-      this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
-  } else if (type === 'bo') {
-      this.isExistingFbo = false; 
-      this.fboForm.reset(); 
       this.fbo['state'].setValue(this.allocated_state);
       this.fbo['business_type'].setValue('b2c')
       this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
+    } else if (type === 'bo') {
+      this.isExistingFbo = false;
+      this.fboForm.reset();
+      this.fbo['state'].setValue(this.allocated_state);
+      this.fbo['business_type'].setValue('b2c')
+      this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
+    }
+    this.isFoscos = false;
+    this.isFostac = false;
+    this.isHygiene = false;
+    this.fbo['district'].setValue('');
+    this.fbo['pincode'].setValue('');
+    this.fbo['payment_mode'].setValue('');
+    this.fostac_training.patchValue({ fostac_client_type: '' });
+    this.foscos_training.patchValue({ foscos_client_type: '' });
+    this.foscos_training.patchValue({ foscos_service_name: '' });
+    this.fostac_training.patchValue({ fostac_service_name: '' });
+    this.fostac_training.patchValue({ fostac_processing_amount: '' });
+    this.foscos_training.patchValue({ foscos_processing_amount: '' });
+    this.foscos_training.patchValue({ license_category: '' });
+    this.foscos_training.patchValue({ license_duration: '' });
+    this.foscos_training.patchValue({ water_test_fee: '' });
+    this.hygiene_audit.patchValue({ hra_processing_amount: 5000 });
+    this.hygiene_audit.patchValue({ hra_service_name: 'HRA' });
+    this.hygiene_audit.patchValue({ hra_client_type: '' });
+    this.multiSelect.onReset();
   }
-  this.isFoscos = false;
-  this.isFostac = false;
-  this.isHygiene = false;
-  this.fbo['district'].setValue('');
-  this.fbo['pincode'].setValue('');
-  this.fbo['payment_mode'].setValue('');
-  this.fostac_training.patchValue({fostac_client_type: ''});
-  this.foscos_training.patchValue({foscos_client_type: ''});
-  this.foscos_training.patchValue({foscos_service_name: ''});
-  this.fostac_training.patchValue({fostac_service_name: ''});
-  this.fostac_training.patchValue({fostac_processing_amount: ''});
-  this.foscos_training.patchValue({foscos_processing_amount: ''});
-  this.foscos_training.patchValue({license_category: ''});
-  this.foscos_training.patchValue({license_duration: ''});
-  this.foscos_training.patchValue({water_test_fee: ''});
-  this.hygiene_audit.patchValue({hra_processing_amount: 5000});
-  this.hygiene_audit.patchValue({hra_service_name: 'HRA'});
-  this.hygiene_audit.patchValue({hra_client_type: ''});
-  this.multiSelect.onReset();
-}
 
   filterSearch(event: any) {
     let value = event.target.value
@@ -328,7 +332,7 @@ resetForm(type: string) {
       this.isSearchEmptyFBO = true;
       return
     }
-    let regex = new RegExp(value, "i") 
+    let regex = new RegExp(value, "i")
     this.searchSuggestions = this.existingFbos.filter((obj: any) => regex.test(obj.fbo_name) || regex.test(obj.owner_name));
   }
 
@@ -346,52 +350,52 @@ resetForm(type: string) {
     this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => regex.test(obj.owner_name) || regex.test(obj.customer_id));
   }
 
-  
-  fetchExistingUser(fboObj: any) {
-      this.existingFboId = fboObj.customer_id
-      this.searchElemFBO.nativeElement.value = ''
-      this.isSearchEmptyFBO = true;
-      this.fbo['fbo_name'].setValue(fboObj.fbo_name);
-      this.fbo['owner_name'].setValue(fboObj.owner_name);
-      this.fbo['owner_contact'].setValue(fboObj.owner_contact);
-      this.fbo['business_entity'].setValue(fboObj.boInfo.business_entity);
-      this.fbo['business_category'].setValue(fboObj.boInfo.business_category);
-      this.fbo['business_ownership_type'].setValue(fboObj.boInfo.business_ownership_type);
-      this.fbo['email'].setValue(fboObj.email);
-      this.fbo['address'].setValue(fboObj.address);
-      this.fbo['village'].setValue(fboObj.village);
-      this.fbo['tehsil'].setValue(fboObj.tehsil);
-      this.fbo['district'].setValue(fboObj.district);
-      this.fbo['boInfo'].setValue(fboObj.boInfo._id);
-      this.fbo['state'].setValue(fboObj.state);
-      this.fbo['pincode'].setValue(fboObj.pincode);
-      this.fbo['business_type'].setValue(fboObj.business_type);
-      if (fboObj.business_type === 'b2b') {
-        this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
-        this.need_gst_number = true;
-      }
-      if (fboObj.business_type === 'b2c') {
-        this.fboForm.removeControl('gst_number');
-        this.need_gst_number;
-      }
-    }
-  
 
-    fetchExistingBo(fboObj: any) {
-      
-      this.existingFboId = fboObj.customer_id
-      this.searchElemBO.nativeElement.value = ''
-      this.isSearchEmptyBO = true;
-      console.log(fboObj);
-      this.fbo['owner_name'].setValue(fboObj.owner_name);
-      this.fbo['business_entity'].setValue(fboObj.business_entity);
-      this.fbo['business_category'].setValue(fboObj.business_category);
-      this.fbo['business_ownership_type'].setValue(fboObj.business_ownership_type);
-      this.fbo['owner_contact'].setValue(fboObj.contact_no);
-      this.fbo['email'].setValue(fboObj.email);
-      this.fbo['boInfo'].setValue(fboObj._id);
+  fetchExistingUser(fboObj: any) {
+    this.existingFboId = fboObj.customer_id
+    this.searchElemFBO.nativeElement.value = ''
+    this.isSearchEmptyFBO = true;
+    this.fbo['fbo_name'].setValue(fboObj.fbo_name);
+    this.fbo['owner_name'].setValue(fboObj.owner_name);
+    this.fbo['owner_contact'].setValue(fboObj.owner_contact);
+    this.fbo['business_entity'].setValue(fboObj.boInfo.business_entity);
+    this.fbo['business_category'].setValue(fboObj.boInfo.business_category);
+    this.fbo['business_ownership_type'].setValue(fboObj.boInfo.business_ownership_type);
+    this.fbo['email'].setValue(fboObj.email);
+    this.fbo['address'].setValue(fboObj.address);
+    this.fbo['village'].setValue(fboObj.village);
+    this.fbo['tehsil'].setValue(fboObj.tehsil);
+    this.fbo['district'].setValue(fboObj.district);
+    this.fbo['boInfo'].setValue(fboObj.boInfo._id);
+    this.fbo['state'].setValue(fboObj.state);
+    this.fbo['pincode'].setValue(fboObj.pincode);
+    this.fbo['business_type'].setValue(fboObj.business_type);
+    if (fboObj.business_type === 'b2b') {
+      this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
+      this.need_gst_number = true;
     }
-  
+    if (fboObj.business_type === 'b2c') {
+      this.fboForm.removeControl('gst_number');
+      this.need_gst_number;
+    }
+  }
+
+
+  fetchExistingBo(fboObj: any) {
+
+    this.existingFboId = fboObj.customer_id
+    this.searchElemBO.nativeElement.value = ''
+    this.isSearchEmptyBO = true;
+    console.log(fboObj);
+    this.fbo['owner_name'].setValue(fboObj.owner_name);
+    this.fbo['business_entity'].setValue(fboObj.business_entity);
+    this.fbo['business_category'].setValue(fboObj.business_category);
+    this.fbo['business_ownership_type'].setValue(fboObj.business_ownership_type);
+    this.fbo['owner_contact'].setValue(fboObj.contact_no);
+    this.fbo['email'].setValue(fboObj.email);
+    this.fbo['boInfo'].setValue(fboObj._id);
+  }
+
 
   //Form Submit Method
   onSubmit() {
@@ -421,7 +425,7 @@ resetForm(type: string) {
       });
     } else {
       this.addFbo = this.fboForm.value;
-      if(!this.isExistingFbo){
+      if (!this.isExistingFbo) {
         if (this.addFbo.payment_mode === 'Pay Page') {
           this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
@@ -445,12 +449,12 @@ resetForm(type: string) {
                 this._toastrService.error('', 'Area has not been allocated to this employee.')
               } else if (errorObj.wrongPincode) {
                 this._toastrService.error('', 'You cannot make sale outside your allocated area');
-              } else if(errorObj.noSignErr){
+              } else if (errorObj.noSignErr) {
                 this._toastrService.error('', 'Provide your signature first in account in settings');
               }
             }
           })
-        } else if(this.addFbo.payment_mode === 'Cash') {
+        } else if (this.addFbo.payment_mode === 'Cash') {
           this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               this.loading = false;
@@ -476,47 +480,47 @@ resetForm(type: string) {
                 this._toastrService.error('', 'Area has not been allocated to this employee.')
               } else if (errorObj.wrongPincode) {
                 this._toastrService.error('', 'You cannot make sale outside your allocated area');
-              } else if(errorObj.noSignErr){
+              } else if (errorObj.noSignErr) {
                 this._toastrService.error('', 'Provide your signature first in account in settings');
               }
             }
           })
         }
-      }else{
-        if(this.addFbo.payment_mode === 'Cash'){
+      } else {
+        if (this.addFbo.payment_mode === 'Cash') {
           this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
-            next: (res)=>{
+            next: (res) => {
               this.loading = false;
               if (res.success) {
                 this._toastrService.success('', 'Record Added Successfully');
                 this.backToRegister();
               }
             },
-            error: (err)=>{
+            error: (err) => {
               this.loading = false;
               let errorObj = err.error
-              if(errorObj.userError){
+              if (errorObj.userError) {
                 this._registerService.signout();
-              }else if(errorObj.signatureErr){
+              } else if (errorObj.signatureErr) {
                 this._toastrService.error('', 'Signature Not Found');
-              }else if(errorObj.areaAllocationErr){
+              } else if (errorObj.areaAllocationErr) {
                 this._toastrService.error('', 'Area has not been allocated to this employee.')
-              }else if(errorObj.wrongPincode){
+              } else if (errorObj.wrongPincode) {
                 this._toastrService.error('', 'You cannot make sale outside your allocated area');
-              }else if(errorObj.noSignErr){
+              } else if (errorObj.noSignErr) {
                 this._toastrService.error('', 'Provide your signature first in account in settings');
-              }else if(errorObj.fboMissing){
+              } else if (errorObj.fboMissing) {
                 this._toastrService.error('', 'FBO not found');
               }
             }
           })
-        }else if(this.addFbo.payment_mode === 'Pay Page'){
+        } else if (this.addFbo.payment_mode === 'Pay Page') {
           this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
-            next: (res)=>{
+            next: (res) => {
               window.location.href = res.message
             }
           })
-        } 
+        }
       }
     }
   }
@@ -527,16 +531,16 @@ resetForm(type: string) {
       next: (res) => {
         this.fboGeneralData = res.product_name;
         this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }))
-                                    .sort((item:any) => {
-                                      if(item.value.enabled){
-                                        return -1;
-                                      }
-                                      else {
-                                        return 1;
-                                      }
-                                    });
+          .sort((item: any) => {
+            if (item.value.enabled) {
+              return -1;
+            }
+            else {
+              return 1;
+            }
+          });
         console.log(this.fboGeneralData);
-        this.productList = this.fboGeneralData.map((item:any) => item.key);
+        this.productList = this.fboGeneralData.map((item: any) => item.key);
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
           this.processAmnts[productName] = product['processing_amount'];
@@ -553,6 +557,7 @@ resetForm(type: string) {
     // for getting fbo lists
     this._getFboGeneralData.getFbolist().subscribe({
       next: (res) => {
+        this.loading = false;
         console.log(res);
         this.existingFbos = res.fboList;
       },
@@ -561,9 +566,9 @@ resetForm(type: string) {
     })
   }
 
-   //Get bo General Data
-   getboGeneralData() {
-     
+  //Get bo General Data
+  getboGeneralData() {
+
     this._getFboGeneralData.getbolist().subscribe({
       next: (res) => {
         this.existingbos = res.boList;
@@ -598,7 +603,7 @@ resetForm(type: string) {
 
     this.productName = $event;
     this.fboForm.patchValue({ product_name: this.productName })
-    var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key))
+    var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key));
 
     this.isFostac = false;
     this.isFoscos = false;
@@ -609,20 +614,26 @@ resetForm(type: string) {
     }
     else {
       this.fboForm.removeControl('fostac_training');
+      //next line will remove the fostac amount from grand total in case of deselection of fostac in products
+      this.fostacTotalAmount(0);
+      this.resetFostacForm();
     }
     if (this.productName.includes('Foscos')) {
       this.isFoscos = true;
       this.fboForm.addControl('foscos_training', this.foscos_training);
       // this.fboForm.get('village')?.setValidators([Validators.required]);
-      this.fboForm.get('village')?.clearValidators();
-      this.fboForm.get('village')?.updateValueAndValidity();
-      this.fboForm.get('tehsil')?.clearValidators();
-      this.fboForm.get('tehsil')?.updateValueAndValidity();
+      // this.fboForm.get('village')?.clearValidators();
+      // this.fboForm.get('village')?.updateValueAndValidity();
+      // this.fboForm.get('tehsil')?.clearValidators();
+      // this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
     else {
       this.fboForm.removeControl('foscos_training');
-      this.fboForm.get('village')?.updateValueAndValidity();
-      this.fboForm.get('tehsil')?.updateValueAndValidity();
+      // this.fboForm.get('village')?.updateValueAndValidity();
+      // this.fboForm.get('tehsil')?.updateValueAndValidity();
+      //next line will remove the foscos amount from grand total in case of deselection of foscos in products
+      this.foscosTotalAmount(0);
+      this.resetFoscosForm();
     }
     if (this.productName.includes('HRA')) {
       this.isHygiene = true;
@@ -630,6 +641,9 @@ resetForm(type: string) {
     }
     else {
       this.fboForm.removeControl('hygiene_audit');
+      //next line will remove the HRA amount from grand total in case of deselection of HRA in products
+      this.hygieneTotalAmount(0);
+      this.resetHRAForm();
     }
 
   }
@@ -724,11 +738,11 @@ resetForm(type: string) {
   }
   foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hra_processAmnt});
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hra_processAmnt });
   }
   hygieneTotalAmount(TotalAmnt: any) {
     this.hra_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt});
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt });
   }
   foscosCharges(charges: any) {
     this.foscosFixedCharges = charges;
@@ -765,5 +779,32 @@ resetForm(type: string) {
 
       }
     })
+  }
+
+  resetFostacForm(): void{
+    this.fostac_training.patchValue({fostac_processing_amount: ''});
+    this.fostac_training.patchValue({fostac_service_name: ''});
+    this.fostac_training.patchValue({fostac_client_type: ''});
+    this.fostac_training.patchValue({recipient_no: ''});
+    this.fostac_training.patchValue({fostac_total: ''});
+  }
+
+  resetFoscosForm(): void{
+    this.foscos_training.patchValue({foscos_processing_amount: ''});
+    this.foscos_training.patchValue({foscos_service_name: ''});
+    this.foscos_training.patchValue({foscos_client_type: ''});
+    this.foscos_training.patchValue({shops_no: ''});
+    this.foscos_training.patchValue({water_test_fee: ''});
+    this.foscos_training.patchValue({license_category: ''});
+    this.foscos_training.patchValue({license_duration: ''});
+    this.foscos_training.patchValue({foscos_total: ''});
+  }
+
+  resetHRAForm(): void{
+    this.hygiene_audit.patchValue({hra_processing_amount: 5000});
+    this.hygiene_audit.patchValue({hra_service_name: 'HRA'});
+    this.hygiene_audit.patchValue({shops_no: ''});
+    this.hygiene_audit.patchValue({hra_client_type: ''});
+    this.hygiene_audit.patchValue({hra_total: ''});
   }
 }

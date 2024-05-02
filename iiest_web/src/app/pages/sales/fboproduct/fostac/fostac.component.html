@@ -4,7 +4,7 @@
      <div class="col-md-3">
         <label for="fostac_service_name" class="form-label">Service Name<sup>*</sup></label>
         <select id="fostac_service_name" formControlName="fostac_service_name" [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_service_name')?.errors}"
-            class="form-select form-select-sm">
+            class="form-select form-select-sm" (change)="onServiceSelect()">
             <option value="" disabled selected>Select the Service</option>
             <option *ngFor="let servicename of serviceNames.fostac"
                 [value]="servicename">{{servicename}}

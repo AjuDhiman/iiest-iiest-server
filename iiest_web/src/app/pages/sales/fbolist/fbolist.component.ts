@@ -31,8 +31,8 @@ export class FbolistComponent implements OnInit {
   faFilePdf: IconDefinition = faFilePdf;
   faArrowUp: IconDefinition = faArrowUp;
   faArrowDown: IconDefinition = faArrowDown;
-  faIndianRupeeSign = faIndianRupeeSign;
-  faMagnifyingGlass = faMagnifyingGlass;
+  faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
   pageNumber: number = 1;
   itemsNumber: number = 25;
 
@@ -209,4 +209,56 @@ export class FbolistComponent implements OnInit {
     }
     return `${day}${suffix} ${month} ${year}`;
   }
+
+     // Method to calculate the processing amount for each row
+  calculateProcessingAmount(employee: any): number {
+    let processingAmount = 0;
+
+
+    if (employee.product_name) {
+      // Calculate processing amount based on the product name
+      employee.product_name.forEach((product: any) => {
+
+        if (product == "Fostac") {
+          processingAmount += employee.fostacInfo.fostac_processing_amount * employee.fostacInfo.recipient_no;
+        }
+        if (product == "Foscos") {
+          let watertest = 0;
+          if (employee.foscosInfo.water_test_fee != 0) {
+            watertest = employee.foscosInfo.water_test_fee - 1200;
+          }
+
+          processingAmount += (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
+        }
+        if (product == "HRA") {
+          processingAmount += employee.hraInfo.hra_processing_amount * employee.hraInfo.shops_no;
+        }
+      });
+    }
+
+    return processingAmount;
+  }
+
+  calculateFoscosProcessingAmount(employee: any): number {
+    let processingAmount = 0;
+
+
+    if (employee.product_name) {
+      // Calculate processing amount based on the product name
+      employee.product_name.forEach((product: any) => {
+        if (product == "Foscos") {
+          let watertest = 0;
+          if (employee.foscosInfo.water_test_fee != 0) {
+            watertest = employee.foscosInfo.water_test_fee - 1200;
+          }
+
+          processingAmount += (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
+        }
+      });
+    }
+
+    return processingAmount;
+  }
+
+  
 }
