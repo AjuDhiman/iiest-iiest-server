@@ -81,6 +81,8 @@ export class FbolistComponent implements OnInit {
       this.filteredData = this.filteredFBOEntries;
     } else {
       switch (this.selectedFilter) {
+        // case 'generalSearch': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        //   break;
         case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
         case 'byLocation': this.filteredData = this.filteredFBOEntries.filter((elem: any) => (elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())));

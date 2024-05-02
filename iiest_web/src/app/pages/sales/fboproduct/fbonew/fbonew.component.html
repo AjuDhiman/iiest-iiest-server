@@ -2,7 +2,7 @@
     <div class="container-xxl">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-md-6">
-                <h1 class="app-page-title mb-2">BO Registration Form</h1>
+                <h1 class="app-page-title mb-2">FBO Registration Form</h1>
 
             </div>
             <div class="col-md-6 text-end">
@@ -145,7 +145,7 @@
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }" type="text"
                             placeholder="State" formControlName="state" [value]="allocated_state"
-                            class="form-control form-control-sm" [readOnly]="true" [readOnly]="isExistingFbo"/>
+                            class="form-control form-control-sm" [readOnly]="true"/>
                         <div *ngIf="submitted && fbo['state'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['state'].errors['required']">State is required</div>
                         </div>
@@ -155,6 +155,7 @@
                         <label for="district" class="form-label">District<sup>*</sup></label>
                         <select type="string" placeholder="District" formControlName="district" id="district"
                             class="form-select form-select-sm cursor-pointer" autocomplete="off" 
+                            [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }"
                             [attr.disabled]="isExistingFbo?true:null">
                             <option value="" disabled selected>Select the District</option>
                             <option *ngFor="let district of allocated_district" [value]="district">{{district}}</option>

@@ -11,7 +11,6 @@ const ticketDelivery = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'recipientdetails',
         required: true,
-        unique: true
     },
     ticketStatus: {
         type: String,

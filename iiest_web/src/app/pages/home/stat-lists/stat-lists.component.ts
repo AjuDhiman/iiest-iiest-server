@@ -19,7 +19,7 @@ export class StatListsComponent implements OnInit {
   empUnderManagerSale: Array<{name: string, salesAmmount: number, salesCount: number}>;
   mostRepeatedCust: Array<{name: string, repetition_count: number}>;
 
-  selectedInterval: 'lastMonth' | 'lastHalf' = 'lastMonth'
+  selectedInterval: 'lastMonth' | 'lastHalf' = 'lastMonth';
 
   lastMonth: string;
 
