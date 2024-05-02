@@ -187,6 +187,11 @@ export class RegisterService {
     return this.http.post<any>(url, areaAllocation).pipe(catchError(this.handleError));
   }
 
+  public verifyMail(OId: string){
+    const url = `${this.url}/verifymail/${OId}`;
+    return this.http.post<any>(url,'').pipe(catchError(this.handleError));
+  }
+
   public closeTicket(recpId: string, certificate: any){
     const url = `${this.url}/closeticket/${recpId}`;
     return this.http.post<any>(url, certificate).pipe(catchError(this.handleError));

@@ -90,7 +90,6 @@ export class HighchartDataModalComponent {
   // -------this function is work for sales chart data of state wise---------
   fetchFboDataByState(): void {
     this.sales$.subscribe(res => {
-      console.log(res);
       this.specificDatas = res.filter((item: any) => ((item.fboInfo) && (item.fboInfo.district === this.chartData.filterValue)));
       this.salesDeptfilter();
       this.loading = false;
@@ -220,9 +219,7 @@ export class HighchartDataModalComponent {
   monthWiseFilter() {
     this.sales$.subscribe(res => {
       if (res) {
-        console.log(days.indexOf(this.chartData.filterValue));
         const filterValue: string[] = this.chartData.filterValue.split('-');
-        console.log(filterValue);
         const day = filterValue[0];
         const month = months.findIndex((item: string) => item === filterValue[1]);
         let year = new Date().getFullYear();
@@ -238,8 +235,6 @@ export class HighchartDataModalComponent {
             this.specificDatas = res.filter((item: any) => new Date(item.createdAt).getUTCMonth() === Months.indexOf(filterValue[0]));
             break;
         }
-
-        console.log(this.specificDatas);
 
         let saleDate = new Date(res[res.length - 1].createdAt);
         this.salesDeptfilter();
@@ -279,7 +274,6 @@ export class HighchartDataModalComponent {
     if (this.searchQuery) {
       this.pageNumber1 = 1;
       this.isSearch = true;
-      console.log(this.chartData.userDept);
       switch (this.chartData.userDept) {
         case "Sales Department": this.salesDeptfilter();
           break;
@@ -410,7 +404,7 @@ export class HighchartDataModalComponent {
       this.specificDatas = this.specificDatas.filter((item: any) => {
         let count = 0;
         if (item.repetition_count > 1) {
-          console.log(new Date(item.createdAt).getUTCFullYear(), item.createdAt, new Date(item.createdAt).getFullYear(), count++);
+          // console.log(new Date(item.createdAt).getUTCFullYear(), item.createdAt, new Date(item.createdAt).getFullYear(), count++);
           return 1
         } else {
           return 0

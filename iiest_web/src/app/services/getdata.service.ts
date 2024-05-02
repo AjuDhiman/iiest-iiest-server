@@ -203,6 +203,12 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+
+  public getTicketDeliveryChartData(): Observable<any> {
+    const url: string = `${this.url}/getticketdeliverychartdata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getEmployeeUnderManager(): Observable<any>{
     const url: string = `${this.url}/getemployeeundermanager`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -235,6 +241,11 @@ export class GetdataService {
 
   public getTicketDeliveryData(recId: string): Observable<any> { // for geting delivery status of a recipient
     const url: string = `${this.url}/getticketdeliverydata/${recId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getEmpNameNIdList(): Observable<any> { // for geting delivery status of a recipient
+    const url: string = `${this.url}/getempnamelist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

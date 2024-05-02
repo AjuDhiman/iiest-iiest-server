@@ -15,10 +15,12 @@ import { EmployeelistComponent } from 'src/app/pages/HR/employeelist/employeelis
 import { LmsComponent } from 'src/app/pages/lms/lms.component';
 import { BatchListComponent } from 'src/app/pages/Training/batch-list/batch-list.component';
 import { MainPageComponent } from 'src/app/pages/main-page/main-page.component';
+import { OnboardVerificationComponent } from './pages/onboard-verification/onboard-verification.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
   { path: 'main', component: LandingpageComponent},
+  { path: 'verifyonboard/:type/:id', component: OnboardVerificationComponent},
   { path: 'mainpage', component: MainPageComponent},
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},

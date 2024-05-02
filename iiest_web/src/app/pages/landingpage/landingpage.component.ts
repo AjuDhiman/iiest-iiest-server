@@ -57,11 +57,8 @@ export class LandingpageComponent implements OnInit, AfterViewInit {
 
   //methord opens the onboard ,modal if user if user is loggedin this runs on click of onboard button on landing page view
   openOnboardModal() {
-    if (!this.isToken) {
-      this._toastrService.info('Login Required')
-      this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });
-    } else {
+
       this.modalService.open(OnboardModalComponent, { size: 'md', backdrop: 'static' });
-    }
+
   }
 }

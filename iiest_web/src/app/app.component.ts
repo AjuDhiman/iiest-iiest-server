@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     router.events.subscribe((val) => {
       const route:any = window.location.hash;
       if (val instanceof NavigationEnd) {
-        if (val.url == '/' || val.url == '/main' || route == "#about" || route == "#contact") {
+        if (val.url == '/' || val.url == '/main' || route == "#about" || route == "#contact" || route.split('/')[1] == "verifyonboard") {
           this.showHeader = false;
           this.largeDisplay = false;
         } else {

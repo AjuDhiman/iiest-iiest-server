@@ -526,7 +526,6 @@ export class HighchartsComponent implements OnChanges {
     if(this.highchartRef && this.highchartRef.chart){
       let chart = this.highchartRef.chart;
       if(chart.drilldownLevels){
-        console.log(chart.drilldownLevels && chart.drilldownLevels.length != 0);
         chart.drillUp();
       }
     }
@@ -638,7 +637,6 @@ export class HighchartsComponent implements OnChanges {
     if (this.chartData.showIntervalSelection) {
       data = this.chartData.data[this.intervalType];
     }
-    console.log(data);
     if (this.chartData.isDrilldown) {
       this.values = data.map((item: any) => {
         return {

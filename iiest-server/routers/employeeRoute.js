@@ -5,7 +5,8 @@ const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProd
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { getTopSalesPersons, getTopProducts, getEmpUnderManager, mostRepeatedCustomer } = require('../controllers/employeeControllers/statList');
-const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, getAreaWiseFboData, getRepeactCustomerData, getData } = require('../controllers/employeeControllers/Highcharts');
+const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, getAreaWiseFboData, getRepeactCustomerData, getData, ticketDeviveryChartData } = require('../controllers/employeeControllers/Highcharts');
+const { getEmployeeNameAndId, verifyEmail } = require('../controllers/boControllers/bo');
 
 const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
@@ -42,6 +43,10 @@ router.get('/getmostrepeatedcust', authMiddleware, mostRepeatedCustomer);
 router.get('/getrepeatedcustdata',authMiddleware, getRepeactCustomerData);
 router.get('/gettopproducts', authMiddleware, getTopProducts);
 router.get('/getempundermanager', authMiddleware, getEmpUnderManager);
+router.post('/verifymail/:id', verifyEmail);//route for verifing mail
+router.get('/getempnamelist', getEmployeeNameAndId); //route for getting employee name and id list for onboard form
+router.get('/getticketdeliverychartdata', ticketDeviveryChartData);
+
 // router.get('/getdata', getData);
 // router.get('/getsalesdata', salesData); // api in development for getting optimized sales list
 

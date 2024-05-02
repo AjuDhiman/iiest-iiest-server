@@ -6,13 +6,14 @@ import { HRModule } from 'src/app/pages/HR/hr.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { GeneralModule } from 'src/app/pages/general/general.module';
 import { OnboardModalComponent } from './onboard-modal/onboard-modal.component';
+import { OnboardVerificationComponent } from './onboard-verification/onboard-verification.component';
 
 
 
 @NgModule({
   declarations: [
-  
-    OnboardModalComponent
+    OnboardModalComponent,
+    OnboardVerificationComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +25,8 @@ import { OnboardModalComponent } from './onboard-modal/onboard-modal.component';
   ],
   exports: [
     SalesModule,
-    OperationModule
+    OperationModule,
+    OnboardVerificationComponent
   ]
 })
 export class PagesModule { }

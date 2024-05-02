@@ -1,0 +1,17 @@
+.background-verification{
+    height: 100vh; 
+    width: 100vw; 
+    position: absolute;
+}
+
+.verification-success {
+    background: linear-gradient(to right, #15a362, #52c685);
+}
+
+.verification-wait {
+    background: linear-gradient(to right, #ffff00, #ffeb3b, #ffd700);
+}
+
+.verification-fail {
+    background: linear-gradient(to right, #ff0000, #ff3333, #ff6666);
+}
