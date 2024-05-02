@@ -1,3 +1,4 @@
+import { caseList_roles } from './../../utils/config';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscriber, Subscription, concat, interval, skipLast } from 'rxjs';
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   empDepartment: string;
   empDesigantion: string;
   projectType: string;
+  caseList_roles: string[] = caseList_roles;
 
   //store related variables
   employees: Employee;
@@ -201,7 +203,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const chartType = 'Line';
         const department = 'Sales Department';
         const chartTitle = 'Sales Graph';
-        const seriesName = `${yearStart}-${yearEnd} `;
+        const seriesName = `${today.getFullYear()}`;
         const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = true;

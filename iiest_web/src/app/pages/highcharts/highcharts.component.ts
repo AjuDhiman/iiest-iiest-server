@@ -69,6 +69,7 @@ export class HighchartsComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['chartData'] && changes['chartData'].currentValue) {
+      console.log(this.chartData)
       this.selectedChartType = this.chartData.chartType;
       this.defaultChartType = this.chartData.chartType;
       if (this.chartData.showIntervalSelection) {
@@ -682,6 +683,9 @@ export class HighchartsComponent implements OnChanges {
   }
 
   clickEvent = (e: any) => {
+    if(this.chartData.department === 'Assesment And Audit Department'){
+      return;
+    }
     if (e.point.options.name) {
       if (e.point.options.name === "Retail" || e.point.options.name === "Catering") {
         this.salesCategory = "Fostac";
