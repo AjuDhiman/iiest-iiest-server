@@ -38,7 +38,7 @@ router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)
 router.post('/existingfbo-pay-return', existingFboPayReturn);
 router.get('/getclientlist', getClientList)
-router.post('/boregister',authMiddleware, createBusinessOwner );
+router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 
 

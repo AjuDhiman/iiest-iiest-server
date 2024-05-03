@@ -258,6 +258,8 @@ export class FbonewComponent implements OnInit {
 
   //hide the exsisting bo and open exsisting fbo search
   existingUserFbo($event: any) {
+    this.existingUserBoForm.reset();
+    // this.existingUserFboForm.reset();
     this.isExistingFbo = false;
     this.isExistingBo = false;
     if ($event.target.checked) {
@@ -269,7 +271,6 @@ export class FbonewComponent implements OnInit {
       this.resetForm('fbo');
       this.fboFieldName = "FBO Name";
       this.fboPlaceholder = "Enter FBO Name";
-      this.existingUserBoForm.reset();
     } else {
 
       this.isExistingFbo = false;
@@ -280,6 +281,8 @@ export class FbonewComponent implements OnInit {
 
   //hide the exsisting fbo and open exsisting bo search
   existingUserBo($event: any) {
+    // this.existingUserBoForm.reset();
+    this.existingUserFboForm.reset();
     this.isExistingBo = false;
     this.isExistingFbo = false;
     if ($event.target.checked) {

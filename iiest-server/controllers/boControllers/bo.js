@@ -36,7 +36,6 @@ exports.createBusinessOwner = async (req, res) => {
         const employeeInfo = await employeeSchema.findOne({ employee_id: onboard_by });
 
         const newBo = await boModel.create({
-            employeeInfo: req.user._id,
             id_num: idNumber,
             customer_id: generatedUniqueCustomerId,
             owner_name,
