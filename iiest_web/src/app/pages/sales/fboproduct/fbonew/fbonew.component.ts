@@ -210,8 +210,8 @@ export class FbonewComponent implements OnInit {
         fbo_name: ['', Validators.required],
         owner_name: ['', Validators.required],
         business_entity: ['', Validators.required],
-        business_category: [''],
-        business_ownership_type: [''],
+        business_category: ['', Validators.required],
+        business_ownership_type: ['', Validators.required],
         owner_contact: ['',
           [
             Validators.required,
@@ -256,17 +256,21 @@ export class FbonewComponent implements OnInit {
   //    }
 
 
+  //hide the exsisting bo and open exsisting fbo search
   existingUserFbo($event: any) {
+    this.existingUserBoForm.reset();
+    // this.existingUserFboForm.reset();
+    this.isExistingFbo = false;
+    this.isExistingBo = false;
     if ($event.target.checked) {
+      this.isExistingFbo = true;
       this.loading = true;
       if (this.existingFbos) {
         this.loading = false;
       }
-      this.isExistingFbo = true;
-      this.isExistingBo = false;
+      this.resetForm('fbo');
       this.fboFieldName = "FBO Name";
       this.fboPlaceholder = "Enter FBO Name";
-      this.existingUserBoForm.reset();
     } else {
 
       this.isExistingFbo = false;
@@ -275,12 +279,17 @@ export class FbonewComponent implements OnInit {
     }
   }
 
+  //hide the exsisting fbo and open exsisting bo search
   existingUserBo($event: any) {
+    // this.existingUserBoForm.reset();
+    this.existingUserFboForm.reset();
+    this.isExistingBo = false;
+    this.isExistingFbo = false;
     if ($event.target.checked) {
       this.isExistingBo = true;
-      this.isExistingFbo = false;
       this.fboFieldName = "Business Entity";
       this.fboPlaceholder = "Enter Business Entity";
+      this.resetForm('bo');
     } else {
       this.isExistingBo = false;
       this.fboFieldName = "FBO Name";
@@ -781,30 +790,30 @@ export class FbonewComponent implements OnInit {
     })
   }
 
-  resetFostacForm(): void{
-    this.fostac_training.patchValue({fostac_processing_amount: ''});
-    this.fostac_training.patchValue({fostac_service_name: ''});
-    this.fostac_training.patchValue({fostac_client_type: ''});
-    this.fostac_training.patchValue({recipient_no: ''});
-    this.fostac_training.patchValue({fostac_total: ''});
+  resetFostacForm(): void {
+    this.fostac_training.patchValue({ fostac_processing_amount: '' });
+    this.fostac_training.patchValue({ fostac_service_name: '' });
+    this.fostac_training.patchValue({ fostac_client_type: '' });
+    this.fostac_training.patchValue({ recipient_no: '' });
+    this.fostac_training.patchValue({ fostac_total: '' });
   }
 
-  resetFoscosForm(): void{
-    this.foscos_training.patchValue({foscos_processing_amount: ''});
-    this.foscos_training.patchValue({foscos_service_name: ''});
-    this.foscos_training.patchValue({foscos_client_type: ''});
-    this.foscos_training.patchValue({shops_no: ''});
-    this.foscos_training.patchValue({water_test_fee: ''});
-    this.foscos_training.patchValue({license_category: ''});
-    this.foscos_training.patchValue({license_duration: ''});
-    this.foscos_training.patchValue({foscos_total: ''});
+  resetFoscosForm(): void {
+    this.foscos_training.patchValue({ foscos_processing_amount: '' });
+    this.foscos_training.patchValue({ foscos_service_name: '' });
+    this.foscos_training.patchValue({ foscos_client_type: '' });
+    this.foscos_training.patchValue({ shops_no: '' });
+    this.foscos_training.patchValue({ water_test_fee: '' });
+    this.foscos_training.patchValue({ license_category: '' });
+    this.foscos_training.patchValue({ license_duration: '' });
+    this.foscos_training.patchValue({ foscos_total: '' });
   }
 
-  resetHRAForm(): void{
-    this.hygiene_audit.patchValue({hra_processing_amount: 5000});
-    this.hygiene_audit.patchValue({hra_service_name: 'HRA'});
-    this.hygiene_audit.patchValue({shops_no: ''});
-    this.hygiene_audit.patchValue({hra_client_type: ''});
-    this.hygiene_audit.patchValue({hra_total: ''});
+  resetHRAForm(): void {
+    this.hygiene_audit.patchValue({ hra_processing_amount: 5000 });
+    this.hygiene_audit.patchValue({ hra_service_name: 'HRA' });
+    this.hygiene_audit.patchValue({ shops_no: '' });
+    this.hygiene_audit.patchValue({ hra_client_type: '' });
+    this.hygiene_audit.patchValue({ hra_total: '' });
   }
 }

@@ -1,3 +1,4 @@
+import { caseList_roles } from './../../utils/config';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscriber, Subscription, concat, interval, skipLast } from 'rxjs';
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   empDepartment: string;
   empDesigantion: string;
   projectType: string;
+  caseList_roles: string[] = caseList_roles;
 
   //store related variables
   employees: Employee;
@@ -53,6 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   empHiringChartData: chartData;
   salesPersonChartData: chartData;
   repetedCustChartData: chartData;
+  ticketDeliveryChartData: chartData;
 
   //condtional variables
   isNameVisible: boolean = false;
@@ -113,6 +116,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (salesManagerRoles.includes(this.empDesigantion)) {
       this.getEmployeeUnderManager()
     }
+
+    this.getTicketDeliveryChartData();
 
     //------this function is for collecting data related to product table-------
     this.getProductData();
@@ -198,14 +203,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         const chartType = 'Line';
         const department = 'Sales Department';
         const chartTitle = 'Sales Graph';
-        const seriesName = `${yearStart}-${yearEnd} `;
+        const seriesName = `${today.getFullYear()}`;
         const yAxisTitle = 'Sales Count';
         const data = res;
         const showIntervalSelection = true;
         const selectedInterval: string = 'This_Year';
         const isDrillDown = false;
         const otherChartTypeOptions = ['Area'];
-        console.log(data);
         data['This_Week'].forEach((item:any) => {
           item.name = days[item.name-1];
         });
@@ -313,6 +317,44 @@ export class HomeComponent implements OnInit, OnDestroy {
     const isDrillDown = false;
     const otherChartTypeOptions = [''];
     this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown,selectedInterval );
+  }
+
+  getTicketDeliveryChartData() {
+    this._getDataService.getTicketDeliveryChartData().subscribe({
+      next: res => {
+        let yearStart: Number;
+        let yearEnd: Number;
+        let today: Date = new Date();
+        if(today.getMonth() < 3){
+          yearStart = today.getFullYear()-1;
+          yearEnd = today.getFullYear();
+        } else {
+          yearStart = today.getFullYear();
+          yearEnd = today.getFullYear() + 1;
+        }
+        const chartType = 'Line';
+        const department = 'Assesment And Audit Department';
+        const chartTitle = 'Ticket Delivery Graph';
+        const seriesName = `${yearStart}-${yearEnd} `;
+        const yAxisTitle = 'Delivery Count';
+        const data = res;
+        console.log(res);
+        const showIntervalSelection = true;
+        const selectedInterval: string = 'This_Year';
+        const isDrillDown = false;
+        const otherChartTypeOptions = ['Area'];
+        data['This_Week'].forEach((item:any) => {
+          item.name = days[item.name-1];
+        });
+        data['This_Month'].forEach((item:any) => {
+          item.name = `${item.name}-${Months[new Date().getMonth()]}`;
+        });
+        data['This_Year'].forEach((item:any) => {
+          item.name = Months[item.name-1];
+        });
+        this.ticketDeliveryChartData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, isDrillDown, showIntervalSelection, selectedInterval);
+      }
+    });
   }
 
   getEmployeeUnderManager() {

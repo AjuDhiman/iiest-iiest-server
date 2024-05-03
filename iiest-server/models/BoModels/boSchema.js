@@ -9,6 +9,11 @@ const boSchema = new Schema({
         min: 10000,
         max: 999999
     },
+    onboard_by:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
+        required: true 
+    },
     customer_id: {
         type: String, 
         required: true,
@@ -28,7 +33,7 @@ const boSchema = new Schema({
     },
     business_ownership_type: {
         type: String,
-        required: true
+        required: true    
     },
     contact_no: {
         type: Number,
@@ -39,9 +44,17 @@ const boSchema = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    is_email_verified: {
+        type: Boolean,
+        required: true
+    },
+    is_contact_verified: {
+        type: Boolean,
+        required: true
     }
 
-}, {timestamp: true})
+}, { timestamps: true })
 
 const boModel = mongoose.model('bo_registers', boSchema);
 module.exports = boModel;

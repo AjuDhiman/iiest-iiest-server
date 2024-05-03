@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="col-md-12 my-2">
-        <label for="business_ownership_type" class="form-label">Business Type<sup>*</sup></label>
+        <label for="business_ownership_type" class="form-label">Business Size<sup>*</sup></label>
         <div class="select-wrapper">
           <select class="form-control" formControlName="business_ownership_type" id="business_ownership_type"
             [ngClass]="{ 'is-invalid': (submitted && businessform['business_ownership_type'].errors)}">
@@ -81,7 +81,22 @@
       </div>
     </div>
     <div class="col-md-12 my-2">
+      <label for="onboard_by" class="form-label">Onboarding Officer<sup>*</sup></label>
+      <div class="select-wrapper">
+        <select class="form-control" formControlName="onboard_by" id="onboard_by"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['onboard_by'].errors)}">
+          <option value="" selected disabled hidden>Select Onboarding Officer &#9662;</option>
+          <option *ngFor="let emp of empList" [value]="emp.employee_id">{{emp.employee_name}} ({{emp.employee_id}})</option>
+        </select>
+      </div>
+      <div *ngIf="submitted && businessform['onboard_by'].errors" class="invalid-feedback">
+        <div *ngIf="businessform['onboard_by'].errors['required']">Onboarding Officer is
+          Required</div>
+      </div>
+    </div>
+    <div class="col-md-12 my-2">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
+  <ngx-loading [show]="loading"></ngx-loading>
 </div>

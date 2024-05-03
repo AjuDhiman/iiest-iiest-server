@@ -69,6 +69,7 @@ export class HighchartsComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['chartData'] && changes['chartData'].currentValue) {
+      console.log(this.chartData)
       this.selectedChartType = this.chartData.chartType;
       this.defaultChartType = this.chartData.chartType;
       if (this.chartData.showIntervalSelection) {
@@ -526,7 +527,6 @@ export class HighchartsComponent implements OnChanges {
     if(this.highchartRef && this.highchartRef.chart){
       let chart = this.highchartRef.chart;
       if(chart.drilldownLevels){
-        console.log(chart.drilldownLevels && chart.drilldownLevels.length != 0);
         chart.drillUp();
       }
     }
@@ -638,7 +638,6 @@ export class HighchartsComponent implements OnChanges {
     if (this.chartData.showIntervalSelection) {
       data = this.chartData.data[this.intervalType];
     }
-    console.log(data);
     if (this.chartData.isDrilldown) {
       this.values = data.map((item: any) => {
         return {
@@ -684,6 +683,9 @@ export class HighchartsComponent implements OnChanges {
   }
 
   clickEvent = (e: any) => {
+    if(this.chartData.department === 'Assesment And Audit Department'){
+      return;
+    }
     if (e.point.options.name) {
       if (e.point.options.name === "Retail" || e.point.options.name === "Catering") {
         this.salesCategory = "Fostac";

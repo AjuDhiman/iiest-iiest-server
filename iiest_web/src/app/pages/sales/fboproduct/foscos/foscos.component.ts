@@ -201,7 +201,10 @@ export class FoscosComponent implements OnInit {
   //Water Test fee Function add the water Test fee to GST Calculation function.
   waterTestAdd($event: any) {
     this.waterTestAmnt = Number($event.target.value);
-    let totalAmntwithWaterFee = this.foscosTotalAmnt + this.totalFixedCharge + this.waterTestAmnt;
+    let totalAmntwithWaterFee
+    // totalAmntwithWaterFee = this.foscosTotalAmnt + this.totalFixedCharge + this.waterTestAmnt; this line is commented on 03-05-2024 beacuse this is giving error in 
+    // water test amount , uncomment if next line liges error and comment next line
+    totalAmntwithWaterFee = this.GSTandTotalAmnt(this.foscos_training.value.shops_no) + this.totalFixedCharge + this.waterTestAmnt;
     this.foscosTotalAmount(totalAmntwithWaterFee);
   }
 

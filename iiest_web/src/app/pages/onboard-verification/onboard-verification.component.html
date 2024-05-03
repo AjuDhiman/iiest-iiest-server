@@ -1,0 +1,10 @@
+<div class="background-verification" [ngClass]="{'verification-fail': status === 'not-verified', 'verification-success': status === 'verified', 'verification-wait': status === 'ongoing' }">
+    <h1 style="height: 100vh; width: 100vw; text-align: center;  margin: auto; padding-top: 100px; border-radius: 40px; color: white;">
+        {{message}}
+        <br>
+        <fa-icon *ngIf="status==='not-verified'" class="fa-3x" [icon]="faCircleXmark"></fa-icon>
+        <fa-icon *ngIf="status==='verified'" class="fa-3x" [icon]="faCheckCircle"></fa-icon>
+        <fa-icon *ngIf="status==='ongoing'" class="fa-3x" [icon]="faCircleExclamation"></fa-icon>
+        <ngx-loading [show]="loading"></ngx-loading>
+    </h1>
+</div>

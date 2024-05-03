@@ -1,5 +1,6 @@
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 const fboModel = require("../../models/fboModels/fboSchema");
+const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
 
 //api for product sales highchart
 exports.getProductSaleData = async (req, res) => {
@@ -792,6 +793,105 @@ exports.getData = async (req, res) => {
     } catch(error) {
         console.log(error);
         return res.status(500).json({message:'Internal Server Error'});
+    }
+}
+
+exports.ticketDeviveryChartData = async(req, res) => {
+    try {
+
+        const todayDate = new Date();
+        const startOfToday = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate(), 0, 0, 0));
+        const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
+        const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
+        const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
+        const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
+
+        const pipeline = [
+            {
+                $facet: {
+                    This_Week: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfThisWeek }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: { $dayOfWeek: "$createdAt" }, // Add this line to get the day of the week
+                                total: { $sum: 1 }
+                            }
+                        },
+                        {
+                            $project: {
+                                name: "$_id",
+                                value: "$total"
+                            }
+                        },
+                        {
+                            $sort: {
+                                name: 1
+                            }
+                        }
+                    ],
+                    This_Month: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfThisMonth }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: { $dayOfMonth: "$createdAt" }, // Add this line to get the day of the week
+                                total: { $sum: 1 }
+                            }
+                        },
+                        {
+                            $project: {
+                                name: "$_id",
+                                value: "$total"
+                            }
+                        },
+                        {
+                            $sort: {
+                                name: 1
+                            }
+                        }
+                    ],
+                    This_Year: [
+                        {
+                            $match: {
+                                createdAt: { $gte: startOfThisYear }
+                            }
+                        },
+                        {
+                            $group: {
+                                _id: { $month: "$createdAt" }, // Add this line to get the day of the week
+                                total: { $sum: 1 },
+                            }
+                        },
+                        {
+                            $project: {
+                                name: "$_id",
+                                value: "$total"
+                            }
+                        },
+                        {
+                            $sort: {
+                                name: 1
+                            }
+                        }
+                    ]
+                }
+            }
+        ];
+
+        const ticketDeliveryChartData = await ticketDeliveryModel.aggregate(pipeline);
+
+        res.status(200).json(ticketDeliveryChartData[0]);
+
+    } catch (error) {
+        console.log('Ticket Delivery Chart Error:', error);
+        return res.status(500).json({success: false, message: 'Internal Server Error'});
     }
 }
 

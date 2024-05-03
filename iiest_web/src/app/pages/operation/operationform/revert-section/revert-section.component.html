@@ -48,7 +48,7 @@
     <fa-icon *ngIf="filedStatus" (click)="viewReceipt()" class="text-primary fa-2xl cursor-pointer" [icon]="faFilePdf"></fa-icon>
     <div *ngIf="filed && filingform['payment_receipt'].errors" class="invalid-feedback">
       <div *ngIf="filingform['payment_receipt'].errors['required']">Payment Receipt is required</div>
-      <div *ngIf="filingform['payment_receipt'].errors['invalidFileType']">Invalid file only .png files are allowed.
+      <div *ngIf="filingform['payment_receipt'].errors['invalidFileType']">Invalid file only .pdf files are allowed.
       </div>
     </div>
   </div>

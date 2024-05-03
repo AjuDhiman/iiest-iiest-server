@@ -47,8 +47,11 @@
 			<!-- <div class="col-12 col-lg-6 mb-3" *ngIf="empDepartment==='HR Department' || empDepartment=='IT Department'">
 				<app-highcharts [chartData]="deptData"></app-highcharts>
 			</div> -->
-			<div class="col-12 col-lg-6 mb-3" *ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
+			<div class="col-12 col-lg-6 mb-3" *ngIf="empDepartment==='Sales Department' || empDesigantion=='Director' ">
 				<app-highcharts [chartData]="repetedCustChartData"></app-highcharts>
+			</div>
+			<div class="col-12 col-lg-6 mb-3" *ngIf="empDesigantion=='Director' || caseList_roles.includes(empDesigantion)">
+				<app-highcharts [chartData]="ticketDeliveryChartData"></app-highcharts>
 			</div>
 		</div>
 

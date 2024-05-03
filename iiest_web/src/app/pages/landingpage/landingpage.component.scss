@@ -11396,18 +11396,18 @@ header.masthead .post-heading .meta a {
           }
         
   .web-logo img {
-            width: 95px;
+            width: 60px;
   }
 
   .web-header-logo{
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     margin-left: 5%;
     padding: 2px 5px;
   }
   
   .web-header-logo img {
-    max-width: 50px;
+    max-width: 30px;
     font-weight: 600;
     height: auto;
   }
@@ -11477,4 +11477,14 @@ header.masthead .post-heading .meta a {
     font-weight: 600;
     height: auto;
   }
+}
+
+@media only screen and (max-width: 768px) {
+.connecttest{
+  font-size : small;
+}
+.web-logo{
+  width: 76px;
+  height: 70px;
+}
 }
