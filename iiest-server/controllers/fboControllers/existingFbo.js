@@ -8,6 +8,7 @@ const fboModel = require('../../models/fboModels/fboSchema');
 const payRequest = require("../../fbo/phonePay");
 const fboPaymentSchema = require("../../models/fboModels/fboPaymentSchema");
 const sendInvoiceMail = require("../../fbo/sendMail");
+const FRONT_END = JSON.parse(process.env.FRONT_END);
 
 exports.existingFboCash = async (req, res) => {
   try {
@@ -295,7 +296,7 @@ exports.existingFboPayReturn = async (req, res) => {
           console.log(err);
         });
 
-        res.redirect('http://localhost:4200/#/fbo');
+        res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
         sendInvoiceMail(existingFboInfo.email, invoiceData);
 

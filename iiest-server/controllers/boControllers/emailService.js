@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const mailData = JSON.parse(process.env.NODE_MAILER);
+const FRONT_END = JSON.parse(process.env.FRONT_END);
 
 exports.sendMailToBo = async (boMail, mailInfo) => {
     try {
@@ -65,14 +66,14 @@ function getMailContent(mailInfo) {
         englishContent = `<p>Thanks for registering in the Connect Bharat Project. To complete the registration process and activate your 
         account, we need to verify your email address. Please click the button below to verify your email.</p>
         <br/>
-        <button style="border:none; color: white; backgraound: green; outline: none"><a href='http://localhost:4200/#/verifyonboard/email/${mailInfo.id}'>Verify</a></button>
+        <button style="border:none; color: white; backgraound: green; outline: none"><a href='${FRONT_END.VIEW_URL}/#/verifyonboard/email/${mailInfo.id}'>Verify</a></button>
         </br>
         <p>Thank You</p>`
 
         hindiContent = `<p>कनेक्ट भारत परियोजना में पंजीकरण के लिए धन्यवाद। पंजीकरण प्रक्रिया पूरी करने और अपने खाते को सक्रिय करने के लिए, 
         हमें आपके ईमेल पते को सत्यापित करना होगा। कृपया नीचे दिए गए बटन पर क्लिक करके अपना ईमेल सत्यापित करें।</p>
         <br/>
-        <button style="border:none; color: white; background: green; outline: none;"><a href='http://localhost:4200/#/verifyonboard/email/${mailInfo.id}'>Verify (वेरीफाई)</a></button>
+        <button style="border:none; color: white; background: green; outline: none;"><a href='${FRONT_END.VIEW_URL}#/verifyonboard/email/${mailInfo.id}'>Verify (वेरीफाई)</a></button>
         <br/>
         <p>धन्यवाद</p>`
     }
