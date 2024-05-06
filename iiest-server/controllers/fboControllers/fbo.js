@@ -11,6 +11,7 @@ const payRequest = require('../../fbo/phonePay');
 const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
 const sendInvoiceMail = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
+const FRONT_END = JSON.parse(process.env.FRONT_END);
 
 exports.fboPayment = async (req, res) => {
   try {
@@ -161,7 +162,7 @@ exports.fboPayReturn = async (req, res) => {
           }
         })
 
-        res.redirect('http://localhost:4200/#/fbo');
+        res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
         sendInvoiceMail(email, invoiceData);
 
