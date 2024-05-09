@@ -12,7 +12,7 @@ const recipientSchema = new Schema({
         unique: true,
         required: true,
         min: 10000,
-        max: 99999
+        max: 999999
     },
     name: {
         type: String,

@@ -11,12 +11,12 @@ const fostacVerification = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'recipientDetails',
         required: true,
-        unique: true
+        // unique: true
     },
     email: {
         type: String, 
         required: true,
-        unique: true
+        // unique: true
     },
     address: {
         type: String, 

@@ -25,13 +25,13 @@ const salesSchema = new Schema({
     fostacInfo: {
         type: Object,
         required: function(){
-            return this.product_name.includes('Fostac Training')
+            return this.product_name.includes('Fostac')
         }
     },
     foscosInfo: {
         type: Object,
         required: function(){
-            return this.product_name.includes('Foscos Training')
+            return this.product_name.includes('Foscos')
         }
     },
     hraInfo: {

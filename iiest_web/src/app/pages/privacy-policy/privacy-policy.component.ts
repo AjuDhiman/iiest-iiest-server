@@ -1,19 +1,18 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from '../login/login.component';
-import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInfo, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { RegisterService } from 'src/app/services/register.service';
+import { Component, ElementRef, ViewChild, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component';
+import { faBuilding, faCircleInfo, faHome, faLocationDot, faPeopleGroup, faPhone, faSignIn } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { RegisterService } from 'src/app/services/register.service';
+import { LoginComponent } from '../login/login.component';
+import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component';
 
 @Component({
-  selector: 'app-landingpage',
-  templateUrl: './landingpage.component.html',
-  styleUrls: ['./landingpage.component.scss'],
+  selector: 'app-privacy-policy',
+  templateUrl: './privacy-policy.component.html',
+  styleUrls: ['./privacy-policy.component.scss']
 })
-export class LandingpageComponent implements OnInit, AfterViewInit {
-
+export class PrivacyPolicyComponent implements OnInit, AfterViewInit {
   faPeopleGroup = faPeopleGroup;
   faBuilding = faBuilding;
   faLocationDot = faLocationDot;

@@ -197,7 +197,8 @@ export class HighchartDataModalComponent {
                 elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                 elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                elem.fboInfo.customer_id.includes(this.searchQuery)
+                elem.fboInfo.customer_id.includes(this.searchQuery) || 
+                elem.product_name.join(" ").toLowerCase().includes(this.searchQuery.toLowerCase())
             );
           break;
         case 'byOwner': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));

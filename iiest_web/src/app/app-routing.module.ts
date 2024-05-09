@@ -16,12 +16,18 @@ import { LmsComponent } from 'src/app/pages/lms/lms.component';
 import { BatchListComponent } from 'src/app/pages/Training/batch-list/batch-list.component';
 import { MainPageComponent } from 'src/app/pages/main-page/main-page.component';
 import { OnboardVerificationComponent } from './pages/onboard-verification/onboard-verification.component';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
+import { RefundPolicyComponent } from './pages/refund-policy/refund-policy.component';
+import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
   { path: 'main', component: LandingpageComponent},
   { path: 'verifyonboard/:type/:id', component: OnboardVerificationComponent},
   { path: 'mainpage', component: MainPageComponent},
+  { path: 'privacy-policy', component: PrivacyPolicyComponent},
+  { path: 'refund-policy', component: RefundPolicyComponent},
+  { path: 'terms-and-conditions', component: TermsAndConditionsComponent},
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
