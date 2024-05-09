@@ -20,7 +20,7 @@ const generateUniqueId = async() => {
   let idNumber;
 
   while(!isUnique) {
-    idNumber = Math.floor(100000 + Math.random() * 900000);
+    idNumber = Math.floor(100000 + Math.random() * 9000000) - 1;
     const existingNumber = await boModel.findOne({id_num: idNumber});
     if(!existingNumber) {
       isUnique = true;
@@ -36,7 +36,7 @@ const generatedInfo = async()=>{
     let idNumber;
 
     while (!isUnique) {
-      idNumber = Math.floor(10000 + Math.random() * 900000);
+      idNumber = Math.floor(10000 + Math.random() * 9000000) - 1;
       const existingNumber = await fboModel.findOne({ id_num: idNumber });
       if (!existingNumber) {
         isUnique = true;
@@ -70,7 +70,7 @@ const getRecipientId = async(salesId, idNumber) => {
 
     const empSales = await salesModel.findOne({_id: salesId}).populate({path: 'fboInfo'});
     
-    recipientId = `${empSales.fboInfo.customer_id}/${idNumber}`
+    recipientId = `${empSales.fboInfo.customer_id}/REC/${idNumber}`
     
     return recipientId;
 }

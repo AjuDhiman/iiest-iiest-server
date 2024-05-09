@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const fboSchema = new Schema({
-    employeeInfo: {
+    assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
         // required: true
@@ -56,7 +56,8 @@ const fboSchema = new Schema({
         required: true,
     },
     createdBy: {
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff_registers',
         required: true
     },
     lastEdit: {

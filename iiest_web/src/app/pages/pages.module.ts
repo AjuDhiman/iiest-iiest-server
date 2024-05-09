@@ -7,13 +7,19 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { GeneralModule } from 'src/app/pages/general/general.module';
 import { OnboardModalComponent } from './onboard-modal/onboard-modal.component';
 import { OnboardVerificationComponent } from './onboard-verification/onboard-verification.component';
+import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { RefundPolicyComponent } from './refund-policy/refund-policy.component';
 
 
 
 @NgModule({
   declarations: [
     OnboardModalComponent,
-    OnboardVerificationComponent
+    OnboardVerificationComponent,
+    TermsAndConditionsComponent,
+    PrivacyPolicyComponent,
+    RefundPolicyComponent
   ],
   imports: [
     CommonModule,
