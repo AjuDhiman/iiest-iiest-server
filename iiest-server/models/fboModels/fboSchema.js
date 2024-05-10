@@ -56,8 +56,10 @@ const fboSchema = new Schema({
         required: true,
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'staff_registers',
+        // type: mongoose.Schema.Types.ObjectId,
+        // ref: 'staff_registers',
+        // required: true
+        type: String,
         required: true
     },
     lastEdit: {
