@@ -9,6 +9,7 @@ const payRequest = require("../../fbo/phonePay");
 const fboPaymentSchema = require("../../models/fboModels/fboPaymentSchema");
 const sendInvoiceMail = require("../../fbo/sendMail");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
+const BACK_END = JSON.parse(process.env.BACK_END);
 
 exports.existingFboCash = async (req, res) => {
   try {
@@ -190,7 +191,7 @@ exports.existingFboPayPage = async (req, res) => {
       return res.status(404).json({ success, wrongPincode: true });
     }
 
-    payRequest(formBody.grand_total, res, 'http://localhost:3000/iiest/existingfbo-pay-return');
+    payRequest(formBody.grand_total, res, `${BACK_END.API_URL}/iiest/fbo-pay-return`);
 
   } catch (error) {
     console.error(error);

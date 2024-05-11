@@ -12,6 +12,7 @@ const areaAllocationModel = require('../../models/employeeModels/employeeAreaSch
 const sendInvoiceMail = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
+const BACK_END = JSON.parse(process.env.BACK_END);
 
 exports.fboPayment = async (req, res) => {
   try {
@@ -52,7 +53,7 @@ exports.fboPayment = async (req, res) => {
       return res.status(404).json({ success, wrongPincode: true });
     }
 
-    payRequest(formBody.grand_total, res, 'http://localhost:3000/iiest/fbo-pay-return');
+    payRequest(formBody.grand_total, res, `${BACK_END.API_URL}/fbo-pay-return`);
 
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' });
