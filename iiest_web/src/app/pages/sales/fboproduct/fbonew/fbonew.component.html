@@ -94,7 +94,7 @@
                     <div class="col-md-3">
                         <label for="email" class="form-label">Email<sup>*</sup></label>
                         <input type="text" placeholder="Email" formControlName="email" id="email"
-                            class="form-control form-control-sm" autocomplete="off" [readOnly]="true" 
+                            class="form-control form-control-sm" autocomplete="off" [readOnly]="" 
                             [ngClass]="{ 'is-invalid': submitted && fbo['email'].errors }" />
                         <div *ngIf="submitted && fbo['email'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['email'].errors['required']">Email is required</div>
@@ -102,7 +102,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label for="fbo_name" class="form-label">Brand Name<sup>*</sup></label>
                         <input type="text" placeholder="Brand Name" formControlName="fbo_name"
                             class="form-control form-control-sm" id="fbo_name" [readOnly]="isExistingFbo"
