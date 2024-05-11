@@ -3,6 +3,7 @@ const sha256 = require('sha256');
 const uniqid = require('uniqid');
 const productionBaseUrl = 'https://api.phonepe.com/apis/pg/v1/';
 const sandboxBaseUrl = 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/';
+const PHONE_PE_CREDENTIALS = JSON.parse(process.env.PHONE_PE_CREDENTIALS);
 
 // Determine whether you're in production or sandbox environment
 const isProduction = false; // Change this value as needed based on your environment
@@ -17,7 +18,8 @@ const payRequest = (grandTotal, res, redirectUrl)=>{
   let tx_uuid =  uniqid();
 
   let normalPayLoad = {
-    "merchantId": "PGTESTPAYUAT93",
+    "merchantId": PHONE_PE_CREDENTIALS.MERCHANT_ID,
+    // "merchantId": "PGTESTPAYUAT93", for test
     "merchantTransactionId": tx_uuid,
     "merchantUserId": "MUID123",
     "amount": grandTotal * 100,
@@ -31,7 +33,7 @@ const payRequest = (grandTotal, res, redirectUrl)=>{
 
   console.log(normalPayLoad)
 
-  let saltKey = '875126e4-5a13-4dae-ad60-5b8c8b629035';
+  let saltKey = PHONE_PE_CREDENTIALS.SALT_KEY;
   let saltIndex = 1
   let bufferObj = Buffer.from(JSON.stringify(normalPayLoad), "utf8");
   let base64String = bufferObj.toString("base64");
