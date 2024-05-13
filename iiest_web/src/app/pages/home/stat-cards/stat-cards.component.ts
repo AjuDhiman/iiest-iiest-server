@@ -5,6 +5,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { IconDefinition, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import { DepartmentListComponent } from 'src/app/pages/modals/department-list/department-list.component';
 import { ToastrService } from 'ngx-toastr';
+import { Months } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-stat-cards',
@@ -16,6 +17,9 @@ export class StatCardsComponent implements OnInit {
   department: string = '';
   salesData: any;
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
+  Months: string[] = Months; // this var is comming from config.ts and it is a array of all months 
+  thisMonth: String = Months[new Date().getMonth()];
+  prevMonth: String = Months[new Date().getMonth() - 1];
 
   @Output() emitDeptCount: EventEmitter<any> = new EventEmitter<any>
 

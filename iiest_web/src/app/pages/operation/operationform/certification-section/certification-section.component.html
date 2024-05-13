@@ -26,7 +26,7 @@
             <option value="delivered">delivered</option>
             <option *ngIf="projectType === 'Foscos'" value="rejected">Rejected</option>
             <option value="refund">Refund</option>
-            <option value="cancle">Cancle</option>
+            <option value="cancel">Cancel</option>
         </select>
         <div *ngIf="submitted && certificationform['ticket_status'].errors" class="invalid-feedback">
             <div *ngIf="certificationform['ticket_status'].errors['required']">Ticket Status is required</div>

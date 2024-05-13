@@ -7,6 +7,12 @@ export const config = {
    DOC_URL: prodEnv?'https://prod':(testEnv?'http://54.235.121.184':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
 }
 
+export const panIndiaAllowedEmpIds = [
+   'IIEST/FD/0176', //Chetan Kapoor Emp Id
+   'IIEST/FD/5187' //Sales test Emp Id
+]
+// export const chetanKapoorEmpId: string = 'IIEST/FD/0176';
+
 //Water test Fee
 export const waterTestFee = [0, 1500, 2000];
 //Fostac Process Amount
@@ -141,7 +147,6 @@ export const fbo_roles = [
    'Area Officer',
    ...master_roles
 ];
-
 
 export const empRegister_roles = [
    'Regional HR Manager',

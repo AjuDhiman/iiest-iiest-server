@@ -74,6 +74,7 @@ const invoiceDataHandler = async (idNum, mail, fboName, address, contact, email,
         gstNumber: gst_number,
         invoiceUploadStream: uploadStream
     }
+    console.log(infoObj);
     const invoiceData = await generateInvoice(idNum, mail, infoObj);
 
     return invoiceData;

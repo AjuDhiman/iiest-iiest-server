@@ -117,7 +117,7 @@
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{employee.product_name.join(', ') +
-                      ((employee.fboInfo.foscosInfo && employee.fboInfo.foscosInfo.water_test_fee)?', Water Test':'')}}</span></td>
+                      ((employee.foscosInfo && (employee.foscosInfo.water_test_fee != 0))?', Water Test':'')}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span

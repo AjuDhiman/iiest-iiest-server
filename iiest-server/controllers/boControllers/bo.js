@@ -52,7 +52,9 @@ exports.createBusinessOwner = async (req, res) => {
         //sending verification mail
         const mailInfo = {
             purpose: 'verification',
-            id: newBo._id
+            id: newBo._id,
+            email: newBo.email,
+            contact_no: newBo.contact_no
         }
         await sendMailToBo(email, mailInfo);
 
@@ -66,7 +68,7 @@ exports.createBusinessOwner = async (req, res) => {
 
 exports.getAllBusinessOwners = async (_req, res) => {
     try {
-        const businessOwners = await boModel.find();
+        const businessOwners = await boModel.find({ is_contact_verified: true, is_email_verified: true });
         console.log(businessOwners);
         res.status(200).json({ data: businessOwners });
     } catch (error) {
@@ -92,7 +94,7 @@ exports.getEmployeeNameAndId = async (req, res) => {
 
 exports.verifyEmail = async (req, res) => {
     try {
-        if(!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(404).json({ success: false, message: "Not A Valid Request" });
         }
         const idExsists = await boModel.findOne({ _id: req.params.id });
@@ -104,17 +106,20 @@ exports.verifyEmail = async (req, res) => {
             const verifiedMail = await boModel.findByIdAndUpdate(
                 { _id: req.params.id },
                 { $set: { is_email_verified: true } },
+                { $set: { is_contact_verified: true } },
                 { new: true }
             )
 
-            if(!verifiedMail){
+            if (!verifiedMail) {
                 return res.status(404).json({ success: false, message: "Verification Failed", emailSendingErr: true });
             }
 
             //sending onboarding  mail
             const mailInfo = {
                 purpose: 'onboard',
-                customerId: verifiedMail.customer_id
+                customerId: verifiedMail.customer_id,
+                email: idExsists.email,
+                contact_no: idExsists.contact_no 
             }
             await sendMailToBo(verifiedMail.email, mailInfo);
             return res.status(200).json({ success: true, message: "Email Verified" })

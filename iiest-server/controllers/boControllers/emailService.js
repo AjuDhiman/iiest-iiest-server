@@ -62,18 +62,49 @@ function getMailContent(mailInfo) {
     let englishContent = '';
     let hindiContent = '';
 
-    if(mailInfo.purpose == 'verification'){
+    if (mailInfo.purpose == 'verification') {
         englishContent = `<p>Thanks for registering in the Connect Bharat Project. To complete the registration process and activate your 
-        account, we need to verify your email address. Please click the button below to verify your email.</p>
+        account, we need to verify your email address.</p>
+        <p>Your Email: ${mailInfo.email}</p>
+        <p>Your Contact No.: ${mailInfo.contact_no}</p>
+        <p>Please check email and contact number above and click button below for verifing your email.</p>
         <br/>
-        <button style="border:none; color: white; backgraound: green; outline: none"><a href='${FRONT_END.VIEW_URL}/#/verifyonboard/email/${mailInfo.id}'>Verify</a></button>
+        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/email/${mailInfo.id}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">Verify</button>
+        </a>
         </br>
         <p>Thank You</p>`
 
         hindiContent = `<p>कनेक्ट भारत परियोजना में पंजीकरण के लिए धन्यवाद। पंजीकरण प्रक्रिया पूरी करने और अपने खाते को सक्रिय करने के लिए, 
-        हमें आपके ईमेल पते को सत्यापित करना होगा। कृपया नीचे दिए गए बटन पर क्लिक करके अपना ईमेल सत्यापित करें।</p>
+        हमें आपके ईमेल पते को सत्यापित करना होगा।</p>
+        <p>आपका ईमेल: ${mailInfo.email}</p>
+        <p>आपका संपर्क नंबर: ${mailInfo.contact_no}</p>
+
+        <p>कृपया ऊपर ईमेल और संपर्क नंबर की जाँच करें और अपने ईमेल को सत्यापित करने के लिए नीचे बटन पर क्लिक करें।</p>
         <br/>
-        <button style="border:none; color: white; background: green; outline: none;"><a href='${FRONT_END.VIEW_URL}#/verifyonboard/email/${mailInfo.id}'>Verify (वेरीफाई)</a></button>
+        <br/>
+        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/email/${mailInfo.id}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">Verify (वेरीफाई)</button>
+        </a>
+        <br/>
         <br/>
         <p>धन्यवाद</p>`
     }

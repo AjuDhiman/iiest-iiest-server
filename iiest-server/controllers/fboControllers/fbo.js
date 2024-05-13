@@ -25,12 +25,13 @@ exports.fboPayment = async (req, res) => {
       success = false;
       return res.status(404).json({ success, signatureErr: true });
     }
-
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
 
-    if (!areaAlloted) {
-      success = false;
-      return res.status(404).json({ success, areaAllocationErr: true })
+    if(req.user.employee_id != 'IIEST/FD/0176') {
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
     }
 
     const signatureBucket = empSignBucket();
@@ -48,10 +49,12 @@ exports.fboPayment = async (req, res) => {
 
     const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
 
+    if(req.user.employee_id != 'IIEST/FD/0176') {
     if (!pincodeCheck) {
       success = false;
       return res.status(404).json({ success, wrongPincode: true });
     }
+  }
 
     payRequest(formBody.grand_total, res, `${BACK_END.API_URL}/fbo-pay-return`);
 
@@ -62,6 +65,8 @@ exports.fboPayment = async (req, res) => {
 
 exports.fboPayReturn = async (req, res) => {
   try {
+
+    console.log(11);
 
     if (req.body.code === 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
       if (req.body.transactionId) {
@@ -210,10 +215,12 @@ exports.fboRegister = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true })
     }
 
-    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
-    if (!areaAlloted) {
-      success = false;
-      return res.status(404).json({ success, areaAllocationErr: true })
+    if(req.user.employee_id != 'IIEST/FD/0176') {
+      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
     }
 
     const signatureBucket = empSignBucket();
@@ -226,12 +233,14 @@ exports.fboRegister = async (req, res) => {
 
     const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = req.body;
 
+    if(req.user.employee_id != 'IIEST/FD/0176') {
     const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
     if (!pincodeCheck) {
       success = false;
       return res.status(404).json({ success, wrongPincode: true });
     }
+  }
 
     const { idNumber, generatedCustomerId } = await generatedInfo();
 
@@ -396,7 +405,7 @@ exports.registerdFBOList = async (req, res) => {
 
 exports.registerdBOList = async (req, res) => {
   try {
-    const boList = await boModel.find();
+    const boList = await boModel.find({is_contact_verified: true, is_email_verified: true});
     return res.status(200).json({ boList });
   } catch (error) {
     console.error(error);

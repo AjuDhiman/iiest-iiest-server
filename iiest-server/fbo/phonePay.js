@@ -18,8 +18,8 @@ const payRequest = (grandTotal, res, redirectUrl)=>{
   let tx_uuid =  uniqid();
 
   let normalPayLoad = {
-    "merchantId": PHONE_PE_CREDENTIALS.MERCHANT_ID,
-    // "merchantId": "PGTESTPAYUAT93", for test
+    // "merchantId": PHONE_PE_CREDENTIALS.MERCHANT_ID,
+    "merchantId": "PGTESTPAYUAT93", 
     "merchantTransactionId": tx_uuid,
     "merchantUserId": "MUID123",
     "amount": grandTotal * 100,
@@ -42,6 +42,8 @@ const payRequest = (grandTotal, res, redirectUrl)=>{
   
   let sha256_val = sha256(string);
   let checksum = sha256_val + '###' + saltIndex;
+
+  console.log(checksum, baseUrl, endpoint)
 
   axios.post(`${baseUrl}${endpoint}`, {
     'request': base64String

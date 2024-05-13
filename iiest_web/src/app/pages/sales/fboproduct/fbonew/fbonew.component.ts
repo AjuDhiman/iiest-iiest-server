@@ -5,9 +5,10 @@ import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { FbolistComponent } from '../../fbolist/fbolist.component';
-import { clientType, hraProcessingAmnt, licenceType, paymentMode, processAmnt, serviceNames, waterTestFee } from 'src/app/utils/config';
+import { clientType, hraProcessingAmnt, licenceType, panIndiaAllowedEmpIds, paymentMode, processAmnt, serviceNames, stateName, waterTestFee } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
+import { pincodeData } from 'src/app/utils/registerinterface';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class FbonewComponent implements OnInit {
   isQrCode = false;
   userName: string = '';
   userData: any;
+  userEmployeeId: string = '';
   processAmnts: any = {};
   existingFboId: string;
   servicesNames: any = {};
@@ -78,9 +80,13 @@ export class FbonewComponent implements OnInit {
   @ViewChild('searchElemFBO') searchElemFBO: any;
   @ViewChild('searchElemBO') searchElemBO: any;
   //New Variables by vansh on 12-01-2023 for allocted area detection for a employee
-  allocated_district: string = '';
-  allocated_state: string = '';
-  allocated_pincodes: number[];
+  allocated_district: string[] = [];
+  allocated_state: any = '';
+  allocated_pincodes: any = [];
+  isPanIndiaAllowed = false; //var for checking if pan india pincodes are allowed for sale to a particular emp or not
+  districtAndPincodes: any;
+  isFboSelected: boolean = false; //var for deciding if field comminh empty from backend then open that particular field
+  selectedFbo: any = {};
 
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];
@@ -159,6 +165,7 @@ export class FbonewComponent implements OnInit {
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
+    this.checkEmpId();
     this.fostac_training = this.formBuilder.group({
       fostac_processing_amount: ['', Validators.required],
       fostac_service_name: ['', Validators.required],
@@ -203,6 +210,11 @@ export class FbonewComponent implements OnInit {
     //   searchUser: ['', Validators.required]
     // })
 
+    let allocated_state:string = '';
+
+    if(!this.isPanIndiaAllowed) { //we will patch allowed state to state field of fbo form in case of only a particulat area allowd to a employee
+      allocated_state = this.allocated_state;
+    }
 
     this.fboForm = this.formBuilder.group(
       {
@@ -222,7 +234,7 @@ export class FbonewComponent implements OnInit {
             Validators.required,
             Validators.email,
           ]],
-        state: [this.allocated_state, Validators.required],
+        state: [allocated_state, Validators.required],
         district: [this.allocated_district, Validators.required],
         address: ['', Validators.required],
         village: [''],
@@ -235,7 +247,9 @@ export class FbonewComponent implements OnInit {
         grand_total: ['', Validators.required],
       });
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
-    this.getAllocatedArea();
+    if(!this.isPanIndiaAllowed) {
+      this.getAllocatedArea();
+    }
     this.getboGeneralData();
   }
 
@@ -258,6 +272,7 @@ export class FbonewComponent implements OnInit {
 
   //hide the exsisting bo and open exsisting fbo search
   existingUserFbo($event: any) {
+    this.isFboSelected = false;
     this.existingUserBoForm.reset();
     // this.existingUserFboForm.reset();
     this.isExistingFbo = false;
@@ -282,6 +297,7 @@ export class FbonewComponent implements OnInit {
   //hide the exsisting fbo and open exsisting bo search
   existingUserBo($event: any) {
     // this.existingUserBoForm.reset();
+    this.isFboSelected = false;
     this.existingUserFboForm.reset();
     this.isExistingBo = false;
     this.isExistingFbo = false;
@@ -298,17 +314,14 @@ export class FbonewComponent implements OnInit {
   }
 
   resetForm(type: string) {
+    this.fbo['business_type'].setValue('b2c')
     if (type === 'fbo') {
       this.isExistingBo = false;
       this.fboForm.reset();
-      this.fbo['state'].setValue(this.allocated_state);
-      this.fbo['business_type'].setValue('b2c')
       this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     } else if (type === 'bo') {
       this.isExistingFbo = false;
       this.fboForm.reset();
-      this.fbo['state'].setValue(this.allocated_state);
-      this.fbo['business_type'].setValue('b2c')
       this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     }
     this.isFoscos = false;
@@ -317,6 +330,11 @@ export class FbonewComponent implements OnInit {
     this.fbo['district'].setValue('');
     this.fbo['pincode'].setValue('');
     this.fbo['payment_mode'].setValue('');
+    if(!this.isPanIndiaAllowed) {
+      this.fbo['state'].setValue(this.allocated_state);
+    } else {
+      this.fbo['state'].setValue('');
+    }
     this.fostac_training.patchValue({ fostac_client_type: '' });
     this.foscos_training.patchValue({ foscos_client_type: '' });
     this.foscos_training.patchValue({ foscos_service_name: '' });
@@ -356,14 +374,18 @@ export class FbonewComponent implements OnInit {
     }
     let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
+    console.log(this.existingbos)
     this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => regex.test(obj.owner_name) || regex.test(obj.customer_id));
+    console.log(this.searchSuggestionsOnBo);
   }
 
 
   fetchExistingUser(fboObj: any) {
+    this.isFboSelected = true;
     this.existingFboId = fboObj.customer_id
     this.searchElemFBO.nativeElement.value = ''
     this.isSearchEmptyFBO = true;
+    this.selectedFbo = fboObj;
     this.fbo['fbo_name'].setValue(fboObj.fbo_name);
     this.fbo['owner_name'].setValue(fboObj.owner_name);
     this.fbo['owner_contact'].setValue(fboObj.owner_contact);
@@ -371,13 +393,37 @@ export class FbonewComponent implements OnInit {
     this.fbo['business_category'].setValue(fboObj.boInfo.business_category);
     this.fbo['business_ownership_type'].setValue(fboObj.boInfo.business_ownership_type);
     this.fbo['email'].setValue(fboObj.email);
+    this.fbo['state'].setValue(fboObj.state);
+    this.loading = true;
+    this.allocated_district = [];
+    this.allocated_pincodes = [];
+    this.fbo['district'].setValue('');
+    this.fbo['pincode'].setValue('');
+    if(fboObj.pincode){
+      this._getFboGeneralData.getPincodesData(fboObj.state).subscribe({
+        next: res => {
+          this.allocated_district = res.map((item: any) => item.District);
+          console.log(fboObj.district)
+          this.fbo['district'].setValue(fboObj.district);
+          if(fboObj.district){
+            this.allocated_pincodes = res.filter((item: any) => item.District == fboObj.district).map((item: any) => item.Pincode);
+            this.fbo['pincode'].setValue(fboObj.pincode);
+          }
+          this.loading = false;
+        },
+        error: err => {
+          this.loading = false;
+        }
+      })
+    }
+    this.loading= false;
+  
+    // this.fbo['district'].setValue(fboObj.district);
+    this.fbo['pincode'].setValue(fboObj.pincode);
     this.fbo['address'].setValue(fboObj.address);
     this.fbo['village'].setValue(fboObj.village);
     this.fbo['tehsil'].setValue(fboObj.tehsil);
-    this.fbo['district'].setValue(fboObj.district);
     this.fbo['boInfo'].setValue(fboObj.boInfo._id);
-    this.fbo['state'].setValue(fboObj.state);
-    this.fbo['pincode'].setValue(fboObj.pincode);
     this.fbo['business_type'].setValue(fboObj.business_type);
     if (fboObj.business_type === 'b2b') {
       this.fboForm.addControl('gst_number', new FormControl(fboObj.gst_number, Validators.required));
@@ -790,6 +836,58 @@ export class FbonewComponent implements OnInit {
     })
   }
 
+  onStateSelect() { // this methord will call api for getting all district belongs to a particular state and their respective pincodes and set them in district and pincodes var in case of pan india allowed
+    let state = this.fbo['state'].value;
+    this.allocated_district=[];
+    this.allocated_pincodes=[];
+    this.fbo['district'].setValue('');
+    this.fbo['pincode'].setValue('');
+    this.loading=true;
+    this._getFboGeneralData.getPincodesData(state).subscribe({
+      next: (res) => {
+        // console.log(res);
+        let pincodesData = res;
+        this.districtAndPincodes = res;
+        pincodesData.forEach((obj: pincodeData) => {
+          if (!this.allocated_district.find((item: string) => item.toLowerCase() === obj.District.toLowerCase())) {
+            this.allocated_district.push(obj.District);
+          }
+        })
+      },
+      error: (err) => {
+        let errorObj = err.error
+        if (errorObj.userError) {
+          this._registerService.signout();
+        }
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    }
+    )
+  }
+
+  onDistrictChange() {
+    if(!this.isPanIndiaAllowed) {
+      return
+    } 
+    this.allocated_pincodes = [];
+    this.fbo['pincode'].setValue('');
+    this.loading = true;
+    let pincodeArr: any =[];
+    this.districtAndPincodes.forEach((obj:any) => {
+      console.log(this.allocated_pincodes)
+      if(obj.District == this.fbo['district'].value) {
+        console.log(11);
+        pincodeArr.push(obj.Pincode);
+      }
+    });
+
+    pincodeArr = new Set(pincodeArr);
+    this.allocated_pincodes = [...pincodeArr];
+    this.loading = false;
+  }
+
   resetFostacForm(): void {
     this.fostac_training.patchValue({ fostac_processing_amount: '' });
     this.fostac_training.patchValue({ fostac_service_name: '' });
@@ -815,5 +913,18 @@ export class FbonewComponent implements OnInit {
     this.hygiene_audit.patchValue({ shops_no: '' });
     this.hygiene_audit.patchValue({ hra_client_type: '' });
     this.hygiene_audit.patchValue({ hra_total: '' });
+  }
+
+  checkEmpId() { //this methord checks and allow to give Pan India location for a particular employee
+    this.userEmployeeId = this.parsedUserData.employee_id;
+    if(panIndiaAllowedEmpIds.includes(this.userEmployeeId)) {
+      this.isPanIndiaAllowed = true;
+      // this.fboForm.patchValue({state: ""});
+      this.allocated_state = stateName;
+    }
+  }
+
+  closeMultiSelect() {
+    this.multiSelect.isdropped = false;
   }
 }

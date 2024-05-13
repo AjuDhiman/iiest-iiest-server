@@ -1,4 +1,4 @@
-<div class="app-content pt-3 p-md-3 p-lg-4">
+<div class="app-content pt-3 p-md-3 p-lg-4" (click)="closeMultiSelect()">
     <div class="container-xxl">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-md-6">
@@ -7,7 +7,7 @@
             </div>
             <div class="col-md-6 text-end">
                 <div class="d-flex align-items-end flex-row-reverse">
-                    <form [formGroup]="existingUserFboForm" class="me-3 d-flex">
+                    <!-- <form [formGroup]="existingUserFboForm" class="me-3 d-flex">
                         <label for="isExistingFbo" class="form-label p-1">Existing FBO:</label>
                         <input type="checkbox"  formControlName="existingUserFbo" id="isExistingFbo" class="align-middle cursor-pointer" (change)="existingUserFbo($event)" (change)="resetForm('fbo')">
                         <div class="d-inline m-0 p-0 position-relative">
@@ -18,8 +18,8 @@
                                 </li>
                             </ul>
                         </div>
-                    </form>
-            
+                    </form> -->
+<!--             
                     <form [formGroup]="existingUserBoForm" class="me-3 d-flex">
                         <label for="isExistingBo" class="form-label p-1">Existing BO:</label>
                         <input type="checkbox"  formControlName="existingUserBo" id="isExistingBo" class="align-middle cursor-pointer" (change)="existingUserBo($event)" (change)="resetForm('bo')">
@@ -27,6 +27,42 @@
                             <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off" class="w-100">
                             <ul *ngIf="isExistingBo && !isSearchEmptyBO" class="search-suggestions">
                                 <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo" (click)="fetchExistingBo(searchSuggestion)">
+                                   
+                                    <span class="fbo-name">{{searchSuggestion.owner_name}}({{searchSuggestion.customer_id}})</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </form> -->
+
+                    <form [formGroup]="existingUserFboForm" class="me-3 d-flex align-items-center">
+                        <div class="col-auto p-1">
+                            <label for="isExistingFbo" class="form-label m-0">Existing FBO:</label>
+                        </div>
+                        <div class="col p-0">
+                            <input type="checkbox" formControlName="existingUserFbo" id="isExistingFbo" class="align-middle cursor-pointer" (change)="existingUserFbo($event)" (change)="resetForm('fbo')">
+                        </div>
+                        <div class="d-inline m-0 p-0 position-relative">
+                            <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input w-100" autocomplete="off">
+                            <ul *ngIf="isExistingFbo && !isSearchEmptyFBO" class="search-suggestions">
+                                <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions" (click)="fetchExistingUser(searchSuggestion)">
+                                    <span class="fbo-name">{{searchSuggestion.fbo_name}}({{searchSuggestion.owner_name}})</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+
+                    <form [formGroup]="existingUserBoForm" class="me-3 d-flex align-items-center">
+                        <div class="col-auto p-1">
+                            <label for="isExistingBo" class="form-label m-0">Existing BO:</label>
+                        </div>
+                        <div class="col p-0">
+                            <input type="checkbox" formControlName="existingUserBo" id="isExistingBo" class="align-middle cursor-pointer" (change)="existingUserBo($event)" (change)="resetForm('bo')">
+                        </div>
+                        <div class="d-inline m-0 p-0 position-relative">
+                            <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input w-100" autocomplete="off">
+                            <ul *ngIf="isExistingBo && !isSearchEmptyBO" class="search-suggestions">
+                                <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo" (click)="fetchExistingBo(searchSuggestion)">
+                                   
                                     <span class="fbo-name">{{searchSuggestion.owner_name}}({{searchSuggestion.customer_id}})</span>
                                 </li>
                             </ul>
@@ -94,7 +130,7 @@
                     <div class="col-md-3">
                         <label for="email" class="form-label">Email<sup>*</sup></label>
                         <input type="text" placeholder="Email" formControlName="email" id="email"
-                            class="form-control form-control-sm" autocomplete="off" [readOnly]="" 
+                            class="form-control form-control-sm" autocomplete="off"
                             [ngClass]="{ 'is-invalid': submitted && fbo['email'].errors }" />
                         <div *ngIf="submitted && fbo['email'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['email'].errors['required']">Email is required</div>
@@ -115,7 +151,7 @@
                     <div class="col-md-6">
                         <label for="address" class="form-label">Address<sup>*</sup></label>
                         <textarea type="text" placeholder="Address" rows="1" formControlName="address"
-                            autocomplete="off" class="form-control form-control-sm" id="address" [readOnly]="isExistingFbo"
+                            autocomplete="off" class="form-control form-control-sm" id="address" [readOnly]="(isExistingFbo && selectedFbo.address)"
                             [ngClass]="{ 'is-invalid': submitted && fbo['address'].errors }"></textarea>
                         <div *ngIf="submitted && fbo['address'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['address'].errors['required']">Address is required</div>
@@ -141,7 +177,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-3" *ngIf="isPanIndiaAllowed == false; else allStates">
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }" type="text"
                             placeholder="State" formControlName="state" [value]="allocated_state"
@@ -151,12 +187,32 @@
                         </div>
                     </div>
 
+                    <ng-template #allStates>
+                        <div class="col-md-3">
+                            <label for="state" class="form-label">State<sup>*</sup></label>
+                            <select type="string" formControlName="state" id="state" (change)="onStateSelect()"
+                                class="form-select form-select-sm cursor-pointer" autocomplete="off" 
+                                [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }"
+                                [attr.disabled]="(isExistingFbo && (selectedFbo.state))?true:null">
+                                <option value="" disabled selected>Select the State</option>
+                                <option *ngFor="let state of allocated_state" [value]="state">{{state}}</option>
+                            </select>
+                            <!-- <input id="district" 
+                            [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }" [readOnly]="true" type="text"
+                                formControlName="district" class="form-control form-control-sm" placeholder="District"
+                                [value]="allocated_district" /> -->
+                            <div *ngIf="submitted && fbo['state'].errors" class="invalid-feedback">
+                                <div *ngIf="fbo['state'].errors['required']">State is required</div>
+                            </div>
+                        </div>
+                    </ng-template>
+
                     <div class="col-md-3">
                         <label for="district" class="form-label">District<sup>*</sup></label>
                         <select type="string" placeholder="District" formControlName="district" id="district"
                             class="form-select form-select-sm cursor-pointer" autocomplete="off" 
                             [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }"
-                            [attr.disabled]="isExistingFbo?true:null">
+                            [attr.disabled]="(isExistingFbo && selectedFbo.district)?true:null" (change)="onDistrictChange()">
                             <option value="" disabled selected>Select the District</option>
                             <option *ngFor="let district of allocated_district" [value]="district">{{district}}</option>
                         </select>
@@ -172,9 +228,10 @@
                     <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
-                            class="form-select form-select-sm cursor-pointer" autocomplete="off" [attr.disabled]="isExistingFbo?true:null"
-                            [attr.disabled]="isExisting?true:null" [ngClass]="{ 'is-invalid': submitted && fbo['pincode'].errors }" >
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            [attr.disabled]="(isExistingFbo && selectedFbo.pincode)?true:null" [ngClass]="{ 'is-invalid': submitted && fbo['pincode'].errors }" >
                             <option value="" disabled selected>Select the Pincode</option>
+                            {{allocated_pincodes| json}}
                             <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
                         <div *ngIf="submitted && fbo['pincode'].errors" class="invalid-feedback">
@@ -210,7 +267,7 @@
                     <div *ngIf="need_gst_number" class="col-md-3">
                         <label for="gst_number" class="form-label">GST Number<sup>*</sup></label>
                         <input type="text" placeholder="GST Number" formControlName="gst_number"
-                            class="form-control form-control-sm" id="gst_number" [readOnly]="isExisting"
+                            class="form-control form-control-sm" id="gst_number" [readOnly]="(isExisting && searchElemFBO.gstNumber)"
                             [ngClass]="{ 'is-invalid': submitted && fbo['gst_number'].errors }" />
                         <div *ngIf="submitted && fbo['gst_number'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['gst_number'].errors['required']">GST Number is required</div>

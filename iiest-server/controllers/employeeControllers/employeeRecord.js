@@ -9,7 +9,7 @@ exports.employeeRecord = async (req, res) => {
         const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
-        const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
 
         const pipeLineArr = [
             {
@@ -18,20 +18,35 @@ exports.employeeRecord = async (req, res) => {
                     totalProcessingAmount: {
                         $sum: {
                             $sum: [
-                                { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
-                                { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
                                 {
-                                    $add: [
-                                        {
-                                            $cond: [
-                                                { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] },
-                                                { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
-                                                0 // Otherwise, leave it as 0
-                                            ]
-                                        },
-                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                    $multiply: [
+                                        { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
+                                        { $ifNull: ["$fostacInfo.recipient_no", 0] },
                                     ]
-                                }
+                                },
+                                { 
+                                    $multiply: [
+                                        { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] },
+                                        { $ifNull: ["$foscosInfo.shops_no", 0] },
+                                    ]
+                                 },
+                                 {
+                                    $add: [
+                                      {
+                                        $cond: [
+                                          {
+                                            $and: [
+                                              { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
+                                              { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] } // Check if water_test_fee is not 0
+                                            ]
+                                          },
+                                          { $subtract: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 1200] }, // Subtract 1200 if both conditions are true
+                                          0 // Otherwise, leave it as 0
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
                             ]
                         }
                     },
@@ -40,7 +55,12 @@ exports.employeeRecord = async (req, res) => {
                             $cond: {
                                 if: { $eq: ["$checkStatus", "Pending"] }, then: {
                                     $sum: [
-                                        { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                        {
+                                            $multiply: [
+                                                { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
+                                                { $ifNull: ["$fostacInfo.recipient_no", 0] },
+                                            ]
+                                        },
                                         { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
                                         {
                                             $add: [
@@ -50,10 +70,10 @@ exports.employeeRecord = async (req, res) => {
                                                         { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
                                                         0 // Otherwise, leave it as 0
                                                     ]
-                                                },
-                                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                                }
                                             ]
-                                        }
+                                        },
+                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
                                     ]
                                 }, else: 0
                             }
@@ -64,7 +84,12 @@ exports.employeeRecord = async (req, res) => {
                             $cond: {
                                 if: { $eq: ["$checkStatus", "Approved"] }, then: {
                                     $sum: [
-                                        { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                        {
+                                            $multiply: [
+                                                { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
+                                                { $ifNull: ["$fostacInfo.recipient_no", 0] },
+                                            ]
+                                        },
                                         { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
                                         {
                                             $add: [
@@ -74,10 +99,10 @@ exports.employeeRecord = async (req, res) => {
                                                         { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
                                                         0 // Otherwise, leave it as 0
                                                     ]
-                                                },
-                                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                                }
                                             ]
-                                        }
+                                        },
+                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
                                     ]
                                 }, else: 0
                             }
@@ -87,6 +112,7 @@ exports.employeeRecord = async (req, res) => {
                 }
             }
         ];
+
 
         const pipeline = [
             {
@@ -126,7 +152,7 @@ exports.employeeRecord = async (req, res) => {
                     this_year: [
                         {
                             $match: {
-                                createdAt: { $gte: startOfThisYear },
+                                createdAt: { $gte: startOfThisFinancialYear },
                             }
                         },
                         ...pipeLineArr

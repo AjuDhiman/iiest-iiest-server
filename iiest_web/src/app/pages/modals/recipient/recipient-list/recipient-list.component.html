@@ -36,7 +36,7 @@
               <tr
                 *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber , id: 'recipient-list'}; let sr = index">
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{sr+5*(pageNumber-1)+1}}</span></td>
-                <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.name}}</span></td>
+                <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.name.toLowerCase()}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.phoneNo}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.aadharNo}}</span></td>
               </tr>
@@ -45,8 +45,8 @@
               <tr
                 *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber, id:'recipient-list' }; let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+5*(pageNumber-1)+1}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.operatorName}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate text-capitalize">{{shops.operatorName.toLowerCase()}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate text-capitalize">{{shops.address.toLowerCase()}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
                 <td *ngIf="!isfostac" class="cell">
@@ -112,10 +112,10 @@
               <tr
                 *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber , id: 'recipient-list' }; let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+5*(pageNumber-1)+1}}</span></td>
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerName}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate text-capitalize">{{shops.managerName.toLowerCase()}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerContact}}</span></td>
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.managerEmail}}</span></td> -->
-                <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.address}}</span></td>
+                <td *ngIf="!isfostac" class="cell"><span class="truncate text-capitalize">{{shops.address.toLowerCase()}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.kob}}</span></td>
                 <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
