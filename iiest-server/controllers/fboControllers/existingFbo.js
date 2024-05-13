@@ -25,10 +25,12 @@ exports.existingFboCash = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true })
     }
 
-    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
-    if (!areaAlloted) {
-      success = false;
-      return res.status(404).json({ success, areaAllocationErr: true })
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
     }
 
     const signatureBucket = empSignBucket();
@@ -239,43 +241,43 @@ exports.existingFboPayReturn = async (req, res) => {
         if (product_name.includes('Fostac')) {
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
-    
+
           total_processing_amount = Number(fostac_training.fostac_processing_amount);
           totalGST = fostacGST;
-    
+
           const qty = fostac_training.recipient_no;
-    
+
           invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream));
-    
+
           invoiceIdArr.push(invoiceUploadStream.id);
         }
-    
+
         if (product_name.includes('Foscos')) {
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
-    
+
           total_processing_amount = Number(foscos_training.foscos_processing_amount);
           totalGST = foscosGST;
           extraFee = foscosFixedCharge;
-    
+
           const qty = foscos_training.shops_no;
-    
+
           invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream));
-    
+
           invoiceIdArr.push(invoiceUploadStream.id);
         }
-    
+
         if (product_name.includes('HRA')) {
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
-    
+
           total_processing_amount = Number(hygiene_audit.hra_processing_amount);
           totalGST = hygieneGST;
-    
+
           const qty = hygiene_audit.shops_no;
-    
+
           invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream));
-    
+
           invoiceIdArr.push(invoiceUploadStream.id);
         }
 

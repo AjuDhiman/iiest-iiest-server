@@ -335,7 +335,7 @@ export class HighchartDataModalComponent {
     const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
     const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
     const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
-    const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
+    const startOfFinancialThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 3, 1, 0, 0, 0));
     if (this.chartData.chartTitile === 'Repeated Customers') {
       switch (this.chartData.interval) {
         case 'today':
@@ -352,7 +352,7 @@ export class HighchartDataModalComponent {
             && (new Date(item.createdAt).getTime() < startOfThisMonth.getTime()));
           break
         case 'This_Year':
-          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfThisYear.getTime());
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.lastSaleDate).getTime() > startOfFinancialThisYear.getTime());
           break
       }
     } else {
@@ -371,7 +371,7 @@ export class HighchartDataModalComponent {
             && (new Date(item.createdAt).getTime() < startOfThisMonth.getTime()));
           break
         case 'This_Year':
-          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.createdAt).getTime() > startOfThisYear.getTime());
+          this.specificDatas = this.specificDatas.filter((item: any) => new Date(item.createdAt).getTime() > startOfFinancialThisYear.getTime());
           break
       }
     }

@@ -10,7 +10,7 @@ exports.getProductSaleData = async (req, res) => {
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
 
         const pipelinesArr = [
             {
@@ -145,7 +145,7 @@ exports.getProductSaleData = async (req, res) => {
                     This_Year: [
                         {
                             $match: {
-                                createdAt: { $gte: startOfThisYear }
+                                createdAt: { $gte: startOfThisFinancialYear }
                             },
                         },
                         ...pipelinesArr
@@ -179,7 +179,7 @@ exports.getAreaWiseSalesData = async (req, res) => {
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
 
         const pipelinesArr = [
             {
@@ -261,7 +261,7 @@ exports.getAreaWiseSalesData = async (req, res) => {
                     This_Year: [
                         {
                             $match: {
-                                createdAt: { $gte: startOfThisYear }
+                                createdAt: { $gte: startOfThisFinancialYear }
                             },
                         },
                         ...pipelinesArr
@@ -287,7 +287,7 @@ exports.getPersonWiseSalesData = async (req, res) => {
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
         const pipelinesArr = [{
             $lookup: {
                 from: "staff_registers",
@@ -354,7 +354,7 @@ exports.getPersonWiseSalesData = async (req, res) => {
                     This_Year: [
                         {
                             $match: {
-                                createdAt: { $gte: startOfThisYear }
+                                createdAt: { $gte: startOfThisFinancialYear }
                             },
                         },
                         ...pipelinesArr
@@ -478,7 +478,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
         const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
         const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
         const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
-        const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
+        const startOfThisFinancialYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 3, 1, 0, 0, 0));
 
 
         if (today.getMonth() > 2) {
@@ -543,7 +543,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
                     This_Year: [
                         {
                             $match: {
-                                createdAt: { $gte: startOfThisYear }
+                                createdAt: { $gte: startOfThisFinancialYear }
                             }
                         },
                         {
@@ -595,13 +595,13 @@ exports.getRepeactCustomerData = async (req, res) => {
         // const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
         // const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
         // const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
-        // const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
+        // const startOfThisFinancialYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
 
         const todayDate = new Date();
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(),0,0, 1);
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
 
         const pipeline = [
             {
@@ -640,7 +640,7 @@ exports.getRepeactCustomerData = async (req, res) => {
                     This_Year: [
                         {
                             $match: {
-                                lastSalesDate: { $gte: startOfThisYear },
+                                lastSalesDate: { $gte: startOfThisFinancialYear },
                                 total: {
                                     $gt: 1
                                 }
@@ -804,7 +804,7 @@ exports.ticketDeviveryChartData = async(req, res) => {
         const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
         const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
         const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
-        const startOfThisYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
+        const startOfThisFinancialYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 3, 1, 0, 0, 0));
 
         const pipeline = [
             {
@@ -860,7 +860,7 @@ exports.ticketDeviveryChartData = async(req, res) => {
                     This_Year: [
                         {
                             $match: {
-                                createdAt: { $gte: startOfThisYear }
+                                createdAt: { $gte: startOfThisFinancialYear }
                             }
                         },
                         {

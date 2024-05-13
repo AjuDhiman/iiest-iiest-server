@@ -56,6 +56,13 @@
     "State": "Delhi"
   },
   {
+    "PostOfficeName": "GTB Nagar",
+    "Pincode": "110009",
+    "City": "New Delhi",
+    "District": "Central Delhi",
+    "State": "Delhi"
+  },
+  {
     "PostOfficeName": "A F Palam",
     "Pincode": "110010",
     "City": "New Delhi",
@@ -660,6 +667,20 @@
   {
     "PostOfficeName": "Air Force Gurgaon",
     "Pincode": "122005",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Galleria DLF-4",
+    "Pincode": "122009",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Gurgaon SEC-56",
+    "Pincode": "122011",
     "City": "Gurgaon",
     "District": "Gurgaon",
     "State": "Haryana"
@@ -13134,6 +13155,13 @@
   {
     "PostOfficeName": "Maharishi Nagar",
     "Pincode": "201304",
+    "City": "Ghaziabad",
+    "District": "Ghaziabad",
+    "State": "Uttar Pradesh"
+  },
+    {
+    "PostOfficeName": "Chhajarsi",
+    "Pincode": "201307",
     "City": "Ghaziabad",
     "District": "Ghaziabad",
     "State": "Uttar Pradesh"
