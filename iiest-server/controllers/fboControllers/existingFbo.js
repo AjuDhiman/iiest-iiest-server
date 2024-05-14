@@ -8,8 +8,9 @@ const fboModel = require('../../models/fboModels/fboSchema');
 const payRequest = require("../../fbo/phonePay");
 const fboPaymentSchema = require("../../models/fboModels/fboPaymentSchema");
 const sendInvoiceMail = require("../../fbo/sendMail");
+const sessionModel = require("../../models/generalModels/sessionDataSchema");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
-const BACK_END = JSON.parse(process.env.BACK_END);
+const BACK_END = process.env.BACK_END;
 
 exports.existingFboCash = async (req, res) => {
   try {
@@ -52,11 +53,12 @@ exports.existingFboCash = async (req, res) => {
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    const pincodeCheck = areaAlloted.pincodes.includes(pincode);
-
-    if (!pincodeCheck) {
-      success = false;
-      return res.status(404).json({ success, wrongPincode: true });
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
     }
 
     let serviceArr = [];
@@ -160,11 +162,12 @@ exports.existingFboPayPage = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true });
     }
 
-    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
-
-    if (!areaAlloted) {
-      success = false;
-      return res.status(404).json({ success, areaAllocationErr: true })
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
     }
 
     const signatureBucket = empSignBucket();
@@ -184,16 +187,19 @@ exports.existingFboPayPage = async (req, res) => {
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    req.session.fboFormData = { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo };
+    // req.session.fboFormData = { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo };
 
-    const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
+    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo } });
 
-    if (!pincodeCheck) {
-      success = false;
-      return res.status(404).json({ success, wrongPincode: true });
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
     }
 
-    payRequest(formBody.grand_total, res, `${BACK_END.API_URL}/iiest/fbo-pay-return`);
+    payRequest(formBody.grand_total, res, `${BACK_END}/existingfbo-pay-return/${fboFormData._id}`);
 
   } catch (error) {
     console.error(error);
@@ -202,6 +208,9 @@ exports.existingFboPayPage = async (req, res) => {
 }
 
 exports.existingFboPayReturn = async (req, res) => {
+
+  let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
+
   try {
 
     if (req.body.code === 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
@@ -209,9 +218,13 @@ exports.existingFboPayReturn = async (req, res) => {
 
         let success = false;
 
-        const fetchedFormData = req.session.fboFormData;
+        // const fetchedFormData = req.session.fboFormData;
+        let sessionData = await sessionModel.findById(sessionId);
+        const fetchedFormData = sessionData.data;
 
         const { product_name, payment_mode, grand_total, fostac_training, foscos_training, hygiene_audit, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, existingFboInfo } = fetchedFormData;
+
+        console.log(fetchedFormData);
 
         let serviceArr = [];
 
@@ -295,9 +308,9 @@ exports.existingFboPayReturn = async (req, res) => {
           return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
         }
 
-        req.session.destroy((err) => {
-          console.log(err);
-        });
+        // req.session.destroy((err) => {
+        //   console.log(err);
+        // });
 
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
@@ -309,5 +322,7 @@ exports.existingFboPayReturn = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
+  } finally {
+    await sessionModel.findByIdAndDelete(sessionId);// delete session data at last in any case sucess or faliure
   }
 }

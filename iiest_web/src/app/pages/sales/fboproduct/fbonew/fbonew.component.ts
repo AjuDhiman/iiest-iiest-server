@@ -86,7 +86,7 @@ export class FbonewComponent implements OnInit {
   isPanIndiaAllowed = false; //var for checking if pan india pincodes are allowed for sale to a particular emp or not
   districtAndPincodes: any;
   isFboSelected: boolean = false; //var for deciding if field comminh empty from backend then open that particular field
-  selectedFbo: any = {};
+  selectedFbo: any;
 
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];

@@ -18,7 +18,7 @@ router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list
 router.get('/hygienesaleshops/:id', authMiddleware, hygieneShopsList); //Router for shops list for hygiene sale
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
-router.post('/fbo-pay-return', fboPayReturn); //To check payment status
+router.post('/fbo-pay-return/:id', fboPayReturn); //To check payment status
 router.post('/fbopayment/:id', authMiddleware, fboPayment); //Router for FBO registration (pay page)
 router.delete('/deleteFbo/:id', authMiddleware, deleteFbo); //Router for deleting FBO
 router.put('/editFbo/:id', authMiddleware, editFbo); //Router for editing FBO data
@@ -36,7 +36,7 @@ router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)
-router.post('/existingfbo-pay-return', existingFboPayReturn);
+router.post('/existingfbo-pay-return/:id', existingFboPayReturn);
 router.get('/getclientlist', getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);
