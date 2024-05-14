@@ -11,8 +11,11 @@ const payRequest = require('../../fbo/phonePay');
 const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
 const sendInvoiceMail = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
+const sessionModel = require('../../models/generalModels/sessionDataSchema');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
-const BACK_END = JSON.parse(process.env.BACK_END);
+const BACK_END = process.env.BACK_END;
+
+let fboFormData = {};
 
 exports.fboPayment = async (req, res) => {
   try {
@@ -25,9 +28,10 @@ exports.fboPayment = async (req, res) => {
       success = false;
       return res.status(404).json({ success, signatureErr: true });
     }
-    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
 
-    if(req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -47,16 +51,18 @@ exports.fboPayment = async (req, res) => {
     const createrId = req.params.id
     req.session.fboFormData = { ...formBody, createrObjId: createrId, signatureFile };
 
-    const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
+    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile } });
 
-    if(req.user.employee_id != 'IIEST/FD/0176') {
-    if (!pincodeCheck) {
-      success = false;
-      return res.status(404).json({ success, wrongPincode: true });
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
+
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
     }
-  }
 
-    payRequest(formBody.grand_total, res, `${BACK_END.API_URL}/fbo-pay-return`);
+    payRequest(formBody.grand_total, res, `${BACK_END}/fbo-pay-return/${fboFormData._id}`);
 
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' });
@@ -64,6 +70,9 @@ exports.fboPayment = async (req, res) => {
 }
 
 exports.fboPayReturn = async (req, res) => {
+
+  let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
+
   try {
 
     console.log(11);
@@ -73,10 +82,12 @@ exports.fboPayReturn = async (req, res) => {
 
         let success = false;
 
-        const fetchedFormData = req.session.fboFormData;
+        // const fetchedFormData = req.session.fboFormData;
+        let sessionData = await sessionModel.findById(sessionId);
+        const fetchedFormData = sessionData.data;
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = fetchedFormData;
-
+        fetchedFormData
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
 
@@ -162,11 +173,11 @@ exports.fboPayReturn = async (req, res) => {
           return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
         }
 
-        req.session.destroy((err) => {
-          if (err) {
-            console.log(console.log(err));
-          }
-        })
+        // req.session.destroy((err) => {
+        //   if (err) {
+        //     console.log(console.log(err));
+        //   }
+        // });
 
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
@@ -198,6 +209,8 @@ exports.fboPayReturn = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
+  } finally {
+    await sessionModel.findByIdAndDelete(sessionId);// delete session data at last in any case sucess or faliure
   }
 }
 
@@ -215,8 +228,9 @@ exports.fboRegister = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true })
     }
 
-    if(req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176') {
       const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+      
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -233,14 +247,14 @@ exports.fboRegister = async (req, res) => {
 
     const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = req.body;
 
-    if(req.user.employee_id != 'IIEST/FD/0176') {
-    const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
-    if (!pincodeCheck) {
-      success = false;
-      return res.status(404).json({ success, wrongPincode: true });
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
     }
-  }
 
     const { idNumber, generatedCustomerId } = await generatedInfo();
 
@@ -395,7 +409,7 @@ exports.editFbo = async (req, res) => {
 //Controller to get all FBO List
 exports.registerdFBOList = async (req, res) => {
   try {
-    const fboList = await fboModel.find().populate({path: 'boInfo'});
+    const fboList = await fboModel.find().populate({ path: 'boInfo' });
     return res.status(200).json({ fboList });
   } catch (error) {
     console.error(error);
@@ -405,7 +419,7 @@ exports.registerdFBOList = async (req, res) => {
 
 exports.registerdBOList = async (req, res) => {
   try {
-    const boList = await boModel.find({is_contact_verified: true, is_email_verified: true});
+    const boList = await boModel.find({ is_contact_verified: true, is_email_verified: true });
     return res.status(200).json({ boList });
   } catch (error) {
     console.error(error);
@@ -461,7 +475,7 @@ exports.getClientList = async (req, res) => {
   try {
 
     const todayDate = new Date();
-    const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(),0,0, 1);
+    const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 0, 0, 1);
     const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
     const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
     const startOfThisYear = new Date(todayDate.getFullYear(), 0, 1);
