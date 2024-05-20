@@ -3,7 +3,7 @@
     "PostOfficeName": "Connaught Place",
     "Pincode": "110001",
     "City": "New Delhi",
-    "District": "New Delhi",
+    "District": "Central Delhi",
     "State": "Delhi"
   },
   {
@@ -248,7 +248,7 @@
     "PostOfficeName": "Alipur",
     "Pincode": "110036",
     "City": "New Delhi",
-    "District": "North West",
+    "District": "North Delhi",
     "State": "Delhi"
   },
   {
@@ -269,14 +269,14 @@
     "PostOfficeName": "Bawana",
     "Pincode": "110039",
     "City": "New Delhi",
-    "District": "North West",
+    "District": "North Delhi",
     "State": "Delhi"
   },
   {
     "PostOfficeName": "Narela",
     "Pincode": "110040",
     "City": "New Delhi",
-    "District": "North West",
+    "District": "North Delhi",
     "State": "Delhi"
   },
   {
@@ -297,7 +297,7 @@
     "PostOfficeName": "Najafgarh",
     "Pincode": "110043",
     "City": "New Delhi",
-    "District": "South West",
+    "District": "South Delhi",
     "State": "Delhi"
   },
   {
@@ -416,7 +416,7 @@
     "PostOfficeName": "Bijwasan",
     "Pincode": "110061",
     "City": "New Delhi",
-    "District": "South West",
+    "District": "South Delhi",
     "State": "Delhi"
   },
   {
@@ -462,24 +462,31 @@
     "State": "Delhi"
   },
   {
+    "PostOfficeName": "Vasant Kunj",
+    "Pincode": "110070",
+    "City": "New Delhi",
+    "District": "South Delhi",
+    "State": "Delhi"
+  },
+  {
     "PostOfficeName": "Chhawla",
     "Pincode": "110071",
     "City": "New Delhi",
-    "District": "South West",
+    "District": "South Delhi",
     "State": "Delhi"
   },
   {
     "PostOfficeName": "D D A Salam",
     "Pincode": "110072",
     "City": "New Delhi",
-    "District": "South West",
+    "District": "South Delhi",
     "State": "Delhi"
   },
   {
     "PostOfficeName": "Ujwa",
     "Pincode": "110073",
     "City": "New Delhi",
-    "District": "South West",
+    "District": "South Delhi",
     "State": "Delhi"
   },
   {
@@ -490,17 +497,38 @@
     "State": "Delhi"
   },
   {
+    "PostOfficeName": "Madanpur Khadar",
+    "Pincode": "110076",
+    "City": "New Delhi",
+    "District": "West Delhi",
+    "State": "Delhi"
+  },
+  {
+    "PostOfficeName": "Barthal",
+    "Pincode": "110077",
+    "City": "New Delhi",
+    "District": "West Delhi",
+    "State": "Delhi"
+  },
+  {
+    "PostOfficeName": "Distt. Court Complex, Dwarka",
+    "Pincode": "110078",
+    "City": "New Delhi",
+    "District": "West Delhi",
+    "State": "Delhi"
+  },
+  {
     "PostOfficeName": "Kanjhawala",
     "Pincode": "110081",
     "City": "New Delhi",
-    "District": "North West",
+    "District": "North Delhi",
     "State": "Delhi"
   },
   {
     "PostOfficeName": "Khera Kalan",
     "Pincode": "110082",
     "City": "New Delhi",
-    "District": "South West",
+    "District": "South Delhi",
     "State": "Delhi"
   },
   {
@@ -520,6 +548,20 @@
   {
     "PostOfficeName": "Rohini",
     "Pincode": "110085",
+    "City": "New Delhi",
+    "District": "North Delhi",
+    "State": "Delhi"
+  },
+  {
+    "PostOfficeName": "Shalimar Bagh",
+    "Pincode": "110088",
+    "City": "New Delhi",
+    "District": "North Delhi",
+    "State": "Delhi"
+  },
+  {
+    "PostOfficeName": "Rohini Sector 15",
+    "Pincode": "110089",
     "City": "New Delhi",
     "District": "North Delhi",
     "State": "Delhi"
@@ -548,6 +590,13 @@
   {
     "PostOfficeName": "Chilla Villege",
     "Pincode": "110094",
+    "City": "New Delhi",
+    "District": "East Delhi",
+    "State": "Delhi"
+  },
+  {
+    "PostOfficeName": "New Seemapuri",
+    "Pincode": "110095",
     "City": "New Delhi",
     "District": "East Delhi",
     "State": "Delhi"
@@ -609,6 +658,13 @@
     "State": "Haryana"
   },
   {
+    "PostOfficeName": "Surajkund",
+    "Pincode": "121009",
+    "City": "Faridabad",
+    "District": "Faridabad",
+    "State": "Haryana"
+  },
+  {
     "PostOfficeName": "Tigaon",
     "Pincode": "121101",
     "City": "Faridabad",
@@ -665,8 +721,29 @@
     "State": "Haryana"
   },
   {
+    "PostOfficeName": "Chakkarpur",
+    "Pincode": "122002",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Wazirabad",
+    "Pincode": "122003",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
     "PostOfficeName": "Air Force Gurgaon",
     "Pincode": "122005",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": " Industrial Estate",
+    "Pincode": "122007",
     "City": "Gurgaon",
     "District": "Gurgaon",
     "State": "Haryana"
@@ -695,6 +772,27 @@
   {
     "PostOfficeName": "Dundahera",
     "Pincode": "122016",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Palam Vihar",
+    "Pincode": "122017",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "South City-II",
+    "Pincode": "122018",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Sector 15",
+    "Pincode": "122022",
     "City": "Gurgaon",
     "District": "Gurgaon",
     "State": "Haryana"
@@ -772,6 +870,27 @@
   {
     "PostOfficeName": "Palmar",
     "Pincode": "122211",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Bhorakalan",
+    "Pincode": "122413",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Bhangrola",
+    "Pincode": "122505",
+    "City": "Gurgaon",
+    "District": "Gurgaon",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Faarukh Nagar",
+    "Pincode": "122506",
     "City": "Gurgaon",
     "District": "Gurgaon",
     "State": "Haryana"
@@ -884,6 +1003,13 @@
   {
     "PostOfficeName": "Khol",
     "Pincode": "123103",
+    "City": "Narnaul",
+    "District": "Mohindergarh",
+    "State": "Haryana"
+  },
+  {
+    "PostOfficeName": "Bhatsana",
+    "Pincode": "123106",
     "City": "Narnaul",
     "District": "Mohindergarh",
     "State": "Haryana"
@@ -13076,6 +13202,13 @@
     "State": "Uttar Pradesh"
   },
   {
+    "PostOfficeName": "Bharat Nagar Ghaziabad",
+    "Pincode": "201010",
+    "City": "Ghaziabad",
+    "District": "Ghaziabad",
+    "State": "Uttar Pradesh"
+  },
+  {
     "PostOfficeName": "Chandra Nagar",
     "Pincode": "201011",
     "City": "Ghaziabad",
@@ -13159,11 +13292,32 @@
     "District": "Ghaziabad",
     "State": "Uttar Pradesh"
   },
-    {
+  {
+    "PostOfficeName": " I.A. Surajpur",
+    "Pincode": "201306",
+    "City": "Ghaziabad",
+    "District": "Ghaziabad",
+    "State": "Uttar Pradesh"
+  },
+  {
     "PostOfficeName": "Chhajarsi",
     "Pincode": "201307",
     "City": "Ghaziabad",
     "District": "Ghaziabad",
+    "State": "Uttar Pradesh"
+  },
+  {
+    "PostOfficeName": "Noida Sector 62",
+    "Pincode": "201309",
+    "City": "Gautam Buddha Nagar",
+    "District": "Gautam Buddha Nagar",
+    "State": "Uttar Pradesh"
+  },
+  {
+    "PostOfficeName": "Sector-1, Greater Noida",
+    "Pincode": "201318",
+    "City": "Gautam Buddha Nagar",
+    "District": "Gautam Buddha Nagar",
     "State": "Uttar Pradesh"
   },
   {
@@ -27386,6 +27540,13 @@
   {
     "PostOfficeName": "Amer Clerk Hotel",
     "Pincode": "302017",
+    "City": "Jaipur",
+    "District": "Jaipur",
+    "State": "Rajasthan"
+  },
+  {
+    "PostOfficeName": "Pratap Nagar",
+    "Pincode": "302033",
     "City": "Jaipur",
     "District": "Jaipur",
     "State": "Rajasthan"
