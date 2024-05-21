@@ -116,6 +116,7 @@ exports.verifyEmail = async (req, res) => {
 
             //sending onboarding  mail
             const mailInfo = {
+                boName: idExsists.business_entity,
                 purpose: 'onboard',
                 customerId: verifiedMail.customer_id,
                 email: idExsists.email,
