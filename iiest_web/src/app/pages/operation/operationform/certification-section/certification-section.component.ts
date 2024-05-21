@@ -20,7 +20,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   @Input() candidateID: string = '';
   @Input() projectType: string = '';
   @Input() attendanceStatus: boolean = false;
-  @Input() attenSecResult: string = '';
+  @Input() prevSecResult: string = '';
 
   //output event emitters
   @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>;
@@ -30,6 +30,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   resultTextClass: string = 'bg-warning';
   resultIcon: IconDefinition = faCircleExclamation;
   ticketClosingDate: string = '';
+  ticketType: string = ''; //var for name of ticket type in ui according to products
 
   formHeading: string = '';
 
@@ -88,7 +89,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes['attenSecResult']) {
+    if (changes && changes['prevSecResult']) {
       this.setCertificateResult(this.ceritificationForm.value.ticket_status);
     }
   }
@@ -103,7 +104,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       next: res => {
         if (res) {
           console.log(res);
-          this.ceritificationForm.patchValue({ ticket_status: res.data.ticketStatus })
+          this.ceritificationForm.patchValue({ ticket_status: res.data.ticketStatus });
           this.ticketClosed = true;
           this.isUploadVisible = true;
           this.src = res.data.certificate;
@@ -111,15 +112,17 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
           if (res.data.ticketStatus === 'delivered') {
             this.isUploadVisible = true;
             this.src = res.data.certificate;
-            this.emitDocuments.emit([{
-              name: 'Fostac Cerificate',
+            console.log(new Date(res.data.issueDate).toUTCString() )
+            this.ceritificationForm.patchValue({ issue_date: new Date(res.data.issueDate).toUTCString() }); //Patch issue date in case of delivered
+            this.emitDocuments.emit([{ //we want to show fostac certificate in documentation tab in case of delivered
+              name: this.ticketType,
               src: this.src,
               format:'pdf'
             }])
           } else {
             this.isUploadVisible = false;
           }
-          this.ticketClosingDate = this.getFormatedDate(res.data.createdAt);
+          this.ticketClosingDate = this.getFormatedDate(res.data.issueDate);
           this.setCertificateResult(res.data.ticketStatus);
         }
       }
@@ -159,17 +162,17 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       this.isUploadVisible = false;
       this.isBtnDisble = false;
     }
-    if (this.attenSecResult !== 'Trained') {
+    if (this.prevSecResult !== 'Trained') {
       this.isBtnDisble = true;
     }
   }
 
   // this methord sets the result of certification section
   setCertificateResult(ticketStatus: string): void {
-    console.log(this.attenSecResult, ticketStatus);
-    if (this.attenSecResult) {
-      if (this.attenSecResult !== 'Trained') {
-        this.resultText = `${this.attenSecResult}`;
+    console.log(this.prevSecResult, ticketStatus);
+    if (this.prevSecResult) {
+      if (this.prevSecResult !== 'Trained' && this.prevSecResult !== 'Filed') {
+        this.resultText = `${this.prevSecResult}`;
         this.resultTextClass = 'bg-danger';
         this.resultIcon = faCircleExclamation;
         this.isBtnDisble = true;
@@ -267,12 +270,15 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
     switch(this.projectType) {
       case 'Fostac': 
         this.formHeading = 'Certification';
+        this.ticketType = 'Fostac Cerificate'
         break;
       case 'Foscos': 
         this.formHeading = 'Licensing';
+        this.ticketType = 'Foscos License'
         break;
       case 'HRA':
         this.formHeading = 'Certification';
+        this.ticketType = 'Audit Report'
         break;
       default: 
         this.formHeading = '';

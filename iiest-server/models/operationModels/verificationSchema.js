@@ -71,7 +71,7 @@ const foscosVerification = new Schema({
         type: Number,
         required: true
     }
-});
+}, {timestamps: true});
 
 const foscosVerifyModel = mongoose.model('foscos_verification', foscosVerification);
 
@@ -91,7 +91,7 @@ const hraVerification = new Schema({
         type: Date,
         required: true
     }
-});
+}, {timestamps: true});
 
 const hraVerifyModel = mongoose.model('hra_verification', hraVerification);
 

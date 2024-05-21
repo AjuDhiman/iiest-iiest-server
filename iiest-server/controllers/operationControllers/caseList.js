@@ -22,7 +22,7 @@ exports.caseList = async (req, res) => {
                 .populate({
                     path: 'salesInfo',
                     populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
-                    select: 'product_name fostacInfo foscosInfo hraInfo'
+                    select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
                 })
                 .lean();
 
@@ -32,7 +32,7 @@ exports.caseList = async (req, res) => {
                 .populate({
                     path: 'salesInfo',
                     populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
-                    select: 'product_name fostacInfo foscosInfo hraInfo'
+                    select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
                 })
                 .select('name phoneNo employeeInfo.employee_name')
                 .lean();
@@ -47,7 +47,7 @@ exports.caseList = async (req, res) => {
                 .populate({
                     path: 'salesInfo',
                     populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
-                    select: 'product_name fostacInfo foscosInfo hraInfo'
+                    select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
                 })
                 .lean();
 

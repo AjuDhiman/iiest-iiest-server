@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IconDefinition, faCircleCheck, faCircleExclamation, faFileArrowUp, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -39,6 +39,9 @@ export class RevertSectionComponent implements OnInit, OnChanges {
 
   @Input() customerId: string;
 
+  //output event emitters
+  @Output() emitFilingResult: EventEmitter<string> = new EventEmitter<string>;
+
   revertForm: FormGroup = new FormGroup({
     fssai_revert: new FormControl('')
   });
@@ -74,7 +77,6 @@ export class RevertSectionComponent implements OnInit, OnChanges {
     });
 
     this.getReverts();
-    this.getFiledData();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -106,6 +108,7 @@ export class RevertSectionComponent implements OnInit, OnChanges {
       next: res => {
         console.log(res);
         this.filedStatus = true;
+        this.emitFilingResult.emit('Filed');
       }
     })
   }
@@ -158,6 +161,7 @@ export class RevertSectionComponent implements OnInit, OnChanges {
             this.filingForm.patchValue({'payment_amount': res.filedData.paymentAmount});
             this.filingForm.patchValue({'payment_date': new Date(res.filedData.paymentDate.toString())});
             this.receiptSrc = res.filedData.paymentReceipt;
+            this.emitFilingResult.emit('Filed');
           }
         }
       });
