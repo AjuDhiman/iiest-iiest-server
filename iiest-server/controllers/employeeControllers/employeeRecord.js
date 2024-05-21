@@ -20,33 +20,42 @@ exports.employeeRecord = async (req, res) => {
                             $sum: [
                                 {
                                     $multiply: [
-                                        { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
-                                        { $ifNull: ["$fostacInfo.recipient_no", 0] },
+                                        { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                        { $toInt: { $ifNull: ["$fostacInfo.recipient_no", 0] } },
                                     ]
                                 },
-                                { 
+                                {
                                     $multiply: [
-                                        { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] },
-                                        { $ifNull: ["$foscosInfo.shops_no", 0] },
+                                        { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                        { $toInt: { $ifNull: ["$foscosInfo.shops_no", 0] } },
                                     ]
-                                 },
-                                 {
+                                },
+                                {
                                     $add: [
-                                      {
-                                        $cond: [
-                                          {
-                                            $and: [
-                                              { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
-                                              { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] } // Check if water_test_fee is not 0
+                                        {$toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] }},
+                                        {
+                                            $cond: [
+                                                {
+                                                    $and: [
+                                                        { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
+                                                        { $ne: [{ $toInt:{ $ifNull: ["$foscosInfo.water_test_fee", 0] }}, 0] } // Check if water_test_fee is not 0
+                                                    ]
+                                                },
+                                                {
+                                                    $subtract: [
+                                                        { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200]
+                                                }, // Subtract 1200 if both conditions are true
+                                                0 // Otherwise, leave it as 0
                                             ]
-                                          },
-                                          { $subtract: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 1200] }, // Subtract 1200 if both conditions are true
-                                          0 // Otherwise, leave it as 0
-                                        ]
-                                      }
+                                        }
                                     ]
-                                  },
-                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                },
+                                {
+                                    $multiply: [
+                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } },
+                                        { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
+                                    ]
+                                }
                             ]
                         }
                     },
@@ -57,23 +66,42 @@ exports.employeeRecord = async (req, res) => {
                                     $sum: [
                                         {
                                             $multiply: [
-                                                { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
-                                                { $ifNull: ["$fostacInfo.recipient_no", 0] },
+                                                { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$fostacInfo.recipient_no", 0] } },
                                             ]
                                         },
-                                        { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                        {
+                                            $multiply: [
+                                                { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$foscosInfo.shops_no", 0] } },
+                                            ]
+                                        },
                                         {
                                             $add: [
+                                                {$toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] }},
                                                 {
                                                     $cond: [
-                                                        { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] },
-                                                        { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
+                                                        {
+                                                            $and: [
+                                                                { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
+                                                                { $ne: [{ $toInt:{ $ifNull: ["$foscosInfo.water_test_fee", 0] }}, 0] } // Check if water_test_fee is not 0
+                                                            ]
+                                                        },
+                                                        {
+                                                            $subtract: [
+                                                                { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200]
+                                                        }, // Subtract 1200 if both conditions are true
                                                         0 // Otherwise, leave it as 0
                                                     ]
                                                 }
                                             ]
                                         },
-                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                         {
+                                            $multiply: [
+                                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
+                                            ]
+                                        }
                                     ]
                                 }, else: 0
                             }
@@ -90,19 +118,38 @@ exports.employeeRecord = async (req, res) => {
                                                 { $ifNull: ["$fostacInfo.recipient_no", 0] },
                                             ]
                                         },
-                                        { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                        {
+                                            $multiply: [
+                                                { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$foscosInfo.shops_no", 0] } },
+                                            ]
+                                        },
                                         {
                                             $add: [
+                                                {$toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] }},
                                                 {
                                                     $cond: [
-                                                        { $ne: [{ $ifNull: ["$foscosInfo.water_test_fee", 0] }, 0] },
-                                                        { $subtract: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200] }, // Subtract 1200 if water test fee is not 0
+                                                        {
+                                                            $and: [
+                                                                { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
+                                                                { $ne: [{ $toInt:{ $ifNull: ["$foscosInfo.water_test_fee", 0] }}, 0] } // Check if water_test_fee is not 0
+                                                            ]
+                                                        },
+                                                        {
+                                                            $subtract: [
+                                                                { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200]
+                                                        }, // Subtract 1200 if both conditions are true
                                                         0 // Otherwise, leave it as 0
                                                     ]
                                                 }
                                             ]
                                         },
-                                        { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } }
+                                        {
+                                            $multiply: [
+                                                { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
+                                            ]
+                                        }
                                     ]
                                 }, else: 0
                             }
