@@ -116,7 +116,7 @@
                                                             (click)="showCaseList(batch.candidateDetails)"></fa-icon>
 
                                                         <fa-icon
-                                                            *ngIf="!editMode[batch._id] && batch.status === 'completed'"
+                                                            *ngIf="!editMode[batch._id]"
                                                             class="text-primary selector px-2" [icon]="faPen"
                                                             (click)="openEditMode(batch._id, i)"></fa-icon>
                                                         <button *ngIf="editMode[batch._id]" [id]="batch._id"
