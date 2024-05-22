@@ -72,7 +72,7 @@ export class BatchListComponent implements OnInit{
   }
 
 
-  onSubmit($event:any) {
+  onSubmit($event:any) { //this mehord sets or updates the training dates
   
     const id = $event.submitter.id;
     const training_date = this.updationForm.value[`training_date${id}`];
@@ -144,9 +144,6 @@ export class BatchListComponent implements OnInit{
 
   openEditMode(id: any, index: number) {
     let selectedBatch = this.batchData.find((item: any) => item._id == id);
-    if(selectedBatch.status !== 'completed') {
-      return
-    }
     this.editMode[id] = true;
     this.updationForm.addControl(`training_date${id}`, this.formBuilder.control(selectedBatch.trainingDate?selectedBatch.trainingDate:''));
     this.updationForm.addControl(`trainer${id}`, this.formBuilder.control(selectedBatch.trainer?selectedBatch.trainer:''));
@@ -175,7 +172,7 @@ export class BatchListComponent implements OnInit{
     return formattedDate;
   }
 
-  resetEditMode() {
+  resetEditMode() {//this methord closes the edit mode for all training batches
     const keys: string[] = Object.keys(this.editMode);
     keys.forEach((key: string) => {
       this.editMode[key] = false;
