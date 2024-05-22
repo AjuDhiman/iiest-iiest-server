@@ -133,6 +133,7 @@ export class CaseListComponent implements OnInit {
     if (this.searchQuery === '') {
       this.filteredData = this.typeData;
     }
+    this.filteredData.sort((a: any, b: any) => new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime());
   }
 
   //method for opening operation form

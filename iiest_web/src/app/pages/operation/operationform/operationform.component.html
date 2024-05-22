@@ -53,16 +53,16 @@
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
           <app-attendance-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
             [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId"
-            (emitAttenanceStatus)="getAttendanceStatus($event)" (emitAttenSecResult)="getAttenSecResult($event)"
+            (emitAttenanceStatus)="getAttendanceStatus($event)" (emitAttenSecResult)="gePrevSecResult($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
 
           <app-revert-section *ngIf="productType === 'Foscos'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [customerId]="candidateId" [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData">
+            [customerId]="candidateId" [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData" (emitFilingResult)="gePrevSecResult($event)">
           </app-revert-section>
 
           <app-certification-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [candidateID]="candidateId"
-            [attendanceStatus]="attendanceStatus" [attenSecResult]="attenSecResult" [projectType]="productType"
+            [attendanceStatus]="attendanceStatus" [prevSecResult]="prevSecResult" [projectType]="productType"
             (emitDocuments)="getDocuments($event)">
           </app-certification-section>
 

@@ -24,7 +24,7 @@ export class OperationformComponent implements OnInit {
   verifiedStatus: boolean;
   enrolledStatus: boolean;
   attendanceStatus: boolean;
-  attenSecResult: string;
+  prevSecResult: string;
   salesDate: string;
   productType: string;
   conformationText: string;
@@ -95,8 +95,8 @@ export class OperationformComponent implements OnInit {
   }
 
   // this methord catch attendance status from Attendance section which we will pass in Certification section
-  getAttenSecResult($event: string): void {
-    this.attenSecResult = $event;
+  gePrevSecResult($event: string): void {
+    this.prevSecResult = $event;
   }
 
   getDocuments($event: any): void {

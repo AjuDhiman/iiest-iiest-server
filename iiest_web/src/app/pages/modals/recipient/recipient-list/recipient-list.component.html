@@ -49,13 +49,11 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate text-capitalize">{{shops.address.toLowerCase()}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-                <td *ngIf="!isfostac" class="cell">
+                <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                        (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                    <a [href]="shops.ebillImage" [download]="shops.operatorName + '_ebill.jpg'" target="_blank">
+                    <a>
                       <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer"
-                        [icon]="faFile"></fa-icon>
+                        [icon]="faFile" (click)="viewDocument('E-Bill', shops.eBillImage, 'image', false)"></fa-icon>
                     </a>
                     <label [for]="'uploadEbill' + sr"> <fa-icon *ngIf="!shops.eBillImage" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
@@ -63,12 +61,11 @@
                   </span>
                 </td>
 
-                <td>
+                <td class="text-center cell">
                   <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                        (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                    <a [href]="shops.ownerPhoto" [download]="shops.operatorName+ '_ownerPhoto.jpg'" target="_blank">
+                    <a target="_blank">
                       <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer"
+                      (click)="viewDocument('Owner Photo', shops.ownerPhoto, 'image', false)"
                         [icon]="faFile"></fa-icon>
                     </a>
                     <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
@@ -78,12 +75,11 @@
                   </span>
                 </td>
 
-                <td>
+                <td class="text-center cell">
                   <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                        (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                    <a [href]="shops.shopPhoto" [download]="shops.operatorName + '_shopPhoto.jpg'" target="_blank">
+                    <a target="_blank">
                       <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer"
+                      (click)="viewDocument('Shop Photo', shops.shopPhoto, 'image', false)"
                         [icon]="faFile"></fa-icon>
                     </a>
                     <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
@@ -92,15 +88,14 @@
                       hidden>
                   </span>
                 </td>
-                <td>
+                <td class="text-center cell">
                   <span class="truncate">
-                    <!-- <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer" [icon]="faFile"
-                        (click)="openEBillWindow(shops.eBillImage)"></fa-icon> -->
-                    <a [href]="shops.aadharPhoto" [download]="shops.operatorName + '_aadharPhoto.jpg'" target="_blank">
-                      <fa-icon *ngIf="shops.aadharPhoto" class="fa-xl text-success cursor-pointer"
+                    <a target="_blank">
+                      <fa-icon *ngIf="shops.aadharPhoto.length != 0" class="fa-xl text-success cursor-pointer"
+                      (click)="viewDocument('Aadhar', shops.aadharPhoto, 'image', true)"
                         [icon]="faFile"></fa-icon>
                     </a>
-                    <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="!shops.aadharPhoto" class="fa-xl text-danger"
+                    <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="shops.aadharPhoto.length == 0" class="fa-xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadAadharPhoto' + sr" (change)="uploadAadharphoto($event, shops._id)"
                       hidden>
@@ -120,7 +115,7 @@
                 <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
                     <a><fa-icon *ngIf="shops.fostacCertificate" class="fa-2xl text-success cursor-pointer"
-                        [icon]="faFile" (click)="viewDocument(shops.fostacCertificate)"></fa-icon></a>
+                        [icon]="faFile" (click)="viewDocument('Fostac Certificate',shops.fostacCertificate, 'pdf', false)"></fa-icon></a>
                     <!-- <a [href]="shops.fostacCerificate" [download]="shops.managerName+ '_ebill.jpg'" target="_blank">
                       <fa-icon *ngIf="shops.fostacCertificate" class="fa-2xl text-success cursor-pointer"
                         [icon]="faFile"></fa-icon>
@@ -134,7 +129,7 @@
                 <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
                     <a><fa-icon *ngIf="shops.foscosLicense" class="fa-2xl text-success cursor-pointer"
-                        [icon]="faFile" (click)="viewDocument(shops.foscosLicense)"></fa-icon></a>
+                        [icon]="faFile" (click)="viewDocument( 'Foscos License', shops.foscosLicense, 'pdf', false)"></fa-icon></a>
                     <label [for]="'uploadFoscosLicense' + sr"> <fa-icon *ngIf="!shops.foscosLicense" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadFoscosLicense' + sr" (change)="uploadFoscosLicense($event, shops._id)"

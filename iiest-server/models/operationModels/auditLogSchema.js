@@ -7,6 +7,10 @@ const auditLogs = new Schema({
         ref: 'staff_registers',
         required: true
     },
+    targetCollection: {
+        type: String,
+        required: true
+    },
     targetInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: function(){

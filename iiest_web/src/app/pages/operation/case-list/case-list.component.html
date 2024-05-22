@@ -152,7 +152,7 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id:'case-list' }; let i=index">
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
@@ -210,7 +210,7 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let i=index">
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'case-list' }; let i=index">
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector text-capitalize"

@@ -23,7 +23,7 @@
             [attr.disabled]="ticketClosed"
             (change)="onTicketStatusChange($event)">
             <option value="" disabled selected>Select Ticket Status</option>
-            <option value="delivered">delivered</option>
+            <option value="delivered">Delivered</option>
             <option *ngIf="projectType === 'Foscos'" value="rejected">Rejected</option>
             <option value="refund">Refund</option>
             <option value="cancel">Cancel</option>
@@ -46,7 +46,7 @@
         </div>
 
         <ng-template #ticketdelivered>
-            <label for="certificate" class="form-label">Fostac Certificate</label>
+            <label for="certificate" class="form-label">{{ticketType}}</label>
             <br>
             <!-- <fa-icon data-bs-toggle='tooltip' data-bs-placement='top' title='Fostac Certificate'
                 class="fa-2xl mx-1 cursor-pointer text-primary" style="margin: 7px 7px;" [icon]="faFilePdf"

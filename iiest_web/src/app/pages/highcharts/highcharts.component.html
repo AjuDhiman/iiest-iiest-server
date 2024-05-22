@@ -29,7 +29,7 @@
 			<ng-template #noData>
 				<div class="alert alert-warning position-absolute" role="alert" *ngIf="chartData">
 					No {{chartData.chartTitle}} data avilable <span style="text-transform: capitalize;">
-						{{intervalType}}</span>
+						{{intervalType.split('_').join(' ')}}</span>
 				</div>
 			</ng-template>
 		</div><!-- //app-card-body -->
