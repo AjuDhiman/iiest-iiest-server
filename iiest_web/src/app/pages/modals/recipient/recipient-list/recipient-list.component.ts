@@ -136,12 +136,13 @@ export class RecipientListComponent {
     })
   }
 
-  viewDocument(res: any): void {
+  viewDocument(name: string, res: any, format: string, isMultiDoc: boolean): void { // methord for calling viewdoc component for a particucar doc
+
     let obj = {
-      name: "HRA Document",
-      src: [ res.toString() ],
-      format: "image",
-      multipleDoc: false
+      name: name,
+      src: isMultiDoc?res:[res.toString()], // we will put single src in array because our component needs array of src for showing docs
+      format: format,
+      multipleDoc: isMultiDoc
     }
     const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.doc = obj;
