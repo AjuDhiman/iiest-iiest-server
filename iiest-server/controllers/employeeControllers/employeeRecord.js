@@ -114,8 +114,8 @@ exports.employeeRecord = async (req, res) => {
                                     $sum: [
                                         {
                                             $multiply: [
-                                                { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
-                                                { $ifNull: ["$fostacInfo.recipient_no", 0] },
+                                                { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$fostacInfo.recipient_no", 0] } },
                                             ]
                                         },
                                         {
