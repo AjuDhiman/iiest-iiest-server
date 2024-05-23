@@ -62,6 +62,14 @@ exports.addRecipient = async (req, res) => {
             success = true;
         }
 
+        const salesInfo = await salesModel.findOne({_id: req.params.id});
+
+        const allRecp = await recipientModel.find({salesInfo: req.params.id});
+
+        if(allRecp.length == salesInfo.fostacInfo.recipient_no) {
+            await salesModel.findByIdAndUpdate(req.params.id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
+        }
+
         if (success) {
             return res.status(200).json({ success })
         }
@@ -118,6 +126,26 @@ exports.addShop = async (req, res) => {
 
         const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc, byExcel });
 
+
+        const salesInfo = await salesModel.findOne({_id: req.params.id});
+
+        const allShop = await shopModel.find({salesInfo: req.params.id});
+
+        let allDocUploaded = false;
+
+        allShop.forEach(shop => {
+            if(shop.eBillImage != undefined && shop.eBillImage != ''
+             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+             && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
+             && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
+                allDocUploaded = true
+            }
+        });
+
+        if((allShop.length == salesInfo.foscosInfo.shops_no) && allDocUploaded) {
+            await salesModel.findByIdAndUpdate(req.params.id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
+        }
+
         if (addShop) {
             success = true
             return res.status(200).json({ success })
@@ -165,6 +193,23 @@ exports.addHygieneShop = async (req, res) => {
         const shopCustInfo = await generateHygieneShopInfo(req.params.id);
 
         const addShop = await hygieneShopModel.create({ salesInfo: req.params.id, shopId: shopCustInfo.shopId, managerName: manager_name,managerContact: manager_contact, managerEmail: manager_email, kob, foodHandlersCount: food_handlers, address, state, district, pincode, fostacCertificate: fostacCertificate[0].filename, foscosLicense: foscosLicense[0].filename });
+
+        const salesInfo = await salesModel.findOne({_id: req.params.id});
+
+        const allShop = await hygieneShopModel.find({salesInfo: req.params.id});
+
+        let allDocUploaded = false;
+
+        allShop.forEach(shop => {
+            if(shop.fostacCertificate != undefined && shop.fostacCertificate != ''
+             && shop.foscosLicense != undefined && shop.foscosLicense != '' ) {
+                allDocUploaded = true;
+            }
+        });
+
+        if((allShop.length == salesInfo.hraInfo.shops_no) && allDocUploaded) {
+            await salesModel.findByIdAndUpdate(req.params.id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
+        }
 
         if (addShop) {
             success = true;
@@ -304,7 +349,28 @@ exports.uploadEbill = async (req, res) => {
 
         if (!billUploaded) {
             success = false;
-            res.status(404).json({ success, randomErr: true });
+            return res.status(404).json({ success, randomErr: true });
+        }
+
+        const shopInfo = await shopModel.findOne({_id: req.params.id}) 
+
+        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+
+        const allShop = await shopModel.find({salesInfo: shopInfo._id});
+
+        let allDocUploaded = false;
+
+        allShop.forEach(shop => {
+            if(shop.eBillImage != undefined && shop.eBillImage != ''
+             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+             && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
+             && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
+                allDocUploaded = true
+            }
+        })
+
+        if(allShop.length == (salesInfo.foscosInfo.shops_no - 1) && allDocUploaded) {
+            await salesModel.findByIdAndUpdate(shopInfo._id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
         }
 
         success = true;
@@ -328,6 +394,27 @@ exports.uploadOwnerPhoto = async (req, res) => {
             res.status(404).json({ success, randomErr: true });
         }
 
+        const shopInfo = await shopModel.findOne({_id: req.params.id}) 
+
+        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+
+        const allShop = await shopModel.find({salesInfo: shopInfo._id});
+
+        let allDocUploaded = false;
+
+        allShop.forEach(shop => {
+            if(shop.eBillImage != undefined && shop.eBillImage != ''
+             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+             && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
+             && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
+                allDocUploaded = true
+            }
+        })
+
+        if(allShop.length == (salesInfo.foscosInfo.shops_no - 1) && allDocUploaded) {
+            await salesModel.findByIdAndUpdate(shopInfo._id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
+        }
+
         success = true;
         res.status(200).json({ success, photoUploaded });
     } catch (error) {
@@ -347,6 +434,27 @@ exports.uploadShopPhoto = async (req, res) => {
         if (!photoUploaded) {
             success = false;
             res.status(404).json({ success, randomErr: true });
+        }
+
+        const shopInfo = await shopModel.findOne({_id: req.params.id}) 
+
+        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+
+        const allShop = await shopModel.find({salesInfo: shopInfo._id});
+
+        let allDocUploaded = false;
+
+        allShop.forEach(shop => {
+            if(shop.eBillImage != undefined && shop.eBillImage != ''
+             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+             && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
+             && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
+                allDocUploaded = true
+            }
+        })
+
+        if(allShop.length == (salesInfo.foscosInfo.shops_no - 1) && allDocUploaded) {
+            await salesModel.findByIdAndUpdate(shopInfo._id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
         }
 
         success = true;
@@ -370,6 +478,27 @@ exports.uploadAadharPhoto = async (req, res) => {
         if (!photoUploaded) {
             success = false;
             res.status(404).json({ success, randomErr: true });
+        }
+
+        const shopInfo = await shopModel.findOne({_id: req.params.id}) 
+
+        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+
+        const allShop = await shopModel.find({salesInfo: shopInfo._id});
+
+        let allDocUploaded = false;
+
+        allShop.forEach(shop => {
+            if(shop.eBillImage != undefined && shop.eBillImage != ''
+             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+             && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
+             && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
+                allDocUploaded = true
+            }
+        })
+
+        if(allShop.length == (salesInfo.foscosInfo.shops_no - 1) && allDocUploaded) {
+            await salesModel.findByIdAndUpdate(shopInfo._id, {checkStatus: 'Approved'}) // we will approve this sale if all docs are uploaded for all shops related to this sale
         }
 
         success = true;

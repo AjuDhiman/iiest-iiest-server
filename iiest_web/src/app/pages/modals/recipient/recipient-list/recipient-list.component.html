@@ -64,11 +64,11 @@
                 <td class="text-center cell">
                   <span class="truncate">
                     <a target="_blank">
-                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-xl text-success cursor-pointer"
+                      <fa-icon *ngIf="shops.ownerPhoto" class="fa-2xl text-success cursor-pointer"
                       (click)="viewDocument('Owner Photo', shops.ownerPhoto, 'image', false)"
                         [icon]="faFile"></fa-icon>
                     </a>
-                    <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-xl text-danger"
+                    <label [for]="'uploadOwnerPhoto' + sr"> <fa-icon *ngIf="!shops.ownerPhoto" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadOwnerPhoto' + sr" (change)="uploadOwnerPhoto($event, shops._id)"
                       hidden>
@@ -78,11 +78,11 @@
                 <td class="text-center cell">
                   <span class="truncate">
                     <a target="_blank">
-                      <fa-icon *ngIf="shops.shopPhoto" class="fa-xl text-success cursor-pointer"
+                      <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer"
                       (click)="viewDocument('Shop Photo', shops.shopPhoto, 'image', false)"
                         [icon]="faFile"></fa-icon>
                     </a>
-                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-xl text-danger"
+                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
                       hidden>
@@ -91,13 +91,13 @@
                 <td class="text-center cell">
                   <span class="truncate">
                     <a target="_blank">
-                      <fa-icon *ngIf="shops.aadharPhoto.length != 0" class="fa-xl text-success cursor-pointer"
+                      <fa-icon *ngIf="shops.aadharPhoto.length != 0" class="fa-2xl text-success cursor-pointer"
                       (click)="viewDocument('Aadhar', shops.aadharPhoto, 'image', true)"
                         [icon]="faFile"></fa-icon>
                     </a>
-                    <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="shops.aadharPhoto.length == 0" class="fa-xl text-danger"
+                    <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="shops.aadharPhoto.length == 0" class="fa-2xl text-danger"
                         [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadAadharPhoto' + sr" (change)="uploadAadharphoto($event, shops._id)"
+                    <input type="file" [id]="'uploadAadharPhoto' + sr" (change)="uploadAadharphoto($event, shops._id)" multiple
                       hidden>
                   </span>
                 </td>

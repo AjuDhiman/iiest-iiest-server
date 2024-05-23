@@ -65,7 +65,7 @@ const invoiceTemplate = async (fboInfo) => {
 
     const amountInWords = toWords.convert(fboInfo.totalAmount, { currency: true, ignoreZeroCurrency: true });
     const signatureBucket = empSignBucket();
-    const signatureDownloadStream = signatureBucket.openDownloadStream(new ObjectId(signatureName));
+    const signatureDownloadStream =  signatureBucket.openDownloadStream(new ObjectId(signatureName));
 
     signatureDownloadStream.on('error', () => {
       success = false;
@@ -302,11 +302,7 @@ const invoiceTemplate = async (fboInfo) => {
                                 <th colspan="2">Subtotal</th>
                                 <td>₹${subTotal}</td>
                             </tr>
-                            <tr>
-                                <td style="border-top: 0; border-bottom: 0;"></td>
-                                <td colspan="2">${calculateTax(fboInfo.business_type, fboInfo.state)}</td>
-                                <td>₹${fboInfo.taxAmount}</td>
-                            </tr>
+                           ${fboInfo.gstDescription}
                             <tr>
                                 <td style="border-top: 0;"></td>
                                 <th colspan="2">Total</th>
@@ -335,7 +331,7 @@ const invoiceTemplate = async (fboInfo) => {
                         <section style="position: relative; margin-left:75%">
                             <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>
                             <img src="${signatureConverted}" height=100 width=100 alt="iiest_stamp" style="position: absolute; top: 0; right:0">
-                            Authorized Signatory
+                            ${fboInfo.officerName}
                         </section>
                     </div>
                 </div>

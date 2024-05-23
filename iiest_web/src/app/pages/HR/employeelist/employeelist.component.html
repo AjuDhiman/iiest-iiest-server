@@ -85,7 +85,7 @@
                   <tr class="list-tr"
                     *ngFor="let employee of filteredEmployees | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber }; let sr = index">
                     <td class="cell"><span class="truncate">{{sr+itemsNumber*(pageNumber-1)+1}}</span></td>
-                    <td class="cell"><span class="truncate">{{employee.employee_name}}</span></td>
+                    <td class="cell"><span class="truncate text-capitalize">{{employee.employee_name.toLowerCase()}}</span></td>
                     <td class="cell"><span class="truncate">{{employee.employee_id}}</span></td>
                     <td class="cell cursor-pointer">
                       <fa-icon class="fa-l truncate mr-2 selector" ngxClipboard [cbContent]="employee.username"
@@ -124,6 +124,11 @@
                     [icon]="faTrash"></fa-icon> -->
                     </td>
                     <!-- <td class="cell"><span class="truncate">{{employee.lastEdit}}</span></td> -->
+                  </tr>
+                </tbody>
+                <tbody *ngIf="filteredEmployees?.length==0">
+                  <tr>
+                    <td colspan="15" class="text-center fw-bold">----------------- No Data Found ----------------</td>
                   </tr>
                 </tbody>
               </table>

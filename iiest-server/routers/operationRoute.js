@@ -4,7 +4,7 @@ const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/op
 const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData, foscosVerification, hraVerification, getFoscosVerifiedData, fssaiRevert, getReverts, foscosFiling, getHraVerifiedData, getFoscosFiledData } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
-const { fostacDocuments, foscosDocuments, hraDocuments } = require('../config/storage');
+const { foscosDocuments, hraDocuments, tickets } = require('../config/storage');
 const { trainingBatch, getTrainingBatchData, updateBatch, auditBatch } = require('../controllers/trainingControllers/trainingBatch');
 const { saveDocument, getDocList, deleteDocs } = require('../controllers/operationControllers/documents');
 
@@ -31,7 +31,7 @@ router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route
 module.exports = router;
 router.get('/getreverts/:id', authMiddleware, getReverts); // route for getting Fssai reverts history of a particular shop
 module.exports = router;
-router.post('/closeticket/:recipientid', authMiddleware,fostacDocuments.single('certificate'), ticketDelivery);
+router.post('/closeticket/:recipientid', authMiddleware,tickets.single('certificate'), ticketDelivery);
 router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliveryData)// route for getting ticket delivery data for a customer
 router.post('/savefoscosdocuments/:id', authMiddleware,  foscosDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
 router.post('/savehradocuments/:id', authMiddleware,  hraDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop

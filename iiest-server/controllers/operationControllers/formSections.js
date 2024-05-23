@@ -283,7 +283,8 @@ exports.fostacEnrollment = async (req, res) => {
             recipientName: verifiedData.recipientInfo.name,
             fostacTrainingDate: fostac_training_date,
             venue: venue,
-            recipientEmail: email
+            recipientEmail: email,
+            enrollmentNumber: roll_no
         }
 
         //this code is for tracking the flow of data regarding to a recipient
@@ -497,20 +498,35 @@ exports.fostacAttendance = async (req, res) => {
 
         //this code is for tracking the flow of data regarding to a recipient
 
-        const enrolledData = await fostacEnrollmentModel.findOne({ _id: enrolledDataId });
+        const enrolledData = await fostacEnrollmentModel.findOne({ _id: enrolledDataId }).populate({ path: 'verificationInfo', populate: { path: 'recipientInfo'}});
 
-        const verifiedData = await fostacVerifyModel.findOne({ _id: enrolledData.verificationInfo });
+        console.log(enrolledData);
+
+        // const verifiedData = await fostacVerifyModel.findOne({ _id: enrolledData.verificationInfo });
+
+        const verifiedData = enrolledData.verificationInfo
 
         const prevVal = {}
 
         const currentVal = addAttendance;
 
-        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo, prevVal, currentVal, `Attendance Marked ${attendee_status}`);
+        await logAudit(req.user._id, "recipientdetails", verifiedData.recipientInfo._id, prevVal, currentVal, `Attendance Marked ${attendee_status}`);
 
         // code for tracking ends
 
+        let clientData = {
+            product: 'fostac_attendance',
+            recipientEmail: verifiedData.email,
+            fostacTrainingDate: enrolledData.fostac_training_date,
+            venue: enrolledData.venue,
+            recipientName: verifiedData.recipientInfo.name,
+            attendee_status: attendee_status,
+            marks: marks
+        }
+
         if (addAttendance) {
             success = true;
+            sendVerificationMail(clientData)
             return res.status(200).json({ success, message: 'Attendance Marked' });
         }
 
@@ -546,7 +562,11 @@ exports.ticketDelivery = async (req, res) => {
 
         const certificateFile = req.file;
 
-        const { ticket_status, issue_date } = req.body;
+        console.log(certificateFile);
+
+        const { ticket_status, issue_date, ticketType } = req.body;
+
+        console.log(req.body)
 
         if (!certificateFile && ticket_status === 'delivered') {
             success = false;
@@ -555,7 +575,7 @@ exports.ticketDelivery = async (req, res) => {
 
         const ticket = await ticketDeliveryModel.findOne({ recipientInfo: req.params.recipientid });
 
-        const verificationData = await fostacVerifyModel.findOne({ recipientInfo: req.params.recipientid });
+        const verificationData = await fostacVerifyModel.findOne({ recipientInfo: req.params.recipientid }).populate({path: 'recipientInfo'});
 
         if (ticket) {
             res.status(401).json({ success, recpErr: true });
@@ -564,10 +584,16 @@ exports.ticketDelivery = async (req, res) => {
         let addTicket;
 
         if (ticket_status == 'delivered') {
-            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.filename, issueDate: issue_date });
-            // sendDocumentMail(verificationData.email, 'Fostac_Certificate.pdf', `${certificateFile.destination}/${certificateFile.filename}`);
+            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, certificate: certificateFile.filename, issueDate: issue_date, ticketType: ticketType });
+            clientData = {
+                ticketType: ticketType,
+                clientMail: verificationData.email,
+                recipientName: verificationData.recipientInfo.name,
+                filePath: `${certificateFile.destination}/${certificateFile.filename}`
+            }
+            sendDocumentMail(clientData);
         } else {
-            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status });
+            addTicket = await ticketDeliveryModel.create({ operatorInfo: req.user._id, recipientInfo: req.params.recipientid, ticketStatus: ticket_status, ticketType: ticketType });
         }
 
         if (addTicket) {

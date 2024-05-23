@@ -99,6 +99,14 @@ export class RegisterService {
       ));
   }
 
+  public uploadAadharPhoto(objId: string, formInterface: FormData): Observable<any> {
+    const url = `${this.url}/fbo/uploadaadharphoto/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   public uploadFostacCertificate(objId: string, formInterface: FormData): Observable<any> {
     const url = `${this.url}/fbo/uploadfostaccertificate/${objId}`
     return this.http.put<any>(url, formInterface).pipe(

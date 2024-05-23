@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const mailData = JSON.parse(process.env.NODE_MAILER);
 
-const sendDocumentMail = (clientMail, fileName, filePath) => {
+const sendDocumentMail = (clientData) => {
   const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -11,13 +11,44 @@ const sendDocumentMail = (clientMail, fileName, filePath) => {
   });
   const mailOptions = {
     from: mailData.email,
-    to: clientMail,
-    subject: fileName,
-    html: `<p>This email contains your ${fileName}</p>`,
+    to: clientData.clientMail,
+    subject: `IIEST Federation - ${clientData.ticketType}`,
+    html: `<p>Dear ${clientData.recipientName},</p>
+    <p>Welcome to the IIEST Federation,<br>
+    Scheme implementing partner of Govt. Of India.</p>
+    <p>We are pleased to inform you that your ${clientData.ticketType} has been generated and is attached to this email.</p>
+    <br>
+    <p>If you have any questions or require further information, please do not hesitate to contact us.</p>
+    <p>Regards,<br>
+    IIEST Federation</p>
+    <br>
+    TP Name - IIEST Federation<br>
+    TP No - TPINT133<br>
+    Contact no – 9910729809<br>
+    Landline - 011-43511788, 011-4681145<br>
+    Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br><br>
+    <hr>
+    <br>
+    <p>प्रिय ${clientData.recipientName},</p>
+    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
+    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
+    <p>हमें आपको सूचित करते हुए खुशी हो रही है कि आपका ${clientData.ticketType} को पूरा हो चुका है और इस मेल के साथ संलग्न किया गया है।</p>
+    <br>
+    <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
+    <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p>"धन्यवाद,<br>
+    IIEST Federation</p>
+    <br>
+    टीपी नाम - IIEST फेडरेशन<br>
+    टीपी नंबर - TPINT133<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
     attachments: [
       {
-        filename: fileName,
-        path: `./${filePath}`
+        filename: 'fostacCertificate.pdf',
+        path: `./${clientData.filePath}`
       }
     ]
   }
@@ -38,9 +69,9 @@ const sendVerificationMail = (clientData) => {
   if (clientData.product == 'fostac') {
 
     let todayDate = new Date();
-    let nextWeek = new Date(todayDate);
-    nextWeek.setDate(todayDate.getDate() + 7);
-    let formattedNextWeek = nextWeek.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    let nextMonth = new Date(todayDate);
+    nextMonth.setMonth(todayDate.getMonth() + 1);
+    let formattedNextMonth = nextMonth.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
     subject = `IIEST Federation - Information Verified Successfuly`;
     content = `<p>Dear ${clientData.recipientName},</p>
@@ -54,9 +85,9 @@ const sendVerificationMail = (clientData) => {
     Trainee Contact No -- ${clientData.recipientContactNo}<br>
     Trainee DOB -- ${clientData.dob}<br>
     Trainee Aadhar No -- ${clientData.aadharNo}<br>
-    Trainee Pancard No -- ${clientData.pancard}<br>
+    ${clientData.pancard ? ('Trainee Pancard No -- ' + clientData.pancard + '<br>') : ''}
 
-    <p>The tentative training date of your training is ${formattedNextWeek}. The final date and training venue & timings details will be provided to you as per availability of the IIEST-FSSAI training schedule 2-3 days in advance through messages and calls.</p>
+    <p>The tentative training date of your training is ${formattedNextMonth}. The final date and training venue & timings details will be provided to you as per availability of the IIEST-FSSAI training schedule 2-3 days in advance through messages and calls.</p>
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
@@ -65,8 +96,8 @@ const sendVerificationMail = (clientData) => {
     <br>
     TP Name - IIEST Federation<br>
     TP No - TPINT133<br>
-    Contact no – 9910729809, 08664069889<br>
-    Landline - 011-43511788,<br>
+    Contact no – 9910729809<br>
+    Landline -011-43511788, 011-4681145<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -82,9 +113,9 @@ const sendVerificationMail = (clientData) => {
     ट्रेनी का संपर्क नंबर -- ${clientData.recipientContactNo}<br>
     ट्रेनी का जन्मतिथि -- ${clientData.dob}<br>
     ट्रेनी का आधार नं -- ${clientData.aadharNo}<br>
-    ट्रेनी का पैनकार्ड नं -- ${clientData.pancard}<br>
+    ${clientData.pancard ? ('ट्रेनी का पैनकार्ड नं -- ' + clientData.pancard + '<br>') : ''}
 
-    <p>आपके प्रशिक्षण की तारीख की संभावित तिथि ${formattedNextWeek} है। अंतिम तारीख और प्रशिक्षण स्थल और समय का विवरण आपको IIEST-FSSAI प्रशिक्षण कार्यक्रम की उपलब्धता के आधार पर मैसेज और कॉल के माध्यम से 2-3 दिन पहले उपलब्ध कराया जाएगा।</p>
+    <p>आपके प्रशिक्षण की तारीख की संभावित तिथि ${formattedNextMonth} है। अंतिम तारीख और प्रशिक्षण स्थल और समय का विवरण आपको IIEST-FSSAI प्रशिक्षण कार्यक्रम की उपलब्धता के आधार पर मैसेज और कॉल के माध्यम से 2-3 दिन पहले उपलब्ध कराया जाएगा।</p>
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
@@ -93,8 +124,8 @@ const sendVerificationMail = (clientData) => {
     <br>
     टीपी नाम - IIEST फेडरेशन<br>
     टीपी नंबर - TPINT133<br>
-    संपर्क नंबर- 9910729809, 08664069889<br>
-    लैंडलाइन  - 011-43511788,<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   } else if (clientData.product == 'foscos') {
@@ -128,8 +159,8 @@ const sendVerificationMail = (clientData) => {
     <br>
     TP Name - IIEST Federation<br>
     TP No - TPINT133<br>
-    Contact no – 9910729809, 08664069889<br>
-    Landline - 011-43511788,<br>
+    Contact no – 9910729809<br>
+    Landline - 011-43511788, 011-4681145<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -162,19 +193,19 @@ const sendVerificationMail = (clientData) => {
     <br>
     टीपी नाम - IIEST फेडरेशन<br>
     टीपी नंबर - TPINT133<br>
-    संपर्क नंबर- 9910729809, 08664069889<br>
-    लैंडलाइन  - 011-43511788,<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
-  } else if (clientData.product == 'fostac_enrollment') {
+  } else if (clientData.product == 'training_date_allotment') {
 
     subject = `IIEST Federation - Fostac Training Venue and Date`;
-    content = `<p>Dear ${clientData.recipientName},</p>
+    content = `<p>Dear Customer,</p>
     <p>Welcome to the IIEST Federation,<br>
     Scheme implementing partner of Govt. Of India.</p>
-    <p>We are pleased to inform you that your FOSTAC training session has been scheduled for ${clientData.fostacTrainingDate}, at the ${clientData.venue} venue. The training will commence promptly as per the scheduled time, and we kindly request your punctual attendance.</p>
+    <p>We are pleased to inform you that your FOSTAC training session has been scheduled for ${clientData.trainingDate}, at the ${clientData.venue} venue. The training will commence promptly as per the scheduled time, and we kindly request your punctual attendance.</p>
     <br>
-    Training Date -- ${clientData.fostacTrainingDate}<br>
+    Training Date -- ${clientData.trainingDate}<br>
     Venue -- ${clientData.venue}
     <br>
     <p>Should you have any questions or require further information, please do not hesitate to contact us.</p>
@@ -183,18 +214,18 @@ const sendVerificationMail = (clientData) => {
     <br>
     TP Name - IIEST Federation<br>
     TP No - TPINT133<br>
-    Contact no – 9910729809, 08664069889<br>
-    Landline - 011-43511788,<br>
+    Contact no – 9910729809<br>
+    Landline - 011-43511788, 011-4681145<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
-    <p>प्रिय ${clientData.recipientName},</p>
+    <p>प्रिय ग्राहक,</p>
     <p>IIEST फेडरेशन में आपका स्वागत है,<br>
     भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
-    <p>हमें आपको सूचित करते हुए खुशी हो रही है कि आपका फोस्टैक प्रशिक्षण सत्र ${clientData.fostacTrainingDate} को ${clientData.venue} स्थल पर निर्धारित किया गया है। प्रशिक्षण निर्धारित समय के अनुसार तुरंत शुरू होगा, और हम आपसे समय पर उपस्थिति का अनुरोध करते हैं।</p>
+    <p>हमें आपको सूचित करते हुए खुशी हो रही है कि आपका फोस्टैक प्रशिक्षण सत्र ${clientData.trainingDate} को ${clientData.venue} स्थल पर निर्धारित किया गया है। प्रशिक्षण निर्धारित समय के अनुसार तुरंत शुरू होगा, और हम आपसे समय पर उपस्थिति का अनुरोध करते हैं।</p>
     <br>
-    Training Date -- ${clientData.fostacTrainingDate}<br>
+    Training Date -- ${clientData.trainingDate}<br>
     Venue -- ${clientData.venue}
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
@@ -204,11 +235,102 @@ const sendVerificationMail = (clientData) => {
     <br>
     टीपी नाम - IIEST फेडरेशन<br>
     टीपी नंबर - TPINT133<br>
-    संपर्क नंबर- 9910729809, 08664069889<br>
-    लैंडलाइन  - 011-43511788,<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
-  } else if (clientData.product == 'hra') {
+  }
+  else if (clientData.product == 'fostac_enrollment') {
+
+    subject = `IIEST Federation - Fostac Training Venue and Date`;
+    content = `<p>Dear ${clientData.recipientName},</p>
+    <p>Welcome to the IIEST Federation,<br>
+    Scheme implementing partner of Govt. Of India.</p>
+    <p>We are pleased to inform you that your enrollment number for FOSTAC training session that been scheduled for ${clientData.fostacTrainingDate} is generated and attached with this mail,The training will commence promptly as per the scheduled time, and we kindly request your punctual attendance.</p>
+    <br>
+    Training Date -- ${clientData.fostacTrainingDate}<br>
+    EnrollmentNumber -- ${clientData.enrollmentNumber}<br>
+    Venue -- ${clientData.venue}
+    <br>
+    <p>Should you have any questions or require further information, please do not hesitate to contact us.</p>
+    <p>Regards,<br>
+    IIEST Federation</p>
+    <br>
+    TP Name - IIEST Federation<br>
+    TP No - TPINT133<br>
+    Contact no – 9910729809<br>
+    Landline - 011-43511788, 011-4681145<br>
+    Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br><br>
+    <hr>
+    <br>
+    <p>प्रिय ${clientData.recipientName},</p>
+    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
+    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
+    <p>
+    सूचित किया जाता है कि आपका FOSTAC प्रशिक्षण सत्र के लिए पंजीकरण संख्या ${clientData.fostacTrainingDate} के अनुसार निर्मित किया गया है और इस मेल के साथ संलग्न किया गया है। प्रशिक्षण सत्र समय सारणी के अनुसार बिना किसी देरी के शीघ्र होगा, और हम आपके समय पर उपस्थिति का अनुरोध करते हैं।</p>
+    <br>
+    Training Date -- ${clientData.fostacTrainingDate}<br>
+    EnrollmentNumber -- ${clientData.enrollmentNumber}<br>
+    Venue -- ${clientData.venue}
+    <br>
+    <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
+    <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p>"धन्यवाद,<br>
+    IIEST Federation</p>
+    <br>
+    टीपी नाम - IIEST फेडरेशन<br>
+    टीपी नंबर - TPINT133<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145br>
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+
+  }
+  else if (clientData.product == 'fostac_attendance') {
+
+    subject = `IIEST Federation - Fostac Training Result`;
+    content = `<p>Dear ${clientData.recipientName},</p>
+    <p>Welcome to the IIEST Federation,<br>
+    Scheme implementing partner of Govt. Of India.</p>
+    <p>We are pleased to inform you that the results of your FOSTAC training, conducted on ${clientData.fostacTrainingDate} at ${clientData.venue}, have been received.</p>
+    <br>
+    Attendance Status -- ${clientData.attendance_status}<br>
+    Marks -- ${clientData.marks} <br>
+    Your Certificate will we sent in few days(If Passed)
+    <br>
+    <p>If you have any questions or require further information, please do not hesitate to contact us.</p>
+    <p>Regards,<br>
+    IIEST Federation</p>
+    <br>
+    TP Name - IIEST Federation<br>
+    TP No - TPINT133<br>
+    Contact no – 9910729809<br>
+    Landline - 011-43511788, 011-4681145<br>
+    Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br><br>
+    <hr>
+    <br>
+    <p>प्रिय ${clientData.recipientName},</p>
+    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
+    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
+    <p>हमें खुशी है कि आपको सूचित किया जा रहा है कि आपकी FOSTAC प्रशिक्षण का परिणाम, ${clientData.venue} पर ${clientData.fostacTrainingDate} को किया गया था, प्राप्त हो गया है।</p>
+    Attendance Status -- ${clientData.attendance_status}<br>
+    Marks -- ${clientData.marks} <br>
+    आपका प्रमाणपत्र कुछ दिनों में भेजा जाएगा (यदि पास हुआ)।
+    <br>
+    <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
+    <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p>"धन्यवाद,<br>
+    IIEST Federation</p>
+    <br>
+    टीपी नाम - IIEST फेडरेशन<br>
+    टीपी नंबर - TPINT133<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+
+  }
+  else if (clientData.product == 'hra') {
 
     subject = `IIEST Federation - Information Verified Successfuly`;
     content = `<p>Dear ${clientData.managerName},</p>
@@ -241,8 +363,8 @@ const sendVerificationMail = (clientData) => {
     <br>
     TP Name - IIEST Federation<br>
     TP No - TPINT133<br>
-    Contact no – 9910729809, 08664069889<br>
-    Landline - 011-43511788,<br>
+    Contact no – 9910729809<br>
+    Landline - 011-43511788, 011-4681145<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -277,8 +399,8 @@ const sendVerificationMail = (clientData) => {
     <br>
     टीपी नाम - IIEST फेडरेशन<br>
     टीपी नंबर - TPINT133<br>
-    संपर्क नंबर- 9910729809, 08664069889<br>
-    लैंडलाइन  - 011-43511788,<br>
+    संपर्क नंबर- 9910729809<br>
+    लैंडलाइन  - 011-43511788, 011-4681145<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }

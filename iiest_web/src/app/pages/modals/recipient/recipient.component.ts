@@ -426,9 +426,10 @@ export class RecipientComponent implements OnInit {
             pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$') ]],
             kob: ['', Validators.required],
             food_handlers: ['', Validators.required],
-            fostac_certificate: ['',[ Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
-            foscos_license: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]]
+            fostac_certificate: ['',[ Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]],
+            foscos_license: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]]
           });
+          this.listCount = this.fboData.hraInfo.shops_no;
       }
     this.excelForm = this.formBuilder.group({
       excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],

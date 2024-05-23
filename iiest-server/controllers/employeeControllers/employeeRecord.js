@@ -32,13 +32,13 @@ exports.employeeRecord = async (req, res) => {
                                 },
                                 {
                                     $add: [
-                                        {$toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] }},
+                                        { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } },
                                         {
                                             $cond: [
                                                 {
                                                     $and: [
                                                         { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
-                                                        { $ne: [{ $toInt:{ $ifNull: ["$foscosInfo.water_test_fee", 0] }}, 0] } // Check if water_test_fee is not 0
+                                                        { $ne: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 0] } // Check if water_test_fee is not 0
                                                     ]
                                                 },
                                                 {
@@ -78,13 +78,13 @@ exports.employeeRecord = async (req, res) => {
                                         },
                                         {
                                             $add: [
-                                                {$toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] }},
+                                                { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } },
                                                 {
                                                     $cond: [
                                                         {
                                                             $and: [
                                                                 { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
-                                                                { $ne: [{ $toInt:{ $ifNull: ["$foscosInfo.water_test_fee", 0] }}, 0] } // Check if water_test_fee is not 0
+                                                                { $ne: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 0] } // Check if water_test_fee is not 0
                                                             ]
                                                         },
                                                         {
@@ -96,7 +96,7 @@ exports.employeeRecord = async (req, res) => {
                                                 }
                                             ]
                                         },
-                                         {
+                                        {
                                             $multiply: [
                                                 { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } },
                                                 { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
@@ -114,8 +114,8 @@ exports.employeeRecord = async (req, res) => {
                                     $sum: [
                                         {
                                             $multiply: [
-                                                { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] },
-                                                { $ifNull: ["$fostacInfo.recipient_no", 0] },
+                                                { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                                { $toInt: { $ifNull: ["$fostacInfo.recipient_no", 0] } },
                                             ]
                                         },
                                         {
@@ -126,13 +126,13 @@ exports.employeeRecord = async (req, res) => {
                                         },
                                         {
                                             $add: [
-                                                {$toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] }},
+                                                { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } },
                                                 {
                                                     $cond: [
                                                         {
                                                             $and: [
                                                                 { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
-                                                                { $ne: [{ $toInt:{ $ifNull: ["$foscosInfo.water_test_fee", 0] }}, 0] } // Check if water_test_fee is not 0
+                                                                { $ne: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 0] } // Check if water_test_fee is not 0
                                                             ]
                                                         },
                                                         {
@@ -235,9 +235,25 @@ exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
-            salesInfo = await salesModel.find({}).populate([{ path: 'fboInfo', options: { lean: true } }, { path: 'employeeInfo', options: { lean: true } }]).lean();
+            salesInfo = await salesModel.find({}).populate([
+                {
+                    path: 'fboInfo',
+                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil',
+                    options: { lean: true }
+                },
+                {
+                    path: 'employeeInfo',
+                    select: 'employee_name',
+                    options: { lean: true }
+                }
+            ]).lean();
         } else {
-            salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate('fboInfo').select('-employeeInfo');
+            salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate(
+                {
+                    path: 'fboInfo',
+                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil'
+                }
+            ).select('-employeeInfo');
         }
         return res.status(200).json({ salesInfo });
     } catch (error) {

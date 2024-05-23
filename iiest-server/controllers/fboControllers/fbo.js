@@ -23,6 +23,7 @@ exports.fboPayment = async (req, res) => {
 
     const userInfo = await employeeSchema.findById(req.params.id);
     const signatureFile = userInfo.signatureImage;
+    const officerName = userInfo.employee_name;
 
     if (!signatureFile) {
       success = false;
@@ -49,9 +50,8 @@ exports.fboPayment = async (req, res) => {
 
     const formBody = req.body;
     const createrId = req.params.id
-    req.session.fboFormData = { ...formBody, createrObjId: createrId, signatureFile };
 
-    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile } });
+    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, officerName: officerName } });
 
     if (req.user.employee_id != 'IIEST/FD/0176') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
@@ -86,7 +86,7 @@ exports.fboPayReturn = async (req, res) => {
         let sessionData = await sessionModel.findById(sessionId);
         const fetchedFormData = sessionData.data;
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = fetchedFormData;
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo, officerName } = fetchedFormData;
         fetchedFormData
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
@@ -125,7 +125,7 @@ exports.fboPayReturn = async (req, res) => {
           totalGST += fostacGST;
 
           const qty = fostac_training.recipient_no;
-          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream));
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName));
         }
 
         if (product_name.includes('Foscos')) {
@@ -137,7 +137,7 @@ exports.fboPayReturn = async (req, res) => {
           extraFee += foscosFixedCharge;
 
           const qty = foscos_training.shops_no;
-          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream));
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName));
         }
 
         if (product_name.includes('HRA')) {
@@ -148,7 +148,7 @@ exports.fboPayReturn = async (req, res) => {
           totalGST += hygieneGST;
 
           const qty = hygiene_audit.shops_no;
-          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream));
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName));
         }
 
         const fboEntry = await fboModel.create({
@@ -228,6 +228,8 @@ exports.fboRegister = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true })
     }
 
+    const officerName = req.user.employee_name;
+
     if (req.user.employee_id != 'IIEST/FD/0176') {
       const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
       
@@ -293,7 +295,7 @@ exports.fboRegister = async (req, res) => {
 
       const qty = fostac_training.recipient_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', foscos_training, signatureFile, invoiceUploadStream));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', foscos_training, signatureFile, invoiceUploadStream, officerName));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }
@@ -308,7 +310,7 @@ exports.fboRegister = async (req, res) => {
 
       const qty = foscos_training.shops_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }
@@ -322,7 +324,7 @@ exports.fboRegister = async (req, res) => {
 
       const qty = hygiene_audit.shops_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }

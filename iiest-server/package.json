@@ -28,6 +28,8 @@
     "multer": "^1.4.4",
     "nodemailer": "^6.9.5",
     "nodemon": "^3.0.2",
+    "puppeteer": "^22.9.0",
+    "puppeteer-html-pdf": "^4.0.8",
     "sha256": "^0.2.0",
     "to-words": "^3.7.0",
     "uniqid": "^5.4.0"

@@ -2,20 +2,30 @@ const multer = require('multer')
 
 
 //configuration of diskstorage for fostac certificate
-const fostacCertificate = multer.diskStorage({
+const ticketStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log(file);
-    cb(null, 'documents/fostac'); // Destination folder for storing uploaded files
+    console.log(req.body);
+    let destination;
+    if(req.body.ticketType == 'Fostac Cerificate') {
+      destination = 'documents/fostac';
+    } else if(req.body.ticketType == 'Foscos License') {
+      destination = 'documents/foscos';
+    } else if(req.body.ticketType == 'Audit Report') {
+      destination = 'documents/hra';
+    }
+    cb(null, destination); // Destination folder for storing uploaded files
   },
   filename: function (req, file, cb) {
-    cb(null, new Date().getTime() + '_fostac_certificate.pdf');
+    cb(null, new Date().getTime() + '.' + getExtention(file.originalname));
   }
 });
 
-const fostacDocuments = multer({ storage: fostacCertificate });
+const tickets = multer({ storage: ticketStorage });
 
 const foscosDocumentsStorage = multer.diskStorage({
+  
   destination: function (req, file, cb) {
+    console.log(file);
     cb(null, 'documents/foscos');
   },
   filename: function (req, file, cb) {
@@ -42,5 +52,5 @@ function getExtention(fileName){
   return ext
 }
 
-module.exports = { fostacDocuments, foscosDocuments, hraDocuments }
+module.exports = { tickets, foscosDocuments, hraDocuments }
 
