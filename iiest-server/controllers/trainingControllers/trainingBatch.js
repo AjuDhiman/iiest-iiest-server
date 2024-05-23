@@ -3,6 +3,7 @@ const AuditBatchModel = require("../../models/auditModels/auditBatchModel");
 const { recipientModel, hygieneShopModel } = require("../../models/fboModels/recipientSchema");
 const { fostacVerifyModel, hraVerifyModel } = require("../../models/operationModels/verificationSchema");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
+const { sendVerificationMail } = require("../../operations/sendMail");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 exports.trainingBatch = async (req, res) => {
@@ -85,7 +86,8 @@ exports.getTrainingBatchData = async (req, res) => {
     try {
         let success = false;
 
-        const batches = await TrainingBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'recipientInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } }  });;
+        const batches = await TrainingBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'recipientInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } }  });
+        
 
         if (!batches) {
             return res.status(204).json({ message: 'Data Not Found' })
@@ -114,6 +116,8 @@ exports.updateBatch = async (req, res) => {
 
         const updatedBatch = await TrainingBatchModel.findByIdAndUpdate(batchId, {trainer: trainer, venue: venue, trainingDate: training_date});
 
+        let emailArr = [];
+
         if(!updatedBatch) {
             success = false;
             return res.status(401).json({success: false, incompleteDataErr: true});
@@ -134,11 +138,23 @@ exports.updateBatch = async (req, res) => {
             } else {
                 action = `Fostac training date(${getFormatedDate(updatedBatch.trainingDate)}) Given`
             }
+
+            emailArr.push(batchInfo.candidateDetails[i].email);
     
             await logAudit(req.user._id, "recipientdetails", batchInfo.candidateDetails[i].recipientInfo, prevVal, currentVal, action);
     
             // code for tracking ends
         }
+
+        let clientData = {
+            product: 'training_date_allotment',
+            trainingDate: training_date,
+            trainer: trainer,
+            venue: venue,
+            recipientEmail: emailArr,
+        }
+
+        sendVerificationMail(clientData);
 
         res.status(200).json({success: true, batchInfo: updatedBatch});
 

@@ -7,7 +7,7 @@
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
 
-<div class="border-top border-dark-subtle" *ngIf="recipientCount!==listCount">
+<div class="border-top border-dark-subtle" *ngIf="recipientCount!==listCount && shopsCount!==listCount">
   <div *ngIf="serviceType !== 'HRA'" class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
     <div class="form-check form-switch">
       <input class="form-check-input cursor-pointer" type="checkbox" role="switch" (change)="ChangeFormType($event)"
@@ -223,7 +223,7 @@
           <div *ngIf="submitted && recipient['fostac_certificate'].errors" class="invalid-feedback">
             <div *ngIf="recipient['fostac_certificate'].errors['required']">Fostac Certificate is required.(jpeg or png)
             </div>
-            <div *ngIf="recipient['fostac_certificate'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or
+            <div *ngIf="recipient['fostac_certificate'].errors['invalidFileType']">Invalid file type. Only .pdf, .png, .jpg or
               .jpeg files
               are allowed.</div>
           </div>
@@ -235,7 +235,7 @@
             [ngClass]="{ 'is-invalid': submitted && recipient['foscos_license'].errors }" />
           <div *ngIf="submitted && recipient['foscos_license'].errors" class="invalid-feedback">
             <div *ngIf="recipient['foscos_license'].errors['required']">Foscos License is required.(jpeg or png)</div>
-            <div *ngIf="recipient['foscos_license'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or
+            <div *ngIf="recipient['foscos_license'].errors['invalidFileType']">Invalid file type. Only .pdf, .png, .jpg or
               .jpeg
               files
               are allowed.</div>

@@ -26,6 +26,10 @@ const ticketDelivery = new Schema({
             }
         }
     },
+    ticketType: {
+        type: String,
+        required: true
+    },
     issueDate: {
         type: Date,
         required: function () {
