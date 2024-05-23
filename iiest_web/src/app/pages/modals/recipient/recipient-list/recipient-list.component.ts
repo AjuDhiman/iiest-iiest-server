@@ -96,10 +96,10 @@ export class RecipientListComponent {
       formData.append('aadharPhoto', file);
     });
 
-    this._registerService.uploadShopPhoto(shopId, formData).subscribe({
+    this._registerService.uploadAadharPhoto(shopId, formData).subscribe({
       next: res => {
         this.activeModal.close();
-        this._toastrService.success('shopPhoto Uploaded')
+        this._toastrService.success('Aadhar Uploaded')
       }
     })
   }

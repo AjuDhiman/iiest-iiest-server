@@ -234,8 +234,9 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       return;
     }
     formData.append('ticket_status', this.certificationform['ticket_status'].value);
-    formData.append('certificate', this.certificate);
     formData.append('issue_date',this.certificationform['issue_date'].value);
+    formData.append('ticketType',this.ticketType);
+    formData.append('certificate', this.certificate);
     console.log(formData);
 
     this._registerService.closeTicket(this.candidateID, formData).subscribe({
