@@ -259,24 +259,31 @@ export class RecipientComponent implements OnInit {
   }
 
   getSaleRecipientsList(saleId: string): void {
+    this.loading = true;
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
+        this.loading = false;
         if (res.recipientsList.length) {
           this.showPagination = true;
           this.recipientData = res.recipientsList;
           this.recipientCount = res.recipientsList.length;
         }
+      },
+      error: err => {
+        this.loading = false;
       }
     });
   }
 
   getSaleShopsList(saleId: string): void {
+    this.loading = false;
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
         if (res.shopsList.length) {
           this.shopData = res.shopsList
           this.showPagination = true;
           this.shopsCount = res.shopsList.length;
+          this.loading = false;
         }
       }
     });
@@ -284,12 +291,14 @@ export class RecipientComponent implements OnInit {
   }
 
   getHygieneShopList(saleId: string) {
+    this.loading = true;
     this.getDataServices.getHygieneSaleShops(saleId).subscribe({
       next: res => {
         if (res.shopsList.length) {
           this.shopData = res.shopsList
           this.showPagination = true;
           this.shopsCount = res.shopsList.length;
+          this.loading = false;
         }
       }
     })
@@ -312,17 +321,20 @@ export class RecipientComponent implements OnInit {
   }
 
   submitExcel() {
+    this.loading = true;
     this.fboID = this.fboData._id
     if (this.serviceType === 'fostac') {
       this._registerService.addFboRecipent(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
             this._toastrService.success('', 'Records Added Successfully.');
+            this.loading = false;
             this.closeModal();
           }
         },
         error: (err) => {
           let errorObj = err.error;
+          this.loading = false;
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
@@ -330,17 +342,19 @@ export class RecipientComponent implements OnInit {
           } else if (errorObj.phoneErr) {
             this._toastrService.error('', 'This Phone Number Already Exists');
           }
-        }
+        },
       })
     } else if (this.serviceType === 'foscos') {
       this._registerService.addFboShopByExcel(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
+            this.loading = false;
             this._toastrService.success('', 'Record Added Successfully.');
             this.closeModal();
           }
         },
         error: (err) => {
+          this.loading = false;
           let errorObj = err.error;
           if (errorObj.userError) {
             this._registerService.signout();

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginComponent } from '../login/login.component';
-import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInfo, faPhone } from '@fortawesome/free-solid-svg-icons';
+import { faPeopleGroup, faBuilding, faLocationDot, faHome, faSignIn, faCircleInfo, faPhone, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component';
@@ -14,13 +14,13 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LandingpageComponent implements OnInit, AfterViewInit {
 
-  faPeopleGroup = faPeopleGroup;
-  faBuilding = faBuilding;
-  faLocationDot = faLocationDot;
-  faHome = faHome;
-  faSignIn = faSignIn;
-  faCircleInfo = faCircleInfo;
-  faPhone = faPhone;
+  faPeopleGroup: IconDefinition = faPeopleGroup;
+  faBuilding: IconDefinition = faBuilding;
+  faLocationDot: IconDefinition = faLocationDot;
+  faHome: IconDefinition = faHome;
+  faSignIn: IconDefinition = faSignIn;
+  faCircleInfo: IconDefinition = faCircleInfo;
+  faPhone: IconDefinition = faPhone;
   isToken: boolean = false;
   isMobileNav: boolean = false;
 

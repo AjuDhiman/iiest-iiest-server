@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faBuilding, faCircleInfo, faHome, faLocationDot, faPeopleGroup, faPhone, faSignIn } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faBuilding, faCircleInfo, faHome, faLocationDot, faPeopleGroup, faPhone, faSignIn } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { RegisterService } from 'src/app/services/register.service';
@@ -13,13 +13,13 @@ import { OnboardModalComponent } from '../onboard-modal/onboard-modal.component'
   styleUrls: ['./privacy-policy.component.scss']
 })
 export class PrivacyPolicyComponent implements OnInit, AfterViewInit {
-  faPeopleGroup = faPeopleGroup;
-  faBuilding = faBuilding;
+  faPeopleGroup: IconDefinition = faPeopleGroup;
+  faBuilding: IconDefinition = faBuilding;
   faLocationDot = faLocationDot;
-  faHome = faHome;
-  faSignIn = faSignIn;
-  faCircleInfo = faCircleInfo;
-  faPhone = faPhone;
+  faHome: IconDefinition = faHome;
+  faSignIn: IconDefinition = faSignIn;
+  faCircleInfo: IconDefinition = faCircleInfo;
+  faPhone: IconDefinition = faPhone;
   isToken: boolean = false;
   isMobileNav: boolean = false;
 
