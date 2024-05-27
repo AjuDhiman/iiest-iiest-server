@@ -141,7 +141,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
 
   setTentativeTrainingDate(salesDate: string): void {
     const date = new Date(salesDate);
-    date.setDate(date.getDate() + 7);
+    date.setMonth(date.getMonth() + 1);
     //we will increase training date by 1 while we find any holiday or sunday on that day
     while (ourHolidays.find((item: any) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0) {
       date.setDate(date.getDate() + 1);
