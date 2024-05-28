@@ -13,13 +13,13 @@ import { days, delhiTrainingLocations, months, trainers, venues } from 'src/app/
   templateUrl: './batch-list.component.html',
   styleUrls: ['./batch-list.component.scss']
 })
-export class BatchListComponent implements OnInit{
+export class BatchListComponent implements OnInit {
   serviceType: string = 'Catering';
   activeTab: string = 'Delhi';
   filteredData: any;
   delhiTrainingLoactions = delhiTrainingLocations;
   trainers: string[] = trainers;
-  venues: {name: string, vendor: string, location: string}[] = venues;
+  venues: { name: string, vendor: string, location: string }[] = venues;
   totalCount: number = 1;
 
   typeData: any;
@@ -72,22 +72,22 @@ export class BatchListComponent implements OnInit{
   }
 
 
-  onSubmit($event:any) { //this mehord sets or updates the training dates
-  
+  onSubmit($event: any) { //this mehord sets or updates the training dates
+
     const id = $event.submitter.id;
     const training_date = this.updationForm.value[`training_date${id}`];
     const trainer = this.updationForm.value[`trainer${id}`];
     const venue = this.updationForm.value[`venue${id}`];
 
-    if(training_date == '' || venue == '' || trainer == '') { //all of these 3 are required
-      this._toastrService.warning(`${!training_date?'Training Date':''},${!venue?'Venue':''},${!trainer?'Trainer':''}, is Required`)
+    if (training_date == '' || venue == '' || trainer == '') { //all of these 3 are required
+      this._toastrService.warning(`${!training_date ? 'Training Date' : ''},${!venue ? 'Venue' : ''},${!trainer ? 'Trainer' : ''}, is Required`)
       return;
     }
 
     //update the training Batch 
-    this._registerService.updateTrainingBatch(id, {training_date, trainer, venue}).subscribe({
+    this._registerService.updateTrainingBatch(id, { training_date, trainer, venue }).subscribe({
       next: res => {
-
+        this.getCases();
       }
     });
 
@@ -99,45 +99,45 @@ export class BatchListComponent implements OnInit{
     this.filterData();
   }
 
-  setServiceType(type: string){
-    this.serviceType=type;
+  setServiceType(type: string) {
+    this.serviceType = type;
     this.filterData();
   }
 
-  onTableDataChange($event:any) {
+  onTableDataChange($event: any) {
     this.pageNumber = $event
   }
 
-  getCases(){
-    if(this.listType === 'Batch') {
+  getCases() {
+    if (this.listType === 'Batch') {
       this._getDataService.getBatchListData().subscribe({
         next: res => {
           this.batchData = res.batches
-                          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-                          
-           this.batchData.forEach((batch: any) => { 
+            .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+          this.batchData.forEach((batch: any) => {
             this.editMode[batch._id] = false;
           });
           this.filterData();
         }
       });
-    } else if(this.listType === 'Audit') {
+    } else if (this.listType === 'Audit') {
       this.batchData = this.auditBatch;
       console.log(this.batchData);
       this.filterData();
     }
-    
+
   }
 
-  showCaseList(res: any){
-    this.router.navigate(['batchlist/caselist'], {state:{batchData: res, forTraining: true}});
+  showCaseList(res: any) {
+    this.router.navigate(['batchlist/caselist'], { state: { batchData: res, forTraining: true } });
   }
 
-  filterData(){
+  filterData() {
     this.resetEditMode();
-    if(this.listType === 'Batch') {
+    if (this.listType === 'Batch') {
       this.filteredData = this.batchData.filter((item: any) => item.category === this.serviceType && item.location === this.activeTab);
-    } else if(this.listType === 'Audit') {
+    } else if (this.listType === 'Audit') {
       this.filteredData = this.batchData.filter((item: any) => item.location === this.activeTab);
     }
   }
@@ -145,9 +145,9 @@ export class BatchListComponent implements OnInit{
   openEditMode(id: any, index: number) {
     let selectedBatch = this.batchData.find((item: any) => item._id == id);
     this.editMode[id] = true;
-    this.updationForm.addControl(`training_date${id}`, this.formBuilder.control(selectedBatch.trainingDate?selectedBatch.trainingDate:''));
-    this.updationForm.addControl(`trainer${id}`, this.formBuilder.control(selectedBatch.trainer?selectedBatch.trainer:''));
-    this.updationForm.addControl(`venue${id}`, this.formBuilder.control(selectedBatch.venue?selectedBatch.venue:''));
+    this.updationForm.addControl(`training_date${id}`, this.formBuilder.control(selectedBatch.trainingDate ? selectedBatch.trainingDate : ''));
+    this.updationForm.addControl(`trainer${id}`, this.formBuilder.control(selectedBatch.trainer ? selectedBatch.trainer : ''));
+    this.updationForm.addControl(`venue${id}`, this.formBuilder.control(selectedBatch.venue ? selectedBatch.venue : ''));
   }
 
   closeEditMode(id: string) {
@@ -161,14 +161,17 @@ export class BatchListComponent implements OnInit{
   getFormatedDate(date: string): string {
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
+    const hours = String(originalDate.getHours()).padStart(2, '0');
+    const minutes = String(originalDate.getMinutes()).padStart(2, '0');
+    const ampm = originalDate.getHours() >= 12 ? 'PM' : 'AM';
     let formattedDate;
-    if(Math.floor((new Date().getTime() - originalDate.getTime())/(24*60*60*1000)) < 7){
-      formattedDate = days[originalDate.getDay()];
+    if (Math.floor((new Date().getTime() - originalDate.getTime()) / (24 * 60 * 60 * 1000)) < 7) {
+      formattedDate = `${hours}:${minutes} ${ampm}, ${days[originalDate.getDay()]}`;
     } else {
       const month = months[originalDate.getMonth()];
       const day = String(originalDate.getDate()).padStart(2, '0');
-      formattedDate = `${day}-${month}-${year}`;
-    }  
+      formattedDate = `${hours}:${minutes} ${ampm}, ${day}-${month}-${year}`;
+    }
     return formattedDate;
   }
 
@@ -179,14 +182,14 @@ export class BatchListComponent implements OnInit{
     });
   }
 
-  initializeListType(): void{
+  initializeListType(): void { //this methord decides wich list type to show batch or audit on the basis of user's pannel
     const user = this._registerService.LoggedInUserData();
     const parsedUser = JSON.parse((user as string));
     const panelType = parsedUser.panel_type;
     console.log(panelType);
-    if(panelType === 'FSSAI Trainer Panel' || panelType === 'Fostac Panel') {
+    if (panelType === 'FSSAI Trainer Panel' || panelType === 'Fostac Panel') {
       this.listType = 'Batch'
-    } else if(panelType === 'HRA Panel') {
+    } else if (panelType === 'HRA Panel') {
       this.listType = 'Audit'
     }
     console.log(this.listType);

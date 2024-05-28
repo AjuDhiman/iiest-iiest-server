@@ -14,7 +14,8 @@ export class FoscosComponent implements OnInit {
   @Output() foscosFixedCharge = new EventEmitter<number>();
   @Output() foscosGSTAmount = new EventEmitter<number>();
   waterTestFee = waterTestFee;
-  clientType = clientType;
+  // clientType = clientType;
+  clientType = ['General Client', 'Corporate Client'];
   paymentMode = paymentMode;
   licenceType = licenceType;
   serviceNames = serviceNames;
@@ -30,14 +31,17 @@ export class FoscosComponent implements OnInit {
   constructor(private rootFormGroup: FormGroupDirective) { }
   ngOnInit(): void {
     this.foscos_training = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
+    this.foscos_training.patchValue({ 'shops_no': this.minValue });
   }
 
   onServiceChange($event: any) {
     let serviceType = $event.target.value;
     let licenceCat = this.foscos_training.value.license_category;
     let duration = this.foscos_training.value.license_duration;
-    let clientType = this.foscos_training.value.foscos_client_type;
-    let shopsCount = this.foscos_training.value.shops_no;
+    // let clientType = this.foscos_training.value.foscos_client_type;
+    let clientType = 'General Client';
+    // let shopsCount = this.foscos_training.value.shops_no;
+    let shopsCount: any = 1; //we used static shop count because we changed our requirement of client type
     let waterTestAmnt = this.foscos_training.value.water_test_fee;
     if (licenceCat != '') {
       this.getProcessAmnt(serviceType, licenceCat);
@@ -62,8 +66,10 @@ export class FoscosComponent implements OnInit {
     let serviceType = this.foscos_training.value.foscos_service_name;
     let licenceCat = $event.target.value;
     let duration = this.foscos_training.value.license_duration;
-    let clientType = this.foscos_training.value.foscos_client_type;
-    let shopsCount = this.foscos_training.value.shops_no;
+    // let clientType = this.foscos_training.value.foscos_client_type;
+    // let shopsCount = this.foscos_training.value.shops_no;
+    let clientType = 'General Client';
+    let shopsCount: any = 1;
     let waterTestAmnt = this.foscos_training.value.water_test_fee;
     if (serviceType != '') {
       this.getProcessAmnt(serviceType, licenceCat);
@@ -89,8 +95,10 @@ export class FoscosComponent implements OnInit {
     let serviceType = this.foscos_training.value.foscos_service_name;
     let licenceCat = this.foscos_training.value.license_category;
     let duration = Number($event.target.value);
-    let clientType = this.foscos_training.value.foscos_client_type;
-    let shopsCount = this.foscos_training.value.shops_no;
+    // let clientType = this.foscos_training.value.foscos_client_type;
+    // let shopsCount = this.foscos_training.value.shops_no;
+    let clientType = 'General Client'
+    let shopsCount: any = 1
     let waterTestAmnt = this.foscos_training.value.water_test_fee;
     if (serviceType !== '' && licenceCat !== '') {
       this.totalFixedCharge = this.fixedChargeIntoDuration(serviceType, licenceCat, duration);
@@ -204,7 +212,8 @@ export class FoscosComponent implements OnInit {
     let totalAmntwithWaterFee
     // totalAmntwithWaterFee = this.foscosTotalAmnt + this.totalFixedCharge + this.waterTestAmnt; this line is commented on 03-05-2024 beacuse this is giving error in 
     // water test amount , uncomment if next line liges error and comment next line
-    totalAmntwithWaterFee = this.GSTandTotalAmnt(this.foscos_training.value.shops_no) + this.totalFixedCharge + this.waterTestAmnt;
+    // totalAmntwithWaterFee = this.GSTandTotalAmnt(this.foscos_training.value.shops_no) + this.totalFixedCharge + this.waterTestAmnt;
+    totalAmntwithWaterFee = this.GSTandTotalAmnt(1) + this.totalFixedCharge + this.waterTestAmnt;// shops no. are static because our client type requirement is changed
     this.foscosTotalAmount(totalAmntwithWaterFee);
   }
 

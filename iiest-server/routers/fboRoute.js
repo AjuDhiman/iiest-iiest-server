@@ -7,6 +7,7 @@ const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { foscosDocuments, hraDocuments } = require('../config/storage');
 const { createBusinessOwner, getAllBusinessOwners } = require('../controllers/boControllers/bo');
+const { getTicketsDocs } = require('../controllers/employeeControllers/employeeRecord');
 
 const eBillStorage = multer.memoryStorage() 
 const eBillUpload = multer({storage: eBillStorage});
@@ -41,5 +42,6 @@ router.get('/getclientlist', getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 
+router.get('/getticketdocs/:id', authMiddleware, getTicketsDocs); 
 
 module.exports = router;

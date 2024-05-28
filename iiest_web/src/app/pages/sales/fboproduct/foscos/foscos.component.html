@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
                 <select id="foscos_client_type" formControlName="foscos_client_type" group='foscos'
                     [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_client_type')?.errors}"
@@ -78,9 +78,9 @@
                         required
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <label for="shops_no" class="form-label">No. of shops<sup>*</sup></label>
                 <input type="number" [attr.min]="minValue" step="1" group='foscos' placeholder="No. of shops"
                     [readonly]="isReadOnly" (change)="recipientCount($event)"
@@ -90,7 +90,7 @@
                     <div *ngIf="foscos_training.get('shops_no')?.errors?.['required']">No. of Shops is required
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="col-md-3">
                 <label for="water_test_fee" class=" form-label">Water Test fee</label>

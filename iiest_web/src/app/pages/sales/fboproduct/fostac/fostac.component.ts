@@ -33,7 +33,7 @@ export class FostacComponent implements OnInit {
 
   //Client Type function for GST calculation on basis of Client.
   clienttypeFun($event: any) {
-    if ($event.target.value === 'General Client') {
+    if ($event.target.value === 'Single Recipient') {
       this.isReadOnly = true;
       this.minValue = 1;
       let TotalAmnt = this.GSTandTotalAmnt(this.minValue)

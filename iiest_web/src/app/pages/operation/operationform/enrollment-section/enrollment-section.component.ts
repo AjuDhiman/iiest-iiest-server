@@ -79,7 +79,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
         this.setTentativeTrainingDate(this.verifiedData.createdAt);
         this.enrollmentForm.patchValue({ 'venue': this.verifiedData.batchData.venue });
         this.enrollmentForm.patchValue({ 'trainer': this.verifiedData.batchData.trainer });
-        this.enrollmentForm.patchValue({ 'fostac_training_date': this.getFormatedDate(this.verifiedData.batchData.trainingDate.toString()) });
+        this.enrollmentForm.patchValue({ 'fostac_training_date': this.getFormatedDateWithTime(this.verifiedData.batchData.trainingDate.toString()) });
       }
     }
   }
@@ -120,7 +120,7 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
       next: res => {
         if (res) {
           // we want to update enrollment form's value if it's data exsists in database and disable it 
-          this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDate(res.enrolledData.fostac_training_date[0].toString()) });
+          this.enrollmentForm.patchValue({ fostac_training_date: this.getFormatedDateWithTime(res.enrolledData.fostac_training_date[0].toString()) });
           this.enrollmentForm.patchValue({ roll_no: res.enrolledData.roll_no });
           this.enrollmentForm.patchValue({ username: res.enrolledData.username });
           this.enrollmentForm.patchValue({ password: res.enrolledData.password });
@@ -157,4 +157,17 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
   }
+
+  getFormatedDateWithTime(date: string): string {
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const hours = String(originalDate.getHours()).padStart(2, '0');
+    const minutes = String(originalDate.getMinutes()).padStart(2, '0');
+    const seconds = String(originalDate.getSeconds()).padStart(2, '0');
+    const formattedDateNTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return formattedDateNTime;
+  }
+  
 }

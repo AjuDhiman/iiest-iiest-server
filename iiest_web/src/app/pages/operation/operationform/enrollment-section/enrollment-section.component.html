@@ -25,7 +25,7 @@
 
     <div class="col-md-3">
         <label for="fostac_training_date" class="form-label">Fostac Training Date</label><sup>*</sup>
-        <input type="date" placeholder="Fostac Training Date" formControlName="fostac_training_date"
+        <input type="datetime" placeholder="Fostac Training Date" formControlName="fostac_training_date"
             class="form-control form-control-sm" id="fostac_training_date" [readOnly]="true"
             [ngClass]="{ 'is-invalid': enrolled && enrollmentform['fostac_training_date'].errors }">
         <div *ngIf="enrolled && enrollmentform['fostac_training_date'].errors" class="invalid-feedback">

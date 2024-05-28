@@ -21,7 +21,7 @@ export const processAmnt = [1200, 1500];
 
 export const hraProcessingAmnt = 5000;
 
-export const clientType = ['General Client', 'Corporate Client'];
+export const clientType = ['Single Recipient', 'Multiple Recipient'];
 
 //Payment Mode
 export const paymentMode = ['Cash', 'Pay Page'];

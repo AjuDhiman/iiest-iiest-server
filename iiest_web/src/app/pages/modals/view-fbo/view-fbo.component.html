@@ -8,7 +8,7 @@
             <div class="row border border-1 p-1">
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4 title">ID</div>
+                        <div class="col-md-4 title">Shop ID</div>
                         <div class="col-md-8 data">
                             {{fboData.fboInfo.customer_id}}
                         </div>
@@ -88,7 +88,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4 title">Total Amount <br><span
+                        <div class="col-md-4 title">Total Sales Amount <br><span
                                 style="font-size: x-small; font-weight: normal;">(18%
                                 GST Inc.)</span></div>
                         <div class="col-md-8 data">
@@ -101,12 +101,12 @@
                         <div class="col-md-8 data">
                             <a *ngIf="isShowInvoice===true" class="download-link" (click)="viewInvoice()">
                                 <fa-icon class="fa-2xl text-success cursor-pointer" style="color: #5d6778;"
-                                [icon]="faFile" title="download"></fa-icon>
+                                    [icon]="faFile" title="download"></fa-icon>
                             </a>
                             <p class="text-danger" *ngIf="isShowInvoice===false">
                                 Digital invoice is not available before 31 March 2024
-                             </p>
- 
+                            </p>
+
                         </div>
                     </div>
                 </div>
@@ -189,8 +189,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Foscos License</div>
+                            <div class="col-md-6 data">
+                                <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <hr>
             </div>
 
             <div *ngIf="fboData.fostacInfo" class="row">
@@ -229,6 +237,7 @@
                         </div>
                     </div>
 
+
                     <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-3 title">Fostac Total<br><span
@@ -240,8 +249,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Fostac Cerificates</div>
+                            <div class="col-md-6 data">
+                                <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
+
             <div *ngIf="fboData.hraInfo" class="row">
                 <div class="col-md title" style="color: #1957a9;">HRA Details</div>
                 <div class="row mt-2 ml-3">
@@ -289,8 +310,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Audit Report</div>
+                            <div class="col-md-6 data">
+                                <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

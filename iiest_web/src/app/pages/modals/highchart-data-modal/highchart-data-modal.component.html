@@ -60,7 +60,8 @@
                     <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" (click)="sortBy('owner_name', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'owner_name' && sortingOrder === 'desc'}"></fa-icon>
                   </th>
-                  <th class="cell">Customer ID</th>
+                  <th class="cell">Member ID</th>
+                  <th class="cell">Shop ID</th>
                   <th class="cell">Contact no.</th>
                   <th *ngIf="!isRepetCustData" class="cell">Product Name</th>
                   <th *ngIf="!isRepetCustData" class="cell">Processing Amount</th>
@@ -113,6 +114,7 @@
                       class="truncate text-capitalize">{{employee.fboInfo.fbo_name.toLowerCase()}}</span></td>
                   <td class="cell col-2"><span
                       class="truncate text-capitalize">{{employee.fboInfo.owner_name.toLowerCase()}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.boInfo.customer_id}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.customer_id}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span

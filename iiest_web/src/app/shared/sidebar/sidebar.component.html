@@ -76,7 +76,7 @@
                         routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
-                        [title]="!isSidebarVisible && largeDisplay?'Fbo List':''">
+                        [title]="!isSidebarVisible && largeDisplay?'My Orders':''">
                         <a class="nav-link" [routerLink]="['/fbolist']">
                             <span class="nav-icon">
                                 <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="23px" height="23px"
@@ -117,7 +117,7 @@
                                     </g>
                                 </svg>
                             </span>
-                            <span class="nav-link-text">Fbo List</span>
+                            <span class="nav-link-text">My Orders</span>
                         </a>
                     </li>
                     <li *ngIf="userData && employeeRoles.includes(userData.designation)" class="nav-item"
