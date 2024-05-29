@@ -35,11 +35,11 @@
         </div>
     </div>
     <div class="col-md-3">
-        <label for="fostac_client_type" class="form-label">Client Type<sup>*</sup></label>
+        <label for="fostac_client_type" class="form-label">Recipient Type<sup>*</sup></label>
         <select id="fostac_client_type" formControlName="fostac_client_type" group='fostac'
             [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_client_type')?.errors}"
             (change)="clienttypeFun($event)" class="form-select form-select-sm">
-            <option value="" disabled selected>Select the Client Type</option>
+            <option value="" disabled selected>Select the Recipient Type</option>
             <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
             </option>
         </select>

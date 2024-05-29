@@ -1,6 +1,8 @@
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
+const { recipientModel } = require('../../models/fboModels/recipientSchema');
+const { recipientsList } = require('../fboControllers/recipient');
 
 exports.employeeRecord = async (req, res) => {
     try {
@@ -238,8 +240,13 @@ exports.employeeSalesData = async (req, res) => {
             salesInfo = await salesModel.find({}).populate([
                 {
                     path: 'fboInfo',
-                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil',
-                    options: { lean: true }
+                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil boInfo',
+                    options: { lean: true },
+                    populate: {
+                        path: 'boInfo',
+                        select: 'customer_id',
+                        options: { lean: true }
+                    }
                 },
                 {
                     path: 'employeeInfo',
@@ -251,14 +258,159 @@ exports.employeeSalesData = async (req, res) => {
             salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate(
                 {
                     path: 'fboInfo',
-                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil'
+                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil boInfo',
+                    options: { lean: true },
+                    populate: {
+                        path: 'boInfo',
+                        select: 'customer_id',
+                        options: { lean: true }
+                    }
                 }
             ).select('-employeeInfo');
         }
+
+        // salesInfo = await salesModel.aggregate([
+        //     {
+        //         $match: {
+        //             employeeInfo: req.user._id
+        //         }
+        //     },
+        //     {
+        //         $lookup: {
+        //             from: 'fbo_registers',
+        //             localField: 'fboInfo',
+        //             foreignField: '_id',
+        //             as: 'fboInfo'
+        //         },
+        //     },
+        //     {
+        //         $unwind: "$fboInfo"
+        //     },
+        //     {
+        //         $lookup: {
+        //             from: 'bo_registers',
+        //             localField: 'fboInfo.boInfo',
+        //             foreignField: '_id',
+        //             as: 'fboInfo.boInfo'
+        //         },
+        //     },
+        //     {
+        //         $unwind: "$fboInfo.boInfo"
+        //     },
+        //     // {
+        //     //     $lookup: {
+        //     //         from: 'staff_registers',
+        //     //         localField: 'employeeInfo',
+        //     //         foreignField: '_id',
+        //     //         as: 'employeeInfo'
+        //     //     }
+        //     // },
+        //     // {
+        //     //     $unwind: "$employeeInfo"
+        //     // },
+        //     {
+        //         $group: {
+        //             _id: "$_id",
+        //             product_name: {
+        //                 $first: "$product_name"
+        //             },
+        //             payment_mode: {
+        //                 $first: "$payment_mode"
+        //             },
+        //             checkStatus: {
+        //                 $first: "$checkStatus"
+        //             },
+        //             grand_total: {
+        //                 $first: "$grand_total"
+        //             },
+        //             invoiceId: {
+        //                 $first: "$invoiceId"
+        //             },
+        //             createdAt: {
+        //                 $first: "$createdAt"
+        //             },
+        //             updatedAt: {
+        //                 $first: "$updatedAt"
+        //             },
+        //             fostacInfo: {
+        //                 $first: "$fostacInfo"
+        //             },
+        //             foscosInfo: {
+        //                 $first: "$foscosInfo"
+        //             },
+        //             hraInfo: {
+        //                 $first: "$hraInfo"
+        //             },
+        //             fboInfo: {
+        //                 $first: {
+        //                     fbo_name: "$fboInfo.fbo_name",
+        //                     owner_name: "$fboInfo.owner_name",
+        //                     customer_id: "$fboInfo.customer_id",
+        //                     state: "$fboInfo.state",
+        //                     district: "$fboInfo.district",
+        //                     _id: "$fboInfo._id",
+        //                     createdAt: "$fboInfo.createdAt",
+        //                     business_type: "$fboInfo.business_type",
+        //                     gst_number: "$fboInfo.gst_number",
+        //                     address: "$fboInfo.address",
+        //                     email: "$fboInfo.email",
+        //                     owner_contact: "$fboInfo.owner_contact",
+        //                     pincode: "$fboInfo.pincode",
+        //                     village: "$fboInfo.village",
+        //                     tehsil: "$fboInfo.tehsil",
+        //                     boInfo: {
+        //                         _id: "$fboInfo.boInfo._id",
+        //                         customer_id: "$fboInfo.boInfo.customer_id",
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // ]);
+
         return res.status(200).json({ salesInfo });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+exports.getTicketsDocs = async (req, res) => {
+    try {
+
+        const salesId = req.params._id;
+        const recipients = await recipientModel.aggregate([
+            {
+                $match: {
+                    salesInfo: salesId
+                }
+            },
+            {
+                $lookup: {
+                    from: 'ticket_deliveries',
+                    foreignField: 'recipientInfo',
+                    localField: '_id',
+                    as: "ticket"
+                }
+            },
+            {
+                $unwind: "$ticket"
+            },
+            {
+                $group: {
+                    _id: "$salesInfo",
+                    cerificates: {
+                        $push: "$ticket.certificate"
+                    }
+                }
+            }
+        ]);
+
+        return res.status(200).json(recipients)
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 

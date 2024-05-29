@@ -5,7 +5,7 @@ const boModel = require('../models/BoModels/boSchema')
 
 let generateCustomerId = (randonNum)=>{
     let customerId = '';
-    customerId = `IIEST/${randonNum}`;
+    customerId = `IIEST/SP/${randonNum}`;
     return customerId
 }
 

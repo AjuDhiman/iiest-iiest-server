@@ -13,7 +13,8 @@ export class HygieneAuditComponent implements OnInit {
   @Output() hygieneTotal = new EventEmitter<number>();
   @Output() hygieneGSTAmount = new EventEmitter<number>();
   processAmnts = processAmnt;
-  clientType = clientType;
+  // clientType = clientType;
+  clientType = ['General Client', 'Corporate Client'];
   minValue: number = 1;
   isReadOnly: boolean = true;
   hygieneTotalAmnt:number;
@@ -24,6 +25,8 @@ export class HygieneAuditComponent implements OnInit {
 
   ngOnInit(): void {
     this.hygiene_audit = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
+    this.GSTandTotalAmnt(this.minValue)
+    this.hygiene_audit.patchValue({ 'shops_no': this.minValue });
   }
 
 // Processing Amount function for Calculating Hygiene total amount on basis of Processing Amount.

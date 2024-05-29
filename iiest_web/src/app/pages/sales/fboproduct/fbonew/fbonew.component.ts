@@ -109,8 +109,10 @@ export class FbonewComponent implements OnInit {
   foscos_training: FormGroup = new FormGroup({
     foscos_processing_amount: new FormControl(''),
     foscos_service_name: new FormControl(''),
-    foscos_client_type: new FormControl(''),
-    shops_no: new FormControl(''),
+    // foscos_client_type: new FormControl(''),
+    // shops_no: new FormControl(''),
+    foscos_client_type: new FormControl('General Client'),
+    shops_no: new FormControl(1),
     water_test_fee: new FormControl(''),
     license_category: new FormControl(''),
     license_duration: new FormControl(''),
@@ -118,10 +120,12 @@ export class FbonewComponent implements OnInit {
   });
 
   hygiene_audit: FormGroup = new FormGroup({
-    hra_service_name: new FormControl(''),
+    hra_service_name: new FormControl(serviceNames['HRA'][0]),
     hra_processing_amount: new FormControl(''),
-    hra_client_type: new FormControl(''),
-    shops_no: new FormControl(serviceNames['HRA'][0]),
+    hra_client_type: new FormControl('General Client'),
+    shops_no: new FormControl(1),
+    // hra_client_type: new FormControl(''),
+    // shops_no: new FormControl(''),
     hra_total: new FormControl('')
   })
 
@@ -177,8 +181,10 @@ export class FbonewComponent implements OnInit {
     this.foscos_training = this.formBuilder.group({
       foscos_processing_amount: ['', Validators.required],
       foscos_service_name: ['', Validators.required],
-      foscos_client_type: ['', Validators.required],
-      shops_no: ['', Validators.required],
+      // foscos_client_type: ['', Validators.required],
+      // shops_no: ['' , Validators.required],
+      foscos_client_type: ['General Client', Validators.required],
+      shops_no: [1 , Validators.required],
       water_test_fee: ['', Validators.required],
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
@@ -188,8 +194,10 @@ export class FbonewComponent implements OnInit {
     this.hygiene_audit = this.formBuilder.group({
       hra_service_name: [serviceNames['HRA'][0], Validators.required],
       hra_processing_amount: [hraProcessingAmnt, Validators.required],
-      hra_client_type: ['', Validators.required],
-      shops_no: ['', Validators.required],
+      // hra_client_type: ['', Validators.required],
+      // shops_no: ['', Validators.required],
+      hra_client_type: ['General Client', Validators.required],
+      shops_no: [1, Validators.required],
       hra_total: ['', Validators.required]
     });
 
@@ -336,7 +344,10 @@ export class FbonewComponent implements OnInit {
       this.fbo['state'].setValue('');
     }
     this.fostac_training.patchValue({ fostac_client_type: '' });
-    this.foscos_training.patchValue({ foscos_client_type: '' });
+    // this.foscos_training.patchValue({ foscos_client_type: '' });
+    // this.hygiene_audit.patchValue({ hra_client_type: '' });
+    this.foscos_training.patchValue({ foscos_client_type: 'General Client' });
+    this.hygiene_audit.patchValue({ hra_client_type: 'General Client' });
     this.foscos_training.patchValue({ foscos_service_name: '' });
     this.fostac_training.patchValue({ fostac_service_name: '' });
     this.fostac_training.patchValue({ fostac_processing_amount: '' });
@@ -346,7 +357,6 @@ export class FbonewComponent implements OnInit {
     this.foscos_training.patchValue({ water_test_fee: '' });
     this.hygiene_audit.patchValue({ hra_processing_amount: 5000 });
     this.hygiene_audit.patchValue({ hra_service_name: 'HRA' });
-    this.hygiene_audit.patchValue({ hra_client_type: '' });
     this.multiSelect.onReset();
   }
 
@@ -458,6 +468,7 @@ export class FbonewComponent implements OnInit {
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
+    console.log(this.fboForm.value);
     if (this.fboForm.invalid) {
       return;
     }
@@ -899,8 +910,10 @@ export class FbonewComponent implements OnInit {
   resetFoscosForm(): void {
     this.foscos_training.patchValue({ foscos_processing_amount: '' });
     this.foscos_training.patchValue({ foscos_service_name: '' });
-    this.foscos_training.patchValue({ foscos_client_type: '' });
-    this.foscos_training.patchValue({ shops_no: '' });
+    // this.foscos_training.patchValue({ foscos_client_type: '' });
+    // this.foscos_training.patchValue({ shops_no: '' });
+    this.foscos_training.patchValue({ foscos_client_type: 'General Client' });
+    this.foscos_training.patchValue({ shops_no: 1 });
     this.foscos_training.patchValue({ water_test_fee: '' });
     this.foscos_training.patchValue({ license_category: '' });
     this.foscos_training.patchValue({ license_duration: '' });
@@ -910,8 +923,10 @@ export class FbonewComponent implements OnInit {
   resetHRAForm(): void {
     this.hygiene_audit.patchValue({ hra_processing_amount: 5000 });
     this.hygiene_audit.patchValue({ hra_service_name: 'HRA' });
-    this.hygiene_audit.patchValue({ shops_no: '' });
-    this.hygiene_audit.patchValue({ hra_client_type: '' });
+    this.hygiene_audit.patchValue({ shops_no: 1 });
+    this.hygiene_audit.patchValue({ hra_client_type: 'General Client' });
+    // this.hygiene_audit.patchValue({ shops_no: '' });
+    // this.hygiene_audit.patchValue({ hra_client_type: '' });
     this.hygiene_audit.patchValue({ hra_total: '' });
   }
 

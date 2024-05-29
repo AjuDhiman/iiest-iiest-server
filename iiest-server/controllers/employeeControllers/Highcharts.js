@@ -400,53 +400,53 @@ exports.getClientTypeSalesData = async (req, res) => {
                                 value: "$total"
                             }
                         }
-                    ],
-                    Foscos: [
-                        {
-                            $match: {
-                                product_name: {
-                                    $elemMatch: {
-                                        $eq: "Foscos"
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            $group: {
-                                _id: "$foscosInfo.foscos_client_type",
-                                total: { $sum: 1 }
-                            }
-                        },
-                        {
-                            $project: {
-                                name: "$_id",
-                                value: "$total"
-                            }
-                        }
-                    ],
-                    HRA: [
-                        {
-                            $match: {
-                                product_name: {
-                                    $elemMatch: {
-                                        $eq: "HRA"
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            $group: {
-                                _id: "$hraInfo.hra_client_type",
-                                total: { $sum: 1 }
-                            }
-                        },
-                        {
-                            $project: {
-                                name: "$_id",
-                                value: "$total"
-                            }
-                        }
                     ]
+                    // Foscos: [
+                    //     {
+                    //         $match: {
+                    //             product_name: {
+                    //                 $elemMatch: {
+                    //                     $eq: "Foscos"
+                    //                 }
+                    //             }
+                    //         }
+                    //     },
+                    //     {
+                    //         $group: {
+                    //             _id: "$foscosInfo.foscos_client_type",
+                    //             total: { $sum: 1 }
+                    //         }
+                    //     },
+                    //     {
+                    //         $project: {
+                    //             name: "$_id",
+                    //             value: "$total"
+                    //         }
+                    //     }
+                    // ],
+                    // HRA: [
+                    //     {
+                    //         $match: {
+                    //             product_name: {
+                    //                 $elemMatch: {
+                    //                     $eq: "HRA"
+                    //                 }
+                    //             }
+                    //         }
+                    //     },
+                    //     {
+                    //         $group: {
+                    //             _id: "$hraInfo.hra_client_type",
+                    //             total: { $sum: 1 }
+                    //         }
+                    //     },
+                    //     {
+                    //         $project: {
+                    //             name: "$_id",
+                    //             value: "$total"
+                    //         }
+                    //     }
+                    // ]
                 }
             }
         ];

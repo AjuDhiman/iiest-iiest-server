@@ -113,7 +113,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
             this.isUploadVisible = true;
             this.src = res.data.certificate;
             console.log(new Date(res.data.issueDate).toUTCString() )
-            this.ceritificationForm.patchValue({ issue_date: new Date(res.data.issueDate).toUTCString() }); //Patch issue date in case of delivered
+            this.ceritificationForm.patchValue({ issue_date: this.getPatchableDate(new Date(res.data.issueDate).toUTCString()) }); //Patch issue date in case of delivered
             this.emitDocuments.emit([{ //we want to show fostac certificate in documentation tab in case of delivered
               name: this.ticketType,
               src: this.src,
@@ -265,6 +265,15 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
       formattedDate = `${day}-${month}-${year}`;
     }
     return formattedDate;
+  }
+
+  getPatchableDate(date: string): string { // this methord converts date string to patchable date string
+    const originalDate = new Date(date);
+    const year = originalDate.getFullYear();
+    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+    const day = String(originalDate.getDate()).padStart(2, '0');
+    const patchableDate = `${year}-${month}-${day}`;
+    return patchableDate;
   }
 
   setFormHeading(): void {

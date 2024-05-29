@@ -11489,3 +11489,30 @@ header.masthead .post-heading .meta a {
 }
 }
 
+.social-media-links{
+  width: 100%;
+  padding: auto;
+}
+
+.social-link-list{
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.social-link-list li img{
+  height: 50px;
+  width: 50px;
+}
+
+.social-link-list li {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.social-link-list li p {
+  margin: 10px;
+}

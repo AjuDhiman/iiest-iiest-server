@@ -6,6 +6,10 @@ import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.component';
 import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.component';
+import { Select, Store } from '@ngxs/store';
+import { SalesState } from 'src/app/store/state/sales.state';
+import { Observable, Subscription } from 'rxjs';
+import { GetSales } from 'src/app/store/actions/sales.action';
 
 @Component({
   selector: 'app-fbolist',
@@ -44,13 +48,30 @@ export class FbolistComponent implements OnInit {
   //loading
   loading: boolean = true;
 
+  // //store related variables
+  // @Select(SalesState.GetSalesList) sales$: Observable<any>;
+  // @Select(SalesState.salesLoaded) salesLoaded$: Observable<boolean>
+  // salesLoadedSub: Subscription;
+  // msg: Subscription;
+  // data: any;
+  // salesData: any;
+
   constructor(private getDataService: GetdataService,
     private registerService: RegisterService,
     private exportAsService: ExportAsService,
+    private store: Store,
     private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.fetchAllFboData();
+
+    
+    // this.sales$.subscribe({
+    //   next: res => {
+    //     this.salesData = res;
+    //     this.loading = false;
+    //   }
+    // });
   }
 
   fetchAllFboData(): void {
@@ -75,6 +96,15 @@ export class FbolistComponent implements OnInit {
       }
     })
   }
+
+  // getSales() {
+  //   this.salesLoadedSub = this.salesLoaded$.subscribe(loadedSales => {
+  //     if (!loadedSales) {
+  //       this.store.dispatch(new GetSales());
+  //     }
+  //     // this.loading = false;
+  //   })
+  // }
 
   filter(): void {
     if (!this.searchQuery) {
@@ -241,7 +271,7 @@ export class FbolistComponent implements OnInit {
     return processingAmount;
   }
 
-  calculateFoscosProcessingAmount(employee: any): number {
+  calculateFoscosProcessingAmount(employee: any): number { //methord for calculating total foscos processing amount with water test fee excluding it'st water test fees
     let processingAmount = 0;
 
 
