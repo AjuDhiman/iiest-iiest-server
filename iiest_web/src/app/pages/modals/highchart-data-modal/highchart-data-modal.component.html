@@ -64,6 +64,7 @@
                   <th class="cell">Shop ID</th>
                   <th class="cell">Contact no.</th>
                   <th *ngIf="!isRepetCustData" class="cell">Product Name</th>
+                  <th *ngIf="!isRepetCustData" class="cell">Product Count</th>
                   <th *ngIf="!isRepetCustData" class="cell">Processing Amount</th>
                   <th *ngIf="isRepetCustData" class="cell text-center">Repetition Count
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
@@ -120,6 +121,13 @@
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{employee.product_name.join(', ') +
                       ((employee.foscosInfo && (employee.foscosInfo.water_test_fee != 0))?', Water Test':'')}}</span></td>
+                  <td *ngIf="!isRepetCustData" class="cell text-center"><span
+                      class="truncate text-capitalize">{{(
+                        (employee.fostacInfo ? employee.fostacInfo.recipient_no : 0) + 
+                        (employee.foscosInfo ? employee.foscosInfo.shops_no : 0) + 
+                        (employee.hraInfo ? employee.hraInfo.shops_no : 0) + 
+                        ((employee.foscosInfo && employee.foscosInfo.water_test_fee != '0') ? 1 : 0)
+                      )}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span

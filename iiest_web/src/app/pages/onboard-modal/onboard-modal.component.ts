@@ -79,7 +79,10 @@ export class OnboardModalComponent implements OnInit {
         this.loading = false;
         if(err.error){
           if(err.error.emailErr){
-            this._toasterService.error('Email Already Exsists')
+            this._toasterService.error('Use some Another Mail', 'Email Already Exsists')
+          }
+          if(err.error.contactErr){
+            this._toasterService.error('Use some Another Contact', 'Contact Already Exsists')
           }
         }
       }
