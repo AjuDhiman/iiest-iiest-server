@@ -245,16 +245,6 @@ export const foscosDocments = [
 
 export const hraDocuments = [
    {
-      name: 'Water Test Report',
-      allowedFormats: ['pdf', 'jpg', 'jpeg'],
-      mutipleDoc: false
-   },
-   {
-      name: 'Medical Certificates',
-      allowedFormats: ['pdf', 'jpg', 'jpeg'],
-      mutipleDoc: false
-   },
-   {
       name: 'Cooking Temp Format',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: true
@@ -294,6 +284,29 @@ export const hraDocuments = [
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: true
    }
+];
+
+export const hraRequiredDocs = [
+   {
+      name: 'Water Test Report',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Medical Certificates',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Fostac Certificate',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Foscos License',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
 ];
 
 export const propratitorDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [

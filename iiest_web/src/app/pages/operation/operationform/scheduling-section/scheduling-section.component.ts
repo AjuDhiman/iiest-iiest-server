@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCircleExclamation, faFileArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { ourHolidays } from 'src/app/utils/config';
+import { hraRequiredDocs, ourHolidays } from 'src/app/utils/config';
 
 
 @Component({
@@ -19,11 +21,16 @@ export class SchedulingSectionComponent implements OnInit {
   scheduledStatus: boolean = false;
   ourHolidays = ourHolidays;
   loading: boolean = false;
+  hraReqDocumentsName: string[] = [];
+  selectedDocs: string[] = [];
+  docList: any = [];
 
   //input variables
   @Input() verifiedDataId: string;
 
   @Input() verifiedData: any;
+
+  @Input() shopId: string;
 
   @Input() verifiedStatus: boolean;
 
@@ -37,6 +44,7 @@ export class SchedulingSectionComponent implements OnInit {
   //icons
   faCircleExclamation = faCircleExclamation
   faCircleCheck = faCircleCheck;
+  faFileArrowUp = faFileArrowUp;
 
   //Fostac Enrollment Reactive form 
   schedulingForm: FormGroup = new FormGroup({
@@ -48,7 +56,8 @@ export class SchedulingSectionComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService) {
+    private _toastrService: ToastrService,
+    private ngbModal: NgbModal) {
   }
 
   ngOnInit(): void {
@@ -56,7 +65,11 @@ export class SchedulingSectionComponent implements OnInit {
       tentative_audit_date: ['', Validators.required],
       hra_book_date: ['', Validators.required],
       auditor_name: ['', Validators.required],
-      });
+    });
+
+    this.getDocs();
+
+    this.hraReqDocumentsName = hraRequiredDocs.map((item: any) => item.name);
   }
 
   get scheduleform(): { [key: string]: AbstractControl } {
@@ -70,7 +83,7 @@ export class SchedulingSectionComponent implements OnInit {
     }
     this.loading = true;//starts the loading
     if (this.verifiedDataId) {
-      const scheduledData = {...this.schedulingForm.value};
+      const scheduledData = { ...this.schedulingForm.value };
       this._registerService.enrollRecipient(this.verifiedDataId, scheduledData).subscribe({
         next: res => {
           this.scheduledStatus = true;
@@ -107,5 +120,30 @@ export class SchedulingSectionComponent implements OnInit {
     const day = String(originalDate.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
+  }
+
+  openDocumentationModal() { //this methord opens the doc modal 
+    const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.docsArr = hraRequiredDocs.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
+    modalRef.componentInstance.shopId = this.shopId;
+    console.log(this.shopId);
+    modalRef.componentInstance.docList = this.docList;
+    modalRef.componentInstance.reloadData.subscribe(() => {
+      this.getDocs();
+      modalRef.componentInstance.docList = this.docList;
+    });
+  }
+
+  getSelectedDocs($event: string[]): void { // this methord set the selected doc by th help of multidoc
+    this.selectedDocs = $event;
+  }
+
+  getDocs(): void { //methord for getting uploaed doc list from backend for passing it to doc modal and doc-tab
+    this._getDataService.getDocs(this.shopId).subscribe({
+      next: res => {
+        this.docList = res.docs; 
+        this.refreshAuditLog.emit();
+      }
+    });
   }
 }

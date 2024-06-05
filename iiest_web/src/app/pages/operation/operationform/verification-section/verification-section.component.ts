@@ -105,25 +105,24 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     food_category: new FormControl(''),
     ownership_type: new FormControl(''),
     owners_num: new FormControl(this.minMembers)
-    });
+  });
 
-    hraVerificationForm: FormGroup = new FormGroup({
-      manager_name: new FormControl(''),
-      fbo_name: new FormControl(''),
-      owner_name: new FormControl(''),
-      manager_contact_no: new FormControl(''),
-      email: new FormControl(''),
-      address: new FormControl(''),
-      pincode: new FormControl(''),
-      state: new FormControl(''),
-      district: new FormControl(''),
-      hra_total: new FormControl(''),
-      sales_date: new FormControl(''),
-      sales_person: new FormControl(''),
-      kob: new FormControl(''),
-      food_handler_no: new FormControl(''),
-      audit_date: new FormControl('')
-      });
+  hraVerificationForm: FormGroup = new FormGroup({
+    manager_name: new FormControl(''),
+    fbo_name: new FormControl(''),
+    owner_name: new FormControl(''),
+    manager_contact_no: new FormControl(''),
+    email: new FormControl(''),
+    address: new FormControl(''),
+    pincode: new FormControl(''),
+    state: new FormControl(''),
+    district: new FormControl(''),
+    hra_total: new FormControl(''),
+    sales_date: new FormControl(''),
+    sales_person: new FormControl(''),
+    kob: new FormControl(''),
+    food_handler_no: new FormControl('')
+  });
 
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
@@ -154,11 +153,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
         this.getFoscosVerifiedData()
         break;
-      
-      case 'HRA': 
+
+      case 'HRA':
         this.verificationForm = this.hraVerificationForm;
         this.getHraVerifiedData();
-       break;
+        break;
     }
 
   }
@@ -202,7 +201,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
-            this.emitVerifiedData.emit({...res.verificationInfo, batchData: res.batchData});
+            this.emitVerifiedData.emit({ ...res.verificationInfo, batchData: res.batchData });
             this.refreshAuditLog.emit();
             this.loading = false;
             this._toastrService.success('Recipient\'s Information is Verified', 'Verified');
@@ -210,9 +209,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         },
         error: err => {
           this.loading = false;
-          if(err.error.locationErr){
+          if (err.error.locationErr) {
             this._toastrService.error('Location not avilable');
-          } else if(err.error.emailErr) {
+          } else if (err.error.emailErr) {
             this._toastrService.error('This email already exists');
           } else {
             this._toastrService.error(err.error.messsage, 'Can\'t Verify');
@@ -308,7 +307,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
               multipleDoc: true
             }
           ]);
-        } else if(this.productType === 'HRA') {
+        } else if (this.productType === 'HRA') {
           this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
@@ -354,7 +353,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ email: res.verifedData.email });
           this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
           this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'));
-          this.emitVerifiedData.emit({...res.verifedData, batchData:res.batchData});
+          this.emitVerifiedData.emit({ ...res.verifedData, batchData: res.batchData });
           this.loading = false;
         } else {
           this.verifiedStatus = false;
@@ -390,7 +389,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       next: res => {
         if (res) {
           this.verifiedStatus = true;
-          this.verificationForm.patchValue({ audit_date: this.getFormatedDate(res.verifedData.auditDate.toString()) });
           this.emitVerifiedData.emit(res.verifedData);
           this.emitVerifiedStatus.emit(this.verifiedStatus);
         } else {
@@ -489,30 +487,29 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],
       kob: ['', Validators.required],
-      food_handler_no: ['', Validators.required],
-      audit_date: ['', Validators.required]
+      food_handler_no: ['', Validators.required]
     })
 
   }
 
   onOwnershipTypeChanges($event: any) {
-    if($event.target.value === 'Propaitorship') {
-      this.minMembers=1;
+    if ($event.target.value === 'Propaitorship') {
+      this.minMembers = 1;
     } else {
-      this.minMembers=2;
+      this.minMembers = 2;
     }
-    this.verificationForm.patchValue({'owners_num': this.minMembers});
+    this.verificationForm.patchValue({ 'owners_num': this.minMembers });
   }
 
   onOwnersNumChange($event: any) {
     let value = $event.target.value;
-    if(value < this.minMembers){
+    if (value < this.minMembers) {
       value = this.minMembers;
     } else if (value > 20) {
       value = 20;
     }
 
-    this.verificationForm.patchValue({'owners_num': value});
+    this.verificationForm.patchValue({ 'owners_num': value });
   }
 
 }
