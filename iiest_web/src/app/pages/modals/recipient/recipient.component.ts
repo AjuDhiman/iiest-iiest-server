@@ -294,11 +294,11 @@ export class RecipientComponent implements OnInit {
     this.loading = true;
     this.getDataServices.getHygieneSaleShops(saleId).subscribe({
       next: res => {
+        this.loading = false;
         if (res.shopsList.length) {
           this.shopData = res.shopsList
           this.showPagination = true;
           this.shopsCount = res.shopsList.length;
-          this.loading = false;
         }
       }
     })

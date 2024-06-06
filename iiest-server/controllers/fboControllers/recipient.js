@@ -354,7 +354,7 @@ exports.uploadEbill = async (req, res) => {
 
         const shopInfo = await shopModel.findOne({_id: req.params.id}) 
 
-        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+        const salesInfo = await salesModel.findOne({_id: shopInfo.salesInfo});
 
         const allShop = await shopModel.find({salesInfo: shopInfo._id});
 
@@ -396,7 +396,7 @@ exports.uploadOwnerPhoto = async (req, res) => {
 
         const shopInfo = await shopModel.findOne({_id: req.params.id}) 
 
-        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+        const salesInfo = await salesModel.findOne({_id: shopInfo.salesInfo});
 
         const allShop = await shopModel.find({salesInfo: shopInfo._id});
 
@@ -438,7 +438,7 @@ exports.uploadShopPhoto = async (req, res) => {
 
         const shopInfo = await shopModel.findOne({_id: req.params.id}) 
 
-        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+        const salesInfo = await salesModel.findOne({_id: shopInfo.salesInfo});
 
         const allShop = await shopModel.find({salesInfo: shopInfo._id});
 
@@ -482,7 +482,7 @@ exports.uploadAadharPhoto = async (req, res) => {
 
         const shopInfo = await shopModel.findOne({_id: req.params.id}) 
 
-        const salesInfo = await salesModel.findOne({_id: shopInfo._id});
+        const salesInfo = await salesModel.findOne({_id: shopInfo.salesInfo});
 
         const allShop = await shopModel.find({salesInfo: shopInfo._id});
 

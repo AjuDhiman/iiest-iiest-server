@@ -105,10 +105,16 @@ exports.verifyEmail = async (req, res) => {
 
             const verifiedMail = await boModel.findByIdAndUpdate(
                 { _id: req.params.id },
-                { $set: { is_email_verified: true } },
-                { $set: { is_contact_verified: true } },
+                {
+                    $set: {
+                        is_email_verified: true,
+                        is_contact_verified: true
+                    }
+                },
                 { new: true }
-            )
+            );
+
+            console.log(verifiedMail);
 
             if (!verifiedMail) {
                 return res.status(404).json({ success: false, message: "Verification Failed", emailSendingErr: true });
@@ -120,7 +126,7 @@ exports.verifyEmail = async (req, res) => {
                 purpose: 'onboard',
                 customerId: verifiedMail.customer_id,
                 email: idExsists.email,
-                contact_no: idExsists.contact_no 
+                contact_no: idExsists.contact_no
             }
             await sendMailToBo(verifiedMail.email, mailInfo);
             return res.status(200).json({ success: true, message: "Email Verified" })

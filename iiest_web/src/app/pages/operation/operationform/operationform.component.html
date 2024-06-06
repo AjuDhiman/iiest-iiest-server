@@ -36,7 +36,7 @@
           </app-enrollment-section>
 
           <app-scheduling-section *ngIf="productType === 'HRA'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-          [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData">
+          [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData" [shopId]="candidateId">
           </app-scheduling-section>
 
           <app-audit-section *ngIf="productType === 'HRA'" [shopId]="candidateId"

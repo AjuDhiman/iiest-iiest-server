@@ -2,9 +2,9 @@ const testEnv = false;
 const prodEnv = false;
 
 export const config = {
-   API_URL: prodEnv?'https://prod':(testEnv?'http://54.235.121.184:3001/iiest':'http://localhost:3000/iiest'),
+   API_URL: prodEnv?'https://connectonline.world:3001':(testEnv?'https://connectonline.world:3001/iiest':'http://localhost:3000/iiest'),
    // API_URL: 'https://iiest-server.onrender.com'
-   DOC_URL: prodEnv?'https://prod':(testEnv?'http://54.235.121.184':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
+   DOC_URL: prodEnv?'https://connectonline.world':(testEnv?'https://connectonline.world':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
 }
 
 export const panIndiaAllowedEmpIds = [
@@ -14,7 +14,7 @@ export const panIndiaAllowedEmpIds = [
 // export const chetanKapoorEmpId: string = 'IIEST/FD/0176';
 
 //Water test Fee
-export const waterTestFee = [0, 1500, 2000];
+export const waterTestFee = [0, 1500, 2000, 2500];
 //Fostac Process Amount
 export const processAmnt = [1200, 1500];
 //Client Type
@@ -245,16 +245,6 @@ export const foscosDocments = [
 
 export const hraDocuments = [
    {
-      name: 'Water Test Report',
-      allowedFormats: ['pdf', 'jpg', 'jpeg'],
-      mutipleDoc: false
-   },
-   {
-      name: 'Medical Certificates',
-      allowedFormats: ['pdf', 'jpg', 'jpeg'],
-      mutipleDoc: false
-   },
-   {
       name: 'Cooking Temp Format',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: true
@@ -294,6 +284,29 @@ export const hraDocuments = [
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: true
    }
+];
+
+export const hraRequiredDocs = [
+   {
+      name: 'Water Test Report',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Medical Certificates',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Fostac Certificate',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Foscos License',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
 ];
 
 export const propratitorDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
@@ -481,3 +494,4 @@ export const days: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thru
 export const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
 export const Months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
