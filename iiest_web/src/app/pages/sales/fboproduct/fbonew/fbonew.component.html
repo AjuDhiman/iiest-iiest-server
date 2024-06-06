@@ -130,7 +130,7 @@
                     <div class="col-md-3">
                         <label for="email" class="form-label">Email<sup>*</sup></label>
                         <input type="text" placeholder="Email" formControlName="email" id="email"
-                            class="form-control form-control-sm" autocomplete="off"
+                            class="form-control form-control-sm" autocomplete="off" [readOnly]="true"
                             [ngClass]="{ 'is-invalid': submitted && fbo['email'].errors }" />
                         <div *ngIf="submitted && fbo['email'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['email'].errors['required']">Email is required</div>
