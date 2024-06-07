@@ -45,7 +45,7 @@
                             <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input w-100" autocomplete="off">
                             <ul *ngIf="isExistingFbo && !isSearchEmptyFBO" class="search-suggestions">
                                 <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions" (click)="fetchExistingUser(searchSuggestion)">
-                                    <span class="fbo-name">{{searchSuggestion.fbo_name}}({{searchSuggestion.owner_name}})</span>
+                                    <span class="fbo-name text-capitalize">{{searchSuggestion.fbo_name.toLowerCase()}}({{searchSuggestion.owner_name.toLowerCase()}})</span>
                                 </li>
                             </ul>
                         </div>
@@ -63,7 +63,7 @@
                             <ul *ngIf="isExistingBo && !isSearchEmptyBO" class="search-suggestions">
                                 <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo" (click)="fetchExistingBo(searchSuggestion)">
                                    
-                                    <span class="fbo-name">{{searchSuggestion.owner_name}}({{searchSuggestion.customer_id}})</span>
+                                    <span class="fbo-name text-capitalize">{{searchSuggestion.owner_name.toLowerCase()}}({{searchSuggestion.customer_id}})</span>
                                 </li>
                             </ul>
                         </div>
@@ -130,7 +130,7 @@
                     <div class="col-md-3">
                         <label for="email" class="form-label">Email<sup>*</sup></label>
                         <input type="text" placeholder="Email" formControlName="email" id="email"
-                            class="form-control form-control-sm" autocomplete="off"
+                            class="form-control form-control-sm" autocomplete="off" [readOnly]="true"
                             [ngClass]="{ 'is-invalid': submitted && fbo['email'].errors }" />
                         <div *ngIf="submitted && fbo['email'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['email'].errors['required']">Email is required</div>
