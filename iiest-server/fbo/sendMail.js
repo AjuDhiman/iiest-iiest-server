@@ -31,7 +31,8 @@ const sendInvoiceMail = (clientMail, files) => {
         <br>
         TP Name - IIEST Federation<br>
         TP No - TPINT133<br>
-        Contact no – 9910729809<br>
+        Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
+        Contact no - 9910729809<br>
         Landline - 011-43511788, 011-4681145<br>
         Contact time 10 :00 a.m to 7:00 p.m<br>
         <br><br>
@@ -46,6 +47,7 @@ const sendInvoiceMail = (clientMail, files) => {
         <br>
         टीपी नाम - IIEST फेडरेशन<br>
         टीपी नंबर - TPINT133<br>
+        पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
         संपर्क नंबर- 9910729809<br>
         लैंडलाइन  - 011-43511788, 011-4681145<br>
         संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
