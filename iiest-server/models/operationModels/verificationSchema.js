@@ -83,13 +83,9 @@ const hraVerification = new Schema({
     },
     shopInfo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'shopdetails',
+        ref: 'hygiene',
         required: true,
         unique: true
-    },
-    auditDate: {
-        type: Date,
-        required: true
     }
 }, {timestamps: true});
 

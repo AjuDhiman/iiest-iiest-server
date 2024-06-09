@@ -134,9 +134,9 @@ exports.hraVerification = async (req, res, next) => {
 
         const verifiedData = req.body;
 
-        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, state, district, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person, audit_date } = verifiedData;
+        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, state, district, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person } = verifiedData;
 
-        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, auditDate: audit_date });
+        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID });
 
         //this code is for tracking the CRUD operation regarding to a shop
 
@@ -158,13 +158,12 @@ exports.hraVerification = async (req, res, next) => {
             pincode: pincode,
             village: village,
             tehsil: tehsil,
-            kindOfBusiness: kob,
-            auditDate: audit_date
+            kindOfBusiness: kob
         }
 
-        if (addVerification) {
-            sendVerificationMail(clientData);
-        }
+        // if (addVerification) {
+        //     sendVerificationMail(clientData);
+        // }
 
         // code for tracking ends
         if (!addVerification) {
