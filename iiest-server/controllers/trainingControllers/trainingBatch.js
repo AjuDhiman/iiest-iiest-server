@@ -322,13 +322,41 @@ exports.auditBatch = async (req, res) => {
 
         } else {
 
-            let auditDatesArr
+            if (sessionsNo === 1) { // in case of single session we doesn't have to check avilablity of same auditor in extra days
+                batchData = await auditBatchModel.findOneAndUpdate(
+                    { status: 'open', location: location, pincodes: { $in: [pincode] } },
+                    {
+                        $set: {
+                            status: 'completed'
+                        }
+                    },
+                    { new: true }
+                );
+            } else {
 
-            let batchData = await auditBatchModel.findOneAndUpdate(
-                { status: 'open', location: location, pincodes: { $in: [pincode] } },
-                { $push: { pincodes: { $each: auditDatesArr } } },
-                { new: true }
-            );
+                // let auditDatesArr;
+
+                // let randomBatch = getRandomItemFromArr(openedBatch);
+
+                // const auditor = randomBatch.auditor;
+
+                // let dates = [];
+
+                // const auditorNotAvailable = await auditBatchModel.findOne({
+                //     auditDates: {
+                //         $elemMatch: {
+                //             date: { $in: dates },
+                //             auditors: auditor
+                //         }
+                //     }
+                // });
+
+                // let batchData = await auditBatchModel.findOneAndUpdate(
+                //     { status: 'open', location: location, pincodes: { $in: [pincode] } },
+                //     { $push: { pincodes: { $each: auditDatesArr } } },
+                //     { new: true }
+                // );
+            }
         }
 
         if (batchData) {
