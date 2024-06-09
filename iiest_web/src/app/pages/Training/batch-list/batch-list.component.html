@@ -67,7 +67,7 @@
                                                 <th class="cell">Batch Code</th>
                                                 <th class="cell">No. of Audits</th>
                                                 <th class="cell">Status</th>
-                                                <th class="cell">Audit Date</th>
+                                                <th class="cell">Audit Dates</th>
                                                 <th class="cell">Auditor</th>
                                                 <th class="cell">View</th>
                                             </tr>
@@ -135,11 +135,11 @@
                                                 <td class="cell col-1"><span
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                                 <td class="cell col-2"><span class="truncate" title="View Case">{{batch.batchCode}}</span></td>
-                                                <td class="cell col-1"><span class="truncate">{{batch.auditCount}}</span>
+                                                <td class="cell col-1"><span class="truncate">{{batch.auditNum}}</span>
                                                 </td>
                                                 <td class="cell col-2"><span class="truncate">{{batch.status}}</span>
                                                 </td>
-                                                <td class="cell col-2"><span class="truncate">{{batch.auditDate}}</span>
+                                                <td class="cell col-2"><span class="truncate">{{getFormatedDate(batch.auditDates)}}</span>
                                                 </td>
                                                 <td class="cell col-2"><span class="truncate">
                                                         {{!editMode[batch._id]?batch.auditor?batch.auditor:'N/A':''}}

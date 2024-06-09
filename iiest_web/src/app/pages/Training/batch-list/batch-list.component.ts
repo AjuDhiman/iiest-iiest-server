@@ -122,7 +122,18 @@ export class BatchListComponent implements OnInit {
         }
       });
     } else if (this.listType === 'Audit') {
-      this.batchData = this.auditBatch;
+      this._getDataService.getAuditBatchListData().subscribe({
+        next: res => {
+          console.log(res);
+          this.batchData = res.batches
+            .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+          this.batchData.forEach((batch: any) => {
+            this.editMode[batch._id] = false;
+          });
+          this.filterData();
+        }
+      });
       console.log(this.batchData);
       this.filterData();
     }
@@ -158,20 +169,33 @@ export class BatchListComponent implements OnInit {
     this.updationForm.removeControl(`venue${id}`);
   }
 
-  getFormatedDate(date: string): string {
-    const originalDate = new Date(date);
-    const year = originalDate.getFullYear();
-    const hours = String(originalDate.getHours()).padStart(2, '0');
-    const minutes = String(originalDate.getMinutes()).padStart(2, '0');
-    const ampm = originalDate.getHours() >= 12 ? 'PM' : 'AM';
-    let formattedDate;
-    if (Math.floor((new Date().getTime() - originalDate.getTime()) / (24 * 60 * 60 * 1000)) < 7) {
-      formattedDate = `${hours}:${minutes} ${ampm}, ${days[originalDate.getDay()]}`;
+  getFormatedDate(date: string | string[]): string {
+
+    let formattedDate = '';
+    if(typeof(date) == 'string') {
+      const originalDate = new Date((date));
+      const year = originalDate.getFullYear();
+      const hours = String(originalDate.getHours()).padStart(2, '0');
+      const minutes = String(originalDate.getMinutes()).padStart(2, '0');
+      const ampm = originalDate.getHours() >= 12 ? 'PM' : 'AM';
+      if (Math.floor((new Date().getTime() - originalDate.getTime()) / (24 * 60 * 60 * 1000)) < 7) {
+        formattedDate = `${hours}:${minutes} ${ampm}, ${days[originalDate.getDay()]}`;
+      } else {
+        const month = months[originalDate.getMonth()];
+        const day = String(originalDate.getDate()).padStart(2, '0');
+        formattedDate = `${hours}:${minutes} ${ampm}, ${day}-${month}-${year}`;
+      }
     } else {
-      const month = months[originalDate.getMonth()];
-      const day = String(originalDate.getDate()).padStart(2, '0');
-      formattedDate = `${hours}:${minutes} ${ampm}, ${day}-${month}-${year}`;
+      if(date.length === 1) {
+        let orignalDate = new Date(date[0].toString())
+        return `${orignalDate.getDate()}-${months[orignalDate.getMonth()]}-${orignalDate.getFullYear()}`
+      } else {
+        let startDate = new Date(date[0].toString());
+        let endDate = new Date(date[date.length - 1].toString());
+        return `${startDate.getDate()}-${months[startDate.getMonth()]}-${startDate.getFullYear()} to ${endDate.getDate()}-${months[endDate.getMonth()]}-${endDate.getFullYear()}`
+      }
     }
+   
     return formattedDate;
   }
 
