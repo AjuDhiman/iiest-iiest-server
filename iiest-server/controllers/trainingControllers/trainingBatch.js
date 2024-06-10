@@ -330,6 +330,17 @@ exports.auditBatch = async (req, res) => {
                             status: 'completed'
                         }
                     },
+                    {
+                        $inc: {
+                            auditNum: 1
+                        }
+                    },
+                    {
+                        $push:
+                        {
+                            candidateDetails: verificationInfo._id
+                        }
+                    },
                     { new: true }
                 );
             } else {
