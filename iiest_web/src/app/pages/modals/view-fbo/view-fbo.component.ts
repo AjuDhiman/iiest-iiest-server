@@ -24,6 +24,7 @@ export class ViewFboComponent implements OnInit {
   invoice: string = '';
   remainingTime: string = '';
   invoiceArr: any = [];
+  newPortalReleaseDate:  "2024-06-10T18:30:00.000Z"
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
     private ngbModal: NgbModal
@@ -49,7 +50,7 @@ export class ViewFboComponent implements OnInit {
   comparedates(date: Date): boolean {
 
     const date1 = new Date(date.toString());
-    const date2 = new Date("2024-03-31T18:30:00.000Z");
+    const date2 = new Date("2024-06-10T18:30:00.000Z");
 
     if (date1 > date2) {
       return true;

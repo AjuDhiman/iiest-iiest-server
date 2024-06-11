@@ -127,7 +127,7 @@ export class RecipientComponent implements OnInit {
     this.submitted = true;
     console.log(this.recipientform);
 
-    if (this.recipientform.invalid) {
+    if (this.recipientform.invalid || this.loading) { //can't submit while loading and in case of invalid recp form
       return;
     }
 
