@@ -59,13 +59,11 @@ export class OnboardModalComponent implements OnInit {
 
   submitForm(): void {
     this.submitted = true;
-    console.log(this.businessForm);
-    if (this.businessForm.invalid) {
+    if (this.businessForm.invalid || this.loading) { // we dont't want to submit form wile loading and in case of invalid form
       return;
     }
 
     const formData = this.businessForm.value;
-    console.log(formData);
     this.loading = true;
     // this._toasterService.success('You Are Successfully Onboarded', '', { timeOut: 1500, easeTime: 700});
     
@@ -93,7 +91,6 @@ export class OnboardModalComponent implements OnInit {
   getEmpNameNIdList(): void {
     this._getDataService.getEmpNameNIdList().subscribe({
       next: res => {
-        console.log(res);
         this.empList = res;
       }
     });
