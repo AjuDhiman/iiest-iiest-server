@@ -246,9 +246,9 @@ const invoiceTemplate = async (fboInfo) => {
                             <p>
                                 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001
                                 <br>
-                                Mobile No: +91-9599195097, 011-46081145
+                                Mobile No: +91-9599195097
                                 <br>
-                                Website: www.iiestedu.org, Email ID: finance.iiest@gmail.com
+                                Website: www.iiest.org, Email ID: finance.iiest@gmail.com
                             </p>
                             <img src="${logoImg}" height=120 width=120 alt="iiest_logo"
                                 style="border: 2.5px solid black; border-radius: 60px; padding: 5px">
