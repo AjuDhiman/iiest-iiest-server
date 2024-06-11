@@ -469,7 +469,7 @@ export class FbonewComponent implements OnInit {
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
     console.log(this.fboForm.value);
-    if (this.fboForm.invalid) {
+    if (this.fboForm.invalid || this.loading) {
       return;
     }
 

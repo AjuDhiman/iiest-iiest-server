@@ -244,7 +244,7 @@ const invoiceTemplate = async (fboInfo) => {
                         </div>
                         <div class="logo-section">
                             <p>
-                                Building no. 55, Panchkuian Road, Connaught Place, New Delhi, Delhi, 110001
+                                1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001
                                 <br>
                                 Mobile No: +91-9599195097, 011-46081145
                                 <br>

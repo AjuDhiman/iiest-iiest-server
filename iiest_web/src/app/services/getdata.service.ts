@@ -256,9 +256,15 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  //training get sevices
+  //training get sevices fot training batch list
   public getBatchListData(): Observable<any> { // for getting batchlist data from training
     const url: string = `${this.url}/getbatchlistdata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+   //Audit get sevices for audit batch list
+  public getAuditBatchListData(): Observable<any> { // for getting batchlist data from training
+    const url: string = `${this.url}/getauditbatchlistdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

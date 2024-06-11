@@ -24,7 +24,7 @@ export const hraProcessingAmnt = 5000;
 export const clientType = ['Single Recipient', 'Multiple Recipient'];
 
 //Payment Mode
-export const paymentMode = ['Cash', 'Pay Page'];
+export const paymentMode = ['Pay Page'];
 
 export const auditers = [
    'Aditi',

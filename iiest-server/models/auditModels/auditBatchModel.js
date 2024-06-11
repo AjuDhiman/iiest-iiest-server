@@ -13,7 +13,7 @@ const auditBatchSchema = new Schema({
         unique: true
     },
     auditNum: {
-        type: String,
+        type: Number,
         required: true
     },
     location: {
