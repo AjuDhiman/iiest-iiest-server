@@ -145,6 +145,7 @@ export const fbo_roles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
+   'Verifier',
    ...master_roles
 ];
 

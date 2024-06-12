@@ -72,7 +72,7 @@
                             <span class="nav-link-text">Book Sale</span>
                         </a>
                     </li>
-                    <li *ngIf="userData && fboRoles.includes(userData.designation)" class="nav-item"
+                    <li *ngIf="userData && (fboRoles.includes(userData.designation) || userData.panel_type == 'Verifier Panel')" class="nav-item"
                         routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
@@ -117,7 +117,7 @@
                                     </g>
                                 </svg>
                             </span>
-                            <span class="nav-link-text">My Orders</span>
+                            <span class="nav-link-text">{{userData.panel_type === 'Verifier Panel'?'Pervious Orders':'My Orders'}}</span>
                         </a>
                     </li>
                     <li *ngIf="userData && employeeRoles.includes(userData.designation)" class="nav-item"

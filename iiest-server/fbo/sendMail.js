@@ -20,6 +20,7 @@ const sendInvoiceMail = (clientMail, files) => {
   });
   const mailOptions = {
     from: mailData.email,
+    cc: process.env.DIRECTOR_MAIL,
     to: clientMail,
     subject: 'IIEST Federation -- INVOICE',
     html: `<p>Welcome to the IIEST Federation,<br>

@@ -241,7 +241,7 @@ exports.employeeRecord = async (req, res) => {
 exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
-        if (req.user.designation === 'Director') {
+        if (req.user.designation === 'Director' || req.user.designation === 'Verifier') {
             salesInfo = await salesModel.find({}).populate([
                 {
                     path: 'fboInfo',
