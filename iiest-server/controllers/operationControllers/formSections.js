@@ -172,6 +172,7 @@ exports.hraVerification = async (req, res, next) => {
         }
 
         req.verificationInfo = addVerification;
+        req.clientData = clientData;
         next();
 
         // success = true;
@@ -642,9 +643,9 @@ exports.getReverts = async (req, res) => {
 
         if (reverts) {
             success = true;
-            res.status(200).json({ success, reverts });
+            return res.status(200).json({ success, reverts });
         } else {
-            res.status(204);
+            return res.status(204);
         }
 
     } catch (error) {

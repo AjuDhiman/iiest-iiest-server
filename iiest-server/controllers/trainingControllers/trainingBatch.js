@@ -252,6 +252,9 @@ exports.auditBatch = async (req, res) => {
 
         const openedBatch = await AuditBatchModel.find({ status: 'open', location: location, pincodes: { $in: [pincode] } });
 
+        console.log(pincode);
+        console.log('open batch', openedBatch);
+
         if (sessionsNo % 2 == 0 || !openedBatch || openedBatch.length === 0) {
 
             let dayAvilable = false;
@@ -328,16 +331,11 @@ exports.auditBatch = async (req, res) => {
                     {
                         $set: {
                             status: 'completed'
-                        }
-                    },
-                    {
+                        },
                         $inc: {
                             auditNum: 1
-                        }
-                    },
-                    {
-                        $push:
-                        {
+                        },
+                        $push: {
                             candidateDetails: verificationInfo._id
                         }
                     },
@@ -371,7 +369,8 @@ exports.auditBatch = async (req, res) => {
         }
 
         if (batchData) {
-            res.status(200).json({ success: true, verificationData: verificationInfo })
+            sendVerificationMail(req.clientData);
+            return res.status(200).json({ success: true, verificationData: verificationInfo })
         }
 
     } catch (error) {
@@ -522,3 +521,23 @@ async function getAuditDate(verificationDate) {
     // const avilableAuditors = allAuditors.filter((auditor) => auditor.isAvilable);
 }
 
+
+exports.getCandidateAuditBatch = async (req, res) => {
+    try {
+
+        const verificationId = req.params.verificationid;
+
+        const candidateBatch = await auditBatchModel.findOne({
+            candidateDetails:
+            {
+                $in: [verificationId]
+            }
+        }).populate({path: 'candidateDetails', populate: {path: 'shopInfo'}});
+
+        return res.status(200).json({batchData: candidateBatch, success: true})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' })
+    }
+}
