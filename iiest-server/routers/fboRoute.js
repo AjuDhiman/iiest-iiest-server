@@ -1,11 +1,11 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, addHygieneShop, hygieneShopsList, uploadAadharPhoto } = require('../controllers/fboControllers/recipient');
-const { existingFboCash, existingFboPayReturn, existingFboPayPage } = require('../controllers/fboControllers/existingFbo');
+const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
-const { foscosDocuments, hraDocuments } = require('../config/storage');
+const { foscosDocuments, hraDocuments, chequeImage } = require('../config/storage');
 const { createBusinessOwner, getAllBusinessOwners } = require('../controllers/boControllers/bo');
 const { getTicketsDocs } = require('../controllers/employeeControllers/employeeRecord');
 
@@ -19,6 +19,8 @@ router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list
 router.get('/hygienesaleshops/:id', authMiddleware, hygieneShopsList); //Router for shops list for hygiene sale
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
+router.post('/fbobycheque/:id', authMiddleware, chequeImage.fields([{name: 'cheque_image', maxCount: 1}]), existingFboByCheque);
+router.post('/bobycheque/:id', authMiddleware, chequeImage.fields([{name: 'cheque_image', maxCount: 1}]), boByCheque);
 router.post('/fbo-pay-return/:id', fboPayReturn); //To check payment status
 router.post('/fbopayment/:id', authMiddleware, fboPayment); //Router for FBO registration (pay page)
 router.delete('/deleteFbo/:id', authMiddleware, deleteFbo); //Router for deleting FBO

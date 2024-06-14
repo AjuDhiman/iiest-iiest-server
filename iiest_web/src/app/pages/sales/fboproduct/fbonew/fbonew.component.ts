@@ -87,6 +87,8 @@ export class FbonewComponent implements OnInit {
   districtAndPincodes: any;
   isFboSelected: boolean = false; //var for deciding if field comminh empty from backend then open that particular field
   selectedFbo: any;
+  byCheque: boolean = false;
+  chequeImage: File; // var for cheque image
 
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];
@@ -149,9 +151,16 @@ export class FbonewComponent implements OnInit {
     payment_mode: new FormControl(''),
     createdBy: new FormControl(''),
     grand_total: new FormControl('')
-  })
+  });
 
 
+  cheque_data: FormGroup = new FormGroup({
+    payee_name: new FormControl(''),
+    bank_name: new FormControl(''),
+    account_number: new FormControl(''),
+    cheque_number: new FormControl(''),
+    cheque_image: new FormControl('')
+  });
 
   constructor(
     private formBuilder: FormBuilder,
@@ -184,7 +193,7 @@ export class FbonewComponent implements OnInit {
       // foscos_client_type: ['', Validators.required],
       // shops_no: ['' , Validators.required],
       foscos_client_type: ['General Client', Validators.required],
-      shops_no: [1 , Validators.required],
+      shops_no: [1, Validators.required],
       water_test_fee: ['', Validators.required],
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
@@ -201,7 +210,13 @@ export class FbonewComponent implements OnInit {
       hra_total: ['', Validators.required]
     });
 
-
+    this.cheque_data = this.formBuilder.group({
+      payee_name: ['', Validators.required],
+      bank_name: ['', Validators.required],
+      account_number: ['', Validators.required],
+      cheque_number: ['', Validators.required],
+      cheque_image: ['', Validators.required]
+    });
 
     this.existingUserFboForm = this.existingFboFrom.group({
       existingUserFbo: [''],
@@ -218,9 +233,9 @@ export class FbonewComponent implements OnInit {
     //   searchUser: ['', Validators.required]
     // })
 
-    let allocated_state:string = '';
+    let allocated_state: string = '';
 
-    if(!this.isPanIndiaAllowed) { //we will patch allowed state to state field of fbo form in case of only a particulat area allowd to a employee
+    if (!this.isPanIndiaAllowed) { //we will patch allowed state to state field of fbo form in case of only a particulat area allowd to a employee
       allocated_state = this.allocated_state;
     }
 
@@ -255,7 +270,7 @@ export class FbonewComponent implements OnInit {
         grand_total: ['', Validators.required],
       });
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
-    if(!this.isPanIndiaAllowed) {
+    if (!this.isPanIndiaAllowed) {
       this.getAllocatedArea();
     }
     this.getboGeneralData();
@@ -263,6 +278,10 @@ export class FbonewComponent implements OnInit {
 
   get fbo(): { [key: string]: AbstractControl } {
     return this.fboForm.controls;
+  }
+
+  get chequedata(): { [key: string]: AbstractControl } {
+    return this.cheque_data.controls;
   }
 
   setRequired() {
@@ -335,10 +354,12 @@ export class FbonewComponent implements OnInit {
     this.isFoscos = false;
     this.isFostac = false;
     this.isHygiene = false;
+    this.byCheque = false;
+    this.cheque_data.reset();
     this.fbo['district'].setValue('');
     this.fbo['pincode'].setValue('');
     this.fbo['payment_mode'].setValue('');
-    if(!this.isPanIndiaAllowed) {
+    if (!this.isPanIndiaAllowed) {
       this.fbo['state'].setValue(this.allocated_state);
     } else {
       this.fbo['state'].setValue('');
@@ -384,9 +405,7 @@ export class FbonewComponent implements OnInit {
     }
     let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
-    console.log(this.existingbos)
     this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => regex.test(obj.owner_name) || regex.test(obj.customer_id));
-    console.log(this.searchSuggestionsOnBo);
   }
 
 
@@ -409,13 +428,12 @@ export class FbonewComponent implements OnInit {
     this.allocated_pincodes = [];
     this.fbo['district'].setValue('');
     this.fbo['pincode'].setValue('');
-    if(fboObj.pincode){
+    if (fboObj.pincode) {
       this._getFboGeneralData.getPincodesData(fboObj.state).subscribe({
         next: res => {
           this.allocated_district = res.map((item: any) => item.District);
-          console.log(fboObj.district)
           this.fbo['district'].setValue(fboObj.district);
-          if(fboObj.district){
+          if (fboObj.district) {
             this.allocated_pincodes = res.filter((item: any) => item.District == fboObj.district).map((item: any) => item.Pincode);
             this.fbo['pincode'].setValue(fboObj.pincode);
           }
@@ -426,8 +444,8 @@ export class FbonewComponent implements OnInit {
         }
       })
     }
-    this.loading= false;
-  
+    this.loading = false;
+
     // this.fbo['district'].setValue(fboObj.district);
     this.fbo['pincode'].setValue(fboObj.pincode);
     this.fbo['address'].setValue(fboObj.address);
@@ -447,11 +465,9 @@ export class FbonewComponent implements OnInit {
 
 
   fetchExistingBo(fboObj: any) {
-
     this.existingFboId = fboObj.customer_id
     this.searchElemBO.nativeElement.value = ''
     this.isSearchEmptyBO = true;
-    console.log(fboObj);
     this.fbo['owner_name'].setValue(fboObj.owner_name);
     this.fbo['business_entity'].setValue(fboObj.business_entity);
     this.fbo['business_category'].setValue(fboObj.business_category);
@@ -468,7 +484,6 @@ export class FbonewComponent implements OnInit {
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
-    console.log(this.fboForm.value);
     if (this.fboForm.invalid || this.loading) {
       return;
     }
@@ -552,6 +567,72 @@ export class FbonewComponent implements OnInit {
             }
           })
         }
+        else if (this.addFbo.payment_mode === 'By Cheque') {
+
+          let formData = new FormData();
+
+          formData.append('boInfo', this.fboForm.value.boInfo);
+          formData.append('fbo_name', this.fboForm.value.fbo_name);
+          formData.append('owner_name', this.fboForm.value.owner_name);
+          formData.append('business_entity', this.fboForm.value.business_entity);
+          formData.append('business_category', this.fboForm.value.business_category);
+          formData.append('business_ownership_type', this.fboForm.value.business_ownership_type);
+          formData.append('owner_contact', this.fboForm.value.owner_contact);
+          formData.append('email', this.fboForm.value.email);
+          formData.append('state', this.fboForm.value.state);
+          formData.append('district', this.fboForm.value.district);
+          formData.append('village', this.fboForm.value.village);
+          formData.append('tehsil', this.fboForm.value.tehsil);
+          formData.append('address', this.fboForm.value.address);
+          formData.append('pincode', this.fboForm.value.pincode);
+          formData.append('product_name', this.fboForm.value.product_name);
+          formData.append('business_type', this.fboForm.value.business_type);
+          formData.append('payment_mode', this.fboForm.value.payment_mode);
+          formData.append('createdBy', this.fboForm.value.createdBy);
+          formData.append('grand_total', this.fboForm.value.grand_total);
+          formData.append('fostac_training', JSON.stringify(this.fostac_training.value));
+          formData.append('foscos_training', JSON.stringify(this.foscos_training.value));
+          formData.append('hygiene_audit', JSON.stringify(this.hygiene_audit.value));
+          let chequeData = {
+            payee_name: this.cheque_data.value.payee_name,
+            account_number: this.cheque_data.value.payee_name,
+            cheque_number: this.cheque_data.value.payee_name,
+            bank_name: this.cheque_data.value.bank_name,
+          }
+          formData.append('cheque_data', JSON.stringify(chequeData));
+          formData.append('cheque_image', this.chequeImage);
+          formData.append('isFostac', this.isFostac.toString());
+          formData.append('isFoscos', this.isFoscos.toString());
+          formData.append('isHygiene',this.isHygiene.toString());
+
+          this._registerService.boByCheque(this.objId, formData).subscribe({
+            next: res => {
+              this._toastrService.success('', 'Record Added Successfully');
+              this.backToRegister();
+            },
+            error: err => {
+              this.loading = false;
+              let errorObj = err.error;
+              if (errorObj.userError) {
+                this._registerService.signout();
+              } else if (errorObj.contactErr) {
+                this._toastrService.error('', 'This Contact Already Exists.');
+              } else if (errorObj.emailErr) {
+                this._toastrService.error('', 'This Email Already Exists.');
+              } else if (errorObj.signatureErr) {
+                this._toastrService.error('', 'Signature Not Found');
+              } else if (errorObj.registerErr) {
+                this._toastrService.error('', 'Some Error Occured. Please Try Again');
+              } else if (errorObj.areaAllocationErr) {
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              } else if (errorObj.wrongPincode) {
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              } else if (errorObj.noSignErr) {
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              }
+            }
+          })
+        }
       } else {
         if (this.addFbo.payment_mode === 'Cash') {
           this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
@@ -580,7 +661,60 @@ export class FbonewComponent implements OnInit {
               }
             }
           })
-        } else if (this.addFbo.payment_mode === 'Pay Page') {
+        }
+        else if (this.addFbo.payment_mode === 'By Cheque') {
+         
+          let formData = new FormData();
+
+          formData.append('pincode', this.fboForm.value.pincode);
+          formData.append('product_name', this.fboForm.value.product_name);
+          formData.append('payment_mode', this.fboForm.value.payment_mode);
+          formData.append('grand_total', this.fboForm.value.grand_total);
+          formData.append('existingFboId', this.existingFboId);
+          formData.append('fostac_training', JSON.stringify(this.fostac_training.value));
+          formData.append('foscos_training', JSON.stringify(this.foscos_training.value));
+          formData.append('hygiene_audit', JSON.stringify(this.hygiene_audit.value));
+          let chequeData = {
+            payee_name: this.cheque_data.value.payee_name,
+            account_number: this.cheque_data.value.payee_name,
+            cheque_number: this.cheque_data.value.payee_name,
+            bank_name: this.cheque_data.value.bank_name,
+          }
+          formData.append('cheque_data', JSON.stringify(chequeData));
+          formData.append('cheque_image', this.chequeImage);
+          formData.append('isFostac', this.isFostac.toString());
+          formData.append('isFoscos', this.isFoscos.toString());
+          formData.append('isHygiene',this.isHygiene.toString());
+          // formData.append('fostacGST', this.fostacGST.toString());
+          // formData.append('foscosGST', this.foscosGST.toString());
+          // formData.append('hygieneGST', this.hygieneGST.toString());
+          // formData.append('foscosFixedCharge', this.foscosFixedCharges.toString());
+          this._registerService.fboByCheque(this.objId, formData).subscribe({
+            next: res => {
+              this._toastrService.success('', 'Record Added Successfully');
+              this.backToRegister();
+            },
+            error: (err) => {
+              this.loading = false;
+              let errorObj = err.error
+              if (errorObj.userError) {
+                this._registerService.signout();
+              } else if (errorObj.signatureErr) {
+                this._toastrService.error('', 'Signature Not Found');
+              } else if (errorObj.areaAllocationErr) {
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              } else if (errorObj.wrongPincode) {
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              } else if (errorObj.noSignErr) {
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              } else if (errorObj.fboMissing) {
+                this._toastrService.error('', 'FBO not found');
+              }
+            }
+          })
+
+        }
+        else if (this.addFbo.payment_mode === 'Pay Page') {
           this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res) => {
               window.location.href = res.message
@@ -605,7 +739,6 @@ export class FbonewComponent implements OnInit {
               return 1;
             }
           });
-        console.log(this.fboGeneralData);
         this.productList = this.fboGeneralData.map((item: any) => item.key);
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
@@ -624,7 +757,6 @@ export class FbonewComponent implements OnInit {
     this._getFboGeneralData.getFbolist().subscribe({
       next: (res) => {
         this.loading = false;
-        console.log(res);
         this.existingFbos = res.fboList;
       },
       error: (err) => {
@@ -638,7 +770,6 @@ export class FbonewComponent implements OnInit {
     this._getFboGeneralData.getbolist().subscribe({
       next: (res) => {
         this.existingbos = res.boList;
-        console.log(this.existingbos);
       },
       error: (err) => {
       }
@@ -665,7 +796,6 @@ export class FbonewComponent implements OnInit {
   }
 
   getSelectedProduct($event: any) {
-    console.log($event);
 
     this.productName = $event;
     this.fboForm.patchValue({ product_name: this.productName })
@@ -753,10 +883,12 @@ export class FbonewComponent implements OnInit {
   }
 
   ModeofPayment(event: any) {
-    if (this.fboForm.value.total_amount !== '' && event.target.value == 'Pay Page') {
-      this.isQrCode = true;
+    if (this.fboForm.value.total_amount !== '' && event.target.value == 'By Cheque') {
+      this.byCheque = true;
+      this.fboForm.addControl('cheque_data', this.cheque_data);
     } else {
-      this.isQrCode = false;
+      this.byCheque = false;
+      this.fboForm.removeControl('cheque_data');
     }
   }
 
@@ -834,7 +966,6 @@ export class FbonewComponent implements OnInit {
           // this.router.navigate(['/home']);
         } else {
           this.allocated_state = data.state;
-          console.log(data.district);
           this.allocated_district = data.district;
           this.allocated_pincodes = data.pincodes;
           this.fboForm.patchValue({ state: this.allocated_state });
@@ -849,14 +980,13 @@ export class FbonewComponent implements OnInit {
 
   onStateSelect() { // this methord will call api for getting all district belongs to a particular state and their respective pincodes and set them in district and pincodes var in case of pan india allowed
     let state = this.fbo['state'].value;
-    this.allocated_district=[];
-    this.allocated_pincodes=[];
+    this.allocated_district = [];
+    this.allocated_pincodes = [];
     this.fbo['district'].setValue('');
     this.fbo['pincode'].setValue('');
-    this.loading=true;
+    this.loading = true;
     this._getFboGeneralData.getPincodesData(state).subscribe({
       next: (res) => {
-        // console.log(res);
         let pincodesData = res;
         this.districtAndPincodes = res;
         pincodesData.forEach((obj: pincodeData) => {
@@ -879,17 +1009,15 @@ export class FbonewComponent implements OnInit {
   }
 
   onDistrictChange() {
-    if(!this.isPanIndiaAllowed) {
+    if (!this.isPanIndiaAllowed) {
       return
-    } 
+    }
     this.allocated_pincodes = [];
     this.fbo['pincode'].setValue('');
     this.loading = true;
-    let pincodeArr: any =[];
-    this.districtAndPincodes.forEach((obj:any) => {
-      console.log(this.allocated_pincodes)
-      if(obj.District == this.fbo['district'].value) {
-        console.log(11);
+    let pincodeArr: any = [];
+    this.districtAndPincodes.forEach((obj: any) => {
+      if (obj.District == this.fbo['district'].value) {
         pincodeArr.push(obj.Pincode);
       }
     });
@@ -932,7 +1060,7 @@ export class FbonewComponent implements OnInit {
 
   checkEmpId() { //this methord checks and allow to give Pan India location for a particular employee
     this.userEmployeeId = this.parsedUserData.employee_id;
-    if(panIndiaAllowedEmpIds.includes(this.userEmployeeId)) {
+    if (panIndiaAllowedEmpIds.includes(this.userEmployeeId)) {
       this.isPanIndiaAllowed = true;
       // this.fboForm.patchValue({state: ""});
       this.allocated_state = stateName;
@@ -941,5 +1069,13 @@ export class FbonewComponent implements OnInit {
 
   closeMultiSelect() {
     this.multiSelect.isdropped = false;
+  }
+
+  uploadChequeImage($event: any) {
+    let file = $event.target.files[0];
+
+    if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png" || file.type == "application/pdf") {
+      this.chequeImage = file;
+    }
   }
 }

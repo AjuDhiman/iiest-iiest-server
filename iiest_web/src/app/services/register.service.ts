@@ -297,6 +297,23 @@ export class RegisterService {
     ));
   }
 
+  
+  public fboByCheque(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/fbobycheque/${objId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public boByCheque(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/bobycheque/${objId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
   //for training batch
   public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{
     const url = `${this.url}/updatetraingbatch/${objId}`;

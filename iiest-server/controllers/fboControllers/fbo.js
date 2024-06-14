@@ -9,7 +9,7 @@ const { ObjectId } = require('mongodb');
 const { createInvoiceBucket, empSignBucket } = require('../../config/buckets');
 const payRequest = require('../../fbo/phonePay');
 const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
-const sendInvoiceMail = require('../../fbo/sendMail');
+const {sendInvoiceMail, sendCheckMail} = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
 const sessionModel = require('../../models/generalModels/sessionDataSchema');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
@@ -30,8 +30,9 @@ exports.fboPayment = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true });
     }
 
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+
     if (req.user.employee_id != 'IIEST/FD/0176') {
-      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
 
       if (!areaAlloted) {
         success = false;
@@ -51,7 +52,9 @@ exports.fboPayment = async (req, res) => {
     const formBody = req.body;
     const createrId = req.params.id
 
-    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, officerName: officerName } });
+    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, officerName: officerName, 
+      apiCalled: false //this property in data chrecks if api for pay page return already called or not in case of payment link share
+    } });
 
     if (req.user.employee_id != 'IIEST/FD/0176') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
@@ -65,6 +68,8 @@ exports.fboPayment = async (req, res) => {
     payRequest(formBody.grand_total, res, `${BACK_END}/fbo-pay-return/${fboFormData._id}`);
 
   } catch (error) {
+    console.log(error);
+    await sessionModel.findByIdAndDelete(fboFormData._id);// delete session in any case of faliure
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 }
@@ -85,6 +90,12 @@ exports.fboPayReturn = async (req, res) => {
         // const fetchedFormData = req.session.fboFormData;
         let sessionData = await sessionModel.findById(sessionId);
         const fetchedFormData = sessionData.data;
+        // let apiCalled = fetchedFormData.apiCalled;
+        // await sessionModel.findByIdAndUpdate(sessionId, {data: {...fetchedFormData, apiCalled: false}});
+
+        // if(!fetchedFormData || apiCalled){
+        //   return;
+        // }
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo, officerName } = fetchedFormData;
         fetchedFormData
@@ -230,8 +241,9 @@ exports.fboRegister = async (req, res) => {
 
     const officerName = req.user.employee_name;
 
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+
     if (req.user.employee_id != 'IIEST/FD/0176') {
-      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
       
       if (!areaAlloted) {
         success = false;
@@ -347,6 +359,94 @@ exports.fboRegister = async (req, res) => {
 
     success = true;
     sendInvoiceMail(email, invoiceData);
+    return res.status(200).json({ success })
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+exports.boByCheque = async (req, res) => {
+  try {
+
+    console.log(req.files);
+    const chequeImage = req.files['cheque_image'][0];
+
+    const createrObjId = req.params.id;
+
+    let success = false;
+
+    const userInfo = await employeeSchema.findById(createrObjId); //getting employee data and signature form db
+    const signatureFile = userInfo.signatureImage;
+
+    if (!signatureFile) {
+      return res.status(404).json({ success, signatureErr: true })
+    }
+
+    const officerName = req.user.employee_name;
+
+    //checkig for allocated areas
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
+    }
+
+    const signatureBucket = empSignBucket(); //getting sign from bucket
+
+    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
+
+    if (!signExists.length > 0) {
+      return res.status(404).json({ success, noSignErr: true })
+    }
+
+    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene } = req.body;//getting data from req body
+
+    if (req.user.employee_id != 'IIEST/FD/0176') { //checking allocated areas
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
+    }
+
+    const { idNumber, generatedCustomerId } = await generatedInfo(); //generating bo Id
+
+    let fostacTraining = isFostac==='true'?JSON.parse(fostac_training):undefined;
+    let foscosTraining =  isFoscos==='true'?JSON.parse(foscos_training):undefined;
+    let hygieneAudit = isHygiene==='true'?JSON.parse(hygiene_audit):undefined;
+    let chequeData = JSON.parse(cheque_data);
+    chequeData.status = 'Pending';
+    chequeData.cheque_image = chequeImage.filename;
+
+    const fboEntry = await fboModel.create({
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+    });
+
+    if (!fboEntry) {
+      success = false;
+      return res.status(401).json({ success, randomErr: true })
+    }
+
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, payment_mode, grand_total, invoiceId: [], cheque_data:chequeData });
+
+    if (!selectedProductInfo) {
+      success = false;
+      return res.status(401).json({ success, randomErr: true })
+    }
+
+    success = true;
+    const clientData = {
+      cheque_data: chequeData
+    }
+    sendCheckMail(email, clientData);
+    // sendInvoiceMail(email, invoiceData);
     return res.status(200).json({ success })
 
   } catch (error) {
