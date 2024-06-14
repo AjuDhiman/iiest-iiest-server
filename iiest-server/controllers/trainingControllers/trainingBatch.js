@@ -185,22 +185,22 @@ exports.auditBatch = async (req, res) => {
         const user = req.user;
 
         const ourHolidays = [
-            { date: '26-01-2024', name: 'Republic Day' },
-            { date: '08-03-2024', name: 'Mahashivratri' },
-            { date: '25-04-2024', name: 'Holi' },
-            { date: '29-04-2024', name: 'Good Friday' },
-            { date: '11-04-2024', name: 'Eid Al-Fitr' },
-            { date: '11-06-2024', name: 'Eid Al-Zuha(Bakrid)' },
-            { date: '15-08-2024', name: 'Independence Day' },
-            { date: '19-08-2024', name: 'Raksha Bandhan' },
-            { date: '26-09-2024', name: 'Janmashtami' },
-            { date: '02-10-2024', name: 'Gandhi Jayanti' },
-            { date: '12-10-2024', name: 'Dussehra' },
-            { date: '01-11-2024', name: 'Diwali' },
-            { date: '02-11-2024', name: 'Govardhan Pooja' },
-            { date: '03-11-2024', name: 'Bhai Dooj' },
-            { date: '25-12-2024', name: 'Christmas' },
-        ];
+            { date: '26-Jan-2024', name: 'Republic Day' },
+            { date: '08-Mar-2024', name: 'Mahashivratri' },
+            { date: '25-Apr-2024', name: 'Holi' },
+            { date: '29-Apr-2024', name: 'Good Friday' },
+            { date: '11-Apr-2024', name: 'Eid Al-Fitr' },
+            { date: '11-Jun-2024', name: 'Eid Al-Zuha(Bakrid)' },
+            { date: '15-Aug-2024', name: 'Independence Day' },
+            { date: '19-Aug-2024', name: 'Raksha Bandhan' },
+            { date: '26-Sept-2024', name: 'Janmashtami' },
+            { date: '02-Oct-2024', name: 'Gandhi Jayanti' },
+            { date: '12-Oct-2024', name: 'Dussehra' },
+            { date: '01-Nov-2024', name: 'Diwali' },
+            { date: '02-Nov-2024', name: 'Govardhan Pooja' },
+            { date: '03-Nov-2024', name: 'Bhai Dooj' },
+            { date: '25-Dec-2024', name: 'Christmas' },
+        ];    
 
         let location;
 
@@ -226,10 +226,6 @@ exports.auditBatch = async (req, res) => {
 
         const allAuditors = [
             'Umar Shakil',
-            'Nitish jamwal',
-            'Vansh Gora',
-            'Harsh Jain',
-            'Chandan Kumar'
         ]
 
         console.log(generalData[0]);
@@ -425,21 +421,21 @@ function getRandomItemFromArr(arr) {
 async function getAuditDate(verificationDate) {
 
     const updatedHolidays = [
-        { date: '26-01-2024', name: 'Republic Day' },
-        { date: '08-03-2024', name: 'Mahashivratri' },
-        { date: '25-04-2024', name: 'Holi' },
-        { date: '29-04-2024', name: 'Good Friday' },
-        { date: '11-04-2024', name: 'Eid Al-Fitr' },
-        { date: '11-06-2024', name: 'Eid Al-Zuha(Bakrid)' },
-        { date: '15-08-2024', name: 'Independence Day' },
-        { date: '19-08-2024', name: 'Raksha Bandhan' },
-        { date: '26-09-2024', name: 'Janmashtami' },
-        { date: '02-10-2024', name: 'Gandhi Jayanti' },
-        { date: '12-10-2024', name: 'Dussehra' },
-        { date: '01-11-2024', name: 'Diwali' },
-        { date: '02-11-2024', name: 'Govardhan Pooja' },
-        { date: '03-11-2024', name: 'Bhai Dooj' },
-        { date: '25-12-2024', name: 'Christmas' },
+        { date: '26-Jan-2024', name: 'Republic Day' },
+        { date: '08-Mar-2024', name: 'Mahashivratri' },
+        { date: '25-Apr-2024', name: 'Holi' },
+        { date: '29-Apr-2024', name: 'Good Friday' },
+        { date: '11-Apr-2024', name: 'Eid Al-Fitr' },
+        { date: '11-Jun-2024', name: 'Eid Al-Zuha(Bakrid)' },
+        { date: '15-Aug-2024', name: 'Independence Day' },
+        { date: '19-Aug-2024', name: 'Raksha Bandhan' },
+        { date: '26-Sept-2024', name: 'Janmashtami' },
+        { date: '02-Oct-2024', name: 'Gandhi Jayanti' },
+        { date: '12-Oct-2024', name: 'Dussehra' },
+        { date: '01-Nov-2024', name: 'Diwali' },
+        { date: '02-Nov-2024', name: 'Govardhan Pooja' },
+        { date: '03-Nov-2024', name: 'Bhai Dooj' },
+        { date: '25-Dec-2024', name: 'Christmas' },
     ];
 
     const allAuditors = await generalDataSchema.find()[0].auditors;// get list of all auditors from general datas
