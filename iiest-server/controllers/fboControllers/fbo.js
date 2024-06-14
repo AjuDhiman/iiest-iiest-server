@@ -196,7 +196,8 @@ exports.fboPayReturn = async (req, res) => {
 
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
-        // sendInvoiceMail(email, invoiceData);
+      
+        sendInvoiceMail(email, invoiceData);
 
         // let saltKey = '875126e4-5a13-4dae-ad60-5b8c8b629035';
         // let saltIndex = 1
