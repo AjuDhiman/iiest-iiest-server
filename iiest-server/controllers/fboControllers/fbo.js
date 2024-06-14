@@ -87,15 +87,19 @@ exports.fboPayReturn = async (req, res) => {
 
         let success = false;
 
-        // const fetchedFormData = req.session.fboFormData;
         let sessionData = await sessionModel.findById(sessionId);
+        if(!sessionData){
+          res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
+          return
+        }
         const fetchedFormData = sessionData.data;
-        // let apiCalled = fetchedFormData.apiCalled;
-        // await sessionModel.findByIdAndUpdate(sessionId, {data: {...fetchedFormData, apiCalled: false}});
+        let apiCalled = fetchedFormData.apiCalled;
+        await sessionModel.findByIdAndUpdate(sessionId, {data: {...fetchedFormData, apiCalled: true}});
 
-        // if(!fetchedFormData || apiCalled){
-        //   return;
-        // }
+        if(apiCalled){
+          res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
+          return;
+        }
 
         const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo, officerName } = fetchedFormData;
         fetchedFormData
@@ -192,7 +196,7 @@ exports.fboPayReturn = async (req, res) => {
 
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
-        sendInvoiceMail(email, invoiceData);
+        // sendInvoiceMail(email, invoiceData);
 
         // let saltKey = '875126e4-5a13-4dae-ad60-5b8c8b629035';
         // let saltIndex = 1

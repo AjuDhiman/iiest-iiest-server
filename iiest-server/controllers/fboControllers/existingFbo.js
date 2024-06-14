@@ -183,8 +183,6 @@ exports.existingFboByCheque = async (req, res) => {
 
     const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, cheque_data, isFostac, isFoscos, isHygiene, existingFboId } = req.body;
 
-    console.log(req.body);
-
     const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId });
 
     if (!existingFboInfo) {
@@ -305,7 +303,18 @@ exports.existingFboPayReturn = async (req, res) => {
 
         // const fetchedFormData = req.session.fboFormData;
         let sessionData = await sessionModel.findById(sessionId);
+        if(!sessionData){
+          res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
+          return
+        }
         const fetchedFormData = sessionData.data;
+        let apiCalled = fetchedFormData.apiCalled;
+        await sessionModel.findByIdAndUpdate(sessionId, {data: {...fetchedFormData, apiCalled: true}});
+
+        if(apiCalled){
+          res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
+          return;
+        }
 
         const { product_name, payment_mode, grand_total, fostac_training, foscos_training, hygiene_audit, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, existingFboInfo, officerName } = fetchedFormData;
 
