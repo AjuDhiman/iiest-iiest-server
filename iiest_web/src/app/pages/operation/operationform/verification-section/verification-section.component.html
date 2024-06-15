@@ -467,7 +467,8 @@
     <div class="col-md-3">
       <label for="owners_num" class="form-label">No. of Owners</label><sup>*</sup>
       <input type="number" placeholder="No. of Owners" formControlName="owners_num" class="form-control form-control-sm"
-        id="owners_num" [readOnly]="verifiedStatus" (change)="onOwnersNumChange($event)"
+        id="owners_num" [readOnly]="verifiedStatus" (change)="onOwnersNumChange($event)" 
+        [readOnly]="verificationform['ownership_type'].value=='Propraitorship'|| !verificationform['ownership_type']"
         [ngClass]="{ 'is-invalid': verified && verificationform['owners_num'].errors }">
       <div *ngIf="verified && verificationform['owners_num'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['owners_num'].errors['required']">No. of Owners is required</div>

@@ -238,6 +238,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           if (res.success) {
             this.loading = false;
             this.verifiedStatus = true;
+            console.log(res);
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
             this.emitVerifiedData.emit(res.verificationInfo);
@@ -493,7 +494,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   onOwnershipTypeChanges($event: any) {
-    if ($event.target.value === 'Propaitorship') {
+    if ($event.target.value === 'Propraitorship') {
       this.minMembers = 1;
     } else {
       this.minMembers = 2;

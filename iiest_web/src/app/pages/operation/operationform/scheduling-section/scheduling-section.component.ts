@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { hraRequiredDocs, ourHolidays } from 'src/app/utils/config';
+import { days, hraRequiredDocs, months, ourHolidays } from 'src/app/utils/config';
 
 
 @Component({
@@ -14,7 +14,7 @@ import { hraRequiredDocs, ourHolidays } from 'src/app/utils/config';
   templateUrl: './scheduling-section.component.html',
   styleUrls: ['./scheduling-section.component.scss']
 })
-export class SchedulingSectionComponent implements OnInit {
+export class SchedulingSectionComponent implements OnInit, OnChanges {
 
   //global variables
   scheduled: boolean = false;
@@ -24,6 +24,8 @@ export class SchedulingSectionComponent implements OnInit {
   hraReqDocumentsName: string[] = [];
   selectedDocs: string[] = [];
   docList: any = [];
+  hraBookDateStr: string;
+  changedDateStr: string;
 
   //input variables
   @Input() verifiedDataId: string;
@@ -48,7 +50,7 @@ export class SchedulingSectionComponent implements OnInit {
 
   //Fostac Enrollment Reactive form 
   schedulingForm: FormGroup = new FormGroup({
-    tentative_audit_date: new FormControl(''),
+    changed_date: new FormControl(''),
     hra_book_date: new FormControl(''),
     auditor_name: new FormControl(''),
   });
@@ -62,7 +64,7 @@ export class SchedulingSectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.schedulingForm = this.formBuilder.group({
-      tentative_audit_date: ['', Validators.required],
+      changed_date: [''],
       hra_book_date: ['', Validators.required],
       auditor_name: ['', Validators.required],
     });
@@ -70,6 +72,22 @@ export class SchedulingSectionComponent implements OnInit {
     this.getDocs();
 
     this.hraReqDocumentsName = hraRequiredDocs.map((item: any) => item.name);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes['verifiedData']){
+      console.log(this.verifiedData._id);
+      this._getDataService.getCandidateAuditBatch(this.verifiedData._id).subscribe({
+        next: res => {
+          console.log(res);
+          this.schedulingForm.patchValue({'auditor_name': res.batchData.auditor });
+          this.hraBookDateStr = this.getFormatedDate(res.batchData.auditDates);
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+    }
   }
 
   get scheduleform(): { [key: string]: AbstractControl } {
@@ -113,12 +131,33 @@ export class SchedulingSectionComponent implements OnInit {
     this.schedulingForm.patchValue({ tentative_audit_date: this.getFormatedDate(date.toString()) });
   }
 
-  getFormatedDate(date: string): string {
-    const originalDate = new Date(date);
-    const year = originalDate.getFullYear();
-    const month = String(originalDate.getMonth() + 1).padStart(2, '0');
-    const day = String(originalDate.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
+  getFormatedDate(date: string | string[]): string {
+
+    let formattedDate = '';
+    if(typeof(date) == 'string') {
+      const originalDate = new Date((date));
+      const year = originalDate.getFullYear();
+      const hours = String(originalDate.getHours()).padStart(2, '0');
+      const minutes = String(originalDate.getMinutes()).padStart(2, '0');
+      const ampm = originalDate.getHours() >= 12 ? 'PM' : 'AM';
+      if (Math.floor((new Date().getTime() - originalDate.getTime()) / (24 * 60 * 60 * 1000)) < 7) {
+        formattedDate = `${hours}:${minutes} ${ampm}, ${days[originalDate.getDay()]}`;
+      } else {
+        const month = months[originalDate.getMonth()];
+        const day = String(originalDate.getDate()).padStart(2, '0');
+        formattedDate = `${hours}:${minutes} ${ampm}, ${day}-${month}-${year}`;
+      }
+    } else {
+      if(date.length === 1) {
+        let orignalDate = new Date(date[0].toString())
+        return `${orignalDate.getDate()}-${months[orignalDate.getMonth()]}-${orignalDate.getFullYear()}`
+      } else {
+        let startDate = new Date(date[0].toString());
+        let endDate = new Date(date[date.length - 1].toString());
+        return `${startDate.getDate()}-${months[startDate.getMonth()]}-${startDate.getFullYear()} to ${endDate.getDate()}-${months[endDate.getMonth()]}-${endDate.getFullYear()}`
+      }
+    }
+   
     return formattedDate;
   }
 
