@@ -77,7 +77,7 @@ const sendCheckMail = (clientMail, clientData) => {
     from: mailData.email,
     cc: process.env.DIRECTOR_MAIL,
     to: clientMail,
-    subject: 'IIEST Federation -- INVOICE',
+    subject: 'IIEST Federation -- Cheque Collection Confirmation',
     html: `<p>Welcome to the IIEST Federation,<br>
         Scheme implementing partner of Govt. Of India.</p>
         <p>Dear Valued Customer</p>
