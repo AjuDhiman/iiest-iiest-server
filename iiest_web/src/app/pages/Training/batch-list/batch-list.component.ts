@@ -211,10 +211,16 @@ export class BatchListComponent implements OnInit {
     const parsedUser = JSON.parse((user as string));
     const panelType = parsedUser.panel_type;
     console.log(panelType);
-    if (panelType === 'FSSAI Trainer Panel' || panelType === 'Fostac Panel') {
+    if (panelType === 'Fostac Panel') {
       this.listType = 'Batch'
     } else if (panelType === 'HRA Panel') {
       this.listType = 'Audit'
+    } else if(panelType === 'FSSAI Training Panel') {
+      if(this.router.url === '/auditlist'){
+        this.listType = 'Audit'
+      } else if(this.router.url === '/batchlist'){
+        this.listType = 'Batch'
+      }
     }
     console.log(this.listType);
   }
