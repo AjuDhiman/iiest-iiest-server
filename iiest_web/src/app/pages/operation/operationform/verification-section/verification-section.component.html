@@ -644,18 +644,11 @@
 
   <div class="col-md-3 position-relative">
     <label for="food_handler_no" class="form-label">No. of Food Handlers</label><sup>*</sup>
-    <input #foodHandler type="text" placeholder="Enter no. of Food Handler" formControlName="food_handler_no"
+    <input type="text" placeholder="Enter no. of Food Handler" formControlName="food_handler_no"
       class="form-control form-control-sm" valid='false' id="food_handler_no"
-      [ngClass]="{ 'is-invalid': verified && verificationform['food_handler_no'].errors , 'is-verified': foodHandler.getAttribute('valid') === 'true' || verifiedStatus}">
+      [ngClass]="{ 'is-invalid': verified && verificationform['food_handler_no'].errors }"/>
     <div *ngIf="verified && verificationform['food_handler_no'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['food_handler_no'].errors['required']">No. of food handler is required</div>
-    </div>
-
-    <!-- For Perticular field verification -->
-    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="foodHandler.getAttribute('valid')"
-      (click)="foodHandler.setAttribute('valid', 'true')"
-      [ngClass]="{'verified-check':foodHandler.getAttribute('valid') === 'true' || verifiedStatus}">
-      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
     </div>
   </div>
 

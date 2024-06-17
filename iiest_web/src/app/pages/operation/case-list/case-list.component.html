@@ -142,8 +142,8 @@
                                         <th class="cell">Address</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
-                                        <th class="cell">KOB</th>
-                                        <th class="cell">No. of Food Handlers</th>
+                                        <!-- <th class="cell">KOB</th>
+                                        <th class="cell">No. of Food Handlers</th> -->
                                         <th class="cell">HRA Total</th>
                                         <!-- <th class="cell">State</th> -->
                                         <th class="cell">Sales Executive</th>
@@ -163,11 +163,11 @@
                                                 class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
-                                        <td class="cell"><span
+                                        <!-- <td class="cell"><span
                                                 class="truncate">{{data.kob}}</span>
                                         </td>
                                         <td class="cell text-center"><span
-                                                class="truncate">{{data.foodHandlersCount}}</span></td>
+                                                class="truncate">{{data.foodHandlersCount}}</span></td> -->
                                         <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.hraInfo.hra_total}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
