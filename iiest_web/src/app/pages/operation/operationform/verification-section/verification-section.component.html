@@ -219,7 +219,7 @@
 
     <!-- form input fields -->
     <div class="col-md-3 position-relative">
-      <label for="operator_name" class="form-label">Operator Name</label><sup>*</sup>
+      <label for="operator_name" class="form-label">Manager's Name</label><sup>*</sup>
       <input #operator_name type="text" placeholder="Operator Name" formControlName="operator_name"
         class="form-control form-control-sm" id="operator_name" [readOnly]="true" valid="false"
         [ngClass]="{ 'is-invalid': verified && verificationform['operator_name'].errors , 'is-verified': operator_name.getAttribute('valid') === 'true' || verifiedStatus}">
@@ -343,7 +343,7 @@
       </div>
     </div>
 
-    <div class="col-md-3 position-relative">
+    <!-- <div class="col-md-3 position-relative">
       <label #village for="village" class="form-label">Village</label><sup>*</sup>
       <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm"
         valid="false" id="address"
@@ -352,15 +352,25 @@
         <div *ngIf="verificationform['village'].errors['required']">Village is required</div>
       </div>
 
-      <!-- For Perticular field verification -->
+     
       <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="village.getAttribute('valid')"
         (click)="village.setAttribute('valid', 'true')"
         [ngClass]="{'verified-check':village.getAttribute('valid') === 'true' || verifiedStatus}">
         <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
       </div>
-    </div>
+    </div> -->
 
-    <div class="col-md-3 position-relative">
+    <!-- <div class="col-md-3 position-relative">
+      <label for="village" class="form-label">Village</label><sup>*</sup>
+      <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm"
+        valid="false" id="address"
+        [ngClass]="{ 'is-invalid': verified && verificationform['village'].errors}">
+      <div *ngIf="verified && verificationform['village'].errors" class="invalid-feedback">
+        <div *ngIf="verificationform['village'].errors['required']">Village is required</div>
+      </div>
+    </div> -->
+
+    <!-- <div class="col-md-3 position-relative">
       <label for="tehsil" class="form-label">Tehsil</label><sup>*</sup>
       <input #tehsil type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm"
         id="address"
@@ -369,14 +379,12 @@
       <div *ngIf="verified && verificationform['tehsil'].errors" class="invalid-feedback">
         <div *ngIf="verificationform['tehsil'].errors['required']">Tehsil is required</div>
       </div>
-
-      <!-- For Perticular field verification -->
       <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="tehsil.getAttribute('valid')"
         (click)="tehsil.setAttribute('valid', 'true')"
         [ngClass]="{'verified-check':tehsil.getAttribute('valid') === 'true' || verifiedStatus}">
         <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
       </div>
-    </div>
+    </div> -->
 
     <div class="col-md-3">
       <label for="license_category" class="form-label">License Category</label><sup>*</sup>

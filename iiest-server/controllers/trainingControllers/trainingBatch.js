@@ -289,13 +289,13 @@ exports.auditBatch = async (req, res) => {
                     const auditorsOnDate = batchesOnDate.map((batch) => batch.auditor)
 
                     if ((allAuditors.length === auditorsOnDate.length) || avilableAuditors.length === 0) {
-                        date.setDate(date.getDate() + i + holidayNum);
+                        date.setDate(date.getDate() + i + holidayNum + 1);
                         break; // break the loop if all auditors are booked any of the day or not same auditor is avilble on all days
                     } else {
                         console.log(2, avilableAuditors);
+                        dayAvilable = true;
                         avilableAuditors = avilableAuditors.filter((auditor) => !auditorsOnDate.includes(auditor));
                         auditDatesArr.push(day);
-                        dayAvilable = true;
                     }
                 }
 

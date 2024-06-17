@@ -316,8 +316,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ email: res.populatedInfo.managerEmail });
           this.verificationForm.patchValue({ address: res.populatedInfo.address });
           this.verificationForm.patchValue({ state: res.populatedInfo.state });
-          this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
-          this.verificationForm.patchValue({ food_handler_no: res.populatedInfo.foodHandlersCount });
+          // this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
+          // this.verificationForm.patchValue({ food_handler_no: res.populatedInfo.foodHandlersCount });
           this.verificationForm.patchValue({ district: res.populatedInfo.district });
           this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
           this.verificationForm.patchValue({ hra_total: res.populatedInfo.salesInfo.hraInfo.hra_total });
@@ -391,6 +391,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         if (res) {
           this.verifiedStatus = true;
           this.emitVerifiedData.emit(res.verifedData);
+          this.verificationForm.patchValue({ kob: res.verifedData.kob });
+          this.verificationForm.patchValue({ food_handler_no: res.verifedData.foodHandlersCount });
           this.emitVerifiedStatus.emit(this.verifiedStatus);
         } else {
           this.verifiedStatus = false;
@@ -461,8 +463,10 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       state: ['', Validators.required],
       district: ['', Validators.required],
       pincode: ['', Validators.required],
-      village: ['', Validators.required],
-      tehsil: ['', Validators.required],
+      // village: ['', Validators.required],
+      // tehsil: ['', Validators.required],
+      village: [''],
+      tehsil: [''],
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required],

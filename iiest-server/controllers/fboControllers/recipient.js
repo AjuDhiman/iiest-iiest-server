@@ -76,8 +76,9 @@ exports.addRecipient = async (req, res) => {
             const allShop = await shopModel.find({salesInfo: req.params.id});
 
             allShop.forEach(shop => {
-                if(shop.eBillImage != undefined && shop.eBillImage != ''
-                 && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+                if(
+                    // shop.eBillImage != undefined && shop.eBillImage != ''
+                 shop.shopPhoto != undefined && shop.shopPhoto != '' 
                  && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
                  && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                     allDocUploaded = true
@@ -131,17 +132,17 @@ exports.addShop = async (req, res) => {
 
         let success = false;
 
-        const eBill = req.files['eBill'];
+        // const eBill = req.files['eBill'];
         const ownerPhoto = req.files['ownerPhoto'];
         const shopPhoto = req.files['shopPhoto'];
         const aadharPhoto = req.files['aadharPhoto'];
 
         const { operatorName, address, pincode, village, tehsil, byExcel } = req.body;
 
-        if (!eBill) {
-            success = false;
-            return res.status(401).json({ success, ebillErr: true })
-        }
+        // if (!eBill) {
+        //     success = false;
+        //     return res.status(401).json({ success, ebillErr: true })
+        // }
 
         if (!ownerPhoto) {
             success = false;
@@ -168,7 +169,7 @@ exports.addShop = async (req, res) => {
 
         const aadharSrc = aadharPhoto.map((file) => file.filename); 
 
-        const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, eBillImage: eBill[0].filename, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc, byExcel });
+        const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc, byExcel });
 
 
         const salesInfo = await salesModel.findOne({_id: req.params.id});
@@ -182,8 +183,9 @@ exports.addShop = async (req, res) => {
         let allDocUploaded = false;
 
         allShop.forEach(shop => {
-            if(shop.eBillImage != undefined && shop.eBillImage != ''
-             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+            if(
+                // shop.eBillImage != undefined && shop.eBillImage != ''
+             shop.shopPhoto != undefined && shop.shopPhoto != '' 
              && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
              && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                 allDocUploaded = true
@@ -245,19 +247,26 @@ exports.addHygieneShop = async (req, res) => {
 
         let success = false;
 
-        const fostacCertificate = req.files['fostacCertificate'];
-        const foscosLicense = req.files['foscosLicense'];
+        // const eBill = req.files['eBill'];
+        const ownerPhoto = req.files['ownerPhoto'];
+        const shopPhoto = req.files['shopPhoto'];
+        const aadharPhoto = req.files['aadharPhoto'];
 
-        const { manager_name, manager_contact, manager_email, kob, food_handlers, address, pincode, byExcel } = req.body;
+        const { manager_name, manager_contact, manager_email, address, pincode, byExcel } = req.body;
 
-        if (!fostacCertificate) {
+        if (!ownerPhoto) {
             success = false;
-            return res.status(401).json({ success, fostacCertificateErr: true })
+            return res.status(401).json({ success, ownerPhotoErr: true })
         }
 
-        if (!foscosLicense) {
+        if (!shopPhoto) {
             success = false;
-            return res.status(401).json({ success, foscosLicenseErr: true })
+            return res.status(401).json({ success, shopPhotoErr: true })
+        }
+       
+        if (!aadharPhoto) {
+            success = false;
+            return res.status(401).json({ success, aadharPhotoErr: true })
         }
 
         const {state, district} = await readPincodeFile(pincode); //extract state and district on the basis of pincode
@@ -270,7 +279,9 @@ exports.addHygieneShop = async (req, res) => {
 
         const shopCustInfo = await generateHygieneShopInfo(req.params.id);
 
-        const addShop = await hygieneShopModel.create({ salesInfo: req.params.id, shopId: shopCustInfo.shopId, managerName: manager_name,managerContact: manager_contact, managerEmail: manager_email, kob, foodHandlersCount: food_handlers, address, state, district, pincode, fostacCertificate: fostacCertificate[0].filename, foscosLicense: foscosLicense[0].filename });
+        const aadharSrc = aadharPhoto.map((file) => file.filename); 
+
+        const addShop = await hygieneShopModel.create({ salesInfo: req.params.id, shopId: shopCustInfo.shopId, managerName: manager_name,managerContact: manager_contact, managerEmail: manager_email, address, state, district, pincode, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc });
 
         //code for approving sale
         const salesInfo = await salesModel.findOne({_id: req.params.id});
@@ -306,8 +317,9 @@ exports.addHygieneShop = async (req, res) => {
             const allShop = await shopModel.find({salesInfo: req.params.id});
 
             allShop.forEach(shop => {
-                if(shop.eBillImage != undefined && shop.eBillImage != ''
-                 && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+                if(
+                    // shop.eBillImage != undefined && shop.eBillImage != ''
+                 shop.shopPhoto != undefined && shop.shopPhoto != '' 
                  && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
                  && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                     allDocUploaded = true
@@ -479,8 +491,9 @@ exports.uploadEbill = async (req, res) => {
         let allDocUploaded = false;
 
         allShop.forEach(shop => {
-            if(shop.eBillImage != undefined && shop.eBillImage != ''
-             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+            if(
+                // shop.eBillImage != undefined && shop.eBillImage != ''
+             shop.shopPhoto != undefined && shop.shopPhoto != '' 
              && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
              && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                 allDocUploaded = true
@@ -555,8 +568,9 @@ exports.uploadOwnerPhoto = async (req, res) => {
         let allDocUploaded = false;
 
         allShop.forEach(shop => {
-            if(shop.eBillImage != undefined && shop.eBillImage != ''
-             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+            if(
+                // shop.eBillImage != undefined && shop.eBillImage != ''
+             shop.shopPhoto != undefined && shop.shopPhoto != '' 
              && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
              && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                 allDocUploaded = true
@@ -631,8 +645,9 @@ exports.uploadShopPhoto = async (req, res) => {
         let allDocUploaded = false;
 
         allShop.forEach(shop => {
-            if(shop.eBillImage != undefined && shop.eBillImage != ''
-             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+            if(
+                // shop.eBillImage != undefined && shop.eBillImage != ''
+             shop.shopPhoto != undefined && shop.shopPhoto != '' 
              && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
              && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                 allDocUploaded = true
@@ -709,8 +724,9 @@ exports.uploadAadharPhoto = async (req, res) => {
         let allDocUploaded = false;
 
         allShop.forEach(shop => {
-            if(shop.eBillImage != undefined && shop.eBillImage != ''
-             && shop.shopPhoto != undefined && shop.shopPhoto != '' 
+            if(
+                // shop.eBillImage != undefined && shop.eBillImage != ''
+             shop.shopPhoto != undefined && shop.shopPhoto != '' 
              && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
              && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
                 allDocUploaded = true

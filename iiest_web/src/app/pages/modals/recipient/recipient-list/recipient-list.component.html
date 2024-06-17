@@ -16,7 +16,7 @@
                 <th class="cell">Operator Name</th>
                 <th class="cell">Address</th>
                 <th class="cell">Pincode</th>
-                <th class="cell text-center">Electricity Bill</th>
+                <!-- <th class="cell text-center">Electricity Bill</th> -->
                 <th class="cell text-center">Owner Photo</th>
                 <th class="cell text-center">Shop Photo</th>
                 <th class="cell text-center">Aadhar</th>
@@ -49,7 +49,7 @@
                 <td *ngIf="!isfostac" class="cell"><span class="truncate text-capitalize">{{shops.address.toLowerCase()}}</span></td>
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.pincode}}</span></td>
                 <!-- <td *ngIf="!isfostac" class="cell"><span class="truncate">{{shops.eBill}}</span></td> -->
-                <td *ngIf="!isfostac" class="cell text-center">
+                <!-- <td *ngIf="!isfostac" class="cell text-center">
                   <span class="truncate">
                     <a>
                       <fa-icon *ngIf="shops.eBillImage" class="fa-2xl text-success cursor-pointer"
@@ -59,7 +59,7 @@
                         [icon]="faFile"></fa-icon></label>
                     <input type="file" [id]="'uploadEbill' + sr" (change)="uploadEbill($event, shops._id)" hidden>
                   </span>
-                </td>
+                </td> -->
 
                 <td class="text-center cell">
                   <span class="truncate">

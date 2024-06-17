@@ -86,7 +86,16 @@ const hraVerification = new Schema({
         ref: 'hygiene',
         required: true,
         unique: true
-    }
+    },
+    kob: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    foodHandlersCount: {
+        type: Number,
+        required: true,
+    },
 }, {timestamps: true});
 
 const hraVerifyModel = mongoose.model('hra_verification', hraVerification);

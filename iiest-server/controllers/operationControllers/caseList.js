@@ -11,8 +11,8 @@ exports.caseList = async (req, res) => {
         if (employeePanel === 'Foscos Panel') {
 
             list = await shopModel.find({})
-                .where('eBillImage')
-                .exists()
+                // .where('eBillImage')
+                // .exists()
                 .where('ownerPhoto')
                 .exists()
                 .where('shopPhoto')
@@ -40,10 +40,10 @@ exports.caseList = async (req, res) => {
         } else if (employeePanel === 'HRA Panel') {
 
             list = await hygieneShopModel.find({})
-                .where('fostacCertificate')
-                .exists()
-                .where('foscosLicense')
-                .exists()
+                // .where('fostacCertificate')
+                // .exists()
+                // .where('foscosLicense')
+                // .exists()
                 .populate({
                     path: 'salesInfo',
                     populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],

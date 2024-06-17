@@ -16,17 +16,19 @@ const recipientSchema = new Schema({
     },
     name: {
         type: String,
+        trim: true,
         required: true
     },
     phoneNo: {
         type: Number,
         required: true,
-        unique: true
+        unique: true,
     },
     recipientId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
     },
     aadharNo: {
         type: Number,
@@ -43,11 +45,13 @@ const shopSchema = new Schema({
     },
     operatorName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     address: {
         type: String,
         required: true,
+        trim: true
     },
     pincode: {
         type: Number,
@@ -55,23 +59,27 @@ const shopSchema = new Schema({
     },
     village: {
         type: String,
-        required: true
+        // required: true,
+        trim: true
     },
     tehsil: {
         type: String,
-        required: true
+        // required: true,
+        trim: true
     },
     state: {
         type: String,
         required: true,
+        trim: true
     },
     district: {
         type: String,
         required: true,
+        trim: true
     },
-    eBillImage: {
-        type: String,
-    },
+    // eBillImage: {
+    //     type: String,
+    // },
     ownerPhoto: {
         type: String,
     },
@@ -95,7 +103,8 @@ const hygieneShopSchema = new Schema({
     },
     managerName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     managerContact: {
         type: String,
@@ -103,11 +112,13 @@ const hygieneShopSchema = new Schema({
     },
     managerEmail: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     address: {
         type: String,
         required: true,
+        trim: true
     },
     pincode: {
         type: Number,
@@ -116,24 +127,36 @@ const hygieneShopSchema = new Schema({
     state: {
         type: String,
         required: true,
+        trim: true
     },
-    kob: {
-        type: String,
-        required: true,
-    },
-    foodHandlersCount: {
-        type: Number,
-        required: true,
-    },
+    // kob: {
+    //     type: String,
+    //     required: true,
+    //     trim: true
+    // },
+    // foodHandlersCount: {
+    //     type: Number,
+    //     required: true,
+    // },
     district: {
         type: String,
         required: true,
+        trim: true
     },
-    fostacCertificate: {
+    // fostacCertificate: {
+    //     type: String,
+    // },
+    // foscosLicense: {
+    //     type: String,
+    // },
+    ownerPhoto: {
         type: String,
     },
-    foscosLicense: {
+    shopPhoto: {
         type: String,
+    },
+    aadharPhoto: {
+        type: [String],
     }
 }, { timestamps: true })
 

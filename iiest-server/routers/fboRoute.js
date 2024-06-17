@@ -27,14 +27,16 @@ router.delete('/deleteFbo/:id', authMiddleware, deleteFbo); //Router for deletin
 router.put('/editFbo/:id', authMiddleware, editFbo); //Router for editing FBO data
 router.get('/fbogeneraldata', authMiddleware, fboFormData); //Router for general FBO form data
 router.get('/getproductdata', authMiddleware, getProductData); //Router for product data
-router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'eBill', maxCount: 1 }, { name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addShop); //Router for adding shop data
+// router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'eBill', maxCount: 1 }, { name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addShop); //Router for adding shop data
+router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addShop); //Router for adding shop data
 router.post('/fbo/addshopbyexcel/:id', authMiddleware, addShopByExcel); 
 router.put('/fbo/uploadebill/:id', authMiddleware, foscosDocuments.fields([{name: 'eBill', maxCount: 1}]), uploadEbill); //Router for adding e bill to shop model
 router.put('/fbo/uploadownerphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'ownerPhoto', maxCount: 1}]), uploadOwnerPhoto); //Router for adding owner photo to shop model
 router.put('/fbo/uploadshophoto/:id', authMiddleware, foscosDocuments.fields([{name: 'shopPhoto', maxCount: 1}]), uploadShopPhoto); //Router for adding shop photo to shop model
 router.put('/fbo/uploadaadharphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'aadharPhoto', maxCount: 5}]), uploadAadharPhoto); //Router for adding Aadhar photo to shop model
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
-router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'fostacCertificate', maxCount: 1 }, { name: 'foscosLicense', maxCount: 1 }]), addHygieneShop); //Router for adding hygiene shop data
+// router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'fostacCertificate', maxCount: 1 }, { name: 'foscosLicense', maxCount: 1 }]), addHygieneShop); //Router for adding hygiene shop data
+router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addHygieneShop); //Router for adding hygiene shop data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
