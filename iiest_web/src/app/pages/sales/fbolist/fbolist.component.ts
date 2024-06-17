@@ -39,6 +39,7 @@ export class FbolistComponent implements OnInit {
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
   pageNumber: number = 1;
   itemsNumber: number = 25;
+  // saleApprovel = 'Approved';
 
   activeTab: string = 'Fostac';
 
@@ -78,7 +79,7 @@ export class FbolistComponent implements OnInit {
     this.getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
-          this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
+          this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1, saleApprovel: (elem.cheque_data && elem.cheque_data.status =='Pending')?'Pending': 'Approved' }));
           this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
             if (item.product_name.includes(this.activeTab)) {
               return item;

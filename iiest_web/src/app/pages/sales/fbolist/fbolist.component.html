@@ -119,7 +119,7 @@
                       </td> -->
                       <td class="cell text-center"><span class="truncate">{{fbo.grand_total | inrAmount}}</span></td>
                       <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>
-                      <td class="cell"><span class="truncate" [ngClass]="{'text-danger': fbo.checkStatus == 'Pending', 'text-success': fbo.checkStatus == 'Approved'}">{{ fbo.checkStatus }}</span></td>
+                      <td class="cell"><span class="truncate" [ngClass]="{'text-danger': fbo.saleApprovel == 'Pending', 'text-success': fbo.saleApprovel == 'Approved'}">{{ fbo.saleApprovel }}</span></td>
                       <td class="cell text-center">
                         <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;"
                           (click)="viewFboDetails(fbo)" [icon]="faEye" title="View Detail"></fa-icon>
