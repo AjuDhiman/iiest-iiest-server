@@ -245,6 +245,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.refreshAuditLog.emit();
             this._toastrService.success('Shop\'s Information is Verified', 'Verified');
           }
+        },
+        error: err => {
+          this.loading = false;
+          if (err.error.locationErr) {
+            this._toastrService.error('Location not avilable');
+          } 
         }
       });
     }
@@ -252,7 +258,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   //founction for fetching recipient data 
   getMoreCaseInfo(): void {
-    this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
+    this._getDataService.getMoreCaseInfo(this.productType, this.candidateId).subscribe({
       next: (res) => {
         if (this.productType === 'Fostac') {
           this.emitCustomerId.emit(res.populatedInfo.recipientId);

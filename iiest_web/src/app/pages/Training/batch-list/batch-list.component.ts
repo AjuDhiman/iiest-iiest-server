@@ -141,7 +141,11 @@ export class BatchListComponent implements OnInit {
   }
 
   showCaseList(res: any) {
-    this.router.navigate(['batchlist/caselist'], { state: { batchData: res, forTraining: true } });
+    if(this.listType === 'Batch'){
+      this.router.navigate(['batchlist/caselist'], { state: { batchData: res, forTraining: true } });
+    } else if(this.listType === 'Audit') {
+      this.router.navigate(['auditlist/caselist'], { state: { batchData: res, forAudit: true } });
+    }
   }
 
   filterData() {

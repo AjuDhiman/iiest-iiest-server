@@ -84,7 +84,7 @@
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
-                            <table *ngIf="panelType==='Fostac Panel' || panelType==='FSSAI Training Panel'"
+                            <table *ngIf="panelType==='Fostac Panel' ||(panelType==='FSSAI Training Panel' && forTraining)"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
@@ -106,7 +106,7 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)"
+                                                (click)="collectResData('Fostac', data._id)"
                                                 title="View Case text-capitalize">{{data.name.toLowerCase()}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
@@ -133,7 +133,7 @@
                                 </tbody>
                             </table>
 
-                            <table *ngIf="panelType==='HRA Panel'"
+                            <table *ngIf="panelType==='HRA Panel' || (panelType==='FSSAI Training Panel' && forAudit)"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
@@ -156,9 +156,9 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData(data._id)">{{data.managerName.toLowerCase()}}</span></td>
+                                                (click)="collectResData('HRA', data._id)">{{data.managerName.toLowerCase()}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize selector">{{data.address.toLowerCase()}}</span></td>
+                                                class="truncate text-capitalize">{{data.address.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
@@ -214,7 +214,7 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
-                                                (click)="collectResData(data._id)">{{data.operatorName.toLowerCase()}}</span></td>
+                                                (click)="collectResData('Foscos', data._id)">{{data.operatorName.toLowerCase()}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate text-capitalize">{{data.address.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize"><span

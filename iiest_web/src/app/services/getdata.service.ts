@@ -113,8 +113,8 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getMoreCaseInfo(candidateId: string): Observable<any> {
-    const url = `${this.url}/morecaseinfo/${candidateId}`;
+  public getMoreCaseInfo(product:string, candidateId: string): Observable<any> {
+    const url = `${this.url}/morecaseinfo/${product}/${candidateId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

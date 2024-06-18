@@ -119,6 +119,8 @@ export class RecipientComponent implements OnInit {
       this.getHygieneShopList(this.fboData._id);
       this.recipientform.patchValue({
         address: this.fboData.fboInfo.address,
+        manager_contact: this.fboData.fboInfo.owner_contact,
+        manager_email:this.fboData.fboInfo.email,
         pincode: this.fboData.fboInfo.pincode,
         village: this.fboData.fboInfo.village,
         tehsil: this.fboData.fboInfo.tehsil,

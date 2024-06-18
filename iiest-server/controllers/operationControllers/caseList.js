@@ -67,13 +67,15 @@ exports.caseInfo = async (req, res) => {
 
         const recipientId = req.params.recipientid;
 
+        const product = req.params.product;
+
         let recipientInfo;
 
-        if (req.user.panel_type === 'Fostac Panel' || req.user.panel_type === 'FSSAI Training Panel') {
+        if (product === 'Fostac') {
             recipientInfo = await recipientModel.findById(recipientId);
-        } else if (req.user.panel_type === 'Foscos Panel') {
+        } else if (product === 'Foscos') {
             recipientInfo = await shopModel.findById(recipientId);
-        } else if (req.user.panel_type === 'HRA Panel') {
+        } else if (product === 'HRA') {
             recipientInfo = await hygieneShopModel.findById(recipientId);
         }
 

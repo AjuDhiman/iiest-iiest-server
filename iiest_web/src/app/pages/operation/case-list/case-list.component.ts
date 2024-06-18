@@ -24,6 +24,7 @@ export class CaseListComponent implements OnInit {
 
   //condional var for deciding case list structure and logic for case list in case of trainers
   forTraining: boolean = false;
+  forAudit: boolean = false;
 
   serviceType: string = '';
   totalCount: number = 0;
@@ -137,8 +138,8 @@ export class CaseListComponent implements OnInit {
   }
 
   //method for opening operation form
-  collectResData(id: string): void {
-    this.router.navigate(['caselist/operationform', id]);
+  collectResData(product: string,id: string): void {
+    this.router.navigate(['caselist/operationform', product, id]);
   }
 
   filter(): void {
@@ -198,6 +199,15 @@ export class CaseListComponent implements OnInit {
       this.totalCount = this.typeData.length
       this.filter();
       console.log(this.forTraining);
+      this.loading = false;
+    } else if(state && state.forAudit) {
+      this.forAudit = state.forAudit;
+      this.typeData = state.batchData.map((item: any) => {
+        return {...item.shopInfo }
+      });
+      this.totalCount = this.typeData.length
+      this.filter();
+      console.log('For Audit',this.forAudit);
       this.loading = false;
     }
   }

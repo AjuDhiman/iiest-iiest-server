@@ -42,7 +42,6 @@ exports.trainingBatch = async (req, res) => {
         }
 
         if (!location) {
-            console.log(verificationInfo);
             await fostacVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
             return res.status(401).json({ success: false, locationErr: true })
         }
@@ -217,7 +216,6 @@ exports.auditBatch = async (req, res) => {
         }
 
         if (!location) {
-            console.log(verificationInfo);
             await hraVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
             return res.status(401).json({ success: false, locationErr: true })
         }
@@ -227,8 +225,6 @@ exports.auditBatch = async (req, res) => {
         const allAuditors = [
             'Umar Shakil',
         ]
-
-        console.log(generalData[0]);
 
         const sessionsNo = Math.ceil(food_handler_no / 50);
 
@@ -247,9 +243,6 @@ exports.auditBatch = async (req, res) => {
         let batchData;
 
         const openedBatch = await AuditBatchModel.find({ status: 'open', location: location, pincodes: { $in: [pincode] } });
-
-        console.log(pincode);
-        console.log('open batch', openedBatch);
 
         if (sessionsNo % 2 == 0 || !openedBatch || openedBatch.length === 0) {
 
@@ -380,7 +373,6 @@ exports.getAuditBatchData = async (req, res) => {
         let success = false;
 
         const batches = await auditBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'shopInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } } });
-
 
         if (!batches) {
             return res.status(204).json({ message: 'Data Not Found' })

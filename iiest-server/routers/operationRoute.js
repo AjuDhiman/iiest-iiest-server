@@ -11,7 +11,7 @@ const { saveDocument, getDocList, deleteDocs } = require('../controllers/operati
 const router = express.Router();
 
 router.get('/getcaseslist', authMiddleware, caseList);
-router.get('/morecaseinfo/:recipientid', authMiddleware, caseInfo);
+router.get('/morecaseinfo/:product/:recipientid', authMiddleware, caseInfo);
 router.get('/employeelistdeptwise/:dept',authMiddleware, employeeCountDeptWise);
 router.post('/fostacverification/:recipientid', authMiddleware, fostacVerification, trainingBatch);
 router.post('/foscosverification/:shopid', authMiddleware, foscosVerification);
