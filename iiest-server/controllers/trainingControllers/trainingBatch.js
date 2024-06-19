@@ -42,7 +42,6 @@ exports.trainingBatch = async (req, res) => {
         }
 
         if (!location) {
-            console.log(verificationInfo);
             await fostacVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
             return res.status(401).json({ success: false, locationErr: true })
         }
@@ -185,22 +184,22 @@ exports.auditBatch = async (req, res) => {
         const user = req.user;
 
         const ourHolidays = [
-            { date: '26-01-2024', name: 'Republic Day' },
-            { date: '08-03-2024', name: 'Mahashivratri' },
-            { date: '25-04-2024', name: 'Holi' },
-            { date: '29-04-2024', name: 'Good Friday' },
-            { date: '11-04-2024', name: 'Eid Al-Fitr' },
-            { date: '11-06-2024', name: 'Eid Al-Zuha(Bakrid)' },
-            { date: '15-08-2024', name: 'Independence Day' },
-            { date: '19-08-2024', name: 'Raksha Bandhan' },
-            { date: '26-09-2024', name: 'Janmashtami' },
-            { date: '02-10-2024', name: 'Gandhi Jayanti' },
-            { date: '12-10-2024', name: 'Dussehra' },
-            { date: '01-11-2024', name: 'Diwali' },
-            { date: '02-11-2024', name: 'Govardhan Pooja' },
-            { date: '03-11-2024', name: 'Bhai Dooj' },
-            { date: '25-12-2024', name: 'Christmas' },
-        ];
+            { date: '26-Jan-2024', name: 'Republic Day' },
+            { date: '08-Mar-2024', name: 'Mahashivratri' },
+            { date: '25-Apr-2024', name: 'Holi' },
+            { date: '29-Apr-2024', name: 'Good Friday' },
+            { date: '11-Apr-2024', name: 'Eid Al-Fitr' },
+            { date: '11-Jun-2024', name: 'Eid Al-Zuha(Bakrid)' },
+            { date: '15-Aug-2024', name: 'Independence Day' },
+            { date: '19-Aug-2024', name: 'Raksha Bandhan' },
+            { date: '26-Sept-2024', name: 'Janmashtami' },
+            { date: '02-Oct-2024', name: 'Gandhi Jayanti' },
+            { date: '12-Oct-2024', name: 'Dussehra' },
+            { date: '01-Nov-2024', name: 'Diwali' },
+            { date: '02-Nov-2024', name: 'Govardhan Pooja' },
+            { date: '03-Nov-2024', name: 'Bhai Dooj' },
+            { date: '25-Dec-2024', name: 'Christmas' },
+        ];    
 
         let location;
 
@@ -217,7 +216,6 @@ exports.auditBatch = async (req, res) => {
         }
 
         if (!location) {
-            console.log(verificationInfo);
             await hraVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
             return res.status(401).json({ success: false, locationErr: true })
         }
@@ -226,13 +224,7 @@ exports.auditBatch = async (req, res) => {
 
         const allAuditors = [
             'Umar Shakil',
-            'Nitish jamwal',
-            'Vansh Gora',
-            'Harsh Jain',
-            'Chandan Kumar'
         ]
-
-        console.log(generalData[0]);
 
         const sessionsNo = Math.ceil(food_handler_no / 50);
 
@@ -290,13 +282,13 @@ exports.auditBatch = async (req, res) => {
                     const auditorsOnDate = batchesOnDate.map((batch) => batch.auditor)
 
                     if ((allAuditors.length === auditorsOnDate.length) || avilableAuditors.length === 0) {
-                        date.setDate(date.getDate() + i + holidayNum);
+                        date.setDate(date.getDate() + i + holidayNum + 1);
                         break; // break the loop if all auditors are booked any of the day or not same auditor is avilble on all days
                     } else {
                         console.log(2, avilableAuditors);
+                        dayAvilable = true;
                         avilableAuditors = avilableAuditors.filter((auditor) => !auditorsOnDate.includes(auditor));
                         auditDatesArr.push(day);
-                        dayAvilable = true;
                     }
                 }
 
@@ -328,16 +320,11 @@ exports.auditBatch = async (req, res) => {
                     {
                         $set: {
                             status: 'completed'
-                        }
-                    },
-                    {
+                        },
                         $inc: {
                             auditNum: 1
-                        }
-                    },
-                    {
-                        $push:
-                        {
+                        },
+                        $push: {
                             candidateDetails: verificationInfo._id
                         }
                     },
@@ -371,7 +358,8 @@ exports.auditBatch = async (req, res) => {
         }
 
         if (batchData) {
-            res.status(200).json({ success: true, verificationData: verificationInfo })
+            sendVerificationMail(req.clientData);
+            return res.status(200).json({ success: true, verificationData: verificationInfo })
         }
 
     } catch (error) {
@@ -385,7 +373,6 @@ exports.getAuditBatchData = async (req, res) => {
         let success = false;
 
         const batches = await auditBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'shopInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } } });
-
 
         if (!batches) {
             return res.status(204).json({ message: 'Data Not Found' })
@@ -426,21 +413,21 @@ function getRandomItemFromArr(arr) {
 async function getAuditDate(verificationDate) {
 
     const updatedHolidays = [
-        { date: '26-01-2024', name: 'Republic Day' },
-        { date: '08-03-2024', name: 'Mahashivratri' },
-        { date: '25-04-2024', name: 'Holi' },
-        { date: '29-04-2024', name: 'Good Friday' },
-        { date: '11-04-2024', name: 'Eid Al-Fitr' },
-        { date: '11-06-2024', name: 'Eid Al-Zuha(Bakrid)' },
-        { date: '15-08-2024', name: 'Independence Day' },
-        { date: '19-08-2024', name: 'Raksha Bandhan' },
-        { date: '26-09-2024', name: 'Janmashtami' },
-        { date: '02-10-2024', name: 'Gandhi Jayanti' },
-        { date: '12-10-2024', name: 'Dussehra' },
-        { date: '01-11-2024', name: 'Diwali' },
-        { date: '02-11-2024', name: 'Govardhan Pooja' },
-        { date: '03-11-2024', name: 'Bhai Dooj' },
-        { date: '25-12-2024', name: 'Christmas' },
+        { date: '26-Jan-2024', name: 'Republic Day' },
+        { date: '08-Mar-2024', name: 'Mahashivratri' },
+        { date: '25-Apr-2024', name: 'Holi' },
+        { date: '29-Apr-2024', name: 'Good Friday' },
+        { date: '11-Apr-2024', name: 'Eid Al-Fitr' },
+        { date: '11-Jun-2024', name: 'Eid Al-Zuha(Bakrid)' },
+        { date: '15-Aug-2024', name: 'Independence Day' },
+        { date: '19-Aug-2024', name: 'Raksha Bandhan' },
+        { date: '26-Sept-2024', name: 'Janmashtami' },
+        { date: '02-Oct-2024', name: 'Gandhi Jayanti' },
+        { date: '12-Oct-2024', name: 'Dussehra' },
+        { date: '01-Nov-2024', name: 'Diwali' },
+        { date: '02-Nov-2024', name: 'Govardhan Pooja' },
+        { date: '03-Nov-2024', name: 'Bhai Dooj' },
+        { date: '25-Dec-2024', name: 'Christmas' },
     ];
 
     const allAuditors = await generalDataSchema.find()[0].auditors;// get list of all auditors from general datas
@@ -522,3 +509,23 @@ async function getAuditDate(verificationDate) {
     // const avilableAuditors = allAuditors.filter((auditor) => auditor.isAvilable);
 }
 
+
+exports.getCandidateAuditBatch = async (req, res) => {
+    try {
+
+        const verificationId = req.params.verificationid;
+
+        const candidateBatch = await auditBatchModel.findOne({
+            candidateDetails:
+            {
+                $in: [verificationId]
+            }
+        }).populate({path: 'candidateDetails', populate: {path: 'shopInfo'}});
+
+        return res.status(200).json({batchData: candidateBatch, success: true})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' })
+    }
+}

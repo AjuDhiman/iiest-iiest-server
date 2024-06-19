@@ -63,7 +63,7 @@ export class RecipientComponent implements OnInit {
     pincode: new FormControl(''),
     village: new FormControl(''),
     tehsil: new FormControl(''),
-    eBill: new FormControl(''),
+    // eBill: new FormControl(''),
     owner_photo: new FormControl(''),
     shop_photo: new FormControl(''),
     aadhar_photo: new FormControl(''),
@@ -72,12 +72,10 @@ export class RecipientComponent implements OnInit {
     manager_name: new FormControl(''),
     manager_contact: new FormControl(''),
     manager_email: new FormControl(''),
-    // address: new FormControl(''),
-    // pincode: new FormControl(''),
-    kob: new FormControl(''),
-    food_handlers: new FormControl(''),
-    fostac_certificate: new FormControl(''),
-    foscos_license: new FormControl('')
+    // kob: new FormControl(''),
+    // food_handlers: new FormControl(''),
+    // fostac_certificate: new FormControl(''),
+    // foscos_license: new FormControl('')
   });
 
 
@@ -99,20 +97,38 @@ export class RecipientComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setFormValidation();
     if (this.serviceType === 'fostac') {
       this.getSaleRecipientsList(this.fboData._id);
     }
 
     if (this.serviceType === 'foscos') {
       this.getSaleShopsList(this.fboData._id);
+      console.log(this.fboData.fboInfo.address)
+      this.recipientform.patchValue({
+        address: this.fboData.fboInfo.address,
+        pincode: this.fboData.fboInfo.pincode,
+        village: this.fboData.fboInfo.village,
+        tehsil: this.fboData.fboInfo.tehsil,
+        state: this.fboData.fboInfo.state,
+        district: this.fboData.fboInfo.district
+      });
     }
 
     if(this.serviceType === 'HRA') {
       this.getHygieneShopList(this.fboData._id);
+      this.recipientform.patchValue({
+        address: this.fboData.fboInfo.address,
+        manager_contact: this.fboData.fboInfo.owner_contact,
+        manager_email:this.fboData.fboInfo.email,
+        pincode: this.fboData.fboInfo.pincode,
+        village: this.fboData.fboInfo.village,
+        tehsil: this.fboData.fboInfo.tehsil,
+        state: this.fboData.fboInfo.state,
+        district: this.fboData.fboInfo.district
+      });
     }
 
-
-    this.setFormValidation();
   }
 
   get recipient(): { [key: string]: AbstractControl } {
@@ -127,7 +143,7 @@ export class RecipientComponent implements OnInit {
     this.submitted = true;
     console.log(this.recipientform);
 
-    if (this.recipientform.invalid) {
+    if (this.recipientform.invalid || this.loading) { //can't submit while loading and in case of invalid recp form
       return;
     }
 
@@ -203,10 +219,17 @@ export class RecipientComponent implements OnInit {
       formData.append('manager_email', this.recipientform.get('manager_email')?.value);
       formData.append('address', this.recipientform.get('address')?.value);
       formData.append('pincode', this.recipientform.get('pincode')?.value);
-      formData.append('kob', this.recipientform.get('kob')?.value);
-      formData.append('food_handlers', this.recipientform.get('food_handlers')?.value);
-      formData.append('fostacCertificate', this.fostacCertificate);
-      formData.append('foscosLicense', this.foscosLicense);
+      // formData.append('kob', this.recipientform.get('kob')?.value);
+      // formData.append('food_handlers', this.recipientform.get('food_handlers')?.value);
+      // formData.append('fostacCertificate', this.fostacCertificate);
+      // formData.append('foscosLicense', this.foscosLicense);
+      formData.append('ownerPhoto', this.ownerPhotoFile);
+      formData.append('shopPhoto', this.shopPhotoFile);
+
+      (this.aadharFile as any).forEach((file: File) => {
+        formData.append('aadharPhoto', file);
+      })
+
 
       this._registerService.addHygieneShop(this.fboID, formData).subscribe({
         next: res => {
@@ -280,7 +303,7 @@ export class RecipientComponent implements OnInit {
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
         if (res.shopsList.length) {
-          this.shopData = res.shopsList
+          this.shopData = res.shopsList; 
           this.showPagination = true;
           this.shopsCount = res.shopsList.length;
           this.loading = false;
@@ -420,9 +443,11 @@ export class RecipientComponent implements OnInit {
             operatorName: ['', Validators.required],
             address: ['', Validators.required],
             pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$')]],
-            village: ['', Validators.required],
-            tehsil: ['', Validators.required],
-            eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            // village: ['', Validators.required],
+            // tehsil: ['', Validators.required],
+            village: [''],
+            tehsil: [''],
+            // eBill: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             owner_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             shop_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             aadhar_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
@@ -438,10 +463,13 @@ export class RecipientComponent implements OnInit {
             manager_email: ['', [Validators.required, Validators.email]],
             address: ['', Validators.required],
             pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$') ]],
-            kob: ['', Validators.required],
-            food_handlers: ['', Validators.required],
-            fostac_certificate: ['',[ Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]],
-            foscos_license: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]]
+            // kob: ['', Validators.required],
+            // food_handlers: ['', Validators.required],
+            // fostac_certificate: ['',[ Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]],
+            // foscos_license: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]]
+            owner_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            shop_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
+            aadhar_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
           });
           this.listCount = this.fboData.hraInfo.shops_no;
       }

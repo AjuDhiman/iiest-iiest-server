@@ -23,18 +23,19 @@
     <div class="modal-body" *ngIf="this.serviceType === 'foscos'">
       <div class="row">
         <div class="col-md-4">
-          <label for="operatorName" class="form-label">Operator Name<sup>*</sup></label>
-          <input type="text" id="operatorName" class="form-control form-control-sm" placeholder="Operator Name"
+          <label for="operatorName" class="form-label">Shop Manager Name<sup>*</sup></label>
+          <input type="text" id="operatorName" class="form-control form-control-sm" placeholder="Shop Manager Name"
             formControlName="operatorName"
             [ngClass]="{ 'is-invalid': submitted && recipient['operatorName'].errors }" />
           <div *ngIf="submitted && recipient['operatorName'].errors" class="invalid-feedback">
-            <div *ngIf="recipient['operatorName'].errors['required']">Operator Name is required</div>
+            <div *ngIf="recipient['operatorName'].errors['required']">Shop Manager Name is required</div>
           </div>
         </div>
         <div class="col-md-4">
           <label for="address" class="form-label">Address<sup>*</sup></label>
           <input type="text" placeholder="Address" formControlName="address" class="form-control form-control-sm"
-            id="address" [ngClass]="{ 'is-invalid': submitted && recipient['address'].errors }" />
+            id="address" [ngClass]="{ 'is-invalid': submitted && recipient['address'].errors }"
+            [readOnly]="true" />
           <div *ngIf="submitted && recipient['address'].errors" class="invalid-feedback">
             <div *ngIf="recipient['address'].errors['required']">Address is required</div>
           </div>
@@ -42,30 +43,33 @@
         <div class="col-md-4">
           <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
           <input type="number" placeholder="Pincode" formControlName="pincode" class="form-control form-control-sm"
-            id="pincode" [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
+            id="pincode" [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }"
+            [readOnly]="true" />
           <div *ngIf="submitted && recipient['pincode'].errors" class="invalid-feedback">
             <div *ngIf="recipient['pincode'].errors['required']">Pincode is required</div>
             <div *ngIf="recipient['pincode'].errors['pattern']">Pincode is invalid</div>
           </div>
         </div>
-        <div class="col-md-4">
-          <label for="village" class="form-label">Village<sup>*</sup></label>
+        <!-- <div class="col-md-4">
+          <label for="village" class="form-label">Village</label>
           <input type="text" placeholder="Village" formControlName="village" class="form-control form-control-sm"
-            id="village" [ngClass]="{ 'is-invalid': submitted && recipient['village'].errors }" />
-          <div *ngIf="submitted && recipient['village'].errors" class="invalid-feedback">
+            id="village" /> -->
+            <!-- [ngClass]="{ 'is-invalid': submitted && recipient['village'].errors }" /> -->
+          <!-- <div *ngIf="submitted && recipient['village'].errors" class="invalid-feedback">
             <div *ngIf="recipient['village'].errors['required']">Village is required</div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <label for="tehsil" class="form-label">Tehsil<sup>*</sup></label>
-          <input type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm"
-            id="tehsil" [ngClass]="{ 'is-invalid': submitted && recipient['tehsil'].errors }" />
-          <div *ngIf="submitted && recipient['tehsil'].errors" class="invalid-feedback">
+          </div> -->
+        <!-- </div> -->
+        <!-- <div class="col-md-4">
+          <label for="tehsil" class="form-label">Tehsil</label>
+          <input type="text" placeholder="Tehsil" formControlName="tehsil" class="form-control form-control-sm" -->
+            <!-- id="tehsil" /> -->
+            <!-- [ngClass]="{ 'is-invalid': submitted && recipient['tehsil'].errors }" /> -->
+          <!-- <div *ngIf="submitted && recipient['tehsil'].errors" class="invalid-feedback">
             <div *ngIf="recipient['tehsil'].errors['required']">Tehsil is required</div>
-          </div>
-        </div>
+          </div> -->
+        <!-- </div> -->
 
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <label for="eBill" class="form-label">Electricity Bill<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event, 'eBill')" placeholder="Electricity Bill"
             formControlName="eBill" class="form-control form-control-sm" id="eBill"
@@ -75,7 +79,7 @@
             <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
               are allowed.</div>
           </div>
-        </div>
+        </div> -->
         <div class="col-md-4">
           <label for="shop_photo" class="form-label">Shop's Photo<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event, 'shopPhoto')"
@@ -90,24 +94,24 @@
           </div>
         </div>
         <div class="col-md-4">
-          <label for="owner_photo" class="form-label">Owner's Photo<sup>*</sup></label>
+          <label for="owner_photo" class="form-label">Manager's Photo<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event, 'ownerPhoto')" placeholder="Owner Photo"
             formControlName="owner_photo" class="form-control form-control-sm" id="owner_photo"
             [ngClass]="{ 'is-invalid': submitted && recipient['owner_photo'].errors }" />
           <div *ngIf="submitted && recipient['owner_photo'].errors" class="invalid-feedback">
-            <div *ngIf="recipient['owner_photo'].errors['required']">Owner Photo is required.(jpeg or png)</div>
+            <div *ngIf="recipient['owner_photo'].errors['required']">Manager's Photo is required.(jpeg or png)</div>
             <div *ngIf="recipient['owner_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
               files
               are allowed.</div>
           </div>
         </div>
         <div class="col-md-4">
-          <label for="aadhar_photo" class="form-label">Owner's Aadhar<sup>*</sup></label>
+          <label for="aadhar_photo" class="form-label">Manager's Aadhar<sup>*</sup></label>
           <input type="file" (change)="onImageChangeFromFile($event, 'aadharPhoto')" placeholder="Aadhar Photo"
             formControlName="aadhar_photo" class="form-control form-control-sm" id="aadhar_photo" multiple
             [ngClass]="{ 'is-invalid': submitted && recipient['aadhar_photo'].errors }" />
           <div *ngIf="submitted && recipient['aadhar_photo'].errors" class="invalid-feedback">
-            <div *ngIf="recipient['aadhar_photo'].errors['required']">Aadhar is required.(jpeg or png)</div>
+            <div *ngIf="recipient['aadhar_photo'].errors['required']">Manager's Aadhar is required.(jpeg or png)</div>
             <div *ngIf="recipient['aadhar_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
               files are allowed.</div>
           </div>
@@ -151,8 +155,8 @@
     <div class="modal-body" *ngIf="this.serviceType === 'HRA'">
       <div class="row">
         <div class="col-md-4">
-          <label for="manager_name" class="form-label">Manager Name<sup>*</sup></label>
-          <input type="text" id="manager_name" class="form-control form-control-sm" placeholder="Manager Name"
+          <label for="manager_name" class="form-label">Shop Manager Name<sup>*</sup></label>
+          <input type="text" id="manager_name" class="form-control form-control-sm" placeholder="Shop Manager Name"
             formControlName="manager_name"
             [ngClass]="{ 'is-invalid': submitted && recipient['manager_name'].errors }" />
           <div *ngIf="submitted && recipient['manager_name'].errors" class="invalid-feedback">
@@ -180,7 +184,7 @@
         </div>
         <div class="col-md-4">
           <label for="address" class="form-label">Address<sup>*</sup></label>
-          <input type="text" id="address" class="form-control form-control-sm" placeholder="Address"
+          <input type="text" id="address" class="form-control form-control-sm" placeholder="Address" [readOnly]="true"
             formControlName="address" [ngClass]="{ 'is-invalid': submitted && recipient['address'].errors }" />
           <div *ngIf="submitted && recipient['address'].errors" class="invalid-feedback">
             <div *ngIf="recipient['address'].errors['required']">Address is required</div>
@@ -188,14 +192,14 @@
         </div>
         <div class="col-md-4">
           <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
-          <input type="number" id="pincode" class="form-control form-control-sm" placeholder="Pincode"
+          <input type="number" id="pincode" class="form-control form-control-sm" placeholder="Pincode" [readOnly]="true"
             formControlName="pincode" [ngClass]="{ 'is-invalid': submitted && recipient['pincode'].errors }" />
           <div *ngIf="submitted && recipient['pincode'].errors" class="invalid-feedback">
             <div *ngIf="recipient['pincode'].errors['required']">Pincode is required</div>
             <div *ngIf="recipient['pincode'].errors['pattern']">Pincode is invalid</div>
           </div>
         </div>
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
           <label for="kob" class="form-label">KOB (Kind of Business)<sup>*</sup></label>
           <select type="text" id="kob" class="form-select form-select-sm" placeholder="KOB (Kind of Business)"
             formControlName="kob" [ngClass]="{ 'is-invalid': submitted && recipient['kob'].errors }">
@@ -205,18 +209,18 @@
           <div *ngIf="submitted && recipient['kob'].errors" class="invalid-feedback">
             <div *ngIf="recipient['kob'].errors['required']">KOB is required</div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <label for="food_handlers" class="form-label">Number of Food Handlers<sup>*</sup></label>
+        </div> -->
+        <!-- <div class="col-md-4">
+          <label for="food_handlers" class="form-label">Number of Food Handlers</label>
           <input type="number" id="food_handlers" class="form-control form-control-sm"
             placeholder="Number of Food Handlers" formControlName="food_handlers"
             [ngClass]="{ 'is-invalid': submitted && recipient['food_handlers'].errors }" />
           <div *ngIf="submitted && recipient['food_handlers'].errors" class="invalid-feedback">
             <div *ngIf="recipient['food_handlers'].errors['required']">Number of Food Handlers is required</div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <label for="fostac_certificate" class="form-label">Fostac Certificate<sup>*</sup></label>
+        </div> -->
+        <!-- <div class="col-md-4">
+          <label for="fostac_certificate" class="form-label">Fostac Certificate</label>
           <input type="file" id="fostac_certificate" class="form-control form-control-sm"
             placeholder="Fostac Certificate" formControlName="fostac_certificate"
             (change)="onImageChangeFromFile($event, 'fostacCerificate')"
@@ -228,8 +232,8 @@
               .jpeg files
               are allowed.</div>
           </div>
-        </div>
-        <div class="col-md-4">
+        </div> -->
+        <!-- <div class="col-md-4">
           <label for="foscos_license" class="form-label">Foscos License<sup>*</sup></label>
           <input type="file" id="foscos_license" class="form-control form-control-sm" placeholder="Foscos License"
             formControlName="foscos_license" (change)="onImageChangeFromFile($event, 'foscosLicense')"
@@ -240,6 +244,53 @@
               .jpeg
               files
               are allowed.</div>
+          </div>
+        </div> -->
+        <!-- <div class="col-md-4">
+          <label for="eBill" class="form-label">Electricity Bill<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'eBill')" placeholder="Electricity Bill"
+            formControlName="eBill" class="form-control form-control-sm" id="eBill"
+            [ngClass]="{ 'is-invalid': submitted && recipient['eBill'].errors }" />
+          <div *ngIf="submitted && recipient['eBill'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['eBill'].errors['required']">Electricity Bill is required.(jpeg or png)</div>
+            <div *ngIf="recipient['eBill'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg files
+              are allowed.</div>
+          </div>
+        </div> -->
+        <div class="col-md-4">
+          <label for="shop_photo" class="form-label">Shop's Photo<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'shopPhoto')"
+            placeholder="Shop Photo(Name should be visible)" formControlName="shop_photo"
+            class="form-control form-control-sm" id="shop_photo"
+            [ngClass]="{ 'is-invalid': submitted && recipient['shop_photo'].errors }" />
+          <div *ngIf="submitted && recipient['shop_photo'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['shop_photo'].errors['required']">Shop Photo is required.(jpeg or png)</div>
+            <div *ngIf="recipient['shop_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files
+              are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="owner_photo" class="form-label">Manager's Photo<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'ownerPhoto')" placeholder="Owner Photo"
+            formControlName="owner_photo" class="form-control form-control-sm" id="owner_photo"
+            [ngClass]="{ 'is-invalid': submitted && recipient['owner_photo'].errors }" />
+          <div *ngIf="submitted && recipient['owner_photo'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['owner_photo'].errors['required']">Manager's Photo is required.(jpeg or png)</div>
+            <div *ngIf="recipient['owner_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files
+              are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="aadhar_photo" class="form-label">Manager's Aadhar<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'aadharPhoto')" placeholder="Aadhar Photo"
+            formControlName="aadhar_photo" class="form-control form-control-sm" id="aadhar_photo" multiple
+            [ngClass]="{ 'is-invalid': submitted && recipient['aadhar_photo'].errors }" />
+          <div *ngIf="submitted && recipient['aadhar_photo'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['aadhar_photo'].errors['required']">Manager's Aadhar is required.(jpeg or png)</div>
+            <div *ngIf="recipient['aadhar_photo'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files are allowed.</div>
           </div>
         </div>
       </div>

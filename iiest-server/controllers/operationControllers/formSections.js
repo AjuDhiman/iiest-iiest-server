@@ -136,7 +136,7 @@ exports.hraVerification = async (req, res, next) => {
 
         const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, state, district, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person } = verifiedData;
 
-        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID });
+        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodHandlersCount: food_handler_no });
 
         //this code is for tracking the CRUD operation regarding to a shop
 
@@ -172,6 +172,7 @@ exports.hraVerification = async (req, res, next) => {
         }
 
         req.verificationInfo = addVerification;
+        req.clientData = clientData;
         next();
 
         // success = true;
@@ -239,7 +240,7 @@ exports.getHraVerifiedData = async (req, res) => {
 
         const shopId = req.params.shopid;
 
-        const verifedData = await hraVerifyModel.findOne({ shopInfo: shopId });
+        const verifedData = await hraVerifyModel.findOne({ shopInfo: shopId }).populate('shopInfo');
 
         if (verifedData) {
             success = true;
@@ -642,9 +643,9 @@ exports.getReverts = async (req, res) => {
 
         if (reverts) {
             success = true;
-            res.status(200).json({ success, reverts });
+            return res.status(200).json({ success, reverts });
         } else {
-            res.status(204);
+            return res.status(204);
         }
 
     } catch (error) {

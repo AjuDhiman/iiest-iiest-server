@@ -51,7 +51,8 @@ export class OperationformComponent implements OnInit {
 
   ngOnInit(): void {
     this.candidateId = this.activatedRoute.snapshot.params['id'];
-    this.getUserProductType();
+    this.productType = this.activatedRoute.snapshot.params['product'];
+    // this.getUserProductType();
   }
 
   //this methord for geting recipient customer id 

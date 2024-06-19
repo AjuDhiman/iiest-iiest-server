@@ -5,13 +5,13 @@ const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEn
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
 const { foscosDocuments, hraDocuments, tickets } = require('../config/storage');
-const { trainingBatch, getTrainingBatchData, updateBatch, auditBatch, getAuditBatchData } = require('../controllers/trainingControllers/trainingBatch');
+const { trainingBatch, getTrainingBatchData, updateBatch, auditBatch, getAuditBatchData, getCandidateAuditBatch } = require('../controllers/trainingControllers/trainingBatch');
 const { saveDocument, getDocList, deleteDocs } = require('../controllers/operationControllers/documents');
 
 const router = express.Router();
 
 router.get('/getcaseslist', authMiddleware, caseList);
-router.get('/morecaseinfo/:recipientid', authMiddleware, caseInfo);
+router.get('/morecaseinfo/:product/:recipientid', authMiddleware, caseInfo);
 router.get('/employeelistdeptwise/:dept',authMiddleware, employeeCountDeptWise);
 router.post('/fostacverification/:recipientid', authMiddleware, fostacVerification, trainingBatch);
 router.post('/foscosverification/:shopid', authMiddleware, foscosVerification);
@@ -44,3 +44,6 @@ router.get('/getfostacattendata/:enrolleddataid', authMiddleware, getFostacAtten
 router.get('/getbatchlistdata', authMiddleware, getTrainingBatchData) // route for getting training batch list data
 router.get('/getauditbatchlistdata', authMiddleware, getAuditBatchData) // route for getting audit batch list data
 router.put('/updatetraingbatch/:batchid', authMiddleware, updateBatch) // route for updating batch list data
+
+//route for auditors
+router.get('/getcandidateauditbatch/:verificationid', authMiddleware, getCandidateAuditBatch); 

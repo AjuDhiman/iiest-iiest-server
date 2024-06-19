@@ -7,7 +7,7 @@ const employeeSchema = require("../../models/employeeModels/employeeSchema");
 const fboModel = require('../../models/fboModels/fboSchema');
 const payRequest = require("../../fbo/phonePay");
 const fboPaymentSchema = require("../../models/fboModels/fboPaymentSchema");
-const sendInvoiceMail = require("../../fbo/sendMail");
+const {sendInvoiceMail, sendCheckMail} = require("../../fbo/sendMail");
 const sessionModel = require("../../models/generalModels/sessionDataSchema");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
@@ -27,8 +27,9 @@ exports.existingFboCash = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true })
     }
 
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+
     if (req.user.employee_id != 'IIEST/FD/0176') {
-      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -122,8 +123,6 @@ exports.existingFboCash = async (req, res) => {
 
       const qty = hygiene_audit.shops_no;
 
-      console.log(qty);
-
       invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName));
 
       invoiceIdArr.push(invoiceUploadStream.id);
@@ -139,6 +138,87 @@ exports.existingFboCash = async (req, res) => {
     success = true;
 
     sendInvoiceMail(existingFboInfo.email, invoiceData);
+    return res.status(200).json({ success })
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+exports.existingFboByCheque = async (req, res) => {
+  try {
+
+    const chequeImage =req.files['cheque_image'][0]
+    const createrObjId = req.params.id; //getting employee info
+
+    let success = false;
+
+    const userInfo = await employeeSchema.findById(createrObjId);
+    const signatureFile = userInfo.signatureImage;
+    const officerName = userInfo.employee_name;
+
+    if (!signatureFile) {
+      return res.status(404).json({ success, signatureErr: true })
+    }
+
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId }); //cjecking for allocated area
+
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
+    }
+
+    const signatureBucket = empSignBucket();
+
+    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
+
+    console.log(signExists);
+
+    if (!signExists.length > 0) {
+      return res.status(404).json({ success, noSignErr: true })
+    }
+
+    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, cheque_data, isFostac, isFoscos, isHygiene, existingFboId } = req.body;
+
+    const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId });
+
+    if (!existingFboInfo) {
+      success = false;
+      return res.status(404).json({ success, fboMissing: true });
+    }
+
+    if (req.user.employee_id != 'IIEST/FD/0176') {
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
+    }
+
+    let fostacTraining = isFostac==='true'?JSON.parse(fostac_training):undefined;
+    let foscosTraining =  isFoscos==='true'?JSON.parse(foscos_training):undefined;
+    let hygieneAudit = isHygiene==='true'?JSON.parse(hygiene_audit):undefined;
+    let chequeData = JSON.parse(cheque_data);
+    chequeData.status = 'Pending';
+    chequeData.cheque_image = chequeImage.filename
+
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, payment_mode, grand_total, invoiceId: [], cheque_data: chequeData });
+
+    if (!selectedProductInfo) {
+      success = false;
+      return res.status(401).json({ success, randomErr: true });
+    }
+
+    success = true;
+
+    // sendInvoiceMail(existingFboInfo.email, invoiceData);
+    let clientData = {
+      cheque_data: chequeData
+    }
+    sendCheckMail(existingFboInfo.email , clientData );
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -164,8 +244,9 @@ exports.existingFboPayPage = async (req, res) => {
       return res.status(404).json({ success, signatureErr: true });
     }
 
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+
     if (req.user.employee_id != 'IIEST/FD/0176') {
-      const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -222,11 +303,20 @@ exports.existingFboPayReturn = async (req, res) => {
 
         // const fetchedFormData = req.session.fboFormData;
         let sessionData = await sessionModel.findById(sessionId);
+        if(!sessionData){
+          res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
+          return
+        }
         const fetchedFormData = sessionData.data;
+        let apiCalled = fetchedFormData.apiCalled;
+        await sessionModel.findByIdAndUpdate(sessionId, {data: {...fetchedFormData, apiCalled: true}});
+
+        if(apiCalled){
+          res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
+          return;
+        }
 
         const { product_name, payment_mode, grand_total, fostac_training, foscos_training, hygiene_audit, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, existingFboInfo, officerName } = fetchedFormData;
-
-        console.log(fetchedFormData);
 
         let serviceArr = [];
 

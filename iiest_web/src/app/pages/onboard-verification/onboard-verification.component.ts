@@ -1,6 +1,6 @@
 import { IconDefinition, faCheckCircle, faCircleXmark, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
@@ -21,6 +21,7 @@ export class OnboardVerificationComponent implements OnInit, AfterViewInit{
 
   constructor(private _registerService: RegisterService,
     private route: ActivatedRoute,
+    private router: Router
   ){
 
   }
@@ -44,11 +45,17 @@ export class OnboardVerificationComponent implements OnInit, AfterViewInit{
         this.loading = false;
         this.status = 'verified';
         this.message = res.message;
+        const timeOut = setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 3000) //redirect after 3 sec of completion
       },
       error: err => {
         this.loading = false;
         this.status = 'not-verified';
         this.message = err.error.message;
+        const timeOut = setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 3000)//redirect after 3 sec of completion
       }
     });
   }

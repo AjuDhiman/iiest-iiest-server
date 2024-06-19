@@ -11,6 +11,16 @@
         </span>
     </div>
 
+    <div class="col-md-3">
+        <label for="advisory_report" class="form-label">Advisory Report</label><sup>*</sup>
+        <input type="file" placeholder="Upload Advisory Report" formControlName="advisory_report"
+            class="form-control form-control-sm" id="advisory_report"
+            [ngClass]="{ 'is-invalid': audited && auditform['advisory_report'].errors }">
+        <div *ngIf="audited && auditform['advisory_report'].errors" class="invalid-feedback">
+            <div *ngIf="auditform['advisory_report'].errors['required']">Advisory Report is required</div>
+        </div>
+    </div>
+
     <!-- form input fields -->
     <div class="col-md-3">
         <label for="audit_report" class="form-label">Audit Report</label><sup>*</sup>
@@ -19,16 +29,6 @@
             [ngClass]="{ 'is-invalid': audited && auditform['audit_report'].errors }">
         <div *ngIf="audited && auditform['audit_report'].errors" class="invalid-feedback">
             <div *ngIf="auditform['audit_report'].errors['required']">Audit Report is required</div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <label for="advisory_report" class="form-label">Audit Report</label><sup>*</sup>
-        <input type="file" placeholder="Upload Advisory Report" formControlName="advisory_report"
-            class="form-control form-control-sm" id="advisory_report"
-            [ngClass]="{ 'is-invalid': audited && auditform['advisory_report'].errors }">
-        <div *ngIf="audited && auditform['advisory_report'].errors" class="invalid-feedback">
-            <div *ngIf="auditform['advisory_report'].errors['required']">Audit Report is required</div>
         </div>
     </div>
 

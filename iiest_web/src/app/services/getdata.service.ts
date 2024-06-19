@@ -113,8 +113,8 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getMoreCaseInfo(candidateId: string): Observable<any> {
-    const url = `${this.url}/morecaseinfo/${candidateId}`;
+  public getMoreCaseInfo(product:string, candidateId: string): Observable<any> {
+    const url = `${this.url}/morecaseinfo/${product}/${candidateId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
@@ -265,6 +265,11 @@ export class GetdataService {
    //Audit get sevices for audit batch list
   public getAuditBatchListData(): Observable<any> { // for getting batchlist data from training
     const url: string = `${this.url}/getauditbatchlistdata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getCandidateAuditBatch(objId: string): Observable<any> { // for getting audit batch info for a particular candidate
+    const url: string = `${this.url}/getcandidateauditbatch/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

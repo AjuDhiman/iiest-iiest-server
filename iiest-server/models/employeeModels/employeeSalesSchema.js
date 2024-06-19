@@ -53,6 +53,12 @@ const salesSchema = new Schema({
         type: Number,
         required: true
     },
+    cheque_data: {
+        type: Object,
+        required: function() {
+            return (this.payment_mode === 'By Cheque');
+        }
+    },
     invoiceId: {
         type: [mongoose.Schema.Types.ObjectId],
         required: true

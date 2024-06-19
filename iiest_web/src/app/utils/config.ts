@@ -24,7 +24,7 @@ export const hraProcessingAmnt = 5000;
 export const clientType = ['Single Recipient', 'Multiple Recipient'];
 
 //Payment Mode
-export const paymentMode = ['Pay Page'];
+export const paymentMode = ['Pay Page', 'By Cheque'];
 
 export const auditers = [
    'Aditi',
@@ -145,6 +145,7 @@ export const fbo_roles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
+   'Verifier',
    ...master_roles
 ];
 
@@ -451,7 +452,7 @@ export const ourHolidays: Array<{ date: string, name: string }> = [
    { date: '2024-04-25', name: 'Holi' },
    { date: '2024-04-29', name: 'Good Friday' },
    { date: '2024-04-11', name: 'Eid Al-Fitr' },
-   { date: '2024-06-11', name: 'Eid Al-Zuha(Bakrid)'},
+   { date: '2024-06-17', name: 'Eid Al-Zuha(Bakrid)'},
    { date: '2024-08-15', name: 'Independence Day'},
    { date: '2024-08-19', name: 'Raksha Bandhan'},
    { date: '2024-09-26', name: 'Janmashtami'},

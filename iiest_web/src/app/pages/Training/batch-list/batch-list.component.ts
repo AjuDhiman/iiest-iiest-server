@@ -141,7 +141,11 @@ export class BatchListComponent implements OnInit {
   }
 
   showCaseList(res: any) {
-    this.router.navigate(['batchlist/caselist'], { state: { batchData: res, forTraining: true } });
+    if(this.listType === 'Batch'){
+      this.router.navigate(['batchlist/caselist'], { state: { batchData: res, forTraining: true } });
+    } else if(this.listType === 'Audit') {
+      this.router.navigate(['auditlist/caselist'], { state: { batchData: res, forAudit: true } });
+    }
   }
 
   filterData() {
@@ -211,10 +215,16 @@ export class BatchListComponent implements OnInit {
     const parsedUser = JSON.parse((user as string));
     const panelType = parsedUser.panel_type;
     console.log(panelType);
-    if (panelType === 'FSSAI Trainer Panel' || panelType === 'Fostac Panel') {
+    if (panelType === 'Fostac Panel') {
       this.listType = 'Batch'
     } else if (panelType === 'HRA Panel') {
       this.listType = 'Audit'
+    } else if(panelType === 'FSSAI Training Panel') {
+      if(this.router.url === '/auditlist'){
+        this.listType = 'Audit'
+      } else if(this.router.url === '/batchlist'){
+        this.listType = 'Batch'
+      }
     }
     console.log(this.listType);
   }

@@ -238,12 +238,19 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           if (res.success) {
             this.loading = false;
             this.verifiedStatus = true;
+            console.log(res);
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
             this.emitVerifiedData.emit(res.verificationInfo);
             this.refreshAuditLog.emit();
             this._toastrService.success('Shop\'s Information is Verified', 'Verified');
           }
+        },
+        error: err => {
+          this.loading = false;
+          if (err.error.locationErr) {
+            this._toastrService.error('Location not avilable');
+          } 
         }
       });
     }
@@ -251,7 +258,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   //founction for fetching recipient data 
   getMoreCaseInfo(): void {
-    this._getDataService.getMoreCaseInfo(this.candidateId).subscribe({
+    this._getDataService.getMoreCaseInfo(this.productType, this.candidateId).subscribe({
       next: (res) => {
         if (this.productType === 'Fostac') {
           this.emitCustomerId.emit(res.populatedInfo.recipientId);
@@ -315,8 +322,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ email: res.populatedInfo.managerEmail });
           this.verificationForm.patchValue({ address: res.populatedInfo.address });
           this.verificationForm.patchValue({ state: res.populatedInfo.state });
-          this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
-          this.verificationForm.patchValue({ food_handler_no: res.populatedInfo.foodHandlersCount });
+          // this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
+          // this.verificationForm.patchValue({ food_handler_no: res.populatedInfo.foodHandlersCount });
           this.verificationForm.patchValue({ district: res.populatedInfo.district });
           this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
           this.verificationForm.patchValue({ hra_total: res.populatedInfo.salesInfo.hraInfo.hra_total });
@@ -390,6 +397,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         if (res) {
           this.verifiedStatus = true;
           this.emitVerifiedData.emit(res.verifedData);
+          this.verificationForm.patchValue({ kob: res.verifedData.kob });
+          this.verificationForm.patchValue({ food_handler_no: res.verifedData.foodHandlersCount });
           this.emitVerifiedStatus.emit(this.verifiedStatus);
         } else {
           this.verifiedStatus = false;
@@ -460,8 +469,10 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       state: ['', Validators.required],
       district: ['', Validators.required],
       pincode: ['', Validators.required],
-      village: ['', Validators.required],
-      tehsil: ['', Validators.required],
+      // village: ['', Validators.required],
+      // tehsil: ['', Validators.required],
+      village: [''],
+      tehsil: [''],
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required],
@@ -493,7 +504,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   }
 
   onOwnershipTypeChanges($event: any) {
-    if ($event.target.value === 'Propaitorship') {
+    if ($event.target.value === 'Propraitorship') {
       this.minMembers = 1;
     } else {
       this.minMembers = 2;
