@@ -16,6 +16,7 @@ export class OnboardModalComponent implements OnInit {
     owner_name: new FormControl(''),
     business_entity: new FormControl(''),
     business_category: new FormControl(''),
+    manager_name: new FormControl(''),
     business_ownership_type: new FormControl(''),
     contact_no: new FormControl(''),
     email: new FormControl(''),
@@ -49,6 +50,7 @@ export class OnboardModalComponent implements OnInit {
       business_entity: ['', Validators.required],
       business_category: ['', Validators.required],
       business_ownership_type: ['', Validators.required],
+      manager_name: ['', Validators.required],
       contact_no: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
       email: ['', [Validators.required, Validators.email]],
       onboard_by: ['', Validators.required]

@@ -44,7 +44,16 @@
         </div>
       </div>
       <div class="col-md-12 my-2">
-        <label for="business_ownership_type" class="form-label">Business Size<sup>*</sup></label>
+        <label for="manager_name" class="form-label">Manager Name<sup>*</sup> </label>
+        <input formControlName="manager_name" type="text" class="form-control" placeholder="Manager Name"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['manager_name'].errors)}" id="business_entity">
+        <div *ngIf="submitted && businessform['manager_name'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['manager_name'].errors['required']">Manager Name is
+            Required</div>
+        </div>
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="business_ownership_type" class="form-label">Manager Contact<sup>*</sup></label>
         <div class="select-wrapper">
           <select class="form-control" formControlName="business_ownership_type" id="business_ownership_type"
             [ngClass]="{ 'is-invalid': (submitted && businessform['business_ownership_type'].errors)}">
