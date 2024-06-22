@@ -36,6 +36,19 @@ const foscosDocumentsStorage = multer.diskStorage({
 const foscosDocuments = multer({ storage: foscosDocumentsStorage });
 
 
+const fostacDocumentsStorage = multer.diskStorage({
+  
+  destination: function (req, file, cb) {
+    console.log(file);
+    cb(null, 'documents/fostac');
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().getTime() + '_' + file.fieldname + '.' + getExtention(file.originalname));
+  }
+});
+
+const fostacDocuments = multer({ storage: fostacDocumentsStorage });
+
 const chequeImageStorage = multer.diskStorage({
   
   destination: function (req, file, cb) {
@@ -65,5 +78,5 @@ function getExtention(fileName){
   return ext
 }
 
-module.exports = { tickets, foscosDocuments, hraDocuments, chequeImage }
+module.exports = { tickets, foscosDocuments, hraDocuments, chequeImage, fostacDocuments }
 
