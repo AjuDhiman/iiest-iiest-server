@@ -82,4 +82,14 @@ export class UtilitiesService {
     }
   }
 
+  public trimObjectStrings(inputObj: any) {
+    Object.keys(inputObj).forEach(key => {
+      if (typeof inputObj[key] === 'string') {
+        inputObj[key] = inputObj[key].trim();
+      } else if (typeof inputObj[key] === 'object' && inputObj[key] !== null) {
+        this.trimObjectStrings(inputObj[key]);
+      }
+    });
+  }
+
 }

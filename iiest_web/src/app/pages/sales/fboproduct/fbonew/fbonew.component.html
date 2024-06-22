@@ -119,7 +119,16 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label for="owner_contact" class="form-label">Mobile No.<sup>*</sup></label>
+                        <label for="manager_name" class="form-label">Manager Name<sup>*</sup></label>
+                        <input type="text" placeholder="Manager Name" formControlName="manager_name"
+                            class="form-control form-control-sm" id="owner_name" [readOnly]="true"
+                            [ngClass]="{ 'is-invalid': submitted && fbo['manager_name'].errors }">
+                        <div *ngIf="submitted && fbo['manager_name'].errors" class="invalid-feedback">
+                            <div *ngIf="fbo['manager_name'].errors['required']">Manager Name is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="owner_contact" class="form-label">Manager Contact No.<sup>*</sup></label>
                         <input type="number" placeholder="Mobile No." formControlName="owner_contact"
                             class="form-control form-control-sm" id="owner_contact" [readOnly]="true"
                             [ngClass]="{ 'is-invalid': submitted && fbo['owner_contact'].errors }" />
@@ -138,7 +147,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label for="fbo_name" class="form-label">Brand Name<sup>*</sup></label>
                         <input type="text" placeholder="Brand Name" formControlName="fbo_name"
                             class="form-control form-control-sm" id="fbo_name" [readOnly]="isExistingFbo"
@@ -319,7 +328,7 @@
 
                 <div class="row mt-3" *ngIf="byCheque" formGroupName="cheque_data">
                     <div class="col-md-3">
-                        <label for="payee_name" class="form-label">Payee Name</label>
+                        <label for="payee_name" class="form-label">Check Payee Name</label>
                         <input type="text" placeholder="Payee Name" formControlName="payee_name" id="payee_name"
                             class="form-control form-control-sm" autocomplete="off"
                              [ngClass]="{ 'is-invalid': submitted && chequedata['payee_name'].errors }" />
