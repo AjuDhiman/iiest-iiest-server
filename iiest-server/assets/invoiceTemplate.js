@@ -246,6 +246,7 @@ const invoiceTemplate = async (fboInfo) => {
                                 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001
                                 <br>
                                 Mobile No: +91-9599195097
+                                Landline - 011-35454931, 011-35457013<br>
                                 <br>
                                 Website: www.iiest.org, Email ID: finance.iiest@gmail.com
                             </p>

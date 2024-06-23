@@ -23,7 +23,7 @@ const docSchema = new Schema({
         type: [String],
         required: true
     }
-});
+},{timestamps: true});
 
 const docsModel = mongoose.model('documents', docSchema);
 module.exports = docsModel;
