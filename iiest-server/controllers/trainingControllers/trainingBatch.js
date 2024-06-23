@@ -13,70 +13,74 @@ exports.trainingBatch = async (req, res) => {
 
         let success = false;
 
-        const verificationInfo = req.verificationInfo;
+        const verifiedRecpArr = req.verifiedRecpArr;
 
-        const recipientId = req.params.recipientid;
+        for(let index = 0; index < verifiedRecpArr.length; index++) {
+            const verificationInfo = verifiedRecpArr[index];
+            const recipientId = verificationInfo.recipientInfo;
 
-        const recipientInfo = await recipientModel.findOne({ _id: recipientId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] });
+            const recipientInfo = await recipientModel.findOne({ _id: recipientId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] });
 
-        const category = recipientInfo.salesInfo.fostacInfo.fostac_service_name;
-
-        const user = req.user;
-
-        const state = recipientInfo.salesInfo.fboInfo.state;
-
-        const district = recipientInfo.salesInfo.fboInfo.district;
-
-        let location;
-
-        if (state === 'Delhi') {
-            location = 'Delhi';
-        } else if (district === 'Gurgaon') {
-            location = 'Gurgaon';
-        } else if (district === 'Gautam Buddha Nagar') {
-            location = 'Noida';
-        } else if (district === 'Faridabad') {
-            location = 'Faridabad';
-        } else if (district === 'Ghaziabad') {
-            location = 'Ghaziabad';
-        }
-
-        if (!location) {
-            await fostacVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
-            return res.status(401).json({ success: false, locationErr: true })
-        }
-
-        let batchData;
-
-        const openedBatch = await TrainingBatchModel.findOne({ status: 'open', category: category, location: location });
-
-        if (openedBatch) {
-
-            if (openedBatch.candidateNo < 99) {
-                batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
-                    {
-                        $inc: { candidateNo: 1 },
-                        $push: { candidateDetails: verificationInfo._id }
-                    });
-            } else {
-                //close the btach if candidate number is grater than or equal to 50
-                batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
-                    {
-                        $inc: { candidateNo: 1 },
-                        $push: { candidateDetails: verificationInfo._id },
-                        status: 'completed'
-                    });
+            const category = recipientInfo.salesInfo.fostacInfo.fostac_service_name;
+    
+            const user = req.user;
+    
+            const state = recipientInfo.salesInfo.fboInfo.state;
+    
+            const district = recipientInfo.salesInfo.fboInfo.district;
+    
+            let location;
+    
+            if (state === 'Delhi') {
+                location = 'Delhi';
+            } else if (district === 'Gurgaon') {
+                location = 'Gurgaon';
+            } else if (district === 'Gautam Buddha Nagar') {
+                location = 'Noida';
+            } else if (district === 'Faridabad') {
+                location = 'Faridabad';
+            } else if (district === 'Ghaziabad') {
+                location = 'Ghaziabad';
             }
-
-        } else {
-            //open new batch if batch with particular requirement is closed 
-            const batchInfo = await generatedBatchInfo();
-
-            batchData = await TrainingBatchModel.create({ operatorInfo: user._id, id_num: batchInfo.idNumber, status: 'open', category: category, batchCode: batchInfo.generatedBatchCode, location: location, candidateNo: 1, candidateDetails: [verificationInfo._id] });
+    
+            if (!location) {
+                await fostacVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
+                return res.status(401).json({ success: false, locationErr: true })
+            }
+    
+            let batchData;
+    
+            const openedBatch = await TrainingBatchModel.findOne({ status: 'open', category: category, location: location });
+    
+            if (openedBatch) {
+    
+                if (openedBatch.candidateNo < 99) {
+                    batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
+                        {
+                            $inc: { candidateNo: 1 },
+                            $push: { candidateDetails: verificationInfo._id }
+                        });
+                } else {
+                    //close the btach if candidate number is grater than or equal to 50
+                    batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
+                        {
+                            $inc: { candidateNo: 1 },
+                            $push: { candidateDetails: verificationInfo._id },
+                            status: 'completed'
+                        });
+                }
+    
+            } else {
+                //open new batch if batch with particular requirement is closed 
+                const batchInfo = await generatedBatchInfo();
+    
+                batchData = await TrainingBatchModel.create({ operatorInfo: user._id, id_num: batchInfo.idNumber, status: 'open', category: category, batchCode: batchInfo.generatedBatchCode, location: location, candidateNo: 1, candidateDetails: [verificationInfo._id] });
+            }
         }
 
         success = true;
-        return res.status(200).json({ success, verificationInfo: verificationInfo, batchData: batchData });
+        return res.status(200).json({ success, recpArr: req.recpArr });
+        // return res.status(200).json({ success, verificationInfo: verificationInfo, batchData: batchData });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -199,7 +203,7 @@ exports.auditBatch = async (req, res) => {
             { date: '02-Nov-2024', name: 'Govardhan Pooja' },
             { date: '03-Nov-2024', name: 'Bhai Dooj' },
             { date: '25-Dec-2024', name: 'Christmas' },
-        ];    
+        ];
 
         let location;
 
@@ -256,9 +260,8 @@ exports.auditBatch = async (req, res) => {
 
                 for (i = 0; i < auditDays; i++) { // we will check avliablity of auditor for continiously no of audit days for a candidate
 
-                    console.log('i', i)
                     let day = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i + daysToEsacpe, 0, 0, 1);
-                    console.log('Orignal Day', day.toUTCString(), day.getDay());
+                    // console.log('Orignal Day', day.toUTCString(), day.getDay());
                     let holidayNum = 0;
 
                     while (ourHolidays.find((item) => item.date === getFormatedDate(day.toString())) || day.getUTCDay() === 0) {
@@ -268,7 +271,7 @@ exports.auditBatch = async (req, res) => {
 
                     daysToEsacpe += holidayNum
 
-                    console.log('Modified Day', day.toUTCString());
+                    // console.log('Modified Day', day.toUTCString());
 
                     const batchesOnDate = await auditBatchModel.find({
                         auditDates: {
@@ -285,7 +288,7 @@ exports.auditBatch = async (req, res) => {
                         date.setDate(date.getDate() + i + holidayNum + 1);
                         break; // break the loop if all auditors are booked any of the day or not same auditor is avilble on all days
                     } else {
-                        console.log(2, avilableAuditors);
+                        // console.log(2, avilableAuditors);
                         dayAvilable = true;
                         avilableAuditors = avilableAuditors.filter((auditor) => !auditorsOnDate.includes(auditor));
                         auditDatesArr.push(day);
@@ -296,7 +299,7 @@ exports.auditBatch = async (req, res) => {
 
             let auditor = getRandomItemFromArr(avilableAuditors);
 
-            console.log(auditor)
+            // console.log(auditor)s
 
             const batchInfo = await generatedAuditBatchInfo();
 
@@ -358,7 +361,7 @@ exports.auditBatch = async (req, res) => {
         }
 
         if (batchData) {
-            sendVerificationMail(req.clientData);
+            sendVerificationMail({ ...req.clientData, auditDate: getFormatedDateArr(batchData.auditDates) });
             return res.status(200).json({ success: true, verificationData: verificationInfo })
         }
 
@@ -397,15 +400,28 @@ function getFormatedDate(date) {
     return formattedDate;
 }
 
+function getFormatedDateArr(date) {
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    if (date.length === 1) {
+        let orignalDate = new Date(date[0].toString())
+        return `${orignalDate.getDate()}-${months[orignalDate.getMonth()]}-${orignalDate.getFullYear()}`
+    } else {
+        console.log(date[0]);
+        let startDate = new Date(date[0].toString());
+        let endDate = new Date(date[date.length - 1].toString());
+        return `${startDate.getDate()}-${months[startDate.getMonth()]}-${startDate.getFullYear()} to ${endDate.getDate()}-${months[endDate.getMonth()]}-${endDate.getFullYear()}`
+    }
+}
+
 function getRandomItemFromArr(arr) {
 
     const length = arr.length;
 
-    console.log('arr', arr);
+    // console.log('arr', arr);
 
     const randomIndex = Math.floor(Math.random() * (length));
 
-    console.log('index', randomIndex, arr[randomIndex]);
+    // console.log('index', randomIndex, arr[randomIndex]);
 
     return arr[randomIndex];
 }
@@ -520,9 +536,9 @@ exports.getCandidateAuditBatch = async (req, res) => {
             {
                 $in: [verificationId]
             }
-        }).populate({path: 'candidateDetails', populate: {path: 'shopInfo'}});
+        }).populate({ path: 'candidateDetails', populate: { path: 'shopInfo' } });
 
-        return res.status(200).json({batchData: candidateBatch, success: true})
+        return res.status(200).json({ batchData: candidateBatch, success: true })
 
     } catch (error) {
         console.log(error);

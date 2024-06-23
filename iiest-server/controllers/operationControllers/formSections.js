@@ -16,52 +16,52 @@ exports.fostacVerification = async (req, res, next) => {
     try {
 
         let success = false;
+        const recpArr = req.recpArr;// we will verify all the recps by looping them
 
-        const recipientId = req.params.recipientid;
+        console.log(recpArr);
 
-        const { recipient_name, fbo_name, owner_name, father_name, dob, address, recipient_contact_no, email, aadhar_no, pancard_no, sales_date } = req.body;
+        const verifiedRecpArr = [];
 
-        const isEditMode = req.body.isEditMode;
+        for (let index = 0; index < recpArr.length; index++) {
+            const recipientId = recpArr[index]._id;
 
-        const checkEmail = await fostacVerifyModel.findOne({email: email});
+            let clientdata = {
+                product: 'fostac',
+                recipientName: recpArr[index].name,
+                fboName: recpArr[index].name,
+                ownerName: recpArr[index].name,
+                fatherName: recpArr[index].fatherName,
+                dob: recpArr[index].dob,
+                address: recpArr[index].address,
+                recipientContactNo: recpArr[index].phoneNo,
+                recipientEmail: recpArr[index].email,
+                aadharNo: recpArr[index].aadharNo,
+            }
 
-        if(checkEmail) {
-            return res.status(401).json({ success: false, emailErr: true });
+            const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId });
+
+            const prevVal = {}
+
+            const currentVal = basicFormAdd;
+
+            logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
+
+            // function to send mail to client after verification process
+            if (basicFormAdd !== undefined) {
+                sendVerificationMail(clientdata);
+            }
+
+            verifiedRecpArr.push(basicFormAdd);
         }
-
-        let clientdata = {
-            product: 'fostac',
-            recipientName: recipient_name,
-            fboName: fbo_name,
-            ownerName: owner_name,
-            fatherName: father_name,
-            dob: dob,
-            address: address,
-            recipientContactNo: recipient_contact_no,
-            recipientEmail: email,
-            aadharNo: aadhar_no,
-            pancard: pancard_no
-        }
-
-        const basicFormAdd = await fostacVerifyModel.create({ operatorInfo: req.user.id, recipientInfo: recipientId, email, address, pancardNo: pancard_no, fatherName: father_name, dob, salesDate: sales_date });
 
         //this code is for tracking the CRUD operation regarding to a recipient
 
-        const prevVal = {}
-
-        const currentVal = basicFormAdd;
-
-        logAudit(req.user._id, "recipientdetails", recipientId, prevVal, currentVal, "Recipient verified");
-
-        // function to send mail to client after verification process
-        if (basicFormAdd !== undefined) {
-            sendVerificationMail(clientdata);
-        }
-
         // code for tracking ends
-        if (basicFormAdd) {
+        if (verifiedRecpArr.length !== 0) {
             success = true
-            req.verificationInfo = basicFormAdd;
+            // req.verificationInfo = basicFormAdd;
+             req.verifiedRecpArr = verifiedRecpArr;
+            // return res.status(200).json({ success: true })
             next();
         }
 
@@ -498,7 +498,7 @@ exports.fostacAttendance = async (req, res) => {
 
         //this code is for tracking the flow of data regarding to a recipient
 
-        const enrolledData = await fostacEnrollmentModel.findOne({ _id: enrolledDataId }).populate({ path: 'verificationInfo', populate: { path: 'recipientInfo'}});
+        const enrolledData = await fostacEnrollmentModel.findOne({ _id: enrolledDataId }).populate({ path: 'verificationInfo', populate: { path: 'recipientInfo' } });
 
         console.log(enrolledData);
 
@@ -575,7 +575,7 @@ exports.ticketDelivery = async (req, res) => {
 
         const ticket = await ticketDeliveryModel.findOne({ recipientInfo: req.params.recipientid });
 
-        const verificationData = await fostacVerifyModel.findOne({ recipientInfo: req.params.recipientid }).populate({path: 'recipientInfo'});
+        const verificationData = await fostacVerifyModel.findOne({ recipientInfo: req.params.recipientid }).populate({ path: 'recipientInfo' });
 
         if (ticket) {
             res.status(401).json({ success, recpErr: true });

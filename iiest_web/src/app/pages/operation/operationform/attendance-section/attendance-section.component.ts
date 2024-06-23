@@ -30,6 +30,8 @@ export class AttendanceSectionComponent implements OnInit, OnChanges {
 
   @Input() enrolledDataId: string = '';
 
+  @Input() isVerifier:boolean = false;
+
   //output event emitters
   @Output() emitAttenanceStatus: EventEmitter<boolean> = new EventEmitter<boolean>;
 

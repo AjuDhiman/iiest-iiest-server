@@ -589,7 +589,7 @@ export class FbonewComponent implements OnInit {
           formData.append('tehsil', this.fboForm.value.tehsil);
           formData.append('address', this.fboForm.value.address);
           formData.append('pincode', this.fboForm.value.pincode);
-          formData.append('product_name', this.fboForm.value.product_name);
+          formData.append('product_name', this.fboForm.value.product_name.toString());
           formData.append('business_type', this.fboForm.value.business_type);
           formData.append('payment_mode', this.fboForm.value.payment_mode);
           formData.append('createdBy', this.fboForm.value.createdBy);
@@ -675,7 +675,7 @@ export class FbonewComponent implements OnInit {
           let formData = new FormData();
 
           formData.append('pincode', this.fboForm.value.pincode);
-          formData.append('product_name', this.fboForm.value.product_name);
+          formData.append('product_name', this.fboForm.value.product_name.toString());
           formData.append('payment_mode', this.fboForm.value.payment_mode);
           formData.append('grand_total', this.fboForm.value.grand_total);
           formData.append('existingFboId', this.existingFboId);

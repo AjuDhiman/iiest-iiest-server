@@ -17,9 +17,10 @@ export class CaseListComponent implements OnInit {
   selectedFilter: string;
   itemsNumber: number = 25;
   pageNumber: number = 1;
-  activeTab: string;
+  productType: string = '';
   caseData: any;
   typeData: any;
+  caseList: any;
   showPagination: boolean = false;
 
   //condional var for deciding case list structure and logic for case list in case of trainers
@@ -89,23 +90,10 @@ export class CaseListComponent implements OnInit {
     this._getDataService.getCaseList().subscribe({
       next: res => {
         this.loading = false;
-        this.caseData = res.caseList.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1 }));
-        this.totalCase = this.caseData.length;
-        if (this.panelType === 'Fostac Panel') {
-          this.setServiceType('Catering');
-          this.selectedFilter = "byRecipientName";
-          this.filter();
-        }
-        else if (this.panelType === 'Foscos Panel') {
-          this.setServiceType("Registration");
-          this.selectedFilter = "byOperatorName";
-          this.filter();
-        }
-        else if (this.panelType === 'HRA Panel') {
-          this.selectedFilter = "byManagerName";
-          this.typeData = this.caseData;
-          this.filter();
-        }
+        console.log(res.caseList);
+        this.caseList = res.caseList;
+        this.caseData = this.caseList[this.productType];
+        this.setListProductWise();
       },
       error: err => {
         let errorObj = err.error;
@@ -120,9 +108,9 @@ export class CaseListComponent implements OnInit {
     this.serviceType = type;
     this.pageNumber = 1;
 
-    if (this.panelType === 'Fostac Panel') {
+    if (this.productType === 'Fostac') {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
-    } else if (this.panelType === 'Foscos Panel') {
+    } else if (this.productType === 'Foscos') {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.foscosInfo.foscos_service_name === type);
     }
 
@@ -144,9 +132,11 @@ export class CaseListComponent implements OnInit {
 
   filter(): void {
     if (!this.searchQuery) {
+      console.log('TYPE DATA', this.typeData)
       this.filteredData = this.typeData;
+      console.log('not 1uery')
     } else {
-      if (this.panelType == 'Fostac Panel') {
+      if (this.productType==='Fostac') {
         switch (this.selectedFilter) {
           case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
@@ -164,7 +154,7 @@ export class CaseListComponent implements OnInit {
             break;
         }
       }
-      else if (this.panelType == 'Foscos Panel') {
+      else if (this.panelType==='Foscos') {
         switch (this.selectedFilter) {
           case 'byOperatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
@@ -183,11 +173,8 @@ export class CaseListComponent implements OnInit {
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
     this.panelType = parsedUser.panel_type;
-    if (this.panelType === 'Fostac Panel') {
-      this.serviceType = 'Catering'
-    } else if (this.panelType === 'Foscos Panel') {
-      this.serviceType = 'Registration'
-    }
+    this.initializeProductType();
+    this.initializeServiceType();
 
     const state = window.history.state;
     console.log(state);
@@ -209,6 +196,51 @@ export class CaseListComponent implements OnInit {
       this.filter();
       console.log('For Audit',this.forAudit);
       this.loading = false;
+    }
+  }
+
+  toogleTabs(tab: string){
+    this.productType = tab;
+    this.caseData = this.caseList[this.productType]
+    this.initializeServiceType();
+    this.setListProductWise();
+  }
+
+  setListProductWise(){ //set the list type on the basis of product type
+    console.log('2221',this.productType)
+    this.totalCase = this.caseData.length;
+    if (this.productType === 'Fostac') {
+      this.setServiceType('Catering');
+      this.selectedFilter = "byRecipientName";
+      this.filter();
+    }
+    else if (this.productType === 'Foscos') {
+      this.setServiceType("Registration");
+      this.selectedFilter = "byOperatorName";
+      this.filter();
+    }
+    else if (this.productType === 'HRA') {
+      this.selectedFilter = "byManagerName";
+      this.typeData = this.caseData;
+      this.filter();
+    }
+  }
+  
+  initializeProductType(): void{
+    if(this.panelType === 'Fostac Panel' || this.panelType === 'Verifier Panel'){
+      this.productType = 'Fostac';
+    } else if(this.panelType === 'Foscos Panel') {
+      this.productType = 'Foscos';
+    } else if(this.panelType === 'HRA Panel') {
+      this.productType = 'HRA'
+    }
+  }
+
+  initializeServiceType(): void {
+    if (this.productType === 'Fostac') {
+      this.serviceType = 'Catering'
+    } else if (this.productType === 'Foscos') {
+      this.serviceType = 'Registration'
     }
   }
 

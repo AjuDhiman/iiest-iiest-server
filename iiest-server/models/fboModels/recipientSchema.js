@@ -30,6 +30,24 @@ const recipientSchema = new Schema({
         unique: true,
         trim: true
     },
+    email: {
+        type: String, 
+        required: true,
+        // unique: true
+    },
+    address: {
+        type: String, 
+        required: true, 
+        // unique: true
+    },
+    fatherName: {
+        type: String, 
+        required: true
+    },
+    dob: {
+        type: String, 
+        required: true
+    },
     aadharNo: {
         type: Number,
         required: true,
@@ -43,7 +61,15 @@ const shopSchema = new Schema({
         ref: 'employee_sales',
         required: true
     },
-    operatorName: {
+    shopId: {
+        type: String,
+        required: true
+    },
+    product_name: {
+        type: String,
+        required: true
+    },
+    managerName: {
         type: String,
         required: true,
         trim: true
@@ -77,18 +103,6 @@ const shopSchema = new Schema({
         required: true,
         trim: true
     },
-    // eBillImage: {
-    //     type: String,
-    // },
-    ownerPhoto: {
-        type: String,
-    },
-    shopPhoto: {
-        type: String,
-    },
-    aadharPhoto: {
-        type: [String],
-    }
 }, { timestamps: true });
 
 const hygieneShopSchema = new Schema({

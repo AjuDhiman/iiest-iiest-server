@@ -5,13 +5,17 @@
         <div class="table-responsive">
           <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
             <thead>
-              <tr *ngIf="this.serviceType == 'fostac'">
+              <tr *ngIf="this.serviceType == 'Fostac'">
                 <th class="cell text-center">S.No</th>
-                <th class="cell text-center">Recipient Name</th>
-                <th class="cell text-center">Phone</th>
-                <th class="cell text-center">Aadhar No.</th>
+                <th class="cell text-center">Recp. Name</th>
+                <th class="cell text-center">Recp. Father Name</th>
+                <th class="cell text-center">Recp. Contact</th>
+                <th class="cell text-center">Recp. Email</th>
+                <th class="cell text-center">Recp. Address</th>
+                <th class="cell text-center">Recp. Aadhar No.</th>
+                <th class="cell text-center">Recp. Aadhar</th>
               </tr>
-              <tr *ngIf="this.serviceType == 'foscos'">
+              <tr *ngIf="this.serviceType == 'Foscos'">
                 <th class="cell">S.No</th>
                 <th class="cell">Operator Name</th>
                 <th class="cell">Address</th>
@@ -32,17 +36,34 @@
                 <th class="cell text-center">Manager's Aadhar</th>
               </tr>
             </thead>
-            <tbody *ngIf="recipientData?.length>0 && serviceType === 'fostac'">
+            <tbody *ngIf="recipientData?.length>0 && serviceType === 'Fostac'">
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
               <tr
                 *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber , id: 'recipient-list'}; let sr = index">
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{sr+5*(pageNumber-1)+1}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.name.toLowerCase()}}</span></td>
+                <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.fatherName}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.phoneNo}}</span></td>
+                <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.email}}</span></td>
+                <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.address}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.aadharNo}}</span></td>
+                <!-- <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.aadharPhoto}}</span></td> -->
+                <td *ngIf="isfostac" class="text-center cell">
+                  <span class="truncate">
+                    <a target="_blank">
+                      <fa-icon *ngIf="recipients.docs[0].src.length != 0" class="fa-2xl text-success cursor-pointer"
+                      (click)="viewDocument('Aadhar', recipients.docs[0].src, 'image', true)"
+                        [icon]="faFile"></fa-icon>
+                    </a>
+                    <!-- <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="shops.aadharPhoto.length == 0" class="fa-2xl text-danger"
+                        [icon]="faFile"></fa-icon></label>
+                    <input type="file" [id]="'uploadAadharPhoto' + sr" (change)="uploadAadharphoto($event, shops._id)" multiple
+                      hidden> -->
+                  </span>
+                </td>
               </tr>
             </tbody>
-            <tbody *ngIf="shopData?.length>0 && serviceType === 'foscos'">
+            <tbody *ngIf="shopData?.length>0 && serviceType === 'Foscos'">
               <tr
                 *ngFor="let shops of shopData | paginate: { itemsPerPage: 5, currentPage: pageNumber, id:'recipient-list' }; let sr = index">
                 <td *ngIf="!isfostac" class="cell"><span class="truncate">{{sr+5*(pageNumber-1)+1}}</span></td>
@@ -193,7 +214,7 @@
               </tr>
             </tbody>
             <tbody
-              *ngIf="(!showPagination && serviceType === 'fostac') || (!showPagination && serviceType === 'foscos') || (!showPagination && serviceType === 'HRA')">
+              *ngIf="(!showPagination && serviceType === 'Fostac') || (!showPagination && serviceType === 'Foscos') || (!showPagination && serviceType === 'HRA')">
               <tr>
                 <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found ----------------</td>
               </tr>

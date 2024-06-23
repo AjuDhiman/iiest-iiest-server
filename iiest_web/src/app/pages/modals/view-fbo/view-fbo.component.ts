@@ -12,6 +12,7 @@ import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-d
 })
 export class ViewFboComponent implements OnInit {
   @Input() public fboData: any;
+  @Input() public isVerifier: boolean = false;
   fulladdress: string;
   recipientData: fboRecipient;
   shopDetails: fboShop;
@@ -44,6 +45,8 @@ export class ViewFboComponent implements OnInit {
 
     this.isShowInvoice = this.comparedates(this.fboData.createdAt);
     this.getInvoice();
+
+    console.log(this.fboData);
   }
 
   // This function is used for showing invoice after 31st March'2024

@@ -10,7 +10,7 @@ exports.saveDocument = async (req, res) => {
 
         const file = req.files['document'];
         const id = req.params.id;
-        const { name, format, multipleDoc, panelType } = req.body;
+        const { name, format, multipleDoc, panelType, handlerId } = req.body;
         let ref = '';
 
         if(panelType === "Foscos Panel") {
@@ -21,8 +21,10 @@ exports.saveDocument = async (req, res) => {
 
         console.log(panelType);
 
+        console.log(file);
+
         const src = file.map(item => item.filename);
-        const uploadedDoc = await docsModel.create({ handlerInfo: id, ref: ref, name: name, format: format, multipleDoc: multipleDoc, src: src })
+        const uploadedDoc = await docsModel.create({ handlerId: handlerId, name: name, format: format, multipleDoc: multipleDoc, src: src })
 
         if (!uploadedDoc) {
             res.status(401).json({ success: false, message: 'Document Saving Error' })
@@ -42,8 +44,10 @@ exports.getDocList = async (req, res) => {
         let success = false;
 
         const id = req.params.id;
+        
+        const handlerId = id.replace(/slash/g, '/'); // remove all word slash with /
 
-        const docs = await docsModel.find({ handlerInfo: id }).select('-handlerInfo');
+        const docs = await docsModel.find({ handlerId: handlerId });
 
         if (!docs) {
             return res.status(201).json({ success, message: 'No Doc Found' });

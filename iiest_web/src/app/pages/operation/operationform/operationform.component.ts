@@ -36,6 +36,7 @@ export class OperationformComponent implements OnInit {
   documents: { name: string, src: string, format: string }[] = [];
   allDocs: any;
   isTrainer: boolean = false;
+  isVerifier: boolean = false;
 
   DOC_URL: string = config.DOC_URL;
 
@@ -52,7 +53,7 @@ export class OperationformComponent implements OnInit {
   ngOnInit(): void {
     this.candidateId = this.activatedRoute.snapshot.params['id'];
     this.productType = this.activatedRoute.snapshot.params['product'];
-    // this.getUserProductType();
+    this.getUserProductType();
   }
 
   //this methord for geting recipient customer id 
@@ -128,21 +129,25 @@ export class OperationformComponent implements OnInit {
     let panelType = parsedUser.panel_type;
 
     switch (panelType) {
-      case 'Fostac Panel':
-        this.productType = 'Fostac';
-        break;
-      case 'Foscos Panel':
-        this.productType = 'Foscos';
-        break;
-      case 'HRA Panel':
-        this.productType = 'HRA';
-        break;
-      case 'FSSAI Training Panel':
-        this.productType = 'Fostac';
-        this.isTrainer = true;
-        break;
-      default:
-        this.productType = 'Fostac';
+      // case 'Fostac Panel':
+      //   this.productType = 'Fostac';
+      //   break;
+      // case 'Foscos Panel':
+      //   this.productType = 'Foscos';
+      //   break;
+      // case 'HRA Panel':
+      //   this.productType = 'HRA';
+      //   break;
+      // case 'FSSAI Training Panel':
+      //   this.productType = 'Fostac';
+      //   this.isTrainer = true;
+      //   break;
+        
+      // default:
+      //   this.productType = 'Fostac';
+      case 'Verifier Panel':
+        this.isVerifier = true;
+      break;
     }
   }
 

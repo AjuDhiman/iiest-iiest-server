@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const docSchema = new Schema({
-    handlerInfo: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: String,
-        required: true
+    handlerId: {
+        type: String,
+        required: true,
+        trim: true
     },
     name: {
         type: String,

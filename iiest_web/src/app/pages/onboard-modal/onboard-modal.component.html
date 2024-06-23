@@ -68,16 +68,6 @@
         </div>
       </div>
       <div class="col-md-12 my-2">
-        <label for="contact_no" class="form-label">Contact No.<sup>*</sup> </label>
-        <input formControlName="contact_no" type="text" class="form-control" placeholder="Contact No" id="contact_no"
-          [ngClass]="{ 'is-invalid': (submitted && businessform['contact_no'].errors)}">
-        <div *ngIf="submitted && businessform['contact_no'].errors" class="invalid-feedback">
-          <div *ngIf="businessform['contact_no'].errors['required']">Contact No. is
-            Required</div>
-            <div *ngIf="businessform['contact_no'].errors['pattern']">Invalid Contact No.</div>
-        </div>
-      </div>
-      <div class="col-md-12 my-2">
         <label for="email" class="form-label">Email<sup>*</sup> </label>
         <input formControlName="email" type="text" class="form-control" placeholder="Email" id="email"
         [ngClass]="{ 'is-invalid': (submitted && businessform['email'].errors)}">

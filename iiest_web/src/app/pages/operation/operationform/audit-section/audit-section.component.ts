@@ -28,6 +28,7 @@ export class AuditSectionComponent implements OnInit {
   @Input() verifiedDataId: string;
   @Input() verifiedData: any;
   @Input() verifiedStatus: boolean;
+  @Input() isVerifier: boolean = false;
 
   officerComments: string[] = [];
 

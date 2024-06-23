@@ -26,7 +26,7 @@
     <div class="col-md-3">
         <label for="marks" class="form-label">Marks</label><sup>*</sup>
         <input type="number" placeholder="Score" formControlName="marks"
-            class="form-control form-control-sm" id="marks" [readOnly]="submittedStatus || isAttendeeAbsent" min="0" max="100" [required]="submittedStatus">
+            class="form-control form-control-sm" id="marks" [readOnly]="submittedStatus || isAttendeeAbsent || isVerifier" min="0" max="100" [required]="submittedStatus">
             <!-- [ngClass]="{ 'is-invalid': enrolled && enrollmentform['fostac_training_date'].errors }">
         <div *ngIf="enrolled && enrollmentform['fostac_training_date'].errors" class="invalid-feedback">
             <div *ngIf="enrollmentform['fostac_training_date'].errors['required']">Fostac Training is required</div>

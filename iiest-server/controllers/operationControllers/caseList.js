@@ -6,40 +6,36 @@ exports.caseList = async (req, res) => {
 
         const employeePanel = req.user.panel_type;
 
-        let list;
+        let list = {};
 
-        if (employeePanel === 'Foscos Panel') {
+        if (employeePanel === 'Foscos Panel' || employeePanel === 'Verifier Panel') {
 
-            list = await shopModel.find({})
-                // .where('eBillImage')
-                // .exists()
-                .where('ownerPhoto')
-                .exists()
-                .where('shopPhoto')
-                .exists()
-                .where('aadharPhoto')
-                .exists()
+            list['Foscos'] = await shopModel.find({product_name: 'Foscos'})
                 .populate({
                     path: 'salesInfo',
                     populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
                     select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
                 })
+                .sort({createdAt: -1})
                 .lean();
 
-        } else if (employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel') {
+        } 
+        if (employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel' || employeePanel === 'Verifier Panel') {
 
-            list = await recipientModel.find({})
+            list['Fostac']= await recipientModel.find({})
                 .populate({
                     path: 'salesInfo',
-                    populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
+                    populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state customer_id', populate: { path: 'boInfo', select: 'customer_id'} }],
                     select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
                 })
                 .select('name phoneNo employeeInfo.employee_name')
+                .sort({createdAt: -1})
                 .lean();
 
-        } else if (employeePanel === 'HRA Panel') {
+        } ;
+        if (employeePanel === 'HRA Panel' || employeePanel === 'Verifier Panel') { 
 
-            list = await hygieneShopModel.find({})
+            list['HRA'] = await shopModel.find({product_name: 'HRA'})
                 // .where('fostacCertificate')
                 // .exists()
                 // .where('foscosLicense')
@@ -49,13 +45,55 @@ exports.caseList = async (req, res) => {
                     populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
                     select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
                 })
+                .sort({createdAt: -1})
                 .lean();
+            }
 
-        }
+        // } else if (employeePanel == 'Verifier Panel') { //show verifier all cases
+        //     list = {}
+        //     list['Foscos'] = await shopModel.find({})
+        //         // .where('eBillImage')
+        //         // .exists()
+        //         .where('ownerPhoto')
+        //         .exists()
+        //         .where('shopPhoto')
+        //         .exists()
+        //         .where('aadharPhoto')
+        //         .exists()
+        //         .populate({
+        //             path: 'salesInfo',
+        //             populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
+        //             select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
+        //         })
+        //         .lean();
+
+        //     list['Fostac'] = await recipientModel.find({})
+        //         .populate({
+        //             path: 'salesInfo',
+        //             populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
+        //             select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
+        //         })
+        //         .select('name phoneNo employeeInfo.employee_name')
+        //         .lean();
+
+        //     list['HRA'] = await hygieneShopModel.find({})
+        //         // .where('fostacCertificate')
+        //         // .exists()
+        //         // .where('foscosLicense')
+        //         // .exists()
+        //         .populate({
+        //             path: 'salesInfo',
+        //             populate: [{ path: 'employeeInfo', select: 'employee_name' }, { path: 'fboInfo', select: 'fbo_name owner_name owner_contact district state' }],
+        //             select: 'product_name fostacInfo foscosInfo hraInfo createdAt'
+        //         })
+        //         .lean();
+
+        // }
 
         return res.status(200).json({ caseList: list })
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -76,7 +114,7 @@ exports.caseInfo = async (req, res) => {
         } else if (product === 'Foscos') {
             recipientInfo = await shopModel.findById(recipientId);
         } else if (product === 'HRA') {
-            recipientInfo = await hygieneShopModel.findById(recipientId);
+            recipientInfo = await shopModel.findById(recipientId);
         }
 
         const moreInfo = await (await recipientInfo.populate('salesInfo')).populate(['salesInfo.employeeInfo', 'salesInfo.fboInfo']);

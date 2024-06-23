@@ -117,6 +117,7 @@ function getMailContent(mailInfo) {
         <p>Thank You</p>
         <br>
         BO Name - ${mailInfo.boName}<br>
+        Manager Name - ${mailInfo.managerName}<br>
         BO ID No - ${mailInfo.customerId}<br>`;
 
         hindiContent = `<p>कनेक्ट भारत परियोजना में पंजीकरण के लिए धन्यवाद। आपका व्यवसायिक संचालन (बीओ) नंबर उत्पन्न किया गया है और आपको इस मेल के माध्यम से भेजा गया है, कृपया जब भी हमसे संपर्क करें तो इसका उपयोग करें।<br>आप विभिन्न सरकारी लाभों के पात्र हो गए हैं, अपने व्यवसाय नियमों के अनुसार, व्यवसाय की वृद्धि के लिए एसएमई के लिए जारी योजनाओं के तहत।<br>आपको अपना विवरण सत्यापित करने के लिए 7 दिनों के भीतर एक कॉल प्राप्त होगा। कृपया आवश्यक कार्रवाई करें।
@@ -124,6 +125,7 @@ function getMailContent(mailInfo) {
         <p>धन्यवाद</p>
         <br>
         बीओ नाम - ${mailInfo.boName}<br>
+        मैनेजर नाम - ${mailInfo.managerName}<br>
         बीओ आईडी नंबर - ${mailInfo.customerId}<br>`
     }
     return { englishContent, hindiContent }

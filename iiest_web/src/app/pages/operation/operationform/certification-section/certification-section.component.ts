@@ -21,6 +21,7 @@ export class CertificationSectionComponent implements OnInit, OnChanges {
   @Input() projectType: string = '';
   @Input() attendanceStatus: boolean = false;
   @Input() prevSecResult: string = '';
+  @Input() isVerifier: boolean = false;
 
   //output event emitters
   @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>;

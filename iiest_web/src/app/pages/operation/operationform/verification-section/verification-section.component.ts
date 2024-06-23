@@ -36,6 +36,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Input() isTrainer: boolean = false;
 
+  @Input() isVerifier: boolean = false;
+
   //output variables
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
@@ -79,13 +81,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     operator_contact_no: new FormControl(''),
     email: new FormControl(''),
     aadhar_no: new FormControl(''),
-    pancard_no: new FormControl(''),
+    // pancard_no: new FormControl(''),
     fostac_total: new FormControl(''),
     sales_person: new FormControl(''),
   });
 
   foscosVerificationForm: FormGroup = new FormGroup({
-    operator_name: new FormControl(''),
+    manager_name: new FormControl(''),
     fbo_name: new FormControl(''),
     owner_name: new FormControl(''),
     operator_contact_no: new FormControl(''),
@@ -265,14 +267,24 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
-          this.verificationForm.patchValue({ address: res.populatedInfo.salesInfo.fboInfo.address });
+          this.verificationForm.patchValue({ address: res.populatedInfo.address });
           this.verificationForm.patchValue({ recipient_contact_no: res.populatedInfo.phoneNo });
           this.verificationForm.patchValue({ aadhar_no: res.populatedInfo.aadharNo });
+          this.verificationForm.patchValue({ father_name: res.populatedInfo.fatherName });
+          this.verificationForm.patchValue({ dob: res.populatedInfo.dob });
+          this.verificationForm.patchValue({ email: res.populatedInfo.email });
           this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
           this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
+          this._getDataService.getDocs(res.populatedInfo.recipientId).subscribe({
+            next: response => {
+              this.emitDocuments.emit(response.docs); //emit 
+              this.refreshAuditLog.emit();
+            }
+          });
         } else if (this.productType === 'Foscos') {
-          this.verificationForm.patchValue({ operator_name: res.populatedInfo.operatorName });
+          this.emitCustomerId.emit(res.populatedInfo.salesInfo.fboInfo.customer_id);
+          this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
           this.verificationForm.patchValue({ operator_contact_no: res.populatedInfo.salesInfo.fboInfo.owner_contact });
@@ -288,38 +300,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ foscos_total: res.populatedInfo.salesInfo.foscosInfo.foscos_total });
           this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
-          this.emitDocuments.emit([
-            {
-              name: 'Electricity Bill',
-              src: [res.populatedInfo.eBillImage],
-              format: 'image',
-              multiplDoc: false
-            },
-            {
-              name: 'Owner Photo',
-              src: [res.populatedInfo.ownerPhoto],
-              format: 'image',
-              multipleDoc: false
-            },
-            {
-              name: 'Shop Photo',
-              src: [res.populatedInfo.shopPhoto],
-              format: 'image',
-              multipleDoc: false
-            },
-            {
-              name: 'Aadhar',
-              src: res.populatedInfo.aadharPhoto,
-              format: 'image',
-              multipleDoc: true
-            }
-          ]);
         } else if (this.productType === 'HRA') {
+          this.emitCustomerId.emit(res.populatedInfo.salesInfo.fboInfo.customer_id);
           this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
           this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
           this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
-          this.verificationForm.patchValue({ manager_contact_no: res.populatedInfo.managerContact });
-          this.verificationForm.patchValue({ email: res.populatedInfo.managerEmail });
+          this.verificationForm.patchValue({ manager_contact_no: res.populatedInfo.salesInfo.fboInfo.owner_contact });
+          this.verificationForm.patchValue({ email: res.populatedInfo.salesInfo.fboInfo.email });
           this.verificationForm.patchValue({ address: res.populatedInfo.address });
           this.verificationForm.patchValue({ state: res.populatedInfo.state });
           // this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
@@ -329,20 +316,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ hra_total: res.populatedInfo.salesInfo.hraInfo.hra_total });
           this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
-          this.emitDocuments.emit([
-            {
-              name: 'Fostac Certificate',
-              src: [res.populatedInfo.fostacCertificate],
-              format: 'image',
-              multiplDoc: false
-            },
-            {
-              name: 'Foscos License',
-              src: [res.populatedInfo.foscosLicense],
-              format: 'image',
-              multipleDoc: false
-            }
-          ]);
         }
       }
     });
@@ -352,13 +325,14 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
       next: res => {
         if (res) {
+          console.log(res);
           this.verifiedStatus = true;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
           this.emitVerifiedID.emit(res.verifedData._id);
-          this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
-          this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
-          this.verificationForm.patchValue({ email: res.verifedData.email });
-          this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
+          // this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
+          // this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
+          // this.verificationForm.patchValue({ email: res.verifedData.email });
+          // this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
           this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'));
           this.emitVerifiedData.emit({ ...res.verifedData, batchData: res.batchData });
           this.loading = false;
@@ -453,14 +427,14 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       recipient_contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
       aadhar_no: ['', Validators.required],
-      pancard_no: ['', Validators.pattern('/^[A-Z]{5}[0-9]{4}[A-Z]$/')],
+      // pancard_no: ['', Validators.pattern('/^[A-Z]{5}[0-9]{4}[A-Z]$/')],
       fostac_total: ['', Validators.required],
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],
     });
 
     this.foscosVerificationForm = this.formBuilder.group({
-      operator_name: ['', Validators.required],
+      manager_name: ['', Validators.required],
       fbo_name: ['', Validators.required],
       owner_name: ['', Validators.required],
       operator_contact_no: ['', Validators.required],

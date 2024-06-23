@@ -20,6 +20,7 @@ export class DocumentationModalComponent implements OnInit {
   selectedDoc: { name: string, allowedFormats: string[], mutipleDoc: boolean } = { name: '', allowedFormats: [], mutipleDoc: false };
   shopId: string;
   panelType: string;
+  handlerId: string;
 
   docsArr: any = [];
   submitted: boolean = false;
@@ -144,15 +145,18 @@ export class DocumentationModalComponent implements OnInit {
 
     let formData = new FormData();
 
-    if (this.isOtherDoc) {
+    if (this.isOtherDoc) { // appent specified name in case of other docs
       formData.append('name', this.documentsForm.value.name);
     } else {
       formData.append('name', this.selectedDoc.name);
     }
 
+    console.log(this.handlerId);
+
     formData.append('format', this.format);
     formData.append('panelType', this.panelType);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
+    formData.append('handlerId', this.handlerId)
 
     if (this.selectedDoc.mutipleDoc) {
       (this.docFile as any).forEach((element: File) => {
@@ -163,8 +167,8 @@ export class DocumentationModalComponent implements OnInit {
     }
 
     if (this.shopId) {
-      if(this.panelType === "Foscos Panel") {
-        this._registerService.saveFoscosDocument(this.shopId, formData).subscribe({
+      if(this.panelType === "Foscos Panel" || this.panelType === "Verifier Panel") {
+        this._registerService.saveFoscosDocument(formData).subscribe({
           next: res => {
             if (res) {
               this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
@@ -174,8 +178,8 @@ export class DocumentationModalComponent implements OnInit {
             }
           }
         });
-      } else if(this.panelType === "HRA Panel") {
-        this._registerService.saveHraDocument(this.shopId, formData).subscribe({
+      } else if(this.panelType === "HRA Panel"|| this.panelType === "Verifier Panel") {
+        this._registerService.saveHraDocument(formData).subscribe({
           next: res => {
             if (res) {
               this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
@@ -224,7 +228,8 @@ export class DocumentationModalComponent implements OnInit {
   }
 
   getDocList(): void {
-    this._getDataService.getDocs(this.shopId).subscribe({
+    console.log(this.handlerId);
+    this._getDataService.getDocs(this.handlerId).subscribe({
       next: res => {
         this.docList = res.docs;
         console.log(this.docList);

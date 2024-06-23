@@ -1,6 +1,6 @@
 <div class="modal-header bg-secondary">
-  <h6 *ngIf="this.serviceType === 'fostac'" class="modal-title text-white" id="modal-basic-title">Recipients</h6>
-  <h6 *ngIf="this.serviceType === 'foscos'" class="modal-title text-white" id="modal-basic-title">Shops</h6>
+  <h6 *ngIf="this.serviceType === 'Fostac'" class="modal-title text-white" id="modal-basic-title">Recipients</h6>
+  <h6 *ngIf="this.serviceType === 'Foscos'" class="modal-title text-white" id="modal-basic-title">Shops</h6>
   <h6 *ngIf="this.serviceType === 'HRA'" class="modal-title text-white" id="modal-basic-title">Shops</h6>
 
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
@@ -8,19 +8,19 @@
 <!-- *ngIf="recipientData?.length==0" -->
 
 <div class="border-top border-dark-subtle" *ngIf="recipientCount!==listCount && shopsCount!==listCount">
-  <div *ngIf="serviceType !== 'HRA'" class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+ <div *ngIf="serviceType !== 'HRA'" class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
     <div class="form-check form-switch">
       <input class="form-check-input cursor-pointer" type="checkbox" role="switch" (change)="ChangeFormType($event)"
         id="flexSwitchCheckDefault" />
       <label class="form-check-label" for="flexSwitchCheckDefault">Upload Excel</label>
     </div>
     <fa-icon class="fa-lg cursor-pointer" style="color: #1d8b6a; margin:10px;" [icon]="faFileExcel"
-      (click)="downloadCSV(this.serviceType === 'fostac'? 'fostac' : 'foscos')" title="Download Format"></fa-icon>
+      (click)="downloadCSV(this.serviceType === 'Fostac'? 'Fostac' : 'Foscos')" title="Download Format"></fa-icon>
   </div>
   <form [formGroup]="recipientform" autocomplete="off" [ngClass]="uploadExcel?'d-none':''" (ngSubmit)="onSubmit()"
     enctype="multipart/form-data">
     <!--Foscos FORM Start-->
-    <div class="modal-body" *ngIf="this.serviceType === 'foscos'">
+    <div class="modal-body" *ngIf="this.serviceType === 'Foscos'">
       <div class="row">
         <div class="col-md-4">
           <label for="operatorName" class="form-label">Shop Manager Name<sup>*</sup></label>
@@ -95,7 +95,7 @@
         </div>
         <div class="col-md-4">
           <label for="owner_photo" class="form-label">Manager's Photo<sup>*</sup></label>
-          <input type="file" (change)="onImageChangeFromFile($event, 'ownerPhoto')" placeholder="Owner Photo"
+          <input type="file" placeholder="Owner Photo" (change)="onImageChangeFromFile($event, 'ownerPhoto')"
             formControlName="owner_photo" class="form-control form-control-sm" id="owner_photo"
             [ngClass]="{ 'is-invalid': submitted && recipient['owner_photo'].errors }" />
           <div *ngIf="submitted && recipient['owner_photo'].errors" class="invalid-feedback">
@@ -121,7 +121,7 @@
     </div>
 
     <!--Fostac FORM Start-->
-    <div class="modal-body" *ngIf="this.serviceType === 'fostac'">
+    <div class="modal-body" *ngIf="this.serviceType === 'Fostac'">
       <div class="row">
         <div class="col-md-4">
           <label for="name" class="form-label">Recipient Full Name<sup>*</sup></label>
@@ -133,7 +133,7 @@
         </div>
 
         <div class="col-md-4">
-          <label for="phoneNo" class="form-label">Mobile No.<sup>*</sup></label>
+          <label for="phoneNo" class="form-label">Recipient Mobile No.<sup>*</sup></label>
           <input type="number" placeholder="Mobile No." formControlName="phoneNo" class="form-control form-control-sm"
             id="phoneNo" [ngClass]="{ 'is-invalid': submitted && recipient['phoneNo'].errors }" />
           <div *ngIf="submitted && recipient['phoneNo'].errors" class="invalid-feedback">
@@ -141,11 +141,53 @@
           </div>
         </div>
         <div class="col-md-4">
-          <label for="aadharNo" class="form-label">Aadhar No.<sup>*</sup></label>
-          <input type="number" placeholder="Aadhar No." formControlName="aadharNo" class="form-control form-control-sm"
+          <label for="email" class="form-label">Recipient Email<sup>*</sup></label>
+          <input type="email" placeholder="Recipient Email" formControlName="email" class="form-control form-control-sm"
+            id="email" [ngClass]="{ 'is-invalid': submitted && recipient['email'].errors }" />
+          <div *ngIf="submitted && recipient['email'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['email'].errors['required']">Recipient Email is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="dob" class="form-label">Recipient DOB<sup>*</sup></label>
+          <input type="date" placeholder="Recipient DOB" formControlName="dob" class="form-control form-control-sm"
+            id="dob" [ngClass]="{ 'is-invalid': submitted && recipient['dob'].errors }" />
+          <div *ngIf="submitted && recipient['dob'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['dob'].errors['required']">Recipient DOB is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="fatherName" class="form-label">Recipient Father Name<sup>*</sup></label>
+          <input type="text" placeholder="Recipient Father Name" formControlName="fatherName" class="form-control form-control-sm"
+            id="fatherName" [ngClass]="{ 'is-invalid': submitted && recipient['fatherName'].errors }" />
+          <div *ngIf="submitted && recipient['fatherName'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['fatherName'].errors['required']">Recipient Father Name is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="recp_address" class="form-label">Recipient Address<sup>*</sup></label>
+          <input type="text" placeholder="Recipient Address" formControlName="recp_address" class="form-control form-control-sm"
+            id="recp_address" [ngClass]="{ 'is-invalid': submitted && recipient['recp_address'].errors }"
+             />
+          <div *ngIf="submitted && recipient['recp_address'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['recp_address'].errors['required']">Recipient Address is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="aadharNo" class="form-label">Recipient Aadhar no.<sup>*</sup></label>
+          <input type="number" placeholder="Recipient Aadhar no." formControlName="aadharNo" class="form-control form-control-sm"
             id="aadharNo" [ngClass]="{ 'is-invalid': submitted && recipient['aadharNo'].errors }" />
           <div *ngIf="submitted && recipient['aadharNo'].errors" class="invalid-feedback">
-            <div *ngIf="recipient['aadharNo'].errors['required']">Aadhar No. is required</div>
+            <div *ngIf="recipient['aadharNo'].errors['required']">Recipient Aadhar no. is required</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="aadhar_photo" class="form-label">Recipient Aadhar Photo<sup>*</sup></label>
+          <input type="file" placeholder="Aadhar No." formControlName="aadhar_photo" class="form-control form-control-sm"
+            id="aadhar_photo" [ngClass]="{ 'is-invalid': submitted && recipient['aadhar_photo'].errors }"
+            (change)="onImageChangeFromFile($event, 'aadharPhoto')" multiple/>
+          <div *ngIf="submitted && recipient['aadhar_photo'].errors" class="invalid-feedback">
+            <div *ngIf="recipient['aadhar_photo'].errors['required']">Recipient Aadhar Photo is required</div>
           </div>
         </div>
       </div>
@@ -300,9 +342,9 @@
     <div class="modal-footer text-left">
       <div>
       </div>
-      <button *ngIf="this.serviceType === 'fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add
+      <button *ngIf="this.serviceType === 'Fostac'" type="submit" class="btn btn-sm btn-outline-dark">Add
         Recipient</button>
-      <button *ngIf="this.serviceType === 'foscos'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
+      <button *ngIf="this.serviceType === 'Foscos'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
 
       <button *ngIf="this.serviceType === 'HRA'" type="submit" class="btn btn-sm btn-outline-dark">Add Shop</button>
 
@@ -334,10 +376,10 @@
 <div class="row g-3 mb-4 mx-2 align-items-center justify-content-between"
   [ngClass]="recipientCount!==listCount?'':'mt-3'">
   <div class="col-auto">
-    <h1 *ngIf="this.serviceType === 'fostac'" class="app-page-title mb-0">Recipient List
+    <h1 *ngIf="this.serviceType === 'Fostac'" class="app-page-title mb-0">Recipient List
       <small>({{fboData.fboInfo.fbo_name}})</small>
     </h1>
-    <h1 *ngIf="this.serviceType === 'foscos'" class="app-page-title mb-0">Shop List
+    <h1 *ngIf="this.serviceType === 'Foscos'" class="app-page-title mb-0">Shop List
       <small>({{fboData.fboInfo.fbo_name}})</small>
     </h1>
   </div>

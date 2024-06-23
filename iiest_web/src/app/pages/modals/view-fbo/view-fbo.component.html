@@ -44,6 +44,24 @@
             <div class="row border border-1 p-1">
                 <div class="col-md-6">
                     <div class="row">
+                        <div class="col-md-4 title">Business Entity</div>
+                        <div class="col-md-8 data">
+                            {{fboData.fboInfo.boInfo.business_entity}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4 title">Bo Id</div>
+                        <div class="col-md-8 data">
+                            {{fboData.fboInfo.boInfo.customer_id}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row border border-1 p-1">
+                <div class="col-md-6">
+                    <div class="row">
                         <div class="col-md-4 title">Payment Mode</div>
                         <div class="col-md-8 data">
                             {{fboData.payment_mode}}
@@ -87,7 +105,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="row">
+                    <div class="row" *ngIf="!isVerifier">
                         <div class="col-md-4 title">Total Sales Amount <br><span
                                 style="font-size: x-small; font-weight: normal;">(18%
                                 GST Inc.)</span></div>
@@ -122,7 +140,7 @@
                     </div>
                 </div>
             </div> -->
-            <div *ngIf="fboData.foscosInfo" class="row border border-1 p-1">
+            <div *ngIf="fboData.foscosInfo && !isVerifier" class="row border border-1 p-1">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Foscos Details</div>
                     <div class="remaining-time">({{remainingTime}} are Remaining)</div>
@@ -265,7 +283,7 @@
 
             </div>
 
-            <div *ngIf="fboData.hraInfo" class="row">
+            <div *ngIf="fboData.hraInfo && !isVerifier" class="row">
                 <div class="col-md title" style="color: #1957a9;">HRA Details</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
