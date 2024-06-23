@@ -327,24 +327,8 @@ export class FbolistComponent implements OnInit {
     if (this.isVerifier) {
      return sale.checkStatus
     } else {
-      let aadharFind: boolean = false;
-      let managerPhotoFind: boolean = false;
-      let shopPhotoFind: boolean = false;
 
-      if (sale.docs) {
-        sale.docs.forEach((doc: any) => {
-          if (doc.name === 'Manager Aadhar') {
-            aadharFind = true;
-          }
-          if (doc.name === 'Manager Photo') {
-            managerPhotoFind = true;
-          }
-          if (doc.name === 'Shop Photo') {
-            shopPhotoFind = true;
-          }
-        })
-      };
-      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved') && aadharFind && managerPhotoFind && shopPhotoFind) {
+      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved')  && sale.fboInfo.isBasicDocUploaded) {
         return 'Approved'
       } else {
         return 'Pending'

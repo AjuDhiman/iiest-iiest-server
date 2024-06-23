@@ -1,5 +1,5 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque, updateFboBasicDocStatus } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, addHygieneShop, hygieneShopsList, uploadAadharPhoto } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
@@ -48,6 +48,7 @@ router.get('/getclientlist', getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 
+router.put('/updatefbobasicdocstatus/:id', authMiddleware, updateFboBasicDocStatus); 
 router.get('/getticketdocs/:id', authMiddleware, getTicketsDocs); 
 
 module.exports = router;

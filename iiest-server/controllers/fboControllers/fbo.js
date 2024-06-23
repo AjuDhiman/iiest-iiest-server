@@ -169,7 +169,7 @@ exports.fboPayReturn = async (req, res) => {
         }
 
         const fboEntry = await fboModel.create({
-          employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, boInfo
+          employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, boInfo, activeStatus: true, isBasicDocUploaded: false
         });
 
         if (!fboEntry) {
@@ -359,7 +359,7 @@ exports.fboRegister = async (req, res) => {
     }
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false
     });
 
     if (!fboEntry) {
@@ -448,7 +448,7 @@ exports.boByCheque = async (req, res) => {
     console.log(productName, product_name)
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false
     });
 
     if (!fboEntry) {
@@ -707,5 +707,23 @@ exports.getClientList = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+exports.updateFboBasicDocStatus = async(req, res) => {
+  try{
+    const id = req.params.id;
+
+    const updatedFbo = await fboModel.findOneAndUpdate({_id: id}, {isBasicDocUploaded: true});
+
+    if(!updatedFbo){
+      return res.status(401).json({success: false, message: 'Basic Doc Status Updating error'})
+    }
+
+    return res.status(200).json({success: true});
+
+  } catch(error) {
+    console.error(error);
+    return res.status(500).json({success: false, message: 'Internal Server Error'});
   }
 }

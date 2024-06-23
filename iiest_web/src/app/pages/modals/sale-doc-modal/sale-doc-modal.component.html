@@ -4,7 +4,7 @@
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
   </div>
   
-  <div class="border-top border-dark-subtle"  *ngIf="fboData.saleApprovel === 'Pending'; else docs">
+  <div class="border-top border-dark-subtle"  *ngIf="!fboData.fboInfo.isBasicDocUploaded; else docs">
     <form [formGroup]="docForm" autocomplete="off" (ngSubmit)="onSubmit()"
       enctype="multipart/form-data">
       <!--Foscos FORM Start-->

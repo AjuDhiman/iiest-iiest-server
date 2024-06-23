@@ -15,6 +15,17 @@ exports.employeeRecord = async (req, res) => {
 
         const pipeLineArr = [
             {
+                $lookup: {
+                    from: 'fbo_registers', // The collection name where fboInfo is stored
+                    localField: 'fboInfo',
+                    foreignField: '_id',
+                    as: 'fboInfo'
+                }
+            },
+            {
+                $unwind: "$fboInfo"
+            },
+            {
                 $group: {
                     _id: 3,
                     totalProcessingAmount: {
@@ -80,9 +91,16 @@ exports.employeeRecord = async (req, res) => {
                         $sum: {
                             $cond: {
                                 if: {
-                                    $and: [
-                                        { $ne: ["$cheque_data", null] }, // Check if chequeData exists
-                                        { $eq: ["$cheque_data.status", "Pending"] } // Check if chequeData.status is "pending"
+                                    $or: [
+                                        // Condition 1: cheque_data exists and cheque_data.status is "Pending"
+                                        {
+                                            $and: [
+                                                { $ne: ["$cheque_data", null] }, // cheque_data exists
+                                                { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
+                                            ]
+                                        },
+                                        // Condition 2: isBasicDocUploaded is false
+                                        { $eq: ["$fboInfo.isBasicDocUploaded", false] }
                                     ]
                                 }, then: {
                                     $sum: [
@@ -128,9 +146,14 @@ exports.employeeRecord = async (req, res) => {
                         $sum: {
                             $cond: {
                                 if: {
-                                    $or: [
-                                        { $eq: [ { $ifNull: ["$cheque_data", null] }, null ] }, // Check if cheque_data is null or doesn't exist
-                                        { $eq: [ { $ifNull: ["$cheque_data.status", null] }, "Approved" ] } // Check if cheque_data.status is "Approved"
+                                    $and: [
+                                        {
+                                            $or: [
+                                                { $eq: [ { $ifNull: [ "$cheque_data", null ] }, null ] }, // Check if cheque_data is null or doesn't exist
+                                                { $eq: [ { $ifNull: [ "$cheque_data.status", null ] }, "Approved" ] } // Check if cheque_data.status is "Approved"
+                                            ]
+                                        },
+                                        { $eq: [ "$fboInfo.isBasicDocUploaded", true ] }
                                     ]
                                 }, then: {
                                     $sum: [

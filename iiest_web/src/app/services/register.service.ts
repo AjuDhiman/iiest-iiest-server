@@ -320,6 +320,13 @@ export class RegisterService {
     ));
   }
 
+    //update basic doc uploaded status of a fbo
+    public updateFboBasicDocStatus(objId: string): Observable<any>{
+      const url = `${this.url}/updatefbobasicdocstatus/${objId}`;
+      console.log(url);
+      return this.http.put<any>(url, {}).pipe(catchError(this.handleError));
+    }
+
   //for training batch
   public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{
     const url = `${this.url}/updatetraingbatch/${objId}`;

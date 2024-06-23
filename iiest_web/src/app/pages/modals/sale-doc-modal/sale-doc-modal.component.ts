@@ -26,7 +26,7 @@ export class SaleDocModalComponent implements OnInit {
     this.setFormValidation();
     this.docForm.patchValue({
       managerName: this.fboData.fboInfo.boInfo.manager_name,
-      address:this.fboData.fboInfo.address,
+      address: this.fboData.fboInfo.address,
       pincode: this.fboData.fboInfo.pincode,
     });
 
@@ -66,9 +66,25 @@ export class SaleDocModalComponent implements OnInit {
       return;
     }
 
-    this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile);
-    this.uploadDoc('Shop Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.shopPhotoFile);
-    this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile);
+    // Call the uploadDoc function for each document and wait for all to finish
+    Promise.all([
+      this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile),
+      this.uploadDoc('Shop Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.shopPhotoFile),
+      this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile)
+    ]).then(() => {
+      // This function is called after all documents are uploaded successfully
+      
+      this.activeModal.close()
+      this._registerService.updateFboBasicDocStatus(this.fboData.fboInfo._id).subscribe({
+        next: res => {
+          this._toastrService.success('', `Docs Uploaded Successfully.`);
+          location.reload();
+        }
+      })
+    }).catch(err => {
+      // Handle any errors that occurred during the uploads
+      console.error('Error uploading documents:', err);
+    });
 
   }
 
@@ -108,38 +124,39 @@ export class SaleDocModalComponent implements OnInit {
   uploadDoc(name: string, format: string, isMultiDoc: boolean, handlerId: string, document: any) {
     const formData = new FormData();
     formData.append('name', name);
-    formData.append('format', format);
+    formData.append('format', format.toLowerCase());
     formData.append('panelType', 'Fostac');
     formData.append('multipleDoc', isMultiDoc.toString());
     formData.append('handlerId', handlerId);
+
     if (isMultiDoc) {
       document.forEach((file: any) => {
         formData.append('document', file);
-      })
+      });
     } else {
       formData.append('document', document);
     }
 
+    let saveDocument: any;
+
     if (this.serviceType == 'Fostac') {
-      this._registerService.saveFostacDocument(formData).subscribe({
-        next: res => {
-          this._toastrService.success('', `${name} Added Successfully.`);
-        }
-      });
+      saveDocument = this._registerService.saveFostacDocument(formData);
     } else if (this.serviceType == 'Foscos') {
-      this._registerService.saveFoscosDocument(formData).subscribe({
-        next: res => {
-          this._toastrService.success('', `${name} Added Successfully.`);
+      saveDocument = this._registerService.saveFoscosDocument(formData);
+    } else if (this.serviceType == 'HRA') {
+      saveDocument = this._registerService.saveHraDocument(formData);
+    }
+
+    return new Promise((resolve, reject) => {
+      saveDocument.subscribe({
+        next: (res: any) => {
+          resolve(res);
+        },
+        error: (err: any) => {
+          reject(err);
         }
       });
-    }
-    else if (this.serviceType == 'HRA') {
-      this._registerService.saveHraDocument(formData).subscribe({
-        next: res => {
-          this._toastrService.success('', `${name} Added Successfully.`);
-        }
-      });
-    }
+    });
 
 
     this.activeModal.close();
@@ -156,12 +173,12 @@ export class SaleDocModalComponent implements OnInit {
     this.managerAadharObj = docs.find((doc: any) => doc.name === 'Manager Aadhar');
     this.shopPhotoObj = docs.find((doc: any) => doc.name === 'Shop Photo');
   }
-  
+
   viewDocument(name: string, res: any, format: string, isMultiDoc: boolean): void { // methord for calling viewdoc component for a particucar doc
 
     let obj = {
       name: name,
-      src: isMultiDoc?res:[res.toString()], // we will put single src in array because our component needs array of src for showing docs
+      src: isMultiDoc ? res : [res.toString()], // we will put single src in array because our component needs array of src for showing docs
       format: format,
       multipleDoc: isMultiDoc
     }
