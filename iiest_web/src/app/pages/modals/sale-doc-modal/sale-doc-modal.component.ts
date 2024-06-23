@@ -141,6 +141,9 @@ export class SaleDocModalComponent implements OnInit {
       });
     }
 
+
+    this.activeModal.close();
+
   }
 
   getDocsObjs(): void {
