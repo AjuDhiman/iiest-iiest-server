@@ -4,7 +4,7 @@ import { faCircleCheck, faCircleExclamation, faFileArrowUp } from '@fortawesome/
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { boardODirectorDocs, extraDoc, foscosDocments, mandatoryDocs, manufacturingDoc, otherDocs, partnershipDocs, propratitorDocs } from 'src/app/utils/config';
+import { boardODirectorDocs, extraDoc, foscosDocments, fostacDocs, mandatoryDocs, manufacturingDoc, otherDocs, partnershipDocs, propratitorDocs } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-documentation-section',
@@ -24,6 +24,7 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
 
   //Input vars
   @Input() shopId: string;
+  @Input() productType: string;
   @Input() customerId: string;
   @Input() verifiedStatus: boolean = false;
   @Input() verifiedData: any = {};
@@ -65,27 +66,32 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   }
 
   getParticularDocs() { //This methord initailize foscos documents list the basis of verified data
-    const mandatoryDocsList = mandatoryDocs;
-    this.foscosDocuments = [...mandatoryDocsList];
-    switch (this.verifiedData.ownershipType) {
-      case 'Propraitorship':
-        this.foscosDocuments = [...this.foscosDocuments, ...propratitorDocs];
-        break;
-      case 'Partnership':
-        this.foscosDocuments = [...this.foscosDocuments, ...partnershipDocs];
-        break;
-      case 'Board of Directors':
-        this.foscosDocuments = [...this.foscosDocuments, ...boardODirectorDocs];
-        break;
+    if(this.productType === 'Foscos') {
+      const mandatoryDocsList = mandatoryDocs;
+      this.foscosDocuments = [...mandatoryDocsList];
+      switch (this.verifiedData.ownershipType) {
+        case 'Propraitorship':
+          this.foscosDocuments = [...this.foscosDocuments, ...propratitorDocs];
+          break;
+        case 'Partnership':
+          this.foscosDocuments = [...this.foscosDocuments, ...partnershipDocs];
+          break;
+        case 'Board of Directors':
+          this.foscosDocuments = [...this.foscosDocuments, ...boardODirectorDocs];
+          break;
+      }
+  
+      if (this.verifiedData.kob === 'Manufacturer') {
+        console.log(this.verifiedData.kob);
+        this.foscosDocuments = [...this.foscosDocuments, ...manufacturingDoc];
+      }
+  
+      this.foscosDocuments = [...this.foscosDocuments, ...extraDoc];
+      this.foscosDocuments = [...this.foscosDocuments, ...otherDocs]
+    } else if(this.productType === 'Fostac') {
+      this.foscosDocuments = fostacDocs;
     }
-
-    if (this.verifiedData.kob === 'Manufacturer') {
-      console.log(this.verifiedData.kob);
-      this.foscosDocuments = [...this.foscosDocuments, ...manufacturingDoc];
-    }
-
-    this.foscosDocuments = [...this.foscosDocuments, ...extraDoc];
-    this.foscosDocuments = [...this.foscosDocuments, ...otherDocs]
+   
 
     this.foscosDocumentsName = this.foscosDocuments.map((item: any) => item.name);
   }

@@ -29,6 +29,12 @@
             (emitVerifiedData)="getVerifiedData($event)">
           </app-verification-section>
 
+          <app-documentation-section *ngIf="productType === 'Foscos' || productType === 'Fostac'" [shopId]="candidateId" [customerId]="customerId"
+          class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus" [productType]="productType"
+          [verifiedData]="verifiedData" (refreshAuditLog)="generalsec.getCaseNotes()"
+          (emitDocuments)="getDocuments($event)">
+        </app-documentation-section>
+
           <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
           <app-enrollment-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
             [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" [verifiedData]="verifiedData"
@@ -45,12 +51,6 @@
           class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
           [verifiedData]="verifiedData" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
           </app-audit-section>
-
-          <app-documentation-section *ngIf="productType === 'Foscos'" [shopId]="candidateId" [customerId]="customerId"
-            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
-            [verifiedData]="verifiedData" (refreshAuditLog)="generalsec.getCaseNotes()"
-            (emitDocuments)="getDocuments($event)">
-          </app-documentation-section>
 
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
           <app-attendance-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
