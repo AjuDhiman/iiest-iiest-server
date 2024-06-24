@@ -53,7 +53,18 @@
         </div>
       </div>
       <div class="col-md-12 my-2">
-        <label for="business_ownership_type" class="form-label">Manager Contact<sup>*</sup></label>
+        <label for="contact_no" class="form-label">Manager Contact<sup>*</sup> </label>
+        <input formControlName="contact_no" type="number" class="form-control" placeholder="Manager Contact"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['contact_no'].errors)}" id="business_entity">
+        <div *ngIf="submitted && businessform['contact_no'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['contact_no'].errors['required']">Manager Contact is
+            Required</div>
+            <div *ngIf="businessform['contact_no'].errors['pattern']">Manager Contact is
+              Invalid</div>
+        </div>
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="business_ownership_type" class="form-label">Ownership Type<sup>*</sup></label>
         <div class="select-wrapper">
           <select class="form-control" formControlName="business_ownership_type" id="business_ownership_type"
             [ngClass]="{ 'is-invalid': (submitted && businessform['business_ownership_type'].errors)}">
