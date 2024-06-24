@@ -311,6 +311,30 @@ export const hraRequiredDocs = [
    },
 ];
 
+
+export const fostacDocs = [
+   {
+      name: 'Water Test Report',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Medical Certificates',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Fostac Certificate',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+   {
+      name: 'Foscos License',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
+];
+
 export const propratitorDocs: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [
    {
       name: 'List of Propraitors',
