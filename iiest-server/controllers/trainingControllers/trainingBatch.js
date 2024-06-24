@@ -1,7 +1,7 @@
 const { generatedBatchInfo, generatedAuditBatchInfo } = require("../../Training/generateCredential");
 const auditBatchModel = require("../../models/auditModels/auditBatchModel");
 const AuditBatchModel = require("../../models/auditModels/auditBatchModel");
-const { recipientModel, hygieneShopModel } = require("../../models/fboModels/recipientSchema");
+const { recipientModel, hygieneShopModel, shopModel } = require("../../models/fboModels/recipientSchema");
 const generalDataSchema = require("../../models/generalModels/generalDataSchema");
 const { fostacVerifyModel, hraVerifyModel } = require("../../models/operationModels/verificationSchema");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
@@ -183,7 +183,7 @@ exports.auditBatch = async (req, res) => {
 
         const verificationDate = new Date(verificationInfo.createdAt);
 
-        const shopInfo = await hygieneShopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] });
+        const shopInfo = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] });
 
         const user = req.user;
 
