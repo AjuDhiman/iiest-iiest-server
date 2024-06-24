@@ -44,7 +44,16 @@
         </div>
       </div>
       <div class="col-md-12 my-2">
-        <label for="business_ownership_type" class="form-label">Business Size<sup>*</sup></label>
+        <label for="manager_name" class="form-label">Manager Name<sup>*</sup> </label>
+        <input formControlName="manager_name" type="text" class="form-control" placeholder="Manager Name"
+          [ngClass]="{ 'is-invalid': (submitted && businessform['manager_name'].errors)}" id="business_entity">
+        <div *ngIf="submitted && businessform['manager_name'].errors" class="invalid-feedback">
+          <div *ngIf="businessform['manager_name'].errors['required']">Manager Name is
+            Required</div>
+        </div>
+      </div>
+      <div class="col-md-12 my-2">
+        <label for="business_ownership_type" class="form-label">Manager Contact<sup>*</sup></label>
         <div class="select-wrapper">
           <select class="form-control" formControlName="business_ownership_type" id="business_ownership_type"
             [ngClass]="{ 'is-invalid': (submitted && businessform['business_ownership_type'].errors)}">
@@ -56,16 +65,6 @@
         <div *ngIf="submitted && businessform['business_ownership_type'].errors" class="invalid-feedback">
           <div *ngIf="businessform['business_ownership_type'].errors['required']">Business Type is
             Required</div>
-        </div>
-      </div>
-      <div class="col-md-12 my-2">
-        <label for="contact_no" class="form-label">Contact No.<sup>*</sup> </label>
-        <input formControlName="contact_no" type="text" class="form-control" placeholder="Contact No" id="contact_no"
-          [ngClass]="{ 'is-invalid': (submitted && businessform['contact_no'].errors)}">
-        <div *ngIf="submitted && businessform['contact_no'].errors" class="invalid-feedback">
-          <div *ngIf="businessform['contact_no'].errors['required']">Contact No. is
-            Required</div>
-            <div *ngIf="businessform['contact_no'].errors['pattern']">Invalid Contact No.</div>
         </div>
       </div>
       <div class="col-md-12 my-2">

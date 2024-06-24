@@ -59,7 +59,7 @@ const generateInvoice = async (idNumber, clientEmail, fboObj) => {
 }
 
 
-const invoiceDataHandler = async (idNum, mail, fboName, address, state, contact, email, processingAmount, extraFee, taxAmount, qty, business_Type, gst_number, totalAmount, serviceType, prodDetails, signatureName, uploadStream, officerName) => {
+const invoiceDataHandler = async (idNum, mail, fboName, address, state, district, pincode, contact, email, processingAmount, extraFee, taxAmount, qty, business_Type, gst_number, totalAmount, serviceType, prodDetails, signatureName, uploadStream, officerName, shopId, boData) => {
 
     const date = new Date();
     const dateVal = date.getDate();
@@ -87,9 +87,14 @@ const invoiceDataHandler = async (idNum, mail, fboName, address, state, contact,
         description: description,
         code: code,
         gstNumber: gst_number,
+        state: state,
+        district: district,
+        pincode: pincode,
         gstDescription: getgstDescription(state, business_Type, taxAmount),
         invoiceUploadStream: uploadStream,
-        officerName: officerName
+        officerName: officerName,
+        shopId: shopId,
+        boData: boData,
     }
     console.log(infoObj);
     const invoiceData = await generateInvoice(idNum, mail, infoObj);

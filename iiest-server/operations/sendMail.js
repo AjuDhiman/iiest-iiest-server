@@ -25,7 +25,7 @@ const sendDocumentMail = (clientData) => {
     TP Name - IIEST Federation<br>
     TP No - TPINT133<br>
     Contact no – 9910729809<br>
-    Landline - 011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -43,7 +43,7 @@ const sendDocumentMail = (clientData) => {
     टीपी नाम - IIEST फेडरेशन<br>
     टीपी नंबर - TPINT133<br>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
     attachments: [
       {
@@ -98,7 +98,7 @@ const sendVerificationMail = (clientData) => {
     TP No - TPINT133<br>
     Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
     Contact no – 9910729809<br>
-    Landline -011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -127,7 +127,7 @@ const sendVerificationMail = (clientData) => {
     टीपी नंबर - TPINT133<br>
     पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   } else if (clientData.product == 'foscos') {
@@ -163,7 +163,7 @@ const sendVerificationMail = (clientData) => {
     TP No - TPINT133<br>
     Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
     Contact no – 9910729809<br>
-    Landline - 011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -198,7 +198,7 @@ const sendVerificationMail = (clientData) => {
     टीपी नंबर - TPINT133<br>
     पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   } else if (clientData.product == 'training_date_allotment') {
@@ -220,7 +220,7 @@ const sendVerificationMail = (clientData) => {
     TP No - TPINT133<br>
     Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
     Contact no – 9910729809<br>
-    Landline - 011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -242,7 +242,7 @@ const sendVerificationMail = (clientData) => {
     टीपी नंबर - TPINT133<br>
     पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
@@ -266,7 +266,7 @@ const sendVerificationMail = (clientData) => {
     TP No - TPINT133<br>
     Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
     Contact no – 9910729809<br>
-    Landline - 011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -290,7 +290,7 @@ const sendVerificationMail = (clientData) => {
     टीपी नंबर - TPINT133<br>
     पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
@@ -314,7 +314,7 @@ const sendVerificationMail = (clientData) => {
     TP No - TPINT133<br>
     Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
     Contact no – 9910729809<br>
-    Landline - 011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -336,7 +336,7 @@ const sendVerificationMail = (clientData) => {
     टीपी नंबर - TPINT133<br>
     पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
@@ -375,7 +375,7 @@ const sendVerificationMail = (clientData) => {
     TP No - TPINT133<br>
     Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
     Contact no – 9910729809<br>
-    Landline - 011-43511788, 011-4681145<br>
+    Landline - 011-35454931, 011-35457013<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
@@ -412,7 +412,7 @@ const sendVerificationMail = (clientData) => {
     टीपी नंबर - TPINT133<br>
     पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
     संपर्क नंबर- 9910729809<br>
-    लैंडलाइन  - 011-43511788, 011-4681145<br>
+    लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }

@@ -15,6 +15,17 @@ exports.employeeRecord = async (req, res) => {
 
         const pipeLineArr = [
             {
+                $lookup: {
+                    from: 'fbo_registers', // The collection name where fboInfo is stored
+                    localField: 'fboInfo',
+                    foreignField: '_id',
+                    as: 'fboInfo'
+                }
+            },
+            {
+                $unwind: "$fboInfo"
+            },
+            {
                 $group: {
                     _id: 3,
                     totalProcessingAmount: {
@@ -80,9 +91,16 @@ exports.employeeRecord = async (req, res) => {
                         $sum: {
                             $cond: {
                                 if: {
-                                    $and: [
-                                        { $ne: ["$cheque_data", null] }, // Check if chequeData exists
-                                        { $eq: ["$cheque_data.status", "Pending"] } // Check if chequeData.status is "pending"
+                                    $or: [
+                                        // Condition 1: cheque_data exists and cheque_data.status is "Pending"
+                                        {
+                                            $and: [
+                                                { $ne: ["$cheque_data", null] }, // cheque_data exists
+                                                { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
+                                            ]
+                                        },
+                                        // Condition 2: isBasicDocUploaded is false
+                                        { $eq: ["$fboInfo.isBasicDocUploaded", false] }
                                     ]
                                 }, then: {
                                     $sum: [
@@ -128,9 +146,14 @@ exports.employeeRecord = async (req, res) => {
                         $sum: {
                             $cond: {
                                 if: {
-                                    $or: [
-                                        { $eq: [ { $ifNull: ["$cheque_data", null] }, null ] }, // Check if cheque_data is null or doesn't exist
-                                        { $eq: [ { $ifNull: ["$cheque_data.status", null] }, "Approved" ] } // Check if cheque_data.status is "Approved"
+                                    $and: [
+                                        {
+                                            $or: [
+                                                { $eq: [ { $ifNull: [ "$cheque_data", null ] }, null ] }, // Check if cheque_data is null or doesn't exist
+                                                { $eq: [ { $ifNull: [ "$cheque_data.status", null ] }, "Approved" ] } // Check if cheque_data.status is "Approved"
+                                            ]
+                                        },
+                                        { $eq: [ "$fboInfo.isBasicDocUploaded", true ] }
                                     ]
                                 }, then: {
                                     $sum: [
@@ -251,15 +274,72 @@ exports.employeeRecord = async (req, res) => {
 exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
-        if (req.user.designation === 'Director' || req.user.designation === 'Verifier') {
-            salesInfo = await salesModel.find({}).populate([
+        if (req.user.designation === 'Director') {
+            salesInfo = await salesModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'fbo_registers', // The collection name where fboInfo is stored
+                        localField: 'fboInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers', // The collection name where boInfo is stored
+                        localField: 'fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                
+                {
+                    $lookup: {
+                        from: 'staff_registers', // The collection name where employeeInfo is stored
+                        localField: 'employeeInfo',
+                        foreignField: '_id',
+                        as: 'employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents', // The collection name where fboInfo is stored
+                        localField: 'fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'docs'
+                    }
+                }
+                
+            ]);
+        } else if(req.user.designation === 'Verifier') {
+            salesInfo = await salesModel.find({
+                fostacInfo: { $ne: null }
+            }).populate([
                 {
                     path: 'fboInfo',
                     select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil boInfo',
                     options: { lean: true },
                     populate: {
                         path: 'boInfo',
-                        select: 'customer_id',
+                        select: 'customer_id manager_name',
                         options: { lean: true }
                     }
                 },
@@ -268,20 +348,67 @@ exports.employeeSalesData = async (req, res) => {
                     select: 'employee_name',
                     options: { lean: true }
                 }
-            ]).lean();
-        } else {
-            salesInfo = await salesModel.find({ employeeInfo: req.user.id }).populate(
+            ]).lean();            
+        }
+         else {
+            salesInfo = await salesModel.aggregate([
                 {
-                    path: 'fboInfo',
-                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil boInfo',
-                    options: { lean: true },
-                    populate: {
-                        path: 'boInfo',
-                        select: 'customer_id',
-                        options: { lean: true }
+                    $match: {
+                        employeeInfo: req.user._id
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'fbo_registers', // The collection name where fboInfo is stored
+                        localField: 'fboInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers', // The collection name where boInfo is stored
+                        localField: 'fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                
+                {
+                    $lookup: {
+                        from: 'staff_registers', // The collection name where employeeInfo is stored
+                        localField: 'employeeInfo',
+                        foreignField: '_id',
+                        as: 'employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents', // The collection name where fboInfo is stored
+                        localField: 'fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'docs'
                     }
                 }
-            ).select('-employeeInfo');
+            ]);
         }
 
         // salesInfo = await salesModel.aggregate([

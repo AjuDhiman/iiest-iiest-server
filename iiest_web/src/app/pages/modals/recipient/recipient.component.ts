@@ -18,6 +18,7 @@ import { hraKob } from 'src/app/utils/config';
 export class RecipientComponent implements OnInit {
   @Input() public fboData: any;
   @Input() public serviceType: string;
+  @Input() public isVerifier: string;
   fboID: any;
   recipientData: any;
   shopData: any;
@@ -56,6 +57,10 @@ export class RecipientComponent implements OnInit {
     name: new FormControl(''),
     phoneNo: new FormControl(''),
     aadharNo: new FormControl(''),
+    fatherName: new FormControl(''),
+    dob: new FormControl(''),
+    email: new FormControl(''),
+    recp_address: new FormControl(''),
 
     //form controls shops
     operatorName: new FormControl(''),
@@ -67,7 +72,7 @@ export class RecipientComponent implements OnInit {
     owner_photo: new FormControl(''),
     shop_photo: new FormControl(''),
     aadhar_photo: new FormControl(''),
-  
+
     // form controls for hra shops 
     manager_name: new FormControl(''),
     manager_contact: new FormControl(''),
@@ -98,14 +103,14 @@ export class RecipientComponent implements OnInit {
 
   ngOnInit(): void {
     this.setFormValidation();
-    if (this.serviceType === 'fostac') {
+    if (this.serviceType === 'Fostac') {
       this.getSaleRecipientsList(this.fboData._id);
     }
 
-    if (this.serviceType === 'foscos') {
+    if (this.serviceType === 'Foscos') {
       this.getSaleShopsList(this.fboData._id);
-      console.log(this.fboData.fboInfo.address)
       this.recipientform.patchValue({
+        operatorName:this.fboData.fboInfo.boInfo.manager_name,
         address: this.fboData.fboInfo.address,
         pincode: this.fboData.fboInfo.pincode,
         village: this.fboData.fboInfo.village,
@@ -115,12 +120,13 @@ export class RecipientComponent implements OnInit {
       });
     }
 
-    if(this.serviceType === 'HRA') {
+    if (this.serviceType === 'HRA') {
       this.getHygieneShopList(this.fboData._id);
       this.recipientform.patchValue({
+        manager_name: this.fboData.fboInfo.boInfo.manager_name, 
         address: this.fboData.fboInfo.address,
         manager_contact: this.fboData.fboInfo.owner_contact,
-        manager_email:this.fboData.fboInfo.email,
+        manager_email: this.fboData.fboInfo.email,
         pincode: this.fboData.fboInfo.pincode,
         village: this.fboData.fboInfo.village,
         tehsil: this.fboData.fboInfo.tehsil,
@@ -151,12 +157,26 @@ export class RecipientComponent implements OnInit {
 
     this.fboID = this.fboData._id
 
-    if (this.serviceType === 'fostac') {
+    if (this.serviceType === 'Fostac') {
 
       this._registerService.addFboRecipent(this.fboID, [this.recipientform.value]).subscribe({
         next: (res) => {
           if (res.success) {
-            this._toastrService.success('', 'Record Added Successfully.');
+            const formData = new FormData();
+            formData.append('name', 'Aadhar Photo');
+            formData.append('format', 'Image');
+            formData.append('panelType', 'Fostac');
+            formData.append('multipleDoc', 'true');
+            formData.append('handlerId', res.recpArr[0].recipientId);
+            (this.aadharFile as any).forEach((file: File) => {
+              formData.append('document', file);
+            })
+            this._registerService.saveFostacDocument(formData).subscribe({
+              next: res => {
+                this._toastrService.success('', 'Record Added Successfully.');
+              }
+            });
+           
             this.closeModal();
             this.loading = false;
           }
@@ -173,7 +193,7 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
-    } else if (this.serviceType === 'foscos') {
+    } else if (this.serviceType === 'Foscos') {
 
       let formData: any = new FormData()
 
@@ -211,7 +231,7 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
-    } else if(this.serviceType === 'HRA') {
+    } else if (this.serviceType === 'HRA') {
       let formData = new FormData();
 
       formData.append('manager_name', this.recipientform.get('manager_name')?.value);
@@ -303,7 +323,7 @@ export class RecipientComponent implements OnInit {
     this.getDataServices.getSaleShops(saleId).subscribe({
       next: (res) => {
         if (res.shopsList.length) {
-          this.shopData = res.shopsList; 
+          this.shopData = res.shopsList;
           this.showPagination = true;
           this.shopsCount = res.shopsList.length;
           this.loading = false;
@@ -346,7 +366,7 @@ export class RecipientComponent implements OnInit {
   submitExcel() {
     this.loading = true;
     this.fboID = this.fboData._id
-    if (this.serviceType === 'fostac') {
+    if (this.serviceType === 'Fostac') {
       this._registerService.addFboRecipent(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
@@ -367,7 +387,7 @@ export class RecipientComponent implements OnInit {
           }
         },
       })
-    } else if (this.serviceType === 'foscos') {
+    } else if (this.serviceType === 'Foscos') {
       this._registerService.addFboShopByExcel(this.fboID, this.excelData).subscribe({
         next: (res) => {
           if (res.success) {
@@ -418,7 +438,7 @@ export class RecipientComponent implements OnInit {
 
   setFormValidation(): void {
     switch (this.serviceType) {
-      case "fostac":
+      case "Fostac":
         this.isfostac = true;
         this.recipientform = this.formBuilder.group(
           {
@@ -432,11 +452,17 @@ export class RecipientComponent implements OnInit {
               [
                 Validators.required,
                 Validators.pattern(/^[0-9]{12}$/)
-              ]]
+              ]],
+            recp_address: ['', Validators.required],
+            fatherName: ['', Validators.required],
+            dob: ['', Validators.required],
+            email: ['', Validators.required],
+            aadhar_photo: ['', Validators.required],
           });
+
         this.listCount = this.fboData.fostacInfo.recipient_no;
         break;
-      case "foscos":
+      case "Foscos":
         this.isfostac = false;
         this.recipientform = this.formBuilder.group(
           {
@@ -454,7 +480,7 @@ export class RecipientComponent implements OnInit {
           });
         this.listCount = this.fboData.foscosInfo.shops_no;
         break;
-       case "HRA":
+      case "HRA":
         this.isfostac = false;
         this.recipientform = this.formBuilder.group(
           {
@@ -462,7 +488,7 @@ export class RecipientComponent implements OnInit {
             manager_contact: ['', Validators.required],
             manager_email: ['', [Validators.required, Validators.email]],
             address: ['', Validators.required],
-            pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$') ]],
+            pincode: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{5}$')]],
             // kob: ['', Validators.required],
             // food_handlers: ['', Validators.required],
             // fostac_certificate: ['',[ Validators.required, this.validateFileType(['jpeg', 'jpg', 'png', 'pdf'])]],
@@ -471,8 +497,8 @@ export class RecipientComponent implements OnInit {
             shop_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
             aadhar_photo: ['', [Validators.required, this.validateFileType(['jpeg', 'jpg', 'png'])]],
           });
-          this.listCount = this.fboData.hraInfo.shops_no;
-      }
+        this.listCount = this.fboData.hraInfo.shops_no;
+    }
     this.excelForm = this.formBuilder.group({
       excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
     });

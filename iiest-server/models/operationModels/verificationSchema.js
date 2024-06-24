@@ -13,32 +13,32 @@ const fostacVerification = new Schema({
         required: true,
         // unique: true
     },
-    email: {
-        type: String, 
-        required: true,
-        // unique: true
-    },
-    address: {
-        type: String, 
-        required: true, 
-        // unique: true
-    },
-    pancardNo: {
-        type: String, 
-        // unique: true
-    },
-    fatherName: {
-        type: String, 
-        required: true
-    },
-    dob: {
-        type: String, 
-        required: true
-    },
-    salesDate: {
-        type: Date, 
-        required: true 
-    }
+    // email: {
+    //     type: String, 
+    //     required: true,
+    //     // unique: true
+    // },
+    // address: {
+    //     type: String, 
+    //     required: true, 
+    //     // unique: true
+    // },
+    // pancardNo: {
+    //     type: String, 
+    //     // unique: true
+    // },
+    // fatherName: {
+    //     type: String, 
+    //     required: true
+    // },
+    // dob: {
+    //     type: String, 
+    //     required: true
+    // },
+    // salesDate: {
+    //     type: Date, 
+    //     required: true 
+    // }
 }, {timestamps: true})
 
 const fostacVerifyModel = mongoose.model('fostac_verifications', fostacVerification);

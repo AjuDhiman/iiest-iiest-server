@@ -65,11 +65,11 @@ const invoiceTemplate = async (fboInfo) => {
 
     const amountInWords = toWords.convert(fboInfo.totalAmount, { currency: true, ignoreZeroCurrency: true });
     const signatureBucket = empSignBucket();
-    const signatureDownloadStream =  signatureBucket.openDownloadStream(new ObjectId(signatureName));
+    const signatureDownloadStream = signatureBucket.openDownloadStream(new ObjectId(signatureName));
 
     signatureDownloadStream.on('error', () => {
-      success = false;
-      return res.status(200).json({ success, randomErr: true });
+        success = false;
+        return res.status(200).json({ success, randomErr: true });
     })
 
     return new Promise((resolve, reject) => {
@@ -178,7 +178,6 @@ const invoiceTemplate = async (fboInfo) => {
                 }
             
                 table {
-                    margin-top: 25px;
                     width: 100%;
                     height: auto;
                     border-collapse: collapse;
@@ -247,6 +246,7 @@ const invoiceTemplate = async (fboInfo) => {
                                 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001
                                 <br>
                                 Mobile No: +91-9599195097
+                                Landline - 011-35454931, 011-35457013<br>
                                 <br>
                                 Website: www.iiest.org, Email ID: finance.iiest@gmail.com
                             </p>
@@ -260,8 +260,8 @@ const invoiceTemplate = async (fboInfo) => {
                         <h5>BILL TO:</h5>
                         <div class="main-container" style="width:100vw>
                                     <p style = " padding-right: 7px;">
-                            ${fboInfo.name}<br><br>
-                            ${fboInfo.address}
+                            ${fboInfo.boData.business_entity}<br><br>
+                            ${fboInfo.address} ,${fboInfo.district} ,${fboInfo.state}, ${fboInfo.pincode} ,
                             <br><br>
                             +91&nbsp;${fboInfo.contact}<br>
                             ${fboInfo.email}
@@ -281,10 +281,18 @@ const invoiceTemplate = async (fboInfo) => {
                                     <td>Invoice Date</td>
                                     <td>${fboInfo.date} </td>
                                 </tr>
+                                 <tr>
+                                    <td>Bo ID</td>
+                                    <td>${fboInfo.boData.customer_id} </td>
+                                </tr>
+                                 <tr>
+                                    <td>Shop ID</td>
+                                    <td>${fboInfo.shopId} </td>
+                                </tr>
                             </table>
             
                         </div>
-                        <table>
+                        <table style = 'margin-top:15px'>
                             <tr>
                                 <th>Particulars</th>
                                 <th>Quantity</th>
@@ -316,23 +324,24 @@ const invoiceTemplate = async (fboInfo) => {
             
                             </p>
                         </div>
-                        <br>
-                        <br>
-                        <div>
-                            <b>Please make Invoice Payment in our Following Bank Account</b>
-                            <br />
-                            Account Name: IIEST FEDERATION <br>
-                            Bank Name: HDFC Bank <br>
-                            Account No: 50200038814644 <br>
-                            IFSC Code: HDFC0000313 <br>
-                            Branch Name: Connaught Circle <br>
-                            Account Type: Current
-                        </div>
-                        <section style="position: relative; margin-left:75%">
-                            <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>
-                            <img src="${signatureConverted}" height=100 width=100 alt="iiest_stamp" style="position: absolute; top: 0; right:0">
-                            ${fboInfo.officerName}
-                        </section>
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                     <b>Please make Invoice Payment in our Following Bank Account</b>
+                    <br />
+                    Account Name: IIEST FEDERATION <br>
+                    Bank Name: HDFC Bank <br>
+                    Account No: 50200038814644 <br>
+                    IFSC Code: HDFC0000313 <br>
+                    Branch Name: Connaught Circle <br>
+                    Account Type: Current
+                </div>
+                <section style="position: relative; margin-top: 40px;">
+                    <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>
+                    <img src="${signatureConverted}" height=100 width=100 alt="iiest_stamp"
+                        style="position: absolute; top: 0; right:0">
+                    ${fboInfo.officerName}
+                </section>
+            </div>
                     </div>
                 </div>
             

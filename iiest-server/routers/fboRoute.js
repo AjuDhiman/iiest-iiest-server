@@ -1,5 +1,5 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque, updateFboBasicDocStatus } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, addHygieneShop, hygieneShopsList, uploadAadharPhoto } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
@@ -8,6 +8,8 @@ const multer = require('multer');
 const { foscosDocuments, hraDocuments, chequeImage } = require('../config/storage');
 const { createBusinessOwner, getAllBusinessOwners } = require('../controllers/boControllers/bo');
 const { getTicketsDocs } = require('../controllers/employeeControllers/employeeRecord');
+const { fostacVerification } = require('../controllers/operationControllers/formSections');
+const { trainingBatch } = require('../controllers/trainingControllers/trainingBatch');
 
 const eBillStorage = multer.memoryStorage() 
 const eBillUpload = multer({storage: eBillStorage});
@@ -34,7 +36,7 @@ router.put('/fbo/uploadebill/:id', authMiddleware, foscosDocuments.fields([{name
 router.put('/fbo/uploadownerphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'ownerPhoto', maxCount: 1}]), uploadOwnerPhoto); //Router for adding owner photo to shop model
 router.put('/fbo/uploadshophoto/:id', authMiddleware, foscosDocuments.fields([{name: 'shopPhoto', maxCount: 1}]), uploadShopPhoto); //Router for adding shop photo to shop model
 router.put('/fbo/uploadaadharphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'aadharPhoto', maxCount: 5}]), uploadAadharPhoto); //Router for adding Aadhar photo to shop model
-router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient); //Router for adding recipient data
+router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient, fostacVerification, trainingBatch ); //Router for adding recipient data
 // router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'fostacCertificate', maxCount: 1 }, { name: 'foscosLicense', maxCount: 1 }]), addHygieneShop); //Router for adding hygiene shop data
 router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addHygieneShop); //Router for adding hygiene shop data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
@@ -46,6 +48,7 @@ router.get('/getclientlist', getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 
+router.put('/updatefbobasicdocstatus/:id', authMiddleware, updateFboBasicDocStatus); 
 router.get('/getticketdocs/:id', authMiddleware, getTicketsDocs); 
 
 module.exports = router;

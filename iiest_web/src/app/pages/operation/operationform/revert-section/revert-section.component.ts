@@ -39,6 +39,8 @@ export class RevertSectionComponent implements OnInit, OnChanges {
 
   @Input() customerId: string;
 
+  @Input() isVerifier: boolean = false;
+
   //output event emitters
   @Output() emitFilingResult: EventEmitter<string> = new EventEmitter<string>;
 

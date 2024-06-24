@@ -11,6 +11,7 @@ exports.createBusinessOwner = async (req, res) => {
             business_entity,
             business_category,
             business_ownership_type,
+            manager_name,
             contact_no,
             email,
             onboard_by } = req.body;
@@ -44,6 +45,7 @@ exports.createBusinessOwner = async (req, res) => {
             business_ownership_type,
             contact_no,
             email,
+            manager_name,
             onboard_by: employeeInfo._id,
             is_contact_verified: false,
             is_email_verified: false
@@ -122,11 +124,12 @@ exports.verifyEmail = async (req, res) => {
 
             //sending onboarding  mail
             const mailInfo = {
-                boName: idExsists.business_entity,
+                boName: idExsists.owner_name,
                 purpose: 'onboard',
                 customerId: verifiedMail.customer_id,
                 email: idExsists.email,
-                contact_no: idExsists.contact_no
+                contact_no: idExsists.contact_no,
+                managerName: idExsists.manager_name
             }
             await sendMailToBo(verifiedMail.email, mailInfo);
             return res.status(200).json({ success: true, message: "Email Verified" })

@@ -1,8 +1,8 @@
-
+<h6>Documentation Section</h6>
 <div class="row">
     <div class="col-md-6">
         <label for="food_category" class="form-label">Select Documents to Upload<sup>*</sup></label>
-        <app-multi-select #multiSelect class="cursor-pointer" [options]="foscosDocumentsName"
+        <app-multi-select #multiSelect class="cursor-pointer" [options]="foscosDocumentsName" 
             [placeHolder]="'Select Documents'" (selectedArrayChange)="getSelectedDocs($event)"></app-multi-select>
         <!-- <div *ngIf="verified && verificationform['food_category'].errors" class="invalid-feedback">
                   <div *ngIf="verificationform['food_category'].errors">Food categories are required</div>

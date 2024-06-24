@@ -1,14 +1,24 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xxl border border-1 rounded-3 pt-3">
+    <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0" *ngIf="panelType==='Verifier Panel'">
+        <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
+          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Fostac'}"
+            (click)="toogleTabs('Fostac')">Fostac</a>
+          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Foscos'}"
+            (click)="toogleTabs('Foscos')">Foscos</a>
+          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='HRA'}"
+            (click)="toogleTabs('HRA')">HRA</a>
+        </li>
+      </ul>
+    <div class="container-xxl border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4 m-0">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
-                <h1 class="app-page-title mb-0">Case List of {{panelType.split(' ')[0]}} {{serviceType?('(' + serviceType + ')'):''}}</h1>
+                <h1 class="app-page-title mb-0">Case List of {{productType}}</h1>
             </div>
             <div class="col-auto">
                 <div class="page-utilities">
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                         <ng-container *ngIf="!forTraining">
-                            <div *ngIf="panelType==='Fostac Panel'" class="col-auto">
+                            <div *ngIf="productType==='Fostac'" class="col-auto">
                                 <button class="btn btn-sm mx-1"
                                     [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
                                     (click)="setServiceType('Catering')">
@@ -20,7 +30,7 @@
                                     Retail
                                 </button>
                             </div>
-                            <div *ngIf="panelType==='Foscos Panel'" class="col-auto">
+                            <div *ngIf="productType==='Foscos'" class="col-auto">
                                 <button class="btn btn-sm mx-1"
                                     [ngClass]="serviceType==='Registration'?'btn-primary':'btn-secondary'" type="button"
                                     (click)="setServiceType('Registration')">
@@ -57,10 +67,10 @@
                         <div class="col-auto">
                             <select class="form-select form-select-sm w-auto cursor-pointer"
                                 [(ngModel)]="selectedFilter">
-                                <option *ngIf="panelType=='Fostac Panel'" value="byRecipientName" selected>Search by
+                                <option *ngIf="productType==='Fostac'" value="byRecipientName" selected>Search by
                                     Recipient Name</option>
-                                <option *ngIf="panelType=='Foscos Panel'" value="byOperatorName" selected>Search by
-                                    Operator Name</option>
+                                <option *ngIf="productType==='Foscos'" value="byManagerName" selected>Search by
+                                    Manager Name</option>
                                 <option value="byFboName">Search by Fbo Name</option>
                                 <option value="byOwnerName">Search by Owner Name</option>
                                 <option value="byContact">Search by Contact no.</option>
@@ -84,7 +94,7 @@
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
-                            <table *ngIf="panelType==='Fostac Panel' ||(panelType==='FSSAI Training Panel' && forTraining)"
+                            <table *ngIf="productType=='Fostac' ||(panelType==='FSSAI Training Panel' && forTraining)"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
@@ -92,7 +102,9 @@
                                         <th class="cell">Recipient Name</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
-                                        <th class="cell">Recipient Contact</th>
+                                        <th class="cell">Contact No.</th>
+                                        <!-- <th class="cell">BO Id</th>
+                                        <th class="cell">Shop Id</th> -->
                                         <th class="cell">District</th>
                                         <th class="cell">State</th>
                                         <!-- <th *ngIf="forTraining" class="cell">Enrollment No.</th> -->
@@ -133,7 +145,7 @@
                                 </tbody>
                             </table>
 
-                            <table *ngIf="panelType==='HRA Panel' || (panelType==='FSSAI Training Panel' && forAudit)"
+                            <table *ngIf="productType==='HRA' || (panelType==='FSSAI Training Panel' && forAudit)"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
@@ -192,12 +204,12 @@
                             </table>
 
                             
-                            <table *ngIf="panelType==='Foscos Panel'"
+                            <table *ngIf="productType==='Foscos'"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
                                         <th class="cell">S.No</th>
-                                        <th class="cell">Operator Name</th>
+                                        <th class="cell">Manager Name</th>
                                         <th class="cell">Address</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
@@ -214,7 +226,7 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
-                                                (click)="collectResData('Foscos', data._id)">{{data.operatorName.toLowerCase()}}</span></td>
+                                                (click)="collectResData('Foscos', data._id)">{{data.managerName.toLowerCase()}}</span></td>
                                         <td class="cell"><span
                                                 class="truncate text-capitalize">{{data.address.toLowerCase()}}</span></td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize"><span

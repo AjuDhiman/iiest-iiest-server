@@ -138,6 +138,7 @@ export class FbonewComponent implements OnInit {
     business_entity: new FormControl(''),
     business_category: new FormControl(''),// form control added by chandan for business_Owner
     business_ownership_type: new FormControl(''), // form control added for business_Owner
+    manager_name: new FormControl(''),
     owner_contact: new FormControl(''),
     email: new FormControl(''),
     state: new FormControl(''),
@@ -247,6 +248,7 @@ export class FbonewComponent implements OnInit {
         business_entity: ['', Validators.required],
         business_category: ['', Validators.required],
         business_ownership_type: ['', Validators.required],
+        manager_name: ['', Validators.required],
         owner_contact: ['',
           [
             Validators.required,
@@ -420,6 +422,7 @@ export class FbonewComponent implements OnInit {
     this.fbo['owner_contact'].setValue(fboObj.owner_contact);
     this.fbo['business_entity'].setValue(fboObj.boInfo.business_entity);
     this.fbo['business_category'].setValue(fboObj.boInfo.business_category);
+    this.fbo['manager_name'].setValue(fboObj.boInfo.manager_name);
     this.fbo['business_ownership_type'].setValue(fboObj.boInfo.business_ownership_type);
     this.fbo['email'].setValue(fboObj.email);
     this.fbo['state'].setValue(fboObj.state);
@@ -474,6 +477,7 @@ export class FbonewComponent implements OnInit {
     this.fbo['business_ownership_type'].setValue(fboObj.business_ownership_type);
     this.fbo['owner_contact'].setValue(fboObj.contact_no);
     this.fbo['email'].setValue(fboObj.email);
+    this.fbo['manager_name'].setValue(fboObj.manager_name);
     this.fbo['boInfo'].setValue(fboObj._id);
   }
 
@@ -585,7 +589,7 @@ export class FbonewComponent implements OnInit {
           formData.append('tehsil', this.fboForm.value.tehsil);
           formData.append('address', this.fboForm.value.address);
           formData.append('pincode', this.fboForm.value.pincode);
-          formData.append('product_name', this.fboForm.value.product_name);
+          formData.append('product_name', this.fboForm.value.product_name.toString());
           formData.append('business_type', this.fboForm.value.business_type);
           formData.append('payment_mode', this.fboForm.value.payment_mode);
           formData.append('createdBy', this.fboForm.value.createdBy);
@@ -604,6 +608,10 @@ export class FbonewComponent implements OnInit {
           formData.append('isFostac', this.isFostac.toString());
           formData.append('isFoscos', this.isFoscos.toString());
           formData.append('isHygiene',this.isHygiene.toString());
+
+          if(this.fboForm.value.business_type == 'b2b'){
+            formData.append('gst_number', this.fboForm.value.gst_number)
+          }
 
           this._registerService.boByCheque(this.objId, formData).subscribe({
             next: res => {
@@ -667,7 +675,7 @@ export class FbonewComponent implements OnInit {
           let formData = new FormData();
 
           formData.append('pincode', this.fboForm.value.pincode);
-          formData.append('product_name', this.fboForm.value.product_name);
+          formData.append('product_name', this.fboForm.value.product_name.toString());
           formData.append('payment_mode', this.fboForm.value.payment_mode);
           formData.append('grand_total', this.fboForm.value.grand_total);
           formData.append('existingFboId', this.existingFboId);
@@ -689,6 +697,10 @@ export class FbonewComponent implements OnInit {
           // formData.append('foscosGST', this.foscosGST.toString());
           // formData.append('hygieneGST', this.hygieneGST.toString());
           // formData.append('foscosFixedCharge', this.foscosFixedCharges.toString());
+
+          if(this.fboForm.value.business_type == 'b2b'){
+            formData.append('gst_number', this.fboForm.value.gst_number)
+          }
           this._registerService.fboByCheque(this.objId, formData).subscribe({
             next: res => {
               this._toastrService.success('', 'Record Added Successfully');

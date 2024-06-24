@@ -12,6 +12,7 @@ const areaAllocationModel = require('../../models/employeeModels/employeeAreaSch
 const {sendInvoiceMail, sendCheckMail} = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
 const sessionModel = require('../../models/generalModels/sessionDataSchema');
+const { shopModel } = require('../../models/fboModels/recipientSchema');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
@@ -105,6 +106,7 @@ exports.fboPayReturn = async (req, res) => {
         fetchedFormData
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
+        const boData = await boModel.findOne({_id: boInfo});
 
         let serviceArr = [];
 
@@ -140,7 +142,7 @@ exports.fboPayReturn = async (req, res) => {
           totalGST += fostacGST;
 
           const qty = fostac_training.recipient_no;
-          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName));
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData ));
         }
 
         if (product_name.includes('Foscos')) {
@@ -152,7 +154,7 @@ exports.fboPayReturn = async (req, res) => {
           extraFee += foscosFixedCharge;
 
           const qty = foscos_training.shops_no;
-          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName));
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
         }
 
         if (product_name.includes('HRA')) {
@@ -163,11 +165,11 @@ exports.fboPayReturn = async (req, res) => {
           totalGST += hygieneGST;
 
           const qty = hygiene_audit.shops_no;
-          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName));
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
         }
 
         const fboEntry = await fboModel.create({
-          employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, boInfo
+          employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, boInfo, activeStatus: true, isBasicDocUploaded: false
         });
 
         if (!fboEntry) {
@@ -187,6 +189,12 @@ exports.fboPayReturn = async (req, res) => {
         if (!selectedProductInfo) {
           return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
         }
+
+        product_name.forEach(async(product) => {
+          if(product !== 'Fostac') {
+            const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId:generatedCustomerId, product_name: product,  village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
+          }
+        })
 
         // req.session.destroy((err) => {
         //   if (err) {
@@ -266,6 +274,8 @@ exports.fboRegister = async (req, res) => {
 
     const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo } = req.body;
 
+    const boData = await boModel.findOne({_id: boInfo});
+
     if (req.user.employee_id != 'IIEST/FD/0176') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
@@ -312,7 +322,7 @@ exports.fboRegister = async (req, res) => {
 
       const qty = fostac_training.recipient_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', foscos_training, signatureFile, invoiceUploadStream, officerName));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }
@@ -327,7 +337,7 @@ exports.fboRegister = async (req, res) => {
 
       const qty = foscos_training.shops_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }
@@ -341,13 +351,15 @@ exports.fboRegister = async (req, res) => {
 
       const qty = hygiene_audit.shops_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName,
+        generatedCustomerId, boData
+      ));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false
     });
 
     if (!fboEntry) {
@@ -412,6 +424,8 @@ exports.boByCheque = async (req, res) => {
 
     const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene } = req.body;//getting data from req body
 
+    const boData = await boModel.findOne({_id: boInfo});
+
     if (req.user.employee_id != 'IIEST/FD/0176') { //checking allocated areas
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
@@ -427,11 +441,14 @@ exports.boByCheque = async (req, res) => {
     let foscosTraining =  isFoscos==='true'?JSON.parse(foscos_training):undefined;
     let hygieneAudit = isHygiene==='true'?JSON.parse(hygiene_audit):undefined;
     let chequeData = JSON.parse(cheque_data);
+    let productName = product_name.split(',');
     chequeData.status = 'Pending';
     chequeData.cheque_image = chequeImage.filename;
 
+    console.log(productName, product_name)
+
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false
     });
 
     if (!fboEntry) {
@@ -439,19 +456,24 @@ exports.boByCheque = async (req, res) => {
       return res.status(401).json({ success, randomErr: true })
     }
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, payment_mode, grand_total, invoiceId: [], cheque_data:chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, payment_mode, grand_total, invoiceId: [], cheque_data:chequeData });
 
     if (!selectedProductInfo) {
       success = false;
       return res.status(401).json({ success, randomErr: true })
     }
 
+    productName.forEach(async(product) => {
+      if(product !== 'Fostac') {
+        const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId:generatedCustomerId, product_name: product,  village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
+      }
+    })
+
     success = true;
     const clientData = {
       cheque_data: chequeData
     }
     sendCheckMail(email, clientData);
-    // sendInvoiceMail(email, invoiceData);
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -685,5 +707,23 @@ exports.getClientList = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+exports.updateFboBasicDocStatus = async(req, res) => {
+  try{
+    const id = req.params.id;
+
+    const updatedFbo = await fboModel.findOneAndUpdate({_id: id}, {isBasicDocUploaded: true});
+
+    if(!updatedFbo){
+      return res.status(401).json({success: false, message: 'Basic Doc Status Updating error'})
+    }
+
+    return res.status(200).json({success: true});
+
+  } catch(error) {
+    console.error(error);
+    return res.status(500).json({success: false, message: 'Internal Server Error'});
   }
 }

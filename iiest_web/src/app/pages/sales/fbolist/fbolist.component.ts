@@ -10,6 +10,7 @@ import { Select, Store } from '@ngxs/store';
 import { SalesState } from 'src/app/store/state/sales.state';
 import { Observable, Subscription } from 'rxjs';
 import { GetSales } from 'src/app/store/actions/sales.action';
+import { SaleDocModalComponent } from '../../modals/sale-doc-modal/sale-doc-modal.component';
 
 @Component({
   selector: 'app-fbolist',
@@ -39,6 +40,7 @@ export class FbolistComponent implements OnInit {
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
   pageNumber: number = 1;
   itemsNumber: number = 25;
+  isVerifier: boolean = false;
   // saleApprovel = 'Approved';
 
   activeTab: string = 'Fostac';
@@ -64,9 +66,14 @@ export class FbolistComponent implements OnInit {
     private modalService: NgbModal) { }
 
   ngOnInit(): void {
+    let user: any = this.registerService.LoggedInUserData();
+    let parsedUser = JSON.parse(user);
+    if (parsedUser.designation === 'Verifier') {
+      this.isVerifier = true;
+    }
     this.fetchAllFboData();
 
-    
+
     // this.sales$.subscribe({
     //   next: res => {
     //     this.salesData = res;
@@ -79,14 +86,19 @@ export class FbolistComponent implements OnInit {
     this.getDataService.getSalesList().subscribe({
       next: (res) => {
         if (res.salesInfo) {
-          this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1, saleApprovel: (elem.cheque_data && elem.cheque_data.status =='Pending')?'Pending': 'Approved' }));
+          this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1, saleApprovel: this.getSalesStatus(elem) }));
           this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
             if (item.product_name.includes(this.activeTab)) {
               return item;
             }
           });
+          if (this.isVerifier) { // filter pending in case of verifer
+            this.filteredFBOEntries = this.filteredFBOEntries.filter((entry: any) => entry.checkStatus === 'Pending');
+          }
           this.filter();
           this.loading = false;
+          console.log(this.allFBOEntries);
         }
       },
       error: (err) => {
@@ -192,27 +204,40 @@ export class FbolistComponent implements OnInit {
     });
   }
 
-  //Recipient Add
+  //Recipient 
+
   recipient(res: any, serviceType: string) {
-    if (res !== '' && serviceType === 'fostac') {
-      const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.fboData = res;
-      modalRef.componentInstance.serviceType = serviceType;
+    if (this.isVerifier) {
+      if (res !== '' && serviceType === 'Fostac') {
+        const modalRef = this.modalService.open(RecipientComponent, { size: 'xl', backdrop: 'static' });
+        modalRef.componentInstance.fboData = res;
+        modalRef.componentInstance.serviceType = serviceType;
+        modalRef.componentInstance.isVerifier = this.isVerifier;
+      } else {
+        const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
+        modalRef.componentInstance.fboData = res;
+        modalRef.componentInstance.serviceType = serviceType;
+        modalRef.componentInstance.isVerifier = this.isVerifier;
+      }
     } else {
-      const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
+      const modalRef = this.modalService.open(SaleDocModalComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.fboData = res;
       modalRef.componentInstance.serviceType = serviceType;
+      // modalRef.componentInstance.isVerifier = this.isVerifier;
     }
+
   }
 
   //View FBO Details
-  viewFboDetails(res: any) {
+  viewFboDetails($event: Event, res: any) {
+    $event.stopPropagation();
     const modalRef = this.modalService.open(ViewFboComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.fboData = res;
+    modalRef.componentInstance.isVerifier = this.isVerifier;
   }
 
 
-  toogleTabs(tab: string) {
+  toogleTabs(tab: string) {  //change the filltered data in case of tab(product) change
     this.activeTab = tab;
     this.pageNumber = 1;
 
@@ -221,6 +246,11 @@ export class FbolistComponent implements OnInit {
         return item;
       }
     });
+
+    if (this.isVerifier) { // filter pending in case of verifer
+      this.filteredFBOEntries = this.filteredFBOEntries.filter((entry: any) => entry.checkStatus === 'Pending');
+    }
+
     this.filter();
 
   }
@@ -243,7 +273,7 @@ export class FbolistComponent implements OnInit {
     return `${day}${suffix} ${month} ${year}`;
   }
 
-     // Method to calculate the processing amount for each row
+  // Method to calculate the processing amount for each row
   calculateProcessingAmount(employee: any): number {
     let processingAmount = 0;
 
@@ -293,5 +323,17 @@ export class FbolistComponent implements OnInit {
     return processingAmount;
   }
 
-  
+  getSalesStatus(sale: any): string {
+    if (this.isVerifier) {
+     return sale.checkStatus
+    } else {
+
+      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved')  && sale.fboInfo.isBasicDocUploaded) {
+        return 'Approved'
+      } else {
+        return 'Pending'
+      }
+    }
+  }
+
 }

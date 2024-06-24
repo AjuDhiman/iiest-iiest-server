@@ -21,6 +21,7 @@
         <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-start-0 tabs"
           [ngClass]="{'d-grid': activeTab==='form'}">
           <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
+           {{productType}}
           <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
             [isTrainer]="isTrainer" [productType]="productType" (emitCustomerId)="getCustomerId($event)"
             (emitVerifiedID)="getVerifiedDataId($event)" (emitVerifiedStatus)="getVerifiedStatus($event)"
@@ -36,15 +37,16 @@
           </app-enrollment-section>
 
           <app-scheduling-section *ngIf="productType === 'HRA'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-          [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData" [shopId]="candidateId" [verifiedDataId]="verifiedDataId">
+          [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData" [shopId]="candidateId" [verifiedDataId]="verifiedDataId"
+          [customerId]="customerId" (emitDocuments)="getDocuments($event)">
           </app-scheduling-section>
 
-          <app-audit-section *ngIf="productType === 'HRA'" [shopId]="candidateId"
+          <app-audit-section *ngIf="productType === 'HRA'" [shopId]="candidateId" [isVerifier]="isVerifier"
           class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
           [verifiedData]="verifiedData" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
           </app-audit-section>
 
-          <app-documentation-section *ngIf="productType === 'Foscos'" [shopId]="candidateId"
+          <app-documentation-section *ngIf="productType === 'Foscos'" [shopId]="candidateId" [customerId]="customerId"
             class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
             [verifiedData]="verifiedData" (refreshAuditLog)="generalsec.getCaseNotes()"
             (emitDocuments)="getDocuments($event)">
@@ -52,17 +54,19 @@
 
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
           <app-attendance-section *ngIf="productType === 'Fostac'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId"
+            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId" [isVerifier]="isVerifier"
             (emitAttenanceStatus)="getAttendanceStatus($event)" (emitAttenSecResult)="gePrevSecResult($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
 
           <app-revert-section *ngIf="productType === 'Foscos'" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [customerId]="candidateId" [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData" (emitFilingResult)="gePrevSecResult($event)">
+            [customerId]="candidateId" [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData"
+             (emitFilingResult)="gePrevSecResult($event)" [isVerifier]="isVerifier" >
           </app-revert-section>
 
           <app-certification-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [candidateID]="candidateId"
             [attendanceStatus]="attendanceStatus" [prevSecResult]="prevSecResult" [projectType]="productType"
+            [isVerifier]="isVerifier"
             (emitDocuments)="getDocuments($event)">
           </app-certification-section>
 

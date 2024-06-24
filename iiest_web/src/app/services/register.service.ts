@@ -279,18 +279,24 @@ export class RegisterService {
     ));
   }
 
-  public saveFoscosDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
-    const url = `${this.url}/savefoscosdocuments/${objId}`
-    console.log(objId, formInterface);
+  public saveFostacDocument(formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savefostacdocuments`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
     ));
   }
 
-  public saveHraDocument(objId: string, formInterface: FormData){ // this service helps on posting data related to recipient attendance
-    const url = `${this.url}/savehradocuments/${objId}`
-    console.log(objId, formInterface);
+  public saveFoscosDocument(formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savefoscosdocuments`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+    ));
+  }
+
+  public saveHraDocument(formInterface: FormData){ // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/savehradocuments`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
@@ -313,6 +319,13 @@ export class RegisterService {
         this.handleError
     ));
   }
+
+    //update basic doc uploaded status of a fbo
+    public updateFboBasicDocStatus(objId: string): Observable<any>{
+      const url = `${this.url}/updatefbobasicdocstatus/${objId}`;
+      console.log(url);
+      return this.http.put<any>(url, {}).pipe(catchError(this.handleError));
+    }
 
   //for training batch
   public updateTrainingBatch(objId: string, editedData: Object): Observable<any>{

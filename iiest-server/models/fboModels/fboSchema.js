@@ -82,6 +82,14 @@ const fboSchema = new Schema({
         required: function(){
             return this.business_type === 'b2b'
         }
+    },
+    activeStatus: {
+        type: Boolean,
+        required: true
+    },
+    isBasicDocUploaded: {
+        type: Boolean,
+        required: true
     }
 }, {timestamps: true})
 

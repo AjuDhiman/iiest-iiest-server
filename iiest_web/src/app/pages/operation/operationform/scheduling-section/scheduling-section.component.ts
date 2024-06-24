@@ -29,6 +29,7 @@ export class SchedulingSectionComponent implements OnInit, OnChanges {
 
   //input variables
   @Input() verifiedDataId: string;
+  @Input() customerId: string;
 
   @Input() verifiedData: any;
 
@@ -38,6 +39,8 @@ export class SchedulingSectionComponent implements OnInit, OnChanges {
 
   //output event emitters
   @Output() emitScheduledDataId: EventEmitter<string> = new EventEmitter<string>;
+
+  @Output() emitDocuments: EventEmitter<any> = new EventEmitter<any>;
 
   @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>;
 
@@ -69,8 +72,6 @@ export class SchedulingSectionComponent implements OnInit, OnChanges {
       auditor_name: ['', Validators.required],
     });
 
-    this.getDocs();
-
     this.hraReqDocumentsName = hraRequiredDocs.map((item: any) => item.name);
   }
 
@@ -88,6 +89,11 @@ export class SchedulingSectionComponent implements OnInit, OnChanges {
         }
       })
     }
+
+    if (changes && changes['customerId'] && changes['customerId'].currentValue) {
+      this.getDocs();
+    }
+
   }
 
   get scheduleform(): { [key: string]: AbstractControl } {
@@ -165,6 +171,7 @@ export class SchedulingSectionComponent implements OnInit, OnChanges {
     const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.docsArr = hraRequiredDocs.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
     modalRef.componentInstance.shopId = this.shopId;
+    modalRef.componentInstance.handlerId = this.customerId;
     console.log(this.shopId);
     modalRef.componentInstance.docList = this.docList;
     modalRef.componentInstance.reloadData.subscribe(() => {
@@ -178,9 +185,10 @@ export class SchedulingSectionComponent implements OnInit, OnChanges {
   }
 
   getDocs(): void { //methord for getting uploaed doc list from backend for passing it to doc modal and doc-tab
-    this._getDataService.getDocs(this.shopId).subscribe({
+    this._getDataService.getDocs(this.customerId).subscribe({
       next: res => {
         this.docList = res.docs; 
+        this.emitDocuments.emit(this.docList); //emit 
         this.refreshAuditLog.emit();
       }
     });

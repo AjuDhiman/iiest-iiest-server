@@ -30,7 +30,7 @@ exports.sendMailToBo = async (boMail, mailInfo) => {
             IIEST Federation
             Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/> 
             Contact no - 9910729809<br>
-            Landline - 011-43511788, 011-4681145<br>
+            Landline - 011-35454931, 011-35457013<br>
             Contact time 10 :00 a.m to 7:00 p.m<br>
             <br><br>
             <hr>
@@ -44,7 +44,7 @@ exports.sendMailToBo = async (boMail, mailInfo) => {
             IIEST फेडरेशन 
             पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
             संपर्क नंबर - 9910729809<br>
-            लैंडलाइन - 011-43511788, 011-4681145<br>
+            लैंडलाइन - 011-35454931, 011-35457013<br>
             संपर्क समय 10:00 बजे से 7:00 बजे तक<br>
             <br><br>
             <hr>
@@ -117,6 +117,7 @@ function getMailContent(mailInfo) {
         <p>Thank You</p>
         <br>
         BO Name - ${mailInfo.boName}<br>
+        Manager Name - ${mailInfo.managerName}<br>
         BO ID No - ${mailInfo.customerId}<br>`;
 
         hindiContent = `<p>कनेक्ट भारत परियोजना में पंजीकरण के लिए धन्यवाद। आपका व्यवसायिक संचालन (बीओ) नंबर उत्पन्न किया गया है और आपको इस मेल के माध्यम से भेजा गया है, कृपया जब भी हमसे संपर्क करें तो इसका उपयोग करें।<br>आप विभिन्न सरकारी लाभों के पात्र हो गए हैं, अपने व्यवसाय नियमों के अनुसार, व्यवसाय की वृद्धि के लिए एसएमई के लिए जारी योजनाओं के तहत।<br>आपको अपना विवरण सत्यापित करने के लिए 7 दिनों के भीतर एक कॉल प्राप्त होगा। कृपया आवश्यक कार्रवाई करें।
@@ -124,6 +125,7 @@ function getMailContent(mailInfo) {
         <p>धन्यवाद</p>
         <br>
         बीओ नाम - ${mailInfo.boName}<br>
+        मैनेजर नाम - ${mailInfo.managerName}<br>
         बीओ आईडी नंबर - ${mailInfo.customerId}<br>`
     }
     return { englishContent, hindiContent }

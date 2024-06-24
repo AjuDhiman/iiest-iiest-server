@@ -24,6 +24,7 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
 
   //Input vars
   @Input() shopId: string;
+  @Input() customerId: string;
   @Input() verifiedStatus: boolean = false;
   @Input() verifiedData: any = {};
 
@@ -43,12 +44,15 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void { 
-    this.getDocs();
+    
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['verifiedData'] && changes['verifiedData'].currentValue) {
       this.getParticularDocs();
+    }
+    if (changes && changes['customerId'] && changes['customerId'].currentValue) {
+      this.getDocs();
     }
   }
 
@@ -87,7 +91,7 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   }
 
   getDocs(): void { //methord for getting uploaed doc list from backend for passing it to doc modal and doc-tab
-    this._getDataService.getDocs(this.shopId).subscribe({
+    this._getDataService.getDocs(this.customerId).subscribe({
       next: res => {
         // this.docList = res.docs.map((item: any) => {
         //   return { ...item, src: item.src[0] }
@@ -103,6 +107,7 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
     const modalRef = this.ngbModal.open(DocumentationModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.docsNameArr = this.selectedDocs;
     modalRef.componentInstance.shopId = this.shopId;
+    modalRef.componentInstance.handlerId = this.customerId;
     modalRef.componentInstance.docsArr = this.foscosDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
     modalRef.componentInstance.docList = this.docList;
     modalRef.componentInstance.reloadData.subscribe(() => {
