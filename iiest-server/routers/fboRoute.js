@@ -1,5 +1,5 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque, updateFboBasicDocStatus } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque, updateFboBasicDocStatus, approveChequeSale } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, addHygieneShop, hygieneShopsList, uploadAadharPhoto } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
@@ -44,6 +44,7 @@ router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)
 router.post('/existingfbo-pay-return/:id', existingFboPayReturn);
+router.post('/approvechequesale/:id', authMiddleware, approveChequeSale);//this api will approve cheque and send invoice for this sale after approving
 router.get('/getclientlist', getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);

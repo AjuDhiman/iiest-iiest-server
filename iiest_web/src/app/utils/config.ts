@@ -19,6 +19,9 @@ export const waterTestFee = [0, 1500, 2000, 2500];
 export const processAmnt = [1200, 1500];
 //Client Type
 
+export const waterTestProcessAmnt = 2500;
+export const medicalProcessAmnt = 678;
+
 export const hraProcessingAmnt = 5000;
 
 export const clientType = ['Single Recipient', 'Multiple Recipient'];
@@ -93,7 +96,8 @@ export const licenceType = {
 export const serviceNames = {
    "fostac": ["Retail", "Catering", "Others"],
    "foscos": ["Registration", "State"],
-   "HRA": ["HRA"]
+   "HRA": ["HRA"],
+   "water_test_report": ["NABL", "Non NABL"],
 }
 
 export const hraKob: string[] = [
@@ -148,6 +152,17 @@ export const fbo_roles = [
    'Verifier',
    ...master_roles
 ];
+
+export const bookSaleRoles = [
+   'General Manager(Sales)',
+   'Regional Deputy Manager(Sales)',
+   'Area Manager(Sales)',
+   'Assistant Area Manager',
+   'Area Officer(District Head)',
+   'Senior Area Officer',
+   'Area Associate Officer',
+   'Area Officer',
+]
 
 export const empRegister_roles = [
    'Regional HR Manager',
@@ -394,7 +409,12 @@ export const mandatoryDocs: Array<{ name: string, allowedFormats: string[], muti
       name: 'Pancard',
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: true
-   }
+   },
+   {
+      name: 'Electricity Bill',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false
+   },
 ];
 
 export const manufacturingDoc: Array<{ name: string, allowedFormats: string[], mutipleDoc: boolean }> = [

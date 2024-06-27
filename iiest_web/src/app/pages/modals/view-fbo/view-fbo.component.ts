@@ -25,7 +25,9 @@ export class ViewFboComponent implements OnInit {
   invoice: string = '';
   remainingTime: string = '';
   invoiceArr: any = [];
-  newPortalReleaseDate:  "2024-06-10T18:30:00.000Z"
+  newPortalReleaseDate:  "2024-06-10T18:30:00.000Z";
+  basicDocs: string[] = ['Manager Photo', 'Shop Photo', 'Manager Aadhar']; //this array contains name of 3 basic docs that only should be shown in view fbo
+  docList: any = []; //list of all docs to show
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
     private ngbModal: NgbModal
@@ -46,7 +48,7 @@ export class ViewFboComponent implements OnInit {
     this.isShowInvoice = this.comparedates(this.fboData.createdAt);
     this.getInvoice();
 
-    console.log(this.fboData);
+    this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name))
   }
 
   // This function is used for showing invoice after 31st March'2024
@@ -69,9 +71,11 @@ export class ViewFboComponent implements OnInit {
   getInvoice() {
     if (this.isShowInvoice) {
       this.invoiceArr = [];
+      console.log(this.fboData.invoiceId);
       this.fboData.invoiceId.forEach((invoice: string) => {
         this.getDataServices.getInvoice(invoice).subscribe({
           next: (res) => {
+            console.log('conversion', res);
             this.invoice = res.invoiceConverted;
             this.invoiceArr.push(this.invoice);
           },
@@ -142,10 +146,23 @@ export class ViewFboComponent implements OnInit {
   viewInvoice(): void {
     const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.doc = {
-      name: 'Invoice',
+      name: `Invoice of ${this.fboData.fboInfo.fbo_name}`,
       format: 'pdf',
       src: this.invoiceArr,
       multipleDoc: true
     }
+    console.log(this.invoiceArr);
+  }
+
+  viewDocument(name: string, res: any, format: string, isMultiDoc: boolean): void { // methord for calling viewdoc component for a particucar doc
+
+    let obj = {
+      name: name,
+      src: isMultiDoc ? res : [res.toString()], // we will put single src in array because our component needs array of src for showing docs
+      format: format,
+      multipleDoc: isMultiDoc
+    }
+    const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.doc = obj;
   }
 }

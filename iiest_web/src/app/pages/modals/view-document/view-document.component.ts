@@ -12,9 +12,12 @@ import { config } from 'src/app/utils/config';
 })
 export class ViewDocumentComponent implements OnInit {
 
+  //icons
   faDownload: IconDefinition = faDownload;
   faArrowAltCircleLeft: IconDefinition = faArrowAltCircleLeft;
   faArrowAltCircleRight: IconDefinition = faArrowAltCircleRight;
+
+  //doc var will contain doc detail what type pf doc it is
   doc: any;
   pdfSrc: any;
 
@@ -37,7 +40,7 @@ export class ViewDocumentComponent implements OnInit {
     }
   }
 
-  next() {
+  next() { //methord fpr changing to next pic in case of multidoc true
     const len: number = this.doc.src.length;
 
     this.activeSlide++;
@@ -46,7 +49,7 @@ export class ViewDocumentComponent implements OnInit {
     }
   }
 
-  prev() {
+  prev() {  //methord for chnaging to previous pic in case of mutidoc true
     const len: number = this.doc.src.length;
 
     this.activeSlide--;
@@ -55,7 +58,7 @@ export class ViewDocumentComponent implements OnInit {
     }
   }
 
-  downloadDoc(documentId: any, contentType: any) {
+  downloadDoc(documentId: any, contentType: any) { //methord for downloading doc
     console.log(typeof(documentId));
     this._utilService.downloadDoc(documentId, contentType);
   }

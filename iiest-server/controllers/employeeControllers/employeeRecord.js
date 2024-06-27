@@ -58,32 +58,35 @@ exports.employeeRecord = async (req, res) => {
                                         0   // Value to return if either condition is false
                                     ]
                                 },
-                                // {
-                                // $add: [
-                                //     { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } },
-                                //     {
-                                //         $cond: [
-                                //             {
-                                //                 $and: [
-                                //                     { $ne: [{ $ifNull: ["$foscosInfo", null] }, null] }, // Check if foscosInfo exists
-                                //                     { $ne: [{ $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 0] } // Check if water_test_fee is not 0
-                                //                 ]
-                                //             },
-                                //             {
-                                //                 $subtract: [
-                                //                     { $toInt: { $ifNull: ["$foscosInfo.water_test_fee", 0] } }, 1200]
-                                //             }, // Subtract 1200 if both conditions are true
-                                //             0 // Otherwise, leave it as 0
-                                //         ]
-                                //     }
-                                // ]
-                                // },
                                 {
                                     $multiply: [
                                         { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } },
                                         { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
                                     ]
-                                }
+                                },
+                                // { //add amount processing according to Medical
+                                //     $sum: [
+                                //         {
+                                //             $multiply: [
+                                //                 { $toInt: { $ifNull: ["$medicalInfo.medical_processing_amount", 0] } },
+                                //                 { $toInt: { $ifNull: ["$medicalInfo.recipient_no", 0] } },
+                                //             ]
+                                //         },
+                                //         -250
+                                //     ]
+                                // },
+                                // {//add amount processing according to water test
+                                //     $sum: [
+                                //         { $toInt: { $ifNull: ["$waterTestInfo.water_test_processing_amount", 0] } },
+                                //         {
+                                //             $cond: [
+                                //                 { $eq: ["$waterTestInfo.water_test_service_name", "NABL"] },
+                                //                 -1500,  // Value to add if water_test_service_name is 'NABL'
+                                //                 -1000   // Value to add if water_test_service_name is not 'NABL'
+                                //             ]
+                                //         }
+                                //     ]
+                                // }
                             ]
                         }
                     },
@@ -149,11 +152,11 @@ exports.employeeRecord = async (req, res) => {
                                     $and: [
                                         {
                                             $or: [
-                                                { $eq: [ { $ifNull: [ "$cheque_data", null ] }, null ] }, // Check if cheque_data is null or doesn't exist
-                                                { $eq: [ { $ifNull: [ "$cheque_data.status", null ] }, "Approved" ] } // Check if cheque_data.status is "Approved"
+                                                { $eq: [{ $ifNull: ["$cheque_data", null] }, null] }, // Check if cheque_data is null or doesn't exist
+                                                { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
                                             ]
                                         },
-                                        { $eq: [ "$fboInfo.isBasicDocUploaded", true ] }
+                                        { $eq: ["$fboInfo.isBasicDocUploaded", true] }
                                     ]
                                 }, then: {
                                     $sum: [
@@ -304,7 +307,7 @@ exports.employeeSalesData = async (req, res) => {
                         preserveNullAndEmptyArrays: true
                     }
                 },
-                
+
                 {
                     $lookup: {
                         from: 'staff_registers', // The collection name where employeeInfo is stored
@@ -327,30 +330,65 @@ exports.employeeSalesData = async (req, res) => {
                         as: 'docs'
                     }
                 }
-                
+
             ]);
-        } else if(req.user.designation === 'Verifier') {
-            salesInfo = await salesModel.find({
-                fostacInfo: { $ne: null }
-            }).populate([
+        } else if (req.user.designation === 'Verifier') {
+            salesInfo = await salesModel.aggregate([
                 {
-                    path: 'fboInfo',
-                    select: 'fbo_name owner_name customer_id state district _id createdAt business_type gst_number address email owner_contact pincode village tehsil boInfo',
-                    options: { lean: true },
-                    populate: {
-                        path: 'boInfo',
-                        select: 'customer_id manager_name',
-                        options: { lean: true }
+                    $lookup: {
+                        from: 'fbo_registers', // The collection name where fboInfo is stored
+                        localField: 'fboInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo'
                     }
                 },
                 {
-                    path: 'employeeInfo',
-                    select: 'employee_name',
-                    options: { lean: true }
+                    $unwind: {
+                        path: '$fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers', // The collection name where boInfo is stored
+                        localField: 'fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: 'staff_registers', // The collection name where employeeInfo is stored
+                        localField: 'employeeInfo',
+                        foreignField: '_id',
+                        as: 'employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents', // The collection name where fboInfo is stored
+                        localField: 'fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'docs'
+                    }
                 }
-            ]).lean();            
+
+            ]);
         }
-         else {
+        else {
             salesInfo = await salesModel.aggregate([
                 {
                     $match: {
@@ -385,7 +423,7 @@ exports.employeeSalesData = async (req, res) => {
                         preserveNullAndEmptyArrays: true
                     }
                 },
-                
+
                 {
                     $lookup: {
                         from: 'staff_registers', // The collection name where employeeInfo is stored

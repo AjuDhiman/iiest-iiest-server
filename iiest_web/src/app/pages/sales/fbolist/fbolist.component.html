@@ -8,6 +8,10 @@
           (click)="toogleTabs('Foscos')">Foscos</a>
         <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='HRA'}"
           (click)="toogleTabs('HRA')">HRA</a>
+          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Medical'}"
+          (click)="toogleTabs('Medical')">Medical</a>
+          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Water Test Report'}"
+          (click)="toogleTabs('Water Test Report')">Water Test</a>
       </li>
     </ul>
     <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
@@ -72,8 +76,8 @@
                       <th class="cell">Shop ID</th>
                       <th class="cell">State</th>
                       <th class="cell">District</th>
-                      <th class="cell text-center" *ngIf="activeTab==='Fostac'">Recipient No</th>
-                      <th class="cell text-center" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No</th>
+                      <th class="cell text-center" *ngIf="activeTab==='Fostac'">Recipient No.</th>
+                      <th class="cell text-center" *ngIf="activeTab === 'Foscos' || activeTab === 'HRA'">Shop No.</th>
                       <th class="cell text-center" *ngIf="!isVerifier">Processing Amount</th>
                       <!-- <th class="cell text-center">{{ activeTab === 'Fostac' ? 'Fostac Amount' : (activeTab === 'Foscos'
                         ? 'Foscos Amount' : 'HRA Amount') }}</th> -->
@@ -81,13 +85,13 @@
                       <th class="cell text-center">{{isVerifier?'Fostac Amount':'Total Amount'}}<span style="font-size: x-small;">(18% GST
                           Included + Govt. Fee)</span></th>
                       <th class="cell">Sales Date</th>
-                      <th class="cell">Sales Status</th>
+                      <th class="cell">{{isVerifier?'Recipient':'Sales'}} Status</th>
                       <th class="cell text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody *ngIf="filteredData">
-                    <tr class="list-tr cursor-pointer"
-                      *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'sales-list' }; let i = index" (click)="recipient(fbo, activeTab)" >
+                    <tr class="list-tr"
+                      *ngFor="let fbo of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'sales-list' }; let i = index" >
                       <ng-container >
 
                       <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
@@ -96,16 +100,16 @@
                       <td class="cell"><span
                           class="truncate text-capitlize">{{fbo.fboInfo.owner_name.toLowerCase()}}</span></td>
                       <td class="cell"><span class="truncate">{{fbo.fboInfo.boInfo.customer_id}}</span></td>
-                      <td class="cell"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
+                      <td class="cell selector" (click)="uploadSaleDoc(fbo, activeTab)"><span class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                       <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.state}}</span></td>
                       <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.district}}</span></td>
-                      <td *ngIf="activeTab==='Fostac'" class="cell text-center"><span class="truncate selector"
+                      <td *ngIf="activeTab==='Fostac'"  (click)="recipient(fbo, activeTab)" class="cell text-center"><span class="truncate selector"
                           >{{!fbo.fostacInfo ? '-' :
                           fbo.fostacInfo.recipient_no}}</span></td>
-                      <td *ngIf="activeTab === 'Foscos'" class="cell text-center"><span class="truncate selector"
+                      <td *ngIf="activeTab === 'Foscos'"  (click)="recipient(fbo, activeTab)" class="cell text-center"><span class="truncate selector"
                           >{{!fbo.foscosInfo ? '-' :
                           fbo.foscosInfo.shops_no}}</span></td>
-                      <td *ngIf="activeTab === 'HRA'" class="cell text-center"><span class="truncate selector"s>{{!fbo.hraInfo ?
+                      <td *ngIf="activeTab === 'HRA'" (click)="recipient(fbo, activeTab)" class="cell text-center"><span class="truncate selector"s>{{!fbo.hraInfo ?
                           '-' :
                           fbo.hraInfo.shops_no}}</span></td>
                       <td class="cell text-center" *ngIf="!isVerifier">
@@ -120,12 +124,18 @@
                         <span class="truncate">{{ fbo.hraInfo.hra_total | inrAmount }}</span>
                       </td> -->
                       <td class="cell text-center" *ngIf="isVerifier"><span class="truncate">{{fbo.fboInfo.owner_contact}}</span></td>
-                      <td class="cell text-center"><span class="truncate">{{(isVerifier?fbo.fostacInfo.fostac_total:fbo.grand_total) | inrAmount}}</span></td>
+                      <td *ngIf="activeTab==='Fostac'" class="cell text-center"><span class="truncate">{{(isVerifier?fbo.fostacInfo.fostac_total:fbo.fostacInfo.fostac_total) | inrAmount}}</span></td>
+                      <td *ngIf="activeTab==='Foscos'" class="cell text-center"><span class="truncate">{{(fbo.foscosInfo.foscos_total) | inrAmount}}</span></td>
+                      <td *ngIf="activeTab==='HRA'" class="cell text-center"><span class="truncate">{{(fbo.hraInfo.hra_total) | inrAmount}}</span></td>
+                      <td *ngIf="activeTab==='Medical'" class="cell text-center"><span class="truncate">{{(fbo.medicalInfo.medical_total) | inrAmount}}</span></td>
+                      <td *ngIf="activeTab==='Water Test Report'" class="cell text-center"><span class="truncate">{{(fbo.waterTestInfo.water_test_total) | inrAmount}}</span></td>
                       <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>
                       <td class="cell"><span class="truncate" [ngClass]="{'text-danger': fbo.saleApprovel == 'Pending', 'text-success': fbo.saleApprovel == 'Approved'}">{{ fbo.saleApprovel }}</span></td>
                       <td class="cell text-center">
-                        <fa-icon class="fa-l selector" style="margin-right: 7px; color: #1957a9;"
+                        <fa-icon class="fa-l selector mx-2" style="margin-right: 7px; color: #1957a9;"
                           (click)="viewFboDetails($event, fbo)" [icon]="faEye" title="View Detail"></fa-icon>
+                          <!-- show approve button in case of approving cheque for director -->
+                          <button *ngIf="userData.designation === 'Director' && (fbo.cheque_data && (fbo.cheque_data.status === 'Pending'))"  class="btn mx-2 btn-primary btn-xs" (click)="approveCheque($event, fbo._id, fbo)">Approve</button>
                         <!-- <fa-icon class="fa-l" (click)="editRecord(fbo)"style="margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon> -->
                         <!-- <fa-icon class="fa-l" style="color: #c64115;" [icon]="faTrash" (click)="deleteFBO(fbo)"></fa-icon> -->
                       </td>

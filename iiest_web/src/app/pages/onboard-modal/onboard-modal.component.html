@@ -1,13 +1,18 @@
+<!-- Modal Header -->
 <div class="modal-header bg-Portal">
   <h6 class="modal-title text-white" id="modal-basic-title">BUSINESS</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
 </div>
 
+<!-- Modal Body -->
 <div class="modal-body"
   style="background:linear-gradient(rgba(2, 27, 77, 0.87), #010e28); color: white; border-top: #112f5d;">
 
+  <!-- Business Form Starts -->
   <form [formGroup]="businessForm" class="onboard-form" (ngSubmit)="submitForm()">
     <div class="row">
+
+      <!-- Owner Name Field -->
       <div class="col-md-12 my-2">
         <label for="owner_name" class="form-label">Business Owner Name<sup>*</sup> </label>
         <input type="text" formControlName="owner_name" type="text" class="form-control"
@@ -19,6 +24,8 @@
         </div>
 
       </div>
+
+       <!-- Business Entity Field -->
       <div class="col-md-12 my-2">
         <label for="business_entity" class="form-label">Business Entity<sup>*</sup> </label>
         <input formControlName="business_entity" type="text" class="form-control" placeholder="Business Entity"
@@ -28,6 +35,8 @@
             Required</div>
         </div>
       </div>
+
+      <!-- Business Category Field -->
       <div class="col-md-12 my-2">
         <label for="business_category" class="form-label">Business Category<sup>*</sup></label>
         <div class="select-wrapper">
@@ -43,6 +52,8 @@
             Required</div>
         </div>
       </div>
+
+      <!-- Manger Name Field -->
       <div class="col-md-12 my-2">
         <label for="manager_name" class="form-label">Manager Name<sup>*</sup> </label>
         <input formControlName="manager_name" type="text" class="form-control" placeholder="Manager Name"
@@ -52,6 +63,8 @@
             Required</div>
         </div>
       </div>
+
+      <!-- Manager Contact Field -->
       <div class="col-md-12 my-2">
         <label for="contact_no" class="form-label">Manager Contact<sup>*</sup> </label>
         <input formControlName="contact_no" type="number" class="form-control" placeholder="Manager Contact"
@@ -63,6 +76,8 @@
               Invalid</div>
         </div>
       </div>
+
+      <!-- Ownership Type Field -->
       <div class="col-md-12 my-2">
         <label for="business_ownership_type" class="form-label">Ownership Type<sup>*</sup></label>
         <div class="select-wrapper">
@@ -78,6 +93,8 @@
             Required</div>
         </div>
       </div>
+
+      <!-- Email Field -->
       <div class="col-md-12 my-2">
         <label for="email" class="form-label">Email<sup>*</sup> </label>
         <input formControlName="email" type="text" class="form-control" placeholder="Email" id="email"
@@ -90,6 +107,8 @@
         <!-- <div *ngIf="submitted && function['email'].errors"></div> -->
       </div>
     </div>
+
+    <!-- Select Onboarding Officer -->
     <div class="col-md-12 my-2">
       <label for="onboard_by" class="form-label">Onboarding Officer<sup>*</sup></label>
       <div class="select-wrapper">
@@ -108,5 +127,7 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
+    <!-- Business Form Ends -->
+    <!-- loader -->
   <ngx-loading [show]="loading"></ngx-loading>
 </div>

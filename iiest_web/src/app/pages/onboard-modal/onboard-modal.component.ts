@@ -12,6 +12,7 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./onboard-modal.component.scss']
 })
 export class OnboardModalComponent implements OnInit {
+  //Logical Reactive angular form
   businessForm: FormGroup = new FormGroup({
     owner_name: new FormControl(''),
     business_entity: new FormControl(''),
@@ -23,10 +24,13 @@ export class OnboardModalComponent implements OnInit {
     onboard_by: new FormControl('')
   });
 
+  //var for traicking if submit button is clicked or not
   submitted = false;
 
+  //var for turning on and off the loader
   loading: boolean = false;
 
+  //list of all active sales executive who can onboard 
   empList: {_id: string, employee_name: string, employee_id: string}[];
 
   constructor(private formBuilder: FormBuilder, 
@@ -36,7 +40,7 @@ export class OnboardModalComponent implements OnInit {
     private _toasterService: ToastrService) { }
 
   ngOnInit(): void {
-    this.initForm();
+    this.setFormValidation();
     this.getEmpNameNIdList();
   }
 
@@ -44,7 +48,7 @@ export class OnboardModalComponent implements OnInit {
     return this.businessForm.controls;
   }
 
-  initForm(): void {
+  setFormValidation(): void { //methord for setting form validation
     this.businessForm = this.formBuilder.group({
       owner_name: ['', Validators.required],
       business_entity: ['', Validators.required],
@@ -59,29 +63,27 @@ export class OnboardModalComponent implements OnInit {
 
    
 
-  submitForm(): void {
+  submitForm(): void {//func will run ater submit button is clicked
     this.submitted = true;
     if (this.businessForm.invalid || this.loading) { // we dont't want to submit form wile loading and in case of invalid form
       return;
     }
 
-    const formData = this.businessForm.value;
     this.loading = true;
     // this._toasterService.success('You Are Successfully Onboarded', '', { timeOut: 1500, easeTime: 700});
     
-    this._registerService.addbo(this.businessForm.value).subscribe({
+    this._registerService.addbo(this.businessForm.value).subscribe({ //api for creating new bo object
       next: res => {
-        this.loading = false;
+        this.loading = false;//setting off loading on success
         this._toasterService.success(res.message);
-        this.activeModal.close();
+        this.activeModal.close();//close the onboard modal on success
       }, 
       error: err => {
-        this.loading = false;
+        this.loading = false;//setting off the loading after api fail
         if(err.error){
-          if(err.error.emailErr){
-            this._toasterService.error('Use some Another Mail', 'Email Already Exsists')
+          if(err.error.emailErr){//error if same email exsists in db            this._toasterService.error('Use some Another Mail', 'Email Already Exsists')
           }
-          if(err.error.contactErr){
+          if(err.error.contactErr){//error if same contact no exsists in db        
             this._toasterService.error('Use some Another Contact', 'Contact Already Exsists')
           }
         }
@@ -90,7 +92,7 @@ export class OnboardModalComponent implements OnInit {
 
   }
 
-  getEmpNameNIdList(): void {
+  getEmpNameNIdList(): void { //methord for getting all active sales man list for showing in onboard form
     this._getDataService.getEmpNameNIdList().subscribe({
       next: res => {
         this.empList = res;
@@ -98,7 +100,7 @@ export class OnboardModalComponent implements OnInit {
     });
   }
  
-  resetForm(): void {
+  resetForm(): void {//reset onboard form
     this.submitted = false;
     this.businessForm.reset();
   }

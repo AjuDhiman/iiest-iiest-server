@@ -140,6 +140,81 @@
                     </div>
                 </div>
             </div> -->
+            <div *ngIf="fboData.cheque_data" class="row border border-1 py-2" style="margin-bottom: 10px;">
+                <div class="col-md title" style="color: #1957a9;">Cheque Data</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Payee Name</div>
+                            <div class="col-md-6 data">
+                                {{fboData.cheque_data.payee_name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Bank Name</div>
+                            <div class="col-md-6 data">
+                                {{fboData.cheque_data.bank_name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Account Number</div>
+                            <div class="col-md-6 data">
+                                {{fboData.cheque_data.account_number}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Cheque Number</div>
+                            <div class="col-md-6 data">
+                                {{fboData.cheque_data.cheque_number}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Cheque Status</div>
+                            <div class="col-md-6 data">
+                                {{fboData.cheque_data.status}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Cheque Image</div>
+                            <div class="col-md-6 data">
+                                <fa-icon class="fa-2xl text-success cursor-pointer"
+                                    (click)="viewDocument('Cheque Of' + fboData.cheque_data.payee_name , fboData.cheque_data.cheque_image, 'image', false)"
+                                    [icon]="faFile"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row border border-1 py-2" style="margin-bottom: 10px;">
+                <div class="col-md title" style="color: #1957a9;">Documents</div>
+                <div class="row mt-2 ml-3">
+                    <ng-container *ngIf="docList.length !== 0; else noDocs">
+                        <div class="col-md-4" *ngFor="let doc of docList">
+                            <div class="row">
+                                <div class="col-md-6 title">{{doc.name}}</div>
+                                <div class="col-md-6 data">
+                                    <fa-icon class="fa-2xl text-success cursor-pointer"
+                                        (click)="viewDocument(doc.name, doc.src, doc.format.toLowerCase(), doc.multipleDoc)"
+                                        [icon]="faFile"></fa-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-template #noDocs>
+                        <div class="no-docs">--------No Document Available--------</div>
+                    </ng-template>
+                </div>
+            </div>
             <div *ngIf="fboData.foscosInfo && !isVerifier" class="row border border-1 p-1">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Foscos Details</div>
@@ -220,6 +295,42 @@
                 </div>
             </div>
 
+            <!-- Medical Data -->
+            <div *ngIf="fboData.medicalInfo && !isVerifier" class="row border border-1 p-1">
+                <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
+                    <div class="product-title">Medical Details</div>
+                </div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Processing Amount </div>
+                            <div class="col-md-6 data">
+                                {{fboData.medicalInfo.medical_processing_amount}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">No. of Recipients </div>
+                            <div class="col-md-6 data">{{fboData.medicalInfo.recipient_no}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3 title">Medical Total <br><span
+                                    style="font-size: x-small; font-weight: normal;">(18%
+                                    GST Exc.)</span></div>
+                            <div class="col-md-9 data">
+                                {{fboData.medicalInfo.medical_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <div *ngIf="fboData.fostacInfo" class="row">
                 <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
                 <div class="row mt-2 ml-3">
@@ -274,7 +385,7 @@
                             <div class="col-md-6 title">Fostac Cerificates</div>
                             <div class="col-md-6 data">
                                 <!-- <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon> -->
-                                 Under development will be visible soon
+                                Under development will be visible soon
                             </div>
                         </div>
                     </div>
@@ -298,8 +409,8 @@
                         <div class="row">
                             <div class="col-md-6 title">Processing Amount </div>
                             <div class="col-md-6 data">
-                                {{fboData.hraInfo.hra_processing_amount}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
+                                {{fboData.hraInfo.hra_processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
                             </div>
                         </div>
                     </div>
@@ -340,6 +451,41 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+             <!-- Water Test Data -->
+             <div *ngIf="fboData.waterTestInfo && !isVerifier" class="row border border-1 p-1">
+                <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
+                    <div class="product-title">Water Test Details</div>
+                </div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Service Name</div>
+                            <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_service_name}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Processing Amount </div>
+                            <div class="col-md-6 data">
+                                {{fboData.watertestInfo.water_test_processing_amount}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3 title">Water Test Total <br><span
+                                    style="font-size: x-small; font-weight: normal;">(18%
+                                    GST Exc.)</span></div>
+                            <div class="col-md-9 data">
+                                {{fboData.waterTestInfo.water_test_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                    [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -1,51 +1,35 @@
-<div class="app-content pt-3 p-md-3 p-lg-4" (click)="closeMultiSelect()">
-    <div class="container-xxl">
-        <div class="row g-3 mb-4 align-items-center justify-content-between">
+<!-- We want margins and paddings only in case of not called as child -->
+<div [ngClass]="{'app-content pt-3 p-md-3 p-lg-4':!isCalledAsChild}" (click)="closeMultiSelect()">
+    <div class="container-xxl" [ngClass]="{'mx-0 px-0':isCalledAsChild}">
+        <!-- We want to show main fbo form in case of called as child like in documentation section of operation form -->
+        <div class="row g-3 mb-4 align-items-center justify-content-between" *ngIf="!isCalledAsChild">
             <div class="col-md-6">
                 <h1 class="app-page-title mb-2">FBO Registration Form</h1>
 
             </div>
+            <!-- Form for showing search option and Fetching Data related to that bo or fbo -->
             <div class="col-md-6 text-end">
                 <div class="d-flex align-items-end flex-row-reverse">
-                    <!-- <form [formGroup]="existingUserFboForm" class="me-3 d-flex">
-                        <label for="isExistingFbo" class="form-label p-1">Existing FBO:</label>
-                        <input type="checkbox"  formControlName="existingUserFbo" id="isExistingFbo" class="align-middle cursor-pointer" (change)="existingUserFbo($event)" (change)="resetForm('fbo')">
-                        <div class="d-inline m-0 p-0 position-relative">
-                            <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off" class="w-100">
-                            <ul *ngIf="isExistingFbo && !isSearchEmptyFBO" class="search-suggestions">
-                                <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions" (click)="fetchExistingUser(searchSuggestion)">
-                                    <span class="fbo-name">{{searchSuggestion.fbo_name}}({{searchSuggestion.owner_name}})</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </form> -->
-<!--             
-                    <form [formGroup]="existingUserBoForm" class="me-3 d-flex">
-                        <label for="isExistingBo" class="form-label p-1">Existing BO:</label>
-                        <input type="checkbox"  formControlName="existingUserBo" id="isExistingBo" class="align-middle cursor-pointer" (change)="existingUserBo($event)" (change)="resetForm('bo')">
-                        <div class="d-inline m-0 p-0 position-relative">
-                            <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input" autocomplete="off" class="w-100">
-                            <ul *ngIf="isExistingBo && !isSearchEmptyBO" class="search-suggestions">
-                                <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo" (click)="fetchExistingBo(searchSuggestion)">
-                                   
-                                    <span class="fbo-name">{{searchSuggestion.owner_name}}({{searchSuggestion.customer_id}})</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </form> -->
 
                     <form [formGroup]="existingUserFboForm" class="me-3 d-flex align-items-center">
                         <div class="col-auto p-1">
                             <label for="isExistingFbo" class="form-label m-0">Existing Shop:</label>
                         </div>
                         <div class="col p-0">
-                            <input type="checkbox" formControlName="existingUserFbo" id="isExistingFbo" class="align-middle cursor-pointer" (change)="existingUserFbo($event)" (change)="resetForm('fbo')">
+                            <input type="checkbox" formControlName="existingUserFbo" id="isExistingFbo"
+                                class="align-middle cursor-pointer" (change)="existingUserFbo($event)"
+                                (change)="resetForm('fbo')">
                         </div>
                         <div class="d-inline m-0 p-0 position-relative">
-                            <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input w-100" autocomplete="off">
+                            <input #searchElemFBO *ngIf="isExistingFbo" type="search" (input)="filterSearch($event)"
+                                name="search" formControlName="searchUser" placeholder="Search"
+                                class="search-input w-100" autocomplete="off">
                             <ul *ngIf="isExistingFbo && !isSearchEmptyFBO" class="search-suggestions">
-                                <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions" (click)="fetchExistingUser(searchSuggestion)">
-                                    <span class="fbo-name text-capitalize">{{searchSuggestion.fbo_name.toLowerCase()}}({{searchSuggestion.owner_name.toLowerCase()}})</span>
+                                <li style="text-decoration:none; font-size: 14px; text-align:left;"
+                                    class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestions"
+                                    (click)="fetchExistingUser(searchSuggestion)">
+                                    <span
+                                        class="fbo-name text-capitalize">{{searchSuggestion.fbo_name.toLowerCase()}}({{searchSuggestion.owner_name.toLowerCase()}})</span>
                                 </li>
                             </ul>
                         </div>
@@ -56,58 +40,66 @@
                             <label for="isExistingBo" class="form-label m-0">Existing BO:</label>
                         </div>
                         <div class="col p-0">
-                            <input type="checkbox" formControlName="existingUserBo" id="isExistingBo" class="align-middle cursor-pointer" (change)="existingUserBo($event)" (change)="resetForm('bo')">
+                            <input type="checkbox" formControlName="existingUserBo" id="isExistingBo"
+                                class="align-middle cursor-pointer" (change)="existingUserBo($event)"
+                                (change)="resetForm('bo')">
                         </div>
                         <div class="d-inline m-0 p-0 position-relative">
-                            <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)" name="search" formControlName="searchUser" placeholder="Search" class="search-input w-100" autocomplete="off">
+                            <input #searchElemBO *ngIf="isExistingBo" type="search" (input)="filterSearchOnBo($event)"
+                                name="search" formControlName="searchUser" placeholder="Search"
+                                class="search-input w-100" autocomplete="off">
                             <ul *ngIf="isExistingBo && !isSearchEmptyBO" class="search-suggestions">
-                                <li style="text-decoration:none; font-size: 14px; text-align:left;" class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo" (click)="fetchExistingBo(searchSuggestion)">
-                                   
-                                    <span class="fbo-name text-capitalize">{{searchSuggestion.owner_name.toLowerCase()}}({{searchSuggestion.customer_id}})</span>
+                                <li style="text-decoration:none; font-size: 14px; text-align:left;"
+                                    class="d-flex justify-start" *ngFor="let searchSuggestion of searchSuggestionsOnBo"
+                                    (click)="fetchExistingBo(searchSuggestion)">
+
+                                    <span
+                                        class="fbo-name text-capitalize">{{searchSuggestion.owner_name.toLowerCase()}}({{searchSuggestion.customer_id}})</span>
                                 </li>
                             </ul>
                         </div>
                     </form>
                 </div>
             </div>
-            
-            
-            
+
+
+
             <div class="col-auto" [ngClass]="isEditMode ?'d-block': 'd-none'">
                 <button type="submit" class="btn btn-sm btn-primary" (click)="backToRegister()">Register Form</button>
             </div>
         </div>
         <ng-container>
-            <form [formGroup]="fboForm" class="row g-3 border border-1 rounded-3 pb-3" autocomplete="off"
-                (ngSubmit)="onSubmit()">
+            <!-- We want to show borders only in cae of not called as child -->
+            <form [formGroup]="fboForm" [ngClass]="{'row g-3 border border-1 rounded-3 pb-3':!isCalledAsChild}"
+                autocomplete="off" (ngSubmit)="onSubmit()">
 
-                <div class="row">
+                <div class="row" *ngIf="!isCalledAsChild">
                     <div class="col-md-3">
                         <label for="owner_name" class="form-label">Owner Name<sup>*</sup></label>
                         <input type="text" placeholder="Owner Name" formControlName="owner_name"
-                            class="form-control form-control-sm" id="owner_name"[readOnly]="true"
+                            class="form-control form-control-sm" id="owner_name" [readOnly]="true"
                             [ngClass]="{ 'is-invalid': submitted && fbo['owner_name'].errors }" readOnly>
                         <div *ngIf="submitted && fbo['owner_name'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['owner_name'].errors['required']">Owner name is required</div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label for="business_entity" class="form-label">Business Entity<sup>*</sup></label>
                         <input type="text" placeholder="Business Entity" formControlName="business_entity"
-                            class="form-control form-control-sm" id="business_entity"[readOnly]="true"
+                            class="form-control form-control-sm" id="business_entity" [readOnly]="true"
                             [ngClass]="{ 'is-invalid': submitted && fbo['business_entity'].errors }" readOnly>
                         <div *ngIf="submitted && fbo['business_entity'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['business_entity'].errors['required']">Business Entity is required</div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label for="business_category" class="form-label">Business Category<sup>*</sup></label> 
-                       <input type="text" placeholder="Business Category" formControlName="business_category"
-                        class="form-control form-control-sm" id="business_category" [readOnly]="true"
-                        [ngClass]="{ 'is-invalid': submitted && fbo['business_category'].errors }">
-                    <div *ngIf="submitted && fbo['business_category'].errors" class="invalid-feedback">
-                        <div *ngIf="fbo['business_category'].errors['required']">Business category id required</div>
-                    </div>
+                        <label for="business_category" class="form-label">Business Category<sup>*</sup></label>
+                        <input type="text" placeholder="Business Category" formControlName="business_category"
+                            class="form-control form-control-sm" id="business_category" [readOnly]="true"
+                            [ngClass]="{ 'is-invalid': submitted && fbo['business_category'].errors }">
+                        <div *ngIf="submitted && fbo['business_category'].errors" class="invalid-feedback">
+                            <div *ngIf="fbo['business_category'].errors['required']">Business category id required</div>
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <label for="business_ownership_type" class="form-label">Business Type<sup>*</sup></label>
@@ -115,7 +107,8 @@
                             class="form-control form-control-sm" id="owner_name" [readOnly]="true"
                             [ngClass]="{ 'is-invalid': submitted && fbo['business_ownership_type'].errors }">
                         <div *ngIf="submitted && fbo['business_ownership_type'].errors" class="invalid-feedback">
-                            <div *ngIf="fbo['business_ownership_type'].errors['required']">Business Type is required</div>
+                            <div *ngIf="fbo['business_ownership_type'].errors['required']">Business Type is required
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -147,7 +140,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label for="fbo_name" class="form-label">Brand Name<sup>*</sup></label>
                         <input type="text" placeholder="Brand Name" formControlName="fbo_name"
                             class="form-control form-control-sm" id="fbo_name" [readOnly]="isExistingFbo"
@@ -160,7 +153,8 @@
                     <div class="col-md-6">
                         <label for="address" class="form-label">Address<sup>*</sup></label>
                         <textarea type="text" placeholder="Address" rows="1" formControlName="address"
-                            autocomplete="off" class="form-control form-control-sm" id="address" [readOnly]="(isExistingFbo && selectedFbo  && selectedFbo.address)"
+                            autocomplete="off" class="form-control form-control-sm" id="address"
+                            [readOnly]="(isExistingFbo && selectedFbo  && selectedFbo.address)"
                             [ngClass]="{ 'is-invalid': submitted && fbo['address'].errors }"></textarea>
                         <div *ngIf="submitted && fbo['address'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['address'].errors['required']">Address is required</div>
@@ -170,7 +164,7 @@
                         <label for="village" class="form-label">Village<sup *ngIf="isFoscos">*</sup></label>
                         <input type="text" placeholder="Village" formControlName="village" id="village"
                             class="form-control form-control-sm" autocomplete="off" [readOnly]="isExistingFbo"
-                            [ngClass]="{ 'is-invalid': submitted && fbo['village'].errors }"/>
+                            [ngClass]="{ 'is-invalid': submitted && fbo['village'].errors }" />
                         <div *ngIf="submitted && fbo['village'].errors" class="invalid-feedback d-block">
                             <div *ngIf="fbo['village'].errors['required']">Village is required</div>
                         </div>
@@ -180,7 +174,7 @@
                         <label for="tehsil" class="form-label">Tehsil<sup *ngIf="isFoscos">*</sup></label>
                         <input type="text" placeholder="Tehsil" formControlName="tehsil" id="tehsil"
                             class="form-control form-control-sm" autocomplete="off" [readOnly]="isExistingFbo"
-                             [ngClass]="{ 'is-invalid': submitted && fbo['tehsil'].errors }" />
+                            [ngClass]="{ 'is-invalid': submitted && fbo['tehsil'].errors }" />
                         <div *ngIf="submitted && fbo['tehsil'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['tehsil'].errors['required']">Tehsil is required</div>
                         </div>
@@ -190,7 +184,7 @@
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }" type="text"
                             placeholder="State" formControlName="state" [value]="allocated_state"
-                            class="form-control form-control-sm" [readOnly]="true"/>
+                            class="form-control form-control-sm" [readOnly]="true" />
                         <div *ngIf="submitted && fbo['state'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['state'].errors['required']">State is required</div>
                         </div>
@@ -200,7 +194,7 @@
                         <div class="col-md-3">
                             <label for="state" class="form-label">State<sup>*</sup></label>
                             <select type="string" formControlName="state" id="state" (change)="onStateSelect()"
-                                class="form-select form-select-sm cursor-pointer" autocomplete="off" 
+                                class="form-select form-select-sm cursor-pointer" autocomplete="off"
                                 [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }"
                                 [attr.disabled]="(isExistingFbo && selectedFbo && (selectedFbo.state))?true:null">
                                 <option value="" disabled selected>Select the State</option>
@@ -219,9 +213,10 @@
                     <div class="col-md-3">
                         <label for="district" class="form-label">District<sup>*</sup></label>
                         <select type="string" placeholder="District" formControlName="district" id="district"
-                            class="form-select form-select-sm cursor-pointer" autocomplete="off" 
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
                             [ngClass]="{ 'is-invalid': submitted && fbo['district'].errors }"
-                            [attr.disabled]="(isExistingFbo && selectedFbo&& selectedFbo.district)?true:null" (change)="onDistrictChange()">
+                            [attr.disabled]="(isExistingFbo && selectedFbo&& selectedFbo.district)?true:null"
+                            (change)="onDistrictChange()">
                             <option value="" disabled selected>Select the District</option>
                             <option *ngFor="let district of allocated_district" [value]="district">{{district}}</option>
                         </select>
@@ -238,7 +233,8 @@
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
                             class="form-select form-select-sm cursor-pointer" autocomplete="off"
-                            [attr.disabled]="(isExistingFbo && selectedFbo && selectedFbo.pincode)?true:null" [ngClass]="{ 'is-invalid': submitted && fbo['pincode'].errors }" >
+                            [attr.disabled]="(isExistingFbo && selectedFbo && selectedFbo.pincode)?true:null"
+                            [ngClass]="{ 'is-invalid': submitted && fbo['pincode'].errors }">
                             <option value="" disabled selected>Select the Pincode</option>
                             {{allocated_pincodes| json}}
                             <option *ngFor="let pincode of allocated_pincodes" [value]="pincode">{{pincode}}</option>
@@ -264,23 +260,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
-                        <app-multi-select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
-                            [options]="productList" [forProducts]="true" [placeHolder]="'Select Products'"
-                            class="cursor-pointer"></app-multi-select>
-                        <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
-                            <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
-                        </div>
-                    </div>
                     <div *ngIf="need_gst_number" class="col-md-3">
                         <label for="gst_number" class="form-label">GST Number<sup>*</sup></label>
                         <input type="text" placeholder="GST Number" formControlName="gst_number"
-                            class="form-control form-control-sm" id="gst_number" [readOnly]="(isExisting && searchElemFBO.gstNumber)"
+                            class="form-control form-control-sm" id="gst_number"
+                            [readOnly]="(isExisting && searchElemFBO.gstNumber)"
                             [ngClass]="{ 'is-invalid': submitted && fbo['gst_number'].errors }" />
                         <div *ngIf="submitted && fbo['gst_number'].errors" class="invalid-feedback">
                             <div *ngIf="fbo['gst_number'].errors['required']">GST Number is required</div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
+                    <app-multi-select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
+                        [options]="productList" [forProducts]="true" [placeHolder]="'Select Products'"
+                        class="cursor-pointer" [disabledArray]="disabledOptions"></app-multi-select>
+                    <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
+                        <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
                     </div>
                 </div>
 
@@ -294,11 +292,112 @@
                     (foscosGSTAmount)="foscosGSTAmount($event)"></app-foscos>
 
                 <!-- Hyginene Audit Component -->
-                <app-hygiene-audit *ngIf="isHygiene" formGroupName="hygiene_audit"  
-                (hygieneTotal)="hygieneTotalAmount($event)" (hygieneGSTAmount)="hygieneGSTAmount($event)"
+                <app-hygiene-audit *ngIf="isHygiene" formGroupName="hygiene_audit"
+                    (hygieneTotal)="hygieneTotalAmount($event)" (hygieneGSTAmount)="hygieneGSTAmount($event)"
                     [submitted]="submitted"></app-hygiene-audit>
 
-                <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene">
+                <!-- Medical Form -->
+                <div *ngIf="isMedical" [formGroup]="medical">
+                    <div class="row">
+                        <h6 class="">Medical</h6>
+                        <div class="col-md-3">
+                            <label for="medical_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+                            <input type="number" [attr.min]="minValue" step="1"
+                                placeholder="Processing Amount"
+                                [readonly]="isReadOnly" formControlName="medical_processing_amount"
+                                class="form-control form-control-sm"
+                                (change)="medicalRecpChange($event)" [readOnly]="true"
+                                [ngClass]="{ 'is-invalid': submitted && medical.get('medical_processing_amount')?.errors}"
+                                id="medical_processing_amount" group='fostac' />
+                            <div *ngIf="submitted && medical.get('medical_processing_amount')?.errors" class="invalid-feedback">
+                                <div *ngIf="medical.get('medical_processing_amount')?.errors?.['required']">Processing Amount is
+                                    required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="recipient_no" class="form-label">No. of Recipient<sup>*</sup></label>
+                            <input type="number" 
+                                placeholder="No. of Recipient"
+                                [readonly]="isReadOnly" formControlName="recipient_no"
+                                class="form-control form-control-sm"
+                                (change)="medicalRecpChange($event)"
+                                [ngClass]="{ 'is-invalid': submitted && medical.get('recipient_no')?.errors}"
+                                id="recipient_no" group='fostac' />
+                            <div *ngIf="submitted && medical.get('recipient_no')?.errors" class="invalid-feedback">
+                                <div *ngIf="medical.get('recipient_no')?.errors?.['required']">No. of Recipient is
+                                    required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="medical_total" class="form-label">MedicalTotal Amount<sup>*</sup>
+                                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+                            <input type="number" 
+                                placeholder="MedicalTotal Amount"
+                                [readonly]="isReadOnly" formControlName="medical_total"
+                                class="form-control form-control-sm"
+                                (change)="medicalRecpChange($event)" [readOnly]="true"
+                                [ngClass]="{ 'is-invalid': submitted && medical.get('medical_total')?.errors}"
+                                id="medical_total" group='fostac' />
+                            <div *ngIf="submitted && medical.get('medical_total')?.errors" class="invalid-feedback">
+                                <div *ngIf="medical.get('medical_total')?.errors?.['required']">MedicalTotal Amount is
+                                    required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="isWaterTest" [formGroup]="water_test_report">
+                    <div class="row">
+                        <h6 class="">Water Test Report</h6>
+                        <div class="col-md-3">
+                            <label for="water_test_service_name" class="form-label">Service Name<sup>*</sup></label>
+                            <select id="water_test_service_name" class="form-select form-select-sm"
+                                [ngClass]="{ 'is-invalid': submitted && water_test_report.get('water_test_service_name')?.errors}"
+                                formControlName="water_test_service_name" 
+                                (change)="onWaterTestServiceChange($event)">
+                                <option value="" disabled selected>Select the Service</option>
+                                <option *ngFor="let servicename of waterTestServiceName" [value]="servicename">{{ servicename }}
+                                </option>
+                            </select>
+                            <div *ngIf="submitted && water_test_report.get('water_test_service_name')?.errors" class="invalid-feedback">
+                                <div *ngIf="water_test_report.get('water_test_service_name')?.errors?.['required']">Service is
+                                    required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="water_test_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+                            <input type="number" 
+                                placeholder="Processing Amount"
+                                [readonly]="isReadOnly" formControlName="water_test_processing_amount"
+                                class="form-control form-control-sm"
+                                 [readOnly]="true"
+                                [ngClass]="{ 'is-invalid': submitted && water_test_report.get('water_test_processing_amount')?.errors}"
+                                id="water_test_processing_amount" group='water_test_report' />
+                            <div *ngIf="submitted && water_test_report.get('water_test_processing_amount')?.errors" class="invalid-feedback">
+                                <div *ngIf="water_test_report.get('water_test_processing_amount')?.errors?.['required']">Processing Amount is
+                                    required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="water_test_total" class="form-label">Water Test Total<sup>*</sup>
+                                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+                            <input type="number" [attr.min]="minValue" step="1"
+                                placeholder="Water Test Total"
+                                [readonly]="isReadOnly" formControlName="water_test_total"
+                                class="form-control form-control-sm"
+                                (change)="medicalRecpChange($event)" [readOnly]="true"
+                                [ngClass]="{ 'is-invalid': submitted && water_test_report.get('water_test_total')?.errors}"
+                                id="water_test_total" group='fostac' />
+                            <div *ngIf="submitted && water_test_report.get('water_test_total')?.errors" class="invalid-feedback">
+                                <div *ngIf="water_test_report.get('water_test_total')?.errors?.['required']">Water Test Total is
+                                    required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest">
                     <div class="col-md-3">
                         <label for="grand_total" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
                             <span style="font-size: x-small;">(18% GST Inc.)</span></label>
@@ -331,7 +430,7 @@
                         <label for="payee_name" class="form-label">Check Payee Name</label>
                         <input type="text" placeholder="Payee Name" formControlName="payee_name" id="payee_name"
                             class="form-control form-control-sm" autocomplete="off"
-                             [ngClass]="{ 'is-invalid': submitted && chequedata['payee_name'].errors }" />
+                            [ngClass]="{ 'is-invalid': submitted && chequedata['payee_name'].errors }" />
                         <div *ngIf="submitted && chequedata['payee_name'].errors" class="invalid-feedback">
                             <div *ngIf="chequedata['payee_name'].errors['required']">Payee name is required</div>
                         </div>
@@ -340,8 +439,8 @@
                     <div class="col-md-3">
                         <label for="bank_name" class="form-label">Bank Name</label>
                         <input type="text" placeholder="Bank Name" formControlName="bank_name" id="bank_name"
-                            class="form-control form-control-sm" autocomplete="off" 
-                             [ngClass]="{ 'is-invalid': submitted && chequedata['bank_name'].errors }" />
+                            class="form-control form-control-sm" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && chequedata['bank_name'].errors }" />
                         <div *ngIf="submitted && chequedata['bank_name'].errors" class="invalid-feedback">
                             <div *ngIf="chequedata['bank_name'].errors['required']">Bank name is required</div>
                         </div>
@@ -349,19 +448,20 @@
 
                     <div class="col-md-3">
                         <label for="account_number" class="form-label">Account Number</label>
-                        <input type="text" placeholder="Account Number" formControlName="account_number" id="account_number"
-                            class="form-control form-control-sm" autocomplete="off"
-                             [ngClass]="{ 'is-invalid': submitted && chequedata['account_number'].errors }" />
+                        <input type="text" placeholder="Account Number" formControlName="account_number"
+                            id="account_number" class="form-control form-control-sm" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && chequedata['account_number'].errors }" />
                         <div *ngIf="submitted && chequedata['account_number'].errors" class="invalid-feedback">
-                            <div *ngIf="chequedata['account_number'].errors['required']">Account number is required</div>
+                            <div *ngIf="chequedata['account_number'].errors['required']">Account number is required
+                            </div>
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <label for="cheque_number" class="form-label">Cheque Number</label>
-                        <input type="text" placeholder="Cheque Number" formControlName="cheque_number" id="cheque_number"
-                            class="form-control form-control-sm" autocomplete="off"
-                             [ngClass]="{ 'is-invalid': submitted && chequedata['cheque_number'].errors }" />
+                        <input type="text" placeholder="Cheque Number" formControlName="cheque_number"
+                            id="cheque_number" class="form-control form-control-sm" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && chequedata['cheque_number'].errors }" />
                         <div *ngIf="submitted && chequedata['cheque_number'].errors" class="invalid-feedback">
                             <div *ngIf="chequedata['cheque_number'].errors['required']">Cheque number is required</div>
                         </div>
@@ -369,9 +469,10 @@
 
                     <div class="col-md-3">
                         <label for="cheque_image" class="form-label">Upload Cheque Image</label>
-                        <input type="File" placeholder="Upload Cheque Image" formControlName="cheque_image" id="cheque_image"
-                            class="form-control form-control-sm" autocomplete="off" (change)="uploadChequeImage($event)"
-                             [ngClass]="{ 'is-invalid': submitted && chequedata['cheque_image'].errors }" />
+                        <input type="File" placeholder="Upload Cheque Image" formControlName="cheque_image"
+                            id="cheque_image" class="form-control form-control-sm" autocomplete="off"
+                            (change)="uploadChequeImage($event)"
+                            [ngClass]="{ 'is-invalid': submitted && chequedata['cheque_image'].errors }" />
                         <div *ngIf="submitted && chequedata['cheque_image'].errors" class="invalid-feedback">
                             <div *ngIf="chequedata['cheque_image'].errors['required']">Cheque image is required</div>
                         </div>

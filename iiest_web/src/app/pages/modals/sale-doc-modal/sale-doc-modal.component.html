@@ -68,8 +68,8 @@
             <input type="file" (change)="onImageChangeFromFile($event, 'aadharPhoto')" placeholder="Aadhar Photo"
               formControlName="managerAadhar" class="form-control form-control-sm" id="managerAadhar" multiple
               [ngClass]="{ 'is-invalid': submitted && docform['managerAadhar'].errors }" />
-            <div *ngIf="submitted && docform['managerAadhar'].errors" class="invalid-feedback">
-              <div *ngIf="docform['managerAadhar'].errors['required']">Manager's Aadhar is required.(jpeg or png)</div>
+            <div *ngIf="submitted && docform['managerAadhar'].errors" class="invalid-feedback" style="display: block;">
+              <div *ngIf="docform['managerAadhar'].errors['required']" style="display: block;">Manager's Aadhar is required.(jpeg or png)</div>
               <div *ngIf="docform['managerAadhar'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
                 files are allowed.</div>
             </div>

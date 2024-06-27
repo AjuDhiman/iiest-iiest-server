@@ -124,6 +124,16 @@ function getProductSpecificData(product, qty, prodDetails, extraFee) {
             description = `<b>Internal Hygiene Auditing Services</b> <br> Hygiene Rating`
             code = `AU-IAH`
             break;
+        case 'Medical':
+            description = `<b>Safe Food & Good Hygiene</b> <br> 
+                              Medical Certificate of ${qty} ${qty === 1 ? 'Candidate' : 'Candidates'}`
+            code = `IS-MT`
+            break;
+        case 'Water Test Report':
+            description = `<b>Safe Food & Good Hygiene</b> <br>
+                                Water Test Report`
+            code = `IS-WT`
+            break;
     }
 
     return { description, code }

@@ -43,7 +43,7 @@ export class InrAmountPipe implements PipeTransform {
       // Break rupees into units and format with commas
       formattedRupees = '₹' + firstDigits.toString().replace(regex, ',') + ',' +  lastDigits;
     } else {
-      formattedRupees = '₹' + rupees.toString().replace(regex, ',');
+      formattedRupees = '₹' + rupees.toString();
     }
 
     return formattedRupees;

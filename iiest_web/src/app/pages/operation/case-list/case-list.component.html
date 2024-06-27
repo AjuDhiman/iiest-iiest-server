@@ -1,14 +1,14 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0" *ngIf="panelType==='Verifier Panel'">
         <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
-          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Fostac'}"
-            (click)="toogleTabs('Fostac')">Fostac</a>
-          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Foscos'}"
-            (click)="toogleTabs('Foscos')">Foscos</a>
-          <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='HRA'}"
-            (click)="toogleTabs('HRA')">HRA</a>
+            <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Fostac'}"
+                (click)="toogleTabs('Fostac')">Fostac</a>
+            <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Foscos'}"
+                (click)="toogleTabs('Foscos')">Foscos</a>
+            <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='HRA'}"
+                (click)="toogleTabs('HRA')">HRA</a>
         </li>
-      </ul>
+    </ul>
     <div class="container-xxl border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4 m-0">
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
@@ -102,14 +102,17 @@
                                         <th class="cell">Recipient Name</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
+                                        <th class="cell">BO Id</th>
+                                        <th class="cell">Shop Id</th>
                                         <th class="cell">Contact No.</th>
-                                        <!-- <th class="cell">BO Id</th>
-                                        <th class="cell">Shop Id</th> -->
                                         <th class="cell">District</th>
                                         <th class="cell">State</th>
                                         <!-- <th *ngIf="forTraining" class="cell">Enrollment No.</th> -->
                                         <!-- <th class="cell">Type of Licence</th> -->
+                                        <th class="cell">Sales Date</th>
                                         <th class="cell">Sales Executive</th>
+                                        <th class="cell text-center">Verification Status</th>
+                                        <!-- <th class="cell">Action</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,22 +122,47 @@
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
                                                 (click)="collectResData('Fostac', data._id)"
-                                                title="View Case text-capitalize">{{data.name.toLowerCase()}}</span></td>
+                                                title="View Case text-capitalize">{{data.name.toLowerCase()}}</span>
+                                        </td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        </td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
+                                        </td>
+                                        <td class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.customer_id}}</span></td>
                                         <td class="cell"><span class="truncate">{{data.phoneNo}}</span></td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.district.toLowerCase()}}</span></td>
-                                        <td class="cell"><span class="truncate text-capitalize">{{data.salesInfo.fboInfo.state.toLowerCase()}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.district.toLowerCase()}}</span>
+                                        </td>
+                                        <td class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.state.toLowerCase()}}</span>
                                         </td>
                                         <!-- <td *ngIf="forTraining" class="cell">{{data.enrollment_no}}<span
                                                 class="truncate"></span>
                                         </td> -->
                                         <td class="cell"><span
+                                                class="truncate text-capitalize">{{getFormattedSalesDate(data.salesInfo.createdAt.toString())}}</span>
+                                        </td>
+                                        <td class="cell"><span
                                                 class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
+                                        <td class="cell text-center"><span class="truncate text-capitalize" [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
+                                            {{data.verificationInfo.length?'Verified':'Pending'}}
+                                         </span>
+                                     </td>
+                                        <!-- <td class="cell"><span class="truncate text-capitalize">
+                                                <fa-icon class="fa-l selector mx-2"
+                                                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                    (click)="viewFboDetails($event, data.salesInfo)"
+                                                    title="View Detail"></fa-icon>
+
+                                            </span>
+                                        </td> -->
                                     </tr>
                                 </tbody>
                                 <tbody *ngIf="!filteredData || filteredData.length===0">
@@ -151,14 +179,19 @@
                                     <tr>
                                         <th class="cell">S.No</th>
                                         <th class="cell">Manager Name</th>
-                                        <th class="cell">Address</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
+                                        <th class="cell">BO Id</th>
+                                        <th class="cell">Shop Id</th>
+                                        <th class="cell">Address</th>
                                         <!-- <th class="cell">KOB</th>
                                         <th class="cell">No. of Food Handlers</th> -->
                                         <th class="cell">HRA Total</th>
                                         <!-- <th class="cell">State</th> -->
+                                        <th class="cell">Sales Date</th>
                                         <th class="cell">Sales Executive</th>
+                                        <th class="cell text-center">Verification Status</th>
+                                        <th class="cell">Action</th>
                                         <!-- <th class="cell">Stage</th> -->
                                     </tr>
                                 </thead>
@@ -168,23 +201,51 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                                (click)="collectResData('HRA', data._id)">{{data.managerName.toLowerCase()}}</span></td>
+                                                (click)="collectResData('HRA', data._id)">{{data.managerName.toLowerCase()}}</span>
+                                        </td>
+
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.customer_id}}</span>
+                                        </td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize">{{data.address.toLowerCase()}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
-                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
-                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
+                                                class="truncate text-capitalize">{{data.address.toLowerCase()}}</span>
+                                        </td>
                                         <!-- <td class="cell"><span
                                                 class="truncate">{{data.kob}}</span>
                                         </td>
                                         <td class="cell text-center"><span
                                                 class="truncate">{{data.foodHandlersCount}}</span></td> -->
                                         <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
-                                                class="truncate">{{data.salesInfo.hraInfo.hra_total}}</span></td>
+                                                class="truncate">{{data.salesInfo.hraInfo.hra_total | inrAmount}}</span>
+                                        </td>
+                                        <td *ngIf="productType==='HRA'" class="cell"><span
+                                                class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span>
+                                        </td>
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
-                                            <span class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
+                                            <span
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td class="cell text-center"><span class="truncate text-capitalize " [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
+                                            {{data.verificationInfo.length?'Verified':'Pending'}}
+                                         </span>
+                                     </td>
+                                        <td class="cell"><span class="truncate text-capitalize">
+                                                <fa-icon class="fa-l selector mx-2"
+                                                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                    (click)="viewFboDetails($event, data.salesInfo)"
+                                                    title="View Detail"></fa-icon>
+
+                                            </span>
                                         </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
                                         </td> -->
@@ -203,20 +264,25 @@
                                 </tbody>
                             </table>
 
-                            
+
                             <table *ngIf="productType==='Foscos'"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
                                         <th class="cell">S.No</th>
                                         <th class="cell">Manager Name</th>
-                                        <th class="cell">Address</th>
                                         <th class="cell">Fbo Name</th>
                                         <th class="cell">Owner Name</th>
+                                        <th class="cell">Bo Id</th>
+                                        <th class="cell">Shop Id</th>
+                                        <th class="cell">Address</th>
                                         <th class="cell">Licence Type</th>
                                         <th class="cell">Foscos Total</th>
                                         <!-- <th class="cell">State</th> -->
+                                        <th class="cell">Sales Date</th>
                                         <th class="cell">Sales Executive</th>
+                                        <th class="cell text-center">verification Status</th>
+                                        <th class="cell">Action</th>
                                         <!-- <th class="cell">Stage</th> -->
                                     </tr>
                                 </thead>
@@ -226,24 +292,51 @@
                                         <td class="cell"><span
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
-                                                (click)="collectResData('Foscos', data._id)">{{data.managerName.toLowerCase()}}</span></td>
+                                                (click)="collectResData('Foscos', data._id)">{{data.managerName.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span
+                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span
+                                                class="truncate">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
+                                        </td>
                                         <td class="cell"><span
-                                                class="truncate text-capitalize">{{data.address.toLowerCase()}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span></td>
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize"><span
-                                                class="truncate">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span></td>
+                                                class="truncate text-capitalize">{{data.address.toLowerCase()}}</span>
+                                        </td>
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
+                                        </td>
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.customer_id}}</span>
+                                        </td>
                                         <td class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.license_category}}</span>
                                         </td>
-                                        <td class="cell"><span
-                                                class="truncate">{{data.salesInfo.foscosInfo.foscos_total}}</span></td>
+                                        <td *ngIf="productType==='Foscos'" class="cell"><span
+                                                class="truncate">{{data.salesInfo.foscosInfo.foscos_total
+                                                | inrAmount}}</span></td>
+                                        <td class="cell"><span class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span></td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
-                                            <span class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
+                                            <span
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
+                                        <td class="cell text-center"><span class="truncate text-capitalize" [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
+                                           {{data.verificationInfo.length?'Verified':'Pending'}}
+                                        </span>
+                                    </td>
+                                    <td class="cell"><span class="truncate text-capitalize">
+                                            <fa-icon class="fa-l selector mx-2"
+                                                style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                (click)="viewFboDetails($event, data.salesInfo)"
+                                                title="View Detail"></fa-icon>
+
+                                        </span>
+                                    </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
                                         </td> -->
                                         <ng-template #noData>
@@ -273,8 +366,8 @@
                     <div *ngIf="filteredData && forTraining" class="text-sm" style="font-size: 13px;">
                         {{filteredData.length}} filtered
                         from {{totalCount}} {{serviceType}} Cases</div>
-                    <pagination-controls previousLabel="Prev" nextLabel="Next"
-                        (pageChange)="onTableDataChange($event)" id="case-list"></pagination-controls>
+                    <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)"
+                        id="case-list"></pagination-controls>
                 </div>
             </div>
         </div>

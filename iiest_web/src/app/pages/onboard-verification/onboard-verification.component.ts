@@ -10,14 +10,15 @@ import { RegisterService } from 'src/app/services/register.service';
 })
 export class OnboardVerificationComponent implements OnInit, AfterViewInit{
 
-  id:string;
+  id:string;//id for finding record in Bo database
+  //icons
   faCheckCircle: IconDefinition = faCheckCircle;
   faCircleExclamation: IconDefinition = faCircleExclamation;
   faCircleXmark:IconDefinition = faCircleXmark;
 
-  status: 'ongoing'|'not-verified'|'verified' = 'ongoing';
+  status: 'ongoing'|'not-verified'|'verified' = 'ongoing';//restrict status to only 3 values
   loading: boolean = false;
-  message: string = 'Verifing Email';
+  message: string = 'Verifing Email'; //Default Message
 
   constructor(private _registerService: RegisterService,
     private route: ActivatedRoute,
@@ -28,31 +29,31 @@ export class OnboardVerificationComponent implements OnInit, AfterViewInit{
 
   ngOnInit(): void {
     const bodyElement = document.body;
-    bodyElement.classList.remove('app');
-    this.id = this.route.snapshot.params['id'];
-    this.verifyMail();
+    bodyElement.classList.remove('app'); //remove calss app from whole body for removing margins and padding related to it
+    this.id = this.route.snapshot.params['id'];//getting id from route
+    this.verifyMail(); // verify mail api
   }
 
   ngAfterViewInit(): void {
     const bodyElement = document.body;
-    bodyElement.classList.remove('app');
+    bodyElement.classList.remove('app');//remove calss app from whole body for removing margins and padding related to it
   }
 
   verifyMail(): void{
-    this.loading = true;
+    this.loading = true; //turn on loading for while calling ap
     this._registerService.verifyMail(this.id).subscribe({
       next: res => {
-        this.loading = false;
+        this.loading = false; //setting loading off on success
         this.status = 'verified';
-        this.message = res.message;
+        this.message = res.message; //getting message from backend
         const timeOut = setTimeout(() => {
           this.router.navigate(['/']);
         }, 3000) //redirect after 3 sec of completion
       },
       error: err => {
-        this.loading = false;
+        this.loading = false;//setting loading off on error
         this.status = 'not-verified';
-        this.message = err.error.message;
+        this.message = err.error.message;//getting message from backend
         const timeOut = setTimeout(() => {
           this.router.navigate(['/']);
         }, 3000)//redirect after 3 sec of completion

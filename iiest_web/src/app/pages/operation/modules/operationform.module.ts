@@ -12,6 +12,7 @@ import { RevertSectionComponent } from 'src/app/pages/operation/operationform/re
 import { GeneralSectionComponent } from 'src/app/pages/operation/operationform/general-section/general-section.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-modal/documentation-modal.component';
+import { SalesModule } from '../../sales/sales.module';
 
 
 
@@ -31,7 +32,8 @@ import { DocumentationModalComponent } from 'src/app/pages/modals/documentation-
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    SalesModule
   ],
   exports: [
     OperationformComponent,

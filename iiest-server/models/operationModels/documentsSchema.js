@@ -7,22 +7,10 @@ const docSchema = new Schema({
         required: true,
         trim: true
     },
-    name: {
-        type: String,
-        required: true
-    },
-    format: {
-        type: String,
-        required: true,
-    },
-    multipleDoc: {
-        type: Boolean,
-        required: true
-    },
-    src: {
-        type: [String],
-        required: true
-    }
+   documents: {
+        type: [Object],
+        default: []
+   }
 },{timestamps: true});
 
 const docsModel = mongoose.model('documents', docSchema);

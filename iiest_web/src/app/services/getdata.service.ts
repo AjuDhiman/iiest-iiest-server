@@ -249,6 +249,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getUnapprovedChequeSale(): Observable<any> { // for geting delivery status of a recipient
+    const url: string = `${this.url}/getunapprovedchequesale`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getDocs(oid: string): Observable<any> { // for getting batchlist data from training
     oid = oid.replace(/\//g, 'slash'); // replace '/' by word slash so we can pass it to as api endpoint
     console.log(oid);

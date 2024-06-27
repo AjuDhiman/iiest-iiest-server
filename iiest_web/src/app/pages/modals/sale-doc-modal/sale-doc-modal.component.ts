@@ -36,7 +36,7 @@ export class SaleDocModalComponent implements OnInit {
   aadharFile: File;
   shopPhotoFile: File;
   managerPhotoFile: File;
-  loading: boolean;
+  loading: boolean = false; // var for deciding loader 
   serviceType: string;
   fboData: any;
 
@@ -66,6 +66,8 @@ export class SaleDocModalComponent implements OnInit {
       return;
     }
 
+    this.loading = true;
+
     // Call the uploadDoc function for each document and wait for all to finish
     Promise.all([
       this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile),
@@ -78,6 +80,7 @@ export class SaleDocModalComponent implements OnInit {
       this._registerService.updateFboBasicDocStatus(this.fboData.fboInfo._id).subscribe({
         next: res => {
           this._toastrService.success('', `Docs Uploaded Successfully.`);
+          this.loading = false;
           location.reload();
         }
       })
@@ -93,9 +96,9 @@ export class SaleDocModalComponent implements OnInit {
       managerName: ['', Validators.required],
       address: ['', Validators.required],
       pincode: ['', Validators.required],
-      shopPhoto: ['', Validators.required],
-      managerPhoto: ['', Validators.required],
-      managerAadhar: ['', Validators.required]
+      shopPhoto: ['', [Validators.required, this.validateFileType(['png', 'jpg', 'jpeg'])]],
+      managerPhoto: ['',[ Validators.required,this.validateFileType(['png', 'jpg', 'jpeg'])]],
+      managerAadhar: ['', [Validators.required, this.validateFileType(['png', 'jpg', 'jpeg'])]]
     });
 
     this.getDocsObjs();
@@ -143,7 +146,7 @@ export class SaleDocModalComponent implements OnInit {
       saveDocument = this._registerService.saveFostacDocument(formData);
     } else if (this.serviceType == 'Foscos') {
       saveDocument = this._registerService.saveFoscosDocument(formData);
-    } else if (this.serviceType == 'HRA') {
+    } else if (this.serviceType == 'HRA' || this.serviceType == 'Medical' || this.serviceType == 'Water Test Report') {
       saveDocument = this._registerService.saveHraDocument(formData);
     }
 
@@ -157,9 +160,6 @@ export class SaleDocModalComponent implements OnInit {
         }
       });
     });
-
-
-    this.activeModal.close();
 
   }
 
@@ -184,5 +184,21 @@ export class SaleDocModalComponent implements OnInit {
     }
     const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.doc = obj;
+  }
+
+  validateFileType(allowedExtensions: string[]) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const file = control.value;
+      if (file) {
+        const fileExtension = file.split('.').pop()?.toLowerCase();
+        if (fileExtension && allowedExtensions.find(item => item === fileExtension)) {
+          return null;
+        } else {
+          return { invalidFileType: true };
+        }
+      }
+
+      return null;
+    };
   }
 }

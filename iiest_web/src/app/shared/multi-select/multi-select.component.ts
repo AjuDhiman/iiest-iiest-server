@@ -9,7 +9,7 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 })
 export class MultiSelectComponent implements OnChanges {
   faAngleDown = faAngleDown;
-  all: Array<{ value: string | number, checked: boolean }> = [];
+  all: Array<{ value: string | number, checked: boolean, isDisabled: boolean }> = [];
   selected: Array<string | number> = [];
   isdropped = false;
   invalid: boolean = false;
@@ -25,6 +25,8 @@ export class MultiSelectComponent implements OnChanges {
   @Input() forProducts:boolean=false;
 
   @Input() isDisabled: boolean = false;
+
+  @Input() disabledArray: string[]|number[] = []; // this array will contain all the value to be diabled from all options
 
   @ViewChild('display') display: ElementRef;
 
@@ -46,7 +48,7 @@ export class MultiSelectComponent implements OnChanges {
     //we are associating a checked boolean with every value for keepig track of check boxes 
     //associated with them
     for (let option of this.options) {
-      this.all.push({ value: option, checked: false }); 
+      this.all.push({ value: option, checked: false, isDisabled: this.disabledArray.includes((option) as never)?true:false }); // we are setting basic initial condition for array of all check boxes , value for value , checked for selecting checked or not and isDisbled for deciding disbled or not
     }
   }
 
