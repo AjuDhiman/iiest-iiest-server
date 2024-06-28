@@ -11,6 +11,8 @@ import { SalesState } from 'src/app/store/state/sales.state';
 import { Observable, Subscription } from 'rxjs';
 import { GetSales } from 'src/app/store/actions/sales.action';
 import { SaleDocModalComponent } from '../../modals/sale-doc-modal/sale-doc-modal.component';
+import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-fbolist',
@@ -43,6 +45,10 @@ export class FbolistComponent implements OnInit {
   isVerifier: boolean = false;
   // saleApprovel = 'Approved';
 
+  selectedSaleId: string // this var will contain sale id of sale of whichj we want to update sale cheque status
+
+  userData: any; // for for getting user data
+
   activeTab: string = 'Fostac';
 
 
@@ -63,11 +69,13 @@ export class FbolistComponent implements OnInit {
     private registerService: RegisterService,
     private exportAsService: ExportAsService,
     private store: Store,
+    private _toastrService: ToastrService,
     private modalService: NgbModal) { }
 
   ngOnInit(): void {
     let user: any = this.registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
+    this.userData = parsedUser;
     if (parsedUser.designation === 'Verifier') {
       this.isVerifier = true;
     }
@@ -219,13 +227,15 @@ export class FbolistComponent implements OnInit {
         modalRef.componentInstance.serviceType = serviceType;
         modalRef.componentInstance.isVerifier = this.isVerifier;
       }
-    } else {
-      const modalRef = this.modalService.open(SaleDocModalComponent, { size: 'lg', backdrop: 'static' });
+    } 
+
+  }
+
+  uploadSaleDoc(res: any, serviceType: string){ //func for uploading sale doc by opening sale doc modal
+    const modalRef = this.modalService.open(SaleDocModalComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.fboData = res;
       modalRef.componentInstance.serviceType = serviceType;
       // modalRef.componentInstance.isVerifier = this.isVerifier;
-    }
-
   }
 
   //View FBO Details
@@ -277,26 +287,22 @@ export class FbolistComponent implements OnInit {
   calculateProcessingAmount(employee: any): number {
     let processingAmount = 0;
 
-
-    if (employee.product_name) {
-      // Calculate processing amount based on the product name
-      employee.product_name.forEach((product: any) => {
-
-        if (product == "Fostac") {
-          processingAmount += employee.fostacInfo.fostac_processing_amount * employee.fostacInfo.recipient_no;
-        }
-        if (product == "Foscos") {
-          let watertest = 0;
-          if (employee.foscosInfo.water_test_fee != 0) {
-            watertest = employee.foscosInfo.water_test_fee - 1200;
-          }
-
-          processingAmount += (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
-        }
-        if (product == "HRA") {
-          processingAmount += employee.hraInfo.hra_processing_amount * employee.hraInfo.shops_no;
-        }
-      });
+    if (this.activeTab === 'Fostac') {
+      processingAmount = employee.fostacInfo.fostac_processing_amount * employee.fostacInfo.recipient_no;
+    } else if (this.activeTab === 'Foscos') {
+      let watertest = 0;
+      if (employee.foscosInfo.water_test_fee != 0) {
+        watertest = employee.foscosInfo.water_test_fee - 1200;
+      }
+      processingAmount = (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
+    } else if(this.activeTab === 'HRA') {
+      processingAmount = employee.hraInfo.hra_processing_amount * employee.hraInfo.shops_no;
+    }
+    else if(this.activeTab === 'Medical') {
+      processingAmount = employee.medicalInfo.medical_processing_amount * employee.medicalInfo.recipient_no;
+    }
+    else if(this.activeTab === 'Water Test Report') {
+      processingAmount = employee.waterTestInfo.water_test_processing_amount;
     }
 
     return processingAmount;
@@ -325,14 +331,40 @@ export class FbolistComponent implements OnInit {
 
   getSalesStatus(sale: any): string {
     if (this.isVerifier) {
-     return sale.checkStatus
+      return sale.checkStatus
     } else {
 
-      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved')  && sale.fboInfo.isBasicDocUploaded) {
+      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved') && sale.fboInfo.isBasicDocUploaded) {
         return 'Approved'
       } else {
         return 'Pending'
       }
+    }
+  }
+
+  approveCheque($event: Event, saleId: string, sale: any): void { //methord for approving cheque in only avilable to director
+    $event.stopPropagation()
+    this.selectedSaleId = saleId;
+    const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.action = 'Approve Cheque';
+    modalRef.componentInstance.confirmationText = sale.cheque_data.cheque_number;
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      this.connformationFunc(confirmation);
+    });
+  }
+
+  connformationFunc = (confirmation: boolean) => { //this func will reun after confirmation comes from confirmation modal in case like cheque approval
+    if (confirmation) {
+      this.loading = true;
+      this.registerService.updateChequeApproval(this.selectedSaleId).subscribe({
+        next: res => {
+          this.loading = false;
+          location.reload();
+        },
+        error: err => {
+          this.loading = false;
+        }
+      })
     }
   }
 

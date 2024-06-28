@@ -4,7 +4,7 @@ import { HomeComponent } from 'src/app/pages/home/home.component';
 import { LandingpageComponent } from 'src/app/pages/landingpage/landingpage.component'
 import { authGuard } from 'src/app/shared/gaurds/auth.guard';
 import { routeGuard } from 'src/app/shared/gaurds/route.guard';
-import { fbo_roles, empRegister_roles, caseList_roles } from 'src/app/utils/config';
+import { fbo_roles, empRegister_roles, caseList_roles, bookSaleRoles } from 'src/app/utils/config';
 import { UserAccountComponent } from 'src/app/pages/user-account/user-account.component';
 import { CaseListComponent } from 'src/app/pages/operation/case-list/case-list.component';
 import { OperationformComponent } from 'src/app/pages/operation/operationform/operationform.component';
@@ -37,7 +37,7 @@ const routes: Routes = [
   { path: 'auditlist/caselist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'caselist/operationform/:product/:id', component: OperationformComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
-  { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
+  { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:bookSaleRoles}},
   { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
   { path: 'emplist', component: EmployeelistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'lms', component: LmsComponent, canActivate:[authGuard]},

@@ -15,7 +15,7 @@
 <div class="modal-body">
 
     <div *ngIf="!doc.multipleDoc" class="">
-        <div class="img-viewer" *ngIf="doc.format === 'image'">
+        <div class="img-viewer" *ngIf="doc.format.toLowerCase() === 'image'">
             <img [src]="DOC_URL + '/' + doc.src" class="rounded float-left img-fluid" alt="User Document">
         </div>
         <div class="pdf-viewer" *ngIf="doc.format === 'pdf'">
@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div *ngIf="doc.multipleDoc && doc.format === 'image'" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <div *ngIf="doc.multipleDoc && doc.format.toLowerCase() === 'image'" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>

@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
 import { FoscosComponent } from '../foscos/foscos.component';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { FbolistComponent } from '../../fbolist/fbolist.component';
-import { clientType, hraProcessingAmnt, licenceType, panIndiaAllowedEmpIds, paymentMode, processAmnt, serviceNames, stateName, waterTestFee } from 'src/app/utils/config';
+import { clientType, hraProcessingAmnt, licenceType, medicalProcessAmnt, panIndiaAllowedEmpIds, paymentMode, processAmnt, serviceNames, stateName, waterTestFee, waterTestProcessAmnt } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { pincodeData } from 'src/app/utils/registerinterface';
@@ -18,7 +18,7 @@ import { pincodeData } from 'src/app/utils/registerinterface';
 })
 
 
-export class FbonewComponent implements OnInit {
+export class FbonewComponent implements OnInit, OnChanges {
   @ViewChild(FostacComponent, { static: false }) fostacChildComponent: FostacComponent;
   @ViewChild(FoscosComponent, { static: false }) foscosChildComponent: FoscosComponent;
   isQrCode = false;
@@ -50,6 +50,8 @@ export class FbonewComponent implements OnInit {
   isFostac: boolean = false;
   isFoscos: boolean = false;
   isHygiene: boolean = false;
+  isMedical: boolean = false;  //var for mediacal certificate
+  isWaterTest: boolean = false;  //var for water test
   isEditMode: boolean = false;
   formType: string = "Registration";
   isReadOnly: boolean = false;
@@ -59,6 +61,8 @@ export class FbonewComponent implements OnInit {
   fostac_processAmnt: number = 0;
   foscos_processAmnt: number = 0;
   hra_processAmnt: number = 0;
+  medical_processAmnt: number = 0;
+  water_test_processAmnt: number = 0;
   maxSelectedItems: number = 2;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
@@ -89,13 +93,28 @@ export class FbonewComponent implements OnInit {
   selectedFbo: any;
   byCheque: boolean = false;
   chequeImage: File; // var for cheque image
+  disabledOptions = []; // this var will contain all the options rom multiselect that have enabled false in db;
 
   //New variables by vansh on 16-01-2023
   existingFbos: Object[];
 
+  //var for water test
+  waterTestServiceName = serviceNames.water_test_report;
+  waterTestGST: number = 0;
+  waterTestFixedCharges: number = 0;
+
+  //var for medical
+  medicalGST: number = 0;
+  medicalFixedCharges: number = 0;
+
+
   loading: boolean = false;
   // new varable by chandan
   existingbos: Object[];
+
+  //var for controlling component in case of component called as child component not by route
+  @Input() isCalledAsChild: boolean = false;
+  // @Input() fboDataByParent: boolean = false;
 
   @ViewChild(FbolistComponent) fboList: FbolistComponent;
 
@@ -129,7 +148,20 @@ export class FbonewComponent implements OnInit {
     // hra_client_type: new FormControl(''),
     // shops_no: new FormControl(''),
     hra_total: new FormControl('')
-  })
+  });
+
+  //medical logial Form
+  medical: FormGroup = new FormGroup({
+    medical_total: new FormControl(''),
+    medical_processing_amount: new FormControl(''),
+    recipient_no: new FormControl('')
+  });
+
+  water_test_report: FormGroup = new FormGroup({
+    water_test_total: new FormControl(''),
+    water_test_service_name: new FormControl(''),
+    water_test_processing_amount: new FormControl(''),
+  });
 
   fboForm: FormGroup = new FormGroup({
     boInfo: new FormControl(''),
@@ -219,6 +251,20 @@ export class FbonewComponent implements OnInit {
       cheque_image: ['', Validators.required]
     });
 
+    //set water test validators
+    this.water_test_report = this.formBuilder.group({
+      water_test_total:['', Validators.required],
+      water_test_service_name: ['', Validators.required],
+      water_test_processing_amount: ['', Validators.required],
+    });
+
+    //set mediacal validation
+    this.medical = this.formBuilder.group({
+      medical_total: ['', Validators.required],
+      recipient_no: ['', Validators.required],
+      medical_processing_amount: [medicalProcessAmnt, Validators.required],
+    })
+
     this.existingUserFboForm = this.existingFboFrom.group({
       existingUserFbo: [''],
       searchUser: ['', Validators.required]
@@ -276,6 +322,13 @@ export class FbonewComponent implements OnInit {
       this.getAllocatedArea();
     }
     this.getboGeneralData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes['isCalledAsChild'] && changes['isCalledAsChild'].currentValue && this.isCalledAsChild){
+      this.isExistingFbo = true;
+      
+    }
   }
 
   get fbo(): { [key: string]: AbstractControl } {
@@ -353,9 +406,12 @@ export class FbonewComponent implements OnInit {
       this.fboForm.reset();
       this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
     }
+    // hide sum form on reset
     this.isFoscos = false;
     this.isFostac = false;
     this.isHygiene = false;
+    this.isWaterTest = false;
+    this.isMedical = false;
     this.byCheque = false;
     this.cheque_data.reset();
     this.fbo['district'].setValue('');
@@ -380,6 +436,9 @@ export class FbonewComponent implements OnInit {
     this.foscos_training.patchValue({ water_test_fee: '' });
     this.hygiene_audit.patchValue({ hra_processing_amount: 5000 });
     this.hygiene_audit.patchValue({ hra_service_name: 'HRA' });
+    //reset subforms in case of reset
+    this.resetWaterTestForm()
+    this.resetMedicalForm();
     this.multiSelect.onReset();
   }
 
@@ -488,6 +547,7 @@ export class FbonewComponent implements OnInit {
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
+    console.log(this.fboForm.value)
     if (this.fboForm.invalid || this.loading) {
       return;
     }
@@ -509,10 +569,10 @@ export class FbonewComponent implements OnInit {
         }
       });
     } else {
-      this.addFbo = this.fboForm.value;
+      this.addFbo = this.fboForm.value;  
       if (!this.isExistingFbo) {
         if (this.addFbo.payment_mode === 'Pay Page') {
-          this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
+          this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               this.loading = false;
               window.location.href = res.message;
@@ -540,7 +600,7 @@ export class FbonewComponent implements OnInit {
             }
           })
         } else if (this.addFbo.payment_mode === 'Cash') {
-          this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges).subscribe({
+          this._registerService.addFbo(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.foscosFixedCharges).subscribe({
             next: (res) => {
               this.loading = false;
               if (res.success) {
@@ -597,10 +657,12 @@ export class FbonewComponent implements OnInit {
           formData.append('fostac_training', JSON.stringify(this.fostac_training.value));
           formData.append('foscos_training', JSON.stringify(this.foscos_training.value));
           formData.append('hygiene_audit', JSON.stringify(this.hygiene_audit.value));
+          formData.append('medical', JSON.stringify(this.medical.value));
+          formData.append('water_test_report', JSON.stringify(this.water_test_report.value));
           let chequeData = {
             payee_name: this.cheque_data.value.payee_name,
-            account_number: this.cheque_data.value.payee_name,
-            cheque_number: this.cheque_data.value.payee_name,
+            account_number: this.cheque_data.value.account_number,
+            cheque_number: this.cheque_data.value.cheque_number,
             bank_name: this.cheque_data.value.bank_name,
           }
           formData.append('cheque_data', JSON.stringify(chequeData));
@@ -608,8 +670,10 @@ export class FbonewComponent implements OnInit {
           formData.append('isFostac', this.isFostac.toString());
           formData.append('isFoscos', this.isFoscos.toString());
           formData.append('isHygiene',this.isHygiene.toString());
+          formData.append('isMedical', this.isMedical.toString());
+          formData.append('isWaterTest',this.isWaterTest.toString());
 
-          if(this.fboForm.value.business_type == 'b2b'){
+          if(this.fboForm.value.business_type == 'b2b'){ //append gst number in case of b2b business type
             formData.append('gst_number', this.fboForm.value.gst_number)
           }
 
@@ -643,7 +707,7 @@ export class FbonewComponent implements OnInit {
         }
       } else {
         if (this.addFbo.payment_mode === 'Cash') {
-          this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+          this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res) => {
               this.loading = false;
               if (res.success) {
@@ -682,10 +746,12 @@ export class FbonewComponent implements OnInit {
           formData.append('fostac_training', JSON.stringify(this.fostac_training.value));
           formData.append('foscos_training', JSON.stringify(this.foscos_training.value));
           formData.append('hygiene_audit', JSON.stringify(this.hygiene_audit.value));
+          formData.append('medical', JSON.stringify(this.medical.value));
+          formData.append('water_test_report', JSON.stringify(this.water_test_report.value));
           let chequeData = {
             payee_name: this.cheque_data.value.payee_name,
-            account_number: this.cheque_data.value.payee_name,
-            cheque_number: this.cheque_data.value.payee_name,
+            account_number: this.cheque_data.value.account_number,
+            cheque_number: this.cheque_data.value.cheque_number,
             bank_name: this.cheque_data.value.bank_name,
           }
           formData.append('cheque_data', JSON.stringify(chequeData));
@@ -693,12 +759,10 @@ export class FbonewComponent implements OnInit {
           formData.append('isFostac', this.isFostac.toString());
           formData.append('isFoscos', this.isFoscos.toString());
           formData.append('isHygiene',this.isHygiene.toString());
-          // formData.append('fostacGST', this.fostacGST.toString());
-          // formData.append('foscosGST', this.foscosGST.toString());
-          // formData.append('hygieneGST', this.hygieneGST.toString());
-          // formData.append('foscosFixedCharge', this.foscosFixedCharges.toString());
+          formData.append('isMedical', this.isMedical.toString());
+          formData.append('isWaterTest',this.isWaterTest.toString());
 
-          if(this.fboForm.value.business_type == 'b2b'){
+          if(this.fboForm.value.business_type == 'b2b'){//append gst number in case of b2b business type
             formData.append('gst_number', this.fboForm.value.gst_number)
           }
           this._registerService.fboByCheque(this.objId, formData).subscribe({
@@ -727,7 +791,7 @@ export class FbonewComponent implements OnInit {
 
         }
         else if (this.addFbo.payment_mode === 'Pay Page') {
-          this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+          this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res) => {
               window.location.href = res.message
             }
@@ -750,8 +814,9 @@ export class FbonewComponent implements OnInit {
             else {
               return 1;
             }
-          });
+          }); //convertimg object to arr of type [{key, value}]
         this.productList = this.fboGeneralData.map((item: any) => item.key);
+        this.disabledOptions = this.fboGeneralData.filter((item: any) => !item.value.enabled).map((item: any) => item.key);
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
           this.processAmnts[productName] = product['processing_amount'];
@@ -797,14 +862,16 @@ export class FbonewComponent implements OnInit {
     this.isFostac = false;
     this.isFoscos = false;
     this.isHygiene = false;
+    this.isMedical = false;
+    this.isWaterTest = false;
     this.fboForm.removeControl('gst_number')// this will remove gst number form control on form reset 
+    //remove products form control from fbo form in case of reset
     this.fboForm.removeControl('fostac_training');
     this.fboForm.removeControl('foscos_training');
-    this.fboForm.removeControl('hygiene_audit');
+    this.fboForm.removeControl('hygiene_audit')
+    this.fboForm.removeControl('water_test_report');
+    this.fboForm.removeControl('medical');
     this.multiSelect.onReset();
-    this.isHygiene = false;
-    this.isFoscos = false;
-    this.isFostac = false;
   }
 
   getSelectedProduct($event: any) {
@@ -816,6 +883,7 @@ export class FbonewComponent implements OnInit {
     this.isFostac = false;
     this.isFoscos = false;
     this.isHygiene = false;
+    this.isMedical = false;
     if (this.productName.includes('Fostac')) {
       this.isFostac = true;
       this.fboForm.addControl('fostac_training', this.fostac_training);
@@ -829,16 +897,9 @@ export class FbonewComponent implements OnInit {
     if (this.productName.includes('Foscos')) {
       this.isFoscos = true;
       this.fboForm.addControl('foscos_training', this.foscos_training);
-      // this.fboForm.get('village')?.setValidators([Validators.required]);
-      // this.fboForm.get('village')?.clearValidators();
-      // this.fboForm.get('village')?.updateValueAndValidity();
-      // this.fboForm.get('tehsil')?.clearValidators();
-      // this.fboForm.get('tehsil')?.updateValueAndValidity();
     }
     else {
       this.fboForm.removeControl('foscos_training');
-      // this.fboForm.get('village')?.updateValueAndValidity();
-      // this.fboForm.get('tehsil')?.updateValueAndValidity();
       //next line will remove the foscos amount from grand total in case of deselection of foscos in products
       this.foscosTotalAmount(0);
       this.resetFoscosForm();
@@ -852,7 +913,28 @@ export class FbonewComponent implements OnInit {
       //next line will remove the HRA amount from grand total in case of deselection of HRA in products
       this.hygieneTotalAmount(0);
       this.resetHRAForm();
+    } 
+    if(this.productName.includes('Water Test Report')){
+      this.isWaterTest = true;
+      this.fboForm.addControl('water_test_report', this.water_test_report);
+    } else {
+      this.isWaterTest = false;
+      this.fboForm.removeControl('water_test_report');
+      this.watertestTotalAmount(0);
+      this.resetWaterTestForm();
     }
+    //for medical Certificate
+    if (this.productName.includes('Medical')) {
+      this.isMedical = true;
+      this.medical.patchValue({medical_processing_amount: medicalProcessAmnt})
+      this.fboForm.addControl('medical', this.medical);
+    }
+    else {
+      this.isMedical = false;
+      this.fboForm.removeControl('medical');
+      this.medicalTotalAmount(0);
+      this.resetMedicalForm();
+    } 
 
   }
 
@@ -896,6 +978,11 @@ export class FbonewComponent implements OnInit {
 
   ModeofPayment(event: any) {
     if (this.fboForm.value.total_amount !== '' && event.target.value == 'By Cheque') {
+      if(this.fboForm.value.grand_total <= 2000) {
+        this.fboForm.patchValue({payment_mode: ''});
+        this._toastrService.error('Grand total should be greated than 2000 For Cheque ')
+        return
+      }
       this.byCheque = true;
       this.fboForm.addControl('cheque_data', this.cheque_data);
     } else {
@@ -944,16 +1031,27 @@ export class FbonewComponent implements OnInit {
 
   fostacTotalAmount(TotalAmnt: any) {
     this.fostac_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hra_processAmnt });
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hra_processAmnt + this.water_test_processAmnt + this.medical_processAmnt});
   }
   foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hra_processAmnt });
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.hra_processAmnt + this.water_test_processAmnt + this.medical_processAmnt });
   }
   hygieneTotalAmount(TotalAmnt: any) {
     this.hra_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt });
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt + this.water_test_processAmnt + this.medical_processAmnt});
   }
+
+  watertestTotalAmount(TotalAmnt: any) {
+    this.water_test_processAmnt = TotalAmnt;
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt + this.hra_processAmnt + this.medical_processAmnt });
+  }
+
+  medicalTotalAmount(TotalAmnt: any) {
+    this.medical_processAmnt = TotalAmnt;
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt + this.hra_processAmnt + this.water_test_processAmnt });
+  }
+
   foscosCharges(charges: any) {
     this.foscosFixedCharges = charges;
   }
@@ -1070,6 +1168,17 @@ export class FbonewComponent implements OnInit {
     this.hygiene_audit.patchValue({ hra_total: '' });
   }
 
+  resetWaterTestForm(): void {
+    this.water_test_report.patchValue({ water_test_processing_amount: '' });
+    this.water_test_report.patchValue({ water_test_service_name: '' });
+    this.water_test_report.patchValue({ water_test_total: '' });
+  }
+
+  resetMedicalForm(): void {
+    this.medical.patchValue({ medical_processing_amount: medicalProcessAmnt });
+    this.medical.patchValue({ medical_total: '' });
+  }
+
   checkEmpId() { //this methord checks and allow to give Pan India location for a particular employee
     this.userEmployeeId = this.parsedUserData.employee_id;
     if (panIndiaAllowedEmpIds.includes(this.userEmployeeId)) {
@@ -1088,6 +1197,40 @@ export class FbonewComponent implements OnInit {
 
     if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png" || file.type == "application/pdf") {
       this.chequeImage = file;
+    }
+  }
+
+  //func for adding medical amount in case of medical 
+  medicalRecpChange($event: any){
+    if($event.target.value <= 0) {
+      this.medical.patchValue({recipient_no: 1});
+    }
+    const perMedicalAmount = medicalProcessAmnt;
+    const GSTPerMedical = Math.round(medicalProcessAmnt*18/100);
+    this.medicalGST = GSTPerMedical*$event.target.value;
+    const perMedicalWithGST = perMedicalAmount + GSTPerMedical;
+    const medicalTotal = perMedicalWithGST*$event.target.value;
+    this.medical.patchValue({medical_total: medicalTotal});
+    this.medicalTotalAmount(medicalTotal);
+  }
+
+  onWaterTestServiceChange($event: any) : void {//methord for water test service change
+    this.getWaterTestProcessAmnt($event.target.value);
+    this.waterTestGST = Math.round(this.water_test_report.value.water_test_processing_amount * 18/100); // calculate gst of water test
+    const waterTestWithGst: number = Number(this.water_test_report.value.water_test_processing_amount) + this.waterTestGST
+
+    this.water_test_report.patchValue({water_test_total: waterTestWithGst}) //patch total to total amount
+    this.watertestTotalAmount(waterTestWithGst);
+  }
+
+  getWaterTestProcessAmnt(serviceType: string) : void { //methord for deciding processing watertest amount on service select
+    if (serviceType === 'NABL') {
+      //NABL
+      this.water_test_report.patchValue({water_test_processing_amount: 2966});
+    }
+    if (serviceType === 'Non NABL') {
+      //NON NABL
+      this.water_test_report.patchValue({water_test_processing_amount: 2119});
     }
   }
 }

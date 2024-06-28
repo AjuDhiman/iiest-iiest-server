@@ -187,23 +187,7 @@ exports.auditBatch = async (req, res) => {
 
         const user = req.user;
 
-        const ourHolidays = [
-            { date: '26-Jan-2024', name: 'Republic Day' },
-            { date: '08-Mar-2024', name: 'Mahashivratri' },
-            { date: '25-Apr-2024', name: 'Holi' },
-            { date: '29-Apr-2024', name: 'Good Friday' },
-            { date: '11-Apr-2024', name: 'Eid Al-Fitr' },
-            { date: '11-Jun-2024', name: 'Eid Al-Zuha(Bakrid)' },
-            { date: '15-Aug-2024', name: 'Independence Day' },
-            { date: '19-Aug-2024', name: 'Raksha Bandhan' },
-            { date: '26-Sept-2024', name: 'Janmashtami' },
-            { date: '02-Oct-2024', name: 'Gandhi Jayanti' },
-            { date: '12-Oct-2024', name: 'Dussehra' },
-            { date: '01-Nov-2024', name: 'Diwali' },
-            { date: '02-Nov-2024', name: 'Govardhan Pooja' },
-            { date: '03-Nov-2024', name: 'Bhai Dooj' },
-            { date: '25-Dec-2024', name: 'Christmas' },
-        ];
+        const ourHolidays = (await generalDataSchema.find({}))[0].our_holidays;
 
         let location;
 
@@ -224,11 +208,11 @@ exports.auditBatch = async (req, res) => {
             return res.status(401).json({ success: false, locationErr: true })
         }
 
-        const generalData = await generalDataSchema.find()// get list of all auditors from general datas
+        const allAuditors = (await generalDataSchema.find({}))[0].auditors// get list of all auditors from general datas
 
-        const allAuditors = [
-            'Umar Shakil',
-        ]
+        // const allAuditors = [
+        //     'Umar Shakil',
+        // ]
 
         const sessionsNo = Math.ceil(food_handler_no / 50);
 
@@ -239,7 +223,7 @@ exports.auditBatch = async (req, res) => {
         let date = verificationDate;
         date.setDate(date.getDate() + 7)
 
-        while (ourHolidays.find((item) => item.date === getFormatedDate(date.toString())) || date.getUTCDay() === 0) {
+        while (ourHolidays.find((item) => getFormatedDate(item.date.toString) === getFormatedDate(date.toString())) || date.getUTCDay() === 0) {
             date.setDate(date.getDate() + 1);
         }
 
@@ -424,105 +408,6 @@ function getRandomItemFromArr(arr) {
     // console.log('index', randomIndex, arr[randomIndex]);
 
     return arr[randomIndex];
-}
-
-async function getAuditDate(verificationDate) {
-
-    const updatedHolidays = [
-        { date: '26-Jan-2024', name: 'Republic Day' },
-        { date: '08-Mar-2024', name: 'Mahashivratri' },
-        { date: '25-Apr-2024', name: 'Holi' },
-        { date: '29-Apr-2024', name: 'Good Friday' },
-        { date: '11-Apr-2024', name: 'Eid Al-Fitr' },
-        { date: '11-Jun-2024', name: 'Eid Al-Zuha(Bakrid)' },
-        { date: '15-Aug-2024', name: 'Independence Day' },
-        { date: '19-Aug-2024', name: 'Raksha Bandhan' },
-        { date: '26-Sept-2024', name: 'Janmashtami' },
-        { date: '02-Oct-2024', name: 'Gandhi Jayanti' },
-        { date: '12-Oct-2024', name: 'Dussehra' },
-        { date: '01-Nov-2024', name: 'Diwali' },
-        { date: '02-Nov-2024', name: 'Govardhan Pooja' },
-        { date: '03-Nov-2024', name: 'Bhai Dooj' },
-        { date: '25-Dec-2024', name: 'Christmas' },
-    ];
-
-    const allAuditors = await generalDataSchema.find()[0].auditors;// get list of all auditors from general datas
-
-    const sessionsNo = 1;
-
-    const auditDays = sessionsNo / 2;
-
-    var avilableAuditors = allAuditors;
-
-    let date = verificationDate;
-    date.setDate(date.getDate() + 7)
-
-    while (ourHolidays.find((item) => item.date === this.getFormatedDate(date.toString())) || date.getDay() === 0) {
-        date.setDate(date.getDate() + 1);
-    }
-
-    let batchData;
-
-    if (sessionsNo % 2 == 0) {
-
-        const dayAvilable = false;
-
-        let auditDatesArr = [];
-
-        let daysToEsacpe = 0;
-
-        while (!dayAvilable) {
-
-            for (i = 0; i < auditDays; i++) { // we will check avliablity of auditor for continiously no of audit days for a candidate
-
-                let day = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i + daysToEsacpe, 0, 0, 0);//increase day by days to Eascape
-                let holidayNum = 0;
-
-                while (ourHolidays.find((item) => item.date === this.getFormatedDate(day.toString())) || day.getUTCDay() === 0) {
-                    day.setDate(day.getDate() + 1);
-                    holidayNum++;
-                } //we will shift day a day after is that day is a holiday or sunday
-
-                daysToEsacpe += holidayNum;
-
-                console.log('days to eascape', daysToEsacpe)
-
-                const batchesOnDate = await auditBatchModel.find({
-                    auditDates: {
-                        $elemMatch: {
-                            $gte: day,
-                            $lt: new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1, 0, 0, 0)
-                        }
-                    }
-                });
-
-                const auditorsOnDate = batchesOnDate.map((batch) => batch.auditor)
-
-                if ((allAuditors.length === auditorsOnDate.length) || avilableAuditors.length === 0) {
-                    date.setDate(date.getDate() + i + daysToEsacpe);
-                    break; // break the loop if all auditors are booked any of the day or not same auditor is avilble on all days
-                } else {
-                    avilableAuditors = avilableAuditors.filter((auditor) => auditorsOnDate.includes(auditor));
-                    auditDatesArr.push(day)
-                    dayAvilable = true;
-                }
-            }
-
-        }
-
-        const batchInfo = await generatedAuditBatchInfo();
-
-        const pincodeArr = [
-            Number(pincode) - 1,
-            Number(pincode),
-            Number(pincode) + 1
-        ]
-
-        batchData = await auditBatchModel.create({ id_num: batchInfo.idNumber, status: 'open', batchCode: batchInfo.generatedBatchCode, location: location, auditNum: 1, candidateDetails: [verificationInfo._id], pincodes: pincodeArr, auditDates: auditDatesArr });
-
-    }
-
-    // const avilableAuditors = allAuditors.filter((auditor) => auditor.isAvilable);
 }
 
 

@@ -25,6 +25,7 @@ exports.fboPayment = async (req, res) => {
     const userInfo = await employeeSchema.findById(req.params.id);
     const signatureFile = userInfo.signatureImage;
     const officerName = userInfo.employee_name;
+    const panelType = userInfo.panel_type;
 
     if (!signatureFile) {
       success = false;
@@ -33,7 +34,7 @@ exports.fboPayment = async (req, res) => {
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
 
-    if (req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -57,7 +58,7 @@ exports.fboPayment = async (req, res) => {
       apiCalled: false //this property in data chrecks if api for pay page return already called or not in case of payment link share
     } });
 
-    if (req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
 
       if (!pincodeCheck) {
@@ -102,7 +103,7 @@ exports.fboPayReturn = async (req, res) => {
           return;
         }
 
-        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, boInfo, officerName } = fetchedFormData;
+        const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, medical, water_test_report, gst_number, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, medicalGST, waterTestGST, foscosFixedCharge, boInfo, officerName } = fetchedFormData;
         fetchedFormData
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
@@ -120,6 +121,14 @@ exports.fboPayReturn = async (req, res) => {
 
         if (hygiene_audit) {
           serviceArr.push(hygiene_audit.hra_service_name);
+        }
+
+        if (medical) {
+          serviceArr.push('Medical');
+        }
+
+        if (water_test_report) {
+          serviceArr.push('Water Test Report');
         }
 
         let total_processing_amount = 0;
@@ -168,6 +177,33 @@ exports.fboPayReturn = async (req, res) => {
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
         }
 
+        //checkfor medical
+        if (product_name.includes('Medical')) {
+          fileName = `${Date.now()}_${idNumber}.pdf`;
+          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+          total_processing_amount = Number(medical.medical_processing_amount);
+          totalGST = medicalGST;
+
+          const qty = medical.recipient_no;
+          //create medical invoice
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+        }
+
+        //check for water test
+        if (product_name.includes('Water Test Report')) {
+          fileName = `${Date.now()}_${idNumber}.pdf`;
+          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+          total_processing_amount = Number(water_test_report.water_test_processing_amount);
+          totalGST = waterTestGST;
+
+          const qty = 1;
+
+          //create water test invoice
+          invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+        }
+
         const fboEntry = await fboModel.create({
           employeeInfo: createrObjId, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, product_name, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, boInfo, activeStatus: true, isBasicDocUploaded: false
         });
@@ -184,14 +220,14 @@ exports.fboPayReturn = async (req, res) => {
           return res.status(401).json({ success, message: "Data not entered in payment collection" });
         }
 
-        const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, payment_mode, grand_total, invoiceId: invoiceIdArr });
+        const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, medicalInfo: medical, waterTestInfo: water_test_report, payment_mode, grand_total, invoiceId: invoiceIdArr });
 
         if (!selectedProductInfo) {
           return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
         }
 
         product_name.forEach(async(product) => {
-          if(product !== 'Fostac') {
+          if(product === 'Fostac' || product === 'HRA') {
             const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId:generatedCustomerId, product_name: product,  village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
           }
         })
@@ -256,7 +292,7 @@ exports.fboRegister = async (req, res) => {
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
 
-    if (req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
       
       if (!areaAlloted) {
         success = false;
@@ -276,7 +312,7 @@ exports.fboRegister = async (req, res) => {
 
     const boData = await boModel.findOne({_id: boInfo});
 
-    if (req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -392,6 +428,8 @@ exports.boByCheque = async (req, res) => {
 
     const createrObjId = req.params.id;
 
+    const panelType = req.user.panel_type;
+
     let success = false;
 
     const userInfo = await employeeSchema.findById(createrObjId); //getting employee data and signature form db
@@ -406,7 +444,7 @@ exports.boByCheque = async (req, res) => {
     //checkig for allocated areas
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
 
-    if (req.user.employee_id != 'IIEST/FD/0176') {
+    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
       
       if (!areaAlloted) {
         success = false;
@@ -422,11 +460,11 @@ exports.boByCheque = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene } = req.body;//getting data from req body
+    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, medical, water_test_report, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene, isMedical, isWaterTest } = req.body;//getting data from req body
 
     const boData = await boModel.findOne({_id: boInfo});
 
-    if (req.user.employee_id != 'IIEST/FD/0176') { //checking allocated areas
+    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') { //checking allocated areas
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -440,6 +478,8 @@ exports.boByCheque = async (req, res) => {
     let fostacTraining = isFostac==='true'?JSON.parse(fostac_training):undefined;
     let foscosTraining =  isFoscos==='true'?JSON.parse(foscos_training):undefined;
     let hygieneAudit = isHygiene==='true'?JSON.parse(hygiene_audit):undefined;
+    let Medical = isMedical==='true'?JSON.parse(medical):undefined;
+    let waterTestReport = isWaterTest==='true'?JSON.parse(water_test_report):undefined;
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
     chequeData.status = 'Pending';
@@ -456,7 +496,7 @@ exports.boByCheque = async (req, res) => {
       return res.status(401).json({ success, randomErr: true })
     }
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, payment_mode, grand_total, invoiceId: [], cheque_data:chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], cheque_data:chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -464,7 +504,7 @@ exports.boByCheque = async (req, res) => {
     }
 
     productName.forEach(async(product) => {
-      if(product !== 'Fostac') {
+      if(product === 'Fostac' || product === 'HRA') {
         const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId:generatedCustomerId, product_name: product,  village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
       }
     })
@@ -725,5 +765,183 @@ exports.updateFboBasicDocStatus = async(req, res) => {
   } catch(error) {
     console.error(error);
     return res.status(500).json({success: false, message: 'Internal Server Error'});
+  }
+}
+
+exports.approveChequeSale = async(req, res) => { //this methord approves the sale for a pending cheque and send invoice after approval
+  try{
+
+    const saleId = req.params.id; //gettimg sales id from route
+
+    const salesInfo = await salesModel.findOne({_id: saleId}).populate([{path: 'fboInfo', populate: {path: 'boInfo'}}, {path: 'employeeInfo'}]); // getting sales info related to sales Id
+
+    const {fboInfo, fostacInfo, foscosInfo, hraInfo, medicalInfo, waterTestInfo, employeeInfo, product_name, cheque_data} = salesInfo; //destructuring sales Info
+
+    const signatureFile = employeeInfo.signatureImage; //getting signature file
+
+    if (!signatureFile) {
+      return res.status(404).json({ success, signatureErr: true })// checking for signature file
+    }
+
+    let serviceArr = []; //service arr will countain info about all the product taken in this sale
+
+    if (fostacInfo) {
+      serviceArr.push(fostacInfo.fostac_service_name);
+    }
+
+    if (foscosInfo) {
+      serviceArr.push(foscosInfo.foscos_service_name);
+    }
+
+    if (hraInfo) {
+      serviceArr.push(hraInfo.hra_service_name);
+    }
+
+    if (medicalInfo) {
+      serviceArr.push('Medical');
+    }
+
+    if (waterTestInfo) {
+      serviceArr.push('Water Test Report');
+    }
+
+    let total_processing_amount = 0;
+    let totalGST = 0;
+    let extraFee = 0;
+
+    const invoiceData = [];
+    let invoiceUploadStream;
+    const invoiceIdArr = [];
+
+    const invoiceBucket = createInvoiceBucket();
+
+    let fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
+
+    if (product_name.includes('Fostac')) { //generating fostac Invoivce in case of fostac sale
+      fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
+      invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+      total_processing_amount = Number(fostacInfo.fostac_processing_amount);
+      totalGST = (fostacInfo.fostac_processing_amount*fostacInfo.recipient_no)*18/100;
+
+      console.log(totalGST);
+
+      const qty = fostacInfo.recipient_no;
+
+      invoiceData.push(await invoiceDataHandler(fboInfo.id_num, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, fostacInfo.fostac_total, 'Fostac', fostacInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
+
+      invoiceIdArr.push(invoiceUploadStream.id);
+    }
+
+    if (product_name.includes('Foscos')) {//generating foscos Invoivce in case of foscos sale
+      fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
+      invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+      total_processing_amount = Number(foscosInfo.foscos_processing_amount);
+      totalGST = (foscosInfo.foscos_processing_amount*foscosInfo.shops_no)*18/100; //calculating foscos gst
+
+      let fixedCharges = 0;
+
+      const category = foscosInfo.license_category;
+      const duration = foscosInfo.license_duration;
+
+      let extraFee;
+
+      if (foscosInfo.foscos_service_name === 'Registration') { //calculating foscos goverment fees
+        fixedCharges = 100;
+        if (category == 'New Licence' || category === 'Renewal') {
+           extraFee = fixedCharges * duration;
+        }
+        if (category === 'Modified') {
+           extraFee = fixedCharges;
+        }
+      }
+      if (foscosInfo.foscos_service_name === 'State') {
+        if (category == 'New Licence' || category === 'Renewal') {
+          fixedCharges = 2000;
+          extraFee = fixedCharges * duration;
+  
+        }
+        if (category === 'Modified') {
+          fixedCharges = 1000;
+          extraFee = fixedCharges;
+        }
+      }
+
+      if(Number(foscosInfo.water_test_fee) !== 0) { //getting extra fee in case of water test fee
+        extraFee += Number(foscosInfo.water_test_fee)
+      }
+
+      console.log(extraFee);
+
+      const qty = foscosInfo.shops_no;
+
+      invoiceData.push(await invoiceDataHandler(fboInfo.id_num, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscosInfo.foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
+
+      invoiceIdArr.push(invoiceUploadStream.id);
+    }
+
+
+    if (product_name.includes('HRA')) { //generating hra Invoivce in case of hra sale
+      fileName = `${Date.now()}_${fboInfo.id_number}.pdf`;
+      invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+      total_processing_amount = Number(hraInfo.hra_processing_amount);
+      totalGST = (hraInfo.hra_processing_amount*hraInfo.shops_no)*18/100;
+
+      const qty = hraInfo.shops_no;
+
+      invoiceData.push(await invoiceDataHandler(fboInfo.id_num, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, hraInfo.hra_total, 'HRA', hraInfo, signatureFile, invoiceUploadStream,employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo
+      ));
+
+      if (product_name.includes('Medical')) { //generating fostac Invoivce in case of fostac sale
+        fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
+        invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+  
+        total_processing_amount = Number(medicalInfo.medical_processing_amount);
+        const eachGSt = Math.round((medicalInfo.medical_processing_amount)*18/100);
+        totalGST = eachGSt*medicalInfo.recipient_no;
+  
+        console.log(totalGST);
+  
+        const qty = medicalInfo.recipient_no;
+  
+        invoiceData.push(await invoiceDataHandler(fboInfo.id_num, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, medicalInfo.medical_total, 'Medical', medicalInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
+  
+        invoiceIdArr.push(invoiceUploadStream.id);
+      }
+
+      if (product_name.includes('Water Test Report')) { //generating fostac Invoivce in case of fostac sale
+        fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
+        invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+  
+        total_processing_amount = Number(waterTestInfo.water_test_processing_amount);
+        totalGST = Math.round((waterTestInfo.water_test_processing_amount)*18/100);
+  
+        const qty = 1;
+  
+        invoiceData.push(await invoiceDataHandler(fboInfo.id_num, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, waterTestInfo.water_test_total, 'Water Test Report', waterTestInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
+  
+        invoiceIdArr.push(invoiceUploadStream.id);
+      }
+  
+
+      invoiceIdArr.push(invoiceUploadStream.id);
+    }
+
+    await salesInfo.updateOne({cheque_data: {...cheque_data, status:'Approved'}, invoiceId: invoiceIdArr});
+
+    await salesInfo.save();
+
+    if(!salesInfo){
+      return res.status(401).json({success: false, message: 'Sale Approving Error'})
+    }
+
+    sendInvoiceMail(fboInfo.email, invoiceData); //sending invoice by mail
+    return res.status(200).json({ success: true })
+
+  } catch(error) {
+    console.log(error);
+    return res.status(500).json({success: false, message: "Internal Server Error"});
   }
 }

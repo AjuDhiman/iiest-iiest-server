@@ -4,6 +4,8 @@ import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, Icon
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
+import { ViewFboComponent } from '../../modals/view-fbo/view-fbo.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-case-list',
@@ -46,6 +48,7 @@ export class CaseListComponent implements OnInit {
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
+    private modalService: NgbModal,
     private router: Router) {
   }
 
@@ -54,7 +57,7 @@ export class CaseListComponent implements OnInit {
     this.initializeCaseList();
 
     if (!this.forTraining) { // we will not call case list api in case of training beacuse in this case we are getting data from route
-      this.getCasedata();
+      this.getCasedata()
     }
 
   }
@@ -244,4 +247,29 @@ export class CaseListComponent implements OnInit {
     }
   }
 
+  getFormattedSalesDate(dateString: string): string { //,ethord for formatting date
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    let suffix = "";
+    if (day === 1 || day === 21 || day === 31) {
+      suffix = "st";
+    } else if (day === 2 || day === 22) {
+      suffix = "nd";
+    } else if (day === 3 || day === 23) {
+      suffix = "rd";
+    } else {
+      suffix = "th";
+    }
+    return `${day}${suffix} ${month} ${year}`;
+  }
+
+  //View FBO Details
+  viewFboDetails($event: Event, res: any) {
+    $event.stopPropagation();
+    const modalRef = this.modalService.open(ViewFboComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.fboData = res;
+    modalRef.componentInstance.isVerifier = true;
+  }
 }

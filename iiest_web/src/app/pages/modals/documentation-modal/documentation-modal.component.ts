@@ -45,6 +45,7 @@ export class DocumentationModalComponent implements OnInit {
   pageNumber: number = 1;
   isSearch: boolean = false;
   selectedFilter: string = 'byName';
+  isEbill:boolean = false; //var for deciding entering customer id in case of e bill
 
   //icons
   faEye: IconDefinition = faEye;
@@ -111,6 +112,10 @@ export class DocumentationModalComponent implements OnInit {
       });
       this.format = 'image';
       return;
+    }
+
+    if(this.selectedDoc.name === 'Electricity Bill'){
+      this.isEbill = true;
     }
 
     this.docFile = $event.target.files[0];

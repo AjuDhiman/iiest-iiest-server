@@ -21,6 +21,14 @@ const generalData = new Schema({
     kob: {
         type: Array,
         required: true
+    },
+    auditors: {
+        type: Array,
+        required: true,
+    },
+    our_holidays: {
+        type: Array,
+        required: true,
     }
 })
 

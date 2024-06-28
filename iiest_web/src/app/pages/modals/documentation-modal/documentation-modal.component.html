@@ -29,6 +29,12 @@
           [id]="changeNameFormat(selectedDoc.name)" (change)="onFileChange($event)" />
       </div>
 
+      <div class="col-md-4" *ngIf="isEbill">
+        <label class="form-label"
+        >{{selectedDoc.name + 'Customer Id'}}</label>
+        <input class="form-control form-control-sm" />
+      </div>
+
       <div [ngClass]="{'py-2': isOtherDoc}" class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
         <button type="submit" class="btn btn-sm btn-primary">Upload
         </button>
@@ -113,7 +119,8 @@
                         (click)="viewDocument(doc)"></fa-icon>
                       <!-- <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
                       ></fa-icon> -->
-                    </span></td>
+                    </span>
+                  </td>
                 </tr>
               </tbody>
               <tbody *ngIf="filteredData.length == 0">

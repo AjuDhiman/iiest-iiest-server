@@ -101,41 +101,40 @@
     </div>
   </div>
 
-  <div class="col-md-3">
-    <label for="recipient_contact_no" class="form-label">Recipient Contact No.</label><sup>*</sup>
-    <input #recipient_contact_no type="text" valid="false" placeholder="Recipient contact no." formControlName="recipient_contact_no"
-      class="form-control form-control-sm" id="recipient_contact_no" [readOnly]="true"
-      [ngClass]="{ 'is-invalid': verified && verificationform['recipient_contact_no'].errors, 'is-verified': recipient_contact_no.getAttribute('valid') === 'true' || verifiedStatus}">
+  <div class="col-md-3 position-relative">
+    <label for="recipient_contact_no" class="form-label">Recipient Contact No</label><sup>*</sup>
+    <input #recipient_contact_no type="text" placeholder="recipient_contact_no" formControlName="recipient_contact_no" class="form-control form-control-sm"
+      id="recipient_contact_no" [attr.valid]='false'
+      [ngClass]="{ 'is-invalid': verified && verificationform['recipient_contact_no'].errors, 'is-verified': recipient_contact_no.getAttribute('valid') === 'true' || verifiedStatus}"
+      [readOnly]="true">
     <div *ngIf="verified && verificationform['recipient_contact_no'].errors" class="invalid-feedback">
-      <div *ngIf="verificationform['recipient_contact_no'].errors['required']">Recipient contact number is
-        required</div>
-      <div *ngIf="verificationform['recipient_contact_no'].errors['pattern']">Recipient contact number is
-        invalid
-      </div>
+      <div *ngIf="verificationform['recipient_contact_no'].errors['required']">Recipient Contact No is required</div>
     </div>
 
-    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="fbo_name.getAttribute('valid')"
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="recipient_contact_no.getAttribute('valid')"
       (click)="recipient_contact_no.setAttribute('valid', 'true')"
-      [ngClass]="{'verified-check':recipient_contact_no.getAttribute('valid') === 'true' || verifiedStatus} ">
+      [ngClass]="{'verified-check':recipient_contact_no.getAttribute('valid') === 'true' || verifiedStatus}">
       <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
     </div>
-
   </div>
 
-  <div class="col-md-3">
-    <label #dob for="dob" class="form-label">DOB</label><sup>*</sup>
-    <input valid="false" type="date" placeholder="DOB" formControlName="dob" class="form-control form-control-sm"
-      id="dob" [ngClass]="{ 'is-invalid': verified && verificationform['dob'].errors, 'is-verified': dob.getAttribute('valid') === 'true' || verifiedStatus}" [readOnly]="verifiedStatus">
+  <div class="col-md-3 position-relative">
+    <label for="dob" class="form-label">DOB</label><sup>*</sup>
+    <input #dob type="date" placeholder="DOB" formControlName="dob" class="form-control form-control-sm"
+      id="dob" [attr.valid]='false'
+      [ngClass]="{ 'is-invalid': verified && verificationform['dob'].errors, 'is-verified': dob.getAttribute('valid') === 'true' || verifiedStatus}"
+      [readOnly]="true">
     <div *ngIf="verified && verificationform['dob'].errors" class="invalid-feedback">
       <div *ngIf="verificationform['dob'].errors['required']">DOB is required</div>
     </div>
 
-    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="fbo_name.getAttribute('valid')"
-    (click)="dob.setAttribute('valid', 'true')"
-    [ngClass]="{'verified-check':dob.getAttribute('valid') === 'true' || verifiedStatus} ">
-    <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
-  </div>
-
+    <!-- For Perticular field verification -->
+    <div class="verify-icon text-secondary" #fieldVerification [attr.valid]="dob.getAttribute('valid')"
+      (click)="dob.setAttribute('valid', 'true')"
+      [ngClass]="{'verified-check':dob.getAttribute('valid') === 'true' || verifiedStatus}">
+      <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+    </div>
   </div>
 
   <div class="col-md-3">
@@ -621,14 +620,14 @@
   </div>
 
   <div class="col-md-3">
-    <label for="manager_contact_no" class="form-label">Manager Contact No.</label><sup>*</sup>
-    <input type="text" valid="false" placeholder="Manager contact no." formControlName="manager_contact_no"
+    <label for="manager_contact_no" class="form-label">Contact No.</label><sup>*</sup>
+    <input type="text" valid="false" placeholder="contact no." formControlName="manager_contact_no"
       class="form-control form-control-sm" id="manager_contact_no" [readOnly]="true"
       [ngClass]="{ 'is-invalid': verified && verificationform['manager_contact_no'].errors}">
     <div *ngIf="verified && verificationform['manager_contact_no'].errors" class="invalid-feedback">
-      <div *ngIf="verificationform['manager_contact_no'].errors['required']">Manager contact number is
+      <div *ngIf="verificationform['manager_contact_no'].errors['required']">Contact number is
         required</div>
-      <div *ngIf="verificationform['manager_contact_no'].errors['pattern']">Manager contact number is
+      <div *ngIf="verificationform['manager_contact_no'].errors['pattern']">Contact number is
         invalid
       </div>
     </div>

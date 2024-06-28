@@ -1,12 +1,103 @@
-<h6>Documentation Section</h6>
+<form [formGroup]="schedulingForm" class="row" (submit)="onSchedule()" *ngIf="productType === 'HRA'; else onlyUpload">
+    <div class="d-flex justify-content-between">
+
+        <!-- heading and form status -->
+        <h6>Documentation Section</h6>
+        <span class="status" [ngClass]="scheduledStatus?'bg-success':'bg-warning'" style="font-size: x-small;"
+            class="badge align-self-baseline">
+            {{scheduledStatus?'Scheduled':'Not-Scheduled'}} <fa-icon class="fa-lg fa-regular ml-2"
+                [icon]="scheduledStatus?faCircleCheck:faCircleExclamation">
+            </fa-icon>
+        </span>
+    </div>
+
+    <!-- form input fields -->
+
+    <!-- <div class="col-md-6">
+        <label for="hra_book_date" class="form-label">HRA Book Date</label><sup>*</sup>
+        <input type="datetime" placeholder="HRA Book Date" formControlName="hra_book_date"
+            class="form-control form-control-sm" id="hra_book_date" [readOnly]="true"
+            [ngClass]="{ 'is-invalid': scheduled && scheduleform['hra_book_date'].errors }">
+        <div *ngIf="scheduled && scheduleform['hra_book_date'].errors" class="invalid-feedback">
+            <div *ngIf="scheduleform['hra_book_date'].errors['required']">HRA Book Date is required</div>
+        </div>
+    </div> -->
+
+    <div class="col-md-6" *ngIf="!hraBookDateStr else bookDateScreen">
+        <label for="hra_book_date" class="form-label">HRA Book Date</label><sup>*</sup>
+        <input type="datetime" placeholder="HRA Book Date"
+            class="form-control form-control-sm" id="hra_book_date" [readOnly]="true"
+            [ngClass]="{ 'is-invalid': scheduled && scheduleform['hra_book_date'].errors }">
+        <div *ngIf="scheduled && scheduleform['hra_book_date'].errors" class="invalid-feedback">
+            <div *ngIf="scheduleform['hra_book_date'].errors['required']">HRA Book Date is required</div>
+        </div>
+    </div>
+
+    <ng-template #bookDateScreen>
+        <div class="col-md-6">
+            <label class="form-label">HRA Book Date</label><sup>*</sup>
+            <div class="book_data_screen" style="background-color: white; height: 28px; border-radius: 4px; border: 0.5px solid #dce3dc;
+            padding-left: 7px; font-size: 14px; padding-top: 3px;">
+                {{hraBookDateStr}}
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="col-md-6"  *ngIf="!changedDateStr else changedDateScreen">
+        <label for="changed_date" class="form-label">Changed Date</label>
+        <input type="datetime" placeholder="Changed Date"
+            class="form-control form-control-sm" id="changed_date" [readOnly]="true">
+    </div>
+
+    <ng-template #changedDateScreen>
+        <div class="col-md-6">
+            <label class="form-label">Changed Date</label>
+            <div class="book_data_screen" style="background-color: white; height: 27px; border-radius: 4px; border: 0.5px solid #dce3dc;
+            padding-left: 7px; font-size: 14px; padding-top: 3px;">
+                {{changedDateStr}}
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="col-md-3">
+        <label for="auditor" class="form-label">Auditor Name</label><sup>*</sup>
+        <input type="text" placeholder="Aduitor Name" formControlName="auditor"
+            class="form-control form-control-sm" id="auditor"
+            [ngClass]="{ 'is-invalid': scheduled && scheduleform['auditor'].errors}" [readOnly]="true">
+        <div *ngIf="scheduled && scheduleform['auditor'].errors" class="invalid-feedback">
+            <div *ngIf="scheduleform['auditor'].errors['required']">Trainer is required</div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <label for="food_category" class="form-label">Select Documents to Upload<sup>*</sup></label>
+        <app-multi-select #multiSelect class="cursor-pointer" [options]="foscosDocumentsName"
+            (selectedArrayChange)="getSelectedDocs($event)" [placeHolder]="'Select Documents'"></app-multi-select>
+    </div>
+
+    <div class="col-md-3">
+        <label for="payment_date" class="form-label">Upload Docs.</label><sup>*</sup>
+        <br>
+        <fa-icon [icon]="faFileArrowUp" class="fa-2xl text-primary cursor-pointer" (click)="openDocumentationModal()"></fa-icon>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-6">
+            <button type="submit" class="btn btn-sm btn-primary">Schedule
+            </button>
+        </div>
+    </div>
+
+    <ngx-loading [show]="loading"></ngx-loading>
+</form>
+
+<ng-template #onlyUpload>
+    <h6>Documentation Section</h6>
 <div class="row">
     <div class="col-md-6">
         <label for="food_category" class="form-label">Select Documents to Upload<sup>*</sup></label>
         <app-multi-select #multiSelect class="cursor-pointer" [options]="foscosDocumentsName" 
             [placeHolder]="'Select Documents'" (selectedArrayChange)="getSelectedDocs($event)"></app-multi-select>
-        <!-- <div *ngIf="verified && verificationform['food_category'].errors" class="invalid-feedback">
-                  <div *ngIf="verificationform['food_category'].errors">Food categories are required</div>
-                </div> -->
     </div>
 
 
@@ -16,3 +107,10 @@
         <fa-icon [icon]="faFileArrowUp" class="fa-2xl text-primary cursor-pointer" (click)="openDocumentationModal()"></fa-icon>
     </div>
 </div>
+</ng-template> 
+
+<h6 style="margin-top: 20px;">Document Sale</h6>
+
+<!-- fbo form for sale -->
+<app-fbonew #fboNew [isCalledAsChild]="true"></app-fbonew> 
+

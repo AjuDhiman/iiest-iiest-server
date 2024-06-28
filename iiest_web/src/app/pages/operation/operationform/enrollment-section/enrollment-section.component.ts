@@ -26,6 +26,8 @@ export class EnrollmentSectionComponent implements OnInit, OnChanges {
 
   @Input() verifiedStatus: boolean;
 
+  @Input() isVerifier: boolean;
+
   //output event emitters
   @Output() emitEnrolledDataId: EventEmitter<string> = new EventEmitter<string>;
 

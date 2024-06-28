@@ -40,6 +40,18 @@ const salesSchema = new Schema({
             return this.product_name.includes('HRA');
         }
     },
+    medicalInfo: {
+        type: Object,
+        required: function() {
+            return this.product_name.includes('Medical');
+        }
+    },
+    waterTestInfo: {
+        type: Object,
+        required: function() {
+            return this.product_name.includes('Water Test Report');
+        }
+    },
     payment_mode: {
         type: String, 
         required: true

@@ -20,10 +20,9 @@ const schedulingSchema=new Schema({
         type: Array,
         default: []
     },
-    documents: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'documents',
-        default: []
+    isRequiredDocUploaded: {
+        type: Boolean,
+        required: true
     },
     auditor: {
         type: String,

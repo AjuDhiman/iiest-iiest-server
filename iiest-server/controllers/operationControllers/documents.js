@@ -13,18 +13,36 @@ exports.saveDocument = async (req, res) => {
         const { name, format, multipleDoc, panelType, handlerId } = req.body;
         let ref = '';
 
-        if(panelType === "Foscos Panel") {
-            ref = "shopdetails";
-        } else if(panelType === "HRA Panel") {
-            ref = "hygienes";
-        };
-
-        console.log(panelType);
-
         console.log(file);
 
-        const src = file.map(item => item.filename);
-        const uploadedDoc = await docsModel.create({ handlerId: handlerId, name: name, format: format, multipleDoc: multipleDoc, src: src })
+        let uploadedDoc
+
+        const src = file.map(item => item.filename); //getting src of each file
+        const docObject = await docsModel.findOne({ handlerId: handlerId });
+        if (docObject) {
+            // Update the existing document by pushing the new document to the array
+            uploadedDoc = await docObject.updateOne({
+                $push: {
+                    documents: {
+                        name: name,
+                        format: format,
+                        multipleDoc: multipleDoc,
+                        src: src
+                    }
+                }
+            });
+        } else {
+            uploadedDoc = await docsModel.create({  //create now obj in case of no history avlable
+                handlerId: handlerId, documents: [
+                    {
+                        name: name,
+                        format: format,
+                        multipleDoc: multipleDoc,
+                        src: src
+                    }
+                ]
+            });
+        }
 
         if (!uploadedDoc) {
             res.status(401).json({ success: false, message: 'Document Saving Error' })
@@ -44,10 +62,10 @@ exports.getDocList = async (req, res) => {
         let success = false;
 
         const id = req.params.id;
-        
+
         const handlerId = id.replace(/slash/g, '/'); // remove all word slash with /
 
-        const docs = await docsModel.find({ handlerId: handlerId });
+        const docs = await docsModel.findOne({ handlerId: handlerId });
 
         if (!docs) {
             return res.status(201).json({ success, message: 'No Doc Found' });
@@ -55,7 +73,7 @@ exports.getDocList = async (req, res) => {
 
         success = true;
 
-        return res.status(200).json({ success, docs });
+        return res.status(200).json({ success, docs: docs.documents });
 
     } catch (error) {
         console.log(error);
@@ -75,7 +93,7 @@ exports.deleteDocs = async (req, res) => {
         fs.unlink(filePath, (err, data) => {
             if (err) {
                 console.error('Error deleting file:', err);
-                return res.status(400).json({message: 'FS File Error'});
+                return res.status(400).json({ message: 'FS File Error' });
             }
         })
 
@@ -84,19 +102,19 @@ exports.deleteDocs = async (req, res) => {
         if (!deletedDoc) {
             return res.status(404).json({ success: false, message: 'Can\'t Delete File' });
         }
- 
+
         //code for audit loging if some one deletes the doc
-         const prevVal = deletedDoc
- 
-         const currentVal = {};
+        const prevVal = deletedDoc
 
-         console.log(doc);
- 
-         await logAudit(req.user._id, "shopdetails", shopId, prevVal, currentVal, `${doc.name} deleted`);
- 
-         // code for tracking ends
+        const currentVal = {};
 
-        return res.status(200).json({success: true, message:'File Deleted Sucessfully'});
+        console.log(doc);
+
+        await logAudit(req.user._id, "shopdetails", shopId, prevVal, currentVal, `${doc.name} deleted`);
+
+        // code for tracking ends
+
+        return res.status(200).json({ success: true, message: 'File Deleted Sucessfully' });
 
     } catch (error) {
         console.log(error);
