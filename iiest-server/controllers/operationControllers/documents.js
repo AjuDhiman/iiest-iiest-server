@@ -10,12 +10,12 @@ exports.saveDocument = async (req, res) => {
 
         const file = req.files['document'];
         const id = req.params.id;
-        const { name, format, multipleDoc, panelType, handlerId } = req.body;
+        const { name, format, multipleDoc, panelType, handlerId, customer_id } = req.body;
         let ref = '';
 
         console.log(file);
 
-        let uploadedDoc
+        let uploadedDoc;
 
         const src = file.map(item => item.filename); //getting src of each file
         const docObject = await docsModel.findOne({ handlerId: handlerId });
@@ -27,7 +27,8 @@ exports.saveDocument = async (req, res) => {
                         name: name,
                         format: format,
                         multipleDoc: multipleDoc,
-                        src: src
+                        src: src,
+                        customer_id: customer_id
                     }
                 }
             });
@@ -38,7 +39,8 @@ exports.saveDocument = async (req, res) => {
                         name: name,
                         format: format,
                         multipleDoc: multipleDoc,
-                        src: src
+                        src: src,
+                        customer_id: customer_id
                     }
                 ]
             });

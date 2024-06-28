@@ -31,8 +31,8 @@
 
       <div class="col-md-4" *ngIf="isEbill">
         <label class="form-label"
-        >{{selectedDoc.name + 'Customer Id'}}</label>
-        <input class="form-control form-control-sm" />
+        >{{selectedDoc.name + ' Customer Id'}}</label>
+        <input class="form-control form-control-sm" formControlName="customer_id" [placeholder]="selectedDoc.name +' Customer Id'" />
       </div>
 
       <div [ngClass]="{'py-2': isOtherDoc}" class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
