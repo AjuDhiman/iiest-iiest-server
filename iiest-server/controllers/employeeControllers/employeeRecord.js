@@ -64,29 +64,38 @@ exports.employeeRecord = async (req, res) => {
                                         { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
                                     ]
                                 },
-                                // { //add amount processing according to Medical
-                                //     $sum: [
-                                //         {
-                                //             $multiply: [
-                                //                 { $toInt: { $ifNull: ["$medicalInfo.medical_processing_amount", 0] } },
-                                //                 { $toInt: { $ifNull: ["$medicalInfo.recipient_no", 0] } },
-                                //             ]
-                                //         },
-                                //         -250
-                                //     ]
-                                // },
-                                // {//add amount processing according to water test
-                                //     $sum: [
-                                //         { $toInt: { $ifNull: ["$waterTestInfo.water_test_processing_amount", 0] } },
-                                //         {
-                                //             $cond: [
-                                //                 { $eq: ["$waterTestInfo.water_test_service_name", "NABL"] },
-                                //                 -1500,  // Value to add if water_test_service_name is 'NABL'
-                                //                 -1000   // Value to add if water_test_service_name is not 'NABL'
-                                //             ]
-                                //         }
-                                //     ]
-                                // }
+                                { //add amount processing according to Medical
+
+                                    $multiply: [
+                                        {
+                                            $sum: [
+                                                { $toInt: { $ifNull: ["$medicalInfo.medical_processing_amount", 0] } },
+                                                -250
+                                            ]
+                                        },
+                                        { $toInt: { $ifNull: ["$medicalInfo.recipient_no", 0] } },
+                                    ]
+
+                                },
+                                {//add amount processing according to water test
+                                    $sum: [
+                                        { $toInt: { $ifNull: ["$waterTestInfo.water_test_processing_amount", 0] } },
+                                        {
+                                            $cond: [
+                                                { $eq: ["$waterTestInfo.water_test_service_name", "NABL"] },
+                                                -1500,  // Value to add if water_test_service_name is 'NABL'
+                                                0  
+                                            ]
+                                        },
+                                        {
+                                            $cond: [
+                                                { $eq: ["$waterTestInfo.water_test_service_name", "Non NABL"] },
+                                                -1000,  // Value to add if water_test_service_name is 'Non NABL'
+                                                0  
+                                            ]
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     },
