@@ -2,10 +2,9 @@ const { recipientModel, shopModel, hygieneShopModel } = require('../../models/fb
 const { fboEbillBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const { logAudit } = require('../generalControllers/auditLogsControllers');
-const { generateRecipientInfo, generateHygieneShopInfo } = require('../../fbo/generateCredentials');
+const { generateRecipientInfo } = require('../../fbo/generateCredentials');
 const fs = require('fs');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
-const { fostacVerifyModel } = require('../../models/operationModels/verificationSchema');
 
 exports.addRecipient = async (req, res, next) => {
 
@@ -64,50 +63,6 @@ exports.addRecipient = async (req, res, next) => {
 
         const allRecp = await recipientModel.find({ salesInfo: req.params.id });
 
-        // let isFoscosCompleted = true; //this var will be true in case of foscos doesn't exsists or it's completed in case of foscos combined in this sale
-
-        // let isHraCompleted = true;//this var will be true in case of hra doesn't exsists or it's completed in  case of hra combined in this sale
-
-        // if(salesInfo.foscosInfo){
-        //     let allDocUploaded = false;
-        //     const allShop = await shopModel.find({salesInfo: req.params.id});
-
-        //     allShop.forEach(shop => {
-        //         if(
-        //             // shop.eBillImage != undefined && shop.eBillImage != ''
-        //          shop.shopPhoto != undefined && shop.shopPhoto != '' 
-        //          && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
-        //          && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
-        //             allDocUploaded = true
-        //         }
-        //     });
-
-        //     if((allShop.length == salesInfo.foscosInfo.shops_no) && allDocUploaded) {
-        //         isFoscosCompleted = true;
-        //     } else {
-        //         isFoscosCompleted = false;
-        //     }
-        // }
-
-        // if(salesInfo.hraInfo){
-        //     const allShop = await hygieneShopModel.find({salesInfo: req.params.id});
-
-        //     let allDocUploaded = false;
-
-        //     allShop.forEach(shop => {
-        //         if(shop.fostacCertificate != undefined && shop.fostacCertificate != ''
-        //          && shop.foscosLicense != undefined && shop.foscosLicense != '' ) {
-        //             allDocUploaded = true;
-        //         }
-        //     });
-
-        //     if((allShop.length == salesInfo.hraInfo.shops_no) && allDocUploaded) {
-        //         isHraCompleted = true;
-        //     } else {
-        //         isHraCompleted = false;
-        //     }
-        // }
-
         if ((allRecp.length == salesInfo.fostacInfo.recipient_no)) {
             await salesModel.findByIdAndUpdate(req.params.id, { checkStatus: 'Approved' }) // we will approve this sale if all docs are uploaded for all shops related to this sale
         }
@@ -137,11 +92,6 @@ exports.addShop = async (req, res) => {
 
         const { operatorName, address, pincode, village, tehsil, byExcel } = req.body;
 
-        // if (!eBill) {
-        //     success = false;
-        //     return res.status(401).json({ success, ebillErr: true })
-        // }
-
         if (!ownerPhoto) {
             success = false;
             return res.status(401).json({ success, ownerPhotoErr: true })
@@ -169,60 +119,6 @@ exports.addShop = async (req, res) => {
 
         const addShop = await shopModel.create({ salesInfo: req.params.id, operatorName, address, state, district, pincode, village, tehsil, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc, byExcel });
 
-
-        // const salesInfo = await salesModel.findOne({ _id: req.params.id });
-
-        // const allShop = await shopModel.find({ salesInfo: req.params.id });
-
-        // let isFostacCompleted = true; //this var will be true in case of fostac doesn't exsists or it's completed in case of fostac combined in this sale
-
-        // let isHraCompleted = true;//this var will be true in case of hra doesn't exsists or it's completed in  case of hra combined in this sale
-
-        // let allDocUploaded = false;
-
-        // allShop.forEach(shop => {
-        //     if (
-        //         // shop.eBillImage != undefined && shop.eBillImage != ''
-        //         shop.shopPhoto != undefined && shop.shopPhoto != ''
-        //         && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
-        //         && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
-        //         allDocUploaded = true
-        //     }
-        // });
-
-        // if (salesInfo.fostacInfo) {
-
-        //     const allRecp = await recipientModel.find({ salesInfo: req.params.id });
-
-        //     if ((allRecp.length == salesInfo.fostacInfo.recipient_no)) {
-        //         isFostacCompleted = true;
-        //     } else {
-        //         isFostacCompleted = false;
-        //     }
-        // }
-
-        // if (salesInfo.hraInfo) {
-        //     const allShop = await hygieneShopModel.find({ salesInfo: req.params.id });
-
-        //     let allDocUploaded = false;
-
-        //     allShop.forEach(shop => {
-        //         if (shop.fostacCertificate != undefined && shop.fostacCertificate != ''
-        //             && shop.foscosLicense != undefined && shop.foscosLicense != '') {
-        //             allDocUploaded = true;
-        //         }
-        //     });
-
-        //     if ((allShop.length == salesInfo.hraInfo.shops_no) && allDocUploaded) {
-        //         isHraCompleted = true;
-        //     } else {
-        //         isHraCompleted = false;
-        //     }
-        // }
-
-        // if ((allShop.length == salesInfo.foscosInfo.shops_no) && allDocUploaded && isFostacCompleted && isHraCompleted) {
-        //     await salesModel.findByIdAndUpdate(req.params.id, { checkStatus: 'Approved' }) // we will approve this sale if all docs are uploaded for all shops related to this sale
-        // }
         
         if (addShop) {
             success = true
@@ -239,124 +135,70 @@ exports.addShop = async (req, res) => {
 
 };
 
-exports.addHygieneShop = async (req, res) => {
+// exports.addHygieneShop = async (req, res) => {
 
-    try {
+//     try {
 
-        let success = false;
+//         let success = false;
 
-        // const eBill = req.files['eBill'];
-        const ownerPhoto = req.files['ownerPhoto'];
-        const shopPhoto = req.files['shopPhoto'];
-        const aadharPhoto = req.files['aadharPhoto'];
+//         // const eBill = req.files['eBill'];
+//         const ownerPhoto = req.files['ownerPhoto'];
+//         const shopPhoto = req.files['shopPhoto'];
+//         const aadharPhoto = req.files['aadharPhoto'];
 
-        const { manager_name, manager_contact, manager_email, address, pincode, byExcel } = req.body;
+//         const { manager_name, manager_contact, manager_email, address, pincode, byExcel } = req.body;
 
-        if (!ownerPhoto) {
-            success = false;
-            return res.status(401).json({ success, ownerPhotoErr: true })
-        }
+//         if (!ownerPhoto) {
+//             success = false;
+//             return res.status(401).json({ success, ownerPhotoErr: true })
+//         }
 
-        if (!shopPhoto) {
-            success = false;
-            return res.status(401).json({ success, shopPhotoErr: true })
-        }
+//         if (!shopPhoto) {
+//             success = false;
+//             return res.status(401).json({ success, shopPhotoErr: true })
+//         }
 
-        if (!aadharPhoto) {
-            success = false;
-            return res.status(401).json({ success, aadharPhotoErr: true })
-        }
+//         if (!aadharPhoto) {
+//             success = false;
+//             return res.status(401).json({ success, aadharPhotoErr: true })
+//         }
 
-        const { state, district } = await readPincodeFile(pincode); //extract state and district on the basis of pincode
+//         const { state, district } = await readPincodeFile(pincode); //extract state and district on the basis of pincode
 
-        console.log(state, district);
+//         console.log(state, district);
 
-        if (state == '' && district == '') {
-            res.status(401).json({ success: false, pincodeErr: true, message: 'Pincode Not Found' })
-        }
+//         if (state == '' && district == '') {
+//             res.status(401).json({ success: false, pincodeErr: true, message: 'Pincode Not Found' })
+//         }
 
-        const shopCustInfo = await generateHygieneShopInfo(req.params.id);
+//         const shopCustInfo = await generateHygieneShopInfo(req.params.id);
 
-        const aadharSrc = aadharPhoto.map((file) => file.filename);
+//         const aadharSrc = aadharPhoto.map((file) => file.filename);
 
-        const addShop = await hygieneShopModel.create({ salesInfo: req.params.id, shopId: shopCustInfo.shopId, managerName: manager_name, managerContact: manager_contact, managerEmail: manager_email, address, state, district, pincode, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc });
+//         const addShop = await hygieneShopModel.create({ salesInfo: req.params.id, shopId: shopCustInfo.shopId, managerName: manager_name, managerContact: manager_contact, managerEmail: manager_email, address, state, district, pincode, ownerPhoto: ownerPhoto[0].filename, shopPhoto: shopPhoto[0].filename, aadharPhoto: aadharSrc });
 
-        //code for approving sale
-        // const salesInfo = await salesModel.findOne({ _id: req.params.id });
+//         if (addShop) {
+//             success = true;
+//             return res.status(200).json({ success });
+//         }
 
-        // const allShop = await hygieneShopModel.find({ salesInfo: req.params.id });
+//         //code for tracking data operation data flow by auditing log starts 
+//         const prevVal = {};
 
-        // let allDocUploaded = false;
+//         const currentVal = addShop;
 
-        // let isFostacCompleted = true;//this var will be true in case of fostac doesn't exsists or it's completed in case of fostac combined in this sale
+//         const log = logAudit(req.user._id, "hygienes", addShop._id, prevVal, currentVal, "Shop Registered");
+//         //code for tracking data operation data flow by auditing log ends
 
-        // let isFoscosCompleted = true;//this var will be true in case of foscos doesn't exsists or it's completed in case of foscos combined in this sale
+//         success = false;
+//         res.status(404).json({ success, randomErr: true });
 
-        // allShop.forEach(shop => {
-        //     if (shop.fostacCertificate != undefined && shop.fostacCertificate != ''
-        //         && shop.foscosLicense != undefined && shop.foscosLicense != '') {
-        //         allDocUploaded = true;
-        //     }
-        // });
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({ message: 'Internal Server Error' });
+//     }
 
-        // if (salesInfo.fostacInfo) {
-
-        //     const allRecp = await recipientModel.find({ salesInfo: req.params.id });
-
-        //     if ((allRecp.length == salesInfo.fostacInfo.recipient_no)) {
-        //         isFostacCompleted = true;
-        //     } else {
-        //         isFostacCompleted = false;
-        //     }
-        // }
-
-        // if (salesInfo.foscosInfo) {
-        //     let allDocUploaded = false;
-        //     const allShop = await shopModel.find({ salesInfo: req.params.id });
-
-        //     allShop.forEach(shop => {
-        //         if (
-        //             // shop.eBillImage != undefined && shop.eBillImage != ''
-        //             shop.shopPhoto != undefined && shop.shopPhoto != ''
-        //             && shop.ownerPhoto != undefined && shop.ownerPhoto != ''
-        //             && shop.aadharPhoto != undefined && shop.shopPhoto.length != 0) {
-        //             allDocUploaded = true
-        //         }
-        //     });
-
-        //     if ((allShop.length == salesInfo.foscosInfo.shops_no) && allDocUploaded) {
-        //         isFoscosCompleted = true;
-        //     } else {
-        //         isFoscosCompleted = false;
-        //     }
-        // }
-
-        // if ((allShop.length == salesInfo.hraInfo.shops_no) && allDocUploaded && isFostacCompleted && isFoscosCompleted) {
-        //     await salesModel.findByIdAndUpdate(req.params.id, { checkStatus: 'Approved' }) // we will approve this sale if all docs are uploaded for all shops related to this sale
-        // }
-
-        if (addShop) {
-            success = true;
-            return res.status(200).json({ success });
-        }
-
-        //code for tracking data operation data flow by auditing log starts 
-        const prevVal = {};
-
-        const currentVal = addShop;
-
-        const log = logAudit(req.user._id, "hygienes", addShop._id, prevVal, currentVal, "Shop Registered");
-        //code for tracking data operation data flow by auditing log ends
-
-        success = false;
-        res.status(404).json({ success, randomErr: true });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-
-};
+// };
 
 
 exports.addShopByExcel = async (req, res) => {
