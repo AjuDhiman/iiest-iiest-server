@@ -244,10 +244,10 @@ const invoiceTemplate = async (fboInfo) => {
                         </div>
                         <div class="logo-section">
                             <p>
-                                1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001
+                                <b>1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001
                                 <br>
                                 Mobile No: +91-9599195097
-                                Landline - 011-35454931, 011-35457013<br>
+                                Landline - 011-35454931, 011-35457013  </b><br>
                                 <br>
                                 Website: connectonline.world, Email ID: info.iiest@gmail.com
                                 <br/>
