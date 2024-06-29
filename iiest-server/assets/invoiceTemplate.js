@@ -97,7 +97,7 @@ const invoiceTemplate = async (fboInfo) => {
                     height: 100%;
                     margin: 0 auto;
                     padding: 0;
-                    font-size: 12pt;
+                    font-size: 10pt;
                     background: rgb(204, 204, 204);
                 }
             
@@ -216,6 +216,7 @@ const invoiceTemplate = async (fboInfo) => {
             
                 .logo-section {
                     display: inline-flex;
+                    width: 100%;
                 }
             
                 img {
@@ -239,7 +240,7 @@ const invoiceTemplate = async (fboInfo) => {
             
                     <div class="sub-page">
                         <div class="heading">
-                            <h3>I I E S T&nbsp;&nbsp;&nbsp;F E D E R A T I O N</h3>
+                            <h3>C O N N E C T&nbsp;&nbsp;&nbsp;B H A R A T</h3>
                         </div>
                         <div class="logo-section">
                             <p>
@@ -248,7 +249,9 @@ const invoiceTemplate = async (fboInfo) => {
                                 Mobile No: +91-9599195097
                                 Landline - 011-35454931, 011-35457013<br>
                                 <br>
-                                Website: www.iiest.org, Email ID: finance.iiest@gmail.com
+                                Website: connectonline.world, Email ID: info.iiest@gmail.com
+                                <br/>
+                                Connect Bharat, a brand of IIEST Federation. Invoice issued by IIEST Federation.
                             </p>
                             <img src="${logoImg}" height=120 width=120 alt="iiest_logo"
                                 style="border: 2.5px solid black; border-radius: 60px; padding: 5px">
