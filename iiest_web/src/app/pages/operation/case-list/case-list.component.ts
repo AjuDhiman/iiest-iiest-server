@@ -133,13 +133,11 @@ export class CaseListComponent implements OnInit {
     this.router.navigate(['caselist/operationform', product, id]);
   }
 
-  filter(): void {
-    if (!this.searchQuery) {
-      console.log('TYPE DATA', this.typeData)
+  filter(): void { //filter func for filtering data on search
+    if (!this.searchQuery) { //if not search query display all data
       this.filteredData = this.typeData;
-      console.log('not 1uery')
     } else {
-      if (this.productType==='Fostac') {
+      if (this.productType==='Fostac') { //search in case of fostac
         switch (this.selectedFilter) {
           case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
@@ -157,13 +155,34 @@ export class CaseListComponent implements OnInit {
             break;
         }
       }
-      else if (this.panelType==='Foscos') {
+      else if (this.productType==='Foscos') { //search in case of foscos
         switch (this.selectedFilter) {
-          case 'byOperatorName': this.filteredData = this.typeData.filter((elem: any) => elem.operatorName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.managerName.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
           case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
             break;
           case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+            // case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo && elem.phoneNo.toString().includes(this.searchQuery.toString()))
+            // break;
+
+          case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && (elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.salesInfo.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase())));
+            break;
+        }
+      }
+       else if (this.productType==='HRA') {  //search in case of HRA
+        switch (this.selectedFilter) {
+          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.managerName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            break;
+          case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo &&  elem.salesInfo.fboInfo && 
+          elem.salesInfo.fboInfo.fbo_name &&  elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+          case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+            // case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo.toString().includes(this.searchQuery.toString()))
+            // break;
+
+          case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && (elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.salesInfo.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase())));
             break;
         }
       }
@@ -219,7 +238,7 @@ export class CaseListComponent implements OnInit {
     }
     else if (this.productType === 'Foscos') {
       this.setServiceType("Registration");
-      this.selectedFilter = "byOperatorName";
+      this.selectedFilter = "byManagerName";
       this.filter();
     }
     else if (this.productType === 'HRA') {
