@@ -5,17 +5,17 @@ const fs = require('fs');
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 
 
-exports.saveDocument = async (req, res) => {
+exports.saveDocument = async (req, res) => { //function for saving documents and adding it's src name and formata as an object in documets arry of oject in document collection finding it by handler id
     try {
 
         const file = req.files['document'];
         const id = req.params.id;
-        const { name, format, multipleDoc, panelType, handlerId } = req.body;
+        const { name, format, multipleDoc, panelType, handlerId, customer_id } = req.body;
         let ref = '';
 
         console.log(file);
 
-        let uploadedDoc
+        let uploadedDoc;
 
         const src = file.map(item => item.filename); //getting src of each file
         const docObject = await docsModel.findOne({ handlerId: handlerId });
@@ -27,7 +27,8 @@ exports.saveDocument = async (req, res) => {
                         name: name,
                         format: format,
                         multipleDoc: multipleDoc,
-                        src: src
+                        src: src,
+                        customer_id: customer_id
                     }
                 }
             });
@@ -38,7 +39,8 @@ exports.saveDocument = async (req, res) => {
                         name: name,
                         format: format,
                         multipleDoc: multipleDoc,
-                        src: src
+                        src: src,
+                        customer_id: customer_id
                     }
                 ]
             });
@@ -56,7 +58,7 @@ exports.saveDocument = async (req, res) => {
     }
 }
 
-exports.getDocList = async (req, res) => {
+exports.getDocList = async (req, res) => { //gertting list of all docs relate to a id
     try {
 
         let success = false;
@@ -81,12 +83,14 @@ exports.getDocList = async (req, res) => {
     }
 }
 
-exports.deleteDocs = async (req, res) => {
+exports.deleteDocs = async (req, res) => { //function for delertng a particular doc from a object of documents relarted to aparticilar id and with a specific name 
     try {
 
         const doc = req.body.docInfo;
 
-        const shopId = req.params.id;
+        const shopId = req.params.id; //getting handler id from frontend
+
+        const handlerId = shopId.replace(/slash/g, '/'); // remove all word slash with /
 
         const filePath = `./documents/foscos/${doc.src}`
 
@@ -97,9 +101,13 @@ exports.deleteDocs = async (req, res) => {
             }
         })
 
-        const deletedDoc = await docsModel.findByIdAndDelete(doc._id);
+        const updatedDoc = await docsModel.findOneAndUpdate(
+            { _id: handlerId },
+            { $pull: { documents: { name: doc.name } } },
+            { new: true } // Return the updated document
+        );
 
-        if (!deletedDoc) {
+        if (!updatedDoc) {
             return res.status(404).json({ success: false, message: 'Can\'t Delete File' });
         }
 

@@ -87,6 +87,11 @@ export class DocumentationModalComponent implements OnInit {
     this.clearInputCount++;
     this.lastSelectedDoc = this.selectedDoc;
     this.selectedDoc = JSON.parse($event.target.value);
+    if(this.selectedDoc.name === 'Electricity Bill'){
+      this.isEbill = true;
+    } else {
+      this.isEbill = false
+    }
 
     if (this.selectedDoc.name === 'Others') {
       this.documentsForm.addControl('name', this.formBuilder.control(''));
@@ -95,6 +100,12 @@ export class DocumentationModalComponent implements OnInit {
       this.isOtherDoc = false;
       this.documentsForm.removeControl('name');
     }
+
+    if(this.isEbill){
+      this.documentsForm.addControl('customer_id', this.formBuilder.control(''));
+    } else {
+      this.documentsForm.removeControl('customer_id');
+    }
     
     this.documentsForm.addControl(this.changeNameFormat(this.selectedDoc.name.toString()), this.formBuilder.control(''));
     this.documentsForm.removeControl(this.changeNameFormat(this.lastSelectedDoc.name.toString()));
@@ -102,6 +113,7 @@ export class DocumentationModalComponent implements OnInit {
   }
 
   onFileChange($event: any) {
+
     if (this.selectedDoc.mutipleDoc) {
       this.docFile = $event.target.files;
       $event.target.files.forEach((file: File) => {
@@ -112,10 +124,6 @@ export class DocumentationModalComponent implements OnInit {
       });
       this.format = 'image';
       return;
-    }
-
-    if(this.selectedDoc.name === 'Electricity Bill'){
-      this.isEbill = true;
     }
 
     this.docFile = $event.target.files[0];
@@ -154,6 +162,12 @@ export class DocumentationModalComponent implements OnInit {
       formData.append('name', this.documentsForm.value.name);
     } else {
       formData.append('name', this.selectedDoc.name);
+    }
+
+    if(this.isEbill){
+      const customer_id = this.documentsForm.value.customer_id;
+      const extraInfo = JSON.stringify({customer_id: customer_id});
+      formData.append('customer_id', customer_id);
     }
 
     console.log(this.handlerId);

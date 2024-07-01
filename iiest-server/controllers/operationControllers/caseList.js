@@ -1,26 +1,26 @@
 const { recipientModel, shopModel, hygieneShopModel } = require('../../models/fboModels/recipientSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 
-exports.caseList = async (req, res) => {
+exports.caseList = async (req, res) => {  //api for getting case list data to be shown for opeartion wing
     try {
 
-        const employeePanel = req.user.panel_type;
+        const employeePanel = req.user.panel_type; //getting panel type of user by the help of middleware
 
-        let list = {};
+        let list = {}; //creating an empty object
 
-        if (employeePanel === 'Foscos Panel' || employeePanel === 'Verifier Panel') {
+        if (employeePanel === 'Foscos Panel' || employeePanel === 'Verifier Panel') { //assigning foscosdata to foscos property of list in case of foscos panel or verifer panel
 
             list['Foscos'] = await shopModel.aggregate([
-                { 
-                    $match: { 
-                        product_name: 'Foscos' 
-                    } 
+                {
+                    $match: {
+                        product_name: 'Foscos'
+                    }
                 },
                 {
                     $lookup: {
                         from: 'employee_sales', // The name of the salesInfo collection
                         localField: 'salesInfo',
-                        foreignField: '_id', // Adjust this according to the actual foreign key in salesInfo
+                        foreignField: '_id', 
                         as: 'salesInfo'
                     }
                 },
@@ -30,7 +30,7 @@ exports.caseList = async (req, res) => {
                 {
                     $lookup: {
                         from: 'staff_registers', // The name of the employee collection
-                        localField: 'salesInfo.employeeInfo', // Adjust this according to the actual field in salesInfo
+                        localField: 'salesInfo.employeeInfo',
                         foreignField: '_id',
                         as: 'salesInfo.employeeInfo'
                     }
@@ -41,7 +41,7 @@ exports.caseList = async (req, res) => {
                 {
                     $lookup: {
                         from: 'fbo_registers', // The name of the fbo collection
-                        localField: 'salesInfo.fboInfo', // Adjust this according to the actual field in salesInfo
+                        localField: 'salesInfo.fboInfo', 
                         foreignField: '_id',
                         as: 'salesInfo.fboInfo'
                     }
@@ -52,17 +52,17 @@ exports.caseList = async (req, res) => {
                 {
                     $lookup: {
                         from: 'bo_registers', // The name of the boInfo collection
-                        localField: 'salesInfo.fboInfo.boInfo', // Adjust this according to the actual field in fboInfo
+                        localField: 'salesInfo.fboInfo.boInfo', 
                         foreignField: '_id',
                         as: 'salesInfo.fboInfo.boInfo'
                     }
                 },
                 {
-                   $unwind: '$salesInfo.fboInfo.boInfo'
+                    $unwind: '$salesInfo.fboInfo.boInfo'
                 },
                 {
                     $lookup: {
-                        from: 'documents',
+                        from: 'documents',  // The name of the documents collection
                         localField: 'salesInfo.fboInfo.customer_id',
                         foreignField: 'handlerId',
                         as: 'salesInfo.docs'
@@ -70,30 +70,75 @@ exports.caseList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'foscos_verifications', 
+                        from: 'foscos_verifications',  // The name of the verification collection
                         localField: '_id',
                         foreignField: 'shopInfo',
                         as: 'verificationInfo'
                     }
                 },
-                // {
-                //    $unwind: '$verificationInfo'
-                // },
                 {
-                    $sort: { 
-                        'salesInfo.createdAt': -1 
+                    $sort: {
+                        'salesInfo.createdAt': -1
                     }
-                }
+                },
+                // {
+                //     $project: { //only showing nessesory fields
+                //         "_id": 1,
+                //         "name": 1,
+                //         "phoneNo": 1,
+                //         "shopId": 1,
+                //         "createdAt": 1,
+                //         "managerName": 1,
+                //         "product_name": 1,
+                //         "address": 1,
+                //         "pincode": 1,
+                //         "state": 1,
+                //         "district": 1,
+                //         "village": 1,
+                //         "tehsil": 1,
+                //         "updatedAt": 1,
+                //         "verificationInfo": 1,
+                //         "salesInfo._id": 1,
+                //         "salesInfo.fboInfo._id": 1,
+                //         "salesInfo.fboInfo.fbo_name": 1,
+                //         "salesInfo.fboInfo.owner_name": 1,
+                //         "salesInfo.fboInfo.owner_contact": 1,
+                //         "salesInfo.fboInfo.email": 1,
+                //         "salesInfo.fboInfo.customer_id": 1,
+                //         "salesInfo.fboInfo.state": 1,
+                //         "salesInfo.fboInfo.district": 1,
+                //         "salesInfo.fboInfo.pincode": 1,
+                //         "salesInfo.fboInfo.village": 1,
+                //         "salesInfo.fboInfo.tehsil": 1,
+                //         "salesInfo.fboInfo.business_type": 1,
+                //         "salesInfo.fboInfo.gst_number": 1,
+                //         "salesInfo.fboInfo.boInfo._id": 1,
+                //         "salesInfo.fboInfo.boInfo.business_entity": 1,
+                //         "salesInfo.fboInfo.boInfo.customer_id": 1,
+                //         "salesInfo.employeeInfo.employee_name": 1,
+                //         "salesInfo.product_name": 1,
+                //         "salesInfo.foscosInfo": 1,
+                //         "salesInfo.fostacInfo": 1,
+                //         "salesInfo.hraInfo": 1,
+                //         "salesInfo.medicalInfo": 1,
+                //         "salesInfo.waterTestInfo": 1,
+                //         "salesInfo.payment_mode": 1,
+                //         "salesInfo.cheque_data": 1,
+                //         "salesInfo.InvoiceId": 1,
+                //         "salesInfo.createdAt": 1,
+                //         "salesInfo.updatedAt": 1,
+                //     }
+                // }
             ]).exec();
-            
 
-        } 
-        if (employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel' || employeePanel === 'Verifier Panel') {
 
-            list['Fostac']= await recipientModel.aggregate([
+        }
+        if (employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel' || employeePanel === 'Verifier Panel') { //assigning fotacdata to fostac property of list in case of foscos panel or verifer panel or fssai training panel
+
+            list['Fostac'] = await recipientModel.aggregate([
                 {
                     $lookup: {
-                        from: 'employee_sales',
+                        from: 'employee_sales',  // The name of the salesInfo collection
                         localField: 'salesInfo',
                         foreignField: '_id',
                         as: 'salesInfo'
@@ -107,7 +152,7 @@ exports.caseList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'staff_registers',
+                        from: 'staff_registers',  // The name of the employee collection
                         localField: 'salesInfo.employeeInfo',
                         foreignField: '_id',
                         as: 'salesInfo.employeeInfo'
@@ -121,7 +166,7 @@ exports.caseList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'fbo_registers',
+                        from: 'fbo_registers', // The name of the fbo collection
                         localField: 'salesInfo.fboInfo',
                         foreignField: '_id',
                         as: 'salesInfo.fboInfo'
@@ -135,21 +180,21 @@ exports.caseList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'bo_registers',
+                        from: 'bo_registers', // The name of the boInfo collection
                         localField: 'salesInfo.fboInfo.boInfo',
                         foreignField: '_id',
                         as: 'salesInfo.fboInfo.boInfo'
                     }
                 },
                 {
-                   $unwind: {
-                       path: '$salesInfo.fboInfo.boInfo',
-                       preserveNullAndEmptyArrays: true
-                   }
+                    $unwind: {
+                        path: '$salesInfo.fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
                     $lookup: {
-                        from: 'documents',
+                        from: 'documents', // The name of the documents collection
                         localField: 'salesInfo.fboInfo.customer_id',
                         foreignField: 'handlerId',
                         as: 'salesInfo.docs'
@@ -157,28 +202,55 @@ exports.caseList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'fostac_verifications',
+                        from: 'fostac_verifications', // The name of the verification collection
                         localField: '_id',
                         foreignField: 'recipientInfo',
                         as: 'verificationInfo'
                     }
                 },
                 {
-                    $sort: { 
-                        'salesInfo.createdAt': -1 
+                    $sort: {
+                        'salesInfo.createdAt': -1
+                    }
+                },
+                {
+                    $project: { //only showing nessesory fields
+                        "_id": 1,
+                        "name": 1,
+                        "phoneNo": 1,
+                        "recipientId": 1,
+                        "createdAt": 1,
+                        "aadharNo": 1,
+                        "updatedAt": 1,
+                        "verificationInfo": 1,
+                        "salesInfo._id": 1,
+                        "salesInfo.fboInfo._id": 1,
+                        "salesInfo.fboInfo.fbo_name": 1,
+                        "salesInfo.fboInfo.owner_name": 1,
+                        "salesInfo.fboInfo.customer_id": 1,
+                        "salesInfo.fboInfo.state": 1,
+                        "salesInfo.fboInfo.district": 1,
+                        "salesInfo.fboInfo.boInfo._id": 1,
+                        "salesInfo.fboInfo.boInfo.customer_id": 1,
+                        "salesInfo.employeeInfo.employee_name": 1,
+                        "salesInfo.product_name": 1,
+                        "salesInfo.InvoiceId": 1,
+                        "salesInfo.fostacInfo": 1,
+                        "salesInfo.createdAt": 1,
+                        "salesInfo.updatedAt": 1,
                     }
                 }
             ]).exec();
-            
 
-        } ;
-        if (employeePanel === 'HRA Panel' || employeePanel === 'Verifier Panel') { 
+
+        };
+        if (employeePanel === 'HRA Panel' || employeePanel === 'Verifier Panel') {
 
             list['HRA'] = await shopModel.aggregate([
-                { 
-                    $match: { 
-                        product_name: 'HRA' 
-                    } 
+                {
+                    $match: {
+                        product_name: 'HRA'
+                    }
                 },
                 {
                     $lookup: {
@@ -231,10 +303,10 @@ exports.caseList = async (req, res) => {
                     }
                 },
                 {
-                   $unwind: {
-                       path: '$salesInfo.fboInfo.boInfo',
-                       preserveNullAndEmptyArrays: true
-                   }
+                    $unwind: {
+                        path: '$salesInfo.fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
                 },
                 {
                     $lookup: {
@@ -253,14 +325,14 @@ exports.caseList = async (req, res) => {
                     }
                 },
                 {
-                    $sort: { 
-                        'salesInfo.createdAt': -1 
+                    $sort: {
+                        'salesInfo.createdAt': -1
                     }
                 }
             ]).exec();
-            
-            
-            }
+
+
+        }
 
         // } else if (employeePanel == 'Verifier Panel') { //show verifier all cases
         //     list = {}

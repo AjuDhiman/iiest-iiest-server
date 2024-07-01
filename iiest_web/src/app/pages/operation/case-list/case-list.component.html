@@ -69,11 +69,11 @@
                                 [(ngModel)]="selectedFilter">
                                 <option *ngIf="productType==='Fostac'" value="byRecipientName" selected>Search by
                                     Recipient Name</option>
-                                <option *ngIf="productType==='Foscos'" value="byManagerName" selected>Search by
+                                <option *ngIf="productType==='Foscos' || productType === 'HRA'" value="byManagerName" selected>Search by
                                     Manager Name</option>
                                 <option value="byFboName">Search by Fbo Name</option>
                                 <option value="byOwnerName">Search by Owner Name</option>
-                                <option value="byContact">Search by Contact no.</option>
+                                <option *ngIf="productType==='Fostac'" value="byContact">Search by Contact no.</option>
                                 <option value="byLocation">Search by Location</option>
                             </select>
                         </div>
@@ -151,10 +151,11 @@
                                         <td class="cell"><span
                                                 class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
-                                        <td class="cell text-center"><span class="truncate text-capitalize" [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
-                                            {{data.verificationInfo.length?'Verified':'Pending'}}
-                                         </span>
-                                     </td>
+                                        <td class="cell text-center"><span class="truncate text-capitalize"
+                                                [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
+                                                {{data.verificationInfo.length?'Verified':'Pending'}}
+                                            </span>
+                                        </td>
                                         <!-- <td class="cell"><span class="truncate text-capitalize">
                                                 <fa-icon class="fa-l selector mx-2"
                                                     style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
@@ -235,10 +236,11 @@
                                             <span
                                                 class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
-                                        <td class="cell text-center"><span class="truncate text-capitalize " [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
-                                            {{data.verificationInfo.length?'Verified':'Pending'}}
-                                         </span>
-                                     </td>
+                                        <td class="cell text-center"><span class="truncate text-capitalize "
+                                                [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
+                                                {{data.verificationInfo.length?'Verified':'Pending'}}
+                                            </span>
+                                        </td>
                                         <td class="cell"><span class="truncate text-capitalize">
                                                 <fa-icon class="fa-l selector mx-2"
                                                     style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
@@ -317,7 +319,9 @@
                                         <td *ngIf="productType==='Foscos'" class="cell"><span
                                                 class="truncate">{{data.salesInfo.foscosInfo.foscos_total
                                                 | inrAmount}}</span></td>
-                                        <td class="cell"><span class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span></td>
+                                        <td class="cell"><span
+                                                class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span>
+                                        </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
                                                 class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
@@ -325,18 +329,19 @@
                                             <span
                                                 class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
                                         </td>
-                                        <td class="cell text-center"><span class="truncate text-capitalize" [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
-                                           {{data.verificationInfo.length?'Verified':'Pending'}}
-                                        </span>
-                                    </td>
-                                    <td class="cell"><span class="truncate text-capitalize">
-                                            <fa-icon class="fa-l selector mx-2"
-                                                style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
-                                                (click)="viewFboDetails($event, data.salesInfo)"
-                                                title="View Detail"></fa-icon>
+                                        <td class="cell text-center"><span class="truncate text-capitalize"
+                                                [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
+                                                {{data.verificationInfo.length?'Verified':'Pending'}}
+                                            </span>
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize">
+                                                <fa-icon class="fa-l selector mx-2"
+                                                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                    (click)="viewFboDetails($event, data.salesInfo)"
+                                                    title="View Detail"></fa-icon>
 
-                                        </span>
-                                    </td>
+                                            </span>
+                                        </td>
                                         <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
                                         </td> -->
                                         <ng-template #noData>
