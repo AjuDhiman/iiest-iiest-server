@@ -1,80 +1,84 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 const { Schema } = mongoose;
 
-const salesSchema = new Schema({
-    employeeInfo: {
+const salesSchema = new Schema({ //creating sales schema
+    employeeInfo: { //property for saving a object id from employee collection of employee who did this sale
         type: mongoose.Schema.Types.ObjectId,
         ref: 'staff_registers',
         required: true
     },
-    fboInfo: {
+    fboInfo: { //property for saving a object id from fbo_registers collection of fbo on which thus sale is done
         type: mongoose.Schema.Types.ObjectId,
         ref: 'fbo_registers',
         required: true
     },
-    product_name: {
+    product_name: { // array of all productrs this which are sold in this sale
         type: [String],
-        validate: {
+        validate: { //its length shoyld not be zero
             validator: function(arr){
                 return arr.length > 0;
             },
-            message: 'Product Name cannot be empty.'
+            message: 'Product Name cannot be empty.' //error message 
         },
         required: true
     },
-    fostacInfo: {
+    fostacInfo: { // object that contacin all info about fostac if fostac sold in this sale
         type: Object,
         required: function(){
-            return this.product_name.includes('Fostac')
+            return this.product_name.includes('Fostac') //required if fostac present in product_name array
         }
     },
-    foscosInfo: {
+    foscosInfo: { // object that contacin all info about foscos if foscos sold in this sale
         type: Object,
         required: function(){
-            return this.product_name.includes('Foscos')
+            return this.product_name.includes('Foscos') //required if foscos present in product_name array
         }
     },
-    hraInfo: {
+    hraInfo: { // object that contacin all info about hra if hra sold in this sale
         type: Object,
         required: function() {
-            return this.product_name.includes('HRA');
+            return this.product_name.includes('HRA'); //required if hra present in product_name array
         }
     },
-    medicalInfo: {
+    medicalInfo: { // object that contacin all info about medical if medical sold in this sale
         type: Object,
         required: function() {
-            return this.product_name.includes('Medical');
+            return this.product_name.includes('Medical'); //required if medical present in product_name array
         }
     },
-    waterTestInfo: {
-        type: Object,
+    waterTestInfo: {  // object that contacin all info about water test if water tset sold in this sale
+        type: Object, 
         required: function() {
-            return this.product_name.includes('Water Test Report');
+            return this.product_name.includes('Water Test Report'); //required if water test present in product_name array
         }
     },
-    payment_mode: {
+    payment_mode: { //property that contain info about which payment payemnt mode is used in this sale
         type: String, 
         required: true
     },
-    checkStatus: {
+    checkStatus: { //property that contain info about if is all recps info is taken of not  in case of recipient like fostac
         type: String, 
         required: true,
         default: 'Pending'
     },
-    grand_total: {
+    grand_total: { //property contains total amount of sale
         type: Number,
         required: true
     },
-    cheque_data: {
+    cheque_data: { //property contains about all info about cheque 
         type: Object,
         required: function() {
-            return (this.payment_mode === 'By Cheque');
+            return (this.payment_mode === 'By Cheque'); // required in case of payment mode is by cheque
         }
     },
-    invoiceId: {
+    invoiceId: { // array that contains object id of invoices of all product sold in this sale
         type: [mongoose.Schema.Types.ObjectId],
         required: true
-    }
+    },
+    // invoiceSaleId: { //array contains all of the invoice ids that are print in invoice that make invoice nuique
+    //     type: [Number],
+    //     unique: true
+    // }
 }, {timestamps: true})
 
 const salesModel = mongoose.model('employee_sales', salesSchema);

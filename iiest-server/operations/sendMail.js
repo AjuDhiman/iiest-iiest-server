@@ -358,7 +358,7 @@ const sendVerificationMail = (clientData) => {
     Kind Of Business -- ${clientData.kindOfBusiness}<br>
 
     <p>You will receive a call to verify the details and supporting documents.</p>
-    <p>Your inspection for Hygiene Rating Program Will be Scheduled on ${clientData.auditDate}, get Ready With the Undermentioned Documents<br>
+    <p>The tentative date of your inspection for Hygiene Rating Program Will be ${clientData.auditDate}, get Ready With the Undermentioned Documents<br>
     1.FSSAI License<br>
     2.FOSTAC Certificate<br>
     3.Water test Report<br>
@@ -414,6 +414,47 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- 9910729809<br>
     लैंडलाइन - 011-35454931, 011-35457013<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+
+  } else if (clientData.product == 'hra schedule') {
+
+    subject = `IIEST Federation - HRA Scheduled`;
+    content = `<p>Dear ${clientData.managerName},</p>
+    <p>Welcome to the IIEST Federation,<br>
+    Scheme implementing partner of Govt. Of India.</p>
+    <p>Thanks for registering for the Hygiene Rating program by FSSAI Govt Of India.<br>
+    Your Hygiene Rating will be sheduled on ${clientData.auditDate}</p>
+    <p>Information Related to your HRA:</p>
+    Auditor Name -- ${clientData.auditor}<br>
+
+    <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
+    <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Regards,<br>
+    IIEST Federation</p>
+    <br>
+    TP Name - IIEST Federation<br>
+    TP No - TPINT133<br>
+    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
+    Contact no – 9910729809<br>
+    Landline - 011-35454931, 011-35457013<br>
+    Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br><br>
+    <hr>
+    <br>
+    <p>प्रिय ${clientData.managerName},</p>
+    <p>IIEST फेडरेशन में आपका स्वागत है,<br>भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
+    <p>FSSAI भारत सरकार द्वारा हाइजीन रेटिंग प्रोग्राम के लिए पंजीकरण करने के लिए धन्यवाद।<br>आपकी हाइजीन रेटिंग ${clientData.auditDate} को निर्धारित की जाएगी।</p>
+    <p>आपके HRA से संबंधित जानकारी:</p>
+    ऑडिटर का नाम -- ${clientData.auditor}<br>
+    <p>यदि आपके पास कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया हमसे संपर्क करने में संकोच न करें।</p>
+<p><strong>कंपनी का रिश्वत, भ्रष्टाचार और धोखाधड़ी की व्यावसायिक गतिविधियों के प्रति शून्य सहनशीलता है।</strong></p>
+<p>सादर,<br>IIEST फेडरेशन</p>
+<br>
+TP नाम - IIEST फेडरेशन<br>
+TP नंबर - TPINT133<br>
+पता - 1-U, फर्स्ट फ्लोर, DCM बिल्डिंग 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
+संपर्क नंबर – 9910729809<br>
+लैंडलाइन - 011-35454931, 011-35457013<br>
+संपर्क समय 10:00 पूर्वाह्न से 7:00 अपराह्न<br>`;
 
   }
 

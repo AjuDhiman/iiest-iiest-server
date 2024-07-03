@@ -147,34 +147,41 @@ exports.fboPayReturn = async (req, res) => {
           fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
-          total_processing_amount += Number(fostac_training.fostac_processing_amount);
+          total_processing_amount = Number(fostac_training.fostac_processing_amount);
           totalGST += fostacGST;
 
           const qty = fostac_training.recipient_no;
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData ));
+
+          invoiceIdArr.push(invoiceUploadStream.id);
         }
 
         if (product_name.includes('Foscos')) {
           fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
-          total_processing_amount += Number(foscos_training.foscos_processing_amount);
+          total_processing_amount = Number(foscos_training.foscos_processing_amount);
           totalGST += foscosGST;
           extraFee += foscosFixedCharge;
 
           const qty = foscos_training.shops_no;
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+
+          invoiceIdArr.push(invoiceUploadStream.id);
+          
         }
 
         if (product_name.includes('HRA')) {
           fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
-          total_processing_amount += Number(hygiene_audit.hra_processing_amount);
+          total_processing_amount = Number(hygiene_audit.hra_processing_amount);
           totalGST += hygieneGST;
 
           const qty = hygiene_audit.shops_no;
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+
+          invoiceIdArr.push(invoiceUploadStream.id);
         }
 
         //checkfor medical
@@ -188,6 +195,8 @@ exports.fboPayReturn = async (req, res) => {
           const qty = medical.recipient_no;
           //create medical invoice
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+
+          invoiceIdArr.push(invoiceUploadStream.id);
         }
 
         //check for water test
@@ -202,6 +211,8 @@ exports.fboPayReturn = async (req, res) => {
 
           //create water test invoice
           invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+
+          invoiceIdArr.push(invoiceUploadStream.id);
         }
 
         const fboEntry = await fboModel.create({
@@ -929,7 +940,9 @@ exports.approveChequeSale = async(req, res) => { //this methord approves the sal
       invoiceIdArr.push(invoiceUploadStream.id);
     }
 
-    await salesInfo.updateOne({cheque_data: {...cheque_data, status:'Approved'}, invoiceId: invoiceIdArr});
+    if(cheque_data){
+      await salesInfo.updateOne({cheque_data: {...cheque_data, status:'Approved'}, invoiceId: invoiceIdArr});
+    }
 
     await salesInfo.save();
 
