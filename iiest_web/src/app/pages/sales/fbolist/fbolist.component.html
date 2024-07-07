@@ -49,6 +49,7 @@
                   <option value="byFboName">Search by FBO Name</option>
                   <option value="byCustomerID">Search by Customer ID</option>
                   <option value="byLocation">Search by Location</option>
+                  <option value="byStatus">Search by Status</option>
                 </select>
               </div>
               <div class="col-auto">
@@ -84,6 +85,7 @@
                       <th class="cell text-center" *ngIf="isVerifier">Contact Number</th>
                       <th class="cell text-center">{{isVerifier?'Fostac Amount':'Total Amount'}}<span style="font-size: x-small;">(18% GST
                           Included + Govt. Fee)</span></th>
+                      <th *ngIf="userData.designation === 'Director' || isVerifier" class="cell">Sales Officer</th>
                       <th class="cell">Sales Date</th>
                       <th class="cell">{{isVerifier?'Recipient':'Sales'}} Status</th>
                       <th class="cell text-center">Action</th>
@@ -129,6 +131,7 @@
                       <td *ngIf="activeTab==='HRA'" class="cell text-center"><span class="truncate">{{(fbo.hraInfo.hra_total) | inrAmount}}</span></td>
                       <td *ngIf="activeTab==='Medical'" class="cell text-center"><span class="truncate">{{(fbo.medicalInfo.medical_total) | inrAmount}}</span></td>
                       <td *ngIf="activeTab==='Water Test Report'" class="cell text-center"><span class="truncate">{{(fbo.waterTestInfo.water_test_total) | inrAmount}}</span></td>
+                      <td class="cell" *ngIf="userData.designation === 'Director' || isVerifier"><span class="truncate">{{ fbo.employeeInfo.employee_name }}</span></td>
                       <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>
                       <td class="cell"><span class="truncate" [ngClass]="{'text-danger': fbo.saleApprovel == 'Pending', 'text-success': fbo.saleApprovel == 'Approved'}">{{ fbo.saleApprovel }}</span></td>
                       <td class="cell text-center">

@@ -22,6 +22,7 @@ import { ToastrService } from 'ngx-toastr';
 export class FbolistComponent implements OnInit {
   @Output() isEditRecord = new EventEmitter();
 
+  //Variables
   createdBy: any;
   allFBOEntries: any;
   filteredFBOEntries: any;
@@ -29,6 +30,18 @@ export class FbolistComponent implements OnInit {
   searchQuery: string = '';
   filteredData: any;
   isSearch: boolean = false;
+
+  pageNumber: number = 1;
+  itemsNumber: number = 25;
+  isVerifier: boolean = false;
+
+  selectedSaleId: string // this var will contain sale id of sale of whichj we want to update sale cheque status
+
+  userData: any; // for for getting user data
+
+  activeTab: string = 'Fostac';
+
+  //icons
   faEye: IconDefinition = faEye;
   faPencil: IconDefinition = faPencil;
   faTrash: IconDefinition = faTrash;
@@ -40,30 +53,11 @@ export class FbolistComponent implements OnInit {
   faArrowDown: IconDefinition = faArrowDown;
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
-  pageNumber: number = 1;
-  itemsNumber: number = 25;
-  isVerifier: boolean = false;
-  // saleApprovel = 'Approved';
-
-  selectedSaleId: string // this var will contain sale id of sale of whichj we want to update sale cheque status
-
-  userData: any; // for for getting user data
-
-  activeTab: string = 'Fostac';
-
 
   isModal: boolean = false;
 
   //loading
   loading: boolean = true;
-
-  // //store related variables
-  // @Select(SalesState.GetSalesList) sales$: Observable<any>;
-  // @Select(SalesState.salesLoaded) salesLoaded$: Observable<boolean>
-  // salesLoadedSub: Subscription;
-  // msg: Subscription;
-  // data: any;
-  // salesData: any;
 
   constructor(private getDataService: GetdataService,
     private registerService: RegisterService,
@@ -101,9 +95,9 @@ export class FbolistComponent implements OnInit {
               return item;
             }
           });
-          if (this.isVerifier) { // filter pending in case of verifer
-            this.filteredFBOEntries = this.filteredFBOEntries.filter((entry: any) => entry.checkStatus === 'Pending');
-          }
+          // if (this.isVerifier) { // filter pending in case of verifer
+          //   this.filteredFBOEntries = this.filteredFBOEntries.filter((entry: any) => entry.checkStatus === 'Pending');
+          // }
           this.filter();
           this.loading = false;
           console.log(this.allFBOEntries);
@@ -134,13 +128,15 @@ export class FbolistComponent implements OnInit {
       switch (this.selectedFilter) {
         // case 'generalSearch': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
         //   break;
-        case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byOwner': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo && elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byLocation': this.filteredData = this.filteredFBOEntries.filter((elem: any) => (elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())));
+        case 'byLocation': this.filteredData = this.filteredFBOEntries.filter((elem: any) => (elem.fboInfo) && (elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())));
           break;
-        case 'byFboName': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byFboName': this.filteredData = this.filteredFBOEntries.filter((elem: any) => (elem.fboInfo) && elem.fboInfo.fbo_name && elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byCustomerID': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery))
+        case 'byCustomerID': this.filteredData = this.filteredFBOEntries.filter((elem: any) => (elem.fboInfo) && elem.fboInfo.customer_id.includes(this.searchQuery))
+          break;
+        case 'byStatus': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.saleApprovel && elem.saleApprovel.toLowerCase().includes(this.searchQuery))
           break;
         case 'byProduct': this.filteredData = this.filteredFBOEntries.filter((elem: any) => {
           if (elem.fboInfo.product_name.find((product: string) => product.toLowerCase().includes(this.searchQuery))) {
@@ -227,15 +223,15 @@ export class FbolistComponent implements OnInit {
         modalRef.componentInstance.serviceType = serviceType;
         modalRef.componentInstance.isVerifier = this.isVerifier;
       }
-    } 
+    }
 
   }
 
-  uploadSaleDoc(res: any, serviceType: string){ //func for uploading sale doc by opening sale doc modal
+  uploadSaleDoc(res: any, serviceType: string) { //func for uploading sale doc by opening sale doc modal
     const modalRef = this.modalService.open(SaleDocModalComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.fboData = res;
-      modalRef.componentInstance.serviceType = serviceType;
-      // modalRef.componentInstance.isVerifier = this.isVerifier;
+    modalRef.componentInstance.fboData = res;
+    modalRef.componentInstance.serviceType = serviceType;
+    // modalRef.componentInstance.isVerifier = this.isVerifier;
   }
 
   //View FBO Details
@@ -295,13 +291,13 @@ export class FbolistComponent implements OnInit {
         watertest = employee.foscosInfo.water_test_fee - 1200;
       }
       processingAmount = (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
-    } else if(this.activeTab === 'HRA') {
+    } else if (this.activeTab === 'HRA') {
       processingAmount = employee.hraInfo.hra_processing_amount * employee.hraInfo.shops_no;
     }
-    else if(this.activeTab === 'Medical') {
+    else if (this.activeTab === 'Medical') {
       processingAmount = employee.medicalInfo.medical_processing_amount * employee.medicalInfo.recipient_no;
     }
-    else if(this.activeTab === 'Water Test Report') {
+    else if (this.activeTab === 'Water Test Report') {
       processingAmount = employee.waterTestInfo.water_test_processing_amount;
     }
 
