@@ -45,7 +45,7 @@ router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager);
 
 
 // ---------------------------------------------------------routes for Highcharts APIs ----------------------------------------------------------
-router.get('/getproductsaledata', getProductSaleData); //route for getting data for productwise chart
+router.get('/getproductsaledata',authMiddleware, getProductSaleData); //route for getting data for productwise chart
 router.get('/getareawisesaledata', authMiddleware, getAreaWiseSalesData); //route for getting data for Area Wise chart
 router.get('/getpersonwisesaledata', authMiddleware, getPersonWiseSalesData); //route for getting data for Sales Person chart
 router.get('/getclienttypesaledata', authMiddleware , getClientTypeSalesData); //route for getting data for Client Wise chart
