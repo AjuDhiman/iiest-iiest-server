@@ -22,13 +22,21 @@ const generalData = new Schema({
         type: Array,
         required: true
     },
-    auditors: {
+    auditors: { //array of aditors
         type: Array,
         required: true,
     },
-    our_holidays: {
+    our_holidays: {  //array of holidays
         type: Array,
         required: true,
+    },
+    invoice_details: { //array will contain details about invoice like last invoice id 
+        type: Object,
+        required: true
+    },
+    state_gst_code: { //stage gst code data
+        type: Array,
+        required: true
     }
 })
 
