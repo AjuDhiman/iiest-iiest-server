@@ -7,10 +7,11 @@ const employeeSchema = require("../../models/employeeModels/employeeSchema");
 const fboModel = require('../../models/fboModels/fboSchema');
 const payRequest = require("../../fbo/phonePay");
 const fboPaymentSchema = require("../../models/fboModels/fboPaymentSchema");
-const {sendInvoiceMail, sendCheckMail} = require("../../fbo/sendMail");
+const { sendInvoiceMail, sendCheckMail } = require("../../fbo/sendMail");
 const sessionModel = require("../../models/generalModels/sessionDataSchema");
 const boModel = require("../../models/BoModels/boSchema");
 const { shopModel } = require("../../models/fboModels/recipientSchema");
+const { generateInvoiceCode } = require("../../fbo/generateCredentials");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
@@ -50,7 +51,7 @@ exports.existingFboCash = async (req, res) => {
 
     const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, fostacGST, foscosGST, hygieneGST, foscosFixedCharge, existingFboId } = req.body;
 
-    const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate({path: 'boInfo'});
+    const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate({ path: 'boInfo' });
 
     if (!existingFboInfo) {
       success = false;
@@ -100,7 +101,7 @@ exports.existingFboCash = async (req, res) => {
 
       invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, existingFboId, existingFboInfo.boInfo.customer_id));
 
-      invoiceIdArr.push(invoiceUploadStream.id);
+      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
     }
 
     if (product_name.includes('Foscos')) {
@@ -114,7 +115,7 @@ exports.existingFboCash = async (req, res) => {
 
       invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, existingFboId, existingFboInfo.boInfo.customer_id));
 
-      invoiceIdArr.push(invoiceUploadStream.id);
+      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
     }
 
     if (product_name.includes('HRA')) {
@@ -127,7 +128,7 @@ exports.existingFboCash = async (req, res) => {
 
       invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, existingFboId, existingFboInfo.boInfo.customer_id));
 
-      invoiceIdArr.push(invoiceUploadStream.id);
+      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
     }
 
     const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, payment_mode, grand_total, invoiceId: invoiceIdArr });
@@ -151,7 +152,7 @@ exports.existingFboCash = async (req, res) => {
 exports.existingFboByCheque = async (req, res) => {
   try {
 
-    const chequeImage =req.files['cheque_image'][0]
+    const chequeImage = req.files['cheque_image'][0]
     const createrObjId = req.params.id; //getting employee info
 
     let success = false;
@@ -202,26 +203,26 @@ exports.existingFboByCheque = async (req, res) => {
     }
 
     //convet json to obj of product details comming from frontend
-    let fostacTraining = isFostac==='true'?JSON.parse(fostac_training):undefined;
-    let foscosTraining =  isFoscos==='true'?JSON.parse(foscos_training):undefined;
-    let hygieneAudit = isHygiene==='true'?JSON.parse(hygiene_audit):undefined;
-    let Medical = isMedical==='true'?JSON.parse(medical):undefined;
-    let waterTestReport = isWaterTest==='true'?JSON.parse(water_test_report):undefined;
+    let fostacTraining = isFostac === 'true' ? JSON.parse(fostac_training) : undefined;
+    let foscosTraining = isFoscos === 'true' ? JSON.parse(foscos_training) : undefined;
+    let hygieneAudit = isHygiene === 'true' ? JSON.parse(hygiene_audit) : undefined;
+    let Medical = isMedical === 'true' ? JSON.parse(medical) : undefined;
+    let waterTestReport = isWaterTest === 'true' ? JSON.parse(water_test_report) : undefined;
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
     chequeData.status = 'Pending';
     chequeData.cheque_image = chequeImage.filename
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], invoiceSaleId: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
       return res.status(401).json({ success, randomErr: true });
     }
 
-    productName.forEach(async(product) => {
-      if(product === 'Foscos' || product === 'HRA') {
-        const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId:existingFboInfo.customer_id, product_name: product,  village: existingFboInfo.village, tehsil: existingFboInfo.tehsil }); //create shop after sale for belongs to this sale
+    productName.forEach(async (product) => {
+      if (product === 'Foscos' || product === 'HRA') {
+        const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId: existingFboInfo.customer_id, product_name: product, village: existingFboInfo.village, tehsil: existingFboInfo.tehsil }); //create shop after sale for belongs to this sale
       }
     })
 
@@ -231,7 +232,7 @@ exports.existingFboByCheque = async (req, res) => {
     let clientData = {
       cheque_data: chequeData
     }
-    sendCheckMail(existingFboInfo.email , clientData );
+    sendCheckMail(existingFboInfo.email, clientData);
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -305,7 +306,11 @@ exports.existingFboPayPage = async (req, res) => {
   }
 }
 
-exports.existingFboPayReturn = async (req, res) => {
+
+
+
+
+exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of pay page success
 
   let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
 
@@ -318,24 +323,44 @@ exports.existingFboPayReturn = async (req, res) => {
 
         // const fetchedFormData = req.session.fboFormData;
         let sessionData = await sessionModel.findById(sessionId);
-        if(!sessionData){
+        if (!sessionData) {
           res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
           return
         }
-        const fetchedFormData = sessionData.data;
-        let apiCalled = fetchedFormData.apiCalled;
-        await sessionModel.findByIdAndUpdate(sessionId, {data: {...fetchedFormData, apiCalled: true}});
 
-        if(apiCalled){
+        const fetchedFormData = sessionData.data;
+        //getting if already this sales api called or not
+        let apiCalled = fetchedFormData.apiCalled;
+        await sessionModel.findByIdAndUpdate(sessionId, { data: { ...fetchedFormData, apiCalled: true } });
+
+        if (apiCalled) {
           res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
           return;
         }
 
-        const { product_name, payment_mode, grand_total, fostac_training, foscos_training, hygiene_audit, medical, water_test_report, createrObjId, signatureFile, fostacGST, foscosGST, hygieneGST, medicalGST, waterTestGST, foscosFixedCharge, medicalFixedCharges, existingFboInfo, officerName } = fetchedFormData;
+        //destructuring form body
+        const {
+          product_name,
+          payment_mode,
+          grand_total,
+          fostac_training,
+          foscos_training,
+          hygiene_audit,
+          medical,
+          water_test_report,
+          createrObjId,
+          signatureFile,
+          fostacGST,
+          foscosGST,
+          hygieneGST,
+          medicalGST,
+          waterTestGST,
+          foscosFixedCharge,
+          medicalFixedCharges,
+          existingFboInfo,
+          officerName } = fetchedFormData; 
 
-        console.log(medicalGST)
-
-        const boData = await boModel.findOne({_id: existingFboInfo.boInfo});
+        const boData = await boModel.findOne({ _id: existingFboInfo.boInfo }); //getting bo data
 
         let serviceArr = [];
 
@@ -351,11 +376,11 @@ exports.existingFboPayReturn = async (req, res) => {
           serviceArr.push(hygiene_audit.hra_service_name);
         }
 
-        if(medical){ //push medical in  case of medical
+        if (medical) { //push medical in  case of medical
           serviceArr.push('Medical');
         }
 
-        if(water_test_report){ //push medical in  case of water test
+        if (water_test_report) { //push medical in  case of water test
           serviceArr.push('Water Test Report');
         }
 
@@ -371,7 +396,9 @@ exports.existingFboPayReturn = async (req, res) => {
         const invoiceBucket = createInvoiceBucket();
 
         let fileName;
-        if (product_name.includes('Fostac')) {
+        if (product_name.includes('Fostac')) { // in case sale includes fostac
+          
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
@@ -380,12 +407,13 @@ exports.existingFboPayReturn = async (req, res) => {
 
           const qty = fostac_training.recipient_no;
 
-          invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
-          invoiceIdArr.push(invoiceUploadStream.id);
+          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
         }
 
         if (product_name.includes('Foscos')) {
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
@@ -395,12 +423,14 @@ exports.existingFboPayReturn = async (req, res) => {
 
           const qty = foscos_training.shops_no;
 
-          invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
-          invoiceIdArr.push(invoiceUploadStream.id);
+          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
         }
 
         if (product_name.includes('HRA')) {
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
+
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
@@ -409,12 +439,14 @@ exports.existingFboPayReturn = async (req, res) => {
 
           const qty = hygiene_audit.shops_no;
 
-          invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
-          invoiceIdArr.push(invoiceUploadStream.id);
+          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
         }
 
         if (product_name.includes('Medical')) {
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
+
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
@@ -423,12 +455,14 @@ exports.existingFboPayReturn = async (req, res) => {
 
           const qty = medical.recipient_no;
 
-          invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
-          invoiceIdArr.push(invoiceUploadStream.id);
+          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
         }
 
         if (product_name.includes('Water Test Report')) {
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
+
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
@@ -437,9 +471,12 @@ exports.existingFboPayReturn = async (req, res) => {
 
           const qty = 1;
 
-          invoiceData.push(await invoiceDataHandler(existingFboInfo.id_num, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          //getting invoice buffer and invoice Id for sending it in mail and saving in d
 
-          invoiceIdArr.push(invoiceUploadStream.id);
+          //pushing buffer into invoice data array
+          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+
+          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
         }
 
         const buyerData = await fboPaymentSchema.create({
@@ -450,16 +487,47 @@ exports.existingFboPayReturn = async (req, res) => {
           return res.status(401).json({ success, message: "Data not entered in payment collection" });
         }
 
-        const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, medicalInfo: medical, waterTestInfo: water_test_report, payment_mode, grand_total, invoiceId: invoiceIdArr });
 
+        //creating new sale record in db
+        const selectedProductInfo = await salesModel.create({
+          employeeInfo: createrObjId,
+          fboInfo: existingFboInfo._id,
+          product_name,
+          fostacInfo: fostac_training,
+          foscosInfo: foscos_training,
+          hraInfo: hygiene_audit,
+          medicalInfo: medical,
+          waterTestInfo: water_test_report,
+          payment_mode,
+          grand_total,
+          invoiceId: invoiceIdArr,
+        });
+
+
+        //sending error response in case !selectedProductInfo
         if (!selectedProductInfo) {
-          return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
+          return res.status(401).json({
+            success,
+            message: "Data not entered in employee_sales collection"
+          });
         }
 
+
         //add shops in shop details for Foscos and Hra
-        product_name.forEach(async(product) => {
-          if(product === 'Foscos' || product === 'HRA') {
-            const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId:existingFboInfo.customer_id , product_name: product,  village: existingFboInfo.village, tehsil: existingFboInfo.tehsil }); //create shop after sale for belongs  tohis sale
+        product_name.forEach(async (product) => {
+          if (product === 'Foscos' || product === 'HRA') {
+            const addShop = await shopModel.create({
+              salesInfo: selectedProductInfo._id,
+              managerName: boData.manager_name,
+              address: existingFboInfo.address,
+              state: existingFboInfo.state,
+              district: existingFboInfo.district,
+              pincode: existingFboInfo.pincode,
+              shopId: existingFboInfo.customer_id,
+              product_name: product,
+              village: existingFboInfo.village,
+              tehsil: existingFboInfo.tehsil
+            }); //create shop after sale for belongs  tohis sale
           }
         })
 
