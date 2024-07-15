@@ -517,6 +517,7 @@ exports.employeeSalesData = async (req, res) => {
                         "fboInfo.owner_name": 1,
                         "fboInfo.email": 1,
                         "fboInfo.owner_contact": 1,
+                        "fboInfo._id": 1,
                         "fboInfo.customer_id": 1,
                         "fboInfo.boInfo.customer_id": 1,
                         "fboInfo.boInfo.manager_name": 1,
@@ -543,7 +544,7 @@ exports.employeeSalesData = async (req, res) => {
                         "createdAt": 1,
                         "cheque_data": 1,
                         "docs": 1,
-                        "InvoiceId": 1,
+                        "invoiceId": 1,
                         "payment_mode": 1,
                     }
                 }
@@ -610,6 +611,7 @@ exports.employeeSalesData = async (req, res) => {
                         "fboInfo.fbo_name": 1,
                         "fboInfo.owner_name": 1,
                         "fboInfo.email": 1,
+                        "fboInfo._id": 1,
                         "fboInfo.owner_contact": 1,
                         "fboInfo.customer_id": 1,
                         "fboInfo.boInfo.customer_id": 1,
@@ -637,7 +639,7 @@ exports.employeeSalesData = async (req, res) => {
                         "createdAt": 1,
                         "cheque_data": 1,
                         "docs": 1,
-                        "InvoiceId": 1,
+                        "invoiceId": 1,
                         "payment_mode": 1,
                     }
                 }
@@ -711,6 +713,7 @@ exports.employeeSalesData = async (req, res) => {
                         "fboInfo.owner_name": 1,
                         "fboInfo.email": 1,
                         "fboInfo.owner_contact": 1,
+                        "fboInfo._id": 1,
                         "fboInfo.customer_id": 1,
                         "fboInfo.boInfo.customer_id": 1,
                         "fboInfo.boInfo.business_entity": 1,
@@ -737,7 +740,7 @@ exports.employeeSalesData = async (req, res) => {
                         "createdAt": 1,
                         "cheque_data": 1,
                         "docs": 1,
-                        "InvoiceId": 1,
+                        "invoiceId": 1,
                         "payment_mode": 1,
                     }
                 }
