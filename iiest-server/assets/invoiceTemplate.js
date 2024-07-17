@@ -252,6 +252,8 @@ const invoiceTemplate = async (fboInfo) => {
                                 Website: connectonline.world, Email ID: info.iiest@gmail.com
                                 <br/>
                                 Connect Bharat, a brand of IIEST Federation. Invoice issued by IIEST Federation.
+                                <br/>
+                                GST: 07AADCI29201Z2
                             </p>
                             <img src="${logoImg}" height=120 width=120 alt="iiest_logo"
                                 style="border: 2.5px solid black; border-radius: 60px; padding: 5px">
@@ -261,15 +263,19 @@ const invoiceTemplate = async (fboInfo) => {
                             <h3>${invoiceType}&nbsp;&nbsp;&nbsp;I N V O I C E</h3>
                         </div>
                         <h5>BILL TO:</h5>
-                        <div class="main-container" style="width:100vw>
+                        <div class="main-container" style="width:90vw">
                                     <p style = " padding-right: 7px;">
-                            ${fboInfo.boData.business_entity}<br><br>
-                            ${fboInfo.address} ,${fboInfo.district} ,${fboInfo.state}, ${fboInfo.pincode} ,
-                            <br><br>
-                            +91&nbsp;${fboInfo.contact}<br>
-                            ${fboInfo.email}
-                            <br />
-                            ${fboInfo.gstNumber || ''}
+                            <b>Customer Name:</b> ${fboInfo.boData.business_entity}<br>
+                            <b>Customer Address:</b> ${fboInfo.address},
+                            <br>
+                            <b>Pincode:</b> ${fboInfo.pincode}<br>
+                            <b>District:</b> ${fboInfo.district}<br>
+                            <b>State:</b> ${fboInfo.state}<br>
+                            <b>Customer Contact:</b> +91&nbsp;${fboInfo.contact}<br>
+                            <b>Customer Email:</b>${fboInfo.email}
+                            <br/><br>
+                            ${fboInfo.gstNumber? '<b>Customer GST:</b>' + fboInfo.gstNumber: ''}<br>
+                            <b>Place of Supply:</b> ${fboInfo.stateCode}<br>
                             </p>
                             <table style="width: 50%;">
                                 <tr>
@@ -323,20 +329,11 @@ const invoiceTemplate = async (fboInfo) => {
             
                         <div>
                             <p>
-                                <b>Note: *Invoice is payable with in 2 days </b><br>
             
                             </p>
                         </div>
             <div style="display: flex; justify-content: space-between;">
                 <div>
-                     <b>Please make Invoice Payment in our Following Bank Account</b>
-                    <br />
-                    Account Name: IIEST FEDERATION <br>
-                    Bank Name: HDFC Bank <br>
-                    Account No: 50200038814644 <br>
-                    IFSC Code: HDFC0000313 <br>
-                    Branch Name: Connaught Circle <br>
-                    Account Type: Current
                 </div>
                 <section style="position: relative; margin-top: 40px;">
                     <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>

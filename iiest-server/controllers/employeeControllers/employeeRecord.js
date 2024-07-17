@@ -1,4 +1,4 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require('../../config/pipeline');
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear } = require('../../config/pipeline');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
@@ -7,12 +7,6 @@ const { recipientsList } = require('../fboControllers/recipient');
 
 exports.employeeRecord = async (req, res) => { //function for getting data about total, pending and approved sales related to sales officer  
     try {
-        const todayDate = new Date(); // getting today's date string
-        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()); //getting time of start of the day
-        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());//getting time of start of this weeek
-        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);//getting time of start of prev month
-        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);//getting time of start of this month
-        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
 
         const pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
             {
@@ -31,12 +25,12 @@ exports.employeeRecord = async (req, res) => { //function for getting data about
                     _id: 3,
                     totalProcessingAmount: { //aggregating total sales amount
                         $sum: {
-                            $sum: [
-                                ...fostacRevenue, //getting fostac revenue formula pipeline from pipeline.js
-                                ...foscosRevenue, //getting foscos revenue formula pipeline from pipeline.js
-                                ...hraRevenue, //getting HRA revenue formula pipeline from pipeline.js
-                                ...medicalRevenue, //getting Medical revenue formula pipeline from pipeline.js
-                                ...waterTestRevenue, //getting Water Test revenue formula pipeline from pipeline.js
+                            $sum: [  //getting revenue formulas pipeline from pipeline.js
+                                ...fostacRevenue, 
+                                ...foscosRevenue,
+                                ...hraRevenue, 
+                                ...medicalRevenue, 
+                                ...waterTestRevenue, 
                             ]
                         }
                     },
@@ -57,11 +51,12 @@ exports.employeeRecord = async (req, res) => { //function for getting data about
                                     ]
                                 }, then: {
                                     $sum: [ //the sum is same as for total sale only the filtering condition is changed 
-                                        ...fostacRevenue, //getting fostac revenue formula pipeline from pipeline.js
-                                        ...foscosRevenue, //getting foscos revenue formula pipeline from pipeline.js
-                                        ...hraRevenue, //getting HRA revenue formula pipeline from pipeline.js
-                                        ...medicalRevenue, //getting Medical revenue formula pipeline from pipeline.js
-                                        ...waterTestRevenue, //getting Water Test revenue formula pipeline from pipeline.js
+                                        //getting revenue formulas pipeline from pipeline.js
+                                        ...fostacRevenue,
+                                        ...foscosRevenue,
+                                        ...hraRevenue,
+                                        ...medicalRevenue,
+                                        ...waterTestRevenue,
                                     ]
                                 }, else: 0
                             }
@@ -82,11 +77,12 @@ exports.employeeRecord = async (req, res) => { //function for getting data about
                                     ]
                                 }, then: {
                                     $sum: [ //the some is same as for total sale only the filtering condition is changed 
-                                        ...fostacRevenue, //getting fostac revenue formula pipeline from pipeline.js
-                                        ...foscosRevenue, //getting foscos revenue formula pipeline from pipeline.js
-                                        ...hraRevenue, //getting HRA revenue formula pipeline from pipeline.js
-                                        ...medicalRevenue, //getting Medical revenue formula pipeline from pipeline.js
-                                        ...waterTestRevenue, //getting Water Test revenue formula pipeline from pipeline.js
+                                         //getting revenue formulas pipeline from pipeline.js
+                                        ...fostacRevenue, 
+                                        ...foscosRevenue, 
+                                        ...hraRevenue, 
+                                        ...medicalRevenue, 
+                                        ...waterTestRevenue, 
                                     ]
                                 }, else: 0
                             }
@@ -521,6 +517,7 @@ exports.employeeSalesData = async (req, res) => {
                         "fboInfo.owner_name": 1,
                         "fboInfo.email": 1,
                         "fboInfo.owner_contact": 1,
+                        "fboInfo._id": 1,
                         "fboInfo.customer_id": 1,
                         "fboInfo.boInfo.customer_id": 1,
                         "fboInfo.boInfo.manager_name": 1,
@@ -547,7 +544,7 @@ exports.employeeSalesData = async (req, res) => {
                         "createdAt": 1,
                         "cheque_data": 1,
                         "docs": 1,
-                        "InvoiceId": 1,
+                        "invoiceId": 1,
                         "payment_mode": 1,
                     }
                 }
@@ -614,6 +611,7 @@ exports.employeeSalesData = async (req, res) => {
                         "fboInfo.fbo_name": 1,
                         "fboInfo.owner_name": 1,
                         "fboInfo.email": 1,
+                        "fboInfo._id": 1,
                         "fboInfo.owner_contact": 1,
                         "fboInfo.customer_id": 1,
                         "fboInfo.boInfo.customer_id": 1,
@@ -641,7 +639,7 @@ exports.employeeSalesData = async (req, res) => {
                         "createdAt": 1,
                         "cheque_data": 1,
                         "docs": 1,
-                        "InvoiceId": 1,
+                        "invoiceId": 1,
                         "payment_mode": 1,
                     }
                 }
@@ -715,6 +713,7 @@ exports.employeeSalesData = async (req, res) => {
                         "fboInfo.owner_name": 1,
                         "fboInfo.email": 1,
                         "fboInfo.owner_contact": 1,
+                        "fboInfo._id": 1,
                         "fboInfo.customer_id": 1,
                         "fboInfo.boInfo.customer_id": 1,
                         "fboInfo.boInfo.business_entity": 1,
@@ -741,7 +740,7 @@ exports.employeeSalesData = async (req, res) => {
                         "createdAt": 1,
                         "cheque_data": 1,
                         "docs": 1,
-                        "InvoiceId": 1,
+                        "invoiceId": 1,
                         "payment_mode": 1,
                     }
                 }

@@ -72,13 +72,9 @@ const salesSchema = new Schema({ //creating sales schema
         }
     },
     invoiceId: { // array that contains object id of invoices of all product sold in this sale
-        type: [mongoose.Schema.Types.ObjectId],
+        type: Array,
         required: true
-    },
-    // invoiceSaleId: { //array contains all of the invoice ids that are print in invoice that make invoice nuique
-    //     type: [Number],
-    //     unique: true
-    // }
+    }
 }, {timestamps: true})
 
 const salesModel = mongoose.model('employee_sales', salesSchema);

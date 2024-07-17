@@ -338,7 +338,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         const seriesName = `${yearStart}-${yearEnd} `;
         const yAxisTitle = 'Delivery Count';
         const data = res;
-        console.log(res);
         const showIntervalSelection = true;
         const selectedInterval: string = 'This_Year';
         const isDrillDown = false;

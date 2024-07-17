@@ -2,6 +2,7 @@ const sendInvoiceMail = require('./sendMail');
 const htmlToPdf = require('html-pdf-node');
 const PuppeteerHTMLPDF = require('puppeteer-html-pdf');
 const invoiceTemplate = require('../assets/invoiceTemplate');
+const generalDataSchema = require('../models/generalModels/generalDataSchema')
 
 const generateInvoice = async (idNumber, clientEmail, fboObj) => {
     const fileName = `${Date.now()}_${idNumber}.pdf`;
@@ -42,15 +43,25 @@ const generateInvoice = async (idNumber, clientEmail, fboObj) => {
         htmlPDF.setOptions(options);
         const pdfBuffer = await htmlPDF.create(invoiceHTML);
         if (pdfBuffer) {
-            fboObj.invoiceUploadStream.write(pdfBuffer);
-            fboObj.invoiceUploadStream.end((err) => {
-                if (err) {
-                    console.error(err);
-                    reject(err);
-                }
-                console.log('Invoice stored successfully');
+            // Write the buffer to the stream and end the stream properly
+            await new Promise((resolve, reject) => {
+                fboObj.invoiceUploadStream.write(pdfBuffer, (err) => {
+                    if (err) {
+                        console.error('Error writing to stream:', err);
+                        return reject(err);
+                    }
+                    fboObj.invoiceUploadStream.end((err) => {
+                        if (err) {
+                            console.error('Error ending stream:', err);
+                            return reject(err);
+                        }
+                        console.log('Invoice stored successfully');
+                        resolve();
+                    });
+                });
             });
         }
+
         return { encodedString: pdfBuffer, fileName };
     } catch (err) {
         console.error('Error generating invoice:', err);
@@ -66,11 +77,54 @@ const invoiceDataHandler = async (idNum, mail, fboName, address, state, district
     const monthVal = date.getMonth() + 1;
     const yearVal = date.getFullYear();
 
+    //generating invoice code
+
+    //getting financial year
+    let firstYear = '';
+    let secondYear = '';
+    if (date.getMonth() < 2) {
+        firstYear = `${(date.getFullYear() - 1).toString().split('').slice(-2).join('')}`;
+        secondYear = `${date.getFullYear().toString().split('').slice(-2).join('')}`;
+    } else {
+        firstYear = `${date.getFullYear().toString().split('').slice(-2).join('')}`;
+        secondYear = `${(date.getFullYear() + 1).toString().split('').slice(-2).join('')}`;
+    }
+
+    let financialYear = `${firstYear}-${secondYear}`
+
+    //getting taxcode
+    let taxCode = '';
+
+    if(business_Type === 'b2b') {
+        taxCode = 'TX';
+    } else if(business_Type === 'b2c') {
+        taxCode = 'CI';
+    }
+
+    //getting invoice number
+    const generalData = (await generalDataSchema.find({}))[0];
+
+    const invoice_details = generalData.invoice_details;
+
+    console.log(invoice_details);
+
+    let invoice_num;
+
+    if (business_Type === 'b2b') {
+        invoice_num = Number(invoice_details.b2b.last_invoice_num);
+    } else {
+        invoice_num = Number(invoice_details.b2c.last_invoice_num);
+    }
+
+    const stateCode = (await generalDataSchema.find({}))[0].state_gst_code.find(obj => obj.state_name === state).code; //var for setting place of supply in invoice
+
+    
+
     const { description, code } = getProductSpecificData(serviceType, qty, prodDetails, extraFee);
 
     const infoObj = {
         date: `${dateVal}-${monthVal}-${yearVal}`,
-        receiptNo: idNum,
+        receiptNo: `FD/${financialYear}/${taxCode}/${invoice_num}`,
         transactionId: idNum,
         name: fboName,
         address: address,
@@ -95,9 +149,31 @@ const invoiceDataHandler = async (idNum, mail, fboName, address, state, district
         officerName: officerName,
         shopId: shopId,
         boData: boData,
+        stateCode: stateCode
     }
-    console.log(infoObj);
     const invoiceData = await generateInvoice(idNum, mail, infoObj);
+
+    if (invoiceData) {
+        if (business_Type == 'b2b') {
+            await generalDataSchema.findOneAndUpdate({
+                _id: generalData._id
+            },
+                {
+                    $inc: {
+                        "invoice_details.b2b.last_invoice_num": 1
+                    }
+                })
+        } else if (business_Type == 'b2c') {
+            await generalDataSchema.findOneAndUpdate({
+                _id: generalData._id
+            }, {
+                $inc: {
+                    "invoice_details.b2c.last_invoice_num": 1
+                }
+            })
+        }
+
+    }
 
     return invoiceData;
 }

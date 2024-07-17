@@ -69,7 +69,6 @@ export class HighchartsComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['chartData'] && changes['chartData'].currentValue) {
-      console.log(this.chartData)
       this.selectedChartType = this.chartData.chartType;
       this.defaultChartType = this.chartData.chartType;
       if (this.chartData.showIntervalSelection) {
