@@ -1,9 +1,10 @@
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require("../../config/pipeline");
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 const reportingManagerModel = require("../../models/employeeModels/reportingManagerSchema");
 const fboModel = require("../../models/fboModels/fboSchema");
 const { fboFormData } = require("../generalControllers/generalData");
 
-//function
+//function for getting data in a formated way for ploating top sales person list in statlist
 exports.getTopSalesPersons = async (req, res) => { 
 
     try {
@@ -17,9 +18,9 @@ exports.getTopSalesPersons = async (req, res) => {
             return res.status(204).json({ message: 'Only for Director' });
         }
 
-        topSalesPersons = await salesModel.aggregate([
+        topSalesPersons = await salesModel.aggregate([ 
             {
-                $lookup: {
+                $lookup: { //getting employee name realted to eachs sales 
                     from: "staff_registers",
                     localField: "employeeInfo",
                     foreignField: "_id",
@@ -60,7 +61,15 @@ exports.getTopSalesPersons = async (req, res) => {
                                         { $lte: ["$createdAt", endOflastMonth] }
                                     ]
                                 },
-                                then: '$grand_total',
+                                then: {
+                                    $sum: [  //getting revenue formulas pipeline from pipeline.js
+                                        ...fostacRevenue, 
+                                        ...foscosRevenue,
+                                        ...hraRevenue, 
+                                        ...medicalRevenue, 
+                                        ...waterTestRevenue, 
+                                    ]
+                                },
                                 else: 0
                             }
                         }
@@ -100,8 +109,6 @@ exports.getTopSalesPersons = async (req, res) => {
             { $limit: 5 }
         ]);
 
-        console.log(topSalesPersons);
-
         res.status(200).json(topSalesPersons)
 
     } catch (error) {
@@ -111,6 +118,7 @@ exports.getTopSalesPersons = async (req, res) => {
 
 }
 
+//function for getting data in a formated way for ploating top sales product list in statlist
 exports.getTopProducts = async (req, res) => {
 
 
@@ -130,6 +138,50 @@ exports.getTopProducts = async (req, res) => {
             {
                 $unwind: "$product_name"
             },
+            { //adding new fiels product amount for getting processing amount of particiular product
+                $addFields: {
+                    product_amount: {
+                        $switch: {
+                            branches: [
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Fostac"]
+                                    },
+                                    then: fostacRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Foscos"]
+                                    },
+                                    then: foscosRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "HRA"]
+                                    },
+                                    then: hraRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Medical"]
+                                    },
+                                    then: medicalRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Water Test Report"]
+                                    },
+                                    then: waterTestRevenue
+                                }
+                            ],
+                            default: 0
+                        }
+                    }
+                }
+            },
+            {
+                $unwind: "$product_amount"
+            },
             {
                 $group: {
                     _id: "$product_name",
@@ -142,7 +194,7 @@ exports.getTopProducts = async (req, res) => {
                                         { $lte: ["$createdAt", endOflastMonth] }
                                     ]
                                 },
-                                then: "$grand_total",
+                                then: "$product_amount",
                                 else: 0
                             }
                         }
@@ -156,7 +208,7 @@ exports.getTopProducts = async (req, res) => {
                                         { $lte: ["$createdAt", endOflastMonth] }
                                     ]
                                 },
-                                then: "$grand_total",
+                                then: "$product_amount",
                                 else: 0
                             }
                         }
