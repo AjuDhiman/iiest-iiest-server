@@ -1,3 +1,4 @@
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require("../../config/pipeline");
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 const fboModel = require("../../models/fboModels/fboSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
@@ -12,91 +13,110 @@ exports.getProductSaleData = async (req, res) => {
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
         const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
 
-        const pipelinesArr = [
+       
+     const pipelinesArr = [
             {
-                $project: {
-                    name: {
-                        $cond: [
-                            { $ifNull: ["$fostacInfo", false] },
-                            "Fostac",
-                            {
-                                $cond: [
-                                    { $ifNull: ["$foscosInfo", false] },
-                                    "Foscos",
-                                    "HRA"
-                                ]
-                            }
-                        ]
-                    },
-                    service: {
-                        $cond: [
-                            { $ifNull: ["$fostacInfo", false] },
-                            {
-                                name: "$fostacInfo.fostac_service_name",
-                                amt: {
-                                    $multiply: [
-                                        { $toInt: "$fostacInfo.fostac_processing_amount" },
-                                        { $toInt: "$fostacInfo.recipient_no" }
-                                    ]
-                                }
-                            },
-                            {
-                                $cond: [
-                                    { $ifNull: ["$foscosInfo", false] },
-                                    {
-                                        name: "$foscosInfo.foscos_service_name",
-                                        amt: {
-                                            $add: [
-                                                {
-                                                    $multiply: [
-                                                        { $toInt: "$foscosInfo.foscos_processing_amount" },
-                                                        { $toInt: "$foscosInfo.shops_no" }
-                                                    ]
-                                                },
-                                                { $toInt: "$foscosInfo.water_test_fee" },
-                                                {
-                                                    $cond: {
-                                                        if: {
-                                                            $eq: [{ $toInt: "$foscosInfo.water_test_fee" }, 0]
-                                                        },
-                                                        then: 0,
-                                                        else: -1200
-                                                    }
-                                                }
-                                            ]
-                                        }
+                $unwind: "$product_name"
+            },
+            {
+                $addFields: {
+                    service_name: { //add new field service name on the basis of product
+                        $switch: {
+                            branches: [
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Fostac"]
                                     },
-                                    {
-                                        name: "$hraInfo.hra_service_name",
-                                        amt: {
-                                            $multiply: [
-                                                { $toInt: "$hraInfo.hra_processing_amount" },
-                                                { $toInt: "$hraInfo.shops_no" }
-                                            ]
-                                        },
-                                        processing_amt: "$hraInfo.hra_processing_amount",
-                                        qty: "$hraInfo.shops_no"
-                                    }
-                                ]
-                            }
-                        ]
+                                    then: "$fostacInfo.fostac_service_name"
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Foscos"]
+                                    },
+                                    then: "$foscosInfo.foscos_service_name"
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "HRA"]
+                                    },
+                                    then: "$hraInfo.hra_service_name"
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Medical"]
+                                    },
+                                    then: "Medical"
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Water Test Report"]
+                                    },
+                                    then: "$waterTestInfo.water_test_service_name"
+                                }
+                            ],
+                            default: ""
+                        }
+                    },
+                    product_amount: { //add new field product amount on the basis of product
+                        $switch: {
+                            branches: [
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Fostac"]
+                                    },
+                                    then: fostacRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Foscos"]
+                                    },
+                                    then: foscosRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "HRA"]
+                                    },
+                                    then: hraRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Medical"]
+                                    },
+                                    then: medicalRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Water Test Report"]
+                                    },
+                                    then: waterTestRevenue
+                                }
+                            ],
+                            default: 0
+                        }
                     }
                 }
-
+            },
+            {
+                $unwind: "$product_amount"
             },
             {
                 $group: {
-                    _id: { name: "$name", category: "$service.name" },
-                    value: { $sum: "$service.amt" }
+                    _id: {
+                        product: "$product_name",
+                        service: "$service_name"
+                    },
+                    value: {
+                        $sum: "$product_amount"
+                    }
                 }
             },
             {
                 $group: {
-                    _id: "$_id.name",
+                    _id: "$_id.product",
                     value: { $sum: "$value" },
                     categories: {
                         $push: {
-                            name: "$_id.category",
+                            name: "$_id.service",
                             value: "$value"
                         }
                     }
@@ -586,6 +606,7 @@ exports.getMonthWiseSaleData = async (req, res) => {
     }
 }
 
+//api for repaeat customer chart
 exports.getRepeactCustomerData = async (req, res) => {
     try {
         // const today = new Date()
@@ -598,7 +619,7 @@ exports.getRepeactCustomerData = async (req, res) => {
         // const startOfThisFinancialYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 0, 1, 0, 0, 0));
 
         const todayDate = new Date();
-        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(),0,0, 1);
+        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 0, 0, 1);
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
         const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
@@ -748,11 +769,11 @@ exports.getData = async (req, res) => {
                 $unwind: "$fboInfo"
             },
             {
-                $match:{
+                $match: {
                     $or: [
-                        {"fboInfo.state": "Delhi"},
-                        {"fboInfo.state": "Uttar Pradesh"},
-                        {"fboInfo.state": "Haryana"}
+                        { "fboInfo.state": "Delhi" },
+                        { "fboInfo.state": "Uttar Pradesh" },
+                        { "fboInfo.state": "Haryana" }
                     ]
                 }
             },
@@ -768,17 +789,17 @@ exports.getData = async (req, res) => {
             },
             {
                 $group: {
-                   _id: {
-                    employee: "$_id.employee",
-                   },
-                   name: {$first:"$_id.name"},
-                   total: {$sum: "$total"},
-                   categories:{
-                       $push:{
-                        state:  "$_id.state",
-                        total: "$total"
-                       }
-                   } 
+                    _id: {
+                        employee: "$_id.employee",
+                    },
+                    name: { $first: "$_id.name" },
+                    total: { $sum: "$total" },
+                    categories: {
+                        $push: {
+                            state: "$_id.state",
+                            total: "$total"
+                        }
+                    }
                 }
             }
             // {
@@ -790,13 +811,14 @@ exports.getData = async (req, res) => {
 
         return res.status(200).json(data);
 
-    } catch(error) {
+    } catch (error) {
         console.log(error);
-        return res.status(500).json({message:'Internal Server Error'});
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
-exports.ticketDeviveryChartData = async(req, res) => {
+//api for ticket delivery chart
+exports.ticketDeviveryChartData = async (req, res) => {
     try {
 
         const todayDate = new Date();
@@ -891,7 +913,7 @@ exports.ticketDeviveryChartData = async(req, res) => {
 
     } catch (error) {
         console.log('Ticket Delivery Chart Error:', error);
-        return res.status(500).json({success: false, message: 'Internal Server Error'});
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
 

@@ -5,7 +5,9 @@ const reportingManagerModel = require('../../models/employeeModels/reportingMana
 const { recipientModel } = require('../../models/fboModels/recipientSchema');
 const { recipientsList } = require('../fboControllers/recipient');
 
-exports.employeeRecord = async (req, res) => { //function for getting data about total, pending and approved sales related to sales officer  
+
+//function for getting data about total, pending and approved sales related to sales officer  
+exports.employeeRecord = async (req, res) => { 
     try {
 
         const pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
@@ -161,8 +163,8 @@ exports.employeeRecord = async (req, res) => { //function for getting data about
     }
 };
 
-
-exports.ticketVerificationData = async (req, res) => { //function for getting data about all of the ticket completed(verified) by a verifier
+//function for getting data about all of the ticket completed(verified) by a verifier
+exports.ticketVerificationData = async (req, res) => { 
     try {
 
         const todayDate = new Date(); // getting today's date string
@@ -451,12 +453,17 @@ exports.ticketVerificationData = async (req, res) => { //function for getting da
     }
 }
 
-
-exports.employeeSalesData = async (req, res) => {
+//function for getting sales data
+exports.employeeSalesData = async (req, res) => { 
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
             salesInfo = await salesModel.aggregate([
+                // {
+                //     $sort: {
+                //         "createdAt": -1
+                //     }
+                // },
                 {
                     $lookup: {
                         from: 'fbo_registers', // The collection name where fboInfo is stored
@@ -547,8 +554,13 @@ exports.employeeSalesData = async (req, res) => {
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }
-                }
-
+                },
+                // {
+                //     $skip: (page_num-1)*size
+                // },
+                // {
+                //     $limit: size
+                // }
             ]);
         } else if (req.user.designation === 'Verifier') {
             salesInfo = await salesModel.aggregate([
@@ -854,6 +866,7 @@ exports.employeeSalesData = async (req, res) => {
     }
 }
 
+//
 exports.getTicketsDocs = async (req, res) => {
     try {
 
@@ -893,47 +906,7 @@ exports.getTicketsDocs = async (req, res) => {
     }
 }
 
-// exports.salesData = async (req, res) => { api under development for getting optimized sales list
-//     try {
-
-//         let salesData = await salesModel.aggregate([
-//             {
-//                 $lookup: {
-//                     from: "fbo_registers",
-//                     localField: "fboInfo",
-//                     foreignField: "_id",
-//                     as: "fboInfo"
-//                 }
-//             },
-//             {
-//                 $unwind: "$fboInfo"
-//             },
-//             {
-//                 $replaceRoot: { newRoot: "$fboInfo" } // Replace the root with fboInfo
-//             },
-//             {
-//                 $project: {
-//                     _id: 1, // Exclude _id field
-//                     fbo_name: 1,
-//                     owner_name: 1,
-//                     customer_id: 1,
-//                     state: 1,
-//                     district: 1
-//                 }
-//             }
-//         ]);
-
-//         // Now salesData contains plain JavaScript objects directly returned from the aggregation pipeline
-
-
-//         res.status(200).json(salesData);
-
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(500).json({ message: "Internal Server Error" });
-//     }
-// }
-
+//api for getting department and count of employee in that department
 exports.employeeDepartmentCount = async (req, res) => {
 
     try {
@@ -975,6 +948,7 @@ exports.employeeDepartmentCount = async (req, res) => {
 
 }
 
+//function for getting employee and his  hiring details
 exports.empHiringData = async (req, res) => {
 
     try {
