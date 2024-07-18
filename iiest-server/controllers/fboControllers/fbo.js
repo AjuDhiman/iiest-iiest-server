@@ -183,7 +183,7 @@ exports.fboPayReturn = async (req, res) => {
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount = Number(fostac_training.fostac_processing_amount);
-          totalGST += fostacGST;
+          totalGST = fostacGST;
 
           const qty = fostac_training.recipient_no;
           invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
@@ -198,8 +198,8 @@ exports.fboPayReturn = async (req, res) => {
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount = Number(foscos_training.foscos_processing_amount);
-          totalGST += foscosGST;
-          extraFee += foscosFixedCharge;
+          totalGST = foscosGST;
+          extraFee = foscosFixedCharge;
 
           const qty = foscos_training.shops_no;
           invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
