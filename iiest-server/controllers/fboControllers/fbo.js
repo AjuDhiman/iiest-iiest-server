@@ -215,7 +215,7 @@ exports.fboPayReturn = async (req, res) => {
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount = Number(hygiene_audit.hra_processing_amount);
-          totalGST += hygieneGST;
+          totalGST = hygieneGST;
 
           const qty = hygiene_audit.shops_no;
           invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
