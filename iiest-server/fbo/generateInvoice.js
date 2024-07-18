@@ -5,7 +5,7 @@ const invoiceTemplate = require('../assets/invoiceTemplate');
 const generalDataSchema = require('../models/generalModels/generalDataSchema')
 
 const generateInvoice = async (idNumber, clientEmail, fboObj) => {
-    const fileName = `${Date.now()}_${idNumber}.pdf`;
+    const fileName = `${Date.now()}.pdf`;
     const invoiceHTML = await invoiceTemplate(fboObj);
     let file = { content: invoiceHTML };
     let options = { format: 'A4', omitBackground: true, pageRanges: '1', printBackground: false };
@@ -70,62 +70,22 @@ const generateInvoice = async (idNumber, clientEmail, fboObj) => {
 }
 
 
-const invoiceDataHandler = async (idNum, mail, fboName, address, state, district, pincode, contact, email, processingAmount, extraFee, taxAmount, qty, business_Type, gst_number, totalAmount, serviceType, prodDetails, signatureName, uploadStream, officerName, shopId, boData) => {
+const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, district, pincode, contact, email, processingAmount, extraFee, taxAmount, qty, business_Type, gst_number, totalAmount, serviceType, prodDetails, signatureName, uploadStream, officerName, shopId, boData) => {
 
+    //getting date fot the invoice
     const date = new Date();
     const dateVal = date.getDate();
     const monthVal = date.getMonth() + 1;
     const yearVal = date.getFullYear();
 
-    //generating invoice code
-
-    //getting financial year
-    let firstYear = '';
-    let secondYear = '';
-    if (date.getMonth() < 2) {
-        firstYear = `${(date.getFullYear() - 1).toString().split('').slice(-2).join('')}`;
-        secondYear = `${date.getFullYear().toString().split('').slice(-2).join('')}`;
-    } else {
-        firstYear = `${date.getFullYear().toString().split('').slice(-2).join('')}`;
-        secondYear = `${(date.getFullYear() + 1).toString().split('').slice(-2).join('')}`;
-    }
-
-    let financialYear = `${firstYear}-${secondYear}`
-
-    //getting taxcode
-    let taxCode = '';
-
-    if(business_Type === 'b2b') {
-        taxCode = 'TX';
-    } else if(business_Type === 'b2c') {
-        taxCode = 'CI';
-    }
-
-    //getting invoice number
-    const generalData = (await generalDataSchema.find({}))[0];
-
-    const invoice_details = generalData.invoice_details;
-
-    console.log(invoice_details);
-
-    let invoice_num;
-
-    if (business_Type === 'b2b') {
-        invoice_num = Number(invoice_details.b2b.last_invoice_num);
-    } else {
-        invoice_num = Number(invoice_details.b2c.last_invoice_num);
-    }
-
     const stateCode = (await generalDataSchema.find({}))[0].state_gst_code.find(obj => obj.state_name === state).code; //var for setting place of supply in invoice
-
-    
 
     const { description, code } = getProductSpecificData(serviceType, qty, prodDetails, extraFee);
 
     const infoObj = {
         date: `${dateVal}-${monthVal}-${yearVal}`,
-        receiptNo: `FD/${financialYear}/${taxCode}/${invoice_num}`,
-        transactionId: idNum,
+        receiptNo: invoiceCode,
+        transactionId: invoiceCode,
         name: fboName,
         address: address,
         contact: contact,
@@ -151,29 +111,7 @@ const invoiceDataHandler = async (idNum, mail, fboName, address, state, district
         boData: boData,
         stateCode: stateCode
     }
-    const invoiceData = await generateInvoice(idNum, mail, infoObj);
-
-    if (invoiceData) {
-        if (business_Type == 'b2b') {
-            await generalDataSchema.findOneAndUpdate({
-                _id: generalData._id
-            },
-                {
-                    $inc: {
-                        "invoice_details.b2b.last_invoice_num": 1
-                    }
-                })
-        } else if (business_Type == 'b2c') {
-            await generalDataSchema.findOneAndUpdate({
-                _id: generalData._id
-            }, {
-                $inc: {
-                    "invoice_details.b2c.last_invoice_num": 1
-                }
-            })
-        }
-
-    }
+    const invoiceData = await generateInvoice(invoiceCode, mail, infoObj);
 
     return invoiceData;
 }

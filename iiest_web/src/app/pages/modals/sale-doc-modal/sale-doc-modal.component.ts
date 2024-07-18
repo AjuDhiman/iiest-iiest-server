@@ -13,6 +13,43 @@ import { ViewDocumentComponent } from '../view-document/view-document.component'
 })
 export class SaleDocModalComponent implements OnInit {
 
+  //var keeps track that form is sumbitted or not
+  submitted: boolean = false;
+  serviceType: string;
+
+  //var contains all the data about fbo to show
+  fboData: any;
+
+  //variables contains data related to images or files if exsists snd comming from backend
+  managerPhotoObj: any;
+  shopPhotoObj: any;
+  managerAadharObj: any;
+
+  //var for storing files
+  aadharFile: File;
+  shopPhotoFile: File;
+  managerPhotoFile: File;
+
+  // var for deciding loader 
+  loading: boolean = false; 
+
+  //fa icons
+  faFile: IconDefinition = faFile;
+
+  //logic form
+  docForm: FormGroup = new FormGroup({
+    managerName: new FormControl(''),
+    address: new FormControl(''),
+    pincode: new FormControl(''),
+    shopPhoto: new FormControl(''),
+    managerPhoto: new FormControl(''),
+    managerAadhar: new FormControl('')
+  });
+
+  get docform(): { [key: string]: AbstractControl } {
+    return this.docForm.controls;
+  }
+
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _registerService: RegisterService,
@@ -32,65 +69,38 @@ export class SaleDocModalComponent implements OnInit {
 
   }
 
-  submitted: boolean = false;
-  aadharFile: File;
-  shopPhotoFile: File;
-  managerPhotoFile: File;
-  loading: boolean = false; // var for deciding loader 
-  serviceType: string;
-  fboData: any;
+  //metord runs on submit button hit
+  async onSubmit() {
 
-  managerPhotoObj: any;
-  shopPhotoObj: any;
-  managerAadharObj: any;
-
-  //fa icons
-  faFile: IconDefinition = faFile;
-
-  docForm: FormGroup = new FormGroup({
-    managerName: new FormControl(''),
-    address: new FormControl(''),
-    pincode: new FormControl(''),
-    shopPhoto: new FormControl(''),
-    managerPhoto: new FormControl(''),
-    managerAadhar: new FormControl('')
-  });
-
-  get docform(): { [key: string]: AbstractControl } {
-    return this.docForm.controls;
-  }
-
-  onSubmit() {
-
+    //return if foc form is invalid or still in loading process of previous hit so multiple hit problem wil be solved
     if (this.docForm.invalid || this.loading) {
       return;
     }
 
     this.loading = true;
 
-    // Call the uploadDoc function for each document and wait for all to finish
-    Promise.all([
-      this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile),
-      this.uploadDoc('Shop Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.shopPhotoFile),
-      this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile)
-    ]).then(() => {
-      // This function is called after all documents are uploaded successfully
-      
-      this.activeModal.close()
+    //upoad all docs one by one we are waiting on doc to uplpad before uploading another one. 
+    await this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile);
+    await this.uploadDoc('Shop Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.shopPhotoFile);
+    await this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile);
+
+    this.activeModal.close()
+    //update basic doc upload for the fbo in case all there basic doc uploaed
       this._registerService.updateFboBasicDocStatus(this.fboData.fboInfo._id).subscribe({
         next: res => {
           this._toastrService.success('', `Docs Uploaded Successfully.`);
           this.loading = false;
           location.reload();
+        },
+        error: err => {
+          this.loading = false;
+          this._toastrService.error('', `Docs Uploading Error.`);
         }
       })
-    }).catch(err => {
-      // Handle any errors that occurred during the uploads
-      console.error('Error uploading documents:', err);
-    });
-
   }
 
+
+  //setting form validation
   setFormValidation() {
     this.docForm = this.formBuilder.group({
       managerName: ['', Validators.required],
@@ -124,6 +134,7 @@ export class SaleDocModalComponent implements OnInit {
     }
   }
 
+  //methord for uploading particular docs 
   uploadDoc(name: string, format: string, isMultiDoc: boolean, handlerId: string, document: any) {
     const formData = new FormData();
     formData.append('name', name);
@@ -163,17 +174,20 @@ export class SaleDocModalComponent implements OnInit {
 
   }
 
+
+  //getting docs to view
   getDocsObjs(): void {
-    let docs = this.fboData.docs;
+    let docs = this.fboData.docs[0].documents;
 
     console.log(docs);
 
     this.managerPhotoObj = docs.find((doc: any) => doc.name === 'Manager Photo');
-    console.log(this.managerPhotoObj);
     this.managerAadharObj = docs.find((doc: any) => doc.name === 'Manager Aadhar');
     this.shopPhotoObj = docs.find((doc: any) => doc.name === 'Shop Photo');
   }
 
+
+  //open view document modal
   viewDocument(name: string, res: any, format: string, isMultiDoc: boolean): void { // methord for calling viewdoc component for a particucar doc
 
     let obj = {
@@ -186,6 +200,8 @@ export class SaleDocModalComponent implements OnInit {
     modalRef.componentInstance.doc = obj;
   }
 
+
+  //file extention validator
   validateFileType(allowedExtensions: string[]) {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const file = control.value;
