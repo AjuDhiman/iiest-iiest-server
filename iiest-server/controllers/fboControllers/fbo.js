@@ -13,12 +13,14 @@ const { sendInvoiceMail, sendCheckMail } = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
 const sessionModel = require('../../models/generalModels/sessionDataSchema');
 const { shopModel } = require('../../models/fboModels/recipientSchema');
+const generalDataSchema = require('../../models/generalModels/generalDataSchema');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
 let fboFormData = {};
 
-exports.fboPayment = async (req, res) => {
+//methord for initiating oayment with phoen pe
+exports.fboPayment = async (req, res) => { 
   try {
     let success = false;
 
@@ -33,8 +35,11 @@ exports.fboPayment = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    console.log(panIndiaAllowedIds);
+
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -61,7 +66,7 @@ exports.fboPayment = async (req, res) => {
       }
     });
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
 
       if (!pincodeCheck) {
@@ -79,13 +84,12 @@ exports.fboPayment = async (req, res) => {
   }
 }
 
+//methord for creating fbo and sale entry and other task that should be done after payment cinfirmation from phone pe
 exports.fboPayReturn = async (req, res) => {
 
   let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
 
   try {
-
-    console.log(11);
 
     if (req.body.code === 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
       if (req.body.transactionId) {
@@ -337,27 +341,6 @@ exports.fboPayReturn = async (req, res) => {
 
         sendInvoiceMail(email, invoiceData);
 
-        // let saltKey = '875126e4-5a13-4dae-ad60-5b8c8b629035';
-        // let saltIndex = 1
-
-        // let surl = 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/PGTESTPAYUAT93/' + req.body.transactionId;
-
-        // let string = '/pg/v1/status/PGTESTPAYUAT93/' + req.body.transactionId + saltKey;
-
-        // let sha256_val = sha256(string);
-        // let checksum = sha256_val + '###' + saltIndex;
-
-        // axios.get(surl, {
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'X-VERIFY': checksum,
-        //     'X-MERCHANT-ID': req.body.transactionId
-        //   }
-        // }).then(function (response) {
-        //   console.log(response);
-        // }).catch(function (error) {
-        //   console.log(error);
-        // });
       }
     }
   } catch (error) {
@@ -368,6 +351,7 @@ exports.fboPayReturn = async (req, res) => {
   }
 }
 
+//methord for regsitering fbo and saving its sale realted info for a sale by cash but not in working after(10-06-24)
 exports.fboRegister = async (req, res) => {
   try {
 
@@ -385,8 +369,9 @@ exports.fboRegister = async (req, res) => {
     const officerName = req.user.employee_name;
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -406,7 +391,7 @@ exports.fboRegister = async (req, res) => {
 
     const boData = await boModel.findOne({ _id: boInfo });
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -514,6 +499,7 @@ exports.fboRegister = async (req, res) => {
   }
 }
 
+//methord for registering j
 exports.boByCheque = async (req, res) => {
   try {
 
@@ -537,8 +523,9 @@ exports.boByCheque = async (req, res) => {
 
     //checkig for allocated areas
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -558,7 +545,7 @@ exports.boByCheque = async (req, res) => {
 
     const boData = await boModel.findOne({ _id: boInfo });
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') { //checking allocated areas
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') { //checking allocated areas
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -680,6 +667,7 @@ exports.registerdFBOList = async (req, res) => {
   }
 }
 
+//Controller to get all BO List
 exports.registerdBOList = async (req, res) => {
   try {
     const boList = await boModel.find({ is_contact_verified: true, is_email_verified: true });
@@ -689,7 +677,6 @@ exports.registerdBOList = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
-
 
 
 exports.saleInvoice = async (req, res) => {
@@ -844,6 +831,7 @@ exports.getClientList = async (req, res) => {
   }
 }
 
+//methord for upadting is basic doc uploaded property of a fbo objevt stroed in fbo registers in db
 exports.updateFboBasicDocStatus = async (req, res) => {
   try {
     const id = req.params.id;
@@ -862,7 +850,8 @@ exports.updateFboBasicDocStatus = async (req, res) => {
   }
 }
 
-exports.approveChequeSale = async (req, res) => { //this methord approves the sale for a pending cheque and send invoice after approval
+//this methord approves the sale for a pending cheque and send invoice after approval
+exports.approveChequeSale = async (req, res) => { 
   try {
 
     const saleId = req.params.id; //gettimg sales id from route

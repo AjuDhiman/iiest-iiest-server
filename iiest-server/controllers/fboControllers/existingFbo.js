@@ -12,6 +12,7 @@ const sessionModel = require("../../models/generalModels/sessionDataSchema");
 const boModel = require("../../models/BoModels/boSchema");
 const { shopModel } = require("../../models/fboModels/recipientSchema");
 const { generateInvoiceCode } = require("../../fbo/generateCredentials");
+const generalDataSchema = require("../../models/generalModels/generalDataSchema");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
@@ -31,8 +32,9 @@ exports.existingFboCash = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
+    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -58,7 +60,7 @@ exports.existingFboCash = async (req, res) => {
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
       if (!pincodeCheck) {
         success = false;
@@ -167,8 +169,9 @@ exports.existingFboByCheque = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId }); //cjecking for allocated area
+    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -194,7 +197,7 @@ exports.existingFboByCheque = async (req, res) => {
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
       if (!pincodeCheck) {
         success = false;
@@ -261,8 +264,9 @@ exports.existingFboPayPage = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -290,7 +294,7 @@ exports.existingFboPayPage = async (req, res) => {
 
     const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo, officerName: officerName } });
 
-    if (req.user.employee_id != 'IIEST/FD/0176' && panelType !== 'Verifier Panel') {
+    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
       if (!pincodeCheck) {
         success = false;
