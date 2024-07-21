@@ -41,7 +41,9 @@ export class ClientListComponent implements OnInit {
     this._getDataService.getClientList().subscribe({
       next: res => {
         this.loading = false;
-        this.clientList = res.clientList.sort((a: any,b: any) => b.fbo.length - a.fbo.length);
+        // this.clientList = res.clientList.sort((a: any,b: any) => b.fbo.length - a.fbo.length);
+        this.clientList = res.clientList;
+        console.log(res.clientList)
         this.filteredData = this.clientList;
       }
     })
