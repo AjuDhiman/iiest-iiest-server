@@ -8,7 +8,8 @@ import { DeleteSales, GetSales, UpdateSales } from "src/app/store/actions/sales.
 //State Model
 export class SalesStateModel {
     sales : any;
-    salesLoaded : boolean
+    salesLoaded : boolean;
+    pageNum: number;
 }
 
 //State
@@ -16,7 +17,8 @@ export class SalesStateModel {
     name : 'sales',
     defaults :{
         sales:[],
-        salesLoaded :false
+        salesLoaded :false,
+        pageNum: 1
     }
 })
 
@@ -43,7 +45,8 @@ export class SalesState {
             setState({
                 ...state,
                 sales:res.salesInfo,
-                salesLoaded:true
+                salesLoaded:true,
+                pageNum: state.pageNum++
             })
         })).subscribe({
             error: (err)=>{

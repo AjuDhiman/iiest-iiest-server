@@ -3,8 +3,10 @@ const employeeSchema = require('../../models/employeeModels/employeeSchema')
 const { sendMailToBo } = require('./emailService');
 const { generateUniqueId } = require('../../fbo/generateCredentials');
 const { default: mongoose } = require('mongoose');
+const fboModel = require('../../models/fboModels/fboSchema');
 
-exports.createBusinessOwner = async (req, res) => { //methord for creating business owners
+//methord for creating business owners
+exports.createBusinessOwner = async (req, res) => {
     try {
         const {
             owner_name,
@@ -51,7 +53,7 @@ exports.createBusinessOwner = async (req, res) => { //methord for creating busin
             is_email_verified: false //setting contact and email verification initially false beacuse we want consumer to verify both by mail or contact
         }); // creating new bo in db
 
-       
+
         const mailInfo = {
             purpose: 'verification',// purpose of the mail
             id: newBo._id,
@@ -68,8 +70,8 @@ exports.createBusinessOwner = async (req, res) => { //methord for creating busin
     }
 };
 
-
-exports.getAllBusinessOwners = async (_req, res) => { //get list of all business owner from bo registers whose both contact and email are verified
+//get list of all business owner from bo registers whose both contact and email are verified
+exports.getAllBusinessOwners = async (_req, res) => {
     try {
         const businessOwners = await boModel.find({ is_contact_verified: true, is_email_verified: true });
         console.log(businessOwners);
@@ -80,7 +82,8 @@ exports.getAllBusinessOwners = async (_req, res) => { //get list of all business
     }
 };
 
-exports.getEmployeeNameAndId = async (req, res) => {//getting all employee name and employeeid for showing list of sale employee in onboard form onboard officer field
+//getting all employee name and employeeid for showing list of sale employee in onboard form onboard officer field
+exports.getEmployeeNameAndId = async (req, res) => {
     try {
 
         const nameNIdList = await employeeSchema.find({ status: true, department: 'Sales Department' }).select('employee_name employee_id');
@@ -96,7 +99,8 @@ exports.getEmployeeNameAndId = async (req, res) => {//getting all employee name 
     }
 }
 
-exports.verifyEmail = async (req, res) => { //methord for verifing email and contact of an bo by clicking verify mail button send in mail or sms
+//methord for verifing email and contact of an bo by clicking verify mail button send in mail or sms
+exports.verifyEmail = async (req, res) => {
     try {
 
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) { //sending error message in case of wrong format of objet id send in parameter
@@ -126,7 +130,7 @@ exports.verifyEmail = async (req, res) => { //methord for verifing email and con
                 return res.status(404).json({ success: false, message: "Verification Failed", emailSendingErr: true });
             }
 
-           
+
             const mailInfo = { //aggregating mail info for sending mail to bo with his or her customer id
                 boName: idExsists.owner_name,
                 purpose: 'onboard',
@@ -137,14 +141,102 @@ exports.verifyEmail = async (req, res) => { //methord for verifing email and con
             }
 
             await sendMailToBo(verifiedMail.email, mailInfo);//sending onboard mail when bo verifies mail and contact by clicking on verify mail button 
-            
-            return res.status(200).json({ success: true, message: "Email Verified" }) 
+
+            return res.status(200).json({ success: true, message: "Email Verified" })
         }
 
         return res.status(404).json({ success: false, message: "Verification Failed" });
     } catch (error) {
         console.log('Mail Verification Error:', error);
         return res.status(500).json({ success: false, message: 'Internal Server Error' })
+    }
+}
+
+//methord for getting list of all bo and their associated shop(or fbo)
+exports.getClientList = async (req, res) => {
+
+    try {
+        // const clientList = await boModel.aggregate([
+        //     {
+        //         $lookup: { //lookup with fbo collection for getting all the fbo related to this bo in array
+        //             from: 'fbo_registers',
+        //             localField: '_id',
+        //             foreignField: 'boInfo',
+        //             as: 'fbo'
+        //         },
+        //     },
+        //     {
+        //         $unwind: "$fbo"
+        //     },
+        //     {
+        //         $project: {
+        //             "_id": 1,
+        //             "cusomer_id": 1,
+        //             "manager_name": 1,
+        //             "owner_name": 1,
+        //             "business_category": 1,
+        //             "fbo._id": 1
+        //         }
+        //     }
+        // ]);
+
+         const clientList = await fboModel.aggregate([
+            {
+                $lookup: { //lookup with fbo collection for getting all the fbo related to this bo in array
+                    from: 'bo_registers',
+                    localField: 'boInfo',
+                    foreignField: '_id',
+                    as: 'boInfo'
+                },
+            },
+            {
+                $unwind: "$boInfo"
+            },
+            {
+                $group: {
+                    "_id": "$boInfo._id",
+                    "contact_no": {$first: "$boInfo.contact_no"},
+                    "email": {$first: "$boInfo.email"},
+                    "customer_id": {$first: "$boInfo.customer_id"},
+                    "owner_name": {$first: "$boInfo.owner_name"},
+                    "business_entity": {$first: "$boInfo.business_entity"},
+                    "business_ownership_type": {$first: "$boInfo.business_ownership_type"},
+                    "business_category": {$first: "$boInfo.business_category"},
+                    "manager_name": {$first: "$boInfo.manager_name"},
+                    "createdAt": {$first: "$boInfo.createdAt"},
+                    "fbo": {
+                        $push: {
+                            "_id": "$_id",
+                            "fbo_name": "$fbo_name",
+                            "owner_name": "$owner_name",
+                            "customer_id": "$customer_id",
+                            "createdAt": "$createdAt",
+                            "state": "$state",
+                            "district": "$district",
+                            "address": "$address",
+                            "pincode": "$pincode",
+                            "business_type": "$business_type",
+                            "gst_number": "$gst_number",
+                            "owner_contact": "$owner_contact",
+                            "email": "$email"
+                        }
+                    }
+                }
+            },
+            {
+                $sort: {
+                    "createdAt": -1
+                }
+            }
+        ]);
+
+        console.log(clientList[0])
+
+        return res.status(200).json({ clientList: clientList });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 

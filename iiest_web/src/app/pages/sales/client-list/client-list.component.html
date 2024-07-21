@@ -1,0 +1,141 @@
+<div class="app-content pt-3">
+    <div class="container-xxl">
+
+        <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
+            <div class="row g-3 mb-4 align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 class="app-page-title mb-0">Bo List
+                    </h1>
+
+                </div>
+                <div class="col-auto">
+                    <div class="page-utilities">
+                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
+                                <option value=10>10</option>
+                                <option value=25 selected>25</option>
+                                <option value=50>50</option>
+                                <option value=100>100</option>
+                            </select>
+                            <div class="col-auto">
+                                <form class="form">
+                                    <div class="input-group" title="Search Employee">
+                                        <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
+                                            style="position: absolute; padding: 9px 10px;"
+                                            [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                                    </div>
+                                    <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                                        class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+                                </form>
+                            </div>
+                            <div class="col-auto">
+                                <select class="form-select form-select-sm w-auto cursor-pointer"
+                                    [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
+                                    <!-- <option value="generalsearch">General Search</option> -->
+                                    <option value="byBoName">Search by Owner</option>
+                                    <option value="byMemberId">Search by Member ID</option>
+                                    <option value="byContact">Search by contact</option>
+                                    <option value="byMail">Search by Email</option>
+                                    <option value="byBusinessEntity">Search by Business Entity</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <!-- <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer" style="margin: 7px 7px; color: #1957a9;"
+                    [icon]="faFileCsv" title="Export as CSV"></fa-icon>
+                </div> -->
+                            </div><!--//row-->
+                        </div><!--//table-utilities-->
+                    </div><!--//col-auto-->
+                </div><!--//row-->
+
+
+                <div class="tab-content" id="orders-table-tab-content">
+                    <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
+                        aria-labelledby="orders-all-tab">
+                        <div class="app-card app-card-orders-table shadow-sm mb-5">
+                            <div class="app-card-body">
+                                <div class="table-responsive">
+                                    <table class="table app-table-hover table-striped mb-0 text-left"
+                                        id="data-to-export">
+                                        <thead>
+                                            <tr>
+                                                <th class="cell">S.No</th>
+                                                <th class="cell">Business Entity</th>
+                                                <th class="cell">Bo Name</th>
+                                                <th class="cell">Member Id</th>
+                                                <th class="cell">Contact No.</th>
+                                                <th class="cell">Email</th>
+                                                <th class="cell">Business Category</th>
+                                                <th class="cell">Business Type</th>
+                                                <th class="cell text-center">Shops No</th>
+                                                <th class="cell text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="filteredData">
+                                            <tr class="list-tr"
+                                                *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'sales-list' }; let i = index">
+                                                <ng-container>
+
+                                                    <td class="cell"><span
+                                                            class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
+                                                    </td>
+
+                                                    <td class="cell text-capitalize"><span
+                                                            class="truncate">{{data.business_entity.toLowerCase()}}</span>
+                                                    </td>
+
+                                                    <td class="cell"><span class="truncate">{{data.owner_name.toLowerCase()}}</span>
+                                                    </td>
+
+                                                    <td class="cell"><span class="truncate">{{data.customer_id}}</span>
+                                                    </td>
+
+                                                    <td class="cell"><span class="truncate">{{data.contact_no}}</span>
+                                                    </td>
+
+                                                    <td class="cell"><span class="truncate">{{data.email}}</span>
+                                                    </td>
+
+                                                    <td class="cell"><span class="truncate">{{data.business_category}}</span>
+                                                    </td>
+
+                                                    <td class="cell"><span class="truncate">{{data.business_ownership_type}}</span>
+                                                    </td>
+
+                                                    <td class="cell text-center"><span class="truncate">{{data.fbo.length}}</span>
+                                                    </td>
+
+                                                    <td class="cell text-center">
+                                                        <fa-icon class="fa-l selector mx-2" (click)="showShops(data)"
+                                                            style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                            title="View Detail"></fa-icon>
+
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="filteredData?.length==0">
+                                            <tr>
+                                                <td colspan="15" class="text-center fw-bold">----------------- No Data
+                                                    Found ----------------
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!--//table-responsive-->
+
+                            </div><!--//app-card-body-->
+                        </div><!--//app-card-->
+
+                        <div class="d-flex" [ngClass]="clientList?'justify-content-between':'justify-content-end'">
+                            <div *ngIf="clientList" class="text-sm" style="font-size: 14px;">{{filteredData.length}}
+                                filtered from {{clientList.length}}</div>
+                            <pagination-controls previousLabel="Prev" nextLabel="Next" id="sales-list"
+                                (pageChange)="onTableDataChange($event)"></pagination-controls>
+                        </div>
+                        <ngx-loading [show]="loading"></ngx-loading>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -43,6 +43,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getClientList(): Observable<any> {
+    const url = `${this.url}/clientlist`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getSalesList(): Observable<any> {
     const url = `${this.url}/employeesaleslist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -88,6 +93,11 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  public getTicketVerificationData(): Observable<any> {
+    const url = `${this.url}/ticketverificationdata`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getEbill(billId: string): Observable<any> {
     const url = `${this.url}/shop/ebill/${billId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -110,6 +120,11 @@ export class GetdataService {
 
   public getCaseList(): Observable<any> {
     const url = `${this.url}/getcaseslist`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  public getRecipientList(): Observable<any> { 
+    const url = `${this.url}/getrecipientlist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

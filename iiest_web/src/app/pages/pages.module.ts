@@ -11,6 +11,7 @@ import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-co
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { RefundPolicyComponent } from './refund-policy/refund-policy.component';
 import { SaleDocModalComponent } from './modals/sale-doc-modal/sale-doc-modal.component';
+import { ShopsModalComponent } from './modals/shops-modal/shops-modal.component';
 
 
 
@@ -21,7 +22,8 @@ import { SaleDocModalComponent } from './modals/sale-doc-modal/sale-doc-modal.co
     TermsAndConditionsComponent,
     PrivacyPolicyComponent,
     RefundPolicyComponent,
-    SaleDocModalComponent
+    SaleDocModalComponent,
+    ShopsModalComponent
   ],
   imports: [
     CommonModule,

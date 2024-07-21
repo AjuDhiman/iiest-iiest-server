@@ -1,10 +1,16 @@
+<!-- Modal Head -->
 <div class="modal-header bg-secondary">
     <h6 class="modal-title text-white" id="modal-basic-title">FBO Details</h6>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
+
+<!-- Modal Body  -->
 <div class="modal-body">
     <div class="row">
         <div class="container">
+
+            <!-- Shop Related Details starts -->
+
             <div class="row border border-1 p-1">
                 <div class="col-md-6">
                     <div class="row">
@@ -62,9 +68,9 @@
             <div class="row border border-1 p-1">
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4 title">Payment Mode</div>
-                        <div class="col-md-8 data">
-                            {{fboData.payment_mode}}
+                        <div class="col-md-4 title">Address</div>
+                        <div class="col-md-8 data text-capitalize">
+                            {{fulladdress}}
                         </div>
                     </div>
                 </div>
@@ -96,21 +102,22 @@
                 </div>
             </div>
             <div class="row border border-1 p-1">
+               
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-4 title">Address</div>
-                        <div class="col-md-8 data text-capitalize">
-                            {{fulladdress}}
+                        <div class="col-md-4 title">Payment Mode</div>
+                        <div class="col-md-8 data">
+                            {{fboData.payment_mode}}
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="row" *ngIf="!isVerifier">
-                        <div class="col-md-4 title">Total Sales Amount <br><span
+                    <div class="row">
+                        <div class="col-md-4 title">Total Sale Amount <br><span
                                 style="font-size: x-small; font-weight: normal;">(18%
                                 GST Inc.)</span></div>
                         <div class="col-md-8 data">
-                            {{fboData.grand_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                            {{productTotalAmt}} <fa-icon class="fa-l" style="color: #5d6778;"
                                 [icon]="faIndianRupeeSign"></fa-icon>
                         </div>
                     </div>
@@ -126,21 +133,18 @@
                             </p>
 
                         </div>
+                       
                     </div>
+
+                    <!-- Shop Related Details Ends -->
+
+                    
                 </div>
             </div>
-            <!-- <div class="row border border-1 p-1">
-                
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6 title"> Type</div>
-                        <div class="col-md-6 data">
-                            {{fboData.fbo_type}}
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <div *ngIf="fboData.cheque_data" class="row border border-1 py-2" style="margin-bottom: 10px;">
+           
+
+            <!-- Cheque Related Data only avilable incase payment mode is bu cheque -->
+            <div *ngIf="fboData.cheque_data" class="row border border-1 py-2">
                 <div class="col-md title" style="color: #1957a9;">Cheque Data</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -195,8 +199,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Cheque Details Ends -->
+
+
+            <!-- Shop Basic Documents -->
             <div class="row border border-1 py-2" style="margin-bottom: 10px;">
-                <div class="col-md title" style="color: #1957a9;">Documents</div>
+                <div class="col-md title" style="color: #1957a9;">Shop Identification Documents</div>
                 <div class="row mt-2 ml-3">
                     <ng-container *ngIf="docList.length !== 0; else noDocs">
                         <div class="col-md-4" *ngFor="let doc of docList">
@@ -215,7 +224,49 @@
                     </ng-template>
                 </div>
             </div>
-            <div *ngIf="fboData.foscosInfo && !isVerifier" class="row border border-1 p-1">
+
+
+
+            <!-- Product Related Details starts -->
+
+
+
+            <!-- In case of Fostac -->
+            <div *ngIf="product === 'Fostac'" class="row">
+                <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Client Type</div>
+                            <div class="col-md-6 data">
+                                {{fboData.fostacInfo.fostac_client_type}}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Service Name</div>
+                            <div class="col-md-6 data">
+                                {{fboData.fostacInfo.fostac_service_name}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">No. of Recipient </div>
+                            <div class="col-md-6 data">{{fboData.fostacInfo.recipient_no}}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- In case of Foscos-->
+            <div *ngIf="product === 'Foscos'" class="row">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Foscos Details</div>
                     <div class="remaining-time">({{remainingTime}} are Remaining)</div>
@@ -229,15 +280,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Processing Amount </div>
-                            <div class="col-md-6 data">
-                                {{fboData.foscosInfo.foscos_processing_amount}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
+                   
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">Service Name</div>
@@ -264,137 +307,13 @@
                             <div class="col-md-6 data">{{fboData.foscosInfo.shops_no}}</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Water Test Fee</div>
-                            <div class="col-md-6 data">{{fboData.foscosInfo.water_test_fee}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon></div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-3 title">Foscos Total <br><span
-                                    style="font-size: x-small; font-weight: normal;">(18%
-                                    GST Exc.)</span></div>
-                            <div class="col-md-9 data">
-                                {{fboData.foscosInfo.foscos_total}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Foscos License</div>
-                            <div class="col-md-6 data">
-                                <!-- <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon> -->
-                                Under development will be visible soon
-                            </div>
-                        </div>
-                    </div>
+                  
                 </div>
             </div>
 
-            <!-- Medical Data -->
-            <div *ngIf="fboData.medicalInfo && !isVerifier" class="row border border-1 p-1">
-                <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
-                    <div class="product-title">Medical Details</div>
-                </div>
-                <div class="row mt-2 ml-3">
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Processing Amount </div>
-                            <div class="col-md-6 data">
-                                {{fboData.medicalInfo.medical_processing_amount}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">No. of Recipients </div>
-                            <div class="col-md-6 data">{{fboData.medicalInfo.recipient_no}}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-3 title">Medical Total <br><span
-                                    style="font-size: x-small; font-weight: normal;">(18%
-                                    GST Exc.)</span></div>
-                            <div class="col-md-9 data">
-                                {{fboData.medicalInfo.medical_total}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-
-            <div *ngIf="fboData.fostacInfo" class="row">
-                <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
-                <div class="row mt-2 ml-3">
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Client Type</div>
-                            <div class="col-md-6 data">
-                                {{fboData.fostacInfo.fostac_client_type}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Processing Amount </div>
-                            <div class="col-md-6 data">
-                                {{fboData.fostacInfo.fostac_processing_amount}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Service Name</div>
-                            <div class="col-md-6 data">
-                                {{fboData.fostacInfo.fostac_service_name}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">No. of Recipient </div>
-                            <div class="col-md-6 data">{{fboData.fostacInfo.recipient_no}}</div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-3 title">Fostac Total<br><span
-                                    style="font-size: x-small; font-weight: normal;">(18%
-                                    GST Exc.)</span></div>
-                            <div class="col-md-9 data">
-                                {{fboData.fostacInfo.fostac_total}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Fostac Cerificates</div>
-                            <div class="col-md-6 data">
-                                <!-- <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon> -->
-                                Under development will be visible soon
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div *ngIf="fboData.hraInfo && !isVerifier" class="row">
+            <!-- In Case of HRA -->
+            <div *ngIf="product === 'HRA'" class="row">
                 <div class="col-md title" style="color: #1957a9;">HRA Details</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -402,15 +321,6 @@
                             <div class="col-md-6 title">Client Type</div>
                             <div class="col-md-6 data">
                                 {{fboData.hraInfo.hra_client_type}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Processing Amount </div>
-                            <div class="col-md-6 data">
-                                {{fboData.hraInfo.hra_processing_amount}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
                             </div>
                         </div>
                     </div>
@@ -430,31 +340,50 @@
                         </div>
                     </div>
 
-                    <div class="col-md-8">
+             
+                </div>
+            </div>
+
+
+            <!-- In case of Medical -->
+            <div *ngIf="product === 'Medical'" class="row">
+                <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
+                    <div class="product-title">Medical Details</div>
+                </div>
+                <div class="row mt-2 ml-3">
+                    <!-- <div class="col-md-4">
                         <div class="row">
-                            <div class="col-md-3 title">HRA Total<br><span
+                            <div class="col-md-6 title">Processing Amount </div>
+                            <div class="col-md-6 data">
+                                {{fboData.medicalInfo.medical_processing_amount}} <fa-icon class="fa-l"
+                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">No. of Recipients </div>
+                            <div class="col-md-6 data">{{fboData.medicalInfo.recipient_no}}</div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3 title">Medical Total <br><span
                                     style="font-size: x-small; font-weight: normal;">(18%
                                     GST Exc.)</span></div>
                             <div class="col-md-9 data">
-                                {{fboData.hraInfo.hra_total}} <fa-icon class="fa-l" style="color: #5d6778;"
+                                {{fboData.medicalInfo.medical_total}} <fa-icon class="fa-l" style="color: #5d6778;"
                                     [icon]="faIndianRupeeSign"></fa-icon>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Audit Report</div>
-                            <div class="col-md-6 data">
-                                <!-- <fa-icon class="fa-2xl text-success cursor-pointer" [icon]="faFile"></fa-icon> -->
-                                Under development will be visible soon
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-             <!-- Water Test Data -->
-             <div *ngIf="fboData.waterTestInfo && !isVerifier" class="row border border-1 p-1">
+
+
+             <!-- In Case of Water Test -->
+             <div *ngIf="product === 'Water Test Report'" class="row">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Water Test Details</div>
                 </div>
@@ -465,28 +394,23 @@
                             <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_service_name}}</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Processing Amount </div>
-                            <div class="col-md-6 data">
-                                {{fboData.watertestInfo.water_test_processing_amount}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-3 title">Water Test Total <br><span
-                                    style="font-size: x-small; font-weight: normal;">(18%
-                                    GST Exc.)</span></div>
-                            <div class="col-md-9 data">
-                                {{fboData.waterTestInfo.water_test_total}} <fa-icon class="fa-l" style="color: #5d6778;"
-                                    [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div>
+                    
+                   
 
                 </div>
             </div>
+
+            <!-- Product Related Details Ends -->
+
+
+
+            <!-- Deliver Related Details Start -->
+
+            <div class="row my-2">
+                <div class="col-md title" style="color: #1957a9;">Delivery Details</div>
+            </div>
+
+            <!-- Deliver Related Details Ends -->
         </div>
     </div>
+</div>
