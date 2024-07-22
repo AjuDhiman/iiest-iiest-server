@@ -7,9 +7,10 @@ export const config = {
    DOC_URL: prodEnv?'https://connectonline.world:3001':(testEnv?'https://connectonline.world:3001':'http://localhost:3000') //this url is the loaction in backend from where static file like pdf or images are avilable for download for backend see index.js in server 
 }
 
-export const panIndiaAllowedEmpIds = [
+export const panIndiaAllowedEmpIds = [ //Employees with Pan India Employee Id
    'IIEST/FD/0176', //Chetan Kapoor Emp Id
-   'IIEST/FD/5187' //Sales test Emp Id
+   'IIEST/FD/5187', //Sales test Emp Id
+   'IIEST/FD/8234' //Rohit Kulshrestha Emp Id
 ]
 // export const chetanKapoorEmpId: string = 'IIEST/FD/0176';
 
@@ -128,6 +129,10 @@ export const stateName = [
    'West Bengal'
 ]
 
+
+//role arraysroutes 
+
+//master_roles
 const master_roles = [
    'Director',
    'Regional IT Manager',
@@ -149,7 +154,6 @@ export const fbo_roles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
-   'Verifier',
    ...master_roles
 ];
 
@@ -188,6 +192,11 @@ export const caseList_roles = [
    'Verifier',
    ...master_roles
 ];
+
+//roles of directors
+export const director_roles = [
+   'Director'
+]
 
 //roles array for showing highchart conditionally
 

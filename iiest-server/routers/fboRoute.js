@@ -1,12 +1,12 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, getClientList, boByCheque, updateFboBasicDocStatus, approveChequeSale } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeSale } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, hygieneShopsList, uploadAadharPhoto } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { foscosDocuments, hraDocuments, chequeImage } = require('../config/storage');
-const { createBusinessOwner, getAllBusinessOwners } = require('../controllers/boControllers/bo');
+const { createBusinessOwner, getAllBusinessOwners, getClientList } = require('../controllers/boControllers/bo');
 const { getTicketsDocs } = require('../controllers/employeeControllers/employeeRecord');
 const { fostacVerification } = require('../controllers/operationControllers/formSections');
 const { trainingBatch } = require('../controllers/trainingControllers/trainingBatch');
@@ -20,6 +20,7 @@ router.get('/salerecipients/:id', authMiddleware, recipientsList); //Router for 
 router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list for sale
 router.get('/hygienesaleshops/:id', authMiddleware, hygieneShopsList); //Router for shops list for hygiene sale
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
+router.get('/clientlist', getClientList); //Router for client list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
 router.post('/fbobycheque/:id', authMiddleware, chequeImage.fields([{name: 'cheque_image', maxCount: 1}]), existingFboByCheque);
 router.post('/bobycheque/:id', authMiddleware, chequeImage.fields([{name: 'cheque_image', maxCount: 1}]), boByCheque);

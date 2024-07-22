@@ -19,13 +19,20 @@ export class SidebarComponent {
   caseListRoles = caseList_roles;
   userImage: string = 'assets/logo-side.png';
   userImageId: string;
+
+  //icons
   faUserPlus: IconDefinition = faUserPlus;
   faCalendarDays: IconDefinition = faCalendarDays;
   faCalendarWeek: IconDefinition = faCalendarWeek;
 
+
+  //input variables
   @Input() sideBarToggle: boolean;
   @Input() isSidebarVisible: boolean;
   @Input() largeDisplay: boolean;
+
+
+  //output event emittor
   @Output() sideBarToggleUpdate = new EventEmitter();
   constructor(private registerService: RegisterService,
     private getDataService: GetdataService,

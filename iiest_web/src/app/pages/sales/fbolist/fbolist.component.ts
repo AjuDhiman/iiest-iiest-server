@@ -13,6 +13,7 @@ import { GetSales } from 'src/app/store/actions/sales.action';
 import { SaleDocModalComponent } from '../../modals/sale-doc-modal/sale-doc-modal.component';
 import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
 import { ToastrService } from 'ngx-toastr';
+import { FbonewComponent } from '../fboproduct/fbonew/fbonew.component';
 
 @Component({
   selector: 'app-fbolist',
@@ -26,14 +27,13 @@ export class FbolistComponent implements OnInit {
   createdBy: any;
   allFBOEntries: any;
   filteredFBOEntries: any;
-  selectedFilter: string = 'byFboName';
+  selectedFilter: string = 'byCustomerID';
   searchQuery: string = '';
   filteredData: any;
-  isSearch: boolean = false;
 
   pageNumber: number = 1;
   itemsNumber: number = 25;
-  isVerifier: boolean = false;
+
 
   selectedSaleId: string // this var will contain sale id of sale of whichj we want to update sale cheque status
 
@@ -54,10 +54,19 @@ export class FbolistComponent implements OnInit {
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
 
-  isModal: boolean = false;
 
-  //loading
-  loading: boolean = true;
+  //Booleans
+  isModal: boolean = false;
+  loading: boolean = true; //loader
+  //var in case of using this list as invoice list
+  isInvoiceList: boolean = false;
+  isVerifier: boolean = false;
+  isSearch: boolean = false;
+
+  //var in case showing fbolist in case list
+  isShowingInCaseList: boolean = false;
+
+  isMoreAvilable: boolean = true;
 
   constructor(private getDataService: GetdataService,
     private registerService: RegisterService,
@@ -67,27 +76,19 @@ export class FbolistComponent implements OnInit {
     private modalService: NgbModal) { }
 
   ngOnInit(): void {
-    let user: any = this.registerService.LoggedInUserData();
-    let parsedUser = JSON.parse(user);
-    this.userData = parsedUser;
-    if (parsedUser.designation === 'Verifier') {
-      this.isVerifier = true;
-    }
+    this.loading = true;
+    this.intailize() //do initial configurations
     this.fetchAllFboData();
-
-
-    // this.sales$.subscribe({
-    //   next: res => {
-    //     this.salesData = res;
-    //     this.loading = false;
-    //   }
-    // });
   }
 
   fetchAllFboData(): void {
+
+    this.loading = true
     this.getDataService.getSalesList().subscribe({
       next: (res) => {
+        this.loading = false;
         if (res.salesInfo) {
+         
           this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1, saleApprovel: this.getSalesStatus(elem) }));
           this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
@@ -112,15 +113,7 @@ export class FbolistComponent implements OnInit {
     })
   }
 
-  // getSales() {
-  //   this.salesLoadedSub = this.salesLoaded$.subscribe(loadedSales => {
-  //     if (!loadedSales) {
-  //       this.store.dispatch(new GetSales());
-  //     }
-  //     // this.loading = false;
-  //   })
-  // }
-
+  //metord for filter according to search
   filter(): void {
     if (!this.searchQuery) {
       this.filteredData = this.filteredFBOEntries;
@@ -150,17 +143,20 @@ export class FbolistComponent implements OnInit {
     }
   }
 
+  //this methord filters the data acoording to text written in search box
   onSearchChange(): void {
     this.pageNumber = 1;
     this.isSearch = true;
     this.filter();
   }
 
+  //methord run when soe one goes on anoter paeg of the table
   onTableDataChange(event: any) {
     this.pageNumber = event;
     this.filter();
   }
 
+  //methord runs when no of records shown is chaged in the table
   onItemNumChange() {
     this.pageNumber = 1;
   }
@@ -174,6 +170,7 @@ export class FbolistComponent implements OnInit {
     this.isEditRecord.emit(data);
   }
 
+  //methord deletes the fbo sale record
   deleteFBO(fbo: any): void {
     const loggedInUserData: any = this.registerService.LoggedInUserData();
     const parsedData = JSON.parse(loggedInUserData);
@@ -208,8 +205,7 @@ export class FbolistComponent implements OnInit {
     });
   }
 
-  //Recipient 
-
+  //open form for entering recp details for verifier 
   recipient(res: any, serviceType: string) {
     if (this.isVerifier) {
       if (res !== '' && serviceType === 'Fostac') {
@@ -227,6 +223,7 @@ export class FbolistComponent implements OnInit {
 
   }
 
+  //upload shop identification documents
   uploadSaleDoc(res: any, serviceType: string) { //func for uploading sale doc by opening sale doc modal
     const modalRef = this.modalService.open(SaleDocModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.fboData = res;
@@ -234,16 +231,19 @@ export class FbolistComponent implements OnInit {
     // modalRef.componentInstance.isVerifier = this.isVerifier;
   }
 
+
   //View FBO Details
   viewFboDetails($event: Event, res: any) {
     $event.stopPropagation();
     const modalRef = this.modalService.open(ViewFboComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.fboData = res;
     modalRef.componentInstance.isVerifier = this.isVerifier;
+    modalRef.componentInstance.product = this.activeTab;
   }
 
 
-  toogleTabs(tab: string) {  //change the filltered data in case of tab(product) change
+  //change the filltered data in case of tab(product) change
+  toogleTabs(tab: string) {
     this.activeTab = tab;
     this.pageNumber = 1;
 
@@ -261,6 +261,7 @@ export class FbolistComponent implements OnInit {
 
   }
 
+  //methord change the view format ofthe sales date in the table
   getFormattedSalesDate(dateString: string): string {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -304,6 +305,7 @@ export class FbolistComponent implements OnInit {
     return processingAmount;
   }
 
+  //calculate foscos processing amount
   calculateFoscosProcessingAmount(employee: any): number { //methord for calculating total foscos processing amount with water test fee excluding it'st water test fees
     let processingAmount = 0;
 
@@ -325,6 +327,7 @@ export class FbolistComponent implements OnInit {
     return processingAmount;
   }
 
+  //methord for setting sale status for user(either sales man or verifier) by checking some conditions
   getSalesStatus(sale: any): string {
     if (this.isVerifier) {
       return sale.checkStatus
@@ -338,6 +341,7 @@ export class FbolistComponent implements OnInit {
     }
   }
 
+  //methord for opeining confirmation modal in case approving cheque
   approveCheque($event: Event, saleId: string, sale: any): void { //methord for approving cheque in only avilable to director
     $event.stopPropagation()
     this.selectedSaleId = saleId;
@@ -349,6 +353,7 @@ export class FbolistComponent implements OnInit {
     });
   }
 
+  //methord run ater you confirm the approval of cheque for sending the invoice
   connformationFunc = (confirmation: boolean) => { //this func will reun after confirmation comes from confirmation modal in case like cheque approval
     if (confirmation) {
       this.loading = true;
@@ -362,6 +367,56 @@ export class FbolistComponent implements OnInit {
         }
       })
     }
+  }
+
+  //method for initializing the basic deatils about what to show according to user, route etc.
+  intailize() {
+    let user: any = this.registerService.LoggedInUserData(); //getting user(user of the panel) data
+    let parsedUser = JSON.parse(user); //parsing the user josn
+    this.userData = parsedUser;
+
+    //set configuration for verifier in case user designation is lies in the roles of verifier
+    if (parsedUser.designation === 'Verifier') {
+      this.isVerifier = true;
+    }
+
+    //set condigurations in case using this list as invoice list
+    const state = window.history.state; //getting state of the window
+    console.log(state);
+    if (state && state.isInvoiceList) {
+      this.isInvoiceList = true;
+    }
+  }
+
+  //only avilable to verifier for reselling from pendig fostac list 
+  doSale(fbo: any): void {
+    const modalRef = this.modalService.open(FbonewComponent, { size: 'xl', backdrop: 'static' });
+    modalRef.componentInstance.isCalledAsChild = true;
+    modalRef.componentInstance.fboForm.patchValue({
+      boInfo: fbo.fboInfo.boInfo._id,
+      fbo_name: fbo.fboInfo.fbo_name,
+      owner_name: fbo.fboInfo.owner_name,
+      business_entity: fbo.fboInfo.boInfo.business_entity,
+      business_category: fbo.fboInfo.boInfo.business_category,// form control added by chandan for business_Owner
+      business_ownership_type: fbo.fboInfo.boInfo.business_ownership_type, // form control added for business_Owner
+      manager_name: fbo.fboInfo.boInfo.manager_name,
+      owner_contact: fbo.fboInfo.owner_contact,
+      email: fbo.fboInfo.boInfo.email,
+      state: fbo.fboInfo.state,
+      district: fbo.fboInfo.district,
+      village: fbo.fboInfo.village,
+      tehsil: fbo.fboInfo.tehsil,
+      address: fbo.fboInfo.address,
+      pincode: fbo.fboInfo.pincode,
+      business_type: fbo.fboInfo.business_type,
+    });
+
+    if (fbo.fboInfo.business_type === 'b2b') {//patch gst number in case of gst businesstype = b2b
+      modalRef.componentInstance.fboForm.patchValue({ gst_number: fbo.fboInfo.gst_number });
+    }
+
+    modalRef.componentInstance.existingFboId = fbo.fboInfo.customer_id;
+
   }
 
 }

@@ -4,7 +4,7 @@ import { HomeComponent } from 'src/app/pages/home/home.component';
 import { LandingpageComponent } from 'src/app/pages/landingpage/landingpage.component'
 import { authGuard } from 'src/app/shared/gaurds/auth.guard';
 import { routeGuard } from 'src/app/shared/gaurds/route.guard';
-import { fbo_roles, empRegister_roles, caseList_roles, bookSaleRoles } from 'src/app/utils/config';
+import { fbo_roles, empRegister_roles, caseList_roles, bookSaleRoles, director_roles } from 'src/app/utils/config';
 import { UserAccountComponent } from 'src/app/pages/user-account/user-account.component';
 import { CaseListComponent } from 'src/app/pages/operation/case-list/case-list.component';
 import { OperationformComponent } from 'src/app/pages/operation/operationform/operationform.component';
@@ -19,6 +19,7 @@ import { OnboardVerificationComponent } from './pages/onboard-verification/onboa
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { RefundPolicyComponent } from './pages/refund-policy/refund-policy.component';
 import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
+import { ClientListComponent } from './pages/sales/client-list/client-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate:[authGuard]},
   { path: 'user', component: UserAccountComponent, canActivate:[authGuard]},
   { path: 'caselist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
+  { path: 'recipientlist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'batchlist/caselist', component: CaseListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'batchlist', component: BatchListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'auditlist', component: BatchListComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
@@ -39,6 +41,9 @@ const routes: Routes = [
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:bookSaleRoles}},
   { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
+  //client list route opens client list component only alowed to director Roles
+  { path: 'clientlist', component: ClientListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:director_roles}},
+  { path: 'invoicelist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
   { path: 'emplist', component: EmployeelistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'lms', component: LmsComponent, canActivate:[authGuard]},
 ];

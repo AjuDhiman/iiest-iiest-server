@@ -341,20 +341,20 @@ exports.allEmployeesData = async (req, res) => {
     }
 }
 
-exports.areaAllocation = async (req, res) => {
+exports.areaAllocation = async (req, res) => { //methord for allocating area to a particular employee
     try {
 
         let success = false;
 
-        const employeeId = req.params.id;
+        const employeeId = req.params.id; //getting employee Id from route
 
-        const existingAreas = await areaAllocationModel.findOne({ employeeInfo: employeeId });
+        const existingAreas = await areaAllocationModel.findOne({ employeeInfo: employeeId }); //checking if already allocated or not
 
         if (existingAreas) {
             return res.status(404).json({ success, existingAreaErr: true })
         }
 
-        const areaAllocated = await areaAllocationModel.create({ employeeInfo: employeeId, state: req.body.state, district: req.body.district, pincodes: req.body.pincodes });
+        const areaAllocated = await areaAllocationModel.create({ employeeInfo: employeeId, state: req.body.state, district: req.body.district, pincodes: req.body.pincodes }); //create new object and allocate new are in case area not allocated
         if (!areaAllocated) {
             success = false;
             return res.status(200).json({ success, randomErr: true })
@@ -364,26 +364,28 @@ exports.areaAllocation = async (req, res) => {
         res.status(200).json({ success })
 
     } catch (error) {
+        //getting time of error in case of error
+        console.error(`Area allocation error at ${new Date().toUTCString()}`,error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 
 }
 
-exports.assignManger = async (req, res) => {
+exports.assignManger = async (req, res) => { //methord for assigning manager
     try {
         let success = false;
 
-        const employeeId = req.params.id;
+        const employeeId = req.params.id; //gettinhg employee from route
 
-        console.log(employeeId, req.body);
-
-        const reportingManger = await reportingManagerModel.findOne({ employeeInfo: employeeId });
+        const reportingManger = await reportingManagerModel.findOne({ employeeInfo: employeeId }); //checking if manager assigned
 
         if (reportingManger) {
             return res.status(404).json({ success, existingManagerErr: true })
         }
 
         const managerAssigned = await reportingManagerModel.create({ employeeInfo: employeeId, reportingManager: req.body.reportingManager});
+        //assigning new manager in case no manager assigned
+
         if (!managerAssigned) {
             success = false;
             return res.status(200).json({ success, randomErr: true })

@@ -1,5 +1,6 @@
 const { recipientModel, shopModel, hygieneShopModel } = require('../../models/fboModels/recipientSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
+const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 
 exports.caseList = async (req, res) => {  //api for getting case list data to be shown for opeartion wing
     try {
@@ -135,113 +136,112 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
         }
         if (employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel' || employeePanel === 'Verifier Panel') { //assigning fotacdata to fostac property of list in case of foscos panel or verifer panel or fssai training panel
 
-            list['Fostac'] = await recipientModel.aggregate([
+            list['Fostac'] = await salesModel.aggregate([
                 {
-                    $lookup: {
-                        from: 'employee_sales',  // The name of the salesInfo collection
-                        localField: 'salesInfo',
-                        foreignField: '_id',
-                        as: 'salesInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$salesInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'staff_registers',  // The name of the employee collection
-                        localField: 'salesInfo.employeeInfo',
-                        foreignField: '_id',
-                        as: 'salesInfo.employeeInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$salesInfo.employeeInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'fbo_registers', // The name of the fbo collection
-                        localField: 'salesInfo.fboInfo',
-                        foreignField: '_id',
-                        as: 'salesInfo.fboInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$salesInfo.fboInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'bo_registers', // The name of the boInfo collection
-                        localField: 'salesInfo.fboInfo.boInfo',
-                        foreignField: '_id',
-                        as: 'salesInfo.fboInfo.boInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$salesInfo.fboInfo.boInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'documents', // The name of the documents collection
-                        localField: 'salesInfo.fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'salesInfo.docs'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'fostac_verifications', // The name of the verification collection
-                        localField: '_id',
-                        foreignField: 'recipientInfo',
-                        as: 'verificationInfo'
+                    $match: {
+                        "fostacInfo": {
+                            $exists: true
+                        }
                     }
                 },
                 {
                     $sort: {
-                        'salesInfo.createdAt': -1
+                        "createdAt": -1
                     }
                 },
                 {
-                    $project: { //only showing nessesory fields
+                    $lookup: {
+                        from: 'fbo_registers', // The collection name where fboInfo is stored
+                        localField: 'fboInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers', // The collection name where boInfo is stored
+                        localField: 'fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+
+                {
+                    $lookup: {
+                        from: 'staff_registers', // The collection name where employeeInfo is stored
+                        localField: 'employeeInfo',
+                        foreignField: '_id',
+                        as: 'employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents', // The collection name where fboInfo is stored
+                        localField: 'fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'docs'
+                    }
+                },
+                {
+                    $project: {
                         "_id": 1,
-                        "name": 1,
-                        "phoneNo": 1,
-                        "recipientId": 1,
+                        "grand_total": 1,
+                        "checkStatus": 1,
+                        "fboInfo.fbo_name": 1,
+                        "fboInfo.owner_name": 1,
+                        "fboInfo.email": 1,
+                        "fboInfo._id": 1,
+                        "fboInfo.owner_contact": 1,
+                        "fboInfo.customer_id": 1,
+                        "fboInfo.boInfo.customer_id": 1,
+                        "fboInfo.boInfo.business_entity": 1,
+                        "fboInfo.boInfo.manager_name": 1,
+                        "fboInfo.boInfo.business_category": 1,
+                        "fboInfo.boInfo.business_ownership_type": 1,
+                        "product_name": 1,
+                        "fboInfo.state": 1,
+                        "fboInfo.address": 1,
+                        "fboInfo.pincode": 1,
+                        "fboInfo.village": 1,
+                        "fboInfo.tehsil": 1,
+                        "fboInfo.district": 1,
+                        "fboInfo.business_type": 1,
+                        "fboInfo.gst_number": 1,
+                        "fboInfo.isBasicDocUploaded": 1,
+                        "fboInfo.activeStatus": 1,
+                        "employeeInfo.employee_name": 1,
+                        "fostacInfo": 1,
+                        "foscosInfo": 1,
+                        "hraInfo": 1,
+                        "medicalInfo": 1,
+                        "waterTestInfo": 1,
                         "createdAt": 1,
-                        "aadharNo": 1,
-                        "updatedAt": 1,
-                        "verificationInfo": 1,
-                        "salesInfo._id": 1,
-                        "salesInfo.fboInfo._id": 1,
-                        "salesInfo.fboInfo.fbo_name": 1,
-                        "salesInfo.fboInfo.owner_name": 1,
-                        "salesInfo.fboInfo.customer_id": 1,
-                        "salesInfo.fboInfo.state": 1,
-                        "salesInfo.fboInfo.district": 1,
-                        "salesInfo.fboInfo.boInfo._id": 1,
-                        "salesInfo.fboInfo.boInfo.customer_id": 1,
-                        "salesInfo.employeeInfo.employee_name": 1,
-                        "salesInfo.product_name": 1,
-                        "salesInfo.InvoiceId": 1,
-                        "salesInfo.fostacInfo": 1,
-                        "salesInfo.createdAt": 1,
-                        "salesInfo.updatedAt": 1,
+                        "cheque_data": 1,
+                        "docs": 1,
+                        "invoiceId": 1,
+                        "payment_mode": 1,
                     }
                 }
-            ]).exec();
 
+            ]);
 
         };
         if (employeePanel === 'HRA Panel' || employeePanel === 'Verifier Panel') {
@@ -380,6 +380,123 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+exports.getRecpList = async (req, res) => {
+    try {
+
+        const recpList = await recipientModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'employee_sales',  // The name of the salesInfo collection
+                        localField: 'salesInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'staff_registers',  // The name of the employee collection
+                        localField: 'salesInfo.employeeInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'fbo_registers', // The name of the fbo collection
+                        localField: 'salesInfo.fboInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.fboInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers', // The name of the boInfo collection
+                        localField: 'salesInfo.fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents', // The name of the documents collection
+                        localField: 'salesInfo.fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'salesInfo.docs'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'fostac_verifications', // The name of the verification collection
+                        localField: '_id',
+                        foreignField: 'recipientInfo',
+                        as: 'verificationInfo'
+                    }
+                },
+                {
+                    $sort: {
+                        'salesInfo.createdAt': -1
+                    }
+                },
+                {
+                    $project: { //only showing nessesory fields
+                        "_id": 1,
+                        "name": 1,
+                        "phoneNo": 1,
+                        "recipientId": 1,
+                        "createdAt": 1,
+                        "aadharNo": 1,
+                        "updatedAt": 1,
+                        "verificationInfo": 1,
+                        "salesInfo._id": 1,
+                        "salesInfo.fboInfo._id": 1,
+                        "salesInfo.fboInfo.fbo_name": 1,
+                        "salesInfo.fboInfo.owner_name": 1,
+                        "salesInfo.fboInfo.customer_id": 1,
+                        "salesInfo.fboInfo.state": 1,
+                        "salesInfo.fboInfo.district": 1,
+                        "salesInfo.fboInfo.boInfo._id": 1,
+                        "salesInfo.fboInfo.boInfo.customer_id": 1,
+                        "salesInfo.employeeInfo.employee_name": 1,
+                        "salesInfo.product_name": 1,
+                        "salesInfo.InvoiceId": 1,
+                        "salesInfo.fostacInfo": 1,
+                        "salesInfo.createdAt": 1,
+                        "salesInfo.updatedAt": 1,
+                    }
+                }
+            ]).exec();
+
+        res.status(200).json({recpList: recpList})
+
+    } catch(error) {
+        res.status(500).json({message: 'Inter Server Error'})
     }
 }
 

@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { faIndianRupeeSign, faFile, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faIndianRupeeSign, faFile, faDownload, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { fboRecipient, fboShop } from 'src/app/utils/registerinterface';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
+import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
   selector: 'app-view-fbo',
@@ -11,44 +12,83 @@ import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-d
   styleUrls: ['./view-fbo.component.scss']
 })
 export class ViewFboComponent implements OnInit {
-  @Input() public fboData: any;
-  @Input() public isVerifier: boolean = false;
+
+  //defining input variables
+  @Input() public fboData: any; //this var contains whole sale Data
+  @Input() public isVerifier: boolean = false; //this var will decide that the user is verifier or not
+  @Input() public product: string = '';
+
+  //user related variables
+  userData: any;
+
+  //shop related variables
   fulladdress: string;
   recipientData: fboRecipient;
   shopDetails: fboShop;
-  isfostac: boolean = false;
-  faIndianRupeeSign = faIndianRupeeSign;
-  faFile = faFile;
-  faDownload = faDownload;
-  showInvoice: boolean = false;
-  isShowInvoice: boolean;
+  
+  //invoice related variables
   invoice: string = '';
-  remainingTime: string = '';
   invoiceArr: any = [];
+
+  //digital invoices will be shown after this date
   newPortalReleaseDate:  "2024-06-10T18:30:00.000Z";
+
+  //var for containing remaining time of a product like total time left for renewal of license
+  remainingTime: string = '';
+
+  //Documents Related Variables
   basicDocs: string[] = ['Manager Photo', 'Shop Photo', 'Manager Aadhar']; //this array contains name of 3 basic docs that only should be shown in view fbo
   docList: any = []; //list of all docs to show
+
+
+  //Booleans
+  isfostac: boolean = false;
+  showInvoice: boolean = false;
+  isShowInvoice: boolean;
+
+
+  //icon
+  faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
+  faFile: IconDefinition = faFile;
+  faDownload: IconDefinition = faDownload;
+
+  //product related vars
+  productTotalAmt: number = 0;
+
+
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
+    private _registerService: RegisterService,
     private ngbModal: NgbModal
   ) {
   }
 
   ngOnInit(): void {
     this.isfostac = true ? this.fboData.product_name.includes('Fostac Training') : this.isfostac = false;
-    //this.fulladdress =  "Village: "+ this.fboData.village+", Post-Office: "+ this.fboData.address+", Tehsil: "+ this.fboData.tehsil+", District: "+ this.fboData.district+", State: "+ this.fboData.state+", Pincode: "+ this.fboData.pincode+", "+ "India";
+
+    //generating full address by aggregating state, address, district and pincode
     this.fulladdress = (this.fboData.fboInfo.village?(this.fboData.fboInfo.village + ", "):'') + (this.fboData.fboInfo.address?(this.fboData.fboInfo.address + ", "):'') + (this.fboData.fboInfo.tehsil?(this.fboData.fboInfo.tehsil + ", "):'')   + this.fboData.fboInfo.district + ", " + this.fboData.fboInfo.state + ", Pincode: " + this.fboData.fboInfo.pincode + ", " + "India";
 
+    //formt the address
     this.fulladdress = this.formatAddress(this.fulladdress);
 
     if (this.fboData.foscosInfo) {
       this.calculateRemaningDays();
     }
 
+    //calculate total product amount
+    this.getProductTotalAmount();
+
+    //deciding to show invoice or not
     this.isShowInvoice = this.comparedates(this.fboData.createdAt);
     this.getInvoice();
 
-    this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name))
+    //getting doclist
+    this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name));
+
+    let user: any = this._registerService.LoggedInUserData();
+    let parsedUser = JSON.parse(user);
+    this.userData = parsedUser;
   }
 
   // This function is used for showing invoice after 31st March'2024
@@ -64,16 +104,18 @@ export class ViewFboComponent implements OnInit {
     }
   }
 
+  //methord for closing this modal
   closeModal() {
     this.activeModal.close();
   }
 
+  //get invoice Array
   getInvoice() {
     if (this.isShowInvoice) {
       this.invoiceArr = [];
       console.log(this.fboData.invoiceId);
-      this.fboData.invoiceId.forEach((invoice: string) => {
-        this.getDataServices.getInvoice(invoice).subscribe({
+      this.fboData.invoiceId.forEach((invoice: {src: string, id: string}) => {
+        this.getDataServices.getInvoice(invoice.src).subscribe({
           next: (res) => {
             console.log('conversion', res);
             this.invoice = res.invoiceConverted;
@@ -94,6 +136,7 @@ export class ViewFboComponent implements OnInit {
     }
   }
 
+  //methord closes the modal
   closeInvoiceWindow() {
     this.showInvoice = false;
   }
@@ -127,6 +170,7 @@ export class ViewFboComponent implements OnInit {
     this.remainingTime = `${remainingYear} Years ${remainingMonths} Months ${remainingDays} Days`
   }
 
+  //methord for formatting address under development
   formatAddress(address: string): string {
     let arr: Array<string> = address.toString().split('');
 
@@ -143,6 +187,7 @@ export class ViewFboComponent implements OnInit {
     return updateAddress;
   }
 
+  //Methord opens view invoice modal
   viewInvoice(): void {
     const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.doc = {
@@ -154,6 +199,7 @@ export class ViewFboComponent implements OnInit {
     console.log(this.invoiceArr);
   }
 
+  //methord opens view document modal in case of shop identification documents
   viewDocument(name: string, res: any, format: string, isMultiDoc: boolean): void { // methord for calling viewdoc component for a particucar doc
 
     let obj = {
@@ -164,5 +210,32 @@ export class ViewFboComponent implements OnInit {
     }
     const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.doc = obj;
+  }
+
+  sendInvoiceManually(): void{
+
+  }
+
+  //methord for getting total amount according to the particular product of the sale
+  getProductTotalAmount(): void {
+
+    //getting totl amount on the basis of product
+    switch(this.product){
+      case 'Fostac': 
+      this.productTotalAmt = this.fboData.fostacInfo.fostac_total;
+      break;
+      case 'Foscos': 
+      this.productTotalAmt = this.fboData.foscosInfo.foscos_total;
+      break;
+      case 'HRA': 
+      this.productTotalAmt = this.fboData.hraInfo.hra_total;
+      break;
+      case 'Medical': 
+      this.productTotalAmt = this.fboData.medicalInfo.medical_total;
+      break;
+      case 'Water Test Report': 
+      this.productTotalAmt = this.fboData.waterTestInfo.water_test_total;
+      break;
+    }
   }
 }

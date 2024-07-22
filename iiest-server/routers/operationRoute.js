@@ -1,6 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middleware/auth');
-const { caseList, caseInfo, employeeCountDeptWise } = require('../controllers/operationControllers/caseList');
+const { caseList, caseInfo, employeeCountDeptWise, getRecpList } = require('../controllers/operationControllers/caseList');
 const { fostacVerification, getFostacVerifiedData, fostacEnrollment, getFostacEnrolledData, postGenOperData, getGenOperData, updateGenOperData, fostacAttendance, getFostacAttenData, ticketDelivery, getTicketDeliveryData, foscosVerification, hraVerification, getFoscosVerifiedData, fssaiRevert, getReverts, foscosFiling, getHraVerifiedData, getFoscosFiledData } = require('../controllers/operationControllers/formSections');
 const { getAuditLogs } = require('../controllers/generalControllers/auditLogsControllers');
 const { getKobData } = require('../controllers/generalControllers/generalData');
@@ -11,6 +11,7 @@ const { saveDocument, getDocList, deleteDocs } = require('../controllers/operati
 const router = express.Router();
 
 router.get('/getcaseslist', authMiddleware, caseList);
+router.get('/getrecipientlist', authMiddleware, getRecpList);
 router.get('/morecaseinfo/:product/:recipientid', authMiddleware, caseInfo);
 router.get('/employeelistdeptwise/:dept',authMiddleware, employeeCountDeptWise);
 router.post('/fostacverification/:recipientid', authMiddleware, fostacVerification, trainingBatch);

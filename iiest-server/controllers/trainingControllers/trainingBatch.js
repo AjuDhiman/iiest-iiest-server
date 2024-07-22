@@ -8,30 +8,30 @@ const TrainingBatchModel = require("../../models/trainingModels/trainingBatchMod
 const { sendVerificationMail } = require("../../operations/sendMail");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
 
-exports.trainingBatch = async (req, res) => {
+exports.trainingBatch = async (req, res) => { //methord for assigning batch to a recipient
     try {
 
         let success = false;
 
-        const verifiedRecpArr = req.verifiedRecpArr;
+        const verifiedRecpArr = req.verifiedRecpArr;  //getting verified recipient arr that id generated in previous middleware
 
-        for(let index = 0; index < verifiedRecpArr.length; index++) {
-            const verificationInfo = verifiedRecpArr[index];
-            const recipientId = verificationInfo.recipientInfo;
+        for(let index = 0; index < verifiedRecpArr.length; index++) { //for every verified Recps
+            const verificationInfo = verifiedRecpArr[index]; //getting particular case
+            const recipientId = verificationInfo.recipientInfo; 
 
-            const recipientInfo = await recipientModel.findOne({ _id: recipientId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] });
+            const recipientInfo = await recipientModel.findOne({ _id: recipientId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] }); //getting a recipient all details
 
-            const category = recipientInfo.salesInfo.fostacInfo.fostac_service_name;
+            const category = recipientInfo.salesInfo.fostacInfo.fostac_service_name; //extracting catagoy
     
-            const user = req.user;
+            const user = req.user; // getting user from middleware
     
-            const state = recipientInfo.salesInfo.fboInfo.state;
+            const state = recipientInfo.salesInfo.fboInfo.state; //getting state
     
-            const district = recipientInfo.salesInfo.fboInfo.district;
+            const district = recipientInfo.salesInfo.fboInfo.district; //getting district
     
             let location;
     
-            if (state === 'Delhi') {
+            if (state === 'Delhi') { //assigning location according to state or district
                 location = 'Delhi';
             } else if (district === 'Gurgaon') {
                 location = 'Gurgaon';
@@ -43,7 +43,7 @@ exports.trainingBatch = async (req, res) => {
                 location = 'Ghaziabad';
             }
     
-            if (!location) {
+            if (!location) { 
                 await fostacVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
                 return res.status(401).json({ success: false, locationErr: true })
             }
@@ -51,10 +51,11 @@ exports.trainingBatch = async (req, res) => {
             let batchData;
     
             const openedBatch = await TrainingBatchModel.findOne({ status: 'open', category: category, location: location });
+            //finding open batch of particular caegory  and a particular location
     
-            if (openedBatch) {
+            if (openedBatch) { //if a batch is opened
     
-                if (openedBatch.candidateNo < 99) {
+                if (openedBatch.candidateNo < 99) { //if candidate no. in this batch less than 100 (99 because index starts from 0)  then update the batch by inc te no of candidate by one and adding his verification info in candidate details array
                     batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
                         {
                             $inc: { candidateNo: 1 },
@@ -63,7 +64,7 @@ exports.trainingBatch = async (req, res) => {
                 } else {
                     //close the btach if candidate number is grater than or equal to 50
                     batchData = await TrainingBatchModel.findOneAndUpdate({ status: 'open', category: category, location: location },
-                        {
+                        { //and if batch 100 th recipient then close the batch after adding it
                             $inc: { candidateNo: 1 },
                             $push: { candidateDetails: verificationInfo._id },
                             status: 'completed'
@@ -74,6 +75,7 @@ exports.trainingBatch = async (req, res) => {
                 //open new batch if batch with particular requirement is closed 
                 const batchInfo = await generatedBatchInfo();
     
+                //create new batch in case of no batch is open for given categor and location
                 batchData = await TrainingBatchModel.create({ operatorInfo: user._id, id_num: batchInfo.idNumber, status: 'open', category: category, batchCode: batchInfo.generatedBatchCode, location: location, candidateNo: 1, candidateDetails: [verificationInfo._id] });
             }
         }
@@ -87,11 +89,11 @@ exports.trainingBatch = async (req, res) => {
     }
 }
 
-exports.getTrainingBatchData = async (req, res) => {
+exports.getTrainingBatchData = async (req, res) => { //methord for getting data related to all the training batch and it's recipients
     try {
         let success = false;
 
-        const batches = await TrainingBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'recipientInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } } });
+        const batches = await TrainingBatchModel.find().populate({ path: 'candidateDetails', populate: { path: 'recipientInfo', populate: { path: 'salesInfo', populate: [{ path: 'employeeInfo' }, { path: 'fboInfo' }] } } }); //getting batch by the help of batchid and populating each recipients details 
 
 
         if (!batches) {

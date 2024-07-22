@@ -140,6 +140,7 @@ export class BatchListComponent implements OnInit {
 
   }
 
+  //methord for showing detailed list of recipient in case of training and list of shops in case of Audit
   showCaseList(res: any) {
     if(this.listType === 'Batch'){
       this.router.navigate(['batchlist/caselist'], { state: { batchData: res, forTraining: true } });
@@ -148,6 +149,7 @@ export class BatchListComponent implements OnInit {
     }
   }
 
+  //this methord filters the data on the basis of selected tab and service type
   filterData() {
     this.resetEditMode();
     if (this.listType === 'Batch') {
@@ -157,6 +159,7 @@ export class BatchListComponent implements OnInit {
     }
   }
 
+  //open the edit mode for a prticular selected batch in the list
   openEditMode(id: any, index: number) {
     let selectedBatch = this.batchData.find((item: any) => item._id == id);
     this.editMode[id] = true;
@@ -165,6 +168,7 @@ export class BatchListComponent implements OnInit {
     this.updationForm.addControl(`venue${id}`, this.formBuilder.control(selectedBatch.venue ? selectedBatch.venue : ''));
   }
 
+  //this methord closes the edit mode and remove the form controls from selected batch in batch list
   closeEditMode(id: string) {
     //remove control at last and hide theh form for particular batch
     this.resetEditMode();
@@ -173,6 +177,7 @@ export class BatchListComponent implements OnInit {
     this.updationForm.removeControl(`venue${id}`);
   }
 
+  //Mehord formats the data string to visualy good looking date
   getFormatedDate(date: string | string[]): string {
 
     let formattedDate = '';
@@ -210,7 +215,9 @@ export class BatchListComponent implements OnInit {
     });
   }
 
-  initializeListType(): void { //this methord decides wich list type to show batch or audit on the basis of user's pannel
+
+  //methord for doining initaial set up and configuration for the list on the basis of the conditions
+  initializeListType(): void { 
     const user = this._registerService.LoggedInUserData();
     const parsedUser = JSON.parse((user as string));
     const panelType = parsedUser.panel_type;
@@ -226,6 +233,5 @@ export class BatchListComponent implements OnInit {
         this.listType = 'Batch'
       }
     }
-    console.log(this.listType);
   }
 }

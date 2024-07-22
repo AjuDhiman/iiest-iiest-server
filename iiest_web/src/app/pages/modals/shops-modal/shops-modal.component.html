@@ -1,0 +1,117 @@
+<div class="modal-header bg-secondary">
+    <h6 class="modal-title text-white" id="modal-basic-title">Shops of {{boName}}({{memberId}})</h6>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
+</div>
+<div class="modal-body">
+    <div class="row g-3 mb-4 align-items-center justify-content-end">
+        <div class="col-auto">
+            <div class="page-utilities">
+                <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                    <div class="col-auto">
+                        <form class="form">
+                            <div class="input-group">
+                                <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
+                                    style="position: absolute; padding: 9px 10px;"
+                                    [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                            </div>
+                            <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                                class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+                        </form>
+                    </div>
+                    <div class="col-auto">
+                        <select class="form-select form-select-sm w-auto cursor-pointer"
+                            [(ngModel)]="selectedFilterSales">
+                            <option value="byFboName">Search by FBO Name</option>
+                            <option value="byShopId">Search by Shop Id</option>
+                            <option value="byOwnerName">Search by Owner</option>
+                            <option value="byLocation">Search by Location</option>
+                            <option value="byContact">Search by Contact Number</option>
+                            <option value="byMail">Search by Email</option>
+                        </select>
+                    </div>
+                </div><!--//row-->
+            </div><!--//table-utilities-->
+        </div><!--//col-auto-->
+    </div><!--//row-->
+    <div class="tab-content mx-3" id="orders-table-tab-content">
+        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                <div class="app-card-body">
+                    <div class="table-responsive">
+                        <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                            <thead>
+                                <tr>
+                                    <th class="cell">S.No</th>
+                                    <th class="cell">Fbo Name</th>
+                                    <th class="cell">Owner Name</th>
+                                    <th class="cell">Shop Id</th>
+                                    <th class="cell">Contact No</th>
+                                    <th class="cell">Email</th>
+                                    <th class="cell">State</th>
+                                    <th class="cell">District</th>
+                                    <!-- <th class="cell">Action</th> -->
+                                    <!-- <th class="cell">FBO Name
+                      <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
+                        (click)="sortBy('fbo_name', 'asc')"
+                        [ngClass]="{'selected-arrow': sortedField === 'fbo_name' && sortingOrder === 'asc'}"></fa-icon>
+                      <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" (click)="sortBy('fbo_name', 'desc')"
+                        [ngClass]="{'selected-arrow': sortedField === 'fbo_name' && sortingOrder === 'desc'}"></fa-icon>
+                    </th> -->
+                            </thead>
+                            <tbody >
+                                <tr class="list-tr" *ngFor="let data of filteredData; let i = index">
+                                    <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
+                                    </td>
+                                    <td class="cell"><span
+                                            class="truncate text-capitalize">{{data.fbo_name.toLowerCase()}}</span>
+                                    </td>
+                                    <td class="cell"><span  class="truncate">{{data.owner_name}}</span>
+                                    </td>
+                                    <td class="cell"><span class="truncate">{{data.customer_id}}</span>
+                                    </td>
+                                    <td class="cell"><span class="truncate">{{data.owner_contact}}</span>
+                                    </td>
+                                    <td class="cell"><span class="truncate">{{data.email}}</span>
+                                    </td>
+                                    <td class="cell"><span class="truncate">{{data.state}}</span>
+                                    </td>
+                                    <td class="cell"><span class="truncate">{{data.district}}</span>
+                                    </td>
+                                    <!-- <td class="cell text-center">
+                                        <span  class="truncate">
+                                            <fa-icon class="fa-l selector mx-2" style="margin-right: 7px; color: #1957a9;"
+                                            [icon]="faEye" title="View Detail"></fa-icon>
+                                        </span>
+                                       
+
+                                    </td> -->
+                                </tr>
+                            </tbody>
+
+                            <tbody *ngIf="filteredData?.length==0">
+                                <tr>
+                                    <td colspan="15" class="text-center fw-bold cell">----------------- No Data Found
+                                        ----------------
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!--//table-responsive-->
+                </div><!--//app-card-body-->
+            </div><!--//app-card-->
+            <div class="d-flex" [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
+                <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of
+                    {{shopData.length}}</div>
+                <pagination-controls previousLabel="Prev" nextLabel="Next"
+                    (pageChange)="onTableDataChange($event)"></pagination-controls>
+            </div>
+            <!-- <div *ngIf="showPagination===true" class="d-flex justify-content-end">
+          <pagination-controls previousLabel="Prev" nextLabel="Next" [id]="chartData.chartTitile.split(' ').join('-')"
+            (pageChange)="onTableDataChange($event)"></pagination-controls>
+        </div> -->
+        </div>
+    </div>
+</div>
+
+<!-- Loader -->
+<ngx-loading [show]="loading"></ngx-loading>

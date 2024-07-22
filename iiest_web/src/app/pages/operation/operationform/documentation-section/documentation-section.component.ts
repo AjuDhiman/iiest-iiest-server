@@ -97,10 +97,10 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   }
 
   onSchedule() {
-    // this.scheduled = true;
-    // if (this.schedulingForm.invalid) {
-    //   return
-    // }
+    this.scheduled = true;
+    if (this.schedulingForm.invalid) {
+      return
+    }
     // this.loading = true;//starts the loading
     // if (this.verifiedDataId) {
     //   const scheduledData = { ...this.schedulingForm.value };

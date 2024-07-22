@@ -37,6 +37,10 @@ const generalData = new Schema({
     state_gst_code: { //stage gst code data
         type: Array,
         required: true
+    },
+    pan_india_allowed_ids: { //employee with Id in this array can sale on any pincode
+        type: Array,
+        required: true
     }
 })
 
