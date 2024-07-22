@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
-import { fbo_roles, empRegister_roles, caseList_roles, bookSaleRoles } from 'src/app/utils/config';
+import { fbo_roles, empRegister_roles, caseList_roles, bookSaleRoles, director_roles } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { faUserPlus, faCalendarWeek, faCalendarDays, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,6 +17,7 @@ export class SidebarComponent {
   bookSaleRoles = bookSaleRoles;
   employeeRoles = empRegister_roles;
   caseListRoles = caseList_roles;
+  directorRoles = director_roles;
   userImage: string = 'assets/logo-side.png';
   userImageId: string;
 

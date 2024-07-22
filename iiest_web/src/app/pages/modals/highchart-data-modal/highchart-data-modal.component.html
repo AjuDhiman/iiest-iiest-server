@@ -1,12 +1,17 @@
+<!-- Modal Header -->
 <div class="modal-header bg-secondary" *ngIf="chartData">
   <h6 class="modal-title text-white" id="modal-basic-title">{{chartData.filterValue.toString().toUpperCase()}}</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
 </div>
+
+<!-- Modal Body -->
 <div class="modal-body" *ngIf="chartData">
   <div class="row g-3 mb-4 align-items-center justify-content-end">
     <div class="col-auto">
       <div class="page-utilities">
         <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+
+          <!-- Search Box -->
           <div class="col-auto">
             <form class="form">
               <div class="input-group">
@@ -17,6 +22,8 @@
                 class="form-control form-control-sm search-orders" (input)="onSearchChange()">
             </form>
           </div>
+
+          <!-- Search Filters For Sales Graph Related Data-->
           <div class="col-auto" *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilterSales">
               <option value="generalsearch">General Search</option>
@@ -27,6 +34,8 @@
               <option value="byCustomerID">Search by Customer ID</option>
             </select>
           </div>
+
+          <!-- Search Filters For HR Graph Related Data-->
           <div class="col-auto" *ngIf="chartData.userDept==='HR Department'">
             <select class="form-select form-select-sm w-auto" [(ngModel)]="selectedFilterHr">
               <option value="byEmployeeName">Search by Employee Name</option>
@@ -37,12 +46,19 @@
       </div><!--//table-utilities-->
     </div><!--//col-auto-->
   </div><!--//row-->
+
+
   <div class="tab-content mx-3" id="orders-table-tab-content">
     <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
       <div class="app-card app-card-orders-table shadow-sm mb-5">
         <div class="app-card-body">
           <div class="table-responsive">
+
+
+            <!-- Table -->
             <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+
+              <!-- Headings for sales charts related datas -->
               <thead *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr>
                   <th class="cell">S.No</th>
@@ -63,8 +79,8 @@
                   <th class="cell">Member ID</th>
                   <th class="cell">Shop ID</th>
                   <th class="cell">Contact no.</th>
-                  <th *ngIf="!isRepetCustData" class="cell">Product Name</th>
-                  <th *ngIf="!isRepetCustData" class="cell">Product Count</th>
+                  <!-- <th *ngIf="!isRepetCustData" class="cell">Product Name</th>
+                  <th *ngIf="!isRepetCustData" class="cell">Product Count</th> -->
                   <th *ngIf="!isRepetCustData" class="cell">Processing Amount</th>
                   <th *ngIf="isRepetCustData" class="cell text-center">Repetition Count
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
@@ -92,8 +108,12 @@
                       [ngClass]="{'selected-arrow': sortedField === 'last_sale_date' && sortingOrder === 'desc'}"></fa-icon>
                   </th>
                   <th *ngIf="designation === 'Director'" class="cell">Sales Officer</th>
+                  <!-- View Details about the sale -->
+                  <th class="cell text-center">View Details</th>
                 </tr>
               </thead>
+
+              <!-- Headings for HR charts related datas -->
               <thead *ngIf="chartData.userDept==='HR Department'">
                 <tr>
                   <th class="cell">S.No</th>
@@ -105,6 +125,8 @@
                   <th class="cell">Status</th>
                 </tr>
               </thead>
+
+              <!-- table body -->
               <tbody
                 *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr (click)="viewCustomerSales(employee.fboInfo.customer_id)"
@@ -115,19 +137,20 @@
                       class="truncate text-capitalize">{{employee.fboInfo.fbo_name.toLowerCase()}}</span></td>
                   <td class="cell col-2"><span
                       class="truncate text-capitalize">{{employee.fboInfo.owner_name.toLowerCase()}}</span></td>
-                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.boInfo.customer_id}}</span></td>
+                  <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.boInfo.customer_id}}</span>
+                  </td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.customer_id}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
-                  <td *ngIf="!isRepetCustData" class="cell"><span
+                  <!-- <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{employee.product_name.join(', ') +
-                      ((employee.foscosInfo && (employee.foscosInfo.water_test_fee != 0))?', Water Test':'')}}</span></td>
-                  <td *ngIf="!isRepetCustData" class="cell text-center"><span
+                      ((employee.foscosInfo && (employee.foscosInfo.water_test_fee != 0))?', Water Test':'')}}</span></td> -->
+                  <!-- <td *ngIf="!isRepetCustData" class="cell text-center"><span
                       class="truncate text-capitalize">{{(
                         (employee.fostacInfo ? employee.fostacInfo.recipient_no : 0) + 
                         (employee.foscosInfo ? employee.foscosInfo.shops_no : 0) + 
                         (employee.hraInfo ? employee.hraInfo.shops_no : 0) + 
                         ((employee.foscosInfo && employee.foscosInfo.water_test_fee != '0') ? 1 : 0)
-                      )}}</span></td>
+                      )}}</span></td> -->
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span
@@ -140,8 +163,13 @@
                       getFormattedSalesDate(employee.createdAt) }}</span></td>
                   <td *ngIf="isRepetCustData" class="cell col-2"><span class="truncate">{{
                       getFormattedSalesDate(employee.lastSaleDate) }}</span></td>
-                  <td *ngIf="designation === 'Director'"
-                  class="cell"><span class="truncate">{{employee.employeeInfo.employee_name }}</span></td>
+                  <td *ngIf="designation === 'Director'" class="cell"><span
+                      class="truncate">{{employee.employeeInfo.employee_name }}</span></td>
+                  <td class="cell text-center"><span class="truncate text-capitalize selector">
+                    <fa-icon [icon]="faEye" style="color: #1957a9;" (click)="viewSaleDetails($event, employee)"></fa-icon>
+                    </span>
+                  </td>
+
                 </tr>
               </tbody>
               <tbody *ngIf="employeeList?.length>0 && chartData.userDept==='HR Department'">

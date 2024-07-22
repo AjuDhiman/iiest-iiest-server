@@ -211,6 +211,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                         "fboInfo._id": 1,
                         "fboInfo.owner_contact": 1,
                         "fboInfo.customer_id": 1,
+                        "fboInfo.boInfo._id": 1,
                         "fboInfo.boInfo.customer_id": 1,
                         "fboInfo.boInfo.business_entity": 1,
                         "fboInfo.boInfo.manager_name": 1,

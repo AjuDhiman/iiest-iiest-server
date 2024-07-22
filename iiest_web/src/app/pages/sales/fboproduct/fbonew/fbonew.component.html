@@ -1,3 +1,9 @@
+<!-- We want to show modal hedaer in case of fostac sae  -->
+<div class="modal-header bg-secondary" *ngIf="isForFostacSaleByCaseList">
+    <h6 class="modal-title text-white" id="modal-basic-title">FBO Register</h6>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
+</div>
+
 <!-- We want margins and paddings only in case of not called as child -->
 <div [ngClass]="{'app-content pt-3 p-md-3 p-lg-4':!isCalledAsChild}" (click)="closeMultiSelect()">
     <div class="container-xxl" [ngClass]="{'mx-0 px-0':isCalledAsChild}">
@@ -11,7 +17,7 @@
             <div class="col-md-6 text-end">
                 <div class="d-flex align-items-end flex-row-reverse">
 
-                    <form [formGroup]="existingUserFboForm" class="me-3 d-flex align-items-center">
+                    <form [formGroup]="existingUserFboForm" class="me-3 d-flex align-items-center" *ngIf="!isForFostacSaleByCaseList">
                         <div class="col-auto p-1">
                             <label for="isExistingFbo" class="form-label m-0">Existing Shop:</label>
                         </div>
@@ -35,7 +41,7 @@
                         </div>
                     </form>
 
-                    <form [formGroup]="existingUserBoForm" class="me-3 d-flex align-items-center">
+                    <form [formGroup]="existingUserBoForm" class="me-3 d-flex align-items-center" *ngIf="!isForFostacSaleByCaseList">
                         <div class="col-auto p-1">
                             <label for="isExistingBo" class="form-label m-0">Existing BO:</label>
                         </div>
@@ -146,7 +152,7 @@
                             class="form-control form-control-sm" id="fbo_name" [readOnly]="isExistingFbo"
                             [ngClass]="{ 'is-invalid': submitted && fbo['fbo_name'].errors }" />
                         <div *ngIf="submitted && fbo['fbo_name'].errors" class="invalid-feedback">
-                            <div *ngIf="fbo['fbo_name'].errors['required']">FBO name is required</div>
+                            <div *ngIf="fbo['fbo_name'].errors['required']">Brand name is required</div>
                         </div>
                     </div>
 

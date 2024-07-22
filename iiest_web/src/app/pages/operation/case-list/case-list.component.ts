@@ -7,6 +7,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { ViewFboComponent } from '../../modals/view-fbo/view-fbo.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecipientComponent } from '../../modals/recipient/recipient.component';
+import { FbonewComponent } from '../../sales/fboproduct/fbonew/fbonew.component';
 
 @Component({
   selector: 'app-case-list',
@@ -372,6 +373,7 @@ export class CaseListComponent implements OnInit {
     modalRef.componentInstance.product = this.productType;
   }
 
+  //methord opens recipient list modal 
   recipient(res: any, serviceType: string) {
     {
       if (res !== '' && serviceType === 'Fostac') {
@@ -387,5 +389,23 @@ export class CaseListComponent implements OnInit {
       }
 
     }
+  }
+
+  //Methord opens fbo form in case of fostac
+  doSale(fbo: any): void {
+    console.log(11)
+    const modalRef = this.modalService.open(FbonewComponent, { size: 'xl', backdrop: 'static' });
+    modalRef.componentInstance.isForFostacSaleByCaseList = true;
+    modalRef.componentInstance.isExistingFbo = true;
+    console.log(fbo);
+    modalRef.componentInstance.fetchExistingUser(fbo.fboInfo);
+    modalRef.componentInstance.fboDataCommingAsModal = fbo.fboInfo;
+    modalRef.result.then((result) => {
+      // modalRef.componentInstance.fbo['fbo_name'].setValue(fbo.fboInfo.fbo_name);
+     
+    })
+    // modalRef.componentInstance.fboForm.patchValue({'onwer_name': 22})
+    
+    
   }
 }

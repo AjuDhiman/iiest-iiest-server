@@ -9,6 +9,7 @@ import { clientType, hraProcessingAmnt, licenceType, medicalProcessAmnt, panIndi
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { pincodeData } from 'src/app/utils/registerinterface';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -112,6 +113,10 @@ export class FbonewComponent implements OnInit, OnChanges {
   // new varable by chandan
   existingbos: Object[];
 
+  //var for coniguring sale for verifer in case of fostac
+  isForFostacSaleByCaseList: boolean = false;
+  fboDataCommingAsModal: any;
+
   //var for controlling component in case of component called as child component not by route
   @Input() isCalledAsChild: boolean = false;
   // @Input() fboDataByParent: boolean = false;
@@ -202,7 +207,8 @@ export class FbonewComponent implements OnInit, OnChanges {
     private _toastrService: ToastrService,
     private existingFrom: FormBuilder,
     private existingFboFrom: FormBuilder,
-    private existingBoFrom: FormBuilder
+    private existingBoFrom: FormBuilder,
+    public activeModal: NgbActiveModal
 
   ) {
     this.getFboGeneralData();
@@ -318,6 +324,8 @@ export class FbonewComponent implements OnInit, OnChanges {
         grand_total: ['', Validators.required],
       });
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
+
+    this.fetchExistingUser(this.fboDataCommingAsModal);
     if (!this.isPanIndiaAllowed) {
       this.getAllocatedArea();
     }
@@ -466,15 +474,23 @@ export class FbonewComponent implements OnInit, OnChanges {
     }
     let regex = new RegExp(value, "i") // i means case insesitive
     //using regex for comparing fbo names and customer ids
-    this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => regex.test(obj.owner_name) || regex.test(obj.customer_id));
+    this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => obj.owner_name && obj.customer_id && (regex.test(obj.owner_name) || regex.test(obj.customer_id)));
   }
 
 
   fetchExistingUser(fboObj: any) {
     this.isFboSelected = true;
     this.existingFboId = fboObj.customer_id
-    this.searchElemFBO.nativeElement.value = ''
+
+    //we will not have search query in case we are fetching fbo from case list
+    if(!this.isForFostacSaleByCaseList) {
+      this.searchElemFBO.nativeElement.value = ''
+      
+    }
+
     this.isSearchEmptyFBO = true;
+    console.log(fboObj.fbo_name);
+
     this.selectedFbo = fboObj;
     this.fbo['fbo_name'].setValue(fboObj.fbo_name);
     this.fbo['owner_name'].setValue(fboObj.owner_name);
@@ -1232,5 +1248,9 @@ export class FbonewComponent implements OnInit, OnChanges {
       //NON NABL
       this.water_test_report.patchValue({water_test_processing_amount: 2119});
     }
+  }
+
+  patchValueCommingAsModal(data: any): void {
+    this.fetchExistingUser(data)
   }
 }

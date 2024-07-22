@@ -11,7 +11,7 @@
 
             <!-- Shop Related Details starts -->
 
-            <div class="row border border-1 p-1">
+            <div class="row border border-1 p-1" *ngIf="!isForWholeSale">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Shop ID</div>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row border border-1 p-1">
+            <div class="row border border-1 p-1"  *ngIf="!isForWholeSale">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Owner Name</div>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row border border-1 p-1">
+            <div class="row border border-1 p-1"  *ngIf="!isForWholeSale">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Business Entity</div>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row border border-1 p-1">
+            <div class="row border border-1 p-1"  *ngIf="!isForWholeSale">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Address</div>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row border border-1 p-1">
+            <div class="row border border-1 p-1"  *ngIf="!isForWholeSale">
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Business Type</div>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row border border-1 p-1">
+            <div class="row border border-1 p-1"  *ngIf="!isForWholeSale">
                
                 <div class="col-md-6">
                     <div class="row">
@@ -144,7 +144,7 @@
            
 
             <!-- Cheque Related Data only avilable incase payment mode is bu cheque -->
-            <div *ngIf="fboData.cheque_data" class="row border border-1 py-2">
+            <div *ngIf="fboData.cheque_data && !isForWholeSale" class="row border border-1 py-2">
                 <div class="col-md title" style="color: #1957a9;">Cheque Data</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -204,7 +204,7 @@
 
 
             <!-- Shop Basic Documents -->
-            <div class="row border border-1 py-2" style="margin-bottom: 10px;">
+            <div class="row border border-1 py-2" style="margin-bottom: 10px;" *ngIf="!isForWholeSale">
                 <div class="col-md title" style="color: #1957a9;">Shop Identification Documents</div>
                 <div class="row mt-2 ml-3">
                     <ng-container *ngIf="docList.length !== 0; else noDocs">
@@ -232,7 +232,7 @@
 
 
             <!-- In case of Fostac -->
-            <div *ngIf="product === 'Fostac'" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Fostac')) || (product === 'Fostac')" class="row">
                 <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -260,13 +260,28 @@
                         </div>
                     </div>
 
+                    <!-- Show processing and total amount in case of sale data -->
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Fostac Processing Amount</div>
+                            <div class="col-md-6 data">{{fboData.fostacInfo.fostac_processing_amount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Fostac Total Amount</div>
+                            <div class="col-md-6 data">{{fboData.fostacInfo.fostac_total}}</div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
 
 
             <!-- In case of Foscos-->
-            <div *ngIf="product === 'Foscos'" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Foscos')) || (product === 'Foscos')" class="row">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Foscos Details</div>
                     <div class="remaining-time">({{remainingTime}} are Remaining)</div>
@@ -307,13 +322,28 @@
                             <div class="col-md-6 data">{{fboData.foscosInfo.shops_no}}</div>
                         </div>
                     </div>
+
+                     <!-- Show processing and total amount in case of sale data -->
+                     <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Foscos Processing Amount</div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.foscos_processing_amount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Foscos Total Amount</div>
+                            <div class="col-md-6 data">{{fboData.foscosInfo.foscos_total}}</div>
+                        </div>
+                    </div>
                   
                 </div>
             </div>
 
 
             <!-- In Case of HRA -->
-            <div *ngIf="product === 'HRA'" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('HRA')) || (product === 'HRA')" class="row">
                 <div class="col-md title" style="color: #1957a9;">HRA Details</div>
                 <div class="row mt-2 ml-3">
                     <div class="col-md-4">
@@ -340,32 +370,55 @@
                         </div>
                     </div>
 
+                     <!-- Show processing and total amount in case of sale data -->
+                     <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">HRA Processing Amount</div>
+                            <div class="col-md-6 data">{{fboData.hraInfo.hra_processing_amount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">HRA Total Amount</div>
+                            <div class="col-md-6 data">{{fboData.hraInfo.hra_total}}</div>
+                        </div>
+                    </div>
+
              
                 </div>
             </div>
 
 
             <!-- In case of Medical -->
-            <div *ngIf="product === 'Medical'" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Medical')) || (product === 'Medical')" class="row">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Medical Details</div>
                 </div>
                 <div class="row mt-2 ml-3">
-                    <!-- <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 title">Processing Amount </div>
-                            <div class="col-md-6 data">
-                                {{fboData.medicalInfo.medical_processing_amount}} <fa-icon class="fa-l"
-                                    style="color: #5d6778;" [icon]="faIndianRupeeSign"></fa-icon>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">No. of Recipients </div>
                             <div class="col-md-6 data">{{fboData.medicalInfo.recipient_no}}</div>
                         </div>
                     </div>
+
+
+                     <!-- Show processing and total amount in case of sale data -->
+                     <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Medical Processing Amount</div>
+                            <div class="col-md-6 data">{{fboData.medicalInfo.medical_processing_amount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Medical Total Amount</div>
+                            <div class="col-md-6 data">{{fboData.medicalInfo.medical_total}}</div>
+                        </div>
+                    </div>
+                    
                     <!-- <div class="col-md-8">
                         <div class="row">
                             <div class="col-md-3 title">Medical Total <br><span
@@ -383,7 +436,7 @@
 
 
              <!-- In Case of Water Test -->
-             <div *ngIf="product === 'Water Test Report'" class="row">
+             <div *ngIf="(isForWholeSale && fboData.product_name.includes('Water Test Report')) || (product === 'Water Test Report')" class="row">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Water Test Details</div>
                 </div>
@@ -395,7 +448,20 @@
                         </div>
                     </div>
                     
-                   
+                    <!-- Show processing and total amount in case of sale data -->
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Water Test Processing Amount</div>
+                            <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_processing_amount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="isForWholeSale">
+                        <div class="row">
+                            <div class="col-md-6 title">Water Test Total Amount</div>
+                            <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_total}}</div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -406,7 +472,7 @@
 
             <!-- Deliver Related Details Start -->
 
-            <div class="row my-2">
+            <div class="row my-2" *ngIf="!isForWholeSale">
                 <div class="col-md title" style="color: #1957a9;">Delivery Details</div>
             </div>
 

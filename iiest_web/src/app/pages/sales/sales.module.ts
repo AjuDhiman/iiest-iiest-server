@@ -10,6 +10,7 @@ import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.com
 import { RecipientListComponent } from 'src/app/pages/modals/recipient/recipient-list/recipient-list.component';
 import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.component';
 import { ClientListComponent } from './client-list/client-list.component';
+import { NgbActiveModal, NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -27,7 +28,7 @@ import { ClientListComponent } from './client-list/client-list.component';
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
   ],
   exports: [
     FbonewComponent,
@@ -38,6 +39,9 @@ import { ClientListComponent } from './client-list/client-list.component';
     RecipientComponent,
     RecipientListComponent,
     ViewFboComponent
+  ],
+  providers: [
+    NgbActiveModal
   ]
 })
 export class SalesModule { }

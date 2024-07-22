@@ -1,3 +1,4 @@
+
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <!-- Tabs for Filtering by Product -->
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0"
@@ -199,9 +200,10 @@
                                         <td class="cell"><span 
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}
                                             </span></td>
-                                        <td class="cell"><span class="truncate text-capitalize selector" >{{data.fboInfo.boInfo.manager_name.toLowerCase()}}</span>
+                                        <td class="cell"><span class="truncate text-capitalize selector"
+                                            (click)="doSale(data)" >{{data.fboInfo.boInfo.manager_name.toLowerCase()}}</span>
                                     </td>
-                                        <td *ngIf="data.fboInfo else noData" class="cell"><span
+                                        <td *ngIf="data.fboInfo else noData" class="cell"><span 
                                                 class="truncate text-capitalize ">{{data.fboInfo.fbo_name.toLowerCase()}}</span>
                                         </td>
                                         <td *ngIf="data.fboInfo; else noData" class="cell"><span
