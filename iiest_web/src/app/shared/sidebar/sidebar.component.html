@@ -130,7 +130,7 @@
                     </li>
 
                      <!-- Client List Button -->
-                     <li *ngIf="userData && (fboRoles.includes(userData.designation))" class="nav-item"
+                    <li *ngIf="userData && (directorRoles.includes(userData.designation))" class="nav-item"
                      routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                      [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                      [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
@@ -177,7 +177,7 @@
                          </span>
                          <span class="nav-link-text">Client List</span>
                      </a>
-                 </li>
+                    </li>
 
                     <!-- Employee List Button -->
                     <li *ngIf="userData && employeeRoles.includes(userData.designation)" class="nav-item"
