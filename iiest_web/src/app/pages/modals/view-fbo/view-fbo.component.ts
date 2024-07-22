@@ -55,6 +55,9 @@ export class ViewFboComponent implements OnInit {
   //product related vars
   productTotalAmt: number = 0;
 
+  //boolean for specifing it for whole sale detail or a particular sale detail
+  isForWholeSale: boolean = false;
+
 
   constructor(public activeModal: NgbActiveModal,
     private getDataServices: GetdataService,
@@ -77,15 +80,18 @@ export class ViewFboComponent implements OnInit {
     }
 
     //calculate total product amount
-    this.getProductTotalAmount();
+    if(!this.isForWholeSale) {
+      this.getProductTotalAmount();
+    }
 
     //deciding to show invoice or not
     this.isShowInvoice = this.comparedates(this.fboData.createdAt);
     this.getInvoice();
 
     //getting doclist
+    if(!this.isForWholeSale) {
     this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name));
-
+    }
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
     this.userData = parsedUser;

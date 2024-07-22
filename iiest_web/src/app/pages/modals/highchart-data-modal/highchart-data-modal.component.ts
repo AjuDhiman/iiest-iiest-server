@@ -2,11 +2,12 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { faMagnifyingGlass, faCheck, faXmark, IconDefinition, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faCheck, faXmark, IconDefinition, faArrowUp, faArrowDown, faEye } from '@fortawesome/free-solid-svg-icons';
 import { Months, days, months } from 'src/app/utils/config';
 import { Select } from '@ngxs/store';
 import { SalesState } from 'src/app/store/state/sales.state';
 import { Observable, Subscription } from 'rxjs';
+import { ViewFboComponent } from '../view-fbo/view-fbo.component';
 
 @Component({
   selector: 'app-highchart-data-modal',
@@ -15,26 +16,30 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class HighchartDataModalComponent {
 
+  //variables
   allFBOEntries: any;
   searchQuery: string = '';
   filteredData: any;
-  selectedFilterSales: string = 'generalsearch';
-  selectedFilterHr: string = 'byEmployeeName';
-  showPagination: boolean = false;
+ 
   filterValue: string;
   chartData: any;
   intervalType: string;
   filterDate: string | void;
   fboSalesData: any;
-  isSearch: boolean = false;
-  pageNumber1: number = 1;
-  itemsNumber: number = 10;
   employeeList: any;
   specificDatas: any;
   isRepetCustData: boolean = false;
-  sortedField: string = '';
   sortingOrder: 'asc' | 'desc' = 'asc';
   designation: string;
+
+  //Table Related Valiables
+  selectedFilterSales: string = 'generalsearch';
+  selectedFilterHr: string = 'byEmployeeName';
+  showPagination: boolean = false;
+  isSearch: boolean = false;
+  pageNumber1: number = 1;
+  itemsNumber: number = 10;
+  sortedField: string = '';
 
   //icons
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
@@ -42,6 +47,7 @@ export class HighchartDataModalComponent {
   faCheck: IconDefinition = faCheck;
   faArrowUp: IconDefinition = faArrowUp;
   faArrowDown: IconDefinition = faArrowDown;
+  faEye: IconDefinition = faEye;
 
   //these variable manges the state of th e sales store
   @Select(SalesState.GetSalesList) sales$: Observable<any>;
@@ -306,9 +312,12 @@ export class HighchartDataModalComponent {
       // Calculate processing amount based on the product name
       employee.product_name.forEach((product: any) => {
 
+        //add more processing amount in case sale contains fostac
         if (product == "Fostac") {
           processingAmount += employee.fostacInfo.fostac_processing_amount * employee.fostacInfo.recipient_no;
         }
+
+        //add more processing amount in case sale contains foscos
         if (product == "Foscos") {
           let watertest = 0;
           if (employee.foscosInfo.water_test_fee != 0) {
@@ -317,8 +326,20 @@ export class HighchartDataModalComponent {
 
           processingAmount += (employee.foscosInfo.foscos_processing_amount * employee.foscosInfo.shops_no) + watertest;
         }
+
+        //add more processing amount in case sale contains HRA
         if (product == "HRA") {
           processingAmount += employee.hraInfo.hra_processing_amount * employee.hraInfo.shops_no;
+        }
+
+        //add more processing amount in case sale contains Medical
+        if (product == "Medical") {
+          processingAmount += employee.medicalInfo.medical_processing_amount * employee.medicalInfo.recipient_no;
+        }
+
+         //add more processing amount in case sale contains Water Test report
+         if (product == "Medical") {
+          processingAmount += employee.waterTestInfo.water_test_processing_amount;
         }
       });
     }
@@ -535,5 +556,14 @@ export class HighchartDataModalComponent {
         })
         break;
     }
+  }
+
+  //methord for viewing details about the sale 
+  viewSaleDetails($event: any, res: any): void {
+    $event.stopPropagation();
+    const modalRef = this._modalService.open(ViewFboComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.fboData = res;
+    modalRef.componentInstance.isVerifier = true;
+    modalRef.componentInstance.isForWholeSale = true;
   }
 }
