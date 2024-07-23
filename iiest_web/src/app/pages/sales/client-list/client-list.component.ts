@@ -26,6 +26,9 @@ export class ClientListComponent implements OnInit {
   searchQuery: string;
   selectedFilter: string = 'byMemberId';
 
+  //var for calculating total no of shops
+  totalShops: number = 0;
+
   //icons
   faEye: IconDefinition = faEye;
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
@@ -45,6 +48,11 @@ export class ClientListComponent implements OnInit {
         this.clientList = res.clientList;
         console.log(res.clientList)
         this.filteredData = this.clientList;
+
+        //getting total no of shops by the help of reduce func
+        this.totalShops = this.clientList.reduce((acc: number, crr: {fbo: unknown[]}) => acc + crr.fbo.length, 0);
+
+        console.log(this.totalShops);
       }
     })
   }

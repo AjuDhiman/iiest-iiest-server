@@ -59,7 +59,7 @@
                     </th> -->
                             </thead>
                             <tbody >
-                                <tr class="list-tr" *ngFor="let data of filteredData; let i = index">
+                                <tr class="list-tr" *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'shop-list' };; let i = index">
                                     <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
                                     </td>
                                     <td class="cell"><span
@@ -102,7 +102,7 @@
             <div class="d-flex" [ngClass]="filteredData?'justify-content-between':'justify-content-end'">
                 <div *ngIf="filteredData" class="text-sm" style="font-size: 14px;">{{filteredData.length}} of
                     {{shopData.length}}</div>
-                <pagination-controls previousLabel="Prev" nextLabel="Next"
+                <pagination-controls previousLabel="Prev" nextLabel="Next" id="shop-list"
                     (pageChange)="onTableDataChange($event)"></pagination-controls>
             </div>
             <!-- <div *ngIf="showPagination===true" class="d-flex justify-content-end">
