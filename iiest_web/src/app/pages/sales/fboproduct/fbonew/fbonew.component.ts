@@ -325,7 +325,10 @@ export class FbonewComponent implements OnInit, OnChanges {
       });
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
 
-    this.fetchExistingUser(this.fboDataCommingAsModal);
+    if(this.isForFostacSaleByCaseList) {
+      this.fetchExistingUser(this.fboDataCommingAsModal);
+    }
+   
     if (!this.isPanIndiaAllowed) {
       this.getAllocatedArea();
     }
