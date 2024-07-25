@@ -32,9 +32,9 @@ exports.existingFboCash = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
-    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -60,7 +60,7 @@ exports.existingFboCash = async (req, res) => {
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
       if (!pincodeCheck) {
         success = false;
@@ -151,6 +151,8 @@ exports.existingFboCash = async (req, res) => {
   }
 }
 
+
+//exsisting fbo sales operations is sales done by cheque
 exports.existingFboByCheque = async (req, res) => {
   try {
 
@@ -169,9 +171,9 @@ exports.existingFboByCheque = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId }); //cjecking for allocated area
-    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -216,7 +218,7 @@ exports.existingFboByCheque = async (req, res) => {
     chequeData.status = 'Pending';
     chequeData.cheque_image = chequeImage.filename
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], invoiceSaleId: [], cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -264,9 +266,9 @@ exports.existingFboPayPage = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
-    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
         success = false;
         return res.status(404).json({ success, areaAllocationErr: true })
@@ -294,7 +296,7 @@ exports.existingFboPayPage = async (req, res) => {
 
     const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo, officerName: officerName } });
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
       if (!pincodeCheck) {
         success = false;
@@ -362,7 +364,7 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
           foscosFixedCharge,
           medicalFixedCharges,
           existingFboInfo,
-          officerName } = fetchedFormData; 
+          officerName } = fetchedFormData;
 
         const boData = await boModel.findOne({ _id: existingFboInfo.boInfo }); //getting bo data
 
@@ -397,11 +399,13 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
         let invoiceUploadStream;
         const invoiceIdArr = [];
 
+        const notificationsArr = [];
+
         const invoiceBucket = createInvoiceBucket();
 
         let fileName;
         if (product_name.includes('Fostac')) { // in case sale includes fostac
-          
+
           const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
           fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
@@ -414,6 +418,10 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
           invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+          //createg self notification data for our panel notifications
+          //setting is read false for this particular product
+          notificationsArr.push({ isRead: false, product: 'Fostac',  purpose: 'Verification' });
         }
 
         if (product_name.includes('Foscos')) {
@@ -430,6 +438,10 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
           invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+          //createg self notification data for our panel notifications
+          //setting is read false for this particular product
+          notificationsArr.push({ isRead: false, product: 'Foscos',  purpose: 'Verification' });
         }
 
         if (product_name.includes('HRA')) {
@@ -446,6 +458,10 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
           invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
 
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+          //createg self notification data for our panel notifications
+          //setting is read false for this particular product
+          notificationsArr.push({ isRead: false, product: 'HRA',  purpose: 'Verification' });
         }
 
         if (product_name.includes('Medical')) {
@@ -505,6 +521,7 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
           payment_mode,
           grand_total,
           invoiceId: invoiceIdArr,
+          notificationInfo: notificationsArr
         });
 
 

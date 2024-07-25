@@ -74,6 +74,10 @@ const salesSchema = new Schema({ //creating sales schema
     invoiceId: { // array that contains object id of invoices of all product sold in this sale
         type: Array,
         required: true
+    },
+    notificationInfo: { //array that contains info related to notification of this sale to verifier
+        type: Array,
+        required: true
     }
 }, {timestamps: true})
 

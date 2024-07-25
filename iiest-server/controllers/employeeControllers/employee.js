@@ -8,6 +8,7 @@ const sendEmployeeInfo = require('../../employee/sendMail');
 const { empSignBucket, empImageBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
+const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
@@ -161,7 +162,7 @@ exports.employeeLogin = async (req, res) => {
 }
 function generateTemporaryPassword() {
     // Generate a temporary password 
-    return Math.random().toString(36).slice(-8); 
+    return Math.random().toString(36).slice(-8);
 }
 
 exports.forgotPassword = async (req, res) => {
@@ -227,7 +228,7 @@ exports.resetPassword = async (req, res) => {
 
         // Update employee's password and clear temporary password
         user.password = hashedNewPassword;
-        user.temporaryPassword = null; 
+        user.temporaryPassword = null;
         await user.save();
 
         return res.status(200).json({ success: true, message: 'Password reset successfully' });
@@ -365,7 +366,7 @@ exports.areaAllocation = async (req, res) => { //methord for allocating area to 
 
     } catch (error) {
         //getting time of error in case of error
-        console.error(`Area allocation error at ${new Date().toUTCString()}`,error);
+        console.error(`Area allocation error at ${new Date().toUTCString()}`, error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 
@@ -383,7 +384,7 @@ exports.assignManger = async (req, res) => { //methord for assigning manager
             return res.status(404).json({ success, existingManagerErr: true })
         }
 
-        const managerAssigned = await reportingManagerModel.create({ employeeInfo: employeeId, reportingManager: req.body.reportingManager});
+        const managerAssigned = await reportingManagerModel.create({ employeeInfo: employeeId, reportingManager: req.body.reportingManager });
         //assigning new manager in case no manager assigned
 
         if (!managerAssigned) {
@@ -581,5 +582,97 @@ exports.editEmployeeImages = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+//methord for getting notifications
+exports.getNotifications = async (req, res) => {
+    try {
+
+        const purpose = req.query.purpose;
+
+        const notifications = await salesModel.aggregate([
+            {
+                $unwind: "$notificationInfo"
+            },
+            {
+                $lookup: {
+                    from: 'staff_registers',
+                    localField: 'employeeInfo',
+                    foreignField: '_id',
+                    as: 'employeeInfo'
+                }
+            },
+            {
+                $unwind: "$employeeInfo"
+            },
+            // {
+            //     $match: {
+            //         eq: ["$notificationInfo.purpose", purpose]
+            //     }
+            // },
+            {
+                $project: {
+                    "purpose": "$notificationInfo.purpose",
+                    "isRead": "$notificationInfo.isRead",
+                    "product": "$notificationInfo.product",
+                    "readerInfo": "$notificationInfo.readerInfo",
+                    "salesInfo": "$_id",
+                    "createdAt": "$createdAt",
+                    "employeeImage": "$employeeInfo.employeeImage",
+                    "employee_name": "$employeeInfo.employee_name"
+                }
+            },
+            {
+                $sort: {
+                    "createdAt": -1
+                }
+            },
+            {
+                $limit: 100
+            }
+        ])
+
+        console.log(purpose);
+
+        return res.status(200).json({ notifications });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+
+//methord for updating notiofication status
+exports.updateNotificationStatus = async (req, res) => {
+    try {
+
+        const saleId = req.params.saleid;
+        const product = req.query.product;
+
+        //getting notification array
+        const notificationArr = (await salesModel.findOne({ _id: saleId })).notificationInfo;
+
+        console.log(notificationArr, product)
+
+        //upating notification ststus
+        notificationArr.forEach(notification => {
+            if (notification.product === product) {
+                notification.isRead = true;
+                notification.readerInfo = req.user._id;
+            }
+        });
+
+        const updatedNotification = await salesModel.findByIdAndUpdate({ _id: saleId }, { $set: { "notificationInfo": notificationArr } });
+
+        if (!updatedNotification) {
+            res.status(201).json({ notificationUpdateErr: true, status: flase })
+        }
+
+        res.status(200).json({status: true});
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }

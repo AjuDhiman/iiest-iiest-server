@@ -1,5 +1,5 @@
 const express = require('express');
-const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger } = require('../controllers/employeeControllers/employee');
+const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger, getNotifications, updateNotificationStatus } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, salesData, ticketVerificationData} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
@@ -40,6 +40,8 @@ router.post('/edituserfiles', authMiddleware, employeeFilesUpload.fields([{name:
 router.get('/empcountbydept', authMiddleware, employeeDepartmentCount); //route for getting department and its employee count data
 router.get('/getemphiringdata', authMiddleware, empHiringData); //route for getting hiring data of a particular employee
 router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager); //route for gettig employee list under manager
+router.get('/getnotifications', getNotifications); //route for gettig notifications
+router.put('/updatenotificationstatus/:saleid', authMiddleware, updateNotificationStatus); //route for gettig notifications
 
 
 

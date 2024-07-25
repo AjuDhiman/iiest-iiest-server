@@ -291,6 +291,13 @@ export class CaseListComponent implements OnInit {
     } else if (state && state.isRecipientList) {
       this.isRecipientList = true;
     }
+
+    //if comming on this page from notification
+    console.log(state);
+    if (state && state.byNotifications) {
+      console.log(state.product);
+      this.productType = state.product;
+    }
   }
 
 
