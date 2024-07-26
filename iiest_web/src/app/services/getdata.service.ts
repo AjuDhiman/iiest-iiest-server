@@ -58,6 +58,12 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  //api for getting notifications
+  public getNotifications(purpose: string): Observable<any> {
+    const url = `${this.url}/getnotifications?purpose=${purpose}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getSaleRecipients(salesId: String): Observable<any> {
     const url = `${this.url}/salerecipients/${salesId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

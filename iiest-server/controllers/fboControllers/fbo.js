@@ -20,7 +20,7 @@ const BACK_END = process.env.BACK_END;
 let fboFormData = {};
 
 //methord for initiating oayment with phoen pe
-exports.fboPayment = async (req, res) => { 
+exports.fboPayment = async (req, res) => {
   try {
     let success = false;
 
@@ -35,11 +35,11 @@ exports.fboPayment = async (req, res) => {
     }
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
-    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
     console.log(panIndiaAllowedIds);
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -91,25 +91,36 @@ exports.fboPayReturn = async (req, res) => {
 
   try {
 
+    //Do further process in case of Payment Success from phone pe
     if (req.body.code === 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
       if (req.body.transactionId) {
 
         let success = false;
 
-        let sessionData = await sessionModel.findById(sessionId);
-        if (!sessionData) {
+        //session related functions starts
+        let sessionData = await sessionModel.findById(sessionId); //getting data from session 
+        if (!sessionData) { //in case session data is not present or deleted we want front end to route to fbo registeration form
           res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
           return
         }
         const fetchedFormData = sessionData.data;
+
+        /* getting is API called or not that will save us from the problrm if the payment success of two screens in case like payment link share 
+        so it will prvent from problem of double sale */
         let apiCalled = fetchedFormData.apiCalled;
+
+        //setting api called true 
         await sessionModel.findByIdAndUpdate(sessionId, { data: { ...fetchedFormData, apiCalled: true } });
 
+        //if api is already called then redirect user to fbo form
         if (apiCalled) {
           res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
           return;
         }
 
+        //session related functions ends
+
+        //destructuring data
         const { fbo_name,
           owner_name,
           owner_contact,
@@ -142,12 +153,15 @@ exports.fboPayReturn = async (req, res) => {
           boInfo,
           officerName } = fetchedFormData;
 
+        //generating customer id or rather say ShopId
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
+        //getting boInfo
         const boData = await boModel.findOne({ _id: boInfo });
 
         let serviceArr = [];
 
+        //pushing all the services to array
         if (fostac_training) {
           serviceArr.push(fostac_training.fostac_service_name);
         }
@@ -172,29 +186,49 @@ exports.fboPayReturn = async (req, res) => {
         let totalGST = 0;
         let extraFee = 0;
 
+        //array for saving invoices datas
         const invoiceData = [];
         let invoiceUploadStream;
-        const invoiceIdArr = []; // arr for saving all invoices buket object keys
 
+        // arr for saving all invoices buket object keys
+        const invoiceIdArr = [];
+
+        //notification data array
+        const notificationsArr = [];
+
+        //creating bucket stream of fs bucket
         const invoiceBucket = createInvoiceBucket();
 
         let fileName;
 
+        //sales operations in case it includes fostac
         if (product_name.includes('Fostac')) {
-          const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
+          //generating new invoice code
+          const invoiceCode = await generateInvoiceCode(business_type);
 
+          //getting file name
           fileName = `${Date.now()}_${idNumber}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
+          //getting total processing amount and gst
           total_processing_amount = Number(fostac_training.fostac_processing_amount);
           totalGST = fostacGST;
 
+          //getting total no of recps or rather say quantity of product
           const qty = fostac_training.recipient_no;
+
+          //generating new Invoice and putting into invoice file array
           invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
 
+          //puttinng data into invoice array
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+          //createg self notification data for our panel notifications
+          //setting is read false for this particular product
+          notificationsArr.push({ isRead: false, product: 'Fostac',  purpose: 'Verification' });
         }
 
+        //sales operations in case it includes foscos
         if (product_name.includes('Foscos')) {
           const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
 
@@ -210,8 +244,13 @@ exports.fboPayReturn = async (req, res) => {
 
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
 
+          //createg self notification data for our panel notifications
+          //setting is read false for this particular product
+          notificationsArr.push({ isRead: false, product: 'Foscos',  purpose: 'Verification' });
+
         }
 
+        //sales operations in case it includes HRA
         if (product_name.includes('HRA')) {
           const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
 
@@ -225,9 +264,13 @@ exports.fboPayReturn = async (req, res) => {
           invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
 
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+          //createg self notification data for our panel notifications
+          //setting is read false for this particular product
+          notificationsArr.push({ isRead: false, product: 'HRA',  purpose: 'Verification' });
         }
 
-        //checkfor medical
+        //sales operations in case it includes medical
         if (product_name.includes('Medical')) {
           const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
 
@@ -245,7 +288,7 @@ exports.fboPayReturn = async (req, res) => {
           invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
         }
 
-        //check for water test
+        //sales operations in case it includes Water Test
         if (product_name.includes('Water Test Report')) {
           const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
 
@@ -317,25 +360,22 @@ exports.fboPayReturn = async (req, res) => {
           waterTestInfo: water_test_report,
           payment_mode,
           grand_total,
-          invoiceId: invoiceIdArr
+          invoiceId: invoiceIdArr,
+          notificationInfo: notificationsArr
         });
 
         if (!selectedProductInfo) {
           return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
         }
 
+        //creating shop details obj in case of HRA and Foscos
         product_name.forEach(async (product) => {
           if (product === 'Fostac' || product === 'HRA') {
             const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
           }
         })
 
-        // req.session.destroy((err) => {
-        //   if (err) {
-        //     console.log(console.log(err));
-        //   }
-        // });
-
+        //lastly redirect user to fbo form
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
 
@@ -369,9 +409,9 @@ exports.fboRegister = async (req, res) => {
     const officerName = req.user.employee_name;
 
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
-    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -391,7 +431,7 @@ exports.fboRegister = async (req, res) => {
 
     const boData = await boModel.findOne({ _id: boInfo });
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -523,9 +563,9 @@ exports.boByCheque = async (req, res) => {
 
     //checkig for allocated areas
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
-    const panIndiaAllowedIds =(await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -545,7 +585,7 @@ exports.boByCheque = async (req, res) => {
 
     const boData = await boModel.findOne({ _id: boInfo });
 
-    if ( !panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') { //checking allocated areas
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') { //checking allocated areas
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -577,7 +617,7 @@ exports.boByCheque = async (req, res) => {
       return res.status(401).json({ success, randomErr: true })
     }
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [],  cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -851,7 +891,7 @@ exports.updateFboBasicDocStatus = async (req, res) => {
 }
 
 //this methord approves the sale for a pending cheque and send invoice after approval
-exports.approveChequeSale = async (req, res) => { 
+exports.approveChequeSale = async (req, res) => {
   try {
 
     const saleId = req.params.id; //gettimg sales id from route
@@ -896,6 +936,8 @@ exports.approveChequeSale = async (req, res) => {
     let invoiceUploadStream;
     const invoiceIdArr = [];
 
+    const notificationsArr = [];
+
     const invoiceBucket = createInvoiceBucket();
 
     let fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
@@ -915,6 +957,10 @@ exports.approveChequeSale = async (req, res) => {
       invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, fostacInfo.fostac_total, 'Fostac', fostacInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
 
       invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+      //createg self notification data for our panel notifications
+      //setting is read false for this particular product
+      notificationsArr.push({ isRead: false, product: 'Fostac',  purpose: 'Verification' });
     }
 
     if (product_name.includes('Foscos')) {//generating foscos Invoivce in case of foscos sale
@@ -933,6 +979,7 @@ exports.approveChequeSale = async (req, res) => {
 
       let extraFee;
 
+      //getting government and processing fes on the basis of serice choose
       if (foscosInfo.foscos_service_name === 'Registration') { //calculating foscos goverment fees
         fixedCharges = 100;
         if (category == 'New Licence' || category === 'Renewal') {
@@ -965,6 +1012,10 @@ exports.approveChequeSale = async (req, res) => {
       invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscosInfo.foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
 
       invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+      //createg self notification data for our panel notifications
+      //setting is read false for this particular product
+      notificationsArr.push({ isRead: false, product: 'Foscos',  purpose: 'Verification' });
     }
 
 
@@ -983,6 +1034,10 @@ exports.approveChequeSale = async (req, res) => {
       ));
 
       invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+
+      //createg self notification data for our panel notifications
+      //setting is read false for this particular product
+      notificationsArr.push({ isRead: false, product: 'HRA', purpose: 'Verification' });
     }
 
     if (product_name.includes('Medical')) { //generating Mediacl Invoivce in case of medical sale
@@ -1022,7 +1077,7 @@ exports.approveChequeSale = async (req, res) => {
 
 
     if (cheque_data) {
-      await salesInfo.updateOne({ cheque_data: { ...cheque_data, status: 'Approved' }, invoiceId: invoiceIdArr });
+      await salesInfo.updateOne({ cheque_data: { ...cheque_data, status: 'Approved' }, invoiceId: invoiceIdArr, notificationInfo: notificationsArr });
     }
 
     await salesInfo.save();

@@ -83,6 +83,14 @@ export class RegisterService {
       ));
   }
 
+  public updateNotifications(objId: string, product: string): Observable<any> {
+    const url = `${this.url}/updatenotificationstatus/${objId}?product=${product}`
+    return this.http.put<any>(url, {}).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   public uploadOwnerPhoto(objId: string, formInterface: FormData): Observable<any> {
     const url = `${this.url}/fbo/uploadownerphoto/${objId}`
     return this.http.put<any>(url, formInterface).pipe(

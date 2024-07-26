@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild, HostListener
 import { RegisterService } from 'src/app/services/register.service';
 import { SidebarComponent } from 'src/app/shared/sidebar/sidebar.component';
 import { GetdataService } from 'src/app/services/getdata.service';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -20,28 +21,35 @@ export class HeaderComponent implements OnInit {
   userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;
-  notifications: Array<{ image: string, description: string, time: string|Date }> = [{
-    image: 'assets/images/profiles/profile-1.png',
-    description: 'Amy shared a file with you. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    time: '2 hours ago'
-  }, {
-    image: 'assets/images/profiles/profile-1.png',
-    description: 'You have a new invoice. Proin venenatis interdum est.',
-    time: ' 1 day ago'
-  }, {
-    image: 'assets/images/profiles/profile-1.png',
-    description: 'Your report is ready. Proin venenatis interdum est.',
-    time: '3 days ago'
-  }, {
-    image: 'assets/images/profiles/profile-2.png',
-    description: 'James sent you a new message.',
-    time: '7 days ago'
-  }];
+  // notifications: Array<{ image: string, description: string, time: string|Date }> = [{
+  //   image: 'assets/images/profiles/profile-1.png',
+  //   description: 'Amy shared a file with you. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  //   time: '2 hours ago'
+  // }, {
+  //   image: 'assets/images/profiles/profile-1.png',
+  //   description: 'You have a new invoice. Proin venenatis interdum est.',
+  //   time: ' 1 day ago'
+  // }, {
+  //   image: 'assets/images/profiles/profile-1.png',
+  //   description: 'Your report is ready. Proin venenatis interdum est.',
+  //   time: '3 days ago'
+  // }, {
+  //   image: 'assets/images/profiles/profile-2.png',
+  //   description: 'James sent you a new message.',
+  //   time: '7 days ago'
+  // }];
+  notifications: Array< {purpose: string, isRead: boolean, readerInfo: string, createdAt: string, _id: string, product: string, 
+    employee_name: string, employeeImage:string }> = []
   toggelStyle: object = {
     'position': 'fixed',
     'inset': '0px 0px auto auto',
     'margin': '0px; transform: translate3d(0.666667px, 28px, 0px)'
   }
+
+  //notification related vars
+  notificationContent: string = '';
+  unreadMessageNum: number = 0;
+
   public getScreenWidth: any;
 
   @Input() item: boolean;
@@ -56,7 +64,8 @@ export class HeaderComponent implements OnInit {
   empName: any;
   userData: any;
   constructor(private _registerService: RegisterService,
-  private getDataService: GetdataService) {
+  private getDataService: GetdataService,
+  private router:Router) {
   
   }
   ngOnInit() { 
@@ -83,6 +92,8 @@ export class HeaderComponent implements OnInit {
       this.userImageId = this.userData.employeeImage;
       this.getUserImage();
     }
+
+    this.getNotifications()
   }
 
 
@@ -169,6 +180,70 @@ export class HeaderComponent implements OnInit {
         }else if(res.noImage){
           this.userImage = 'assets/logo-side.png';
         }
+      }
+    })
+  }
+
+  //methord for getting image of persons in notifications
+  // getImageForNotification(imageObj: string) {
+  //   let imageSrc = '';
+  //   this.getDataService.getUserImage(imageObj).subscribe({
+  //     next: (res)=>{
+  //       if(res.success){
+  //         imageSrc = res.imageConverted;
+  //       }else if(res.defaulImage){
+  //         imageSrc = res.defaulImage;
+  //       }else if(res.noImage){
+  //         imageSrc = 'assets/logo-side.png';
+  //       }
+  //       return imageSrc;
+  //     }
+  //   })
+  // }
+
+  //methord for getting notfications
+  getNotifications(): void {
+
+    let purpose: string = 'Verification';
+    if(this.userData.panel_type === 'Verifier Panel') {
+      this.getDataService.getNotifications(purpose).subscribe({
+        next: res => {
+          console.log(res);
+          this.notifications = res.notifications.filter((a: any) => !a.isRead);
+          this.unreadMessageNum = this.notifications.filter(a => !a.isRead).length;
+        }
+      })
+    }
+    
+    // if(this.userData.panel_type == 'Verification Panel') {
+    //   let purpose: string = 'Verification';
+    //   this.getDataService.getNotifications(purpose).subscribe({
+    //     next: res => {
+    //       console.log(res);
+    //     }
+    //   })
+    // }
+  }
+
+  //methord for fomatting date string to readable string 
+  getFormattedDate(date: string): string {
+    let daysGone = '';
+
+    const timeDiffrence = (new Date().getTime()) - (new Date(date).getTime());
+
+    daysGone = Math.ceil(timeDiffrence/(1000*60*60*24)).toString();
+    return daysGone;
+  }
+
+  //methord for updating notifications
+  updateNotification(salesId: string, product: string): void {
+   
+    //update notifications 
+    this._registerService.updateNotifications(salesId, product).subscribe({
+      next: res => {
+        this.toggelNotification = false;
+        this.router.navigate(['/caselist'], { state: { byNotifications: true, product: product } })
+        this.getNotifications();
       }
     })
   }
