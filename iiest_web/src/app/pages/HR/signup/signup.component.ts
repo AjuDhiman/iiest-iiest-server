@@ -12,6 +12,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { Employee, pincodeData } from 'src/app/utils/registerinterface';
 import Validation from 'src/app/utils/validation';
+import { UtilitiesService } from 'src/app/services/utilities.service';
 
 @Component({
   selector: 'app-signup',
@@ -88,10 +89,17 @@ export class SignupComponent implements OnInit {
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
     private _getdataService: GetdataService,
+    private _utilService: UtilitiesService,
     private store: Store) {
     this.getPostsData();
     this.empGeneralData();
   }
+
+  //var relarte to uplading empp files to server 
+  empSignature: string;
+  empImage: string;
+  // imageFormat: string;
+  // signatureFormat: string;
 
   ngOnInit(): void {
     this.userData = this._registerService.LoggedInUserData();
@@ -159,9 +167,10 @@ export class SignupComponent implements OnInit {
     return this.form.controls;
   }
 
-  onSubmit(): void {
+  //methord for submitting the form
+  async onSubmit() {
     this.submitted = true;
-    //return;
+    // return;
     if (this.form.invalid) {
       return;
     }
@@ -170,30 +179,10 @@ export class SignupComponent implements OnInit {
     this.form.value.dob = this.datePipe.transform(this.form.value.dob, 'yyyy-MM-dd');
     this.form.value.doj = this.datePipe.transform(this.form.value.doj, 'yyyy-MM-dd');
 
-    const formData = new FormData();
-    formData.append('employee_name', this.form.get('employee_name')?.value);
-    formData.append('gender', this.form.get('gender')?.value);
-    formData.append('dob', this.form.get('dob')?.value);
-    formData.append('email', this.form.get('email')?.value);
-    formData.append('company_name', this.form.get('company_name')?.value);
-    formData.append('panel_type', this.form.get('panel_type')?.value);
-    formData.append('doj', this.form.get('doj')?.value);
-    formData.append('project_name', this.form.get('project_name')?.value);
-    formData.append('department', this.form.get('department')?.value);
-    formData.append('designation', this.form.get('designation')?.value);
-    formData.append('post_type', this.form.get('post_type')?.value)
-    formData.append('salary', this.form.get('salary')?.value);
-    formData.append('pay_band', this.form.get('pay_band')?.value);
-    formData.append('contact_no', this.form.get('contact_no')?.value);
-    formData.append('alternate_contact', this.form.get('alternate_contact')?.value);
-    formData.append('empSignature', this.signatureFile);
-    formData.append('employeeImage', this.empImageFile);
-    formData.append('address', this.form.get('address')?.value);
-    formData.append('city', this.form.get('city')?.value);
-    formData.append('state', this.form.get('state')?.value);
-    formData.append('country', this.form.get('country')?.value);
-    formData.append('zip_code', this.form.get('zip_code')?.value);
-    formData.append('createdBy', this.form.get('createdBy')?.value);
+    //uploading employee Images ans signtures
+    await this.uploadEmpSignature();
+    await this.uploadEmpImage();
+    
 
     if (this.isEditMode) {
       this.editedData = this.form.value;
@@ -235,7 +224,7 @@ export class SignupComponent implements OnInit {
         }
       })
     } else {
-      this.addemployee = formData
+      this.addemployee = {...this.form.value, empSignature: this.empSignature, employeeImage: this.empImage}
       this._registerService.addEmployee(this.addemployee).subscribe({
         next: (response) => {
           if (response.success) {
@@ -425,6 +414,7 @@ export class SignupComponent implements OnInit {
       let file = $event.target.files[0];
       if (file.type == "image/png") {
         this.signatureFile = file;
+        this.empSignature = `sign${new Date().getTime()}.${this._utilService.getExtention(this.signatureFile.name)}`;
       }
       else {
         //call validation
@@ -438,6 +428,7 @@ export class SignupComponent implements OnInit {
       let file = $event.target.files[0];
       if (file.type == "image/png" || file.type == "image/jpeg") {
         this.empImageFile = file;
+        this.empImage = `image${new Date().getTime()}.${this._utilService.getExtention(this.empImageFile.name)}`;
       }
       else {
         //call validation
@@ -459,5 +450,49 @@ export class SignupComponent implements OnInit {
 
       return null;
     };
+  }
+
+  //methord for uploading e,mployee signature
+  uploadEmpSignature(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._getdataService.getEmployeeDocUploadURL(this.empSignature, this.signatureFile.type).subscribe({
+        next: res => {
+          this._registerService.uplaodDocstoS3(res.uploadUrl, this.signatureFile).subscribe({
+            next: res => {
+              resolve(res);
+              // this.form.patchValue({'empSignature': this.empSignature});
+              this._toastrService.success('Done')
+            },
+            error: err => {
+              this.loading = false;
+              reject(err);
+              this._toastrService.error('Signature Uploading Problem')
+            }
+          });
+        }
+      })
+    })
+  }
+
+   //methord for uploading e,mployee image
+   uploadEmpImage(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._getdataService.getEmployeeDocUploadURL(this.empImage, this.empImageFile.type).subscribe({
+        next: res => {
+          this._registerService.uplaodDocstoS3(res.uploadUrl, this.empImageFile).subscribe({
+            next: res => {
+              // this.form.patchValue({'employeeImage': this.empImage});
+              resolve(res);
+              this._toastrService.success('Done')
+            },
+            error: err => {
+              this.loading = false;
+              reject(err);
+              this._toastrService.error('Image Uploading Problem')
+            }
+          });
+        }
+      })
+    })
   }
 }

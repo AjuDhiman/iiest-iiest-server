@@ -116,7 +116,7 @@ const employeeRegister = new Schema({
         default: 'Not edited yet'
     },
     signatureImage: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         // unique: true
     },
@@ -125,7 +125,7 @@ const employeeRegister = new Schema({
         required: true
     },
     employeeImage: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         // unique: true
     },

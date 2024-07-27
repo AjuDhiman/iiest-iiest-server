@@ -92,4 +92,14 @@ export class UtilitiesService {
     });
   }
 
+
+  //methord for getting extention from file name 
+  public getExtention(filename: string): string {
+
+    const nameArr: string[] = filename.split('.');
+    const ext: string = nameArr[nameArr.length - 1];
+
+    return ext;
+  }
+
 }

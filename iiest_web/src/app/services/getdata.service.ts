@@ -13,25 +13,45 @@ export class GetdataService {
   constructor(private http: HttpClient, private router: Router) { }
 
 
+  //api for getting lsit of all employees and their details
   public getEmployeeData(): Observable<any> {
     const url = `${this.url}/allemployees`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  //api for getting general data related to eployee registration
   public getGeneralData(): Observable<any> {
     const url = `${this.url}/empgeneraldata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  //api for getting user image
   public getUserImage(objId: string): Observable<any> {
     const url = `${this.url}/getuserimage/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  //api for getting user sign
   public getUserSign(objId: string): Observable<any> {
     const url = `${this.url}/getusersign/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
+
+  //api for getting upload url forn uploading dos to s3 bucket
+  public getEmployeeDocUploadURL(name: string, format: string): Observable<any> {
+    //convering image/jpg to image_jpg because "/" can effect route
+    const url = `${this.url}/getemployeedocuploadurl/${name}?format=${format}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+
+  //api for getting upload url forn uploading dos to s3 bucket
+  public getSalesBasicDocUploadURL(name: string, format: string): Observable<any> {
+    //convering image/jpg to image_jpg because "/" can effect route
+    const url = `${this.url}/getsalesbasicdocuploadurl/${name}?format=${format}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
 
   public getFboGeneralData(): Observable<any> {
     const url = `${this.url}/fbogeneraldata`;
@@ -88,7 +108,7 @@ export class GetdataService {
     const url = `${this.url}/allfbolist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
-  
+
   public getbolist(): Observable<any> {
     const url = `${this.url}/allbolist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -129,12 +149,12 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getRecipientList(): Observable<any> { 
+  public getRecipientList(): Observable<any> {
     const url = `${this.url}/getrecipientlist`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getMoreCaseInfo(product:string, candidateId: string): Observable<any> {
+  public getMoreCaseInfo(product: string, candidateId: string): Observable<any> {
     const url = `${this.url}/morecaseinfo/${product}/${candidateId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
@@ -230,27 +250,27 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getEmployeeUnderManager(): Observable<any>{
+  public getEmployeeUnderManager(): Observable<any> {
     const url: string = `${this.url}/getemployeeundermanager`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getEmpUnderManager(): Observable<any>{
+  public getEmpUnderManager(): Observable<any> {
     const url: string = `${this.url}/getempundermanager`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getTopSalesPersons(): Observable<any>{
+  public getTopSalesPersons(): Observable<any> {
     const url: string = `${this.url}/gettopsalespersons`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getTopProducts(): Observable<any>{
+  public getTopProducts(): Observable<any> {
     const url: string = `${this.url}/gettopproducts`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-  public getMostRepeatedCust(): Observable<any>{
+  public getMostRepeatedCust(): Observable<any> {
     const url: string = `${this.url}/getmostrepeatedcust`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
@@ -289,7 +309,7 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
-   //Audit get sevices for audit batch list
+  //Audit get sevices for audit batch list
   public getAuditBatchListData(): Observable<any> { // for getting batchlist data from training
     const url: string = `${this.url}/getauditbatchlistdata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -309,7 +329,7 @@ export class GetdataService {
     // just a test ... more could would go here
     return throwError(() => err);
   }
-  
+
   // for getting business_owner information
   public getboDetails(): Observable<any> {
     const url: string = `${this.url}/getbodata`;

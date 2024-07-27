@@ -1,5 +1,5 @@
 const express = require('express');
-const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger, getNotifications, updateNotificationStatus } = require('../controllers/employeeControllers/employee');
+const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger, getNotifications, updateNotificationStatus, getEmployeeDocUploadURL } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, salesData, ticketVerificationData} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
@@ -7,6 +7,8 @@ const multer = require('multer');
 const { getTopSalesPersons, getTopProducts, getEmpUnderManager, mostRepeatedCustomer } = require('../controllers/employeeControllers/statList');
 const { getProductSaleData, getAreaWiseSalesData, getPersonWiseSalesData, getClientTypeSalesData, getMonthWiseSaleData, getAreaWiseFboData, getRepeactCustomerData, getData, ticketDeviveryChartData } = require('../controllers/employeeControllers/Highcharts');
 const { getEmployeeNameAndId, verifyEmail } = require('../controllers/boControllers/bo');
+const { signUpload } = require('../config/s3Bucket');
+const { deleteDocFromS3 } = require('../controllers/operationControllers/documents');
 
 const router = express.Router();
 const employeeFilesStorage = multer.memoryStorage();
@@ -18,7 +20,7 @@ const employeeFilesUpload = multer({storage: employeeFilesStorage});
 
 //-----------------------------------------------routes--------------------------------------------------------------------------------------
 
-router.post('/empregister', authMiddleware, employeeFilesUpload.fields([{name: 'empSignature', maxCount: 1}, {name: 'employeeImage', maxCount: 1}]), employeeRegister); //Route of regitering new employee
+router.post('/empregister', authMiddleware, employeeRegister); //Route of regitering new employee
 router.post('/login', employeeLogin);// Route for calling login API for a particular employee
 router.post('/forgot-password', forgotPassword);  //route for calling forgot password api
 router.post('/reset-password', resetPassword); //route for calling reset password API
@@ -36,12 +38,14 @@ router.post('/assignmanager/:id', authMiddleware, assignManger); //rote for assi
 router.get('/allocatedareas/:id', authMiddleware, allocatedAreas); //route for getting allocated area of a particular employee
 router.get('/getuserimage/:id', authMiddleware, employeeImage); //route for getting employee image file from bucket
 router.get('/getusersign/:id', authMiddleware, employeeSignature); //route for getting employee signature file from bucket
-router.post('/edituserfiles', authMiddleware, employeeFilesUpload.fields([{name: 'userImage', maxCount: 1}, {name: 'userSign', maxCount: 1}]), editEmployeeImages); //route for updating employee image or sinature
+router.post('/edituserfiles', authMiddleware, editEmployeeImages); //route for updating employee image or sinature
 router.get('/empcountbydept', authMiddleware, employeeDepartmentCount); //route for getting department and its employee count data
 router.get('/getemphiringdata', authMiddleware, empHiringData); //route for getting hiring data of a particular employee
 router.get('/getemployeeundermanager', authMiddleware, getEmployeeUnderManager); //route for gettig employee list under manager
 router.get('/getnotifications', getNotifications); //route for gettig notifications
 router.put('/updatenotificationstatus/:saleid', authMiddleware, updateNotificationStatus); //route for gettig notifications
+router.get('/getemployeedocuploadurl/:name', authMiddleware, getEmployeeDocUploadURL); //route for getting upload url for uploading employee docs to AWS S3
+router.post('/deletedfroms3', authMiddleware, deleteDocFromS3); //route for deleting image from s3
 
 
 

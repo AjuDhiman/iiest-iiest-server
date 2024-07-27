@@ -1,4 +1,5 @@
 const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear } = require('../../config/pipeline');
+const { uploadDocObject, getDocObject } = require('../../config/s3Bucket');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
@@ -96,7 +97,7 @@ exports.employeeRecord = async (req, res) => {
         ];
 
 
-        const pipeline = [ //pipeline for aggregation 
+        const pipeline = [ //pipeline for aggregating data according to time periods
             {
                 $facet: { // we will use facet for aggregate sales data according to above pipeline arr for diffrent time lines
                     today: [ //filltering only those data which are created after start of today
@@ -760,104 +761,11 @@ exports.employeeSalesData = async (req, res) => {
             ]);
         }
 
-        // salesInfo = await salesModel.aggregate([
-        //     {
-        //         $match: {
-        //             employeeInfo: req.user._id
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: 'fbo_registers',
-        //             localField: 'fboInfo',
-        //             foreignField: '_id',
-        //             as: 'fboInfo'
-        //         },
-        //     },
-        //     {
-        //         $unwind: "$fboInfo"
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: 'bo_registers',
-        //             localField: 'fboInfo.boInfo',
-        //             foreignField: '_id',
-        //             as: 'fboInfo.boInfo'
-        //         },
-        //     },
-        //     {
-        //         $unwind: "$fboInfo.boInfo"
-        //     },
-        //     // {
-        //     //     $lookup: {
-        //     //         from: 'staff_registers',
-        //     //         localField: 'employeeInfo',
-        //     //         foreignField: '_id',
-        //     //         as: 'employeeInfo'
-        //     //     }
-        //     // },
-        //     // {
-        //     //     $unwind: "$employeeInfo"
-        //     // },
-        //     {
-        //         $group: {
-        //             _id: "$_id",
-        //             product_name: {
-        //                 $first: "$product_name"
-        //             },
-        //             payment_mode: {
-        //                 $first: "$payment_mode"
-        //             },
-        //             checkStatus: {
-        //                 $first: "$checkStatus"
-        //             },
-        //             grand_total: {
-        //                 $first: "$grand_total"
-        //             },
-        //             invoiceId: {
-        //                 $first: "$invoiceId"
-        //             },
-        //             createdAt: {
-        //                 $first: "$createdAt"
-        //             },
-        //             updatedAt: {
-        //                 $first: "$updatedAt"
-        //             },
-        //             fostacInfo: {
-        //                 $first: "$fostacInfo"
-        //             },
-        //             foscosInfo: {
-        //                 $first: "$foscosInfo"
-        //             },
-        //             hraInfo: {
-        //                 $first: "$hraInfo"
-        //             },
-        //             fboInfo: {
-        //                 $first: {
-        //                     fbo_name: "$fboInfo.fbo_name",
-        //                     owner_name: "$fboInfo.owner_name",
-        //                     customer_id: "$fboInfo.customer_id",
-        //                     state: "$fboInfo.state",
-        //                     district: "$fboInfo.district",
-        //                     _id: "$fboInfo._id",
-        //                     createdAt: "$fboInfo.createdAt",
-        //                     business_type: "$fboInfo.business_type",
-        //                     gst_number: "$fboInfo.gst_number",
-        //                     address: "$fboInfo.address",
-        //                     email: "$fboInfo.email",
-        //                     owner_contact: "$fboInfo.owner_contact",
-        //                     pincode: "$fboInfo.pincode",
-        //                     village: "$fboInfo.village",
-        //                     tehsil: "$fboInfo.tehsil",
-        //                     boInfo: {
-        //                         _id: "$fboInfo.boInfo._id",
-        //                         customer_id: "$fboInfo.boInfo.customer_id",
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // ]);
+        //generating presigned url for all docs src
+
+        // salesInfo.docs.forEach((doc) => {
+        //     doc.src = doc.src.map(async(src) => await getDocObject(src))
+        // })
 
         return res.status(200).json({ salesInfo });
     } catch (error) {
