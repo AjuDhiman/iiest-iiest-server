@@ -3,6 +3,7 @@ const docsModel = require("../../models/operationModels/documentsSchema");
 
 const fs = require('fs');
 const { logAudit } = require("../generalControllers/auditLogsControllers");
+const { getDocObject, fostacDocPath, foscosDocPath, hraDocPath } = require("../../config/s3Bucket");
 
 
 exports.saveDocument = async (req, res) => { //function for saving documents and adding it's src name and formata as an object in documets arry of oject in document collection finding it by handler id
@@ -69,6 +70,22 @@ exports.getDocList = async (req, res) => { //gertting list of all docs relate to
 
         const docs = await docsModel.findOne({ handlerId: handlerId });
 
+        const promises = [];
+
+        //generating presigned urls for each src
+        docs.documents.forEach((doc) => {
+            const promise = (async () => {
+                if (doc.multipleDoc) {
+                    doc.src = await Promise.all(doc.src.map(async (src) => await getDocObject(src)));
+                } else {
+                    doc.src = await getDocObject(doc.src);
+                }
+            })();
+            promises.push(promise);
+        });
+
+        await Promise.all(promises);
+
         if (!docs) {
             return res.status(201).json({ success, message: 'No Doc Found' });
         }
@@ -127,5 +144,75 @@ exports.deleteDocs = async (req, res) => { //function for delertng a particular 
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+//methord for deleting doc from s3
+exports.deleteDocFromS3 = async (req, res) => {
+    try {
+
+        const { key } = req.body;
+
+        await this.deleteDocFromS3(key);
+
+        res.status(200).json({ message: 'Doc Deleted' })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+//methord for generatig uplaod url for fostc
+exports.generateFostacDocUploadURL = async (req, res) => {
+    try {
+        const { info } = req.body;
+        //generating key for obj
+
+        const key = `${fostacDocPath}${info.name}`;
+        //generating uolaod url
+        const uploadUrl = await uploadDocObject(key, info.format);
+
+        return res.status(200).json({ uploadUrl: uploadUrl });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
+
+//methord for generatig uplaod url for foscos
+exports.generateFoscosDocUploadURL = async (req, res) => {
+    try {
+        const { info } = req.body;
+        //generating key for obj
+
+        const key = `${foscosDocPath}${info.name}`;
+        //generating uolaod url
+        const uploadUrl = await uploadDocObject(key, info.format);
+
+        return res.status(200).json({ uploadUrl: uploadUrl });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
+
+//methord for generatig uplaod url for hra
+exports.generateHRADocUploadURL = async (req, res) => {
+    try {
+        const { info } = req.body;
+        //generating key for obj
+
+        const key = `${hraDocPath}${info.name}`;
+        //generating uolaod url
+        const uploadUrl = await uploadDocObject(key, info.format);
+
+        return res.status(200).json({ uploadUrl: uploadUrl });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }

@@ -914,13 +914,19 @@ exports.updateFboBasicDocStatus = async (req, res) => {
 
     // saving each doc to doc array
     docsObject.forEach(async (doc) => {
+      let src = '';
+      if(doc.isMultiDoc) {
+        src = doc.src.map(a => `${fboBasicDocsPath}${a}`)
+      } else {
+        src = `${fboBasicDocsPath}${doc.src}`;
+      }
       await docsModel.findOneAndUpdate({ handlerId: handlerId }, {
         $push: {
           documents: {
             name: doc.name,
             format: doc.format,
             multipleDoc: doc.isMultiDoc,
-            src: `${fboBasicDocsPath}${doc.src}`,
+            src: src,
           }
         }
       });

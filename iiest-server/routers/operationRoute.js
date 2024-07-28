@@ -6,7 +6,7 @@ const { getAuditLogs } = require('../controllers/generalControllers/auditLogsCon
 const { getKobData } = require('../controllers/generalControllers/generalData');
 const { foscosDocuments, hraDocuments, tickets, fostacDocuments } = require('../config/storage');
 const { trainingBatch, getTrainingBatchData, updateBatch, auditBatch, getAuditBatchData, getCandidateAuditBatch } = require('../controllers/trainingControllers/trainingBatch');
-const { saveDocument, getDocList, deleteDocs } = require('../controllers/operationControllers/documents');
+const { saveDocument, getDocList, deleteDocs, generateFostacDocUploadURL, generateFoscosDocUploadURL, generateHRADocUploadURL } = require('../controllers/operationControllers/documents');
 
 const router = express.Router();
 
@@ -49,3 +49,8 @@ router.put('/updatetraingbatch/:batchid', authMiddleware, updateBatch) // route 
 
 //route for auditors
 router.get('/getcandidateauditbatch/:verificationid', authMiddleware, getCandidateAuditBatch); 
+
+//route for generating uopload url for s3
+router.post('/generatefostacdocuploadurl', authMiddleware, generateFostacDocUploadURL); 
+router.post('/generatefoscosdocuploadurl', authMiddleware, generateFoscosDocUploadURL); 
+router.post('/generatehradocuploadurl', authMiddleware, generateHRADocUploadURL); 

@@ -53,6 +53,27 @@ export class GetdataService {
   }
 
 
+  //api for getting upload url forn uploading dos to s3 bucket
+  public generateFostacDocUrl(info:{name: string, format: string}): Observable<any> {
+    const url = `${this.url}/generatefostacdocuploadurl`;
+    return this.http.post<any>(url, {info}).pipe(catchError(this.handleError));
+  }
+
+
+  //api for getting upload url forn uploading dos to s3 bucket
+  public generateFoscosDocUrl(info:{name: string, format: string}): Observable<any> {
+    const url = `${this.url}/generatefoscosdocuploadurl`;
+    return this.http.post<any>(url, {info}).pipe(catchError(this.handleError));
+  }
+
+
+  //api for getting upload url forn uploading dos to s3 bucket
+  public generateHRADocUrl(info:{name: string, format: string}): Observable<any> {
+    const url = `${this.url}/generatehradocuploadurl`;
+    return this.http.post<any>(url, {info}).pipe(catchError(this.handleError));
+  }
+
+
   public getFboGeneralData(): Observable<any> {
     const url = `${this.url}/fbogeneraldata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

@@ -10,9 +10,15 @@ const AWS_S3 = JSON.parse(process.env.AWS_S3);
 const invoicePath = 'invoices/';
 const employeeDocsPath = 'employee/';
 const fboBasicDocsPath = 'basicsalesdoc/';
+const fostacDocPath = 'fostac/';
+const foscosDocPath = 'foscos/';
+const hraDocPath = 'hra/';
 exports.invoicesPath = invoicePath;
 exports.employeeDocsPath = employeeDocsPath;
 exports.fboBasicDocsPath = fboBasicDocsPath;
+exports.fostacDocPath = fostacDocPath;
+exports.foscosDocPath = foscosDocPath;
+exports.hraDocPath = hraDocPath;
 
 //configuring S3 Client
 const s3Client = new S3Client({

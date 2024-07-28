@@ -1,141 +1,142 @@
 <div class="modal-header bg-secondary">
-    <h6 class="modal-title text-white" id="modal-basic-title">Upload Docs</h6>
-  
-    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
-  </div>
-  
-  <div class="border-top border-dark-subtle"  *ngIf="!fboData.fboInfo.isBasicDocUploaded; else docs">
-    <form [formGroup]="docForm" autocomplete="off" (ngSubmit)="onSubmit()"
-      enctype="multipart/form-data">
-      <!--Foscos FORM Start-->
-      <div class="modal-body">
-        <div class="row">
-          
-            <div class="col-md-4">
-                <label for="managerName" class="form-label">Shop Manager Name<sup>*</sup></label>
-                <input type="text" id="managerName" class="form-control form-control-sm" placeholder="Shop Manager Name"
-                  formControlName="managerName"
-                  [ngClass]="{ 'is-invalid': submitted && docform['managerName'].errors }" />
-                <div *ngIf="submitted && docform['managerName'].errors" class="invalid-feedback">
-                  <div *ngIf="docform['managerName'].errors['required']">Manager Name is required</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label for="address" class="form-label">Address<sup>*</sup></label>
-                <input type="text" id="address" class="form-control form-control-sm" placeholder="Address"
-                  formControlName="address" [ngClass]="{ 'is-invalid': submitted && docform['address'].errors }" />
-                <div *ngIf="submitted && docform['address'].errors" class="invalid-feedback">
-                  <div *ngIf="docform['address'].errors['required']">Address is required</div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
-                <input type="number" id="pincode" class="form-control form-control-sm" placeholder="Pincode" 
-                  formControlName="pincode" [ngClass]="{ 'is-invalid': submitted && docform['pincode'].errors }" />
-                <div *ngIf="submitted && docform['pincode'].errors" class="invalid-feedback">
-                  <div *ngIf="docform['pincode'].errors['required']">Pincode is required</div>
-                  <div *ngIf="docform['pincode'].errors['pattern']">Pincode is invalid</div>
-                </div>
-              </div>
-              <div class="col-md-4">
-            <label for="shopPhoto" class="form-label">Shop's Photo<sup>*</sup></label>
-            <input type="file" (change)="onImageChangeFromFile($event, 'shopPhoto')"
-              placeholder="Shop Photo(Name should be visible)" formControlName="shopPhoto"
-              class="form-control form-control-sm" id="shopPhoto"
-              [ngClass]="{ 'is-invalid': submitted && docform['shopPhoto'].errors }" />
-            <div *ngIf="submitted && docform['shopPhoto'].errors" class="invalid-feedback">
-              <div *ngIf="docform['shopPhoto'].errors['required']">Shop Photo is required.(jpeg or png)</div>
-              <div *ngIf="docform['shopPhoto'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
-                files
-                are allowed.</div>
-            </div>
-            </div>
-         
-          <div class="col-md-4">
-            <label for="managerPhoto" class="form-label">Manager's Photo<sup>*</sup></label>
-            <input type="file" placeholder="Owner Photo" (change)="onImageChangeFromFile($event, 'managerPhoto')"
-              formControlName="managerPhoto" class="form-control form-control-sm" id="managerPhoto"
-              [ngClass]="{ 'is-invalid': submitted && docform['managerPhoto'].errors }" />
-            <div *ngIf="submitted && docform['managerPhoto'].errors" class="invalid-feedback">
-              <div *ngIf="docform['managerPhoto'].errors['required']">Manager's Photo is required.(jpeg or png)</div>
-              <div *ngIf="docform['managerPhoto'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
-                files
-                are allowed.</div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label for="managerAadhar" class="form-label">Manager's Aadhar<sup>*</sup></label>
-            <input type="file" (change)="onImageChangeFromFile($event, 'aadharPhoto')" placeholder="Aadhar Photo"
-              formControlName="managerAadhar" class="form-control form-control-sm" id="managerAadhar" multiple
-              [ngClass]="{ 'is-invalid': submitted && docform['managerAadhar'].errors }" />
-            <div *ngIf="submitted && docform['managerAadhar'].errors" class="invalid-feedback" style="display: block;">
-              <div *ngIf="docform['managerAadhar'].errors['required']" style="display: block;">Manager's Aadhar is required.(jpeg or png)</div>
-              <div *ngIf="docform['managerAadhar'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
-                files are allowed.</div>
-            </div>
+  <h6 class="modal-title text-white" id="modal-basic-title">Upload Docs</h6>
+
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="border-top border-dark-subtle" *ngIf="!fboData.fboInfo.isBasicDocUploaded; else docs">
+  <form [formGroup]="docForm" autocomplete="off" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+    <!--Foscos FORM Start-->
+    <div class="modal-body">
+      <div class="row">
+
+        <div class="col-md-4">
+          <label for="managerName" class="form-label">Shop Manager Name<sup>*</sup></label>
+          <input type="text" id="managerName" class="form-control form-control-sm" placeholder="Shop Manager Name"
+            formControlName="managerName" [ngClass]="{ 'is-invalid': submitted && docform['managerName'].errors }" />
+          <div *ngIf="submitted && docform['managerName'].errors" class="invalid-feedback">
+            <div *ngIf="docform['managerName'].errors['required']">Manager Name is required</div>
           </div>
         </div>
-        <p style="font-size: 16px; margin: 0; padding: 0; margin-top: 15px;">(Note: only .jpeg, .jpg, and .png files are allowed) </p>
-      </div>
-  
-      <!--Fostac FORM Ends-->
-      <!--HRA FORM Start -->
-
-    
-  
-      <div class="modal-footer text-left">
-        <div>
+        <div class="col-md-4">
+          <label for="address" class="form-label">Address<sup>*</sup></label>
+          <input type="text" id="address" class="form-control form-control-sm" placeholder="Address"
+            formControlName="address" [ngClass]="{ 'is-invalid': submitted && docform['address'].errors }" />
+          <div *ngIf="submitted && docform['address'].errors" class="invalid-feedback">
+            <div *ngIf="docform['address'].errors['required']">Address is required</div>
+          </div>
         </div>
-        <button  type="submit" class="btn btn-sm btn-outline-dark">Upload</button>
+        <div class="col-md-4">
+          <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
+          <input type="number" id="pincode" class="form-control form-control-sm" placeholder="Pincode"
+            formControlName="pincode" [ngClass]="{ 'is-invalid': submitted && docform['pincode'].errors }" />
+          <div *ngIf="submitted && docform['pincode'].errors" class="invalid-feedback">
+            <div *ngIf="docform['pincode'].errors['required']">Pincode is required</div>
+            <div *ngIf="docform['pincode'].errors['pattern']">Pincode is invalid</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="shopPhoto" class="form-label">Shop's Photo<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'shopPhoto')"
+            placeholder="Shop Photo(Name should be visible)" formControlName="shopPhoto"
+            class="form-control form-control-sm" id="shopPhoto"
+            [ngClass]="{ 'is-invalid': submitted && docform['shopPhoto'].errors }" />
+          <div *ngIf="submitted && docform['shopPhoto'].errors" class="invalid-feedback">
+            <div *ngIf="docform['shopPhoto'].errors['required']">Shop Photo is required.(jpeg or png)</div>
+            <div *ngIf="docform['shopPhoto'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files
+              are allowed.</div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="managerPhoto" class="form-label">Manager's Photo<sup>*</sup></label>
+          <input type="file" placeholder="Owner Photo" (change)="onImageChangeFromFile($event, 'managerPhoto')"
+            formControlName="managerPhoto" class="form-control form-control-sm" id="managerPhoto"
+            [ngClass]="{ 'is-invalid': submitted && docform['managerPhoto'].errors }" />
+          <div *ngIf="submitted && docform['managerPhoto'].errors" class="invalid-feedback">
+            <div *ngIf="docform['managerPhoto'].errors['required']">Manager's Photo is required.(jpeg or png)</div>
+            <div *ngIf="docform['managerPhoto'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files
+              are allowed.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="managerAadhar" class="form-label">Manager's Aadhar(Max two Files)<sup>*</sup></label>
+          <input type="file" (change)="onImageChangeFromFile($event, 'aadharPhoto')" placeholder="Aadhar Photo"
+            formControlName="managerAadhar" class="form-control form-control-sm" id="managerAadhar" multiple
+            [ngClass]="{ 'is-invalid': submitted && docform['managerAadhar'].errors }" />
+          <div *ngIf="submitted && docform['managerAadhar'].errors" class="invalid-feedback" style="display: block;">
+            <div *ngIf="docform['managerAadhar'].errors['required']" style="display: block;">Manager's Aadhar is
+              required.(jpeg or png)</div>
+            <div *ngIf="docform['managerAadhar'].errors['invalidFileType']">Invalid file type. Only .png, .jpg or .jpeg
+              files are allowed.</div>
+            <div *ngIf="docform['managerAadhar'].errors['invalidFileNumber']">Max 2 files are allowed</div>
+          </div>
+        </div>
       </div>
-    </form>
-  </div>
+      <p style="font-size: 16px; margin: 0; padding: 0; margin-top: 15px;">(Note: only .jpeg, .jpg, and .png files are
+        allowed) </p>
+    </div>
 
-  <ng-template #docs>
-    <div class="tab-content mx-3 my-3" id="orders-table-tab-content">
-      <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-        <div class="app-card app-card-orders-table shadow-sm mb-5">
-          <div class="app-card-body">
-            <div class="table-responsive">
-              <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
-                <thead>
-                  <th class="cell text-center">Manager Name</th>
-                  <th class="cell text-center">Address</th>
-                  <th class="cell text-center">Pincode</th>
-                  <th class="cell text-center">Manager Photo</th>
-                  <th class="cell text-center">Shop Photo</th>
-                  <th class="cell text-center">Manager Aadhar</th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="cell text-center"><span class="truncate">{{fboData.fboInfo.boInfo.manager_name}}</span></td>
-                    <td class="cell text-center"><span class="truncate">{{fboData.fboInfo.address}}</span></td>
-                    <td class="cell text-center"><span class="truncate">{{fboData.fboInfo.pincode}}</span></td>
-                    <td class="cell text-center"><span class="truncate">
-                      <fa-icon class="fa-2xl text-success cursor-pointer"
-                      (click)="viewDocument(managerPhotoObj.name, managerPhotoObj.src, managerPhotoObj.format.toLowerCase(), managerPhotoObj.multipleDoc)"
-                        [icon]="faFile"></fa-icon>
-                    </span></td>
-                    <td class="cell text-center"><span class="truncate">
-                      <fa-icon class="fa-2xl text-success cursor-pointer"
-                      (click)="viewDocument(shopPhotoObj.name, shopPhotoObj.src, shopPhotoObj.format.toLowerCase(), shopPhotoObj.multipleDoc)"
-                        [icon]="faFile"></fa-icon>
-                    </span></td>
-                    <td class="cell text-center"><span class="truncate">
-                      <fa-icon class="fa-2xl text-success cursor-pointer"
-                      (click)="viewDocument(managerAadharObj.name, managerAadharObj.src, managerAadharObj.format.toLowerCase(), managerAadharObj.multipleDoc)"
-                        [icon]="faFile"></fa-icon>
-                    </span></td>
-                  </tr>
-                </tbody>
+    <!--Fostac FORM Ends-->
+    <!--HRA FORM Start -->
 
-              </table>
-            </div>
+
+
+    <div class="modal-footer text-left">
+      <div>
+      </div>
+      <button type="submit" class="btn btn-sm btn-outline-dark">Upload</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #docs>
+  <div class="tab-content mx-3 my-3" id="orders-table-tab-content">
+    <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+      <div class="app-card app-card-orders-table shadow-sm mb-5">
+        <div class="app-card-body">
+          <div class="table-responsive">
+            <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+              <thead>
+                <th class="cell text-center">Manager Name</th>
+                <th class="cell text-center">Address</th>
+                <th class="cell text-center">Pincode</th>
+                <th class="cell text-center">Manager Photo</th>
+                <th class="cell text-center">Shop Photo</th>
+                <th class="cell text-center">Manager Aadhar</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell text-center"><span class="truncate">{{fboData.fboInfo.boInfo.manager_name}}</span>
+                  </td>
+                  <td class="cell text-center"><span class="truncate">{{fboData.fboInfo.address}}</span></td>
+                  <td class="cell text-center"><span class="truncate">{{fboData.fboInfo.pincode}}</span></td>
+                  <td class="cell text-center"><span class="truncate">
+                      <fa-icon class="fa-2xl text-success cursor-pointer"
+                        (click)="viewDocument(managerPhotoObj.name, managerPhotoObj.src, managerPhotoObj.format.toLowerCase(), managerPhotoObj.multipleDoc)"
+                        [icon]="faFile"></fa-icon>
+                    </span></td>
+                  <td class="cell text-center"><span class="truncate">
+                      <fa-icon class="fa-2xl text-success cursor-pointer"
+                        (click)="viewDocument(shopPhotoObj.name, shopPhotoObj.src, shopPhotoObj.format.toLowerCase(), shopPhotoObj.multipleDoc)"
+                        [icon]="faFile"></fa-icon>
+                    </span></td>
+                  <td class="cell text-center"><span class="truncate">
+                      <fa-icon class="fa-2xl text-success cursor-pointer"
+                        (click)="viewDocument(managerAadharObj.name, managerAadharObj.src, managerAadharObj.format.toLowerCase(), managerAadharObj.multipleDoc)"
+                        [icon]="faFile"></fa-icon>
+                    </span></td>
+                </tr>
+              </tbody>
+
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </ng-template>
-  
-  <ngx-loading [show]="loading"></ngx-loading>
-  
+  </div>
+</ng-template>
+
+<ngx-loading [show]="loading"></ngx-loading>

@@ -509,14 +509,6 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'documents', // The collection name where fboInfo is stored
-                        localField: 'fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'docs'
-                    }
-                },
-                {
                     $project: {
                         "_id": 1,
                         "grand_total": 1,
@@ -551,7 +543,6 @@ exports.employeeSalesData = async (req, res) => {
                         "waterTestInfo": 1,
                         "createdAt": 1,
                         "cheque_data": 1,
-                        "docs": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }
@@ -609,14 +600,6 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'documents', // The collection name where fboInfo is stored
-                        localField: 'fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'docs'
-                    }
-                },
-                {
                     $project: {
                         "_id": 1,
                         "grand_total": 1,
@@ -651,7 +634,6 @@ exports.employeeSalesData = async (req, res) => {
                         "waterTestInfo": 1,
                         "createdAt": 1,
                         "cheque_data": 1,
-                        "docs": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }
@@ -710,14 +692,6 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'documents', // The collection name where fboInfo is stored
-                        localField: 'fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'docs'
-                    }
-                },
-                {
                     $project: {
                         "_id": 1,
                         "grand_total": 1,
@@ -752,7 +726,6 @@ exports.employeeSalesData = async (req, res) => {
                         "waterTestInfo": 1,
                         "createdAt": 1,
                         "cheque_data": 1,
-                        "docs": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }

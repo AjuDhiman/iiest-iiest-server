@@ -48,19 +48,25 @@ export class UtilitiesService {
     const documentIds = Array.from(allDocument);
     const zip = new JSZip();
 
+    console.log(documentIds);
+
     if (documentIds.length <= 1) {
       const documentId = documentIds;
-      this.http.get(`${this.DOC_URL}/${documentId}`, { responseType: 'blob' }).subscribe((data: Blob) => {
+      this.http.get(documentId[0], { responseType: 'blob' }).subscribe((data: Blob) => {
         const downloadUrl = window.URL.createObjectURL(data);
-
+  
         // Create a link element and trigger the download
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = `document_${documentId}`; // Set the filename with the appropriate file extension
-        link.click();
-
+        link.download = `document_${documentId}.jpg`; // Adjust the file extension as needed
+        document.body.appendChild(link); // Append the link to the body
+        link.click(); // Trigger the download
+        document.body.removeChild(link); // Remove the link after download
+  
         // Cleanup the Blob URL
         window.URL.revokeObjectURL(downloadUrl);
+      }, error => {
+        console.error('Download failed:', error);
       });
     } else {
       // Fetch and add each document to the zip file
