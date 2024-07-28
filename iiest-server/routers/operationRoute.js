@@ -7,6 +7,7 @@ const { getKobData } = require('../controllers/generalControllers/generalData');
 const { foscosDocuments, hraDocuments, tickets, fostacDocuments } = require('../config/storage');
 const { trainingBatch, getTrainingBatchData, updateBatch, auditBatch, getAuditBatchData, getCandidateAuditBatch } = require('../controllers/trainingControllers/trainingBatch');
 const { saveDocument, getDocList, deleteDocs, generateFostacDocUploadURL, generateFoscosDocUploadURL, generateHRADocUploadURL } = require('../controllers/operationControllers/documents');
+const { uploadFostacDoc, uploadFoscosDoc, uploadHraDoc } = require('../config/s3Bucket');
 
 const router = express.Router();
 
@@ -34,9 +35,9 @@ router.get('/getreverts/:id', authMiddleware, getReverts); // route for getting 
 module.exports = router;
 router.post('/closeticket/:recipientid', authMiddleware,tickets.single('certificate'), ticketDelivery);
 router.get('/getticketdeliverydata/:recipientid', authMiddleware, getTicketDeliveryData)// route for getting ticket delivery data for a customer
-router.post('/savefoscosdocuments', authMiddleware,  foscosDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
-router.post('/savehradocuments', authMiddleware,  hraDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a shop
-router.post('/savefostacdocuments', authMiddleware,  fostacDocuments.fields([{name: 'document', maxCount: 50}]), saveDocument)// route for saving docs for a recp
+router.post('/savefoscosdocuments', authMiddleware,  uploadFoscosDoc.fields([{name: 'document', maxCount: 5}]), saveDocument)// route for saving docs for a shop
+router.post('/savehradocuments', authMiddleware,  uploadHraDoc.fields([{name: 'document', maxCount: 5}]), saveDocument)// route for saving docs for a shop
+router.post('/savefostacdocuments', authMiddleware,  uploadFostacDoc.fields([{name: 'document', maxCount: 5}]), saveDocument)// route for saving docs for a recp
 router.delete('/deletedoc/:id', authMiddleware, deleteDocs)// route for saving docs for a shop
 router.get('/getdocs/:id', authMiddleware, getDocList);
 

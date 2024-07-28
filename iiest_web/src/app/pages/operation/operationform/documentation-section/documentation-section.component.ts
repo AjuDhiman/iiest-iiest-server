@@ -166,6 +166,7 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
         //   return { ...item, src: item.src[0] }
         // });
         this.docList = res.docs;
+        console.log(res);
         this.emitDocuments.emit(this.docList); //emit 
         this.refreshAuditLog.emit();
       }

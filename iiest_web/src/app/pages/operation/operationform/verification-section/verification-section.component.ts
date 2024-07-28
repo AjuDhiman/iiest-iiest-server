@@ -278,7 +278,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
           this._getDataService.getDocs(res.populatedInfo.recipientId).subscribe({
             next: response => {
-              this.emitDocuments.emit(response.docs); //emit 
+              this.emitDocuments.emit(response.doc || []); //emit 
               this.refreshAuditLog.emit();
             }
           });
@@ -309,8 +309,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verificationForm.patchValue({ email: res.populatedInfo.salesInfo.fboInfo.email });
           this.verificationForm.patchValue({ address: res.populatedInfo.address });
           this.verificationForm.patchValue({ state: res.populatedInfo.state });
-          // this.verificationForm.patchValue({ kob: res.populatedInfo.kob });
-          // this.verificationForm.patchValue({ food_handler_no: res.populatedInfo.foodHandlersCount });
           this.verificationForm.patchValue({ district: res.populatedInfo.district });
           this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
           this.verificationForm.patchValue({ hra_total: res.populatedInfo.salesInfo.hraInfo.hra_total });

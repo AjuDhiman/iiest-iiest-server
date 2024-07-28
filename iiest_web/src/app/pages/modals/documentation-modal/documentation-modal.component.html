@@ -104,7 +104,7 @@
                         <fa-icon *ngIf="doc.format === 'pdf'" [icon]="faFilePdf"
                           class="fa-2xl text-success cursor-pointer"></fa-icon>
                         <img class="cursor-pointers" *ngIf="doc.format === 'image'"
-                          [src]="'http://localhost:3000/' + doc.src" height="30" width="50" [alt]="doc.name">
+                          [src]="doc.src" height="30" width="50" [alt]="doc.name">
                       </div>
                       <div *ngIf="doc.src.length > 1">
                         <fa-icon *ngIf="doc.format === 'image'" [icon]="faFileImage"
