@@ -193,73 +193,6 @@ export class RecipientComponent implements OnInit {
           }
         }
       })
-    } else if (this.serviceType === 'Foscos') {
-
-      let formData: any = new FormData()
-
-      formData.append('operatorName', this.recipientform.get('operatorName')?.value);
-      formData.append('address', this.recipientform.get('address')?.value);
-      formData.append('pincode', this.recipientform.get('pincode')?.value);
-      formData.append('village', this.recipientform.get('village')?.value);
-      formData.append('tehsil', this.recipientform.get('tehsil')?.value);
-      formData.append('eBill', this.ebillFile);
-      formData.append('ownerPhoto', this.ownerPhotoFile);
-      formData.append('shopPhoto', this.shopPhotoFile);
-
-      (this.aadharFile as any).forEach((file: File) => {
-        formData.append('aadharPhoto', file);
-      })
-
-      this._registerService.addFboShop(this.fboID, formData).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this._toastrService.success('', 'Record Added Successfully.');
-            this.closeModal();
-            this.loading = false;
-          }
-        },
-        error: (err) => {
-          this.loading = false;
-          let errorObj = err.error;
-          if (errorObj.userError) {
-            this._registerService.signout();
-          } else if (errorObj.addressErr) {
-            this._toastrService.error('', 'This Address Already Exists.');
-          } else if (errorObj.pincodeErr) {
-            this._toastrService.error(errorObj.message, 'Invalid Pincode');
-            this.activeModal.close();
-          }
-        }
-      })
-    } else if (this.serviceType === 'HRA') {
-      let formData = new FormData();
-
-      formData.append('manager_name', this.recipientform.get('manager_name')?.value);
-      formData.append('manager_contact', this.recipientform.get('manager_contact')?.value);
-      formData.append('manager_email', this.recipientform.get('manager_email')?.value);
-      formData.append('address', this.recipientform.get('address')?.value);
-      formData.append('pincode', this.recipientform.get('pincode')?.value);
-      // formData.append('kob', this.recipientform.get('kob')?.value);
-      // formData.append('food_handlers', this.recipientform.get('food_handlers')?.value);
-      // formData.append('fostacCertificate', this.fostacCertificate);
-      // formData.append('foscosLicense', this.foscosLicense);
-      formData.append('ownerPhoto', this.ownerPhotoFile);
-      formData.append('shopPhoto', this.shopPhotoFile);
-
-      (this.aadharFile as any).forEach((file: File) => {
-        formData.append('aadharPhoto', file);
-      })
-
-
-      this._registerService.addHygieneShop(this.fboID, formData).subscribe({
-        next: res => {
-          if (res.success) {
-            this._toastrService.success('', 'Record Added Successfully.');
-            this.closeModal();
-            this.loading = false;
-          }
-        }
-      })
     }
   }
 
@@ -502,14 +435,6 @@ export class RecipientComponent implements OnInit {
     this.excelForm = this.formBuilder.group({
       excel: ['', [Validators.required, this.validateFileType(['csv', 'xlsx'])]],
     });
-  }
-
-  getEbill(id: string) {
-    this.getDataServices.getEbill(id).subscribe({
-      next: (res) => {
-        this.ebillImage = res.billConverted;
-      }
-    })
   }
 
 }

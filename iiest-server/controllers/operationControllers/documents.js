@@ -18,7 +18,7 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
 
         let uploadedDoc;
 
-        const src = file.map(item => item.filename); //getting src of each file
+        const src = file.map(item => item.key); //getting src of each file
         const docObject = await docsModel.findOne({ handlerId: handlerId });
         if (docObject) {
             // Update the existing document by pushing the new document to the array
