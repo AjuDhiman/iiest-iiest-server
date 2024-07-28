@@ -2,64 +2,25 @@ const sendInvoiceMail = require('./sendMail');
 const htmlToPdf = require('html-pdf-node');
 const PuppeteerHTMLPDF = require('puppeteer-html-pdf');
 const invoiceTemplate = require('../assets/invoiceTemplate');
-const generalDataSchema = require('../models/generalModels/generalDataSchema')
+const generalDataSchema = require('../models/generalModels/generalDataSchema');
+const { uploadBuffer, invoicesPath } = require('../config/s3Bucket');
 
 const generateInvoice = async (idNumber, clientEmail, fboObj) => {
-    const fileName = `${Date.now()}.pdf`;
+    const fileName = `invoice_${Date.now()}.pdf`;
     const invoiceHTML = await invoiceTemplate(fboObj);
     let file = { content: invoiceHTML };
     let options = { format: 'A4', omitBackground: true, pageRanges: '1', printBackground: false };
 
     try {
-        // const pdfBuffer = await new Promise((resolve, reject) => {
-        // htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-        //     if (pdfBuffer) {
-        //         fboObj.invoiceUploadStream.write(pdfBuffer);
-        //         fboObj.invoiceUploadStream.end((err) => {
-        //             if (err) {
-        //                 console.error(err);
-        //                 reject(err);
-        //             }
-        //             console.log('Invoice stored successfully');
-        //             // sendInvoiceMail(clientEmail, fileName, pdfBuffer);
-        //             // const invoiceDownloadStream = invoiceBucket.openDownloadStreamByName(fileName);
-        //             // const filePath = `${__dirname}/invoice/${fileName}`;
-        //             // const fileWriteStream = fs.createWriteStream(filePath);
-
-        //             // invoiceDownloadStream.pipe(fileWriteStream);
-        //             // fileWriteStream.on('finish', () => {
-        //             //     console.log('Invoice downloaded and saved successfully');
-        //             // });
-        //             // fileWriteStream.on('error', (err) => {                  
-        //             //     console.error('Error saving invoice to folder:', err);
-        //             // });
-        //             resolve(pdfBuffer);
-        //         });
-        //     }
-        // }).catch(err => reject(err));
-        // });
         const htmlPDF = new PuppeteerHTMLPDF();
 
         htmlPDF.setOptions(options);
         const pdfBuffer = await htmlPDF.create(invoiceHTML);
         if (pdfBuffer) {
-            // Write the buffer to the stream and end the stream properly
-            await new Promise((resolve, reject) => {
-                fboObj.invoiceUploadStream.write(pdfBuffer, (err) => {
-                    if (err) {
-                        console.error('Error writing to stream:', err);
-                        return reject(err);
-                    }
-                    fboObj.invoiceUploadStream.end((err) => {
-                        if (err) {
-                            console.error('Error ending stream:', err);
-                            return reject(err);
-                        }
-                        console.log('Invoice stored successfully');
-                        resolve();
-                    });
-                });
-            });
+
+            //uploading invoice to AWS S3 invoices path is comming from s3.js file in config folder
+            await uploadBuffer(`${invoicesPath}${fileName}`, pdfBuffer)
+
         }
 
         return { encodedString: pdfBuffer, fileName };

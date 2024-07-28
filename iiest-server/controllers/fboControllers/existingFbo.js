@@ -314,10 +314,10 @@ exports.existingFboPayPage = async (req, res) => {
 
 
 
+//API for sale i n case of pay page success
 
 
-exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of pay page success
-
+exports.existingFboPayReturn = async (req, res) => { 
   let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
 
   try {
@@ -415,9 +415,9 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
 
           const qty = fostac_training.recipient_no;
 
-          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
-
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
+          invoiceData.push(invoice);
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Fostac' });
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
@@ -435,9 +435,9 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
 
           const qty = foscos_training.shops_no;
 
-          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
-
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
+          invoiceData.push(invoice);
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Foscos' });
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
@@ -455,9 +455,10 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
 
           const qty = hygiene_audit.shops_no;
 
-          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceData.push(invoice)
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'HRA' });
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
@@ -475,9 +476,11 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
 
           const qty = medical.recipient_no;
 
-          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceData.push(invoice);
+          
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Medical' });
         }
 
         if (product_name.includes('Water Test Report')) {
@@ -494,9 +497,10 @@ exports.existingFboPayReturn = async (req, res) => { //API for sale i n case of 
           //getting invoice buffer and invoice Id for sending it in mail and saving in d
 
           //pushing buffer into invoice data array
-          invoiceData.push(await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceData.push(invoice);
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode , product: 'Water Test Report'});
         }
 
         const buyerData = await fboPaymentSchema.create({

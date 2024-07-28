@@ -14,12 +14,14 @@ const boModel = require('../../models/BoModels/boSchema');
 const sessionModel = require('../../models/generalModels/sessionDataSchema');
 const { shopModel } = require('../../models/fboModels/recipientSchema');
 const generalDataSchema = require('../../models/generalModels/generalDataSchema');
+const { getDocObject, invoicesPath, fboBasicDocsPath, uploadDocObject, doesFileExist, employeeDocsPath } = require('../../config/s3Bucket');
+const docsModel = require('../../models/operationModels/documentsSchema');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
 let fboFormData = {};
 
-//methord for initiating oayment with phoen pe
+//methord for initiating payment with phone pe
 exports.fboPayment = async (req, res) => {
   try {
     let success = false;
@@ -47,11 +49,10 @@ exports.fboPayment = async (req, res) => {
       }
     }
 
-    const signatureBucket = empSignBucket();
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
 
-    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
-
-    if (!signExists.length > 0) {
+    if (!signExists) {
       return res.status(404).json({ success, noSignErr: true })
     }
 
@@ -156,6 +157,8 @@ exports.fboPayReturn = async (req, res) => {
         //generating customer id or rather say ShopId
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
+        console.log(signatureFile);
+
         //getting boInfo
         const boData = await boModel.findOne({ _id: boInfo });
 
@@ -207,7 +210,7 @@ exports.fboPayReturn = async (req, res) => {
           const invoiceCode = await generateInvoiceCode(business_type);
 
           //getting file name
-          fileName = `${Date.now()}_${idNumber}.pdf`;
+          fileName = `invoices/${Date.now()}.pdf`;
           invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           //getting total processing amount and gst
@@ -218,35 +221,37 @@ exports.fboPayReturn = async (req, res) => {
           const qty = fostac_training.recipient_no;
 
           //generating new Invoice and putting into invoice file array
-          invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, fostac_training.fostac_total, 'Fostac', fostac_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData);
 
+          invoiceData.push(invoice)
           //puttinng data into invoice array
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Fostac' });
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
-          notificationsArr.push({ isRead: false, product: 'Fostac',  purpose: 'Verification' });
+          notificationsArr.push({ isRead: false, product: 'Fostac', purpose: 'Verification' });
         }
 
         //sales operations in case it includes foscos
         if (product_name.includes('Foscos')) {
           const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
 
-          fileName = `${Date.now()}_${idNumber}.pdf`;
-          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+          // fileName = `${Date.now()}_${idNumber}.pdf`;
+          // invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
           total_processing_amount = Number(foscos_training.foscos_processing_amount);
           totalGST = foscosGST;
           extraFee = foscosFixedCharge;
 
           const qty = foscos_training.shops_no;
-          invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData)
+          invoiceData.push(invoice);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Foscos' });
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
-          notificationsArr.push({ isRead: false, product: 'Foscos',  purpose: 'Verification' });
+          notificationsArr.push({ isRead: false, product: 'Foscos', purpose: 'Verification' });
 
         }
 
@@ -261,13 +266,14 @@ exports.fboPayReturn = async (req, res) => {
           totalGST = hygieneGST;
 
           const qty = hygiene_audit.shops_no;
-          invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, hygiene_audit.hra_total, 'HRA', hygiene_audit, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceData.push(invoice);
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'HRA' });
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
-          notificationsArr.push({ isRead: false, product: 'HRA',  purpose: 'Verification' });
+          notificationsArr.push({ isRead: false, product: 'HRA', purpose: 'Verification' });
         }
 
         //sales operations in case it includes medical
@@ -283,9 +289,10 @@ exports.fboPayReturn = async (req, res) => {
 
           const qty = medical.recipient_no;
           //create medical invoice
-          invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceData.push(invoice)
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Medical' });
         }
 
         //sales operations in case it includes Water Test
@@ -301,9 +308,10 @@ exports.fboPayReturn = async (req, res) => {
           const qty = 1;
 
           //create water test invoice
-          invoiceData.push(await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData);
 
-          invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+          invoiceData.push(invoice);
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Water Test Report' });
         }
 
         //creating new fbo entry
@@ -719,41 +727,50 @@ exports.registerdBOList = async (req, res) => {
 }
 
 
+//methord for getting invoice 
 exports.saleInvoice = async (req, res) => {
   try {
 
     const invoiceId = req.params.id;
 
-    const invoiceBucket = createInvoiceBucket();
+    // invoices path is comming from s3.js file in config folder
+    const invoiceKey = `${invoicesPath}${invoiceId}`;
 
-    const invoiceCheck = await invoiceBucket.find({ '_id': new ObjectId(invoiceId) }).toArray();
+    //getting invoice presigned url and sending it to client
+    const invoiceConverted = await getDocObject(invoiceKey);
 
-    if (!invoiceCheck.length > 0) {
-      success = false;
-      return res.status(404).json({ success, oldInvoiceErr: true });
-    }
+    // const invoiceBucket = createInvoiceBucket();
 
-    const invoiceDownloadStream = invoiceBucket.openDownloadStream(new ObjectId(invoiceId));
+    // const invoiceCheck = await invoiceBucket.find({ '_id': new ObjectId(invoiceId) }).toArray();
 
-    invoiceDownloadStream.on('error', () => {
-      success = false;
-      return res.status(200).json({ success, randomErr: true });
-    })
+    // if (!invoiceCheck.length > 0) {
+    //   success = false;
+    //   return res.status(404).json({ success, oldInvoiceErr: true });
+    // }
 
-    let chunks = [];
+    // const invoiceDownloadStream = invoiceBucket.openDownloadStream(new ObjectId(invoiceId));
 
-    invoiceDownloadStream.on('data', (chunk) => {
-      chunks.push(chunk);
-    });
+    // invoiceDownloadStream.on('error', () => {
+    //   success = false;
+    //   return res.status(200).json({ success, randomErr: true });
+    // })
 
-    invoiceDownloadStream.on('end', () => {
-      const invoiceBuffer = Buffer.concat(chunks);
-      const invoicePrefix = 'data:application/pdf;base64,';
-      const invoiceBase64 = invoiceBuffer.toString('base64');
-      const invoiceConverted = `${invoicePrefix}${invoiceBase64}`;
-      success = true;
-      return res.status(200).json({ success, invoiceConverted })
-    });
+    // let chunks = [];
+
+    // invoiceDownloadStream.on('data', (chunk) => {
+    //   chunks.push(chunk);
+    // });
+
+    // invoiceDownloadStream.on('end', () => {
+    //   const invoiceBuffer = Buffer.concat(chunks);
+    //   const invoicePrefix = 'data:application/pdf;base64,';
+    //   const invoiceBase64 = invoiceBuffer.toString('base64');
+    //   const invoiceConverted = `${invoicePrefix}${invoiceBase64}`;
+    //   success = true;
+    //   return res.status(200).json({ success, invoiceConverted })
+    // });
+
+    return res.status(200).json({ success: true, invoiceConverted })
 
   } catch (error) {
     console.error(error);
@@ -876,6 +893,39 @@ exports.updateFboBasicDocStatus = async (req, res) => {
   try {
     const id = req.params.id;
 
+    const { handlerId, docsObject } = req.body;
+
+    // //saving path with srcs in doc modal 
+    // docsObject.forEach(doc => {
+    //   doc.src.forEach(src => {
+    //     src = `${fboBasicDocsPath}${src}`;
+    //   })
+    // });
+
+    //check if doc obj already exsists in documents modalor not for a particular hansler id
+    const idExsists = await docsModel.findOne({ handlerId: handlerId });
+
+    //create empty obj if not exsists {}
+    if (!idExsists) {
+      await docsModel.create({  //create now obj in case of no history avlable
+        handlerId: handlerId, documents: []
+      });
+    }
+
+    // saving each doc to doc array
+    docsObject.forEach(async (doc) => {
+      await docsModel.findOneAndUpdate({ handlerId: handlerId }, {
+        $push: {
+          documents: {
+            name: doc.name,
+            format: doc.format,
+            multipleDoc: doc.isMultiDoc,
+            src: `${fboBasicDocsPath}${doc.src}`,
+          }
+        }
+      });
+    })
+
     const updatedFbo = await fboModel.findOneAndUpdate({ _id: id }, { isBasicDocUploaded: true });
 
     if (!updatedFbo) {
@@ -954,13 +1004,15 @@ exports.approveChequeSale = async (req, res) => {
 
       const qty = fostacInfo.recipient_no;
 
-      invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, fostacInfo.fostac_total, 'Fostac', fostacInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, fostacInfo.fostac_total, 'Fostac', fostacInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo)
 
-      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+      invoiceData.push(invoice);
+
+      invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Fostac' });
 
       //createg self notification data for our panel notifications
       //setting is read false for this particular product
-      notificationsArr.push({ isRead: false, product: 'Fostac',  purpose: 'Verification' });
+      notificationsArr.push({ isRead: false, product: 'Fostac', purpose: 'Verification' });
     }
 
     if (product_name.includes('Foscos')) {//generating foscos Invoivce in case of foscos sale
@@ -1008,14 +1060,14 @@ exports.approveChequeSale = async (req, res) => {
       console.log(extraFee);
 
       const qty = foscosInfo.shops_no;
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscosInfo.foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
 
-      invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscosInfo.foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
-
-      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+      invoiceData.push(invoice)
+      invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Foscos' });
 
       //createg self notification data for our panel notifications
       //setting is read false for this particular product
-      notificationsArr.push({ isRead: false, product: 'Foscos',  purpose: 'Verification' });
+      notificationsArr.push({ isRead: false, product: 'Foscos', purpose: 'Verification' });
     }
 
 
@@ -1030,10 +1082,11 @@ exports.approveChequeSale = async (req, res) => {
 
       const qty = hraInfo.shops_no;
 
-      invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, hraInfo.hra_total, 'HRA', hraInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo
-      ));
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, hraInfo.hra_total, 'HRA', hraInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo
+      );
+      invoiceData.push(invoice);
 
-      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+      invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'HRA' });
 
       //createg self notification data for our panel notifications
       //setting is read false for this particular product
@@ -1053,10 +1106,10 @@ exports.approveChequeSale = async (req, res) => {
       console.log(totalGST);
 
       const qty = medicalInfo.recipient_no;
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, medicalInfo.medical_total, 'Medical', medicalInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
 
-      invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, medicalInfo.medical_total, 'Medical', medicalInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
-
-      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+      invoiceData.push(invoice);
+      invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Medical' });
     }
 
     if (product_name.includes('Water Test Report')) { //generating fostac Invoivce in case of fostac sale
@@ -1070,9 +1123,10 @@ exports.approveChequeSale = async (req, res) => {
 
       const qty = 1;
 
-      invoiceData.push(await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, waterTestInfo.water_test_total, 'Water Test Report', waterTestInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo));
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, waterTestInfo.water_test_total, 'Water Test Report', waterTestInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
 
-      invoiceIdArr.push({ src: invoiceUploadStream.id, code: invoiceCode });
+      invoiceData.push(invoice);
+      invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Water Test Report' });
     }
 
 
@@ -1092,5 +1146,28 @@ exports.approveChequeSale = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+//methord for generatig uplaod url for employeeDocs
+exports.getSalesBasicDocUploadURL = async (req, res) => {
+  try {
+    const filename = req.params.name;
+    const format = req.query.format;
+
+    //convering format commoing in formof image_png or image_jpg to image/png or jpeg
+    const formatConverted = format.split('_').join('/');
+
+    //generating key for obj
+    const key = `${fboBasicDocsPath}${filename}`;
+
+    //generating uolaod url
+    const uploadUrl = await uploadDocObject(key, formatConverted);
+
+    return res.status(200).json({ uploadUrl: uploadUrl });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }

@@ -3,6 +3,7 @@ const fboStamp = require('./stamp');
 const { ToWords } = require('to-words');
 const { empSignBucket } = require("../config/buckets");
 const { ObjectId } = require("mongodb");
+const { getFileStream, employeeDocsPath } = require("../config/s3Bucket");
 
 
 const invoiceTemplate = async (fboInfo) => {
@@ -64,8 +65,9 @@ const invoiceTemplate = async (fboInfo) => {
     let chunks = [];
 
     const amountInWords = toWords.convert(fboInfo.totalAmount, { currency: true, ignoreZeroCurrency: true });
-    const signatureBucket = empSignBucket();
-    const signatureDownloadStream = signatureBucket.openDownloadStream(new ObjectId(signatureName));
+
+    //getting signature stream from s3
+    const signatureDownloadStream = await getFileStream((`${employeeDocsPath}${signatureName}`));
 
     signatureDownloadStream.on('error', () => {
         success = false;

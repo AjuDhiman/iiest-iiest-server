@@ -1,4 +1,4 @@
-const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 // const multerS3 = require('multer-s3')
 const AWS_S3 = JSON.parse(process.env.AWS_S3);
@@ -90,6 +90,40 @@ exports.uploadBuffer = async (key, buffer) => {
         console.error("Error uploading buffer:", err);
     }
 }
+
+exports.getFileStream = async (key) => {
+  try {
+      const command = new GetObjectCommand({
+          Bucket: AWS_S3.bucket,
+          Key: key
+      });
+
+      const data = await s3Client.send(command);
+      return data.Body; // This is a readable stream
+  } catch (error) {
+      console.error('Error getting file stream:', error);
+      throw error;
+  }
+};
+
+//this methprds get if file exsists on s3 on not
+exports.doesFileExist = async (key) => {
+  try {
+      const command = new HeadObjectCommand({
+          Bucket: AWS_S3.bucket,
+          Key: key
+      });
+
+      await s3Client.send(command);
+      return true; // File exists
+  } catch (error) {
+      if (error.name === 'NotFound' || error.$metadata.httpStatusCode === 404) {
+          return false; // File does not exist
+      }
+      console.error('Error checking if file exists:', error);
+      throw error;
+  }
+};
 
 
 // //multer s3 uploading
