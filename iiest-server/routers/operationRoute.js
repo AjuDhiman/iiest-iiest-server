@@ -30,7 +30,7 @@ router.post('/postopergendata/:recipientid', authMiddleware, postGenOperData);//
 router.post('/registerrevert/:id', authMiddleware, fssaiRevert);//route for adding data in genral section of operation form
 router.get('/getopergensecdata/:recipientid', authMiddleware, getGenOperData); // route for getting if a person general sec data in operation form
 router.get('/getauditlogs/:recipientid', authMiddleware, getAuditLogs); // route for getting audit logs history of a particular recipient
-module.exports = router;
+
 router.get('/getreverts/:id', authMiddleware, getReverts); // route for getting Fssai reverts history of a particular shop
 module.exports = router;
 router.post('/closeticket/:recipientid', authMiddleware,tickets.single('certificate'), ticketDelivery);
@@ -55,3 +55,5 @@ router.get('/getcandidateauditbatch/:verificationid', authMiddleware, getCandida
 router.post('/generatefostacdocuploadurl', authMiddleware, generateFostacDocUploadURL); 
 router.post('/generatefoscosdocuploadurl', authMiddleware, generateFoscosDocUploadURL); 
 router.post('/generatehradocuploadurl', authMiddleware, generateHRADocUploadURL); 
+
+module.exports = router;

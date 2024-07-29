@@ -238,6 +238,7 @@ export class RecipientComponent implements OnInit {
     this.loading = true;
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
+        console.log(res);
         this.loading = false;
         if (res.recipientsList.length) {
           this.showPagination = true;
@@ -296,6 +297,7 @@ export class RecipientComponent implements OnInit {
 
   }
 
+  //submit excels
   submitExcel() {
     this.loading = true;
     this.fboID = this.fboData._id

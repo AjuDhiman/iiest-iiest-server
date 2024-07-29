@@ -1,4 +1,4 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear } = require('../../config/pipeline');
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require('../../config/pipeline');
 const { uploadDocObject, getDocObject } = require('../../config/s3Bucket');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
@@ -8,8 +8,16 @@ const { recipientsList } = require('../fboControllers/recipient');
 
 
 //function for getting data about total, pending and approved sales related to sales officer  
-exports.employeeRecord = async (req, res) => { 
+exports.employeeRecord = async (req, res) => {
     try {
+
+        //var for timelines usually used in getting for a particular time Interval
+        const todayDate = new Date(); // getting today's date string
+        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()); //getting time of start of the day
+        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());//getting time of start of this week
+        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);//getting time of start of prev month
+        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);//getting time of start of this month
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
 
         const pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
             {
@@ -29,11 +37,11 @@ exports.employeeRecord = async (req, res) => {
                     totalProcessingAmount: { //aggregating total sales amount
                         $sum: {
                             $sum: [  //getting revenue formulas pipeline from pipeline.js
-                                ...fostacRevenue, 
+                                ...fostacRevenue,
                                 ...foscosRevenue,
-                                ...hraRevenue, 
-                                ...medicalRevenue, 
-                                ...waterTestRevenue, 
+                                ...hraRevenue,
+                                ...medicalRevenue,
+                                ...waterTestRevenue,
                             ]
                         }
                     },
@@ -80,12 +88,12 @@ exports.employeeRecord = async (req, res) => {
                                     ]
                                 }, then: {
                                     $sum: [ //the some is same as for total sale only the filtering condition is changed 
-                                         //getting revenue formulas pipeline from pipeline.js
-                                        ...fostacRevenue, 
-                                        ...foscosRevenue, 
-                                        ...hraRevenue, 
-                                        ...medicalRevenue, 
-                                        ...waterTestRevenue, 
+                                        //getting revenue formulas pipeline from pipeline.js
+                                        ...fostacRevenue,
+                                        ...foscosRevenue,
+                                        ...hraRevenue,
+                                        ...medicalRevenue,
+                                        ...waterTestRevenue,
                                     ]
                                 }, else: 0
                             }
@@ -165,7 +173,7 @@ exports.employeeRecord = async (req, res) => {
 };
 
 //function for getting data about all of the ticket completed(verified) by a verifier
-exports.ticketVerificationData = async (req, res) => { 
+exports.ticketVerificationData = async (req, res) => {
     try {
 
         const todayDate = new Date(); // getting today's date string
@@ -455,7 +463,7 @@ exports.ticketVerificationData = async (req, res) => {
 }
 
 //function for getting sales data
-exports.employeeSalesData = async (req, res) => { 
+exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
@@ -733,14 +741,14 @@ exports.employeeSalesData = async (req, res) => {
 
             ]);
         }
-
+        // console.log(Date.now())
         //generating presigned url for all docs src
 
         // salesInfo.docs.forEach((doc) => {
         //     doc.src = doc.src.map(async(src) => await getDocObject(src))
         // })
 
-        return res.status(200).json({ salesInfo });
+        return res.status(200).json({ salesInfo, time: new Date() });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });

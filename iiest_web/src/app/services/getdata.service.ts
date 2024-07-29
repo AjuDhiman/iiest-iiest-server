@@ -79,6 +79,12 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  //service for getting invoice list
+  public getInvoiceList(): Observable<any> {
+    const url = `${this.url}/getinvoicelist`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   public getAllocatedAreas(objId: string): Observable<any> {
     const url = `${this.url}/allocatedareas/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

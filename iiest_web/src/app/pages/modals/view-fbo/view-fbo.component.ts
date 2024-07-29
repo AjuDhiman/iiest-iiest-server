@@ -25,13 +25,13 @@ export class ViewFboComponent implements OnInit {
   fulladdress: string;
   recipientData: fboRecipient;
   shopDetails: fboShop;
-  
+
   //invoice related variables
   invoice: string = '';
   invoiceArr: any = [];
 
   //digital invoices will be shown after this date
-  newPortalReleaseDate:  "2024-06-10T18:30:00.000Z";
+  newPortalReleaseDate: "2024-06-10T18:30:00.000Z";
 
   //var for containing remaining time of a product like total time left for renewal of license
   remainingTime: string = '';
@@ -70,7 +70,7 @@ export class ViewFboComponent implements OnInit {
     this.isfostac = true ? this.fboData.product_name.includes('Fostac Training') : this.isfostac = false;
 
     //generating full address by aggregating state, address, district and pincode
-    this.fulladdress = (this.fboData.fboInfo.village?(this.fboData.fboInfo.village + ", "):'') + (this.fboData.fboInfo.address?(this.fboData.fboInfo.address + ", "):'') + (this.fboData.fboInfo.tehsil?(this.fboData.fboInfo.tehsil + ", "):'')   + this.fboData.fboInfo.district + ", " + this.fboData.fboInfo.state + ", Pincode: " + this.fboData.fboInfo.pincode + ", " + "India";
+    this.fulladdress = (this.fboData.fboInfo.village ? (this.fboData.fboInfo.village + ", ") : '') + (this.fboData.fboInfo.address ? (this.fboData.fboInfo.address + ", ") : '') + (this.fboData.fboInfo.tehsil ? (this.fboData.fboInfo.tehsil + ", ") : '') + this.fboData.fboInfo.district + ", " + this.fboData.fboInfo.state + ", Pincode: " + this.fboData.fboInfo.pincode + ", " + "India";
 
     //formt the address
     this.fulladdress = this.formatAddress(this.fulladdress);
@@ -80,7 +80,7 @@ export class ViewFboComponent implements OnInit {
     }
 
     //calculate total product amount
-    if(!this.isForWholeSale) {
+    if (!this.isForWholeSale) {
       this.getProductTotalAmount();
     }
 
@@ -89,8 +89,13 @@ export class ViewFboComponent implements OnInit {
     this.getInvoice();
 
     //getting doclist
-    if(!this.isForWholeSale) {
-    this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name));
+    if (!this.isForWholeSale) {
+      this.getDataServices.getDocs(this.fboData.fboInfo.customer_id).subscribe({
+        next: res => {
+          this.docList = res.docs.filter((doc: any) => this.basicDocs.includes(doc.name));
+        }
+      });
+      // this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name));
     }
     let user: any = this._registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
@@ -120,7 +125,7 @@ export class ViewFboComponent implements OnInit {
     if (this.isShowInvoice) {
       this.invoiceArr = [];
       console.log(this.fboData.invoiceId);
-      this.fboData.invoiceId.forEach((invoice: {src: string, id: string}) => {
+      this.fboData.invoiceId.forEach((invoice: { src: string, id: string }) => {
         this.getDataServices.getInvoice(invoice.src).subscribe({
           next: (res) => {
             console.log('conversion', res);
@@ -218,7 +223,7 @@ export class ViewFboComponent implements OnInit {
     modalRef.componentInstance.doc = obj;
   }
 
-  sendInvoiceManually(): void{
+  sendInvoiceManually(): void {
 
   }
 
@@ -226,22 +231,22 @@ export class ViewFboComponent implements OnInit {
   getProductTotalAmount(): void {
 
     //getting totl amount on the basis of product
-    switch(this.product){
-      case 'Fostac': 
-      this.productTotalAmt = this.fboData.fostacInfo.fostac_total;
-      break;
-      case 'Foscos': 
-      this.productTotalAmt = this.fboData.foscosInfo.foscos_total;
-      break;
-      case 'HRA': 
-      this.productTotalAmt = this.fboData.hraInfo.hra_total;
-      break;
-      case 'Medical': 
-      this.productTotalAmt = this.fboData.medicalInfo.medical_total;
-      break;
-      case 'Water Test Report': 
-      this.productTotalAmt = this.fboData.waterTestInfo.water_test_total;
-      break;
+    switch (this.product) {
+      case 'Fostac':
+        this.productTotalAmt = this.fboData.fostacInfo.fostac_total;
+        break;
+      case 'Foscos':
+        this.productTotalAmt = this.fboData.foscosInfo.foscos_total;
+        break;
+      case 'HRA':
+        this.productTotalAmt = this.fboData.hraInfo.hra_total;
+        break;
+      case 'Medical':
+        this.productTotalAmt = this.fboData.medicalInfo.medical_total;
+        break;
+      case 'Water Test Report':
+        this.productTotalAmt = this.fboData.waterTestInfo.water_test_total;
+        break;
     }
   }
 }

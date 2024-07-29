@@ -10,6 +10,7 @@ const { createBusinessOwner, getAllBusinessOwners, getClientList } = require('..
 const { getTicketsDocs } = require('../controllers/employeeControllers/employeeRecord');
 const { fostacVerification } = require('../controllers/operationControllers/formSections');
 const { trainingBatch } = require('../controllers/trainingControllers/trainingBatch');
+const { uploadCheque } = require('../config/s3Bucket');
 
 const eBillStorage = multer.memoryStorage() 
 const eBillUpload = multer({storage: eBillStorage});
@@ -22,8 +23,8 @@ router.get('/hygienesaleshops/:id', authMiddleware, hygieneShopsList); //Router 
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
 router.get('/clientlist', getClientList); //Router for client list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
-router.post('/fbobycheque/:id', authMiddleware, chequeImage.fields([{name: 'cheque_image', maxCount: 1}]), existingFboByCheque);
-router.post('/bobycheque/:id', authMiddleware, chequeImage.fields([{name: 'cheque_image', maxCount: 1}]), boByCheque);
+router.post('/fbobycheque/:id', authMiddleware, uploadCheque.fields([{name: 'cheque_image', maxCount: 1}]), existingFboByCheque);
+router.post('/bobycheque/:id', authMiddleware, uploadCheque.fields([{name: 'cheque_image', maxCount: 1}]), boByCheque);
 router.post('/fbo-pay-return/:id', fboPayReturn); //To check payment status
 router.post('/fbopayment/:id', authMiddleware, fboPayment); //Router for FBO registration (pay page)
 router.delete('/deleteFbo/:id', authMiddleware, deleteFbo); //Router for deleting FBO

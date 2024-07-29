@@ -13,6 +13,7 @@ const boModel = require("../../models/BoModels/boSchema");
 const { shopModel } = require("../../models/fboModels/recipientSchema");
 const { generateInvoiceCode } = require("../../fbo/generateCredentials");
 const generalDataSchema = require("../../models/generalModels/generalDataSchema");
+const { doesFileExist, employeeDocsPath } = require("../../config/s3Bucket");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
@@ -41,13 +42,10 @@ exports.existingFboCash = async (req, res) => {
       }
     }
 
-    const signatureBucket = empSignBucket();
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
 
-    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
-
-    console.log(signExists);
-
-    if (!signExists.length > 0) {
+    if (!signExists) {
       return res.status(404).json({ success, noSignErr: true })
     }
 
@@ -180,13 +178,10 @@ exports.existingFboByCheque = async (req, res) => {
       }
     }
 
-    const signatureBucket = empSignBucket();
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
 
-    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
-
-    console.log(signExists);
-
-    if (!signExists.length > 0) {
+    if (!signExists) {
       return res.status(404).json({ success, noSignErr: true })
     }
 
@@ -216,7 +211,7 @@ exports.existingFboByCheque = async (req, res) => {
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
     chequeData.status = 'Pending';
-    chequeData.cheque_image = chequeImage.filename
+    chequeData.cheque_image = chequeImage.key
 
     const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
@@ -275,13 +270,10 @@ exports.existingFboPayPage = async (req, res) => {
       }
     }
 
-    const signatureBucket = empSignBucket();
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
 
-    console.log(signatureFile);
-
-    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
-
-    if (!signExists.length > 0) {
+    if (!signExists) {
       return res.status(404).json({ success, noSignErr: true })
     }
 

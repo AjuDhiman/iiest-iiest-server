@@ -427,11 +427,10 @@ exports.fboRegister = async (req, res) => {
       }
     }
 
-    const signatureBucket = empSignBucket();
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
 
-    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
-
-    if (!signExists.length > 0) {
+    if (!signExists) {
       return res.status(404).json({ success, noSignErr: true })
     }
 
@@ -581,11 +580,10 @@ exports.boByCheque = async (req, res) => {
       }
     }
 
-    const signatureBucket = empSignBucket(); //getting sign from bucket
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
 
-    const signExists = await signatureBucket.find({ "_id": new ObjectId(signatureFile) }).toArray();
-
-    if (!signExists.length > 0) {
+    if (!signExists) {
       return res.status(404).json({ success, noSignErr: true })
     }
 
@@ -612,7 +610,7 @@ exports.boByCheque = async (req, res) => {
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
     chequeData.status = 'Pending';
-    chequeData.cheque_image = chequeImage.filename;
+    chequeData.cheque_image = chequeImage.key;
 
     console.log(productName, product_name)
 
