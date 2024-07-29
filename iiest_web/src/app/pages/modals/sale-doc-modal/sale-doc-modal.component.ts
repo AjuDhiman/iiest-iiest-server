@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { IconDefinition, faFile } from '@fortawesome/free-solid-svg-icons';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { RegisterService } from 'src/app/services/register.service';
 import { ViewDocumentComponent } from '../view-document/view-document.component';
+import { GetdataService } from 'src/app/services/getdata.service';
+import { UtilitiesService } from 'src/app/services/utilities.service';
 
 @Component({
   selector: 'app-sale-doc-modal',
@@ -25,13 +27,21 @@ export class SaleDocModalComponent implements OnInit {
   shopPhotoObj: any;
   managerAadharObj: any;
 
+  //var for saving names of the docs
+  aadhar: string[] = [];
+  managerPhoto: string = '';
+  shopPhoto: string = '';
+
+  //var that will containg generated file name and save it in documents schema
+  docObjects: { name: string, format: string, isMultiDoc: boolean, src: string[] }[] = [];
+
   //var for storing files
   aadharFile: File;
   shopPhotoFile: File;
   managerPhotoFile: File;
 
   // var for deciding loader 
-  loading: boolean = false; 
+  loading: boolean = false;
 
   //fa icons
   faFile: IconDefinition = faFile;
@@ -54,6 +64,8 @@ export class SaleDocModalComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
+    private _getdataService: GetdataService,
+    private _utilServives: UtilitiesService,
     private modalService: NgbModal
   ) {
 
@@ -72,6 +84,7 @@ export class SaleDocModalComponent implements OnInit {
   //metord runs on submit button hit
   async onSubmit() {
 
+    this.submitted = true;
     //return if foc form is invalid or still in loading process of previous hit so multiple hit problem wil be solved
     if (this.docForm.invalid || this.loading) {
       return;
@@ -80,23 +93,28 @@ export class SaleDocModalComponent implements OnInit {
     this.loading = true;
 
     //upoad all docs one by one we are waiting on doc to uplpad before uploading another one. 
-    await this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile);
-    await this.uploadDoc('Shop Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.shopPhotoFile);
-    await this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile);
+    // await this.uploadDoc('Manager Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.managerPhotoFile);
+    // await this.uploadDoc('Shop Photo', 'Image', false, this.fboData.fboInfo.customer_id, this.shopPhotoFile);
+    // await this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile);
+    await this.uploadShopImage();
+    await this.uploadManagerAddharFront();
+    await this.uploadManagerAddharBack();
+    await this.uploadManagerImage();
 
     this.activeModal.close()
     //update basic doc upload for the fbo in case all there basic doc uploaed
-      this._registerService.updateFboBasicDocStatus(this.fboData.fboInfo._id).subscribe({
-        next: res => {
-          this._toastrService.success('', `Docs Uploaded Successfully.`);
-          this.loading = false;
-          location.reload();
-        },
-        error: err => {
-          this.loading = false;
-          this._toastrService.error('', `Docs Uploading Error.`);
-        }
-      })
+
+    this._registerService.updateFboBasicDocStatus(this.fboData.fboInfo._id, this.fboData.fboInfo.customer_id, this.docObjects).subscribe({
+      next: res => {
+        this._toastrService.success('', `Docs Uploaded Successfully.`);
+        this.loading = false;
+        location.reload();
+      },
+      error: err => {
+        this.loading = false;
+        this._toastrService.error('', `Docs Uploading Error.`);
+      }
+    })
   }
 
 
@@ -107,7 +125,7 @@ export class SaleDocModalComponent implements OnInit {
       address: ['', Validators.required],
       pincode: ['', Validators.required],
       shopPhoto: ['', [Validators.required, this.validateFileType(['png', 'jpg', 'jpeg'])]],
-      managerPhoto: ['',[ Validators.required,this.validateFileType(['png', 'jpg', 'jpeg'])]],
+      managerPhoto: ['', [Validators.required, this.validateFileType(['png', 'jpg', 'jpeg'])]],
       managerAadhar: ['', [Validators.required, this.validateFileType(['png', 'jpg', 'jpeg'])]]
     });
 
@@ -122,12 +140,16 @@ export class SaleDocModalComponent implements OnInit {
         switch (fileType) {
           case 'managerPhoto':
             this.managerPhotoFile = file;
+            this.managerPhoto = `managerphoto${new Date().getTime()}.${this._utilServives.getExtention(this.managerPhotoFile.name)}`;
             break;
           case 'shopPhoto':
             this.shopPhotoFile = file;
+            this.shopPhoto = `shopphoto${new Date().getTime()}.${this._utilServives.getExtention(this.shopPhotoFile.name)}`;
             break;
           case 'aadharPhoto':
             this.aadharFile = $event.target.files;
+            this.aadhar[0] = `aadharfront${new Date().getTime()}.${this._utilServives.getExtention((this.aadharFile as any)[0].name)}`;
+            this.aadhar[1] = `aadharback${new Date().getTime()}.${this._utilServives.getExtention((this.aadharFile as any)[1].name)}`;
             break;
         }
       }
@@ -177,13 +199,19 @@ export class SaleDocModalComponent implements OnInit {
 
   //getting docs to view
   getDocsObjs(): void {
-    let docs = this.fboData.docs[0].documents;
+    // let docs = this.fboData.docs[0].documents;
 
-    console.log(docs);
+    this._getdataService.getDocs(this.fboData.fboInfo.customer_id).subscribe({
+      next: res => {
+        let docs = res.docs;
+        console.log(docs);
+        this.managerPhotoObj = docs.find((doc: any) => doc.name === 'Manager Photo');
+        this.managerAadharObj = docs.find((doc: any) => doc.name === 'Manager Aadhar');
+        this.shopPhotoObj = docs.find((doc: any) => doc.name === 'Shop Photo');
+      }
+    })
 
-    this.managerPhotoObj = docs.find((doc: any) => doc.name === 'Manager Photo');
-    this.managerAadharObj = docs.find((doc: any) => doc.name === 'Manager Aadhar');
-    this.shopPhotoObj = docs.find((doc: any) => doc.name === 'Shop Photo');
+
   }
 
 
@@ -216,5 +244,105 @@ export class SaleDocModalComponent implements OnInit {
 
       return null;
     };
+  }
+
+  //file num validation
+  validateFileNumber(maxFiles: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const files = control.value;
+      if (files && files.length > maxFiles) {
+        return { invalidFileNumber: true};
+      }
+      return null;
+    };
+  }
+
+  //methord for uploading shop image
+  uploadShopImage(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._getdataService.getSalesBasicDocUploadURL(this.shopPhoto, this.shopPhotoFile.type ).subscribe({
+        next: res => {
+          this._registerService.uplaodDocstoS3(res.uploadUrl, this.shopPhotoFile).subscribe({
+            next: res => {
+
+              this.docObjects.push({ name: 'Shop Photo', format: 'Image', isMultiDoc: false, src: [this.shopPhoto] });
+              resolve(res);
+              // this._toastrService.success('Done')
+            },
+            error: err => {
+              this.loading = false;
+              reject(err);
+              this._toastrService.error('Shop Image Uploading Problem')
+            }
+          });
+        }
+      })
+    })
+  }
+
+  //methord for uploading manager aadhar front
+  uploadManagerAddharFront(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._getdataService.getSalesBasicDocUploadURL(this.aadhar[0], (this.aadharFile as any)[0].type).subscribe({
+        next: res => {
+          this._registerService.uplaodDocstoS3(res.uploadUrl, (this.aadharFile as any)[0]).subscribe({
+            next: res => {
+
+              resolve(res);
+              // this._toastrService.success('Done')
+            },
+            error: err => {
+              this.loading = false;
+              reject(err);
+              this._toastrService.error('Manager Aadhar Uploading Problem')
+            }
+          });
+        }
+      })
+    })
+  }
+
+   //methord for uploading manager aadhar Back
+   uploadManagerAddharBack(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._getdataService.getSalesBasicDocUploadURL(this.aadhar[1], (this.aadharFile as any)[1].type).subscribe({
+        next: res => {
+          this._registerService.uplaodDocstoS3(res.uploadUrl, (this.aadharFile as any)[1]).subscribe({
+            next: res => {
+              this.docObjects.push({ name: 'Manager Aadhar', format: 'Image', isMultiDoc: true, src: this.aadhar });
+              resolve(res);
+              // this._toastrService.success('Done')
+            },
+            error: err => {
+              this.loading = false;
+              reject(err);
+              this._toastrService.error('Manager Aadhar Uploading Problem')
+            }
+          });
+        }
+      })
+    })
+  }
+
+  //methord for uploading manager image
+  uploadManagerImage(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._getdataService.getSalesBasicDocUploadURL(this.managerPhoto, this.managerPhotoFile.type ).subscribe({
+        next: res => {
+          this._registerService.uplaodDocstoS3(res.uploadUrl, this.managerPhotoFile).subscribe({
+            next: res => {
+              this.docObjects.push({ name: 'Manager Photo', format: 'Image', isMultiDoc: false, src: [this.managerPhoto] });
+              resolve(res);
+              // this._toastrService.success('Done')
+            },
+            error: err => {
+              this.loading = false;
+              reject(err);
+              this._toastrService.error('Manager Image Uploading Problem')
+            }
+          });
+        }
+      })
+    })
   }
 }

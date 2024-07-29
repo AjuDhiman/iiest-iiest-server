@@ -95,7 +95,7 @@
               <div class="app-card app-card-doc shadow-sm h-100">
                 <div class="app-card-thumb-holder p-3">
                   <div class="app-card-thumb" *ngIf="doc.format.toLowerCase() === 'image' && doc.src.length == 1">
-                    <img class="thumb-image" [src]="DOC_URL + '/' + doc.src" [alt]="doc.name"
+                    <img class="thumb-image" [src]="doc.src" [alt]="doc.name"
                       (click)="viewDocument(doc)">
                   </div>
                   <span class="icon-holder" *ngIf="doc.format === 'pdf' && doc.src.length == 1">

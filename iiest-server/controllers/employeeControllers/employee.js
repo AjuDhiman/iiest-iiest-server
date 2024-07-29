@@ -9,46 +9,41 @@ const { empSignBucket, empImageBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
+const { employeeDocsPath, uploadDocObject, getDocObject, deleteDocObject } = require('../../config/s3Bucket');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
 
-
+//methord for creating new employee Record
 exports.employeeRegister = async (req, res) => {
     try {
-        const signature = req.files['empSignature'];
-        const image = req.files['employeeImage'];
 
         let success = false;
         let isUnique = false;
 
-        if (!signature) {
-            success = false
-            return res.status(401).json({ success, signatureErr: true })
-        }
+        //destructuring body of the request
+        const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, createdBy, empSignature, employeeImage } = req.body;
 
-        if (!image) {
-            success = false
-            return res.status(401).json({ success, imageErr: true })
-        }
-
-        const { employee_name, gender, email, alternate_contact, contact_no, dob, post_type, country, state, city, address, zip_code, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, createdBy } = req.body;
-
+        console.log(req.body);
+        //checking if email comming in body aready exsists or not
         const existing_email = await employeeSchema.findOne({ email });
         if (existing_email) {
             return res.status(401).json({ success, emailErr: true });
         }
 
+        //checking if phone no comming in body aready exsists or not
         const existing_contact = await employeeSchema.findOne({ contact_no });
         if (existing_contact) {
             return res.status(401).json({ success, contactErr: true });
         }
 
+        //checking if  aternate phone no comming in body aready exsists or not
         const existing_alternate_no = await employeeSchema.findOne({ alternate_contact });
         if (existing_alternate_no) {
             return res.status(401).json({ success, alternateContactErr: true });
         }
 
+        //checking if the address already exsistts or not
         const existing_address = await employeeSchema.findOne({ address });
         if (existing_address) {
             return res.status(401).json({ success, addressErr: true });
@@ -56,6 +51,7 @@ exports.employeeRegister = async (req, res) => {
 
         let idNumber;
 
+        //getting unique id num
         while (!isUnique) {
             idNumber = Math.floor(1000 + Math.random() * 9000);
             const existingNumber = await employeeSchema.findOne({ id_num: idNumber });
@@ -64,10 +60,13 @@ exports.employeeRegister = async (req, res) => {
             }
         }
 
+        //generatig user name
         const generatedUsername = generateUsername(employee_name, idNumber);
 
+        //generatig employee id
         const generatedId = generateEmployeeID(company_name, idNumber);
 
+        //generating password
         let generatedPassword = generatePassword(10);
 
         console.log(generatedUsername, generatedPassword);
@@ -76,39 +75,9 @@ exports.employeeRegister = async (req, res) => {
 
         const secPass = await bcrypt.hash(generatedPassword, salt);
 
-        const signatureFileName = `${Date.now()}_${signature[0].originalname}`;
-        const imageFileName = `${Date.now()}_employeeimage_${image[0].originalname}`;
-
-        const sigatureBuckcet = empSignBucket();
-
-        const uploadSignStream = sigatureBuckcet.openUploadStream(signatureFileName);
-
-        uploadSignStream.write(signature[0].buffer);
-
-        const imageBucket = empImageBucket();
-
-        const uploadImageStream = imageBucket.openUploadStream(imageFileName);
-
-        uploadImageStream.write(image[0].buffer);
-
-        uploadSignStream.end((err) => {
-            if (err) {
-                success = false;
-                return res.status(401).json({ success, signatureErr: true })
-            }
-            console.log(`File ${uploadSignStream.id} uploaded successfully.`);
-        });
-
-        uploadImageStream.end((err) => {
-            if (err) {
-                success = false;
-                return res.status(401).json({ success, imageErr: true })
-            }
-            console.log(`File ${uploadImageStream.id} uploaded successfully.`);
-        })
 
         const employeeRegisterd = await employeeSchema.create({
-            id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, signatureImage: uploadSignStream.id, status: true, employeeImage: uploadImageStream.id
+            id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, signatureImage: empSignature, status: true, employeeImage: employeeImage
         });
 
         if (!employeeRegisterd) {
@@ -127,6 +96,7 @@ exports.employeeRegister = async (req, res) => {
     }
 }
 
+//api for employee login
 exports.employeeLogin = async (req, res) => {
     try {
         let success = false;
@@ -160,11 +130,14 @@ exports.employeeLogin = async (req, res) => {
         return res.status(500).json({ success, message: "Internal Server Error" });
     }
 }
+
+//this methord generates temporary passwords
 function generateTemporaryPassword() {
     // Generate a temporary password 
     return Math.random().toString(36).slice(-8);
 }
 
+//api for forgot password
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -201,6 +174,7 @@ exports.forgotPassword = async (req, res) => {
     }
 }
 
+//api for reseting password
 exports.resetPassword = async (req, res) => {
     try {
         const { username, email, temporaryPassword, newPassword } = req.body;
@@ -238,6 +212,7 @@ exports.resetPassword = async (req, res) => {
     }
 }
 
+//api for deleting employee object
 exports.deleteEmployee = async (req, res) => {
     const objId = req.params.id;
     const { deletedBy } = req.body;
@@ -285,6 +260,7 @@ exports.deleteEmployee = async (req, res) => {
     }
 }
 
+//api for editing employee
 exports.editEmployee = async (req, res) => {
 
     try {
@@ -333,6 +309,7 @@ exports.editEmployee = async (req, res) => {
     }
 }
 
+//api for getting all employees data
 exports.allEmployeesData = async (req, res) => {
     const employeesData = await employeeSchema.find({ _id: { $ne: req.user.id } });
     try {
@@ -342,6 +319,7 @@ exports.allEmployeesData = async (req, res) => {
     }
 }
 
+//api for arae allocation
 exports.areaAllocation = async (req, res) => { //methord for allocating area to a particular employee
     try {
 
@@ -372,6 +350,7 @@ exports.areaAllocation = async (req, res) => { //methord for allocating area to 
 
 }
 
+//api for assigining manager
 exports.assignManger = async (req, res) => { //methord for assigning manager
     try {
         let success = false;
@@ -400,6 +379,7 @@ exports.assignManger = async (req, res) => { //methord for assigning manager
     }
 }
 
+//methord for getting allocate area of the user
 exports.allocatedAreas = async (req, res) => {
     try {
 
@@ -411,44 +391,13 @@ exports.allocatedAreas = async (req, res) => {
     }
 }
 
+//api for getting presighned url of employee image
 exports.employeeImage = async (req, res) => {
     try {
 
-        let success = false;
-
-        const imageBucket = empImageBucket();
-
-        const imageExists = await imageBucket.find({ "_id": new ObjectId(req.params.id) }).toArray();
-
-        if (!imageExists.length > 0) {
-            success = false;
-            return res.status(200).json({ success, noImage: true })
-        }
-
-        const imageDownloadStream = imageBucket.openDownloadStream(new ObjectId(req.params.id));
-
-        imageDownloadStream.on('error', () => {
-            success = false;
-            return res.status(200).json({ success, defaultImage: 'assets/logo-side.png' })
-        })
-
-        let chunks = [];
-
-        imageDownloadStream.on('data', (chunk) => {
-            chunks.push(chunk);
-        })
-
-        imageDownloadStream.on('end', () => {
-
-            const imageBuffer = Buffer.concat(chunks);
-            const imagePrefix = 'data:image/png;base64,';
-            const imageBase64 = imageBuffer.toString('base64');
-            const imageConverted = `${imagePrefix}${imageBase64}`;
-
-            success = true;
-
-            return res.status(200).json({ success, imageConverted })
-        })
+        //getting presigned url for image saves in s3 bucket
+        const imageConverted = await getDocObject(`${employeeDocsPath}${req.params.id}`);
+        return res.status(200).json({ success: true, imageConverted: imageConverted });
 
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" });
@@ -456,120 +405,91 @@ exports.employeeImage = async (req, res) => {
 }
 
 
+//api for getting presigned url of employee signature
 exports.employeeSignature = async (req, res) => {
     try {
 
-        let success = false;
+        // let success = false;
 
-        const signatureBucket = empSignBucket();
+        // const signatureBucket = empSignBucket();
 
-        const signExists = await signatureBucket.find({ "_id": new ObjectId(req.params.id) }).toArray();
+        // const signExists = await signatureBucket.find({ "_id": new ObjectId(req.params.id) }).toArray();
 
-        if (!signExists.length > 0) {
-            success = false;
-            return res.status(200).json({ success, noSign: true })
-        }
+        // if (!signExists.length > 0) {
+        //     success = false;
+        //     return res.status(200).json({ success, noSign: true })
+        // }
 
-        const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
+        // const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
 
-        if (!signDownloadStream) {
-            success = false;
-            return res.status.json({ success, noSignature: true });
-        }
+        // if (!signDownloadStream) {
+        //     success = false;
+        //     return res.status.json({ success, noSignature: true });
+        // }
 
-        let chunks = [];
+        // let chunks = [];
 
-        signDownloadStream.on('data', (chunk) => {
-            chunks.push(chunk);
-        })
+        // signDownloadStream.on('data', (chunk) => {
+        //     chunks.push(chunk);
+        // })
 
-        signDownloadStream.on('end', () => {
-            const signatureBuffer = Buffer.concat(chunks);
-            const signaturePrefix = 'data:image/png;base64,';
-            const signBase64 = signatureBuffer.toString('base64');
-            const signatureConverted = `${signaturePrefix}${signBase64}`;
+        // signDownloadStream.on('end', () => {
+        //     const signatureBuffer = Buffer.concat(chunks);
+        //     const signaturePrefix = 'data:image/png;base64,';
+        //     const signBase64 = signatureBuffer.toString('base64');
+        //     const signatureConverted = `${signaturePrefix}${signBase64}`;
 
-            success = true;
+        //     success = true;
 
-            return res.status(200).json({ success, signatureConverted })
-        })
+        // return res.status(200).json({ success, signatureConverted })
+        // })
+
+        const signatureConverted = await getDocObject(`${employeeDocsPath}${req.params.id}`);
+        return res.status(200).json({ success: true, signatureConverted: signatureConverted });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
+//api for updating employee image and signature
 exports.editEmployeeImages = async (req, res) => {
     try {
 
         let success = false;
 
-        const userInfo = await employeeSchema.findById(req.user.id);
+        const { userImage, userSignature } = req.body;
 
-        const imageBucket = empImageBucket();
+        console.log(req.body);
 
-        const signatureBucket = empSignBucket();
+        const userInfo = await employeeSchema.findOne({_id: req.user._id});
 
-        let updatedInfo;
+       
 
-        if (req.files['userImage']) {
-            const imageFile = req.files['userImage'];
-            const newImageName = `${Date.now()}_${imageFile[0].originalname}`;
-
-            const imageExists = await imageBucket.find({ "_id": new ObjectId(userInfo.employeeImage) }).toArray();
-
-            if (imageExists.length > 0) {
-                await imageBucket.delete(userInfo.employeeImage);
-            }
-
-            const newImageStream = imageBucket.openUploadStream(newImageName);
-
-            newImageStream.write(imageFile[0].buffer);
-
-            newImageStream.end((err) => {
-                if (err) {
-                    success = false;
-                    return res.status(404).json({ success, editImageErr: true })
-                }
-
-                console.log('New Image Uploaded Successfully');
-            })
-
-            userInfo.employeeImage = newImageStream.id;
-            updatedInfo = await userInfo.save();
+        //update userImage in case user image came in body
+        if (userImage) {
+            await deleteDocObject(`${employeeDocsPath}${userInfo.employeeImage}`);
+            await userInfo.updateOne({ $set: { employeeImage: userImage} });
+            await userInfo.save();
         }
 
-        if (req.files['userSign']) {
-            const signatureFile = req.files['userSign'];
-            const newSignName = `${Date.now()}_${signatureFile[0].originalname}`;
-
-            const signExists = await signatureBucket.find({ "_id": new ObjectId(userInfo.signatureImage) }).toArray();
-
-            if (signExists.length > 0) {
-                await signatureBucket.delete(userInfo.signatureImage);
-            }
-
-            const newSignStream = signatureBucket.openUploadStream(newSignName);
-
-            newSignStream.write(signatureFile[0].buffer);
-
-            newSignStream.end((err) => {
-                if (err) {
-                    success = false;
-                    return res.status(404).json({ success, editSignErr: true })
-                }
-                console.log('New Signature Uploaded Successfully')
-            })
-
-            userInfo.signatureImage = newSignStream.id;
-            updatedInfo = await userInfo.save();
+        //update userSign in case user sign came in body
+        if (userSignature) {
+            await deleteDocObject(`${employeeDocsPath}${userInfo.signatureImage}`);
+            await userInfo.updateOne({ $set: { signatureImage: userSignature  } });
+            await userInfo.save();
         }
 
-        if (updatedInfo) {
+        const updatedInfo = await employeeSchema.findOne({_id: req.user._id});
+
+
+        //setting new token in case updated info
+        if (userImage || userSignature) {
 
             const newData = {
                 user: {
-                    id: userInfo._id
+                    id: req.user._id
                 }
             }
 
@@ -669,10 +589,35 @@ exports.updateNotificationStatus = async (req, res) => {
             res.status(201).json({ notificationUpdateErr: true, status: flase })
         }
 
-        res.status(200).json({status: true});
+        res.status(200).json({ status: true });
 
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+
+//methord for generatig uplaod url for employeeDocs
+exports.getEmployeeDocUploadURL = async (req, res) => {
+    try {
+        const filename = req.params.name;
+        const format = req.query.format;
+
+        console.log(filename, format);
+        //convering format commoing in formof image_png or image_jpg to image/png or jpeg
+        const formatConverted = format.split('_').join('/');
+
+        //generating key for obj
+        const key = `${employeeDocsPath}${filename}`;
+
+        //generating uolaod url
+        const uploadUrl = await uploadDocObject(key, formatConverted);
+
+        return res.status(200).json({ uploadUrl: uploadUrl });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
+

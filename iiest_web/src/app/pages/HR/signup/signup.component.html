@@ -245,7 +245,7 @@
                 [ngClass]="{ 'is-invalid': submitted && f['empSignature'].errors }">
               <div *ngIf="submitted && f['empSignature'].errors" class="invalid-feedback">
                 <div *ngIf="f['empSignature'].errors['required']">Signature is required</div>
-                <div *ngIf="f['empSignature'].errors['invalidFileType']">Invalid file type. Only .png files are allowed.
+                <div *ngIf="f['empSignature'].errors['invalidFileType']">Invalid file type Only .png files are allowed.
                 </div>
               </div>
             </div>

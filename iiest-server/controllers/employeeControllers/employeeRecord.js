@@ -1,4 +1,5 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear } = require('../../config/pipeline');
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require('../../config/pipeline');
+const { uploadDocObject, getDocObject } = require('../../config/s3Bucket');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
@@ -7,8 +8,16 @@ const { recipientsList } = require('../fboControllers/recipient');
 
 
 //function for getting data about total, pending and approved sales related to sales officer  
-exports.employeeRecord = async (req, res) => { 
+exports.employeeRecord = async (req, res) => {
     try {
+
+        //var for timelines usually used in getting for a particular time Interval
+        const todayDate = new Date(); // getting today's date string
+        const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()); //getting time of start of the day
+        const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());//getting time of start of this week
+        const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);//getting time of start of prev month
+        const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);//getting time of start of this month
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
 
         const pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
             {
@@ -28,11 +37,11 @@ exports.employeeRecord = async (req, res) => {
                     totalProcessingAmount: { //aggregating total sales amount
                         $sum: {
                             $sum: [  //getting revenue formulas pipeline from pipeline.js
-                                ...fostacRevenue, 
+                                ...fostacRevenue,
                                 ...foscosRevenue,
-                                ...hraRevenue, 
-                                ...medicalRevenue, 
-                                ...waterTestRevenue, 
+                                ...hraRevenue,
+                                ...medicalRevenue,
+                                ...waterTestRevenue,
                             ]
                         }
                     },
@@ -79,12 +88,12 @@ exports.employeeRecord = async (req, res) => {
                                     ]
                                 }, then: {
                                     $sum: [ //the some is same as for total sale only the filtering condition is changed 
-                                         //getting revenue formulas pipeline from pipeline.js
-                                        ...fostacRevenue, 
-                                        ...foscosRevenue, 
-                                        ...hraRevenue, 
-                                        ...medicalRevenue, 
-                                        ...waterTestRevenue, 
+                                        //getting revenue formulas pipeline from pipeline.js
+                                        ...fostacRevenue,
+                                        ...foscosRevenue,
+                                        ...hraRevenue,
+                                        ...medicalRevenue,
+                                        ...waterTestRevenue,
                                     ]
                                 }, else: 0
                             }
@@ -96,7 +105,7 @@ exports.employeeRecord = async (req, res) => {
         ];
 
 
-        const pipeline = [ //pipeline for aggregation 
+        const pipeline = [ //pipeline for aggregating data according to time periods
             {
                 $facet: { // we will use facet for aggregate sales data according to above pipeline arr for diffrent time lines
                     today: [ //filltering only those data which are created after start of today
@@ -164,7 +173,7 @@ exports.employeeRecord = async (req, res) => {
 };
 
 //function for getting data about all of the ticket completed(verified) by a verifier
-exports.ticketVerificationData = async (req, res) => { 
+exports.ticketVerificationData = async (req, res) => {
     try {
 
         const todayDate = new Date(); // getting today's date string
@@ -454,7 +463,7 @@ exports.ticketVerificationData = async (req, res) => {
 }
 
 //function for getting sales data
-exports.employeeSalesData = async (req, res) => { 
+exports.employeeSalesData = async (req, res) => {
     try {
         let salesInfo;
         if (req.user.designation === 'Director') {
@@ -508,14 +517,6 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'documents', // The collection name where fboInfo is stored
-                        localField: 'fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'docs'
-                    }
-                },
-                {
                     $project: {
                         "_id": 1,
                         "grand_total": 1,
@@ -550,7 +551,6 @@ exports.employeeSalesData = async (req, res) => {
                         "waterTestInfo": 1,
                         "createdAt": 1,
                         "cheque_data": 1,
-                        "docs": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }
@@ -608,14 +608,6 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'documents', // The collection name where fboInfo is stored
-                        localField: 'fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'docs'
-                    }
-                },
-                {
                     $project: {
                         "_id": 1,
                         "grand_total": 1,
@@ -650,7 +642,6 @@ exports.employeeSalesData = async (req, res) => {
                         "waterTestInfo": 1,
                         "createdAt": 1,
                         "cheque_data": 1,
-                        "docs": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }
@@ -709,14 +700,6 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
                 {
-                    $lookup: {
-                        from: 'documents', // The collection name where fboInfo is stored
-                        localField: 'fboInfo.customer_id',
-                        foreignField: 'handlerId',
-                        as: 'docs'
-                    }
-                },
-                {
                     $project: {
                         "_id": 1,
                         "grand_total": 1,
@@ -751,7 +734,6 @@ exports.employeeSalesData = async (req, res) => {
                         "waterTestInfo": 1,
                         "createdAt": 1,
                         "cheque_data": 1,
-                        "docs": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
                     }
@@ -759,107 +741,14 @@ exports.employeeSalesData = async (req, res) => {
 
             ]);
         }
+        // console.log(Date.now())
+        //generating presigned url for all docs src
 
-        // salesInfo = await salesModel.aggregate([
-        //     {
-        //         $match: {
-        //             employeeInfo: req.user._id
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: 'fbo_registers',
-        //             localField: 'fboInfo',
-        //             foreignField: '_id',
-        //             as: 'fboInfo'
-        //         },
-        //     },
-        //     {
-        //         $unwind: "$fboInfo"
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: 'bo_registers',
-        //             localField: 'fboInfo.boInfo',
-        //             foreignField: '_id',
-        //             as: 'fboInfo.boInfo'
-        //         },
-        //     },
-        //     {
-        //         $unwind: "$fboInfo.boInfo"
-        //     },
-        //     // {
-        //     //     $lookup: {
-        //     //         from: 'staff_registers',
-        //     //         localField: 'employeeInfo',
-        //     //         foreignField: '_id',
-        //     //         as: 'employeeInfo'
-        //     //     }
-        //     // },
-        //     // {
-        //     //     $unwind: "$employeeInfo"
-        //     // },
-        //     {
-        //         $group: {
-        //             _id: "$_id",
-        //             product_name: {
-        //                 $first: "$product_name"
-        //             },
-        //             payment_mode: {
-        //                 $first: "$payment_mode"
-        //             },
-        //             checkStatus: {
-        //                 $first: "$checkStatus"
-        //             },
-        //             grand_total: {
-        //                 $first: "$grand_total"
-        //             },
-        //             invoiceId: {
-        //                 $first: "$invoiceId"
-        //             },
-        //             createdAt: {
-        //                 $first: "$createdAt"
-        //             },
-        //             updatedAt: {
-        //                 $first: "$updatedAt"
-        //             },
-        //             fostacInfo: {
-        //                 $first: "$fostacInfo"
-        //             },
-        //             foscosInfo: {
-        //                 $first: "$foscosInfo"
-        //             },
-        //             hraInfo: {
-        //                 $first: "$hraInfo"
-        //             },
-        //             fboInfo: {
-        //                 $first: {
-        //                     fbo_name: "$fboInfo.fbo_name",
-        //                     owner_name: "$fboInfo.owner_name",
-        //                     customer_id: "$fboInfo.customer_id",
-        //                     state: "$fboInfo.state",
-        //                     district: "$fboInfo.district",
-        //                     _id: "$fboInfo._id",
-        //                     createdAt: "$fboInfo.createdAt",
-        //                     business_type: "$fboInfo.business_type",
-        //                     gst_number: "$fboInfo.gst_number",
-        //                     address: "$fboInfo.address",
-        //                     email: "$fboInfo.email",
-        //                     owner_contact: "$fboInfo.owner_contact",
-        //                     pincode: "$fboInfo.pincode",
-        //                     village: "$fboInfo.village",
-        //                     tehsil: "$fboInfo.tehsil",
-        //                     boInfo: {
-        //                         _id: "$fboInfo.boInfo._id",
-        //                         customer_id: "$fboInfo.boInfo.customer_id",
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // ]);
+        // salesInfo.docs.forEach((doc) => {
+        //     doc.src = doc.src.map(async(src) => await getDocObject(src))
+        // })
 
-        return res.status(200).json({ salesInfo });
+        return res.status(200).json({ salesInfo, time: new Date() });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });

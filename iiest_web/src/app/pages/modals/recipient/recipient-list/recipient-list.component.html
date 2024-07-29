@@ -15,26 +15,6 @@
                 <th class="cell text-center">Recp. Aadhar No.</th>
                 <th class="cell text-center">Recp. Aadhar</th>
               </tr>
-              <tr *ngIf="this.serviceType == 'Foscos'">
-                <th class="cell">S.No</th>
-                <th class="cell">Operator Name</th>
-                <th class="cell">Address</th>
-                <th class="cell">Pincode</th>
-                <!-- <th class="cell text-center">Electricity Bill</th> -->
-                <th class="cell text-center">Owner Photo</th>
-                <th class="cell text-center">Shop Photo</th>
-                <th class="cell text-center">Aadhar</th>
-              </tr>
-              <tr *ngIf="this.serviceType == 'HRA'">
-                <th class="cell">S.No</th>
-                <th class="cell">Manager Name</th>
-                <th class="cell">Manager Contact</th>
-                <th class="cell">Address</th>
-                <!-- <th class="cell text-center">Electricity Bill<th> -->
-                <th class="cell text-center">Shop Photo</th>
-                <th class="cell text-center">Manager's Photo</th>
-                <th class="cell text-center">Manager's Aadhar</th>
-              </tr>
             </thead>
             <tbody *ngIf="recipientData?.length>0 && serviceType === 'Fostac'">
               <!-- <tr *ngFor="let recipient of recipientData | paginate: { itemsPerPage: 10, currentPage: pageNumber }"> -->
@@ -88,19 +68,6 @@
                 <td class="text-center cell">
                   <span class="truncate">
                     <a target="_blank">
-                      <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer"
-                      (click)="viewDocument('Shop Photo', shops.shopPhoto, 'image', false)"
-                        [icon]="faFile"></fa-icon>
-                    </a>
-                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-2xl text-danger"
-                        [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
-                      hidden>
-                  </span>
-                </td>
-                <td class="text-center cell">
-                  <span class="truncate">
-                    <a target="_blank">
                       <fa-icon *ngIf="shops.aadharPhoto.length != 0" class="fa-2xl text-success cursor-pointer"
                       (click)="viewDocument('Aadhar', shops.aadharPhoto, 'image', true)"
                         [icon]="faFile"></fa-icon>
@@ -135,19 +102,7 @@
                   </span>
                 </td>
 
-                <td class="text-center cell">
-                  <span class="truncate">
-                    <a target="_blank">
-                      <fa-icon *ngIf="shops.shopPhoto" class="fa-2xl text-success cursor-pointer"
-                      (click)="viewDocument('Shop Photo', shops.shopPhoto, 'image', false)"
-                        [icon]="faFile"></fa-icon>
-                    </a>
-                    <label [for]="'uploadShopPhoto' + sr"> <fa-icon *ngIf="!shops.shopPhoto" class="fa-2xl text-danger"
-                        [icon]="faFile"></fa-icon></label>
-                    <input type="file" [id]="'uploadShopPhoto' + sr" (change)="uploadShopPhoto($event, shops._id)"
-                      hidden>
-                  </span>
-                </td>
+                
                 <td class="text-center cell">
                   <span class="truncate">
                     <a target="_blank">

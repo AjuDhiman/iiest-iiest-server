@@ -10,14 +10,28 @@ import { RegisterService } from 'src/app/services/register.service';
   styleUrls: ['./user-account.component.scss']
 })
 export class UserAccountComponent {
+
+  //vars
   submitted:boolean = false;
+  //default employee image and signture
   userImage:string = '../../../assets/logo-side.png';
   userSign:string;
+
   selectedImage:string = '';
   selectedSign:string = '';
+
+  //image and sign file vars
   imageObj: any;
   signObj: any;
+
+  //loading vafr
   loading:boolean = false;
+
+  //var for storing file names
+  imageName: string;
+  signName: string;
+
+  //user form
   updateProfileForm:FormGroup = new FormGroup({
     userImage:new FormControl(''),
     userSign:new FormControl('')
@@ -31,11 +45,13 @@ export class UserAccountComponent {
   }
 
   ngOnInit(): void {
+    //setting form vaildation
     this.updateProfileForm=this.formBuilder.group({
       userImage:['',[this.validateFileType(['png', 'jpg','jpeg'])]],
       userSign:['',[this.validateFileType(['png'])]]
     })
 
+    //get user image and siganture
     this.getUserImage();
     this.getUserSign();
   }
@@ -44,21 +60,26 @@ export class UserAccountComponent {
     return this.updateProfileForm.controls;
   }
 
-  onProfileUpdate(){
+  //submit func for changing image and siganture form
+  async onProfileUpdate(){
     this.submitted = true;
     //return;
-    if (this.updateProfileForm.invalid) {
+    if (this.updateProfileForm.invalid || (!this.imageName && !this.signName)) {
       return;
     }
-
-    const formData = new FormData();
-
-    formData.append('userImage', this.imageObj);
-    formData.append('userSign', this.signObj);
-
-    const filesSelect: any = formData;
- 
     this.loading = true;
+
+    //upload image and signature of employee to s3 bucket in case image or sign change
+    if(this.imageName){
+      await this.uploadEmpImage();
+    }
+
+    if(this.signName) {
+      await this.uploadEmpSignature();
+    }
+
+    const filesSelect: {userImage: string, userSignature: string} = {userImage: this.imageName, userSignature: this.signName};
+ 
     this.registerService.editEmployeeFiles(filesSelect).subscribe({
       next: (res)=>{
         this.loading = false;
@@ -81,6 +102,7 @@ export class UserAccountComponent {
 
   }
 
+  //getting user image
   getUserImage(){
     let user:any = this.registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
@@ -93,16 +115,19 @@ export class UserAccountComponent {
     })
   }
 
+   //getting user sign
   getUserSign(){
     let user:any = this.registerService.LoggedInUserData();
     let parsedUser = JSON.parse(user);
     this.getDataService.getUserSign(parsedUser.signatureImage).subscribe({
       next: (res)=>{
         this.userSign = res.signatureConverted;
+        console.log(res);
       }
     })
   }
 
+  //set configuration on image select
   changeImage($event:any){
     let image = $event.target.files[0];
     const fileExt = $event.target.files[0].name;
@@ -114,6 +139,7 @@ export class UserAccountComponent {
         // Set the image source to the base64 data URL
         if(fileExtension == "png" || fileExtension == "jpg" || fileExtension == "jpeg") {
           this.selectedImage = e.target.result;
+          this.imageName = `employeeImage${new Date().getTime()}.${fileExtension}`;
         } else {
           alert("Only .png, .jpg, .jpeg are allowed");
         }
@@ -124,6 +150,7 @@ export class UserAccountComponent {
     }
   }
 
+   //set configuration on sign select
   changeSign($event:any){
     let image = $event.target.files[0];
     if(image){
@@ -131,6 +158,7 @@ export class UserAccountComponent {
       reader.onload = (e: any) => {
         // Set the image source to the base64 data URL
         this.selectedSign = e.target.result;
+        this.signName = `empSignature${new Date().getTime()}.png`;
       };
       // Read the selected image as a data URL
       reader.readAsDataURL(image);
@@ -153,4 +181,48 @@ export class UserAccountComponent {
       return null;
     };
   }
+
+    //methord for uploading e,mployee signature
+    uploadEmpSignature(): Promise<any> {
+      return new Promise((resolve, reject) => {
+        this.getDataService.getEmployeeDocUploadURL(this.signName, this.signObj.type).subscribe({
+          next: res => {
+            this.registerService.uplaodDocstoS3(res.uploadUrl, this.signObj).subscribe({
+              next: res => {
+                resolve(res);
+                // this.form.patchValue({'empSignature': this.empSignature});
+                // this.toastrService.success('Done')
+              },
+              error: err => {
+                this.loading = false;
+                reject(err);
+                this.toastrService.error('Signature Uploading Problem')
+              }
+            });
+          }
+        })
+      })
+    }
+  
+     //methord for uploading e,mployee image
+     uploadEmpImage(): Promise<any> {
+      return new Promise((resolve, reject) => {
+        this.getDataService.getEmployeeDocUploadURL(this.imageName, this.imageObj.type).subscribe({
+          next: res => {
+            this.registerService.uplaodDocstoS3(res.uploadUrl, this.imageObj).subscribe({
+              next: res => {
+                // this.form.patchValue({'employeeImage': this.empImage});
+                resolve(res);
+                // this.toastrService.success('Done')
+              },
+              error: err => {
+                this.loading = false;
+                reject(err);
+                this.toastrService.error('Image Uploading Problem')
+              }
+            });
+          }
+        })
+      })
+    }
 }
