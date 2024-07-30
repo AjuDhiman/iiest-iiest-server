@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Employee, bo, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification } from 'src/app/utils/registerinterface';
+import { Employee, bo, fbo, fboRecipient, loginEmployee, fboShop, areaAllocation, editUserFiles, fostacVerification, fostacEnrollment, operGeneralSection, fostacAttendance, reportingManager, foscosVerification, hraVerification, invoiceCreation } from 'src/app/utils/registerinterface';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators'
 import { config } from 'src/app/utils/config'
@@ -330,6 +330,7 @@ export class RegisterService {
   }
 
 
+  // secrvice for calling fbo payment by cehque api
   public fboByCheque(objId: string, formInterface: FormData) { // this service helps on posting data related to recipient attendance
     const url = `${this.url}/fbobycheque/${objId}`
     return this.http.post<any>(url, formInterface).pipe(
@@ -338,9 +339,19 @@ export class RegisterService {
       ));
   }
 
+  //service for doing approving cheque request
   public updateChequeApproval(objId: string) { // this service approves the pending cheques
     const url = `${this.url}/approvechequesale/${objId}`
     return this.http.post<any>(url, {}).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  //service for creation of invoice by invoce creation form
+  public createInvoice( formInterface: invoiceCreation) { // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/createinvoice`
+    return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
       ));

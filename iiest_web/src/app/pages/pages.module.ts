@@ -12,6 +12,8 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { RefundPolicyComponent } from './refund-policy/refund-policy.component';
 import { SaleDocModalComponent } from './modals/sale-doc-modal/sale-doc-modal.component';
 import { ShopsModalComponent } from './modals/shops-modal/shops-modal.component';
+import { AccountsModule } from './accounts/accounts.module';
+import { CoworksModule } from './coworks/coworks.module';
 
 
 
@@ -23,7 +25,7 @@ import { ShopsModalComponent } from './modals/shops-modal/shops-modal.component'
     PrivacyPolicyComponent,
     RefundPolicyComponent,
     SaleDocModalComponent,
-    ShopsModalComponent
+    ShopsModalComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,9 @@ import { ShopsModalComponent } from './modals/shops-modal/shops-modal.component'
     GeneralModule,
     SalesModule,
     OperationModule,
-    HRModule
+    HRModule,
+    AccountsModule,
+    CoworksModule
   ],
   exports: [
     SalesModule,

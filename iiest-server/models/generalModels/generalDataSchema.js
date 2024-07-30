@@ -41,7 +41,11 @@ const generalData = new Schema({
     pan_india_allowed_ids: { //employee with Id in this array can sale on any pincode
         type: Array,
         required: true
-    }
+    },
+    cowork_invoice_details: { //array will contain details about invoice like last invoice id 
+        type: Object,
+        required: true
+    },
 })
 
 const generalDataSchema = mongoose.model('generaldata', generalData);

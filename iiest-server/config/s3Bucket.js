@@ -8,6 +8,7 @@ const multer = require('multer')
 
 //Destination Variables or path varibles  of the folders in bucket
 const invoicePath = 'invoices/';
+const coworkInvoicePath = 'coworkinvoices/';
 const employeeDocsPath = 'employee/';
 const fboBasicDocsPath = 'basicsalesdoc/';
 const fostacDocPath = 'fostac/';
@@ -21,6 +22,7 @@ exports.fostacDocPath = fostacDocPath;
 exports.foscosDocPath = foscosDocPath;
 exports.hraDocPath = hraDocPath;
 exports.chequePath = chequePath;
+exports.coworkInvoicePath = coworkInvoicePath;
 
 //configuring S3 Client
 const s3Client = new S3Client({

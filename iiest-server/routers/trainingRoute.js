@@ -6,3 +6,6 @@ const { getTrainingBatchData } = require('../controllers/trainingControllers/tra
 const router = express.Router();
 
 router.get('/gettrainingbatchdata', authMiddleware, getTrainingBatchData)
+
+//eporting router
+module.exports = router;
