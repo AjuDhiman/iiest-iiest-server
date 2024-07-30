@@ -22,16 +22,15 @@ const sendCoworkInvoiceMail = (clientMail, files) => {
     from: mailData.email,
     cc: process.env.DIRECTOR_MAIL,
     to: clientMail,
-    subject: 'IIEST Incubation And Business Center -- INVOICE',
-    html: `<p>Welcome to the IIEST Federation,<br>
-        Scheme implementing partner of Govt. Of India.</p>
+    subject: 'IIEST Incubation And Business Centre -- INVOICE',
+    html: `<p>Welcome to the IIEST Incubation And Business Centre<br></p>
         <p>Dear Valued Customer</p>
-        <p>Thanks for avialing the services under project - Shared spaces via start works. Your invoice is generated and sent to you via this mail.<br> For any queries or assistance please contact below given details.<br><br>
+        <p>Thanks for avialing the services under project - Shared Spaces via Startworks. Your invoice is generated and sent to you via this mail.<br> For any queries or assistance please contact below given details.<br><br>
         </p>
         <p>Thank You</p>
         <br>
-        Brand Name - Start Works<br>
-        Company Name - IIEST Incubation And Business Center<br>
+        Brand Name - Startworks<br>
+        Company Name - IIEST Incubation And Business Centre<br>
         Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
         Contact no - 9667797391<br>
         Landline - 011-35454931, 011-35457013<br>

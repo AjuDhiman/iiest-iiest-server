@@ -13288,8 +13288,8 @@
   {
     "PostOfficeName": "Maharishi Nagar",
     "Pincode": "201304",
-    "City": "Ghaziabad",
-    "District": "Ghaziabad",
+    "City": "Gautam Buddha Nagar",
+    "District": "Gautam Buddha Nagar",
     "State": "Uttar Pradesh"
   },
   {
@@ -133333,6 +133333,13 @@
     "Pincode": "700093",
     "City": "Barast",
     "District": "South 24 Parganas",
+    "State": "West Bengal"
+  },
+  {
+    "PostOfficeName": "Krishnapur",
+    "Pincode": "700102",
+    "City": "Calcutta",
+    "District": "Calcutta",
     "State": "West Bengal"
   },
   {
