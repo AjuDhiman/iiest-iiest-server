@@ -292,10 +292,27 @@
                             <span class="nav-link-text">Invoice List</span>
                         </a>
                     </li>
+
+    <!-- Create Invoice -->
+<li *ngIf="userData && userData.designation == 'Director'" class="nav-item"
+routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+[attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
+[attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
+[title]="!isSidebarVisible && largeDisplay?'Create Invoice':''">
+<a class="nav-link" [routerLink]="['/createinvoice']" [state]="{ isInvoiceList: true }">
+   
+    <span class="nav-icon">
+        <fa-icon class="fa-xl" [icon]="faFileInvoice"></fa-icon>
+     </span>
+    <span class="nav-link-text">Create Invoice</span>
+</a>
+</li>    
+ <!-- Create Invoice -->
                 </span>
             </ul>
         </nav>
 
     </div>
+
 
 </div><!--//app-sidepanel-->

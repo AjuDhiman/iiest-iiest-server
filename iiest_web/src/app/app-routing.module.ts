@@ -20,6 +20,8 @@ import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.co
 import { RefundPolicyComponent } from './pages/refund-policy/refund-policy.component';
 import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
 import { ClientListComponent } from './pages/sales/client-list/client-list.component';
+import { InvoiceListComponent } from './pages/accounts/invoice-list/invoice-list.component';
+import { CreateInvoiceComponent } from './pages/coworks/create-invoice/create-invoice.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' }, // Default route
@@ -43,7 +45,8 @@ const routes: Routes = [
   { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
   //client list route opens client list component only alowed to director Roles
   { path: 'clientlist', component: ClientListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:director_roles}},
-  { path: 'invoicelist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
+  { path: 'invoicelist', component: InvoiceListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
+  { path: 'createinvoice', component: CreateInvoiceComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
   { path: 'emplist', component: EmployeelistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'lms', component: LmsComponent, canActivate:[authGuard]},
 ];

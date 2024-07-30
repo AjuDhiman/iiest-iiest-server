@@ -1,5 +1,5 @@
 const express = require('express');
-const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger, getNotifications, updateNotificationStatus, getEmployeeDocUploadURL } = require('../controllers/employeeControllers/employee');
+const { employeeRegister, employeeLogin,forgotPassword, resetPassword, allEmployeesData, deleteEmployee, editEmployee, areaAllocation, allocatedAreas, employeeImage, employeeSignature, editEmployeeImages, assignManger, getNotifications, updateNotificationStatus, getEmployeeDocUploadURL, generatePresignedGetUrl } = require('../controllers/employeeControllers/employee');
 const { employeeFormData, getPostData, getPincodesData } = require('../controllers/generalControllers/generalData');
 const { employeeRecord, employeeSalesData, employeeDepartmentCount, empSalesProdWise, empHiringData, getEmployeeUnderManager, salesData, ticketVerificationData} = require('../controllers/employeeControllers/employeeRecord');
 const authMiddleware = require('../middleware/auth');
@@ -46,8 +46,7 @@ router.get('/getnotifications', getNotifications); //route for gettig notificati
 router.put('/updatenotificationstatus/:saleid', authMiddleware, updateNotificationStatus); //route for gettig notifications
 router.get('/getemployeedocuploadurl/:name', authMiddleware, getEmployeeDocUploadURL); //route for getting upload url for uploading employee docs to AWS S3
 router.post('/deletedfroms3', authMiddleware, deleteDocFromS3); //route for deleting image from s3
-
-
+router.post('/generatepresignedgeturl', authMiddleware, generatePresignedGetUrl); //route for getting presigned url for a key comming from client
 
 
 // ---------------------------------------------------------routes for Highcharts APIs ----------------------------------------------------------

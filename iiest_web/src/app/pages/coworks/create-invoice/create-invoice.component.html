@@ -1,0 +1,224 @@
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xxl" class="mx-0 px-0">
+        <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-md-6">
+                <h1 class="app-page-title mb-2">Invoice Creation Form</h1>
+
+            </div>
+
+
+        </div>
+        <ng-container>
+            <!-- We want to show borders only in cae of not called as child -->
+            <form [formGroup]="invoiceForm" class="row g-3 border border-1 rounded-3 pb-3" autocomplete="off"
+                (ngSubmit)="onSubmit()">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="business_name" class="form-label">Business Name<sup>*</sup></label>
+                        <input type="text" placeholder="Business Name" formControlName="business_name"
+                            class="form-control form-control-sm" id="business_name"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['business_name'].errors }">
+                        <div *ngIf="submitted && invoiceform['business_name'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['business_name'].errors['required']">Business name is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="contact_no" class="form-label">Contact No.<sup>*</sup></label>
+                        <input type="number" placeholder="Contact No." formControlName="contact_no"
+                            class="form-control form-control-sm" id="contact_no"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['contact_no'].errors }">
+                        <div *ngIf="submitted && invoiceform['contact_no'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['contact_no'].errors['required']">Contact No. is required</div>
+                            <div *ngIf="invoiceform['contact_no'].errors['pattern']">Contact No. is Invalid</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="email" class="form-label">Email<sup>*</sup></label>
+                        <input type="text" placeholder="Email" formControlName="email" id="email"
+                            class="form-control form-control-sm" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['email'].errors }" />
+                        <div *ngIf="submitted && invoiceform['email'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['email'].errors['required']">Email is required</div>
+                            <div *ngIf="invoiceform['email'].errors['email']">Email is invalid</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="address" class="form-label">Address<sup>*</sup></label>
+                        <textarea type="text" placeholder="Address" rows="1" formControlName="address"
+                            autocomplete="off" class="form-control form-control-sm" id="address"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['address'].errors }"></textarea>
+                        <div *ngIf="submitted && invoiceform['address'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['address'].errors['required']">Address is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="state" class="form-label">State<sup>*</sup></label>
+                        <select type="string" formControlName="state" id="state" (change)="onStateSelect()"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['state'].errors }">
+                            <option value="" disabled selected>Select the State</option>
+                            <option *ngFor="let state of states" [value]="state">{{state}}</option>
+                        </select>
+                        <div *ngIf="submitted && invoiceform['state'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['state'].errors['required']">State is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="district" class="form-label">District<sup>*</sup></label>
+                        <select type="string" placeholder="District" formControlName="district" id="district"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['district'].errors }"
+                            (change)="onDistrictChange()">
+                            <option value="" disabled selected>Select the District</option>
+                            <option *ngFor="let district of distrcts" [value]="district">{{district}}</option>
+                        </select>
+                        <div *ngIf="submitted && invoiceform['district'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['district'].errors['required']">District is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
+                        <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['pincode'].errors }">
+                            <option value="" disabled selected>Select the Pincode</option>
+                            <option *ngFor="let pincode of pincodes" [value]="pincode">{{pincode}}</option>
+                        </select>
+                        <div *ngIf="submitted && invoiceform['pincode'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['pincode'].errors['required']">Pincode is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="behalf_of" class="form-label">Behalf of<sup>*</sup></label>
+                        <input type="text" placeholder="Behalf of" formControlName="behalf_of"
+                            class="form-control form-control-sm" id="behalf_of"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['behalf_of'].errors }">
+                        <div *ngIf="submitted && invoiceform['behalf_of'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['behalf_of'].errors['required']">Behalf of is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="invoice_type" class="form-label">Select the Invoice Type<sup>*</sup></label>
+                        <select type="string" placeholder="invoice_type" formControlName="invoice_type"
+                            id="invoice_type" class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['invoice_type'].errors }"
+                            (change)="onInvoiceTypeChange($event)">
+                            <option value="" disabled selected>Select the Invoice Type</option>
+                            <option *ngFor="let type of invoiceTypes" [value]="type">{{type}}</option>
+                        </select>
+                        <div *ngIf="submitted && invoiceform['invoice_type'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['invoice_type'].errors['required']">Invoice Type is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" *ngIf="isGstNoVisible">
+                        <label for="gst_number" class="form-label">GST Number<sup>*</sup></label>
+                        <input type="text" placeholder="GST Number" formControlName="gst_number"
+                            class="form-control form-control-sm" id="gst_number"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['gst_number'].errors }">
+                        <div *ngIf="submitted && invoiceform['gst_number'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['gst_number'].errors['required']">GST Number is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="product" class="form-label">Select the Product<sup>*</sup></label>
+                        <select type="string" placeholder="product" formControlName="product" id="product"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off" (change)="setInvoiceCode()"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['product'].errors }">
+                            <option value="" disabled selected>Select the Product</option>
+                            <option *ngFor="let product of products" [value]="product">{{product}}</option>
+                        </select>
+                        <div *ngIf="submitted && invoiceform['product'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['product'].errors['required']">Product is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="narration" class="form-label">Narration<sup>*</sup></label>
+                        <textarea type="text" placeholder="Narration" rows="1" formControlName="narration"
+                            autocomplete="off" class="form-control form-control-sm" id="narration"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['narration'].errors }"></textarea>
+                        <div *ngIf="submitted && invoiceform['narration'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['narration'].errors['required']">Narration is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="invoice_date" class="form-label">Invoice Date<sup>*</sup></label>
+                        <input type="date" placeholder="Invoice Date" formControlName="invoice_date"
+                            class="form-control form-control-sm" id="invoice_date"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['invoice_date'].errors }">
+                        <div *ngIf="submitted && invoiceform['invoice_date'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['invoice_date'].errors['required']">Invoice Date is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="qty" class="form-label">Quantity<sup>*</sup></label>
+                        <input type="number" placeholder="Quantity" formControlName="qty"
+                            class="form-control form-control-sm" id="qty" (change)="onQtyChange()"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['qty'].errors }">
+                        <div *ngIf="submitted && invoiceform['qty'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['qty'].errors['required']">Quantity is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="processing_amount" class="form-label">Processing Amount(of single
+                            product)<sup>*</sup></label>
+                        <input type="number" placeholder="Processing Amount" formControlName="processing_amount"
+                            class="form-control form-control-sm" id="processing_amount"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['processing_amount'].errors }"
+                            (change)="setTotalAmount()">
+                        <div *ngIf="submitted && invoiceform['processing_amount'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['processing_amount'].errors['required']">Processing Amount is
+                                required</div>
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="col-md-3">
+                        <label for="total_amount" class="form-label">Total Amount(With GST)<sup>*</sup></label>
+                        <input type="number" placeholder="Total Amount" formControlName="total_amount"
+                            class="form-control form-control-sm" id="total_amount" [readOnly]="true"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['total_amount'].errors }" readOnly>
+                        <div *ngIf="submitted && invoiceform['total_amount'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['total_amount'].errors['required']">Total Amount is required</div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-6">
+
+
+
+                        <button type="submit" class="btn btn-sm btn-primary">Create Invoice</button>
+
+                    </div>
+                    <!-- <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" (click)="onReset()" class="btn btn-sm btn-warning">Reset</button>
+                    </div> -->
+                </div>
+
+
+            </form>
+
+
+        </ng-container>
+
+    </div>
+    <ngx-loading [show]="loading"></ngx-loading>
+</div>
+<!-- <div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xxl border border-1 rounded-3">
+        <app-fbolist (isEditRecord)="isEditRecord($event)" class="border" #fbolist></app-fbolist>
+
+    </div>
+</div> -->

@@ -165,6 +165,10 @@ exports.employeeRecord = async (req, res) => {
 
         const data = await salesModel.aggregate(pipeline); //performing aggregation
 
+
+        console.log('dataaaaaaaaaaaaaaaaaaa: ------------------',data)
+        console.log('today: ------------------',today)
+
         res.status(200).json(data);
     } catch (error) {
         console.error(error);
@@ -555,12 +559,6 @@ exports.employeeSalesData = async (req, res) => {
                         "payment_mode": 1,
                     }
                 },
-                // {
-                //     $skip: (page_num-1)*size
-                // },
-                // {
-                //     $limit: size
-                // }
             ]);
         } else if (req.user.designation === 'Verifier') {
             salesInfo = await salesModel.aggregate([
@@ -741,6 +739,7 @@ exports.employeeSalesData = async (req, res) => {
 
             ]);
         }
+
         // console.log(Date.now())
         //generating presigned url for all docs src
 

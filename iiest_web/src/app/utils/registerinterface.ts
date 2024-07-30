@@ -240,3 +240,23 @@ export interface sales{
   invoiceId: string,
   createdAt: string
 }
+
+export interface invoiceCreation{
+  business_name: string,
+  contact_no: number,
+  email: string,
+  state: string,
+  district: string,
+  pincode: number,
+  address: string,
+  invoice_code: string,
+  product: string,
+  invoice_type: string,
+  behalf_of: string,
+  qty: number,
+  total_amount: number,
+  narration: string,
+  processing_amount: number,
+  invoice_date: Date,
+  gst_amount: number
+}

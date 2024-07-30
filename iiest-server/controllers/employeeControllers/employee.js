@@ -621,3 +621,24 @@ exports.getEmployeeDocUploadURL = async (req, res) => {
     }
 }
 
+
+//methord for generating pesigned url for a key if it comming from frontend
+exports.generatePresignedGetUrl = async(req, res) => {
+    try {
+        let success = false;
+
+        const {key} = req.body.key;
+
+        const url = await getDocObject(key);
+
+        if(!url){
+            return res.status(404).json({success: success, urlGeneratingError: true})
+        }
+
+        success = true;
+        return res.status(200).json({success: success, url: url});
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({success: false, message: 'Internal Server Error'});
+    }
+}
