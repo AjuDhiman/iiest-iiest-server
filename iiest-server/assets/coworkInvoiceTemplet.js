@@ -260,7 +260,7 @@ const coworkInvoiceTemplate = async (data) => {
             
                     <div class="sub-page">
                         <div class="heading">
-                            <h3>I I E S T&nbsp;&nbsp;&nbsp;I N C U B A T I O N&nbsp;&nbsp;&nbsp;A N D&nbsp;&nbsp;&nbsp;B U S I N E S S&nbsp;&nbsp;&nbsp;C E N T E R</h3>
+                            <h3>I I E S T&nbsp;&nbsp;&nbsp;I N C U B A T I O N&nbsp;&nbsp;&nbsp;A N D&nbsp;&nbsp;&nbsp;B U S I N E S S&nbsp;&nbsp;&nbsp;C E N T R E</h3>
                         </div>
                         <div class="logo-section">
                             <p>
@@ -271,7 +271,7 @@ const coworkInvoiceTemplate = async (data) => {
                                 <br>
                                 Website: startworks.co.in, Email ID: finance.iiest@gmail.com
                                 <br/>
-                                Start Works, a brand of IIEST Incubation And Business Center. Invoice issued by IIEST Incubation And Business Center.
+                                Start Works, a brand of IIEST Incubation And Business Centre. Invoice issued by IIEST Incubation And Business Centre.
                                 <br/>
                                 GST: 07AAHFI6394N1ZN
                             </p>
@@ -348,6 +348,14 @@ const coworkInvoiceTemplate = async (data) => {
                         </div>
             <div style="display: flex; justify-content: space-between;">
                 <div>
+                <p><b>Invoice is payable within 2 days *</b><br/>
+                <b>Please make invoice payment in our following bank account</b></p>
+                <br/>
+                <p><b>Account Name: </b>IIEST Incubation and Business Centre</p>
+                <p><b>Bank Name: </b>IndusInd Bank</p>
+                <p><b>Account No.: </b>250359359359</p>
+                <p><b>IFSC Code: </b>INDB0000005</p>
+                <p><b>Account Type: </b>Current</p>
                 </div>
                 <section style="position: relative; margin-top: 40px;">
                     <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>
