@@ -136,7 +136,7 @@
                                                         class="truncate text-capitlize">{{invoice.invoice_date}}</span>
                                                 </td>
                                                 <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faFile"
+                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
                                                             class="text-success fa-xl cursor-pointer"></fa-icon>
                                                     </span>
                                                 </td>

@@ -732,7 +732,7 @@ exports.saleInvoice = async (req, res) => {
     const invoiceId = req.params.id;
 
     // invoices path is comming from s3.js file in config folder
-    const invoiceKey = invoiceId;
+    const invoiceKey = `${invoicesPath}${invoiceId}`;
 
     //getting invoice presigned url and sending it to client
     const invoiceConverted = await getDocObject(invoiceKey);
