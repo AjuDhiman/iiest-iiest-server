@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
+import { RegisterService } from 'src/app/services/register.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -14,7 +15,7 @@ export class InvoiceListComponent implements OnInit {
 
   //data related vars
   invoiceList: any = [];
-  caseData:any = [];
+  caseData: any = [];
 
   //variables
   activeTab: string = 'tax'; //var for configuring tab
@@ -27,6 +28,11 @@ export class InvoiceListComponent implements OnInit {
   filteredData: any;
   pageNumber: number = 1;
   isSearch: boolean = false;
+
+  //vars for showing total Aggregation
+  totalProcessingAmt: number = 0;
+  totalGstAmt: number = 0;
+  totalAmt: number = 0;
 
 
   //loader var
@@ -41,6 +47,7 @@ export class InvoiceListComponent implements OnInit {
 
   //constructor
   constructor(private _getDataService: GetdataService,
+    private _registerService: RegisterService,
     private exportAsService: ExportAsService,
     private ngbModal: NgbModal
   ) {
@@ -62,12 +69,13 @@ export class InvoiceListComponent implements OnInit {
   onSearchChange(): void {
     this.pageNumber = 1;
     this.isSearch = true;
+
     this.filter();
   }
 
   //methord runs on item number changes
   onItemNumChange(): void {
-
+    this.pageNumber = 1
   }
 
   //methord for filltering the invoice list
@@ -92,6 +100,21 @@ export class InvoiceListComponent implements OnInit {
           break;
       }
     }
+
+    //setting total aggregation to 0
+    this.totalProcessingAmt = 0;
+    this.totalGstAmt = 0;
+    this.totalAmt = 0;
+
+    this.filteredData.forEach((data: any) => {
+      this.totalProcessingAmt += Number(data.processing_amount);
+      this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
+      this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst) );
+    });
+
+    console.log('Total processing amount', this.totalProcessingAmt);
+    console.log('Total gst amount', this.totalGstAmt)
+    console.log('Total amount', this.totalAmt)
   }
 
   //methord for getting invoice list by the invoice list service and converting it to according to our need by performind diffrent operations
@@ -99,7 +122,7 @@ export class InvoiceListComponent implements OnInit {
     this.loading = true;
     this._getDataService.getInvoiceList().subscribe({
       next: res => {
-    
+
         this.invoiceList = res.invoiceList.map((entry: any) => {
           return {
             ...entry,
@@ -110,9 +133,9 @@ export class InvoiceListComponent implements OnInit {
             igst: ((entry.business_type === 'b2b') && entry.state !== 'Delhi') ? this.calculateGST('igst', entry.processing_amount) : 0,
           }
         });
-        console.log(this.invoiceList);
         this.loading = false;
         this.filterByBusinessType();
+        
       }
     });
 
@@ -159,8 +182,9 @@ export class InvoiceListComponent implements OnInit {
     } else if (this.activeTab === 'customer') {
       this.caseData = this.invoiceList.filter((invoice: any) => invoice.business_type === 'b2c');
     }
-    
+
     this.filteredData = this.caseData;
+    this.filter();
   }
 
   //this methord sets the initia configuration of the componets
@@ -197,6 +221,15 @@ export class InvoiceListComponent implements OnInit {
           src: res.invoiceConverted,
           multipleDoc: false
         }
+      }
+    })
+  }
+
+  //methord for recreating invoice
+  reCreateInvoice(saleId: string, product: string, invoiceSrc: string) {
+    this._registerService.recreateInvoice(saleId, product, invoiceSrc).subscribe({
+      next: res => {
+        console.log(res);
       }
     })
   }

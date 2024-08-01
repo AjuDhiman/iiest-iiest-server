@@ -26,7 +26,11 @@ exports.createInvoie = async (req, res) => {
             email: email, processing_amount: processing_amount, invoice_type: invoice_type, gst_number: gst_number,  gst_amount: gst_amount, qty: qty,
             total_amount: total_amount, product: product, product_code: product_code, narration: narration, invoice_date: invoice_date, behalf_of: behalf_of,
             invoice_code: invoiceCode, invoice_src: invoiceData.fileName
-        })
+        });
+
+        if(!dataSaved){
+            return res.status(401).json({success: false, message:'Data Saving Error', dataSavingErr: true})
+        }
 
         sendCoworkInvoiceMail(email, [invoiceData]);
 
@@ -36,5 +40,23 @@ exports.createInvoie = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+//metjord for getting invoice list
+exports.getCoworkInvoiceList = async(req, res) => {
+    try {
+
+        const invoiceList = await coworkInvoiceModel.find({});
+
+        if(!invoiceList) {
+            return res.status(201).json({success: false,  dataNotFoundErr: true, message: 'Data Not Found' })
+        }
+
+        return res.status(200).json({success: true, invoiceList: invoiceList});
+
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({message:'Internal Server Error'});
     }
 }

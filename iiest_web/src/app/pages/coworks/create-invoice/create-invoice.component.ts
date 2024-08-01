@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -73,11 +75,39 @@ export class CreateInvoiceComponent implements OnInit {
   }
 
 
+
+
+  //----------------------------------------------------------------------invoice list related vars-----------------------------------------------------------------
+  activeTab: string = 'Tax';
+  itemsNumber: number = 10;
+  isSearch: boolean = false;
+  searchQuery: string = '';
+  pageNumber: number = 1;
+  selectedFilter: string = 'byInvoiceCode';
+
+  invoiceList: any = [];
+  filteredData: any = [];
+  caseData: any = [];
+
+   //vars for showing total Aggregation
+   totalProcessingAmt: number = 0;
+   totalGstAmt: number = 0;
+   totalAmt: number = 0;
+ 
+  
+
+  //icons
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faFileCsv: IconDefinition = faFileCsv;
+  faFile: IconDefinition = faFile;
+
+
   //constructor
   constructor(private formBuilder: FormBuilder,
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
-    private _toastrService: ToastrService
+    private _toastrService: ToastrService,
+    private exportAsService: ExportAsService
   ) {
 
   }
@@ -86,6 +116,9 @@ export class CreateInvoiceComponent implements OnInit {
   //life cycle hooks
   ngOnInit(): void {
     this.setformValidation();
+
+    //geting invoice list
+    this.getCoworkInvoiceList();
   }
 
   //methords
@@ -259,5 +292,150 @@ export class CreateInvoiceComponent implements OnInit {
   onQtyChange(): void {
     this.setTotalAmount();
   }
+
+  //**********************************************************methord for getting cowork invoice list**************************************************************
+  getCoworkInvoiceList(): void {
+    this.loading = true;
+    this._getDataService.getCoworkInvoiceList().subscribe({
+      next: res => {
+        this.loading = false;
+        this.invoiceList = res.invoiceList.map((invoice: any) => {
+          return {...invoice, 
+            invoice_date: this.getFormattedDate(invoice.invoice_date),
+            gst: invoice.invoice_type === 'Customer' ? this.calculateGST('gst', invoice.processing_amount) : 0,
+            sgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? this.calculateGST('sgst', invoice.processing_amount) : 0,
+            cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? this.calculateGST('cgst', invoice.processing_amount) : 0,
+            igst: ((invoice.invoice_type === 'Tax') && invoice.state !== 'Delhi') ? this.calculateGST('igst', invoice.processing_amount) : 0,
+          }
+        });
+        this.filteredData = this.invoiceList;
+        this.filterByInvoiceType();
+      }
+    });
+  }
+
+  //methord for calculating amount according to gst, sgst, cgst or igst
+  calculateGST(type: string, processing_amount: number): number {
+    let gstAmount: number = 0;
+    if (type === 'igst' || type === 'gst') {
+      //getting 18% of processing amount
+      gstAmount = Math.ceil(processing_amount * (18 / 100));
+    }
+    else if (type === 'sgst' || type === 'cgst') {
+      //getting 9% of processing amount
+      gstAmount = Math.ceil(processing_amount * (9 / 100));
+    }
+    return gstAmount;
+  }
+
+
+  //methord change the view format ofthe invoice date in the table
+  getFormattedDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    let suffix = "";
+    if (day === 1 || day === 21 || day === 31) {
+      suffix = "st";
+    } else if (day === 2 || day === 22) {
+      suffix = "nd";
+    } else if (day === 3 || day === 23) {
+      suffix = "rd";
+    } else {
+      suffix = "th";
+    }
+    return `${day}${suffix} ${month} ${year}`;
+  }
+
+  // cowork invoicelist related methords
+  toogleTabs(tab: string) {
+    this.activeTab = tab;
+    this.filterByInvoiceType();
+  }
+
+  //methord for filtering table according to serach query
+  onSearchChange() {
+    this.pageNumber = 1;
+    this.isSearch = true;
+    this.filter();
+  }
+
+  //methord for item no change
+  onItemNumChange() {
+
+  }
+
+   //methord for filltering the invoice list
+   filter(): void {
+    if (!this.searchQuery) {
+      this.filteredData = this.caseData;
+    } else {
+      switch (this.selectedFilter) {
+        // case 'generalSearch': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        //   break;
+        case 'byBusinessName': this.filteredData = this.caseData.filter((elem: any) => elem.business_name && elem.business_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
+        case 'byInvoiceCode': this.filteredData = this.caseData.filter((elem: any) => elem.invoice_code && elem.invoice_code.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
+        case 'byGstNum': this.filteredData = this.caseData.filter((elem: any) => elem.gst_number && elem.gst_number.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
+        case 'byProduct': this.filteredData = this.caseData.filter((elem: any) => elem.product && elem.product.toLowerCase().includes(this.searchQuery.toLowerCase()));
+          break;
+        case 'byPlaceOfSupply': this.filteredData = this.caseData.filter((elem: any) => elem.state && elem.state.toLowerCase().includes(this.searchQuery));
+          break;
+        case 'byInvoiceDate': this.filteredData = this.caseData.filter((elem: any) => elem.invoice_date && elem.invoice_date.toLowerCase().includes(this.searchQuery));
+          break;
+      }
+    }
+
+    //setting total aggregation to 0
+    this.totalProcessingAmt = 0;
+    this.totalGstAmt = 0;
+    this.totalAmt = 0;
+
+    this.filteredData.forEach((data: any) => {
+      this.totalProcessingAmt += Number(data.processing_amount);
+      this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
+      this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst) );
+    });
+
+    console.log('Total processing amount', this.totalProcessingAmt);
+    console.log('Total gst amount', this.totalGstAmt)
+    console.log('Total amount', this.totalAmt)
+  }
+
+
+  //methord for exporting excel
+  exportToCsv(): void {
+    const options: ExportAsConfig = {
+      type: 'csv',
+      elementIdOrContent: 'data-to-export',
+    };
+
+    this.exportAsService.save(options, 'table_data').subscribe(() => {
+    });
+  }
+
+  //methord runs on paination cahnges
+  onTableDataChange($event: number) {
+    this.pageNumber=$event;
+  }
+
+   //fillter the records on the basis of invoice type
+   filterByInvoiceType(): void {
+    if (this.activeTab === 'Tax') {
+      this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Tax');
+    } else if (this.activeTab === 'Customer') {
+      this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Customer');
+    }  else if (this.activeTab === 'Service') {
+      this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Service');
+    } 
+    
+    this.filteredData = this.caseData;
+
+    this.filter();
+  }
+
 
 }

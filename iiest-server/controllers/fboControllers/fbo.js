@@ -737,36 +737,6 @@ exports.saleInvoice = async (req, res) => {
     //getting invoice presigned url and sending it to client
     const invoiceConverted = await getDocObject(invoiceKey);
 
-    // const invoiceBucket = createInvoiceBucket();
-
-    // const invoiceCheck = await invoiceBucket.find({ '_id': new ObjectId(invoiceId) }).toArray();
-
-    // if (!invoiceCheck.length > 0) {
-    //   success = false;
-    //   return res.status(404).json({ success, oldInvoiceErr: true });
-    // }
-
-    // const invoiceDownloadStream = invoiceBucket.openDownloadStream(new ObjectId(invoiceId));
-
-    // invoiceDownloadStream.on('error', () => {
-    //   success = false;
-    //   return res.status(200).json({ success, randomErr: true });
-    // })
-
-    // let chunks = [];
-
-    // invoiceDownloadStream.on('data', (chunk) => {
-    //   chunks.push(chunk);
-    // });
-
-    // invoiceDownloadStream.on('end', () => {
-    //   const invoiceBuffer = Buffer.concat(chunks);
-    //   const invoicePrefix = 'data:application/pdf;base64,';
-    //   const invoiceBase64 = invoiceBuffer.toString('base64');
-    //   const invoiceConverted = `${invoicePrefix}${invoiceBase64}`;
-    //   success = true;
-    //   return res.status(200).json({ success, invoiceConverted })
-    // });
 
     return res.status(200).json({ success: true, invoiceConverted })
 

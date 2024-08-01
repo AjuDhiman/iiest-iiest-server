@@ -47,7 +47,7 @@ router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)
 router.post('/existingfbo-pay-return/:id', existingFboPayReturn);
 router.post('/approvechequesale/:id', authMiddleware, approveChequeSale);//this api will approve cheque and send invoice for this sale after approving
-router.get('/getclientlist', getClientList)
+router.get('/getclientlist', authMiddleware, getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 

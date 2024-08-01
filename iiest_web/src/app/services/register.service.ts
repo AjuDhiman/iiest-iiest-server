@@ -357,6 +357,12 @@ export class RegisterService {
       ));
   }
 
+
+  public recreateInvoice(salesId: string, product: string, invoicSrc: string) {
+    const url = `${this.url}/resendinvoice/${salesId}`;
+    return this.http.post<any>(url, {product: product, invoicSrc: invoicSrc}).pipe(catchError(this.handleError));
+  }
+
   public deleteDocFromS3(key: string) { // this service approves the pending cheques
     const url = `${this.url}/deletedfroms3`
     return this.http.post<any>(url, {key}).pipe(

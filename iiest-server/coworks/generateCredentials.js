@@ -24,9 +24,9 @@ const generateCoworksInvoiceCode = async (invoice_type) => {  //methord for gene
         taxCode = 'TX';
     } else if (invoice_type === 'Customer') {
         taxCode = 'CI';
-    } else if (invoice_type === 'S') {
+    } else if (invoice_type === 'Service') {
         ervice
-        taxCode = 'CI';
+        taxCode = 'SI';
     }
 
     //getting invoice number

@@ -1,3 +1,4 @@
+const invoiceDataHandler = require("../../fbo/generateInvoice");
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 
 
@@ -147,5 +148,37 @@ exports.getInvoiceList = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+exports.reCreateInvoice = async (req, res) => {
+    try {
+
+        let success = false;
+
+        const id = req.params.id
+        const { product, invoiceCode } = req.body;
+
+        const sale = await salesModel.findOne({ _id: id }).populate([
+            {
+                path: 'employeeInfo'
+            },
+            {
+                path: 'fboInfo', populate: {
+                    path: 'boInfo'
+                }
+            }
+        ]);
+
+        return res.status(200).json({success , sale})
+
+
+
+        const invoice = invoiceDataHandler()
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error', success: false })
     }
 }

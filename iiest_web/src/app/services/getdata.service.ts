@@ -74,6 +74,7 @@ export class GetdataService {
   }
 
 
+  //service for getting general data related to products
   public getFboGeneralData(): Observable<any> {
     const url = `${this.url}/fbogeneraldata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -85,6 +86,13 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+   //service for getting cowork invoice list
+   public getCoworkInvoiceList(): Observable<any> {
+    const url = `${this.url}/getcoworkinvoicelist`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  //service for getting allocated area of a particular employee
   public getAllocatedAreas(objId: string): Observable<any> {
     const url = `${this.url}/allocatedareas/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));

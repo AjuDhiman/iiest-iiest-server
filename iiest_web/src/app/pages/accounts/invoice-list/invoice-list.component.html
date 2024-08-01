@@ -129,7 +129,7 @@
                                                         |
                                                         inrAmount):'Nil'}}</span>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.total_amount |
+                                                        class="truncate text-capitlize">{{(+invoice.processing_amount + invoice.gst + invoice.cgst + invoice.sgst + invoice.igst) |
                                                         inrAmount}}</span>
                                                 </td>
                                                 <td class="cell"><span
@@ -142,6 +142,39 @@
                                                 </td>
 
                                             </ng-container>
+                                        </tr>
+                                        <tr class="list-tr">
+
+
+                                            <td class="cell"><span class="truncate"></span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize"></span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize"></span>
+                                            </td>
+                                            <td *ngIf="activeTab==='tax'" class="cell"><span class="truncate text-capitlize"></span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize">Total Income</span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt| inrAmount}}</span>
+                                            </td>
+                                           
+                                            <td class="cell"><span class="truncate text-capitlize">Total GST.</span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize">{{totalGstAmt| inrAmount}}</span>
+                                            <td class="cell"><span class="truncate text-capitlize">Total Amount</span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize">
+                                                {{totalAmt| inrAmount}}
+                                            </span>
+                                            </td>
+                                            <td class="cell"><span class="truncate text-capitlize">
+                                                    
+                                                </span>
+                                            </td>
+                                            <td class="cell" *ngIf="activeTab==='tax'"><span class="truncate text-capitlize"></span>
+                                            </td>
+
                                         </tr>
                                     </tbody>
                                     <tbody *ngIf="filteredData?.length==0">
