@@ -307,7 +307,23 @@ export class CreateInvoiceComponent implements OnInit {
             cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? this.calculateGST('cgst', invoice.processing_amount) : 0,
             igst: ((invoice.invoice_type === 'Tax') && invoice.state !== 'Delhi') ? this.calculateGST('igst', invoice.processing_amount) : 0,
           }
-        });
+        }).sort((a: any, b: any) => {
+          if(a.invoice_code){
+            const codeA = a.invoice_code;
+            const codeB = b.invoice_code;
+  
+            const codeArrA = codeA.split('/');
+            const codeArrB = codeB.split('/');
+  
+            const codeNumA = codeArrA[codeArrA.length - 1];
+            const codeNumB = codeArrB[codeArrB.length - 1];
+  
+            return (codeNumB - codeNumA);
+          } else {
+            return 0;
+          }
+          
+        });;
         this.filteredData = this.invoiceList;
         this.filterByInvoiceType();
       }

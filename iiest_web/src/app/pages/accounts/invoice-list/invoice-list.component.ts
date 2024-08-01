@@ -132,6 +132,22 @@ export class InvoiceListComponent implements OnInit {
             cgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('cgst', entry.processing_amount) : 0,
             igst: ((entry.business_type === 'b2b') && entry.state !== 'Delhi') ? this.calculateGST('igst', entry.processing_amount) : 0,
           }
+        }).sort((a: any, b: any) => {
+          if(a.code){
+            const codeA = a.code;
+            const codeB = b.code;
+  
+            const codeArrA = codeA.split('/');
+            const codeArrB = codeB.split('/');
+  
+            const codeNumA = codeArrA[codeArrA.length - 1];
+            const codeNumB = codeArrB[codeArrB.length - 1];
+  
+            return (codeNumB - codeNumA);
+          } else {
+            return 0;
+          }
+          
         });
         this.loading = false;
         this.filterByBusinessType();
