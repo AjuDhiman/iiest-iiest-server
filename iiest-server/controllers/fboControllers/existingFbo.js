@@ -241,68 +241,76 @@ exports.existingFboByCheque = async (req, res) => {
   }
 }
 
+
 exports.existingFboPayPage = async (req, res) => {
   try {
-
     let success = false;
 
     const panelType = req.user.panel_type;
-
     const formBody = req.body;
-    const createrId = req.params.id
+    const createrId = req.params.id;
 
-    const userInfo = await employeeSchema.findById(req.params.id);
+    // Validate createrId to ensure it's a valid ObjectId
+    if (!ObjectId.isValid(createrId)) {
+      return res.status(400).json({ success, message: 'Invalid creator ID format' });
+    }
+
+    const userInfo = await employeeSchema.findById(createrId);
+    if (!userInfo) {
+      return res.status(404).json({ success, message: 'User not found' });
+    }
+
     const signatureFile = userInfo.signatureImage;
     const officerName = userInfo.employee_name;
 
     if (!signatureFile) {
-      success = false;
       return res.status(404).json({ success, signatureErr: true });
     }
 
-    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: req.params.id });
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrId });
     const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
     if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       if (!areaAlloted) {
-        success = false;
-        return res.status(404).json({ success, areaAllocationErr: true })
+        return res.status(404).json({ success, areaAllocationErr: true });
       }
     }
 
     const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
-    console.log('sign Exsists:', signExists)
-
     if (!signExists) {
-      return res.status(404).json({ success, noSignErr: true })
+      return res.status(404).json({ success, noSignErr: true });
     }
 
     const existingFboInfo = await fboModel.findOne({ customer_id: formBody.existingFboId });
-
     if (!existingFboInfo) {
-      success = false;
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    // req.session.fboFormData = { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo };
-
-    const fboFormData = await sessionModel.create({ data: { ...formBody, createrObjId: createrId, signatureFile, existingFboInfo, officerName: officerName } });
+    // Ensure that fboFormData is created only if the required data is valid
+    const fboFormData = await sessionModel.create({
+      data: {
+        ...formBody,
+        createrObjId: new ObjectId(createrId), // Ensure createrId is converted to ObjectId
+        signatureFile,
+        existingFboInfo,
+        officerName
+      }
+    });
 
     if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
       if (!pincodeCheck) {
-        success = false;
         return res.status(404).json({ success, wrongPincode: true });
       }
     }
 
+    // Call the payment request function
     payRequest(formBody.grand_total, res, `${BACK_END}/existingfbo-pay-return/${fboFormData._id}`);
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 
 
