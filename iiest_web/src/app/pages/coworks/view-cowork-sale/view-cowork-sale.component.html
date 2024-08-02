@@ -1,0 +1,127 @@
+<!-- Modal Head -->
+<div class="modal-header bg-secondary">
+    <h6 class="modal-title text-white" id="modal-basic-title">FBO Details</h6>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<!-- Modal Body  -->
+<div class="modal-body">
+    <div class="row">
+        <div class="container">
+           
+
+            <!-- Business Related Data -->
+            <div class="row py-2" style="font-size: small;">
+                <div class="col-md title" style="color: #1957a9;">Business Info</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Business Name</div>
+                            <div class="col-md-6 data">
+                                {{data.business_name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Contact No.</div>
+                            <div class="col-md-6 data">
+                                {{data.contact_no}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Email</div>
+                            <div class="col-md-6 data">
+                                {{data.email}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Address</div>
+                            <div class="col-md-6 data">
+                                {{data.address}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">State</div>
+                            <div class="col-md-6 data">
+                                {{data.state}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">District</div>
+                            <div class="col-md-6 data">
+                                {{data.district}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Pincode</div>
+                            <div class="col-md-6 data">
+                                {{data.pincode}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" *ngIf="data.gst_number">
+                        <div class="row">
+                            <div class="col-md-6 title">Gst Number</div>
+                            <div class="col-md-6 data">
+                                {{data.gst_number}}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Cheque Image</div>
+                            <div class="col-md-6 data">
+                                <fa-icon class="fa-2xl text-success cursor-pointer"
+                                    (click)="viewDocument('Cheque Of' + data.cheque_data.payee_name , data.cheque_data.cheque_image, 'image', false)"
+                                    [icon]="faFile"></fa-icon>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+
+            <div *ngIf="data.isAmountReceived" class="row py-2" style="font-size: small;">
+                <div class="col-md title" style="color: #1957a9;">Receving Info</div>
+                <div class="row mt-2 ml-3">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Recevied Amount</div>
+                            <div class="col-md-6 data">
+                                {{data.receivingAmount}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6 title">Recevied Date</div>
+                            <div class="col-md-6 data">
+                                {{getFormattedDate(data.receivingDate)}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2 title">Receving Narration</div>
+                            <div class="col-md-10 data">
+                                {{data.receivingNarration}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Busniness reated data Ends -->
+        </div>
+    </div>
+</div>

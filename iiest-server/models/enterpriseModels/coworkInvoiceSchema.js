@@ -84,6 +84,28 @@ const cowworkInvoice = new Schema({
     behalf_of: {
         type: String,
         required: true
+    },
+    isAmountReceived: {
+        type: Boolean,
+        require: true
+    },
+    receivingAmount: {
+        type: Number,
+        required: function () {
+            return this.isAmountReceived;
+        }
+    },
+    receivingDate: {
+        type: Date,
+        required: function () {
+            return this.isAmountReceived;
+        }
+    },
+    receivingNarration: {
+        type: String,
+        required: function () {
+            return this.isAmountReceived;
+        }
     }
 }, {timestamps: true});
 

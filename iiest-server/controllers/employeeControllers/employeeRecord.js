@@ -167,7 +167,7 @@ exports.employeeRecord = async (req, res) => {
 
 
         console.log('dataaaaaaaaaaaaaaaaaaa: ------------------',data)
-        console.log('today: ------------------',today)
+        console.log('today: ------------------',todayDate)
 
         res.status(200).json(data);
     } catch (error) {

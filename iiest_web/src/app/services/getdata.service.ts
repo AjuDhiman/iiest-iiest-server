@@ -54,26 +54,27 @@ export class GetdataService {
 
 
   //api for getting upload url forn uploading dos to s3 bucket
-  public generateFostacDocUrl(info:{name: string, format: string}): Observable<any> {
+  public generateFostacDocUrl(info: { name: string, format: string }): Observable<any> {
     const url = `${this.url}/generatefostacdocuploadurl`;
-    return this.http.post<any>(url, {info}).pipe(catchError(this.handleError));
+    return this.http.post<any>(url, { info }).pipe(catchError(this.handleError));
   }
 
 
   //api for getting upload url forn uploading dos to s3 bucket
-  public generateFoscosDocUrl(info:{name: string, format: string}): Observable<any> {
+  public generateFoscosDocUrl(info: { name: string, format: string }): Observable<any> {
     const url = `${this.url}/generatefoscosdocuploadurl`;
-    return this.http.post<any>(url, {info}).pipe(catchError(this.handleError));
+    return this.http.post<any>(url, { info }).pipe(catchError(this.handleError));
   }
 
 
   //api for getting upload url forn uploading dos to s3 bucket
-  public generateHRADocUrl(info:{name: string, format: string}): Observable<any> {
+  public generateHRADocUrl(info: { name: string, format: string }): Observable<any> {
     const url = `${this.url}/generatehradocuploadurl`;
-    return this.http.post<any>(url, {info}).pipe(catchError(this.handleError));
+    return this.http.post<any>(url, { info }).pipe(catchError(this.handleError));
   }
 
 
+  //service for getting general data related to products
   public getFboGeneralData(): Observable<any> {
     const url = `${this.url}/fbogeneraldata`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -85,6 +86,13 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+  //service for getting cowork invoice list
+  public getCoworkInvoiceList(): Observable<any> {
+    const url = `${this.url}/getcoworkinvoicelist`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  //service for getting allocated area of a particular employee
   public getAllocatedAreas(objId: string): Observable<any> {
     const url = `${this.url}/allocatedareas/${objId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
@@ -158,6 +166,12 @@ export class GetdataService {
 
   public getInvoice(invoiceId: string): Observable<any> {
     const url = `${this.url}/fbo/invoice/${invoiceId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  //service for getting cowork invoice 
+  public getCoworkInvoice(invoiceId: string) {
+    const url = `${this.url}/getcoworkinvoice/${invoiceId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
