@@ -79,7 +79,7 @@
                             <div *ngIf="invoiceform['district'].errors['required']">District is required</div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
                             class="form-select form-select-sm cursor-pointer" autocomplete="off"
@@ -87,6 +87,15 @@
                             <option value="" disabled selected>Select the Pincode</option>
                             <option *ngFor="let pincode of pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
+                        <div *ngIf="submitted && invoiceform['pincode'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['pincode'].errors['required']">Pincode is required</div>
+                        </div>
+                    </div> -->
+                    <div class="col-md-3">
+                        <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
+                        <input type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
+                            class="form-control form-control-sm" autocomplete="off"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['pincode'].errors }" />
                         <div *ngIf="submitted && invoiceform['pincode'].errors" class="invalid-feedback">
                             <div *ngIf="invoiceform['pincode'].errors['required']">Pincode is required</div>
                         </div>
@@ -336,7 +345,7 @@
                                                         class="truncate text-capitlize">{{invoice.state}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.processing_amount
+                                                        class="truncate text-capitlize">{{invoice.income_amount
                                                         | inrAmount}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.invoice_type === 'Customer'"><span

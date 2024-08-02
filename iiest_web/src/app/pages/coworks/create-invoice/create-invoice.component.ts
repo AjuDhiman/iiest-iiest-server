@@ -10,6 +10,7 @@ import { stateName, processAmnt } from 'src/app/utils/config';
 import { pincodeData } from 'src/app/utils/registerinterface';
 import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
 import { ApprovesaleModalComponent } from '../approvesale-modal/approvesale-modal.component';
+import { ViewCoworkSaleComponent } from '../view-cowork-sale/view-cowork-sale.component';
 
 
 @Component({
@@ -317,10 +318,11 @@ export class CreateInvoiceComponent implements OnInit {
         this.invoiceList = res.invoiceList.map((invoice: any) => {
           return {...invoice, 
             invoice_date: this.getFormattedDate(invoice.invoice_date),
-            gst: invoice.invoice_type === 'Customer' ? this.calculateGST('gst', invoice.processing_amount) : 0,
-            sgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? this.calculateGST('sgst', invoice.processing_amount) : 0,
-            cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? this.calculateGST('cgst', invoice.processing_amount) : 0,
-            igst: ((invoice.invoice_type === 'Tax') && invoice.state !== 'Delhi') ? this.calculateGST('igst', invoice.processing_amount) : 0,
+            gst: invoice.invoice_type === 'Customer' ? (this.calculateGST('gst', invoice.processing_amount) * Number(invoice.qty)) : 0,
+            sgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('sgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
+            cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('cgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
+            igst: ((invoice.invoice_type === 'Tax') && invoice.state !== 'Delhi') ? (this.calculateGST('igst', invoice.processing_amount) * Number(invoice.qty)) : 0,
+            income_amount: invoice.processing_amount*invoice.qty
           }
         }).sort((a: any, b: any) => {
           if(a.invoice_code){
@@ -504,7 +506,8 @@ export class CreateInvoiceComponent implements OnInit {
 
   //methord for viewing details
   viewDetail(Invoice: any): void {
-
+    const modalRef = this.ngbModal.open(ViewCoworkSaleComponent, { size: 'xl', backdrop: 'static' });
+    modalRef.componentInstance.data = Invoice;
   }
 
 
