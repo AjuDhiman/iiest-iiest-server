@@ -82,7 +82,8 @@
                     <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
-                            class="form-select form-select-sm cursor-pointer" autocomplete="off" (change)="onPincodeChanges()"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            (change)="onPincodeChanges()"
                             [ngClass]="{ 'is-invalid': submitted && invoiceform['pincode'].errors }">
                             <option value="" disabled selected>Select the Pincode</option>
                             <option [value]="'others'">Others</option>
@@ -94,9 +95,9 @@
                     </div>
                     <!-- Visible in case others selected in pincode drop box -->
                     <div class="col-md-3" *ngIf="isOtherPincode">
-                        <label for="other_pincode" class="form-label" >Other Pincode<sup>*</sup></label>
-                        <input type="number" placeholder="Other Pincode" formControlName="other_pincode" id="other_pincode"
-                            class="form-control form-control-sm" autocomplete="off"
+                        <label for="other_pincode" class="form-label">Other Pincode<sup>*</sup></label>
+                        <input type="number" placeholder="Other Pincode" formControlName="other_pincode"
+                            id="other_pincode" class="form-control form-control-sm" autocomplete="off"
                             [ngClass]="{ 'is-invalid': submitted && invoiceform['other_pincode'].errors }" />
                         <div *ngIf="submitted && invoiceform['other_pincode'].errors" class="invalid-feedback">
                             <div *ngIf="invoiceform['other_pincode'].errors['required']">Pincode is required</div>
@@ -397,18 +398,29 @@
 
                                             </ng-container>
                                         </tr>
-                                        <tr class="list-tr">
+                                        <tr class="list-result">
 
 
-                                            <td class="cell"><span class="truncate"></span>
+                                            <td class="cell"><span class="truncate text-capitlize">
+
+                                            </span>
+                                        </td>
+                                            <td class="cell" *ngIf="activeTab !== 'Service'"><span class="truncate"></span>
+                                            </td>
+                                            <td class="cell" *ngIf="activeTab==='Tax'"><span
+                                                    class="truncate text-capitlize"></span>
+                                            </td>
+                                            <td class="cell" *ngIf="activeTab==='Tax'"><span
+                                                    class="truncate text-capitlize"></span>
+                                            </td>
+                                            <td *ngIf="activeTab==='Tax'" class="cell"><span
+                                                    class="truncate text-capitlize"></span>
                                             </td>
                                             <td class="cell"><span class="truncate">Total Receivings</span>
                                             </td>
                                             <td class="cell"><span class="truncate">{{totalReceivedAmt}}</span>
                                             </td>
-                                            <td *ngIf="activeTab==='Tax'" class="cell"><span
-                                                    class="truncate text-capitlize"></span>
-                                            </td>
+
                                             <td class="cell"><span class="truncate text-capitlize">Total Income</span>
                                             </td>
                                             <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt|
@@ -425,13 +437,8 @@
                                                     {{totalAmt| inrAmount}}
                                                 </span>
                                             </td>
-                                            <td class="cell"><span class="truncate text-capitlize">
+                                         
 
-                                                </span>
-                                            </td>
-                                            <td class="cell" *ngIf="activeTab==='Tax'"><span
-                                                    class="truncate text-capitlize"></span>
-                                            </td>
 
                                         </tr>
                                     </tbody>

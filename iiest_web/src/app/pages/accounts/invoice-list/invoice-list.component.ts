@@ -6,6 +6,7 @@ import { GetdataService } from 'src/app/services/getdata.service';
 import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
 import { RegisterService } from 'src/app/services/register.service';
 import { ToastrService } from 'ngx-toastr';
+import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
 
 @Component({
   selector: 'app-invoice-list',
@@ -53,6 +54,7 @@ export class InvoiceListComponent implements OnInit {
     private _registerService: RegisterService,
     private exportAsService: ExportAsService,
     private _toastrService: ToastrService,
+    private modalService: NgbModal,
     private ngbModal: NgbModal
   ) {
 
@@ -113,7 +115,7 @@ export class InvoiceListComponent implements OnInit {
     this.filteredData.forEach((data: any) => {
       this.totalProcessingAmt += Number(data.processing_amount);
       this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
-      this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst) );
+      this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst));
     });
 
     console.log('Total processing amount', this.totalProcessingAmt);
@@ -137,25 +139,25 @@ export class InvoiceListComponent implements OnInit {
             igst: ((entry.business_type === 'b2b') && entry.state !== 'Delhi') ? this.calculateGST('igst', entry.processing_amount) : 0,
           }
         }).sort((a: any, b: any) => {
-          if(a.code){
+          if (a.code) {
             const codeA = a.code;
             const codeB = b.code;
-  
+
             const codeArrA = codeA.split('/');
             const codeArrB = codeB.split('/');
-  
+
             const codeNumA = codeArrA[codeArrA.length - 1];
             const codeNumB = codeArrB[codeArrB.length - 1];
-  
+
             return (codeNumB - codeNumA);
           } else {
             return 0;
           }
-          
+
         });
         this.loading = false;
         this.filterByBusinessType();
-        
+
       }
     });
 
@@ -197,6 +199,7 @@ export class InvoiceListComponent implements OnInit {
 
   //fillter the records on the basis of business type b2b or b2c or rather i say active tab basis
   filterByBusinessType(): void {
+    this.pageNumber = 1;
     if (this.activeTab === 'tax') {
       this.caseData = this.invoiceList.filter((invoice: any) => invoice.business_type === 'b2b');
     } else if (this.activeTab === 'customer') {
@@ -231,8 +234,14 @@ export class InvoiceListComponent implements OnInit {
 
   //methord for viewing invoice
   viewInvoice(invoice: any): void {
+    //while loading we can't re request for opening the invoice
+    if (this.loading) {
+      return
+    }
+    this.loading = true;
     this._getDataService.getInvoice(invoice.src).subscribe({
       next: res => {
+        this.loading = false;
         console.log(res)
         const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'xl', backdrop: 'static' });
         modalRef.componentInstance.doc = {
@@ -247,32 +256,61 @@ export class InvoiceListComponent implements OnInit {
 
   //methord for recreating invoice
   reCreateInvoice(saleId: string, product: string, invoiceSrc: string, invoiceCode: string) {
-    this.loading = true;
-    this._registerService.recreateInvoice(saleId, product, invoiceSrc, invoiceCode).subscribe({
-      next: res => {
-        console.log(res);
-        this.loading = false;
-        this._toastrService.success('Invoice Recreated Success fully')
-      },
-      error: err => {
-        this.loading = false;
-        console.log(err);
+    // we dont want to call this func again while loading
+    if (this.loading) {
+      return
+    }
+
+    //confirmation modal:- confirm before recreating invoice
+    const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.action = 'Recreate Invoice';
+    modalRef.componentInstance.confirmationText = invoiceCode;
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      if (confirmation) {
+        this.loading = true;
+        this._registerService.recreateInvoice(saleId, product, invoiceSrc, invoiceCode).subscribe({
+          next: res => {
+            console.log(res);
+            this.loading = false;
+            this._toastrService.success('Invoice Recreated Success fully')
+          },
+          error: err => {
+            this.loading = false;
+            console.log(err);
+          }
+        })
       }
     })
+
   }
 
-   //methord for resending invoice
-   reSendInvoice(src: string, email: string) {
-    this.loading = true;
-    this._registerService.reSenndInvoice(src, email).subscribe({
-      next: res => {
-        console.log(res);
-        this.loading = false;
-        this._toastrService.success('Invoice Send Successfully');
-      }, 
-      error: err => {
-        this.loading = false;
+  //methord for resending invoice
+  reSendInvoice(src: string, email: string) {
+    // we dont want to call this func again while loading
+    if (this.loading) {
+      return
+    }
+
+    //confirmation modal:- confirm before resending
+    const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.action = 'Resend Invoice';
+    modalRef.componentInstance.confirmationText = email;
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      if (confirmation) {
+        this.loading = true;
+        this._registerService.reSenndInvoice(src, email).subscribe({
+          next: res => {
+            console.log(res);
+            this.loading = false;
+            this._toastrService.success('Invoice Send Successfully');
+          },
+          error: err => {
+            this.loading = false;
+          }
+        })
       }
-    })
+    });
+
   }
+
 }

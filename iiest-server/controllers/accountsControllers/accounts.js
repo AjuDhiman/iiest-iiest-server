@@ -11,14 +11,14 @@ exports.getInvoiceList = async (req, res) => {
         let success = false;
 
         const todayDate = new Date(); // getting today's date string
-        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
+        const startOfNewPanel = new Date(2024, 5, 10); //getting time of start of this the new sales panel which is 10th of july 2024
 
 
         //getting invoice data by using sales modal by doinf some aggregation for getting the result we need
         const invoiceList = await salesModel.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: startOfThisFinancialYear },
+                    createdAt: { $gte: startOfNewPanel },
                 }
             },
             {
@@ -143,7 +143,7 @@ exports.getInvoiceList = async (req, res) => {
                     "business_type": "$fboInfo.business_type",
                     "gst_number": "$fboInfo.gst_number",
                     "state": "$fboInfo.state",
-                    "email": "$email"
+                    "email": "$fboInfo.email"
                 }
             }
         ]);
@@ -243,8 +243,6 @@ exports.reCreateInvoice = async (req, res) => {
             sale.fboInfo.gst_number, totalAmount, product, productInfo, sale.employeeInfo.signatureImage, uploadStream, sale.employeeInfo.employee_name,
             sale.fboInfo.customer_id, sale.fboInfo.boInfo
         );
-
-        console.log(invoice);
 
         if (!invoice) {
             return res.status(401).json({ success: success, invoiceErr: true, message: 'Error in generating invoice' });

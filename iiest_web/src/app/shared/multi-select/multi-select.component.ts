@@ -72,7 +72,8 @@ export class MultiSelectComponent implements OnChanges {
     event.stopPropagation();
   }
 
-  onDisplayClick(event: Event): void {//this function will close if display is unfocused
+  //this function will close if display is unfocused
+  onDisplayClick(event: Event): void {
     this.isdropped = !this.isdropped;
     event.stopPropagation();
   }

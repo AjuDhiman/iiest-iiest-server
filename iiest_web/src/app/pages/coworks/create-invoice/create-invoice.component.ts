@@ -488,6 +488,7 @@ export class CreateInvoiceComponent implements OnInit {
 
    //fillter the records on the basis of invoice type
    filterByInvoiceType(): void {
+    this.pageNumber = 1;
     if (this.activeTab === 'Tax') {
       this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Tax');
     } else if (this.activeTab === 'Customer') {

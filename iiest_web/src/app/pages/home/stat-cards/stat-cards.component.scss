@@ -15,7 +15,7 @@
     }
 
     & .stats-figure {
-        font-size: x-large;
+        font-size: large;
     }
 
     & .stats-danger {
@@ -62,7 +62,7 @@
 
 .department-card-container {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(10, 1fr);
 
 }
 
@@ -71,14 +71,14 @@
     transition: transform 0.8s;
 
     & .stats-type {
-        font-size: 13px;
+        font-size: 11px;
         height: 40px;
         vertical-align: middle;
         word-wrap: break-word;
     }
 
     & .stats-figure {
-        font-size: x-large;
+        font-size: large;
     }
 }
 
@@ -95,7 +95,7 @@
     height: 60px;
     width: 50px;
     object-fit: fill;
-    filter: grayscale(100%) sepia(100%) saturate(5000%) hue-rotate(206deg);
+    filter: grayscale(100%) sepia(100%) saturate(5000%) hue-rotate(206deg) !important;
     // filter:  grayscale(100%) sepia(100%) hue-rotate(200deg) saturate(5000%) brightness(0.8);
 }
 
@@ -172,7 +172,7 @@
 }
 
 .text-xs {
-    font-size: 12px;
+    font-size: 11px;
 }
 .bgimage{
    // border:2px solid black;
