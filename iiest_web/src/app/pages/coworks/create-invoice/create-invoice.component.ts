@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { stateName, processAmnt } from 'src/app/utils/config';
 import { pincodeData } from 'src/app/utils/registerinterface';
+import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
+import { ApprovesaleModalComponent } from '../approvesale-modal/approvesale-modal.component';
 
 
 @Component({
@@ -91,6 +94,7 @@ export class CreateInvoiceComponent implements OnInit {
 
    //vars for showing total Aggregation
    totalProcessingAmt: number = 0;
+   totalReceivedAmt: number = 0;
    totalGstAmt: number = 0;
    totalAmt: number = 0;
  
@@ -100,6 +104,7 @@ export class CreateInvoiceComponent implements OnInit {
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
   faFileCsv: IconDefinition = faFileCsv;
   faFile: IconDefinition = faFile;
+  faThumbsUp: IconDefinition = faThumbsUp;
 
 
   //constructor
@@ -107,7 +112,8 @@ export class CreateInvoiceComponent implements OnInit {
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
-    private exportAsService: ExportAsService
+    private exportAsService: ExportAsService,
+    private ngbModal: NgbModal
   ) {
 
   }
@@ -309,6 +315,9 @@ export class CreateInvoiceComponent implements OnInit {
           }
         }).sort((a: any, b: any) => {
           if(a.invoice_code){
+            if(a.invoice_code === 'Performa') {
+              return -1;
+            }
             const codeA = a.invoice_code;
             const codeB = b.invoice_code;
   
@@ -407,11 +416,13 @@ export class CreateInvoiceComponent implements OnInit {
 
     //setting total aggregation to 0
     this.totalProcessingAmt = 0;
+    this.totalReceivedAmt = 0;
     this.totalGstAmt = 0;
     this.totalAmt = 0;
 
     this.filteredData.forEach((data: any) => {
       this.totalProcessingAmt += Number(data.processing_amount);
+      this.totalReceivedAmt += Number(data.receivedAmount);
       this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
       this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst) );
     });
@@ -451,6 +462,38 @@ export class CreateInvoiceComponent implements OnInit {
     this.filteredData = this.caseData;
 
     this.filter();
+  }
+
+
+  //methord for viewing invoice
+  viewInvoice(invoice: any): void {
+    this._getDataService.getCoworkInvoice(invoice.invoice_src).subscribe({
+      next: res => {
+        console.log(res)
+        const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'xl', backdrop: 'static' });
+        modalRef.componentInstance.doc = {
+          name: `Invoice of ${invoice.business_name}`,
+          format: 'pdf',
+          src: res.invoiceConverted,
+          multipleDoc: false
+        }
+      }
+    })
+  }
+
+   //methord for Approvinf invoice
+   approveSale(invoice: any): void {
+    if(invoice.isAmountReceived) {
+      this._toastrService.info('Already Approved')
+      return
+    }
+    this._getDataService.getCoworkInvoice(invoice.invoice_src).subscribe({
+      next: res => {
+        console.log(res)
+        const modalRef = this.ngbModal.open(ApprovesaleModalComponent, { size: 'xl', backdrop: 'static' });
+        modalRef.componentInstance.saleInfo = invoice
+      }
+    })
   }
 
 

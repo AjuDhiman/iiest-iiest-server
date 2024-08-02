@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faShare, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
 import { RegisterService } from 'src/app/services/register.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-invoice-list',
@@ -43,12 +44,15 @@ export class InvoiceListComponent implements OnInit {
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
   faFile: IconDefinition = faFile;
   faFileCsv: IconDefinition = faFileCsv;
+  faShare: IconDefinition = faShare;
+  faPlusCircle: IconDefinition = faPlusCircle;
 
 
   //constructor
   constructor(private _getDataService: GetdataService,
     private _registerService: RegisterService,
     private exportAsService: ExportAsService,
+    private _toastrService: ToastrService,
     private ngbModal: NgbModal
   ) {
 
@@ -242,10 +246,32 @@ export class InvoiceListComponent implements OnInit {
   }
 
   //methord for recreating invoice
-  reCreateInvoice(saleId: string, product: string, invoiceSrc: string) {
-    this._registerService.recreateInvoice(saleId, product, invoiceSrc).subscribe({
+  reCreateInvoice(saleId: string, product: string, invoiceSrc: string, invoiceCode: string) {
+    this.loading = true;
+    this._registerService.recreateInvoice(saleId, product, invoiceSrc, invoiceCode).subscribe({
       next: res => {
         console.log(res);
+        this.loading = false;
+        this._toastrService.success('Invoice Recreated Success fully')
+      },
+      error: err => {
+        this.loading = false;
+        console.log(err);
+      }
+    })
+  }
+
+   //methord for resending invoice
+   reSendInvoice(src: string, email: string) {
+    this.loading = true;
+    this._registerService.reSenndInvoice(src, email).subscribe({
+      next: res => {
+        console.log(res);
+        this.loading = false;
+        this._toastrService.success('Invoice Send Successfully');
+      }, 
+      error: err => {
+        this.loading = false;
       }
     })
   }

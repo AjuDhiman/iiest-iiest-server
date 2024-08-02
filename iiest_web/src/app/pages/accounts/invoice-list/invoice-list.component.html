@@ -81,6 +81,7 @@
                                             <th class="cell">Total Amount</th>
                                             <th class="cell">Invoice Date</th>
                                             <th class="cell">Invoice</th>
+                                            <th class="cell">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody *ngIf="filteredData">
@@ -129,7 +130,8 @@
                                                         |
                                                         inrAmount):'Nil'}}</span>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{(+invoice.processing_amount + invoice.gst + invoice.cgst + invoice.sgst + invoice.igst) |
+                                                        class="truncate text-capitlize">{{(+invoice.processing_amount +
+                                                        invoice.gst + invoice.cgst + invoice.sgst + invoice.igst) |
                                                         inrAmount}}</span>
                                                 </td>
                                                 <td class="cell"><span
@@ -138,6 +140,13 @@
                                                 <td class="cell"><span class="truncate text-capitlize">
                                                         <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
                                                             class="text-success fa-xl cursor-pointer"></fa-icon>
+                                                    </span>
+                                                </td>
+                                                <td class="cell"><span class="truncate text-capitlize">
+                                                        <fa-icon [icon]="faShare" (click)="reSendInvoice(invoice.src, invoice.email)" title="Re Send Invoice"
+                                                            class="text-primary fa-l cursor-pointer px-1"></fa-icon>
+                                                        <fa-icon [icon]="faPlusCircle" (click)="reCreateInvoice(invoice._id,invoice.product, invoice.src, invoice.code)" title="Re Create Invoice"
+                                                            class="text-primary fa-l cursor-pointer"></fa-icon>
                                                     </span>
                                                 </td>
 
@@ -152,27 +161,31 @@
                                             </td>
                                             <td class="cell"><span class="truncate text-capitlize"></span>
                                             </td>
-                                            <td *ngIf="activeTab==='tax'" class="cell"><span class="truncate text-capitlize"></span>
+                                            <td *ngIf="activeTab==='tax'" class="cell"><span
+                                                    class="truncate text-capitlize"></span>
                                             </td>
                                             <td class="cell"><span class="truncate text-capitlize">Total Income</span>
                                             </td>
-                                            <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt| inrAmount}}</span>
+                                            <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt|
+                                                    inrAmount}}</span>
                                             </td>
-                                           
+
                                             <td class="cell"><span class="truncate text-capitlize">Total GST.</span>
                                             </td>
-                                            <td class="cell"><span class="truncate text-capitlize">{{totalGstAmt| inrAmount}}</span>
+                                            <td class="cell"><span class="truncate text-capitlize">{{totalGstAmt|
+                                                    inrAmount}}</span>
                                             <td class="cell"><span class="truncate text-capitlize">Total Amount</span>
                                             </td>
                                             <td class="cell"><span class="truncate text-capitlize">
-                                                {{totalAmt| inrAmount}}
-                                            </span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">
-                                                    
+                                                    {{totalAmt| inrAmount}}
                                                 </span>
                                             </td>
-                                            <td class="cell" *ngIf="activeTab==='tax'"><span class="truncate text-capitlize"></span>
+                                            <td class="cell"><span class="truncate text-capitlize">
+
+                                                </span>
+                                            </td>
+                                            <td class="cell" *ngIf="activeTab==='tax'"><span
+                                                    class="truncate text-capitlize"></span>
                                             </td>
 
                                         </tr>

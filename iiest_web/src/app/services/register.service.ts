@@ -148,10 +148,10 @@ export class RegisterService {
   public editEmployeeFiles(editForm: { userImage: string, userSignature: string }): Observable<any> {
     const url = `${this.url}/edituserfiles`
     console.log(editForm)
-;    return this.http.post<any>(url, editForm).pipe(
-      catchError(
-        this.handleError
-      ));
+      ; return this.http.post<any>(url, editForm).pipe(
+        catchError(
+          this.handleError
+        ));
   }
 
   //api for loging in 
@@ -340,7 +340,7 @@ export class RegisterService {
   }
 
   //service for doing approving cheque request
-  public updateChequeApproval(objId: string) { // this service approves the pending cheques
+  public updateChequeApproval(objId: string) { 
     const url = `${this.url}/approvechequesale/${objId}`
     return this.http.post<any>(url, {}).pipe(
       catchError(
@@ -349,8 +349,17 @@ export class RegisterService {
   }
 
   //service for creation of invoice by invoce creation form
-  public createInvoice( formInterface: invoiceCreation) { // this service helps on posting data related to recipient attendance
-    const url = `${this.url}/createinvoice`
+  public createInvoice(formInterface: invoiceCreation) { 
+    const url = `${this.url}/createinvoice`;
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  //service for updating receiving info for of a cowork sale
+  public updateReceivingInfo(invoiceId : string, formInterface: any) { 
+    const url = `${this.url}/updatereceivinginfo/${invoiceId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
@@ -358,14 +367,21 @@ export class RegisterService {
   }
 
 
-  public recreateInvoice(salesId: string, product: string, invoicSrc: string) {
-    const url = `${this.url}/resendinvoice/${salesId}`;
-    return this.http.post<any>(url, {product: product, invoicSrc: invoicSrc}).pipe(catchError(this.handleError));
+  //service for recreating invoice 
+  public recreateInvoice(salesId: string, product: string, invoiceSrc: string, invoiceCode: string) {
+    const url = `${this.url}/recreateinvoice/${salesId}`;
+    return this.http.post<any>(url, { product: product, invoiceSrc: invoiceSrc , invoiceCode: invoiceCode}).pipe(catchError(this.handleError));
+  }
+
+  //service for resending invoice 
+  public reSenndInvoice(invoiceSrc: string, email: string) {
+    const url = `${this.url}/resendinvoice`;
+    return this.http.post<any>(url, { invoiceSrc: invoiceSrc , email: email}).pipe(catchError(this.handleError));
   }
 
   public deleteDocFromS3(key: string) { // this service approves the pending cheques
     const url = `${this.url}/deletedfroms3`
-    return this.http.post<any>(url, {key}).pipe(
+    return this.http.post<any>(url, { key }).pipe(
       catchError(
         this.handleError
       ));

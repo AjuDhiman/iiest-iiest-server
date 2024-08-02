@@ -185,7 +185,7 @@
     "PostOfficeName": "J 6Block Rajouri Garden",
     "Pincode": "110027",
     "City": "New Delhi",
-    "District": "West Delhi",
+    "District": "Central Delhi",
     "State": "Delhi"
   },
   {
@@ -83953,6 +83953,13 @@
   {
     "PostOfficeName": "Vidyaranyapura",
     "Pincode": "560097",
+    "City": "Bangalore",
+    "District": "Bangalore",
+    "State": "Karnataka"
+  },
+  {
+    "PostOfficeName": "HSR Layout",
+    "Pincode": "560102",
     "City": "Bangalore",
     "District": "Bangalore",
     "State": "Karnataka"

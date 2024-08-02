@@ -297,7 +297,7 @@
                                         <tr>
                                             <th class="cell">S.No</th>
                                             <th class="cell">Invoice Code</th>
-                                            <th class="cell">Buisness Name</th>
+                                            <th class="cell col-2">Buisness Name</th>
                                             <th *ngIf="activeTab === 'Tax'" class="cell">GST Number</th>
                                             <th class="cell">Product</th>
                                             <th class="cell">Place of Supply</th>
@@ -308,6 +308,7 @@
                                             <th *ngIf="activeTab === 'Tax'" class="cell">IGST</th>
                                             <th class="cell">Total Amount</th>
                                             <th class="cell">Invoice Date</th>
+                                            <th class="cell">Approve</th>
                                             <th class="cell">Invoice</th>
                                         </tr>
                                     </thead>
@@ -322,7 +323,7 @@
                                                 <td class="cell"><span
                                                         class="truncate text-capitlize">{{invoice.invoice_code}}</span>
                                                 </td>
-                                                <td class="cell"><span
+                                                <td class="cell  col-2"><span
                                                         class="truncate text-capitlize">{{invoice.business_name.toLowerCase()}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
@@ -364,10 +365,15 @@
                                                         class="truncate text-capitlize">{{invoice.invoice_date}}</span>
                                                 </td>
                                                 <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faFile"
-                                                            class="text-success fa-xl cursor-pointer"></fa-icon>
+                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)" [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
+                                                            class="text-primary fa-xl cursor-pointer"></fa-icon>
                                                     </span>
                                                 </td>
+                                                <td class="cell"><span class="truncate text-capitlize">
+                                                    <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
+                                                        class="fa-xl cursor-pointer" [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"></fa-icon>
+                                                </span>
+                                            </td>
 
                                             </ng-container>
                                         </tr>
@@ -376,9 +382,9 @@
 
                                             <td class="cell"><span class="truncate"></span>
                                             </td>
-                                            <td class="cell"><span class="truncate text-capitlize"></span>
+                                            <td class="cell"><span class="truncate">Total Receivings</span>
                                             </td>
-                                            <td class="cell"><span class="truncate text-capitlize"></span>
+                                            <td class="cell"><span class="truncate">{{totalReceivedAmt}}</span>
                                             </td>
                                             <td *ngIf="activeTab==='Tax'" class="cell"><span class="truncate text-capitlize"></span>
                                             </td>
