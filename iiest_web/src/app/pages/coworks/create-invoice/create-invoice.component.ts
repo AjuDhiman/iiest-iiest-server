@@ -32,6 +32,9 @@ export class CreateInvoiceComponent implements OnInit {
   pincodes: number[] = [];
   districtAndPincodes: any = [];
 
+  //boolean of decidingif other pincode exsists or not
+  isOtherPincode: boolean = false;
+
 
   products: string[] = [
     'FVO',
@@ -141,13 +144,22 @@ export class CreateInvoiceComponent implements OnInit {
 
     this.loading = true;
 
-    this._registerService.createInvoice(this.invoiceForm.value).subscribe({
+    const formValue = this.invoiceForm.value;
+
+    //setting other pincode to pin code in case of other pincode
+    if(this.isOtherPincode) {
+      formValue.pincode = formValue.other_pincode;
+    }
+
+    this._registerService.createInvoice(formValue).subscribe({
       next: res => {
         console.log(res);
         this.loading = false;
         this._toastrService.success('Invoice Created Successfully');
         this.submitted = false;
         this.invoiceForm.reset();
+        this.isOtherPincode = false;
+        this.invoiceForm.removeControl('other_pincode')
         this.getCoworkInvoiceList();
       },
       error: err => {
@@ -188,6 +200,8 @@ export class CreateInvoiceComponent implements OnInit {
     //re configuring districs and pincodes
     this.distrcts = [];
     this.pincodes = [];
+    this.isOtherPincode = false;
+    this.invoiceForm.removeControl('other_pincode');
     this.invoiceform['district'].setValue('');
     this.invoiceform['pincode'].setValue('');
     this.loading = true;
@@ -218,6 +232,8 @@ export class CreateInvoiceComponent implements OnInit {
   onDistrictChange(): void {
     this.pincodes = [];
     this.invoiceform['pincode'].setValue('');
+    this.isOtherPincode = false;
+    this.invoiceForm.removeControl('other_pincode');
     this.loading = true;
     let pincodeArr: any = [];
     this.districtAndPincodes.forEach((obj: any) => {
@@ -229,6 +245,19 @@ export class CreateInvoiceComponent implements OnInit {
     pincodeArr = new Set(pincodeArr);
     this.pincodes = [...pincodeArr];
     this.loading = false;
+  }
+
+  //method runs on pincode changes
+  onPincodeChanges(): void {
+    const pincode: any = this.invoiceform['pincode'].value;
+
+    if(pincode === 'others') {
+      this.isOtherPincode = true;
+      this.invoiceForm.addControl('other_pincode', new FormControl('', Validators.required));
+    } else {
+      this.isOtherPincode = false;
+      this.invoiceForm.removeControl('other_pincode');
+    }
   }
 
   //methord for invoicce type change
@@ -310,6 +339,7 @@ export class CreateInvoiceComponent implements OnInit {
   }
 
   //**********************************************************methord for getting cowork invoice list**************************************************************
+  //methord for getting invoice list
   getCoworkInvoiceList(): void {
     this.loading = true;
     this._getDataService.getCoworkInvoiceList().subscribe({

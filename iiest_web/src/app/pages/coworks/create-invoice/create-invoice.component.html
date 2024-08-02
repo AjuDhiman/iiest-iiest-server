@@ -79,25 +79,27 @@
                             <div *ngIf="invoiceform['district'].errors['required']">District is required</div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-3">
+                    <div class="col-md-3">
                         <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
                         <select type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
-                            class="form-select form-select-sm cursor-pointer" autocomplete="off"
+                            class="form-select form-select-sm cursor-pointer" autocomplete="off" (change)="onPincodeChanges()"
                             [ngClass]="{ 'is-invalid': submitted && invoiceform['pincode'].errors }">
                             <option value="" disabled selected>Select the Pincode</option>
+                            <option [value]="'others'">Others</option>
                             <option *ngFor="let pincode of pincodes" [value]="pincode">{{pincode}}</option>
                         </select>
                         <div *ngIf="submitted && invoiceform['pincode'].errors" class="invalid-feedback">
                             <div *ngIf="invoiceform['pincode'].errors['required']">Pincode is required</div>
                         </div>
-                    </div> -->
-                    <div class="col-md-3">
-                        <label for="pincode" class="form-label">Pincode<sup>*</sup></label>
-                        <input type="number" placeholder="Pincode" formControlName="pincode" id="pincode"
+                    </div>
+                    <!-- Visible in case others selected in pincode drop box -->
+                    <div class="col-md-3" *ngIf="isOtherPincode">
+                        <label for="other_pincode" class="form-label" >Other Pincode<sup>*</sup></label>
+                        <input type="number" placeholder="Other Pincode" formControlName="other_pincode" id="other_pincode"
                             class="form-control form-control-sm" autocomplete="off"
-                            [ngClass]="{ 'is-invalid': submitted && invoiceform['pincode'].errors }" />
-                        <div *ngIf="submitted && invoiceform['pincode'].errors" class="invalid-feedback">
-                            <div *ngIf="invoiceform['pincode'].errors['required']">Pincode is required</div>
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['other_pincode'].errors }" />
+                        <div *ngIf="submitted && invoiceform['other_pincode'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['other_pincode'].errors['required']">Pincode is required</div>
                         </div>
                     </div>
                     <div class="col-md-3">
