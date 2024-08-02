@@ -62,7 +62,8 @@ export class ApprovesaleModalComponent implements OnInit{
         this.activeModal.close();
         this._tostrService.success('Sale Approved');
         //refresh invoice list after approval
-        this.refreshCoworkInvoiceList();
+        location.reload();
+        // this.refreshCoworkInvoiceList();
       }
     })
   }

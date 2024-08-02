@@ -498,7 +498,7 @@ export class CreateInvoiceComponent implements OnInit {
       next: res => {
         console.log(res)
         const modalRef = this.ngbModal.open(ApprovesaleModalComponent, { size: 'xl', backdrop: 'static' });
-        modalRef.componentInstance.saleInfo = invoice
+        modalRef.componentInstance.saleInfo = invoice;
         modalRef.componentInstance.refreshCoworkInvoiceList = this.getCoworkInvoiceList;
       }
     })

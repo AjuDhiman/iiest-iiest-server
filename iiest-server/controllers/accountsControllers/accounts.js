@@ -10,8 +10,17 @@ exports.getInvoiceList = async (req, res) => {
 
         let success = false;
 
+        const todayDate = new Date(); // getting today's date string
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
+
+
         //getting invoice data by using sales modal by doinf some aggregation for getting the result we need
         const invoiceList = await salesModel.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: startOfThisFinancialYear },
+                }
+            },
             {
                 $sort: {
                     "createdAt": -1 //sorting on the basis of creation date
