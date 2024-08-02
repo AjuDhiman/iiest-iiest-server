@@ -14,6 +14,9 @@ export class ApprovesaleModalComponent implements OnInit{
   //loading vars
   loading: boolean = false;
 
+  //var that contains refrence of get cowork invoice list func of cowork invoice component
+  refreshCoworkInvoiceList: Function;
+
   //form related vars
   submitted: boolean = false;
 
@@ -58,6 +61,8 @@ export class ApprovesaleModalComponent implements OnInit{
         this.loading = false;
         this.activeModal.close();
         this._tostrService.success('Sale Approved');
+        //refresh invoice list after approval
+        this.refreshCoworkInvoiceList();
       }
     })
   }

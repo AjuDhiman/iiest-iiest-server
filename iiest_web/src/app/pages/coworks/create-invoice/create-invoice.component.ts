@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faEye, faFile, faFileCsv, faMagnifyingGlass, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { ToastrService } from 'ngx-toastr';
@@ -105,6 +105,7 @@ export class CreateInvoiceComponent implements OnInit {
   faFileCsv: IconDefinition = faFileCsv;
   faFile: IconDefinition = faFile;
   faThumbsUp: IconDefinition = faThumbsUp;
+  faEye: IconDefinition = faEye;
 
 
   //constructor
@@ -144,6 +145,14 @@ export class CreateInvoiceComponent implements OnInit {
         console.log(res);
         this.loading = false;
         this._toastrService.success('Invoice Created Successfully');
+        this.submitted = false;
+        this.invoiceForm.reset();
+        this.getCoworkInvoiceList();
+      },
+      error: err => {
+        this.loading = false;
+        console.log(err);
+        
       }
     })
   }
@@ -422,14 +431,10 @@ export class CreateInvoiceComponent implements OnInit {
 
     this.filteredData.forEach((data: any) => {
       this.totalProcessingAmt += Number(data.processing_amount);
-      this.totalReceivedAmt += Number(data.receivedAmount);
+      this.totalReceivedAmt += Number(data.receivingAmount);
       this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
       this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst) );
     });
-
-    console.log('Total processing amount', this.totalProcessingAmt);
-    console.log('Total gst amount', this.totalGstAmt)
-    console.log('Total amount', this.totalAmt)
   }
 
 
@@ -492,8 +497,14 @@ export class CreateInvoiceComponent implements OnInit {
         console.log(res)
         const modalRef = this.ngbModal.open(ApprovesaleModalComponent, { size: 'xl', backdrop: 'static' });
         modalRef.componentInstance.saleInfo = invoice
+        modalRef.componentInstance.refreshCoworkInvoiceList = this.getCoworkInvoiceList;
       }
     })
+  }
+
+  //methord for viewing details
+  viewDetail(Invoice: any): void {
+
   }
 
 

@@ -71,7 +71,7 @@ exports.updateRecivingInfo = async (req, res) => {
 
         const invoiceId = req.params.id;
 
-        const { receivedAmount, receivedDate, receivedNarration } = req.body;
+        const { receviedAmount, receivedDate, receivedNarration } = req.body;
 
         console.log(req.body)
 
@@ -103,12 +103,10 @@ exports.updateRecivingInfo = async (req, res) => {
 
         const dataUpdated = await coworkInvoiceModel.findOneAndUpdate({ _id: invoiceId }, {
             $set: {
-                invoice_src: invoiceData.fileName, isAmountReceived: true, receivingAmount: receivedAmount,
-                receivingDate: receivedDate, receivingNarration: receivedNarration
+                invoice_src: invoiceData.fileName, isAmountReceived: true, receivingAmount: receviedAmount,
+                receivingDate: receivedDate, receivingNarration: receivedNarration, invoice_code: invoiceCode
             }
         });
-
-        console.log(dataUpdated);
 
         if (!dataUpdated) {
             return res.status(401).json({ success: success, message: 'Data not updated', dataUpdationErr: true })
