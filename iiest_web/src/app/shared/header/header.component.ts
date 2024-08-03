@@ -21,25 +21,10 @@ export class HeaderComponent implements OnInit {
   userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;
-  // notifications: Array<{ image: string, description: string, time: string|Date }> = [{
-  //   image: 'assets/images/profiles/profile-1.png',
-  //   description: 'Amy shared a file with you. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  //   time: '2 hours ago'
-  // }, {
-  //   image: 'assets/images/profiles/profile-1.png',
-  //   description: 'You have a new invoice. Proin venenatis interdum est.',
-  //   time: ' 1 day ago'
-  // }, {
-  //   image: 'assets/images/profiles/profile-1.png',
-  //   description: 'Your report is ready. Proin venenatis interdum est.',
-  //   time: '3 days ago'
-  // }, {
-  //   image: 'assets/images/profiles/profile-2.png',
-  //   description: 'James sent you a new message.',
-  //   time: '7 days ago'
-  // }];
-  notifications: Array< {purpose: string, isRead: boolean, readerInfo: string, createdAt: string, _id: string, product: string, 
-    employee_name: string, employeeImage:string }> = []
+  notifications: Array<{
+    purpose: string, isRead: boolean, readerInfo: string, createdAt: string, _id: string, product: string,
+    employee_name: string, employeeImage: string
+  }> = []
   toggelStyle: object = {
     'position': 'fixed',
     'inset': '0px 0px auto auto',
@@ -57,38 +42,38 @@ export class HeaderComponent implements OnInit {
   @Input() isSideBar: boolean;
   @Output() toogleSideBarEvent = new EventEmitter<any>();
   //the purpose of this sidebar is to close drop menu of functions in sidebar component by falsing toggleshow var in sidebar component
-  @ViewChild(SidebarComponent) sideBar: SidebarComponent; 
-  
- 
+  @ViewChild(SidebarComponent) sideBar: SidebarComponent;
+
+
   blockMsg: boolean = true;
   empName: any;
   userData: any;
   constructor(private _registerService: RegisterService,
-  private getDataService: GetdataService,
-  private router:Router) {
-  
+    private getDataService: GetdataService,
+    private router: Router) {
+
   }
-  ngOnInit() { 
+  ngOnInit() {
     this.getUserData();
     if (this.width >= 1920) {
       this.isSideBar = true;
       this.isSidebarVisible = true;
-      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: false});
+      this.toogleSideBarEvent.emit({ isSidebarVisible: true, largeDisplay: false });
     }
     else if (this.width >= 1200) {
       this.largeDisplay = true;
       this.isSidebarVisible = false;
-      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false});
+      this.toogleSideBarEvent.emit({ isSidebarVisible: false, largeDisplay: false });
     }
-    else{
-      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: true});
+    else {
+      this.toogleSideBarEvent.emit({ isSidebarVisible: false, largeDisplay: true });
     }
-   }
+  }
 
-   getUserData() {
+  getUserData() {
     const rawUserData: any = this._registerService.LoggedInUserData()
     this.userData = JSON.parse(rawUserData);
-    if(this.userData) {
+    if (this.userData) {
       this.userImageId = this.userData.employeeImage;
       this.getUserImage();
     }
@@ -97,28 +82,29 @@ export class HeaderComponent implements OnInit {
   }
 
 
-//Window size
+  //Window size
   onWindowResize(event: any) {
     this.width = event.target.innerWidth;
     this.sideBar.toggelShow = false; // on window resize deop menu will close in sidebar component
-    if(this.width >= 1920){
+    if (this.width >= 1920) {
       this.isSideBar = true;
       this.isSidebarVisible = true;
-      this.toogleSideBarEvent.emit({isSidebarVisible: true, largeDisplay: true})
+      this.toogleSideBarEvent.emit({ isSidebarVisible: true, largeDisplay: true })
     }
     else if (this.width >= 1200) {
       this.largeDisplay = true;
       this.isSidebarVisible = false;
-      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: true});
+      this.toogleSideBarEvent.emit({ isSidebarVisible: false, largeDisplay: true });
     }
     else {
       this.isSideBar = false;
       this.isSidebarVisible = false;
       this.largeDisplay = false;
-      this.toogleSideBarEvent.emit({isSidebarVisible: false, largeDisplay: false})
+      this.toogleSideBarEvent.emit({ isSidebarVisible: false, largeDisplay: false })
     }
   }
   toggleClass = (event: any) => {
+    event.stopPropagation();
     let title = event.target.getAttribute('title');
     if (title === 'dropdown-menu') {
       this.toggelSettings = false;
@@ -146,6 +132,10 @@ export class HeaderComponent implements OnInit {
     if ((!targetElement.closest('.app-user-dropdown'))) {
       this.toggelShow = false;
     }
+
+    if ((!targetElement.closest('.dropdown-menu'))) {
+      this.toggelNotification = false;
+    }
   }
 
   logout() {
@@ -158,26 +148,26 @@ export class HeaderComponent implements OnInit {
     this.toggelShow = false;
     this.isSideBar = !this.isSideBar;
     this.isSidebarVisible = !this.isSidebarVisible; //this variable is changing the right-margin in header on toggle 
-    this.toogleSideBarEvent.emit({isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay});// this event used in changing the right-margin in app content on toggle 
+    this.toogleSideBarEvent.emit({ isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay });// this event used in changing the right-margin in app content on toggle 
   }
   sideBarToggleUpdate(val: any) {
     this.isSideBar = val;
     this.isSidebarVisible = !this.isSidebarVisible; //this variable is changing the right-margin in header on toggle 
-    this.toogleSideBarEvent.emit({isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay});// this event used in changing the right-margin in app content on toggle 
+    this.toogleSideBarEvent.emit({ isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay });// this event used in changing the right-margin in app content on toggle 
   }
 
-  getUserImage(){
-    if(!this.userImageId) {
+  getUserImage() {
+    if (!this.userImageId) {
       this.userImage = 'assets/logo-side.png';
       return;
     }
     this.getDataService.getUserImage(this.userImageId).subscribe({
-      next: (res)=>{
-        if(res.success){
+      next: (res) => {
+        if (res.success) {
           this.userImage = res.imageConverted;
-        }else if(res.defaulImage){
+        } else if (res.defaulImage) {
           this.userImage = res.defaulImage;
-        }else if(res.noImage){
+        } else if (res.noImage) {
           this.userImage = 'assets/logo-side.png';
         }
       }
@@ -205,7 +195,7 @@ export class HeaderComponent implements OnInit {
   getNotifications(): void {
 
     let purpose: string = 'Verification';
-    if(this.userData.panel_type === 'Verifier Panel') {
+    if (this.userData.panel_type === 'Verifier Panel') {
       this.getDataService.getNotifications(purpose).subscribe({
         next: res => {
           console.log(res);
@@ -214,7 +204,7 @@ export class HeaderComponent implements OnInit {
         }
       })
     }
-    
+
     // if(this.userData.panel_type == 'Verification Panel') {
     //   let purpose: string = 'Verification';
     //   this.getDataService.getNotifications(purpose).subscribe({
@@ -231,13 +221,13 @@ export class HeaderComponent implements OnInit {
 
     const timeDiffrence = (new Date().getTime()) - (new Date(date).getTime());
 
-    daysGone = Math.ceil(timeDiffrence/(1000*60*60*24)).toString();
+    daysGone = Math.ceil(timeDiffrence / (1000 * 60 * 60 * 24)).toString();
     return daysGone;
   }
 
   //methord for updating notifications
   updateNotification(salesId: string, product: string): void {
-   
+
     //update notifications 
     this._registerService.updateNotifications(salesId, product).subscribe({
       next: res => {

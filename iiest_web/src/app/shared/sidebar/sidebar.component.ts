@@ -3,7 +3,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { Router } from '@angular/router';
 import { fbo_roles, empRegister_roles, caseList_roles, bookSaleRoles, director_roles } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
-import { faUserPlus, faCalendarWeek, faCalendarDays, IconDefinition, faList, faList12, faFileInvoice } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faCalendarWeek, faCalendarDays, IconDefinition, faList, faList12, faFileInvoice , faListOl} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',

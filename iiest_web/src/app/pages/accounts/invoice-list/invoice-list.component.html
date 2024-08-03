@@ -25,6 +25,7 @@
                                 <option value=25 selected>25</option>
                                 <option value=50>50</option>
                                 <option value=100>100</option>
+                                <!-- <option [value]="filteredData.length">All</option> -->
                             </select>
                             <div class="col-auto">
                                 <form class="form">
@@ -80,7 +81,7 @@
                                             <th *ngIf="activeTab === 'tax'" class="cell">IGST</th>
                                             <th class="cell">Total Amount</th>
                                             <th class="cell">Invoice Date</th>
-                                            <th class="cell">Invoice</th>
+                                            <th class="cell text-center">Invoice</th>
                                             <th class="cell">Action</th>
                                         </tr>
                                     </thead>
@@ -93,35 +94,35 @@
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.code}}</span>
+                                                        class="truncate text-capitalize">{{invoice.code}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.business_name.toLowerCase()}}</span>
+                                                        class="truncate text-capitalize">{{invoice.business_name.toLowerCase()}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.business_type === 'b2b'"><span
-                                                        class="truncate text-capitlize">{{invoice.gst_number}}</span>
+                                                        class="truncate text-capitalize">{{invoice.gst_number}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.product}}</span>
+                                                        class="truncate text-capitalize">{{invoice.product}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.state}}</span>
+                                                        class="truncate text-capitalize">{{invoice.state}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.processing_amount
+                                                        class="truncate text-capitalize">{{invoice.processing_amount
                                                         | inrAmount}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.business_type === 'b2c'"><span
-                                                        class="truncate text-capitlize">{{invoice.gst |
+                                                        class="truncate text-capitalize">{{invoice.gst |
                                                         inrAmount}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.business_type === 'b2b'"><span
-                                                        class="truncate text-capitlize">{{invoice.sgst?(invoice.sgst
+                                                        class="truncate text-capitalize">{{invoice.sgst?(invoice.sgst
                                                         |
                                                         inrAmount):'Nil'}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.business_type === 'b2b'"><span
-                                                        class="truncate text-capitlize">{{invoice.cgst?(invoice.cgst
+                                                        class="truncate text-capitalize">{{invoice.cgst?(invoice.cgst
                                                         |
                                                         inrAmount): 'Nil'}}</span>
                                                 </td>
@@ -137,22 +138,26 @@
                                                 <td class="cell"><span
                                                         class="truncate text-capitlize">{{invoice.invoice_date}}</span>
                                                 </td>
-                                                <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
+                                                <td class="cell text-center"><span class="truncate text-capitlize">
+                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)" title="View Invoice"
                                                             class="text-success fa-xl cursor-pointer"></fa-icon>
                                                     </span>
                                                 </td>
                                                 <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faShare" (click)="reSendInvoice(invoice.src, invoice.email)" title="Re Send Invoice"
+                                                        <fa-icon [icon]="faShare"
+                                                            (click)="reSendInvoice(invoice.src, invoice.email)"
+                                                            title="Re Send Invoice"
                                                             class="text-primary fa-l cursor-pointer px-1"></fa-icon>
-                                                        <fa-icon [icon]="faPlusCircle" (click)="reCreateInvoice(invoice._id,invoice.product, invoice.src, invoice.code)" title="Re Create Invoice"
+                                                        <fa-icon [icon]="faPlusCircle"
+                                                            (click)="reCreateInvoice(invoice._id,invoice.product, invoice.src, invoice.code)"
+                                                            title="Re Create Invoice"
                                                             class="text-primary fa-l cursor-pointer"></fa-icon>
                                                     </span>
                                                 </td>
 
                                             </ng-container>
                                         </tr>
-                                        <tr class="list-tr">
+                                        <tr class="list-result">
 
 
                                             <td class="cell"><span class="truncate"></span>
@@ -161,9 +166,14 @@
                                             </td>
                                             <td class="cell"><span class="truncate text-capitlize"></span>
                                             </td>
+                                            <td class="cell" *ngIf="activeTab==='tax'"><span class="truncate text-capitlize"></span>
+                                            </td>
                                             <td *ngIf="activeTab==='tax'" class="cell"><span
                                                     class="truncate text-capitlize"></span>
                                             </td>
+                                            <td *ngIf="activeTab==='tax'" class="cell"><span
+                                                class="truncate text-capitlize"></span>
+                                        </td>
                                             <td class="cell"><span class="truncate text-capitlize">Total Income</span>
                                             </td>
                                             <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt|
@@ -184,7 +194,7 @@
 
                                                 </span>
                                             </td>
-                                            <td class="cell" *ngIf="activeTab==='tax'"><span
+                                            <td class="cell" style="width: 0;"><span
                                                     class="truncate text-capitlize"></span>
                                             </td>
 
@@ -204,9 +214,9 @@
                     </div><!--//app-card-->
 
                     <div class="d-flex" [ngClass]="invoiceList?'justify-content-between':'justify-content-end'">
-                        <div *ngIf="invoiceList" class="text-sm" style="font-size: 14px;">{{filteredData.length}}
-                            filtered from
-                            {{invoiceList.length}})</div>
+                        <div *ngIf="invoiceList" class="text-sm text-capitalize" style="font-size: 14px;">{{filteredData.length}} Invoices
+                            filtered from 
+                            {{caseData.length}} {{activeTab}} Invoices</div>
                         <pagination-controls previousLabel="Prev" nextLabel="Next" id="sales-list"
                             (pageChange)="onTableDataChange($event)"></pagination-controls>
                     </div>
