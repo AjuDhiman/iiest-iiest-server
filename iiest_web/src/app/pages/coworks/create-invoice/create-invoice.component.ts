@@ -462,11 +462,12 @@ export class CreateInvoiceComponent implements OnInit {
     this.totalAmt = 0;
 
     this.filteredData.forEach((data: any) => {
-      this.totalProcessingAmt += Number(data.processing_amount);
+      this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
       this.totalReceivedAmt += Number(data.receivingAmount);
-      this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
-      this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst) );
+      this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
     });
+
+    this.totalAmt += (this.totalProcessingAmt + this.totalGstAmt);
   }
 
 
