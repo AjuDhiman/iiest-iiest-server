@@ -12,13 +12,14 @@ exports.getInvoiceList = async (req, res) => {
 
         const todayDate = new Date(); // getting today's date string
         const startOfNewPanel = new Date(2024, 5, 10); //getting time of start of this the new sales panel which is 10th of july 2024
+        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
 
 
         //getting invoice data by using sales modal by doinf some aggregation for getting the result we need
         const invoiceList = await salesModel.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: startOfNewPanel },
+                    createdAt: { $gte: startOfThisFinancialYear },
                 }
             },
             {

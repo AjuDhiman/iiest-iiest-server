@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faShare, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faShare, faPlusCircle, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -47,6 +47,7 @@ export class InvoiceListComponent implements OnInit {
   faFileCsv: IconDefinition = faFileCsv;
   faShare: IconDefinition = faShare;
   faPlusCircle: IconDefinition = faPlusCircle;
+  faFileCirclePlus: IconDefinition = faFileCirclePlus;
 
 
   //constructor
@@ -188,11 +189,11 @@ export class InvoiceListComponent implements OnInit {
     let gstAmount: number = 0;
     if (type === 'igst' || type === 'gst') {
       //getting 18% of processing amount
-      gstAmount = Math.ceil(processing_amount * (18 / 100));
+      gstAmount = Math.round(processing_amount * (18 / 100));
     }
     else if (type === 'sgst' || type === 'cgst') {
       //getting 9% of processing amount
-      gstAmount = Math.ceil(processing_amount * (9 / 100));
+      gstAmount = Math.round(processing_amount * (9 / 100));
     }
     return gstAmount;
   }
@@ -311,6 +312,12 @@ export class InvoiceListComponent implements OnInit {
       }
     });
 
+  }
+
+  //methords for making name small 
+  makeSmall(name: string, length: number): string {
+    const subName =  name.substring(0, length);
+    return (subName + '...');
   }
 
 }

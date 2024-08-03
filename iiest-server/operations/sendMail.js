@@ -1,5 +1,9 @@
 const nodemailer = require('nodemailer');
 const mailData = JSON.parse(process.env.NODE_MAILER);
+const CONTACT_NUMBERS = JSON.parse(process.env.CONTACT_NUMBERS);
+const LANDLINES = JSON.parse(process.env.LANDLINES);
+const CB_ADDRESS = JSON.parse(process.env.CB_ADDRESS);
+const CB_BRAND_NAME = JSON.parse(process.env.CB_BRAND_NAME);
 
 const sendDocumentMail = (clientData) => {
   const transport = nodemailer.createTransport({
@@ -12,38 +16,41 @@ const sendDocumentMail = (clientData) => {
   const mailOptions = {
     from: mailData.email,
     to: clientData.clientMail,
-    subject: `IIEST Federation - ${clientData.ticketType}`,
-    html: `<p>Dear ${clientData.recipientName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject: `${CB_BRAND_NAME.english} - ${clientData.ticketType}`,
+    html: `
+    <p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+
+    <p>Dear ${clientData.recipientName},</p>
     <p>We are pleased to inform you that your ${clientData.ticketType} has been generated and is attached to this email.</p>
     <br>
     <p>If you have any questions or require further information, please do not hesitate to contact us.</p>
-    <p>Regards,<br>
-    IIEST Federation</p>
+    <p>Regards, ${CB_BRAND_NAME.english}<br>
+    </p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
-    Contact time 10 :00 a.m to 7:00 p.m<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+            Address - ${CB_ADDRESS.english}<br/>
+            Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+            Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+            Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+   
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.recipientName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>हमें आपको सूचित करते हुए खुशी हो रही है कि आपका ${clientData.ticketType} को पूरा हो चुका है और इस मेल के साथ संलग्न किया गया है।</p>
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
     attachments: [
       {
@@ -73,10 +80,10 @@ const sendVerificationMail = (clientData) => {
     nextMonth.setMonth(todayDate.getMonth() + 1);
     let formattedNextMonth = nextMonth.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
-    subject = `IIEST Federation - Information Verified Successfuly`;
-    content = `<p>Dear ${clientData.recipientName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    content = ` <p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.recipientName},</p>
     <p>Thanks for registering for the FoSTaC Training program by FSSAI Govt Of India.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
     <p>Kindly review the details you have provided below:</p>
@@ -87,25 +94,24 @@ const sendVerificationMail = (clientData) => {
     Trainee Aadhar No -- ${clientData.aadharNo}<br>
     ${clientData.pancard ? ('Trainee Pancard No -- ' + clientData.pancard + '<br>') : ''}
 
-    <p>The tentative training date of your training is ${formattedNextMonth}. The final date and training venue & timings details will be provided to you as per availability of the IIEST-FSSAI training schedule 2-3 days in advance through messages and calls.</p>
+    <p>The tentative training date of your training is ${formattedNextMonth}. The final date and training venue & timings details will be provided to you as per availability of the ${CB_BRAND_NAME.english}-FSSAI training schedule 2-3 days in advance through messages and calls.</p>
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.recipientName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>भारत सरकार के FSSAI द्वारा आयोजित FoSTaC प्रशिक्षण कार्यक्रम के लिए पंजीकरण के लिए धन्यवाद।<br>
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
@@ -116,26 +122,25 @@ const sendVerificationMail = (clientData) => {
     ट्रेनी का आधार नं -- ${clientData.aadharNo}<br>
     ${clientData.pancard ? ('ट्रेनी का पैनकार्ड नं -- ' + clientData.pancard + '<br>') : ''}
 
-    <p>आपके प्रशिक्षण की तारीख की संभावित तिथि ${formattedNextMonth} है। अंतिम तारीख और प्रशिक्षण स्थल और समय का विवरण आपको IIEST-FSSAI प्रशिक्षण कार्यक्रम की उपलब्धता के आधार पर मैसेज और कॉल के माध्यम से 2-3 दिन पहले उपलब्ध कराया जाएगा।</p>
+    <p>आपके प्रशिक्षण की तारीख की संभावित तिथि ${formattedNextMonth} है। अंतिम तारीख और प्रशिक्षण स्थल और समय का विवरण आपको ${CB_BRAND_NAME.english}-FSSAI प्रशिक्षण कार्यक्रम की उपलब्धता के आधार पर मैसेज और कॉल के माध्यम से 2-3 दिन पहले उपलब्ध कराया जाएगा।</p>
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   } else if (clientData.product == 'foscos') {
 
-    subject = `IIEST Federation - Information Verified Successfuly`;
-    content = `<p>Dear ${clientData.operatorName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.operatorName},</p>
     <p>Thanks for registering for the FSSAI LICENSE(FoSCoS) program by FSSAI Govt Of India.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
     <p>Kindly review the details you have provided below:</p>
@@ -157,20 +162,19 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.recipientName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>FSSAI भारत सरकार द्वारा FSSAI लाइसेंस (FOSCOS) कार्यक्रम के लिए पंजीकरण करने के लिए धन्यवाद।<br>
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
@@ -192,21 +196,20 @@ const sendVerificationMail = (clientData) => {
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   } else if (clientData.product == 'training_date_allotment') {
 
-    subject = `IIEST Federation - Fostac Training Venue and Date`;
-    content = `<p>Dear Customer,</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - Fostac Training Venue and Date`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear Customer,</p>
     <p>We are pleased to inform you that your FOSTAC training session has been scheduled for ${clientData.trainingDate}, at the ${clientData.venue} venue. The training will commence promptly as per the scheduled time, and we kindly request your punctual attendance.</p>
     <br>
     Training Date -- ${clientData.trainingDate}<br>
@@ -214,20 +217,19 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>Should you have any questions or require further information, please do not hesitate to contact us.</p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ग्राहक,</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>हमें आपको सूचित करते हुए खुशी हो रही है कि आपका फोस्टैक प्रशिक्षण सत्र ${clientData.trainingDate} को ${clientData.venue} स्थल पर निर्धारित किया गया है। प्रशिक्षण निर्धारित समय के अनुसार तुरंत शुरू होगा, और हम आपसे समय पर उपस्थिति का अनुरोध करते हैं।</p>
     <br>
     Training Date -- ${clientData.trainingDate}<br>
@@ -236,22 +238,21 @@ const sendVerificationMail = (clientData) => {
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
   else if (clientData.product == 'fostac_enrollment') {
 
-    subject = `IIEST Federation - Fostac Training Venue and Date`;
-    content = `<p>Dear ${clientData.recipientName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - Fostac Training Venue and Date`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.recipientName},</p>
     <p>We are pleased to inform you that your enrollment number for FOSTAC training session that been scheduled for ${clientData.fostacTrainingDate} is generated and attached with this mail,The training will commence promptly as per the scheduled time, and we kindly request your punctual attendance.</p>
     <br>
     Training Date -- ${clientData.fostacTrainingDate}<br>
@@ -260,20 +261,19 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>Should you have any questions or require further information, please do not hesitate to contact us.</p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.recipientName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>
     सूचित किया जाता है कि आपका FOSTAC प्रशिक्षण सत्र के लिए पंजीकरण संख्या ${clientData.fostacTrainingDate} के अनुसार निर्मित किया गया है और इस मेल के साथ संलग्न किया गया है। प्रशिक्षण सत्र समय सारणी के अनुसार बिना किसी देरी के शीघ्र होगा, और हम आपके समय पर उपस्थिति का अनुरोध करते हैं।</p>
     <br>
@@ -284,22 +284,21 @@ const sendVerificationMail = (clientData) => {
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
   else if (clientData.product == 'fostac_attendance') {
 
-    subject = `IIEST Federation - Fostac Training Result`;
-    content = `<p>Dear ${clientData.recipientName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - Fostac Training Result`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.recipientName},</p>
     <p>We are pleased to inform you that the results of your FOSTAC training, conducted on ${clientData.fostacTrainingDate} at ${clientData.venue}, have been received.</p>
     <br>
     Attendance Status -- ${clientData.attendance_status}<br>
@@ -308,20 +307,19 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>If you have any questions or require further information, please do not hesitate to contact us.</p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.recipientName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>हमें खुशी है कि आपको सूचित किया जा रहा है कि आपकी FOSTAC प्रशिक्षण का परिणाम, ${clientData.venue} पर ${clientData.fostacTrainingDate} को किया गया था, प्राप्त हो गया है।</p>
     Attendance Status -- ${clientData.attendance_status}<br>
     Marks -- ${clientData.marks} <br>
@@ -330,22 +328,21 @@ const sendVerificationMail = (clientData) => {
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
   else if (clientData.product == 'hra') {
 
-    subject = `IIEST Federation - Information Verified Successfuly`;
-    content = `<p>Dear ${clientData.managerName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.managerName},</p>
     <p>Thanks for registering for the Hygiene Rating program by FSSAI Govt Of India.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
     <p>Kindly review the details you have provided below:</p>
@@ -369,20 +366,19 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.managerName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-    भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>भारत सरकार के FSSAI द्वारा आयोजित HRA कार्यक्रम के लिए पंजीकरण के लिए धन्यवाद।<br>
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
@@ -406,21 +402,20 @@ const sendVerificationMail = (clientData) => {
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.hindi}</p>
     <br>
-    टीपी नाम - IIEST फेडरेशन<br>
-    टीपी नंबर - TPINT133<br>
-    पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-    संपर्क नंबर- 9910729809<br>
-    लैंडलाइन - 011-35454931, 011-35457013<br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   } else if (clientData.product == 'hra schedule') {
 
-    subject = `IIEST Federation - HRA Scheduled`;
-    content = `<p>Dear ${clientData.managerName},</p>
-    <p>Welcome to the IIEST Federation,<br>
-    Scheme implementing partner of Govt. Of India.</p>
+    subject = `${CB_BRAND_NAME.english} - HRA Scheduled`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.managerName},</p>
     <p>Thanks for registering for the Hygiene Rating program by FSSAI Govt Of India.<br>
     Your Hygiene Rating will be sheduled on ${clientData.auditDate}</p>
     <p>Information Related to your HRA:</p>
@@ -429,32 +424,31 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
-    IIEST Federation</p>
+    ${CB_BRAND_NAME.english}</p>
     <br>
-    TP Name - IIEST Federation<br>
-    TP No - TPINT133<br>
-    Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/>
-    Contact no – 9910729809<br>
-    Landline - 011-35454931, 011-35457013<br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
     <br><br>
     <hr>
     <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
     <p>प्रिय ${clientData.managerName},</p>
-    <p>IIEST फेडरेशन में आपका स्वागत है,<br>भारत सरकार की योजना कार्यान्वयन भागीदार।</p>
     <p>FSSAI भारत सरकार द्वारा हाइजीन रेटिंग प्रोग्राम के लिए पंजीकरण करने के लिए धन्यवाद।<br>आपकी हाइजीन रेटिंग ${clientData.auditDate} को निर्धारित की जाएगी।</p>
     <p>आपके HRA से संबंधित जानकारी:</p>
     ऑडिटर का नाम -- ${clientData.auditor}<br>
     <p>यदि आपके पास कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया हमसे संपर्क करने में संकोच न करें।</p>
 <p><strong>कंपनी का रिश्वत, भ्रष्टाचार और धोखाधड़ी की व्यावसायिक गतिविधियों के प्रति शून्य सहनशीलता है।</strong></p>
-<p>सादर,<br>IIEST फेडरेशन</p>
+<p>सादर,<br>${CB_BRAND_NAME.hindi}</p>
 <br>
-TP नाम - IIEST फेडरेशन<br>
-TP नंबर - TPINT133<br>
-पता - 1-U, फर्स्ट फ्लोर, DCM बिल्डिंग 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-संपर्क नंबर – 9910729809<br>
-लैंडलाइन - 011-35454931, 011-35457013<br>
-संपर्क समय 10:00 पूर्वाह्न से 7:00 अपराह्न<br>`;
+ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+पता - ${CB_ADDRESS.hindi}<br/>
+संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
   }
 

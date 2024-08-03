@@ -1,6 +1,10 @@
 const nodemailer = require('nodemailer');
 const mailData = JSON.parse(process.env.NODE_MAILER);
 const FRONT_END = JSON.parse(process.env.FRONT_END);
+const CONTACT_NUMBERS = JSON.parse(process.env.CONTACT_NUMBERS);
+const LANDLINES = JSON.parse(process.env.LANDLINES);
+const CB_ADDRESS = JSON.parse(process.env.CB_ADDRESS);
+const CB_BRAND_NAME = JSON.parse(process.env.CB_BRAND_NAME);
 
 exports.sendMailToBo = async (boMail, mailInfo) => {
     try {
@@ -21,34 +25,32 @@ exports.sendMailToBo = async (boMail, mailInfo) => {
         let info = await transporter.sendMail({
             from: mailData.email,
             to: boMail,
-            subject: 'IIEST Federation -- Onboard',
-            html: `<p>Welcome to the IIEST Federation,<br>
-            Scheme implementing partner of Govt. Of India.</p>
+            subject: `${CB_BRAND_NAME.english} -- Onboard`,
+            html: `<p>Welcome to ${CB_BRAND_NAME.english},<br>
+            ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
             <p>Dear Valued Customer</p>
             ${englishContent}
 
-            IIEST Federation
-            Address - 1-U, First Floor, DCM Building 16, Barakhamba road New Delhi, Delhi, 110001<br/> 
-            Contact no - 9910729809<br>
-            Landline - 011-35454931, 011-35457013<br>
+            Brand Name - ${CB_BRAND_NAME.english},<br/>
+            Address - ${CB_ADDRESS.english}<br/>
+            Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+            Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
             Contact time 10 :00 a.m to 7:00 p.m<br>
             <br><br>
             <hr>
             <br>
 
-            <p>IIEST फेडरेशन में आपका स्वागत है,<br>
-            भारत सरकार के योजना कार्यान्वयन साथी।</p>
+            <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+        ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
             <p>प्रिय मूल्यवान ग्राहक</p>
             ${hindiContent}
             
-            IIEST फेडरेशन 
-            पता - 1-यू, प्रथम मंजिल, डीसीएम भवन, 16, बाराखंबा रोड, नई दिल्ली, दिल्ली, 110001<br/>
-            संपर्क नंबर - 9910729809<br>
-            लैंडलाइन - 011-35454931, 011-35457013<br>
-            संपर्क समय 10:00 बजे से 7:00 बजे तक<br>
-            <br><br>
-            <hr>
-            <br>`,
+            ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+        पता - ${CB_ADDRESS.hindi}<br/>
+        संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+        लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+        <hr> <br>`,
         });
 
         console.log('Message sent: %s', info.messageId);

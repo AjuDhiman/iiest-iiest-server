@@ -335,8 +335,11 @@
                                                 <td class="cell"><span
                                                         class="truncate text-capitlize">{{invoice.invoice_code}}</span>
                                                 </td>
-                                                <td class="cell  col-2"><span
-                                                        class="truncate text-capitlize">{{invoice.business_name.toLowerCase()}}</span>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitlize"  style="white-space: nowrap;
+                                                        overflow: hidden;
+                                                        text-overflow: ellipsis;
+                                                        width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
                                                         class="truncate text-capitlize">{{invoice.gst_number}}</span>
