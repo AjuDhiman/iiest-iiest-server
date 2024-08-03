@@ -12,17 +12,17 @@ const sendEmployeeInfo = (username, password, empId, clientMail) => {
   const mailOptions = {
     from: mailData.email,
     to: clientMail,
-    subject: "Welcome to IIEST Federation - Your Employee Information",
-    html: `<p>Welcome to IIEST Federation! We are excited to have you on board. Below, you will find important details regarding your employee account:</p>
+    subject: "Welcome to Connect Bharat - Your Employee Information",
+    html: `<p>Welcome to Connect Bharat! We are excited to have you on board. Below, you will find important details regarding your employee account:</p>
               <p><strong>Employee ID:</strong> ${empId}</p>
               <p><strong>Username:</strong> ${username}</p>
               <p><strong>Password:</strong> ${password}</p>
-              <p>We look forward to your contributions to the company.</p>
-              <p>Best regards,<br>
-              [Your Name]<br>
-              [Your Position]<br>
-              [Company Name]<br>
-              [Contact Information]</p>`
+              <p>We look forward to your contributions to the company.</p>`
+              // <p>Best regards,<br>
+              // [Your Name]<br>
+              // [Your Position]<br>
+              // [Company Name]<br>
+              // [Contact Information]</p>`
   }
   transport.sendMail(mailOptions, function (error, response) {
     if (error) {

@@ -97,7 +97,10 @@
                                                         class="truncate text-capitalize">{{invoice.code}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitalize">{{invoice.business_name.toLowerCase()}}</span>
+                                                        class="truncate text-capitalize" style="white-space: nowrap;
+                                                        overflow: hidden;
+                                                        text-overflow: ellipsis;
+                                                        width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.business_type === 'b2b'"><span
                                                         class="truncate text-capitalize">{{invoice.gst_number}}</span>
@@ -148,7 +151,7 @@
                                                             (click)="reSendInvoice(invoice.src, invoice.email)"
                                                             title="Re Send Invoice"
                                                             class="text-primary fa-l cursor-pointer px-1"></fa-icon>
-                                                        <fa-icon [icon]="faPlusCircle"
+                                                        <fa-icon [icon]="faFileCirclePlus"
                                                             (click)="reCreateInvoice(invoice._id,invoice.product, invoice.src, invoice.code)"
                                                             title="Re Create Invoice"
                                                             class="text-primary fa-l cursor-pointer"></fa-icon>

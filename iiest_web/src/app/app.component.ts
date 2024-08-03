@@ -35,6 +35,8 @@ export class AppComponent implements OnInit {
           this.largeDisplay = false;
         } else {
           this.showHeader = true;
+          const bodyElement = document.body;
+          bodyElement.classList.add('app');
         }
       }
     });
