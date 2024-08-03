@@ -62,25 +62,45 @@ exports.getInvoiceList = async (req, res) => {
                                     case: {
                                         $eq: ["$invoiceId.product", "Fostac"]
                                     },
-                                    then: "$fostacInfo.fostac_processing_amount"
+                                    then: {
+                                        $multiply: [
+                                            { $toInt: { $ifNull: ["$fostacInfo.fostac_processing_amount", 0] } },
+                                            { $toInt: { $ifNull: ["$fostacInfo.recipient_no", 0] } },
+                                        ]
+                                    }
                                 },
                                 {
                                     case: {
                                         $eq: ["$invoiceId.product", "Foscos"]
                                     },
-                                    then: "$foscosInfo.foscos_processing_amount"
+                                    then: {
+                                        $multiply: [
+                                            { $toInt: { $ifNull: ["$foscosInfo.foscos_processing_amount", 0] } },
+                                            { $toInt: { $ifNull: ["$foscosInfo.shops_no", 0] } },
+                                        ]
+                                    }
                                 },
                                 {
                                     case: {
                                         $eq: ["$invoiceId.product", "HRA"]
                                     },
-                                    then: "$hraInfo.hra_processing_amount"
+                                    then: {
+                                        $multiply: [
+                                            { $toInt: { $ifNull: ["$hraInfo.hra_processing_amount", 0] } },
+                                            { $toInt: { $ifNull: ["$hraInfo.shops_no", 0] } },
+                                        ]
+                                    }
                                 },
                                 {
                                     case: {
                                         $eq: ["$invoiceId.product", "Medical"]
                                     },
-                                    then: "$medicalInfo.medical_processing_amount"
+                                    then: {
+                                        $multiply: [
+                                            { $toInt: { $ifNull: ["$medicalInfo.medical_processing_amount", 0] } },
+                                            { $toInt: { $ifNull: ["$medicalInfo.recipient_no", 0] } },
+                                        ]
+                                    }
                                 },
                                 {
                                     case: {
