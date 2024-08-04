@@ -96,13 +96,13 @@ export class CreateInvoiceComponent implements OnInit {
   filteredData: any = [];
   caseData: any = [];
 
-   //vars for showing total Aggregation
-   totalProcessingAmt: number = 0;
-   totalReceivedAmt: number = 0;
-   totalGstAmt: number = 0;
-   totalAmt: number = 0;
- 
-  
+  //vars for showing total Aggregation
+  totalProcessingAmt: number = 0;
+  totalReceivedAmt: number = 0;
+  totalGstAmt: number = 0;
+  totalAmt: number = 0;
+
+
 
   //icons
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
@@ -147,7 +147,7 @@ export class CreateInvoiceComponent implements OnInit {
     const formValue = this.invoiceForm.value;
 
     //setting other pincode to pin code in case of other pincode
-    if(this.isOtherPincode) {
+    if (this.isOtherPincode) {
       formValue.pincode = formValue.other_pincode;
     }
 
@@ -165,7 +165,7 @@ export class CreateInvoiceComponent implements OnInit {
       error: err => {
         this.loading = false;
         console.log(err);
-        
+
       }
     })
   }
@@ -174,7 +174,7 @@ export class CreateInvoiceComponent implements OnInit {
   setformValidation(): void {
     this.invoiceForm = this.formBuilder.group({
       business_name: ['', Validators.required],
-      contact_no: ['', [Validators.required,   Validators.pattern(/^[0-9]{10}$/)]],
+      contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
       state: ['', [Validators.required]],
       district: ['', [Validators.required]],
@@ -251,7 +251,7 @@ export class CreateInvoiceComponent implements OnInit {
   onPincodeChanges(): void {
     const pincode: any = this.invoiceform['pincode'].value;
 
-    if(pincode === 'others') {
+    if (pincode === 'others') {
       this.isOtherPincode = true;
       this.invoiceForm.addControl('other_pincode', new FormControl('', Validators.required));
     } else {
@@ -291,7 +291,7 @@ export class CreateInvoiceComponent implements OnInit {
 
     gstAmount = gstAmount * qty;
 
-    const totalAmount = (processAmnt*qty) + gstAmount;
+    const totalAmount = (processAmnt * qty) + gstAmount;
 
     this.invoiceform['gst_amount'].setValue(gstAmount);
     this.invoiceform['total_amount'].setValue(totalAmount);
@@ -346,33 +346,34 @@ export class CreateInvoiceComponent implements OnInit {
       next: res => {
         this.loading = false;
         this.invoiceList = res.invoiceList.map((invoice: any) => {
-          return {...invoice, 
+          return {
+            ...invoice,
             invoice_date: this.getFormattedDate(invoice.invoice_date),
             gst: invoice.invoice_type === 'Customer' ? (this.calculateGST('gst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             sgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('sgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('cgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             igst: ((invoice.invoice_type === 'Tax') && invoice.state !== 'Delhi') ? (this.calculateGST('igst', invoice.processing_amount) * Number(invoice.qty)) : 0,
-            income_amount: invoice.processing_amount*invoice.qty
+            income_amount: invoice.processing_amount * invoice.qty
           }
         }).sort((a: any, b: any) => {
-          if(a.invoice_code){
-            if(a.invoice_code === 'Performa') {
+          if (a.invoice_code) {
+            if (a.invoice_code === 'Performa') {
               return -1;
             }
             const codeA = a.invoice_code;
             const codeB = b.invoice_code;
-  
+
             const codeArrA = codeA.split('/');
             const codeArrB = codeB.split('/');
-  
+
             const codeNumA = codeArrA[codeArrA.length - 1];
             const codeNumB = codeArrB[codeArrB.length - 1];
-  
+
             return (codeNumB - codeNumA);
           } else {
             return 0;
           }
-          
+
         });;
         this.filteredData = this.invoiceList;
         this.filterByInvoiceType();
@@ -432,8 +433,8 @@ export class CreateInvoiceComponent implements OnInit {
 
   }
 
-   //methord for filltering the invoice list
-   filter(): void {
+  //methord for filltering the invoice list
+  filter(): void {
     if (!this.searchQuery) {
       this.filteredData = this.caseData;
     } else {
@@ -463,7 +464,9 @@ export class CreateInvoiceComponent implements OnInit {
 
     this.filteredData.forEach((data: any) => {
       this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
-      this.totalReceivedAmt += Number(data.receivingAmount);
+      if(data.receivingAmount) {
+        this.totalReceivedAmt += data.receivingAmount;
+      }
       this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
     });
 
@@ -484,20 +487,20 @@ export class CreateInvoiceComponent implements OnInit {
 
   //methord runs on paination cahnges
   onTableDataChange($event: number) {
-    this.pageNumber=$event;
+    this.pageNumber = $event;
   }
 
-   //fillter the records on the basis of invoice type
-   filterByInvoiceType(): void {
+  //fillter the records on the basis of invoice type
+  filterByInvoiceType(): void {
     this.pageNumber = 1;
     if (this.activeTab === 'Tax') {
       this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Tax');
     } else if (this.activeTab === 'Customer') {
       this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Customer');
-    }  else if (this.activeTab === 'Service') {
+    } else if (this.activeTab === 'Service') {
       this.caseData = this.invoiceList.filter((invoice: any) => invoice.invoice_type === 'Service');
-    } 
-    
+    }
+
     this.filteredData = this.caseData;
 
     this.filter();
@@ -520,9 +523,9 @@ export class CreateInvoiceComponent implements OnInit {
     })
   }
 
-   //methord for Approvinf invoice
-   approveSale(invoice: any): void {
-    if(invoice.isAmountReceived) {
+  //methord for Approvinf invoice
+  approveSale(invoice: any): void {
+    if (invoice.isAmountReceived) {
       this._toastrService.info('Already Approved')
       return
     }
