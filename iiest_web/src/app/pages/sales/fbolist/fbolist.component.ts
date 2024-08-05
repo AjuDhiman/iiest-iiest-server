@@ -101,7 +101,6 @@ export class FbolistComponent implements OnInit {
           // }
           this.filter();
           this.loading = false;
-          console.log(this.allFBOEntries);
         }
       },
       error: (err) => {
@@ -382,7 +381,6 @@ export class FbolistComponent implements OnInit {
 
     //set condigurations in case using this list as invoice list
     const state = window.history.state; //getting state of the window
-    console.log(state);
     if (state && state.isInvoiceList) {
       this.isInvoiceList = true;
     }

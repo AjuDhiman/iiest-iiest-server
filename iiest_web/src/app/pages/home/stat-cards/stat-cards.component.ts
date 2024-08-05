@@ -96,6 +96,7 @@ export class StatCardsComponent implements OnInit {
     let updatedStr: string = str.toLocaleLowerCase().split(" ").join('_');
     updatedStr = updatedStr.replace('&', 'and');
     return updatedStr;
+    
   }
 
 }

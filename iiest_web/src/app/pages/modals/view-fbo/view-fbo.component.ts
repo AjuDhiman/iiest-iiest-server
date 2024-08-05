@@ -124,11 +124,9 @@ export class ViewFboComponent implements OnInit {
   getInvoice() {
     if (this.isShowInvoice) {
       this.invoiceArr = [];
-      console.log(this.fboData.invoiceId);
       this.fboData.invoiceId.forEach((invoice: { src: string, id: string }) => {
         this.getDataServices.getInvoice(invoice.src).subscribe({
           next: (res) => {
-            console.log('conversion', res);
             this.invoice = res.invoiceConverted;
             this.invoiceArr.push(this.invoice);
           },
@@ -159,8 +157,6 @@ export class ViewFboComponent implements OnInit {
     let startDate = new Date(this.fboData.createdAt);
 
     let lastDate = new Date(startDate.getFullYear() + Number(this.fboData.foscosInfo.license_duration), startDate.getMonth(), startDate.getDate()).getTime();
-
-    console.log(lastDate);
 
     let remainingDays: number = Math.floor((lastDate - today) / (1000 * 60 * 60 * 24));
 
@@ -207,7 +203,6 @@ export class ViewFboComponent implements OnInit {
       src: this.invoiceArr,
       multipleDoc: true
     }
-    console.log(this.invoiceArr);
   }
 
   //methord opens view document modal in case of shop identification documents
