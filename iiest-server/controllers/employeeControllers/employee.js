@@ -398,7 +398,7 @@ exports.employeeImage = async (req, res) => {
         const src = req.params.id;
         const key = `${employeeDocsPath}${src}`;
 
-        //returning error in case image file doesn't exsists\
+        //returning error in case image file doesn't exsists
         const isExsists = await doesFileExist(key);
 
         if(!isExsists) {
@@ -419,42 +419,17 @@ exports.employeeImage = async (req, res) => {
 exports.employeeSignature = async (req, res) => {
     try {
 
-        // let success = false;
+        const src = req.params.id;
+        const key = `${employeeDocsPath}${src}`;
 
-        // const signatureBucket = empSignBucket();
+         //returning error in case image file doesn't exsists
+         const isExsists = await doesFileExist(key);
 
-        // const signExists = await signatureBucket.find({ "_id": new ObjectId(req.params.id) }).toArray();
+         if(!isExsists) {
+             return res.status(204).json({success: false, message: 'Image Not Found', exsistanceErr: true})
+         }
 
-        // if (!signExists.length > 0) {
-        //     success = false;
-        //     return res.status(200).json({ success, noSign: true })
-        // }
-
-        // const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
-
-        // if (!signDownloadStream) {
-        //     success = false;
-        //     return res.status.json({ success, noSignature: true });
-        // }
-
-        // let chunks = [];
-
-        // signDownloadStream.on('data', (chunk) => {
-        //     chunks.push(chunk);
-        // })
-
-        // signDownloadStream.on('end', () => {
-        //     const signatureBuffer = Buffer.concat(chunks);
-        //     const signaturePrefix = 'data:image/png;base64,';
-        //     const signBase64 = signatureBuffer.toString('base64');
-        //     const signatureConverted = `${signaturePrefix}${signBase64}`;
-
-        //     success = true;
-
-        // return res.status(200).json({ success, signatureConverted })
-        // })
-
-        const signatureConverted = await getDocObject(`${employeeDocsPath}${req.params.id}`);
+        const signatureConverted = await getDocObject(key);
         return res.status(200).json({ success: true, signatureConverted: signatureConverted });
 
     } catch (error) {

@@ -108,8 +108,10 @@ export class UserAccountComponent {
     let parsedUser = JSON.parse(user);
     this.getDataService.getUserImage(parsedUser.employeeImage).subscribe({
       next: (res)=>{
-        if(res.imageConverted){
-          this.userImage = res.imageConverted;
+        if(res) {
+          if(res.imageConverted){
+            this.userImage = res.imageConverted;
+          }
         }
       }
     })
@@ -121,8 +123,9 @@ export class UserAccountComponent {
     let parsedUser = JSON.parse(user);
     this.getDataService.getUserSign(parsedUser.signatureImage).subscribe({
       next: (res)=>{
-        this.userSign = res.signatureConverted;
-        console.log(res);
+        if(res) {
+          this.userSign = res.signatureConverted;
+        }
       }
     })
   }

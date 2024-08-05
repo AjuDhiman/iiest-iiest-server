@@ -12,7 +12,7 @@ export class MultiSelectComponent implements OnChanges {
   all: Array<{ value: string | number, checked: boolean, isDisabled: boolean }> = [];
   selected: Array<string | number> = [];
   isdropped = false;
-  invalid: boolean = false;
+  @Input() invalid: boolean = false;
   isDisplayEmpty: boolean = true;
   popedElement: string|number = '';
 

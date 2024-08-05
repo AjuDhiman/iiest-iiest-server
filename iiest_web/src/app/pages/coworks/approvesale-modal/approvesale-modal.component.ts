@@ -57,7 +57,6 @@ export class ApprovesaleModalComponent implements OnInit{
 
     this._registerService.updateReceivingInfo(this.saleInfo._id, this.approvalForm.value).subscribe({
       next: res => {
-        console.log(res);
         this.loading = false;
         this.activeModal.close();
         this._tostrService.success('Sale Approved');

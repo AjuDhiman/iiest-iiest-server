@@ -250,7 +250,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">GST Type<sup>*</sup></label>
+                        <label id="business_type" class="form-label">GST Type<sup>*</sup></label>
                         <div>
                             <div class="form-check form-check-inline">
                                 <input type="radio" class="form-check-input" [checked]="!isBusinessTypeB2B" value="b2c"
@@ -265,6 +265,9 @@
                                 <label class="form-label" for="b2b">B2B</label>
                             </div>
                         </div>
+                        <div *ngIf="submitted && fbo['business_type'].errors" class="invalid-feedback d-block">
+                            <div *ngIf="fbo['business_type'].errors['required']">GST Type is required</div>
+                        </div>
                     </div>
                     <div *ngIf="need_gst_number" class="col-md-3">
                         <label for="gst_number" class="form-label">GST Number<sup>*</sup></label>
@@ -278,15 +281,18 @@
                     </div>
                 </div>
 
+                <!-- Product Multi Select -->
                 <div class="col-md-6">
                     <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
                     <app-multi-select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
                         [options]="productList" [forProducts]="true" [placeHolder]="'Select Products'"
+                        [invalid]="(submitted && fbo['product_name'].errors)?true:false"
                         class="cursor-pointer" [disabledArray]="disabledOptions"></app-multi-select>
-                    <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback">
+                    <!-- <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback d-block">
                         <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
-                    </div>
+                    </div> -->
                 </div>
+                 <!-- Product Multi Select -->
 
                 <!--Fostac Component -->
                 <app-fostac *ngIf="isFostac" formGroupName="fostac_training" [submitted]="submitted"

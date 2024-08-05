@@ -169,7 +169,7 @@
                                                     inrAmount}},
                                                 </span>
                                                 <span class="text-capitlize mx-4">
-                                                Total GST. :- {{totalGstAmt|inrAmount}},
+                                                Total GST<small *ngIf="activeTab==='tax'">(Igst + Cgst + SGst)</small> :- {{totalGstAmt|inrAmount}},
                                                 </span>
                                                 <span class="text-capitlize mx-4">
                                                     Total Amount :- {{totalAmt| inrAmount}}
