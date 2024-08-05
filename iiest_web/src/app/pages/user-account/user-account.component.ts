@@ -14,7 +14,7 @@ export class UserAccountComponent {
   //vars
   submitted:boolean = false;
   //default employee image and signture
-  userImage:string = '../../../assets/logo-side.png';
+  userImage:string = 'assets/images/landing_img/baharat-logo.png';
   userSign:string;
 
   selectedImage:string = '';

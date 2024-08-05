@@ -57,7 +57,7 @@ export class UtilitiesService {
         const a = document.createElement('a');
         const objectUrl = URL.createObjectURL(data);
         a.href = objectUrl;
-        a.download = `${new Date().getTime()}.pdf`; // Replace with the desired filename and extension
+        a.download = `${new Date().getTime()}.pdf`; 
         a.click();
         URL.revokeObjectURL(objectUrl);
       }, error => {
