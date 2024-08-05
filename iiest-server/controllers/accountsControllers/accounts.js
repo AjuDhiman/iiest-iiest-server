@@ -19,7 +19,7 @@ exports.getInvoiceList = async (req, res) => {
         const invoiceList = await salesModel.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: startOfThisFinancialYear },
+                    createdAt: { $gte: startOfNewPanel },
                 }
             },
             {

@@ -333,22 +333,21 @@
                                                         class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.invoice_code}}</span>
+                                                        class="truncate text-capitalize">{{invoice.invoice_code}}</span>
                                                 </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitlize"  style="white-space: nowrap;
+                                                <td class="cell"><span class="truncate text-capitalize" style="white-space: nowrap;
                                                         overflow: hidden;
                                                         text-overflow: ellipsis;
                                                         width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
-                                                        class="truncate text-capitlize">{{invoice.gst_number}}</span>
+                                                        class="truncate text-capitalize">{{invoice.gst_number}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.product}}</span>
+                                                        class="truncate text-capitalize">{{invoice.product}}</span>
                                                 </td>
                                                 <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.state}}</span>
+                                                        class="truncate text-capitalize">{{invoice.state}}</span>
                                                 </td>
                                                 <td class="cell"><span
                                                         class="truncate text-capitlize">{{invoice.income_amount
@@ -401,46 +400,24 @@
 
                                             </ng-container>
                                         </tr>
+                                        
                                         <tr class="list-result">
 
 
-                                            <td class="cell"><span class="truncate text-capitlize">
-
-                                            </span>
-                                        </td>
-                                            <td class="cell" *ngIf="activeTab !== 'Service'"><span class="truncate"></span>
-                                            </td>
-                                            <td class="cell" *ngIf="activeTab==='Tax'"><span
-                                                    class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td class="cell" *ngIf="activeTab==='Tax'"><span
-                                                    class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td *ngIf="activeTab==='Tax'" class="cell"><span
-                                                    class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td class="cell"><span class="truncate">Total Receivings</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate">{{totalReceivedAmt}}</span>
-                                            </td>
-
-                                            <td class="cell"><span class="truncate text-capitlize">Total Income</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt|
-                                                    inrAmount}}</span>
-                                            </td>
-
-                                            <td class="cell"><span class="truncate text-capitlize">Total GST.</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">{{totalGstAmt|
-                                                    inrAmount}}</span>
-                                            <td class="cell"><span class="truncate text-capitlize">Total Amount</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">
-                                                    {{totalAmt| inrAmount}}
+                                            <td class="cell" colspan="13">
+                                                <span class="text-capitlize mx-3">
+                                                    Total Receivings: - {{totalReceivedAmt}},
+                                                </span>
+                                                <span class="text-capitlize mx-3">Total Income :- {{totalProcessingAmt|
+                                                    inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-3">
+                                                Total GST. :- {{totalGstAmt|inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-3">
+                                                    Total Amount :- {{totalAmt| inrAmount}}
                                                 </span>
                                             </td>
-                                         
 
 
                                         </tr>

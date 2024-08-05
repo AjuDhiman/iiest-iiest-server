@@ -96,8 +96,7 @@
                                                 <td class="cell"><span
                                                         class="truncate text-capitalize">{{invoice.code}}</span>
                                                 </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitalize" style="white-space: nowrap;
+                                                <td class="cell"><span class="truncate text-capitalize" style="white-space: nowrap;
                                                         overflow: hidden;
                                                         text-overflow: ellipsis;
                                                         width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
@@ -142,7 +141,8 @@
                                                         class="truncate text-capitlize">{{invoice.invoice_date}}</span>
                                                 </td>
                                                 <td class="cell text-center"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)" title="View Invoice"
+                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
+                                                            title="View Invoice"
                                                             class="text-success fa-xl cursor-pointer"></fa-icon>
                                                     </span>
                                                 </td>
@@ -160,45 +160,20 @@
 
                                             </ng-container>
                                         </tr>
+                                       
                                         <tr class="list-result">
 
 
-                                            <td class="cell"><span class="truncate"></span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td class="cell" *ngIf="activeTab==='tax'"><span class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td *ngIf="activeTab==='tax'" class="cell"><span
-                                                    class="truncate text-capitlize"></span>
-                                            </td>
-                                            <td *ngIf="activeTab==='tax'" class="cell"><span
-                                                class="truncate text-capitlize"></span>
-                                        </td>
-                                            <td class="cell"><span class="truncate text-capitlize">Total Income</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">{{totalProcessingAmt|
-                                                    inrAmount}}</span>
-                                            </td>
-
-                                            <td class="cell"><span class="truncate text-capitlize">Total GST.</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">{{totalGstAmt|
-                                                    inrAmount}}</span>
-                                            <td class="cell"><span class="truncate text-capitlize">Total Amount</span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">
-                                                    {{totalAmt| inrAmount}}
+                                            <td class="cell" colspan="14">
+                                                <span class="text-capitlize mx-4">Total Income :- {{totalProcessingAmt|
+                                                    inrAmount}},
                                                 </span>
-                                            </td>
-                                            <td class="cell"><span class="truncate text-capitlize">
-
+                                                <span class="text-capitlize mx-4">
+                                                Total GST. :- {{totalGstAmt|inrAmount}},
                                                 </span>
-                                            </td>
-                                            <td class="cell" style="width: 0;"><span
-                                                    class="truncate text-capitlize"></span>
+                                                <span class="text-capitlize mx-4">
+                                                    Total Amount :- {{totalAmt| inrAmount}}
+                                                </span>
                                             </td>
 
                                         </tr>
@@ -217,8 +192,9 @@
                     </div><!--//app-card-->
 
                     <div class="d-flex" [ngClass]="invoiceList?'justify-content-between':'justify-content-end'">
-                        <div *ngIf="invoiceList" class="text-sm text-capitalize" style="font-size: 14px;">{{filteredData.length}} Invoices
-                            filtered from 
+                        <div *ngIf="invoiceList.length" class="text-sm text-capitalize" style="font-size: 14px;">
+                            {{filteredData.length}} Invoices
+                            filtered from
                             {{caseData.length}} {{activeTab}} Invoices</div>
                         <pagination-controls previousLabel="Prev" nextLabel="Next" id="sales-list"
                             (pageChange)="onTableDataChange($event)"></pagination-controls>
