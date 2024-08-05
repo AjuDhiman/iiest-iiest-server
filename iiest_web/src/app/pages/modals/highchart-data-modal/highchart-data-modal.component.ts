@@ -144,6 +144,10 @@ export class HighchartDataModalComponent {
             this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.foscosInfo.foscos_service_name === this.filterValue));
           } else if (this.chartData.salesCategory === 'HRA') {
             this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.hraInfo.hra_service_name === this.filterValue));
+          } else if (this.chartData.salesCategory === 'Medical') {
+            this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)));
+          } else if (this.chartData.salesCategory === 'Water Test Report') {
+            this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.waterTestInfo.water_test_service_name === this.filterValue));
           }
           this.salesDeptfilter();
           this.loading = false;
@@ -338,7 +342,7 @@ export class HighchartDataModalComponent {
         }
 
          //add more processing amount in case sale contains Water Test report
-         if (product == "Medical") {
+         if (product == "Water Test Report") {
           processingAmount += employee.waterTestInfo.water_test_processing_amount;
         }
       });

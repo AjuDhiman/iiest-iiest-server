@@ -192,7 +192,7 @@
                     </div><!--//app-card-->
 
                     <div class="d-flex" [ngClass]="invoiceList?'justify-content-between':'justify-content-end'">
-                        <div *ngIf="invoiceList" class="text-sm text-capitalize" style="font-size: 14px;">
+                        <div *ngIf="invoiceList.length" class="text-sm text-capitalize" style="font-size: 14px;">
                             {{filteredData.length}} Invoices
                             filtered from
                             {{caseData.length}} {{activeTab}} Invoices</div>

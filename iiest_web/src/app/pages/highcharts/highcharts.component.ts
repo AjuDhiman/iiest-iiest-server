@@ -692,6 +692,10 @@ export class HighchartsComponent implements OnChanges {
         this.salesCategory = "Foscos";
       } else if (e.point.options.name === "HRA") {
         this.salesCategory = "HRA";
+      } else if (e.point.options.name === "Medical") {
+        this.salesCategory = "Medical";
+      } else if ((e.point.options.name === "NABL") || (e.point.options.name === "Non NABL")) {
+        this.salesCategory = "Water Test Report";
       }
     } else if (e.point.category) {
       if (e.point.category === "Retail" || e.point.category === "Catering") {
@@ -699,6 +703,10 @@ export class HighchartsComponent implements OnChanges {
       } else if (e.point.category === "Registration" || e.point.options.name === "State") {
         this.salesCategory = "Foscos";
       } else if (e.point.category === "HRA") {
+        this.salesCategory = "HRA";
+      } else if (e.point.options.name === "HRA") {
+        this.salesCategory = "HRA";
+      } else if (e.point.options.name === "HRA") {
         this.salesCategory = "HRA";
       }
     }
