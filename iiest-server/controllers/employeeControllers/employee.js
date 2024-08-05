@@ -9,7 +9,7 @@ const { empSignBucket, empImageBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
-const { employeeDocsPath, uploadDocObject, getDocObject, deleteDocObject } = require('../../config/s3Bucket');
+const { employeeDocsPath, uploadDocObject, getDocObject, deleteDocObject, doesFileExist } = require('../../config/s3Bucket');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
@@ -395,8 +395,18 @@ exports.allocatedAreas = async (req, res) => {
 exports.employeeImage = async (req, res) => {
     try {
 
+        const src = req.params.id;
+        const key = `${employeeDocsPath}${src}`;
+
+        //returning error in case image file doesn't exsists\
+        const isExsists = await doesFileExist(key);
+
+        if(!isExsists) {
+            return res.status(204).json({success: false, message: 'Image Not Found', exsistanceErr: true})
+        }
+
         //getting presigned url for image saves in s3 bucket
-        const imageConverted = await getDocObject(`${employeeDocsPath}${req.params.id}`);
+        const imageConverted = await getDocObject(key);
         return res.status(200).json({ success: true, imageConverted: imageConverted });
 
     } catch (error) {

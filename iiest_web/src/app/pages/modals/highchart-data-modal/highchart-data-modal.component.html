@@ -31,7 +31,8 @@
               <option *ngIf="designation === 'Director'" value="bySalesOfficer">Search by Sales Officer</option>
               <option value="byOwner">Search by Owner</option>
               <option value="byLocation">Search by Location</option>
-              <option value="byCustomerID">Search by Customer ID</option>
+              <option value="byShopID">Search by Shop ID</option>
+              <option value="byMemberID">Search by Member ID</option>
             </select>
           </div>
 
@@ -62,50 +63,61 @@
               <thead *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
                 <tr>
                   <th class="cell">S.No</th>
+
                   <th class="cell">FBO Name
+                    <!-- Soreting arrow by fbo name -->
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
                       (click)="sortBy('fbo_name', 'asc')"
                       [ngClass]="{'selected-arrow': sortedField === 'fbo_name' && sortingOrder === 'asc'}"></fa-icon>
-                    <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" (click)="sortBy('fbo_name', 'desc')"
+                    <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" 
+                    (click)="sortBy('fbo_name', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'fbo_name' && sortingOrder === 'desc'}"></fa-icon>
+                    <!-- Soreting arrow by fbo name -->
                   </th>
+
                   <th class="cell">Owner Name
+                    <!-- Soreting arrow by owner name -->
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
                       (click)="sortBy('owner_name', 'asc')"
                       [ngClass]="{'selected-arrow': sortedField === 'owner_name' && sortingOrder === 'asc'}"></fa-icon>
                     <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" (click)="sortBy('owner_name', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'owner_name' && sortingOrder === 'desc'}"></fa-icon>
+                      <!-- Soreting arrow by owner name -->
                   </th>
                   <th class="cell">Member ID</th>
                   <th class="cell">Shop ID</th>
                   <th class="cell">Contact no.</th>
-                  <!-- <th *ngIf="!isRepetCustData" class="cell">Product Name</th>
-                  <th *ngIf="!isRepetCustData" class="cell">Product Count</th> -->
                   <th *ngIf="!isRepetCustData" class="cell">Processing Amount</th>
                   <th *ngIf="isRepetCustData" class="cell text-center">Repetition Count
+                    <!-- Soreting arrow by repetition count -->
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
                       (click)="sortBy('repetition_count', 'asc')"
                       [ngClass]="{'selected-arrow': sortedField === 'repetition_count' && sortingOrder === 'asc'}"></fa-icon>
                     <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown"
                       (click)="sortBy('repetition_count', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'repetition_count' && sortingOrder === 'desc'}"></fa-icon>
+                      <!-- Soreting arrow by repetition count -->
                   </th>
                   <th class="cell">District</th>
                   <th class="cell">State</th>
                   <th *ngIf="!isRepetCustData" class="cell">Sales Date
+                    <!-- Soreting arrow by sales date -->
                     <fa-icon style="margin-left: 5px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
                       (click)="sortBy('sales_date', 'asc')"
                       [ngClass]="{'selected-arrow': sortedField === 'sales_date' && sortingOrder === 'asc'}"></fa-icon>
                     <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown" (click)="sortBy('sales_date', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'sales_date' && sortingOrder === 'desc'}"></fa-icon>
+                      <!-- Soreting arrow by sales sate -->
                   </th>
                   <th *ngIf="isRepetCustData" class="cell text-center">Last Sale Date
+                    <!-- sorting Arrows by last sale date -->
                     <fa-icon style="margin-left: 10px;" class="px-2 cursor-pointer arrow" [icon]="faArrowUp"
                       (click)="sortBy('last_sale_date', 'asc')"
                       [ngClass]="{'selected-arrow': sortedField === 'last_sale_date' && sortingOrder === 'asc'}"></fa-icon>
                     <fa-icon class="cursor-pointer arrow" [icon]="faArrowDown"
                       (click)="sortBy('last_sale_date', 'desc')"
                       [ngClass]="{'selected-arrow': sortedField === 'last_sale_date' && sortingOrder === 'desc'}"></fa-icon>
+                    <!-- sorting Arrows by last sale date-->
                   </th>
                   <th *ngIf="designation === 'Director'" class="cell">Sales Officer</th>
                   <!-- View Details about the sale -->
@@ -141,16 +153,6 @@
                   </td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.customer_id}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
-                  <!-- <td *ngIf="!isRepetCustData" class="cell"><span
-                      class="truncate text-capitalize">{{employee.product_name.join(', ') +
-                      ((employee.foscosInfo && (employee.foscosInfo.water_test_fee != 0))?', Water Test':'')}}</span></td> -->
-                  <!-- <td *ngIf="!isRepetCustData" class="cell text-center"><span
-                      class="truncate text-capitalize">{{(
-                        (employee.fostacInfo ? employee.fostacInfo.recipient_no : 0) + 
-                        (employee.foscosInfo ? employee.foscosInfo.shops_no : 0) + 
-                        (employee.hraInfo ? employee.hraInfo.shops_no : 0) + 
-                        ((employee.foscosInfo && employee.foscosInfo.water_test_fee != '0') ? 1 : 0)
-                      )}}</span></td> -->
                   <td *ngIf="!isRepetCustData" class="cell"><span
                       class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span
@@ -161,12 +163,13 @@
                       class="truncate text-capitalize">{{employee.fboInfo.state.toLowerCase()}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span class="truncate">{{
                       getFormattedSalesDate(employee.createdAt) }}</span></td>
-                  <td *ngIf="isRepetCustData" class="cell col-2"><span class="truncate">{{
+                  <td *ngIf="isRepetCustData" class="cell col-2 text-center"><span class="truncate">{{
                       getFormattedSalesDate(employee.lastSaleDate) }}</span></td>
                   <td *ngIf="designation === 'Director'" class="cell"><span
                       class="truncate">{{employee.employeeInfo.employee_name }}</span></td>
                   <td class="cell text-center"><span class="truncate text-capitalize selector">
-                    <fa-icon [icon]="faEye" style="color: #1957a9;" (click)="viewSaleDetails($event, employee)"></fa-icon>
+                      <fa-icon [icon]="faEye" style="color: #1957a9;"
+                        (click)="viewSaleDetails($event, employee)"></fa-icon>
                     </span>
                   </td>
 

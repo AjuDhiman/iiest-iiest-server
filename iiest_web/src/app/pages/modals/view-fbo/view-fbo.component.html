@@ -232,10 +232,10 @@
 
 
             <!-- In case of Fostac -->
-            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Fostac')) || (product === 'Fostac')" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Fostac')) || (product === 'Fostac')" class="row py-2">
                 <div class="col-md title" style="color: #1957a9;">Fostac Details</div>
                 <div class="row mt-2 ml-3">
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Client Type</div>
                             <div class="col-md-6 data">
@@ -244,7 +244,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Service Name</div>
                             <div class="col-md-6 data">
@@ -253,7 +253,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">No. of Recipient </div>
                             <div class="col-md-6 data">{{fboData.fostacInfo.recipient_no}}</div>
@@ -261,14 +261,14 @@
                     </div>
 
                     <!-- Show processing and total amount in case of sale data -->
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Fostac Processing Amount</div>
                             <div class="col-md-6 data">{{fboData.fostacInfo.fostac_processing_amount}}</div>
                         </div>
                     </div>
 
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Fostac Total Amount</div>
                             <div class="col-md-6 data">{{fboData.fostacInfo.fostac_total}}</div>
@@ -281,7 +281,7 @@
 
 
             <!-- In case of Foscos-->
-            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Foscos')) || (product === 'Foscos')" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Foscos')) || (product === 'Foscos')" class="row py-2">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Foscos Details</div>
                     <div class="remaining-time">({{remainingTime}} are Remaining)</div>
@@ -296,7 +296,7 @@
                         </div>
                     </div>
                    
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Service Name</div>
                             <div class="col-md-6 data">
@@ -304,19 +304,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Licence Category</div>
                             <div class="col-md-6 data">{{fboData.foscosInfo.license_category}}</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Licence Duration</div>
                             <div class="col-md-6 data">{{fboData.foscosInfo.license_duration}} Year</div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">No. of Shops </div>
                             <div class="col-md-6 data">{{fboData.foscosInfo.shops_no}}</div>
@@ -324,14 +324,14 @@
                     </div>
 
                      <!-- Show processing and total amount in case of sale data -->
-                     <div class="col-md-4" *ngIf="isForWholeSale">
+                     <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Foscos Processing Amount</div>
                             <div class="col-md-6 data">{{fboData.foscosInfo.foscos_processing_amount}}</div>
                         </div>
                     </div>
 
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Foscos Total Amount</div>
                             <div class="col-md-6 data">{{fboData.foscosInfo.foscos_total}}</div>
@@ -343,10 +343,10 @@
 
 
             <!-- In Case of HRA -->
-            <div *ngIf="(isForWholeSale && fboData.product_name.includes('HRA')) || (product === 'HRA')" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('HRA')) || (product === 'HRA')" class="row py-2">
                 <div class="col-md title" style="color: #1957a9;">HRA Details</div>
                 <div class="row mt-2 ml-3">
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Client Type</div>
                             <div class="col-md-6 data">
@@ -354,7 +354,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Service Name</div>
                             <div class="col-md-6 data">
@@ -363,7 +363,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">No. of Shops</div>
                             <div class="col-md-6 data">{{fboData.hraInfo.shops_no}}</div>
@@ -371,14 +371,14 @@
                     </div>
 
                      <!-- Show processing and total amount in case of sale data -->
-                     <div class="col-md-4" *ngIf="isForWholeSale">
+                     <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">HRA Processing Amount</div>
                             <div class="col-md-6 data">{{fboData.hraInfo.hra_processing_amount}}</div>
                         </div>
                     </div>
 
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">HRA Total Amount</div>
                             <div class="col-md-6 data">{{fboData.hraInfo.hra_total}}</div>
@@ -391,12 +391,12 @@
 
 
             <!-- In case of Medical -->
-            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Medical')) || (product === 'Medical')" class="row">
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Medical')) || (product === 'Medical')" class="row py-2">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Medical Details</div>
                 </div>
                 <div class="row mt-2 ml-3">
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">No. of Recipients </div>
                             <div class="col-md-6 data">{{fboData.medicalInfo.recipient_no}}</div>
@@ -405,14 +405,14 @@
 
 
                      <!-- Show processing and total amount in case of sale data -->
-                     <div class="col-md-4" *ngIf="isForWholeSale">
+                     <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Medical Processing Amount</div>
                             <div class="col-md-6 data">{{fboData.medicalInfo.medical_processing_amount}}</div>
                         </div>
                     </div>
 
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Medical Total Amount</div>
                             <div class="col-md-6 data">{{fboData.medicalInfo.medical_total}}</div>
@@ -436,12 +436,12 @@
 
 
              <!-- In Case of Water Test -->
-             <div *ngIf="(isForWholeSale && fboData.product_name.includes('Water Test Report')) || (product === 'Water Test Report')" class="row">
+             <div *ngIf="(isForWholeSale && fboData.product_name.includes('Water Test Report')) || (product === 'Water Test Report')" class="row py-2">
                 <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
                     <div class="product-title">Water Test Details</div>
                 </div>
                 <div class="row mt-2 ml-3">
-                    <div class="col-md-4">
+                    <div class="col-md-4 view-data-elem">
                         <div class="row">
                             <div class="col-md-6 title">Service Name</div>
                             <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_service_name}}</div>
@@ -449,14 +449,14 @@
                     </div>
                     
                     <!-- Show processing and total amount in case of sale data -->
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Water Test Processing Amount</div>
                             <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_processing_amount}}</div>
                         </div>
                     </div>
 
-                    <div class="col-md-4" *ngIf="isForWholeSale">
+                    <div class="col-md-4 view-data-elem" *ngIf="isForWholeSale">
                         <div class="row">
                             <div class="col-md-6 title">Water Test Total Amount</div>
                             <div class="col-md-6 data">{{fboData.waterTestInfo.water_test_total}}</div>
