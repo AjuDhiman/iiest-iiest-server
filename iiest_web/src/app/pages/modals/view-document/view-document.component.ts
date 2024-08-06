@@ -59,7 +59,6 @@ export class ViewDocumentComponent implements OnInit {
   }
 
   downloadDoc(documentId: any, contentType: any) { //methord for downloading doc
-    console.log(typeof(documentId));
     this._utilService.downloadDoc(documentId, contentType);
   }
 

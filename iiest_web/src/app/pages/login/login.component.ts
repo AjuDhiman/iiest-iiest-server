@@ -109,7 +109,7 @@ export class LoginComponent implements OnInit {
         },
         error: (err) => {
           let errorObj = err.error
-          this.toastrService.error('Message Error!', errorObj.message);
+          this.toastrService.error('Internal Server Error!', errorObj.message && 'Please Check Your Internet Connection');
           this.error = true;
           this.errorMgs = errorObj.message
         },

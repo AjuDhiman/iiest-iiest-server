@@ -185,7 +185,15 @@ exports.ticketVerificationData = async (req, res) => {
         const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());//getting time of start of this weeek
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);//getting time of start of prev month
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);//getting time of start of this month
-        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
+        
+        let startOfThisFinancialYear;
+
+        //getting start of this financial year
+        if(todayDate.getMonth() < 3) {
+            startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
+        } else {
+            startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        }
 
         const pipeLineArr = [
             {

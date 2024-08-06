@@ -70,6 +70,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  //methord for getting panel user data 
   getUserData() {
     const rawUserData: any = this._registerService.LoggedInUserData()
     this.userData = JSON.parse(rawUserData);
@@ -103,6 +104,8 @@ export class HeaderComponent implements OnInit {
       this.toogleSideBarEvent.emit({ isSidebarVisible: false, largeDisplay: false })
     }
   }
+
+  //methord open and closes the popups in headers relared to settings notoifications etc.
   toggleClass = (event: any) => {
     event.stopPropagation();
     let title = event.target.getAttribute('title');
@@ -126,6 +129,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  //methord for closing notifications and other popups on tab on any side of doc modal other than the popuo area
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const targetElement = event.target as HTMLElement;
@@ -138,10 +142,12 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  //methord for logging out
   logout() {
     this._registerService.signout();
   }
 
+  //methord for toggling side bar
   sideBarToggle(event: any) {
     this.sideBar.toggelShow = false;
     this.toggelNotification = false; // we want notifications and show to be closed on 
@@ -156,6 +162,7 @@ export class HeaderComponent implements OnInit {
     this.toogleSideBarEvent.emit({ isSidebarVisible: this.isSidebarVisible, largeDisplay: this.largeDisplay });// this event used in changing the right-margin in app content on toggle 
   }
 
+  //methord for getting user image
   getUserImage() {
     if (!this.userImageId) {
       this.userImage = 'assets/logo-side.png';
@@ -163,33 +170,18 @@ export class HeaderComponent implements OnInit {
     }
     this.getDataService.getUserImage(this.userImageId).subscribe({
       next: (res) => {
-        if (res.success) {
-          this.userImage = res.imageConverted;
-        } else if (res.defaulImage) {
-          this.userImage = res.defaulImage;
-        } else if (res.noImage) {
-          this.userImage = 'assets/logo-side.png';
+        if(res) {
+          if (res.success) {
+            this.userImage = res.imageConverted;
+          } else if (res.defaulImage) {
+            this.userImage = res.defaulImage;
+          } else if (res.noImage) {
+            this.userImage = 'assets/logo-side.png';
+          }
         }
       }
     })
   }
-
-  //methord for getting image of persons in notifications
-  // getImageForNotification(imageObj: string) {
-  //   let imageSrc = '';
-  //   this.getDataService.getUserImage(imageObj).subscribe({
-  //     next: (res)=>{
-  //       if(res.success){
-  //         imageSrc = res.imageConverted;
-  //       }else if(res.defaulImage){
-  //         imageSrc = res.defaulImage;
-  //       }else if(res.noImage){
-  //         imageSrc = 'assets/logo-side.png';
-  //       }
-  //       return imageSrc;
-  //     }
-  //   })
-  // }
 
   //methord for getting notfications
   getNotifications(): void {
@@ -204,15 +196,6 @@ export class HeaderComponent implements OnInit {
         }
       })
     }
-
-    // if(this.userData.panel_type == 'Verification Panel') {
-    //   let purpose: string = 'Verification';
-    //   this.getDataService.getNotifications(purpose).subscribe({
-    //     next: res => {
-    //       console.log(res);
-    //     }
-    //   })
-    // }
   }
 
   //methord for fomatting date string to readable string 

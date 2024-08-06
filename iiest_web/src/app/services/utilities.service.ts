@@ -53,18 +53,13 @@ export class UtilitiesService {
     if (documentIds.length <= 1) {
       const documentId = documentIds;
       this.http.get(documentId[0], { responseType: 'blob' }).subscribe((data: Blob) => {
-        const downloadUrl = window.URL.createObjectURL(data);
-  
-        // Create a link element and trigger the download
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `document_${documentId}.jpg`; // Adjust the file extension as needed
-        document.body.appendChild(link); // Append the link to the body
-        link.click(); // Trigger the download
-        document.body.removeChild(link); // Remove the link after download
-  
-        // Cleanup the Blob URL
-        window.URL.revokeObjectURL(downloadUrl);
+        console.log(data)
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(data);
+        a.href = objectUrl;
+        a.download = `${new Date().getTime()}.pdf`; 
+        a.click();
+        URL.revokeObjectURL(objectUrl);
       }, error => {
         console.error('Download failed:', error);
       });
@@ -72,10 +67,10 @@ export class UtilitiesService {
       // Fetch and add each document to the zip file
       await Promise.all(documentIds.map(async (documentId, index) => {
         const contentType = contentTypes[index];
-        const response = await this.http.get(`${this.DOC_URL}/${documentId}`, { responseType: 'blob' }).toPromise();
+        const response = await this.http.get(documentId, { responseType: 'blob' }).toPromise();
 
         if (response instanceof Blob) {
-          zip.file(`document_${documentId}`, response, { binary: true });
+          zip.file(`document`, response, { binary: true });
         } else {
           console.error(`Error fetching document ${documentId}`);
         }

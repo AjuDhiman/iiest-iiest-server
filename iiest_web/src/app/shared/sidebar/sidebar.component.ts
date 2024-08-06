@@ -59,6 +59,8 @@ export class SidebarComponent {
     this.toggelShow = !this.toggelShow;
     event.target.classList.toggle('show');
   }
+
+  //methord for getting user data
   getUserData() {
     const rawUserData: any = this.registerService.LoggedInUserData()
     this.userData = JSON.parse(rawUserData);
@@ -67,11 +69,15 @@ export class SidebarComponent {
       this.getUserImage();
     }
   }
+
+  //methord for toggleing sidebar
   sideBarToggleValue() {
     this.sideBarToggleUpdate.emit(false);
     this.toggelShow = false;
     this.isSidebarVisible = !this.isSidebarVisible;
   }
+
+  //methord for getting user image
   getUserImage() {
     if(!this.userImageId) {
       this.userImage = 'assets/logo-side.png';
@@ -81,15 +87,18 @@ export class SidebarComponent {
     const parsedData: any = JSON.parse(rawUserData);
     this.getDataService.getUserImage(parsedData.employeeImage).subscribe({
       next: (res) => {
-        if (res.imageConverted) {
-          this.userImage = res.imageConverted;
-        } else if (res.defaulImage) {
-          this.userImage = res.defaultImage;
+        if(res) {
+          if (res.imageConverted) {
+            this.userImage = res.imageConverted;
+          } else if (res.defaulImage) {
+            this.userImage = res.defaultImage;
+          }
         }
       }
     })
   }
 
+  //methotd for closing side bar
   closeDropMenu() {
     this.toggelShow = false;
   }

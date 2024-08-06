@@ -199,7 +199,15 @@ exports.getAreaWiseSalesData = async (req, res) => {
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+
+        let startOfThisFinancialYear;
+
+        //getting start of this financial year
+        if(todayDate.getMonth() < 3) {
+            startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
+        } else {
+            startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        }
 
         const pipelinesArr = [
             {
@@ -307,7 +315,15 @@ exports.getPersonWiseSalesData = async (req, res) => {
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        
+        let startOfThisFinancialYear;
+
+        //getting start of this financial year
+        if(todayDate.getMonth() < 3) {
+            startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
+        } else {
+            startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        }
         const pipelinesArr = [{
             $lookup: {
                 from: "staff_registers",
@@ -498,7 +514,15 @@ exports.getMonthWiseSaleData = async (req, res) => {
         const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
         const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
         const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
-        const startOfThisFinancialYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 3, 1, 0, 0, 0));
+        
+        let startOfThisFinancialYear;
+
+        //getting start of this financial year
+        if(todayDate.getMonth() < 3) {
+            startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
+        } else {
+            startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        }
 
 
         if (today.getMonth() > 2) {
@@ -622,7 +646,15 @@ exports.getRepeactCustomerData = async (req, res) => {
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 0, 0, 1);
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);
-        const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        
+        let startOfThisFinancialYear;
+
+        //getting start of this financial year
+        if(todayDate.getMonth() < 3) {
+            startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
+        } else {
+            startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        }
 
         const pipeline = [
             {
@@ -826,7 +858,15 @@ exports.ticketDeviveryChartData = async (req, res) => {
         const startOfThisWeek = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), todayDate.getUTCDate() - todayDate.getUTCDay(), 0, 0, 0));
         const startOfPrevMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1, 0, 0, 0));
         const startOfThisMonth = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth(), 1, 0, 0, 0));
-        const startOfThisFinancialYear = new Date(Date.UTC(todayDate.getUTCFullYear(), 3, 1, 0, 0, 0));
+        
+        let startOfThisFinancialYear;
+
+        //getting start of this financial year
+        if(todayDate.getMonth() < 3) {
+            startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
+        } else {
+            startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
+        }
 
         const pipeline = [
             {

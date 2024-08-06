@@ -259,7 +259,7 @@ export class FbonewComponent implements OnInit, OnChanges {
 
     //set water test validators
     this.water_test_report = this.formBuilder.group({
-      water_test_total:['', Validators.required],
+      water_test_total: ['', Validators.required],
       water_test_service_name: ['', Validators.required],
       water_test_processing_amount: ['', Validators.required],
     });
@@ -325,10 +325,10 @@ export class FbonewComponent implements OnInit, OnChanges {
       });
     this.fboForm.patchValue({ createdBy: `${this.userName}(${this.parsedUserData.employee_id})` });
 
-    if(this.isForFostacSaleByCaseList) {
+    if (this.isForFostacSaleByCaseList) {
       this.fetchExistingUser(this.fboDataCommingAsModal);
     }
-   
+
     if (!this.isPanIndiaAllowed) {
       this.getAllocatedArea();
     }
@@ -336,9 +336,9 @@ export class FbonewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes && changes['isCalledAsChild'] && changes['isCalledAsChild'].currentValue && this.isCalledAsChild){
+    if (changes && changes['isCalledAsChild'] && changes['isCalledAsChild'].currentValue && this.isCalledAsChild) {
       this.isExistingFbo = true;
-      
+
     }
   }
 
@@ -486,13 +486,12 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.existingFboId = fboObj.customer_id
 
     //we will not have search query in case we are fetching fbo from case list
-    if(!this.isForFostacSaleByCaseList) {
+    if (!this.isForFostacSaleByCaseList) {
       this.searchElemFBO.nativeElement.value = ''
-      
+
     }
 
     this.isSearchEmptyFBO = true;
-    console.log(fboObj.fbo_name);
 
     this.selectedFbo = fboObj;
     this.fbo['fbo_name'].setValue(fboObj.fbo_name);
@@ -545,6 +544,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   }
 
 
+  //fetching exsisting bo data bo data 
   fetchExistingBo(fboObj: any) {
     this.existingFboId = fboObj.customer_id
     this.searchElemBO.nativeElement.value = ''
@@ -566,7 +566,7 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
-    console.log(this.fboForm.value)
+
     if (this.fboForm.invalid || this.loading) {
       return;
     }
@@ -588,7 +588,7 @@ export class FbonewComponent implements OnInit, OnChanges {
         }
       });
     } else {
-      this.addFbo = this.fboForm.value;  
+      this.addFbo = this.fboForm.value;
       if (!this.isExistingFbo) {
         if (this.addFbo.payment_mode === 'Pay Page') {
           this._registerService.fboPayment(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.foscosFixedCharges).subscribe({
@@ -688,11 +688,11 @@ export class FbonewComponent implements OnInit, OnChanges {
           formData.append('cheque_image', this.chequeImage);
           formData.append('isFostac', this.isFostac.toString());
           formData.append('isFoscos', this.isFoscos.toString());
-          formData.append('isHygiene',this.isHygiene.toString());
+          formData.append('isHygiene', this.isHygiene.toString());
           formData.append('isMedical', this.isMedical.toString());
-          formData.append('isWaterTest',this.isWaterTest.toString());
+          formData.append('isWaterTest', this.isWaterTest.toString());
 
-          if(this.fboForm.value.business_type == 'b2b'){ //append gst number in case of b2b business type
+          if (this.fboForm.value.business_type == 'b2b') { //append gst number in case of b2b business type
             formData.append('gst_number', this.fboForm.value.gst_number)
           }
 
@@ -754,7 +754,7 @@ export class FbonewComponent implements OnInit, OnChanges {
           })
         }
         else if (this.addFbo.payment_mode === 'By Cheque') {
-         
+
           let formData = new FormData();
 
           formData.append('pincode', this.fboForm.value.pincode);
@@ -777,11 +777,11 @@ export class FbonewComponent implements OnInit, OnChanges {
           formData.append('cheque_image', this.chequeImage);
           formData.append('isFostac', this.isFostac.toString());
           formData.append('isFoscos', this.isFoscos.toString());
-          formData.append('isHygiene',this.isHygiene.toString());
+          formData.append('isHygiene', this.isHygiene.toString());
           formData.append('isMedical', this.isMedical.toString());
-          formData.append('isWaterTest',this.isWaterTest.toString());
+          formData.append('isWaterTest', this.isWaterTest.toString());
 
-          if(this.fboForm.value.business_type == 'b2b'){//append gst number in case of b2b business type
+          if (this.fboForm.value.business_type == 'b2b') {//append gst number in case of b2b business type
             formData.append('gst_number', this.fboForm.value.gst_number)
           }
           this._registerService.fboByCheque(this.objId, formData).subscribe({
@@ -860,14 +860,20 @@ export class FbonewComponent implements OnInit, OnChanges {
     })
   }
 
-  //Get bo General Data
+  //Get all bo General Data 
   getboGeneralData() {
 
+    //start loading
+    this.loading = true;
     this._getFboGeneralData.getbolist().subscribe({
       next: (res) => {
         this.existingbos = res.boList;
+        //stop loading on success
+        this.loading = false;
       },
       error: (err) => {
+        //stop loading on error
+        this.loading = false;
       }
     })
 
@@ -932,8 +938,8 @@ export class FbonewComponent implements OnInit, OnChanges {
       //next line will remove the HRA amount from grand total in case of deselection of HRA in products
       this.hygieneTotalAmount(0);
       this.resetHRAForm();
-    } 
-    if(this.productName.includes('Water Test Report')){
+    }
+    if (this.productName.includes('Water Test Report')) {
       this.isWaterTest = true;
       this.fboForm.addControl('water_test_report', this.water_test_report);
     } else {
@@ -945,7 +951,7 @@ export class FbonewComponent implements OnInit, OnChanges {
     //for medical Certificate
     if (this.productName.includes('Medical')) {
       this.isMedical = true;
-      this.medical.patchValue({medical_processing_amount: medicalProcessAmnt})
+      this.medical.patchValue({ medical_processing_amount: medicalProcessAmnt })
       this.fboForm.addControl('medical', this.medical);
     }
     else {
@@ -953,7 +959,7 @@ export class FbonewComponent implements OnInit, OnChanges {
       this.fboForm.removeControl('medical');
       this.medicalTotalAmount(0);
       this.resetMedicalForm();
-    } 
+    }
 
   }
 
@@ -997,8 +1003,8 @@ export class FbonewComponent implements OnInit, OnChanges {
 
   ModeofPayment(event: any) {
     if (this.fboForm.value.total_amount !== '' && event.target.value == 'By Cheque') {
-      if(this.fboForm.value.grand_total <= 2000) {
-        this.fboForm.patchValue({payment_mode: ''});
+      if (this.fboForm.value.grand_total <= 2000) {
+        this.fboForm.patchValue({ payment_mode: '' });
         this._toastrService.error('Grand total should be greated than 2000 For Cheque ')
         return
       }
@@ -1050,7 +1056,7 @@ export class FbonewComponent implements OnInit, OnChanges {
 
   fostacTotalAmount(TotalAmnt: any) {
     this.fostac_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hra_processAmnt + this.water_test_processAmnt + this.medical_processAmnt});
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.foscos_processAmnt + this.hra_processAmnt + this.water_test_processAmnt + this.medical_processAmnt });
   }
   foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = TotalAmnt;
@@ -1058,7 +1064,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   }
   hygieneTotalAmount(TotalAmnt: any) {
     this.hra_processAmnt = TotalAmnt;
-    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt + this.water_test_processAmnt + this.medical_processAmnt});
+    this.fboForm.patchValue({ 'grand_total': TotalAmnt + this.fostac_processAmnt + this.foscos_processAmnt + this.water_test_processAmnt + this.medical_processAmnt });
   }
 
   watertestTotalAmount(TotalAmnt: any) {
@@ -1220,36 +1226,36 @@ export class FbonewComponent implements OnInit, OnChanges {
   }
 
   //func for adding medical amount in case of medical 
-  medicalRecpChange($event: any){
-    if($event.target.value <= 0) {
-      this.medical.patchValue({recipient_no: 1});
+  medicalRecpChange($event: any) {
+    if ($event.target.value <= 0) {
+      this.medical.patchValue({ recipient_no: 1 });
     }
     const perMedicalAmount = medicalProcessAmnt;
-    const GSTPerMedical = Math.round(medicalProcessAmnt*18/100);
-    this.medicalGST = GSTPerMedical*$event.target.value;
+    const GSTPerMedical = Math.round(medicalProcessAmnt * 18 / 100);
+    this.medicalGST = GSTPerMedical * $event.target.value;
     const perMedicalWithGST = perMedicalAmount + GSTPerMedical;
-    const medicalTotal = perMedicalWithGST*$event.target.value;
-    this.medical.patchValue({medical_total: medicalTotal});
+    const medicalTotal = perMedicalWithGST * $event.target.value;
+    this.medical.patchValue({ medical_total: medicalTotal });
     this.medicalTotalAmount(medicalTotal);
   }
 
-  onWaterTestServiceChange($event: any) : void {//methord for water test service change
+  onWaterTestServiceChange($event: any): void {//methord for water test service change
     this.getWaterTestProcessAmnt($event.target.value);
-    this.waterTestGST = Math.round(this.water_test_report.value.water_test_processing_amount * 18/100); // calculate gst of water test
+    this.waterTestGST = Math.round(this.water_test_report.value.water_test_processing_amount * 18 / 100); // calculate gst of water test
     const waterTestWithGst: number = Number(this.water_test_report.value.water_test_processing_amount) + this.waterTestGST
 
-    this.water_test_report.patchValue({water_test_total: waterTestWithGst}) //patch total to total amount
+    this.water_test_report.patchValue({ water_test_total: waterTestWithGst }) //patch total to total amount
     this.watertestTotalAmount(waterTestWithGst);
   }
 
-  getWaterTestProcessAmnt(serviceType: string) : void { //methord for deciding processing watertest amount on service select
+  getWaterTestProcessAmnt(serviceType: string): void { //methord for deciding processing watertest amount on service select
     if (serviceType === 'NABL') {
       //NABL
-      this.water_test_report.patchValue({water_test_processing_amount: 2966});
+      this.water_test_report.patchValue({ water_test_processing_amount: 2966 });
     }
     if (serviceType === 'Non NABL') {
       //NON NABL
-      this.water_test_report.patchValue({water_test_processing_amount: 2119});
+      this.water_test_report.patchValue({ water_test_processing_amount: 2119 });
     }
   }
 

@@ -62,10 +62,12 @@ export class HighchartDataModalComponent {
     private _modalService: NgbModal) { }
 
   ngOnInit() {
+    //getting panel user info
     const loggedInUserData: any = this.registerService.LoggedInUserData();
     const parsedData = JSON.parse(loggedInUserData);
     this.designation = parsedData.designation;
 
+    //use diffrent filters in case ofdiffrent charts
     switch (this.chartData.chartTitile) {
       case 'Product Wise Sales':
         this.fetchAllFboData();
@@ -86,6 +88,7 @@ export class HighchartDataModalComponent {
         break;
     }
 
+    //initial sorting in both case for repeted sort by last sale date and sale date for else
     if (this.isRepetCustData) {
       this.sortBy('last_sale_date', 'desc');
     } else {
@@ -207,7 +210,8 @@ export class HighchartDataModalComponent {
                 elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                 elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                elem.fboInfo.customer_id.includes(this.searchQuery) || 
+                elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery) || 
+                elem.fboInfo.boInfo.customer_id.toLowerCase().includes(this.searchQuery) || 
                 elem.product_name.join(" ").toLowerCase().includes(this.searchQuery.toLowerCase())
             );
           break;
@@ -217,7 +221,9 @@ export class HighchartDataModalComponent {
           break;
         case 'byFboName': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byCustomerID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.customer_id.includes(this.searchQuery));
+        case 'byShopID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery));
+          break;
+          case 'byMemberID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.boInfo.customer_id.toLowerCase().includes(this.searchQuery));
           break;
         case 'bySalesOfficer': this.filteredData = this.specificDatas.filter((elem: any) => elem.employeeInfo.employee_name.toLowerCase().includes(this.searchQuery));
           break;
@@ -403,6 +409,7 @@ export class HighchartDataModalComponent {
 
   }
 
+  //filter func n cas of repeated customer
   repeatedCustomerFilter() {
     this.isRepetCustData = true;
     this.sales$.subscribe(res => {
@@ -486,6 +493,7 @@ export class HighchartDataModalComponent {
 
   //this methord sorts the filterd data onthe basis of selected arrow on the table
   sortBy(field: string, order: 'asc' | 'desc') {
+    //sorting filed and order
     this.sortedField = field;
     this.sortingOrder = order;
 
@@ -503,7 +511,7 @@ export class HighchartDataModalComponent {
           } else {
             if (b.fboInfo.fbo_name > a.fboInfo.fbo_name) {
               return 1
-            } else if (a.fboInfo.fbo_name < b.fboInfo.fbo_name) {
+            } else if (b.fboInfo.fbo_name < a.fboInfo.fbo_name) {
               return -1
             } else {
               return 0;

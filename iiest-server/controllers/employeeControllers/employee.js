@@ -9,7 +9,7 @@ const { empSignBucket, empImageBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
-const { employeeDocsPath, uploadDocObject, getDocObject, deleteDocObject } = require('../../config/s3Bucket');
+const { employeeDocsPath, uploadDocObject, getDocObject, deleteDocObject, doesFileExist } = require('../../config/s3Bucket');
 const auth = JSON.parse(process.env.AUTH);
 const JWT_SECRET = auth.JWT_TOKEN;
 
@@ -395,8 +395,18 @@ exports.allocatedAreas = async (req, res) => {
 exports.employeeImage = async (req, res) => {
     try {
 
+        const src = req.params.id;
+        const key = `${employeeDocsPath}${src}`;
+
+        //returning error in case image file doesn't exsists
+        const isExsists = await doesFileExist(key);
+
+        if(!isExsists) {
+            return res.status(204).json({success: false, message: 'Image Not Found', exsistanceErr: true})
+        }
+
         //getting presigned url for image saves in s3 bucket
-        const imageConverted = await getDocObject(`${employeeDocsPath}${req.params.id}`);
+        const imageConverted = await getDocObject(key);
         return res.status(200).json({ success: true, imageConverted: imageConverted });
 
     } catch (error) {
@@ -409,42 +419,17 @@ exports.employeeImage = async (req, res) => {
 exports.employeeSignature = async (req, res) => {
     try {
 
-        // let success = false;
+        const src = req.params.id;
+        const key = `${employeeDocsPath}${src}`;
 
-        // const signatureBucket = empSignBucket();
+         //returning error in case image file doesn't exsists
+         const isExsists = await doesFileExist(key);
 
-        // const signExists = await signatureBucket.find({ "_id": new ObjectId(req.params.id) }).toArray();
+         if(!isExsists) {
+             return res.status(204).json({success: false, message: 'Image Not Found', exsistanceErr: true})
+         }
 
-        // if (!signExists.length > 0) {
-        //     success = false;
-        //     return res.status(200).json({ success, noSign: true })
-        // }
-
-        // const signDownloadStream = signatureBucket.openDownloadStream(new ObjectId(req.params.id));
-
-        // if (!signDownloadStream) {
-        //     success = false;
-        //     return res.status.json({ success, noSignature: true });
-        // }
-
-        // let chunks = [];
-
-        // signDownloadStream.on('data', (chunk) => {
-        //     chunks.push(chunk);
-        // })
-
-        // signDownloadStream.on('end', () => {
-        //     const signatureBuffer = Buffer.concat(chunks);
-        //     const signaturePrefix = 'data:image/png;base64,';
-        //     const signBase64 = signatureBuffer.toString('base64');
-        //     const signatureConverted = `${signaturePrefix}${signBase64}`;
-
-        //     success = true;
-
-        // return res.status(200).json({ success, signatureConverted })
-        // })
-
-        const signatureConverted = await getDocObject(`${employeeDocsPath}${req.params.id}`);
+        const signatureConverted = await getDocObject(key);
         return res.status(200).json({ success: true, signatureConverted: signatureConverted });
 
     } catch (error) {

@@ -46,12 +46,12 @@ export class StatCardsComponent implements OnInit {
 
   }
 
+  //methord for getting statcards aggregated data from backend
   getUserRecord(): void {
 
     this._getDataService.getUserRecord().subscribe({
       next: (res) => {
         this.salesData = res[0];
-        console.log(this.salesData);
       }
     });
 
@@ -63,6 +63,7 @@ export class StatCardsComponent implements OnInit {
     // })
   }
 
+  //methord for getting aggregated data of employee and their count
   getEmployeeCountByDept(): void {
     this._getDataService.getEmpCount().subscribe({
       next: res => {
@@ -84,15 +85,18 @@ export class StatCardsComponent implements OnInit {
     })
   }
 
+  //methord for viewinhg department data 
   viewDepartmentData(res: any): void {
     const modalRef = this.modalService.open(DepartmentListComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.department = res;
   }
 
+  //methotd for correcting names
   changeNameFormat(str: any): string {
     let updatedStr: string = str.toLocaleLowerCase().split(" ").join('_');
     updatedStr = updatedStr.replace('&', 'and');
     return updatedStr;
+    
   }
 
 }
