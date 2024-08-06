@@ -22,7 +22,7 @@ const sendEmployeeInfo = (username, password, empId, clientMail) => {
               // [Your Name]<br>
               // [Your Position]<br>
               // [Company Name]<br>
-              // [Contact Information]</p>`
+              // [Contact Information]</p>` 
   }
   transport.sendMail(mailOptions, function (error, response) {
     if (error) {
