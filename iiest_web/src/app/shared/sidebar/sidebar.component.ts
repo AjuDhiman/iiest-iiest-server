@@ -18,7 +18,7 @@ export class SidebarComponent {
   employeeRoles = empRegister_roles;
   caseListRoles = caseList_roles;
   directorRoles = director_roles;
-  userImage: string = 'assets/logo-side.png';
+  userImage: string = 'assets/images/landing_img/baharat-logo.png';
   userImageId: string;
 
   //icons
@@ -80,7 +80,7 @@ export class SidebarComponent {
   //methord for getting user image
   getUserImage() {
     if(!this.userImageId) {
-      this.userImage = 'assets/logo-side.png';
+      this.userImage = 'assets/images/landing_img/baharat-logo.png';
       return;
     }
     const rawUserData: any = this.registerService.LoggedInUserData();

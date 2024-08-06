@@ -23,8 +23,8 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">FBO Name</div>
-                        <div class="col-md-8 data">
-                            {{fboData.fboInfo.fbo_name}}
+                        <div class="col-md-8 data text-capitalize">
+                            {{fboData.fboInfo.fbo_name.toLowercase()}}
                         </div>
                     </div>
                 </div>
@@ -33,8 +33,8 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Owner Name</div>
-                        <div class="col-md-8 data">
-                            {{fboData.fboInfo.owner_name}}
+                        <div class="col-md-8 data text-capitalize">
+                            {{fboData.fboInfo.owner_name.toLowerCase()}}
                         </div>
                     </div>
                 </div>
@@ -51,8 +51,8 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Business Entity</div>
-                        <div class="col-md-8 data">
-                            {{fboData.fboInfo.boInfo.business_entity}}
+                        <div class="col-md-8 data text-capitalize">
+                            {{fboData.fboInfo.boInfo.business_entity.toLowerCase()}}
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                     <div class="row">
                         <div class="col-md-4 title">Address</div>
                         <div class="col-md-8 data text-capitalize">
-                            {{fulladdress}}
+                            {{fulladdress.toLowerCase()}}
                         </div>
                     </div>
                 </div>
@@ -106,8 +106,8 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-4 title">Payment Mode</div>
-                        <div class="col-md-8 data">
-                            {{fboData.payment_mode}}
+                        <div class="col-md-8 data text-capitalize">
+                            {{fboData.payment_mode.toLowerCase()}}
                         </div>
                     </div>
                 </div>
@@ -150,16 +150,16 @@
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">Payee Name</div>
-                            <div class="col-md-6 data">
-                                {{fboData.cheque_data.payee_name}}
+                            <div class="col-md-6 data text-capitalize">
+                                {{fboData.cheque_data.payee_name.toLowerCase()}}
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="row">
                             <div class="col-md-6 title">Bank Name</div>
-                            <div class="col-md-6 data">
-                                {{fboData.cheque_data.bank_name}}
+                            <div class="col-md-6 data text-capitalize">
+                                {{fboData.cheque_data.bank_name.toLowerCase()}}
                             </div>
                         </div>
                     </div>
@@ -472,9 +472,9 @@
 
             <!-- Deliver Related Details Start -->
 
-            <div class="row my-2" *ngIf="!isForWholeSale">
+            <!-- <div class="row my-2" *ngIf="!isForWholeSale">
                 <div class="col-md title" style="color: #1957a9;">Delivery Details</div>
-            </div>
+            </div> -->
 
             <!-- Deliver Related Details Ends -->
         </div>
