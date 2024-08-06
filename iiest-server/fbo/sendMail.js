@@ -53,7 +53,7 @@ const sendInvoiceMail = (clientMail, files) => {
         ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
         पता - ${CB_ADDRESS.hindi}<br/>
         संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
-        लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+        लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br> 
         संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
     attachments: attachments
   }

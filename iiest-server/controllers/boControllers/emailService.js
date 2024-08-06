@@ -14,7 +14,7 @@ exports.sendMailToBo = async (boMail, mailInfo) => {
                 user: mailData.email,
                 pass: mailData.pass
             }
-        });
+        }); 
 
         const { englishContent, hindiContent } = getMailContent(mailInfo);
 
