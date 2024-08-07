@@ -100,6 +100,7 @@ export class CaseListComponent implements OnInit {
   //getting csae list from backend
   getCasedata(): void {
 
+    //getting case list and recp list on the basis of var
     if (this.isRecipientList) {
       this._getDataService.getRecipientList().subscribe({
         next: res => {
@@ -143,6 +144,8 @@ export class CaseListComponent implements OnInit {
 
     if (this.productType === 'Fostac' && this.isRecipientList) {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
+    } else if (this.productType === 'Fostac' && !this.isRecipientList) {
+      this.typeData = this.caseData.filter((elem: any) => elem.fostacInfo && elem.fostacInfo.fostac_service_name === type);
     } else if (this.productType === 'Foscos') {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.foscosInfo.foscos_service_name === type);
     }
@@ -155,7 +158,7 @@ export class CaseListComponent implements OnInit {
     if (this.searchQuery === '') {
       this.filteredData = this.typeData;
     }
-    this.filteredData.sort((a: any, b: any) => new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime());
+    this.filteredData.sort((a: any, b: any) => (a.salesInfo && b.salesInfo) && (new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime()));
   }
 
 
@@ -174,46 +177,46 @@ export class CaseListComponent implements OnInit {
     } else {
       if (this.productType === 'Fostac') { //search in case of fostac
 
-        if(this.isRecipientList){
+        if (this.isRecipientList) {
           switch (this.selectedFilter) {
             case 'byRecipientName': this.filteredData = this.typeData.filter((elem: any) => elem.name && elem.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
               break;
-  
+
             case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
               break;
-  
+
             case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
               break;
-  
+
             case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
               break;
-  
+
             case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo.toString().includes(this.searchQuery.toString()))
               break;
-  
+
             case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && (elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.salesInfo.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase())));
               break;
           }
         } else {
           switch (this.selectedFilter) {
-  
+
             case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo && elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
               break;
-  
+
             case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
               break;
-  
+
             case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
               break;
-  
+
             case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.fboInfo.owner_contact.toString().includes(this.searchQuery.toString()))
               break;
-  
+
             case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo.state && elem.fboInfo.district && (elem.fboInfo.state.toString().toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.district.toString().toLowerCase().includes(this.searchQuery.toLowerCase())));
               break;
           }
         }
-       
+
       }
       else if (this.productType === 'Foscos') { //search in case of foscos
         switch (this.selectedFilter) {
@@ -256,7 +259,7 @@ export class CaseListComponent implements OnInit {
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
-    this.filteredData.sort((a: any, b: any) => new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime());
+    this.filteredData.sort((a: any, b: any) => (a.salesInfo && b.salesInfo) && (new Date(b.salesInfo.createdAt).getTime() - new Date(a.salesInfo.createdAt).getTime()));
   }
 
 
@@ -293,9 +296,7 @@ export class CaseListComponent implements OnInit {
     }
 
     //if comming on this page from notification
-    console.log(state);
     if (state && state.byNotifications) {
-      console.log(state.product);
       this.productType = state.product;
     }
   }
@@ -314,11 +315,9 @@ export class CaseListComponent implements OnInit {
   setListProductWise() {
     this.totalCase = this.caseData.length;
     if (this.productType === 'Fostac') {
-      if (this.isRecipientList) {
-        this.setServiceType('Catering');
-      }
-      this.typeData = this.caseData;
-      this.totalCount = this.typeData.length;
+      this.setServiceType('Catering');
+      // this.typeData = this.caseData;
+      // this.totalCount = this.typeData.length;
       this.filter();
     }
     else if (this.productType === 'Foscos') {
@@ -345,7 +344,7 @@ export class CaseListComponent implements OnInit {
 
   //methord initailly sets service type filter on the basis of product
   initializeServiceType(): void {
-    if (this.productType === 'Fostac' && this.isRecipientList) {
+    if (this.productType === 'Fostac') {
       this.serviceType = 'Catering'
     } else if (this.productType === 'Foscos') {
       this.serviceType = 'Registration'
@@ -400,19 +399,17 @@ export class CaseListComponent implements OnInit {
 
   //Methord opens fbo form in case of fostac
   doSale(fbo: any): void {
-    console.log(11)
     const modalRef = this.modalService.open(FbonewComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.isForFostacSaleByCaseList = true;
     modalRef.componentInstance.isExistingFbo = true;
-    console.log(fbo);
     modalRef.componentInstance.fetchExistingUser(fbo.fboInfo);
     modalRef.componentInstance.fboDataCommingAsModal = fbo.fboInfo;
     modalRef.result.then((result) => {
       // modalRef.componentInstance.fbo['fbo_name'].setValue(fbo.fboInfo.fbo_name);
-     
+
     })
     // modalRef.componentInstance.fboForm.patchValue({'onwer_name': 22})
-    
-    
+
+
   }
 }
