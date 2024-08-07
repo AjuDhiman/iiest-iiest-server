@@ -23,7 +23,7 @@
                     <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
                         <!-- Buttons for filtering list accordig to service type -->
                         <ng-container *ngIf="!forTraining">
-                            <div *ngIf="isRecipientList" class="col-auto">
+                            <div class="col-auto" *ngIf="productType==='Fostac'">
                                 <button class="btn btn-sm mx-1"
                                     [ngClass]="serviceType==='Catering'?'btn-primary':'btn-secondary'" type="button"
                                     (click)="setServiceType('Catering')">
