@@ -5,6 +5,42 @@
 @import './node_modules/ngx-bootstrap/datepicker/bs-datepicker.scss';
 @import 'ngx-toastr/toastr';
 @import "~@ng-select/ng-select/themes/default.theme.css";
+
+@font-face {
+  font-family: 'Khand';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/assets/fonts/Khand-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Khand';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/assets/fonts/Khand-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Khand';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/assets/fonts/Khand-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Khand';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/assets/fonts/Khand-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Khand';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/assets/fonts/Khand-Bold.ttf') format('truetype');
+}
+
 ::-webkit-input-placeholder {
     font-size: 13px;
  }
