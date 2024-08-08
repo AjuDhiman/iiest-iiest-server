@@ -118,10 +118,6 @@ export class InvoiceListComponent implements OnInit {
       this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
       this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst));
     });
-
-    console.log('Total processing amount', this.totalProcessingAmt);
-    console.log('Total gst amount', this.totalGstAmt)
-    console.log('Total amount', this.totalAmt)
   }
 
   //methord for getting invoice list by the invoice list service and converting it to according to our need by performind diffrent operations

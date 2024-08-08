@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { RegisterService } from 'src/app/services/register.service';
+import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
 
 @Component({
   selector: 'app-approvesale-modal',
   templateUrl: './approvesale-modal.component.html',
   styleUrls: ['./approvesale-modal.component.scss']
 })
-export class ApprovesaleModalComponent implements OnInit{
+export class ApprovesaleModalComponent implements OnInit {
 
   //loading vars
   loading: boolean = false;
@@ -36,7 +37,8 @@ export class ApprovesaleModalComponent implements OnInit{
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private _registerService: RegisterService,
-    private _tostrService: ToastrService
+    private _tostrService: ToastrService,
+    private modalService: NgbModal
   ) {
 
   }
@@ -49,22 +51,35 @@ export class ApprovesaleModalComponent implements OnInit{
   onSubmit(): void {
 
     //retirn while loading ot if form is invalid
+    this.submitted = true;
     if (this.approvalForm.invalid || this.loading) {
       return
     }
 
-    this.loading = true;
 
-    this._registerService.updateReceivingInfo(this.saleInfo._id, this.approvalForm.value).subscribe({
-      next: res => {
-        this.loading = false;
-        this.activeModal.close();
-        this._tostrService.success('Sale Approved');
-        //refresh invoice list after approval
-        location.reload();
-        // this.refreshCoworkInvoiceList();
+    //confirmation modal:- confirm before resending
+    const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.action = 'Approve Receving';
+    modalRef.componentInstance.confirmationText = this.approvalForm.value.receviedAmount.toString();
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      if (confirmation) {
+
+        this.loading = true;
+
+        this._registerService.updateReceivingInfo(this.saleInfo._id, this.approvalForm.value).subscribe({
+          next: res => {
+            this.loading = false;
+            this.activeModal.close();
+            this._tostrService.success('Sale Approved');
+            this.submitted = false;
+            //refresh invoice list after approval
+            location.reload();
+            // this.refreshCoworkInvoiceList();
+          }
+        })
       }
-    })
+    });
+
   }
 
   //setting form validation
