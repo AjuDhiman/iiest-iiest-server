@@ -18,7 +18,7 @@ export class SidebarComponent {
   employeeRoles = empRegister_roles;
   caseListRoles = caseList_roles;
   directorRoles = director_roles;
-  userImage: string = 'assets/images/landing_img/baharat-logo.png';
+  userImage: string = 'assets/images/logo-side.png';
   userImageId: string;
 
   //icons

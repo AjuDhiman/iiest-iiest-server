@@ -17,7 +17,7 @@ export class HeaderComponent implements OnInit {
   toggelSettings: boolean = false;
   toggelNotification: boolean = false;
   width: number = window.innerWidth;
-  userImage: string = 'assets/images/landing_img/baharat-logo.png';
+  userImage: string = 'assets/images/logo-side.png';
   userImageId: string;
   isSidebarVisible = false;
   largeDisplay: boolean = false;

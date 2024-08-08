@@ -176,26 +176,26 @@
 
 
                                             <td class="cell" colspan="13">
-                                                <span class="text-capitlize mx-2">
+                                                <span class="text-capitlize mx-1">
                                                     <span class="text-danger">Total Pending Amount</span> : -
                                                     {{totalPendingAmt| inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-2">
+                                                <span class="text-capitlize mx-1">
                                                     Total Bank Receivings: - {{totalReceivedAmt| inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-2">
+                                                <span class="text-capitlize mx-1">
                                                     Total TDS: - {{totalTDSAmt| inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-2">
+                                                <span class="text-capitlize mx-1">
                                                     <span class="text-success">Total Net Income</span> :-
                                                     {{totalProcessingAmt|
                                                     inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-2" *ngIf="activeTab!=='Service'">
+                                                <span class="text-capitlize mx-1" *ngIf="activeTab!=='Service'">
                                                     Total recevied GST<small *ngIf="activeTab==='Tax'">(Igst + Cgst +
                                                         Sgst)</small> :- {{totalGstAmt|inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-2">
+                                                <span class="text-capitlize mx-1">
                                                     <span class="text-primary">Total Billing Amount</span>
                                                      :- {{totalAmt| inrAmount}}
                                                 </span>

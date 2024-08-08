@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faShare, faPlusCircle, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
@@ -7,13 +7,15 @@ import { ViewDocumentComponent } from '../../modals/view-document/view-document.
 import { RegisterService } from 'src/app/services/register.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
+import { Months } from 'src/app/utils/config';
+import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 
 @Component({
   selector: 'app-invoice-list',
   templateUrl: './invoice-list.component.html',
   styleUrls: ['./invoice-list.component.scss']
 })
-export class InvoiceListComponent implements OnInit {
+export class InvoiceListComponent implements OnInit, AfterViewInit {
 
   //data related vars
   invoiceList: any = [];
@@ -49,6 +51,16 @@ export class InvoiceListComponent implements OnInit {
   faPlusCircle: IconDefinition = faPlusCircle;
   faFileCirclePlus: IconDefinition = faFileCirclePlus;
 
+  // motnth wise data related vars
+  allMonths: string[] = Months;
+  disabledMonths: string[] = [];
+  selectedMonths: string[] = [];
+  monthsData: any = [];
+
+
+  @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
+
+
 
   //constructor
   constructor(private _getDataService: GetdataService,
@@ -56,7 +68,8 @@ export class InvoiceListComponent implements OnInit {
     private exportAsService: ExportAsService,
     private _toastrService: ToastrService,
     private modalService: NgbModal,
-    private ngbModal: NgbModal
+    private ngbModal: NgbModal,
+    private cdr: ChangeDetectorRef
   ) {
 
   }
@@ -64,6 +77,21 @@ export class InvoiceListComponent implements OnInit {
   //lifecycle hooks
   ngOnInit(): void {
     this.getInvoiceList();
+    this.getDisabledMonths();
+  }
+
+
+  ngAfterViewInit(): void {
+    this.selectedMonths = [Months[new Date().getMonth()]];
+    this.multiSelect.selected = this.selectedMonths;
+    this.multiSelect.isDisplayEmpty = false;
+    this.multiSelect.all.forEach(option => {
+      if(option.value === Months[new Date().getMonth()]) {
+        option.checked = true;
+      }
+    })
+    this.filterMonthWise();
+    this.cdr.detectChanges();
   }
 
   //methords
@@ -88,22 +116,22 @@ export class InvoiceListComponent implements OnInit {
   //methord for filltering the invoice list
   filter(): void {
     if (!this.searchQuery) {
-      this.filteredData = this.caseData;
+      this.filteredData = this.monthsData;
     } else {
       switch (this.selectedFilter) {
         // case 'generalSearch': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
         //   break;
-        case 'byBusinessName': this.filteredData = this.caseData.filter((elem: any) => elem.business_name && elem.business_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byBusinessName': this.filteredData = this.monthsData.filter((elem: any) => elem.business_name && elem.business_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byInvoiceCode': this.filteredData = this.caseData.filter((elem: any) => elem.code && elem.code.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byInvoiceCode': this.filteredData = this.monthsData.filter((elem: any) => elem.code && elem.code.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byGstNum': this.filteredData = this.caseData.filter((elem: any) => elem.gst_number && elem.gst_number.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byGstNum': this.filteredData = this.monthsData.filter((elem: any) => elem.gst_number && elem.gst_number.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byProduct': this.filteredData = this.caseData.filter((elem: any) => elem.product && elem.product.includes(this.searchQuery));
+        case 'byProduct': this.filteredData = this.monthsData.filter((elem: any) => elem.product && elem.product.includes(this.searchQuery));
           break;
-        case 'byPlaceOfSupply': this.filteredData = this.caseData.filter((elem: any) => elem.state && elem.state.toLowerCase().includes(this.searchQuery));
+        case 'byPlaceOfSupply': this.filteredData = this.monthsData.filter((elem: any) => elem.state && elem.state.toLowerCase().includes(this.searchQuery));
           break;
-        case 'byInvoiceDate': this.filteredData = this.caseData.filter((elem: any) => elem.invoice_date && elem.invoice_date.toLowerCase().includes(this.searchQuery));
+        case 'byInvoiceDate': this.filteredData = this.monthsData.filter((elem: any) => elem.invoice_date && elem.invoice_date.toLowerCase().includes(this.searchQuery));
           break;
       }
     }
@@ -118,6 +146,7 @@ export class InvoiceListComponent implements OnInit {
       this.totalGstAmt = this.totalGstAmt + (Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst));
       this.totalAmt += Number((+data.processing_amount + data.gst + data.cgst + data.sgst + data.igst));
     });
+    
   }
 
   //methord for getting invoice list by the invoice list service and converting it to according to our need by performind diffrent operations
@@ -204,7 +233,7 @@ export class InvoiceListComponent implements OnInit {
     }
 
     this.filteredData = this.caseData;
-    this.filter();
+    this.filterMonthWise();
   }
 
   //this methord sets the initia configuration of the componets
@@ -315,5 +344,79 @@ export class InvoiceListComponent implements OnInit {
     const subName =  name.substring(0, length);
     return (subName + '...');
   }
+
+   //methord for filtering data only for selected months
+   getSelectedMonths($event: any): void {
+    this.selectedMonths = $event;
+    console.log(this.selectedMonths);
+    this.filterMonthWise();
+  }
+
+  //methord for getting disabled months
+  getDisabledMonths(): void {
+    const today = new Date();
+    const currentMonthIndex = today.getMonth();
+
+    //adding months after current months in diabled months array
+    this.disabledMonths = Months.slice(currentMonthIndex + 1);
+    console.log(this.disabledMonths);
+  }
+
+  //methord for filtering data selected month wise
+  filterMonthWise(): void {
+
+    //array of months with first three letter of each month only
+    const monthsToFilter = this.selectedMonths.map((month) => month.slice(0, 3));
+    this.monthsData = this.caseData.filter((data: any) => {
+      let find = false;
+
+      for(let i = 0; i <= monthsToFilter.length; i++) {
+        if(data.invoice_date.includes(monthsToFilter[i])){
+          find = true;
+          break;
+        }
+      }
+      return find;
+    })
+
+    // this.filteredData = this.monthsData;
+    this.filter();
+  }
+
+  onBodyTab() {
+    this.multiSelect.isdropped = false;
+  }
+
+  //methord for aggreagting results 
+  // aggregateResults(): void {
+  //    //setting total aggregation to 0
+  //    this.totalProcessingAmt = 0;
+  //    this.totalGstAmt = 0;
+  //    this.totalAmt = 0;
+ 
+  //    //aggregating totals
+  //    this.filteredData.forEach((data: any) => {
+       
+  //      if(data.receivingAmount) {
+  //       //total processing amout = processing amount * total qty if payment recevied 
+  //        this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
+        
+
+  //        //total gst = sgst + igst + cgst + gst
+  //        this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
+  //      } else  {
+        
+  //      }
+
+  //      //total mount = total processing maont + gst
+  //    this.totalAmt += Number(data.total_amount);
+       
+       
+  //    });
+
+  //    //total tds amount = total procesing amount - total recivings
+  //    this.totalTDSAmt = this.totalProcessingAmt - this.totalReceivedAmt;
+  // }
+
 
 }

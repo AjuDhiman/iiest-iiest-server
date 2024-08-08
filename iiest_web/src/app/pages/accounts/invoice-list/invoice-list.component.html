@@ -1,4 +1,4 @@
-<div class="app-content pt-3">
+<div class="app-content pt-3" (click)="onBodyTab()">
     <div class="container-xxl">
         <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
             <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
@@ -20,6 +20,12 @@
                 <div class="col-auto">
                     <div class="page-utilities">
                         <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                            <div style="width: 170px;">
+                                <app-multi-select #multiSelect (selectedArrayChange)="getSelectedMonths($event)"
+                                    [options]="allMonths" [forProducts]="true" [placeHolder]="'Select Months'"
+                                    class="cursor-pointer" [disabledArray]="disabledMonths"></app-multi-select>
+
+                            </div>
                             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
                                 <option value=10>10</option>
                                 <option value=25 selected>25</option>
