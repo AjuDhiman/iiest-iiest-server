@@ -36,6 +36,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
   //boolean of decidingif other pincode exsists or not
   isOtherPincode: boolean = false;
 
+  isFormVisible: boolean = false;
+
 
   products: string[] = [
     'FVO',
