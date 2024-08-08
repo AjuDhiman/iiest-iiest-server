@@ -165,14 +165,15 @@
 
 
                                             <td class="cell" colspan="14">
-                                                <span class="text-capitlize mx-4">Total Income :- {{totalProcessingAmt|
+                                                <span class="text-capitlize mx-4">
+                                                    <span class="text-success">Total Income</span> :- {{totalProcessingAmt|
                                                     inrAmount}},
                                                 </span>
                                                 <span class="text-capitlize mx-4">
-                                                Total GST<small *ngIf="activeTab==='tax'">(Igst + Cgst + SGst)</small> :- {{totalGstAmt|inrAmount}},
+                                                Total GST<small *ngIf="activeTab==='tax'">(Igst + Cgst + Sgst)</small> :- {{totalGstAmt|inrAmount}},
                                                 </span>
                                                 <span class="text-capitlize mx-4">
-                                                    Total Amount :- {{totalAmt| inrAmount}}
+                                                    <span class="text-primary">Total Amount</span> :- {{totalAmt| inrAmount}}
                                                 </span>
                                             </td>
 

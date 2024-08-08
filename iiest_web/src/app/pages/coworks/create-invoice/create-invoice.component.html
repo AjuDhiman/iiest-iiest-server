@@ -1,4 +1,3 @@
-
 <!-- ********************************************************************cowork Invoice List********************************************************************** -->
 
 
@@ -17,20 +16,28 @@
         <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
             <div class="row g-3 mb-4 align-items-center justify-content-between">
                 <div class="col-auto">
-                    <h1 class="app-page-title mb-0"><span style="text-transform: capitalize;">Cowork {{activeTab}}</span>
+                    <h1 class="app-page-title mb-0"><span style="text-transform: capitalize;">Cowork
+                            {{activeTab}}</span>
                         Invoice List
                     </h1>
                 </div>
                 <div class="col-auto">
                     <div class="page-utilities">
-                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center" style="flex-wrap: nowrap;">
+                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center"
+                            >
+                            <div style="width: 170px;">
+                                <app-multi-select #multiSelect (selectedArrayChange)="getSelectedMonths($event)"
+                                    [options]="allMonths" [forProducts]="true" [placeHolder]="'Select Months'"
+                                    class="cursor-pointer" [disabledArray]="disabledMonths"></app-multi-select>
+
+                            </div>
                             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
                                 <option value=10>10</option>
                                 <option value=25 selected>25</option>
                                 <option value=50>50</option>
                                 <option value=100>100</option>
                             </select>
-                            <!-- <div class="col-auto">
+                            <div class="col-auto">
                                 <form class="form">
                                     <div class="input-group" title="Search Employee">
                                         <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
@@ -40,20 +47,17 @@
                                     <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
                                         class="form-control form-control-sm search-orders" (input)="onSearchChange()">
                                 </form>
-                            </div> -->
-                            <div style="width: 180px;">
-                                <app-multi-select #multiSelect (selectedArrayChange)="getSelectedMonths($event)"
-                                    [options]="allMonths" [forProducts]="true" [placeHolder]="'Select Months'"
-                                    class="cursor-pointer" [disabledArray]="disabledMonths"></app-multi-select>
-                                <!-- <select class="form-select form-select-sm w-auto cursor-pointer"
+                            </div>
+                            <div class="col-auto">
+                                <select class="form-select form-select-sm w-auto cursor-pointer"
                                     [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
                                     <option value="byBusinessName">Search by Business Name</option>
                                     <option value="byInvoiceCode">Search by Invoice Code</option>
-                                    <option value="byGstNum">Search by GST Number</option>
+                                    <option *ngIf="activeTab === 'Tax'" value="byGstNum">Search by GST Number</option>
                                     <option value="byProduct">Search by Product</option>
                                     <option value="byPlaceOfSupply">Search by Place of Supply</option>
                                     <option value="byInvoiceDate">Search by Invoice Date</option>
-                                </select> -->
+                                </select>
                             </div>
                             <div class="col-auto">
                                 <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer"
@@ -172,21 +176,28 @@
 
 
                                             <td class="cell" colspan="13">
-                                                <span class="text-capitlize mx-3">
-                                                    Total Pending Amount: - {{totalPendingAmt| inrAmount}},
+                                                <span class="text-capitlize mx-2">
+                                                    <span class="text-danger">Total Pending Amount</span> : -
+                                                    {{totalPendingAmt| inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-3">
-                                                    Total Receivings: - {{totalReceivedAmt| inrAmount}},
+                                                <span class="text-capitlize mx-2">
+                                                    Total Bank Receivings: - {{totalReceivedAmt| inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-3">Total Income :- {{totalProcessingAmt|
+                                                <span class="text-capitlize mx-2">
+                                                    Total TDS: - {{totalTDSAmt| inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-2">
+                                                    <span class="text-success">Total Net Income</span> :-
+                                                    {{totalProcessingAmt|
                                                     inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-3" *ngIf="activeTab!=='Service'">
-                                                    Total GST<small *ngIf="activeTab==='Tax'">(Igst + Cgst +
-                                                        SGst)</small> :- {{totalGstAmt|inrAmount}},
+                                                <span class="text-capitlize mx-2" *ngIf="activeTab!=='Service'">
+                                                    Total recevied GST<small *ngIf="activeTab==='Tax'">(Igst + Cgst +
+                                                        Sgst)</small> :- {{totalGstAmt|inrAmount}},
                                                 </span>
-                                                <span class="text-capitlize mx-3">
-                                                    Total Amount :- {{totalAmt| inrAmount}}
+                                                <span class="text-capitlize mx-2">
+                                                    <span class="text-primary">Total Billing Amount</span>
+                                                     :- {{totalAmt| inrAmount}}
                                                 </span>
                                             </td>
 
@@ -232,13 +243,17 @@
 
 
 <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="form-check form-switch" style="margin-left: 60px; margin-bottom: 40px;" (change)="isFormVisible = !isFormVisible">
-        <input class="form-check-input cursor-pointer" type="checkbox" role="switch" 
-          id="flexSwitchCheckDefault" />
+
+    <!-- Form Switch -->
+    <div class="form-check form-switch border border-2 rounded-5 border-secondary-subtle switch-option"
+        (change)="isFormVisible = !isFormVisible">
+        <input class="form-check-input cursor-pointer" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
         <label class="form-check-label" for="flexSwitchCheckDefault">Create New Invoice</label>
-      </div>
+    </div>
+
+
     <div class="container-xxl" *ngIf="isFormVisible">
-        
+
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-md-6">
                 <h1 class="app-page-title mb-2">Cowork Invoice Creation Form</h1>

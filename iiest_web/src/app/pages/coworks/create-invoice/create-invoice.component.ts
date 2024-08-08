@@ -105,6 +105,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
   totalProcessingAmt: number = 0;
   totalReceivedAmt: number = 0;
   totalPendingAmt: number = 0;
+  totalTDSAmt: number = 0;
   totalGstAmt: number = 0;
   totalAmt: number = 0;
 
@@ -464,47 +465,28 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
   //methord for filltering the invoice list
   filter(): void {
     if (!this.searchQuery) {
-      this.filteredData = this.caseData;
+      this.filteredData = this.monthsData;
     } else {
       switch (this.selectedFilter) {
         // case 'generalSearch': this.filteredData = this.filteredFBOEntries.filter((elem: any) => elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
         //   break;
-        case 'byBusinessName': this.filteredData = this.caseData.filter((elem: any) => elem.business_name && elem.business_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byBusinessName': this.filteredData = this.monthsData.filter((elem: any) => elem.business_name && elem.business_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byInvoiceCode': this.filteredData = this.caseData.filter((elem: any) => elem.invoice_code && elem.invoice_code.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byInvoiceCode': this.filteredData = this.monthsData.filter((elem: any) => elem.invoice_code && elem.invoice_code.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byGstNum': this.filteredData = this.caseData.filter((elem: any) => elem.gst_number && elem.gst_number.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byGstNum': this.filteredData = this.monthsData.filter((elem: any) => elem.gst_number && elem.gst_number.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byProduct': this.filteredData = this.caseData.filter((elem: any) => elem.product && elem.product.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        case 'byProduct': this.filteredData = this.monthsData.filter((elem: any) => elem.product && elem.product.toLowerCase().includes(this.searchQuery.toLowerCase()));
           break;
-        case 'byPlaceOfSupply': this.filteredData = this.caseData.filter((elem: any) => elem.state && elem.state.toLowerCase().includes(this.searchQuery));
+        case 'byPlaceOfSupply': this.filteredData = this.monthsData.filter((elem: any) => elem.state && elem.state.toLowerCase().includes(this.searchQuery));
           break;
-        case 'byInvoiceDate': this.filteredData = this.caseData.filter((elem: any) => elem.invoice_date && elem.invoice_date.toLowerCase().includes(this.searchQuery));
+        case 'byInvoiceDate': this.filteredData = this.monthsData.filter((elem: any) => elem.invoice_date && elem.invoice_date.toLowerCase().includes(this.searchQuery));
           break;
       }
     }
 
-    //setting total aggregation to 0
-    this.totalProcessingAmt = 0;
-    this.totalReceivedAmt = 0;
-    this.totalGstAmt = 0;
-    this.totalAmt = 0;
+   this.aggregateResults();
 
-    //aggregating totals
-    this.filteredData.forEach((data: any) => {
-      
-      if(data.receivingAmount) {
-        this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
-        this.totalReceivedAmt += data.receivingAmount;
-      } else  {
-        this.totalPendingAmt += Number(data.processing_amount) * data.qty;
-      }
-      this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
-    });
-
-    this.totalAmt += (this.totalProcessingAmt + this.totalGstAmt);
-
-    this.filterMonthWise();
     
   }
 
@@ -538,7 +520,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
 
     this.filteredData = this.caseData;
 
-    this.filter();
+    this.filterMonthWise();
+    // this.filter()
   }
 
 
@@ -567,7 +550,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     this._getDataService.getCoworkInvoice(invoice.invoice_src).subscribe({
       next: res => {
         console.log(res)
-        const modalRef = this.ngbModal.open(ApprovesaleModalComponent, { size: 'xl', backdrop: 'static' });
+        const modalRef = this.ngbModal.open(ApprovesaleModalComponent, { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.saleInfo = invoice;
         modalRef.componentInstance.refreshCoworkInvoiceList = this.getCoworkInvoiceList;
       }
@@ -576,7 +559,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
 
   //methord for viewing details
   viewDetail(Invoice: any): void {
-    const modalRef = this.ngbModal.open(ViewCoworkSaleComponent, { size: 'xl', backdrop: 'static' });
+    const modalRef = this.ngbModal.open(ViewCoworkSaleComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.data = Invoice;
   }
 
@@ -597,35 +580,11 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     console.log(this.disabledMonths);
   }
 
+  //methord for filtering data selected month wise
   filterMonthWise(): void {
-    const today = new Date();
-
-    const monthsDurationArr = this.selectedMonths.map(month => {
-      const indexOfMonth = Months.indexOf(month);
-      return {
-        start: new Date(today.getFullYear(), indexOfMonth, 1).getTime(),
-        end: new Date(today.getFullYear(), indexOfMonth + 1, 1).getTime(),
-      }
-    });
 
     //array of months with first three letter of each month only
     const monthsToFilter = this.selectedMonths.map((month) => month.slice(0, 3));
-    // this.monthsData = this.caseData.filter((data: any) => {
-
-    //   let find = false;
-    //   monthsDurationArr.forEach((a) => {
-    //     const dateOfSale = new Date(data.invoice_date.toString());
-    //     if(a.start <= dateOfSale.getTime() && a.end >= dateOfSale.getTime() )  {
-    //        find = true;
-    //     } else {
-    //       find = false;
-    //     }
-    //   })
-
-    //   return find;
-      
-    // });
-
     this.monthsData = this.caseData.filter((data: any) => {
       let find = false;
 
@@ -638,11 +597,47 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
       return find;
     })
 
-    this.filteredData = this.monthsData;
+    // this.filteredData = this.monthsData;
+    this.filter();
   }
 
   onBodyTab() {
     this.multiSelect.isdropped = false;
+  }
+
+  //methord for aggreagting results 
+  aggregateResults(): void {
+     //setting total aggregation to 0
+     this.totalProcessingAmt = 0;
+     this.totalReceivedAmt = 0;
+     this.totalPendingAmt= 0;
+     this.totalGstAmt = 0;
+     this.totalTDSAmt = 0;
+     this.totalAmt = 0;
+ 
+     //aggregating totals
+     this.filteredData.forEach((data: any) => {
+       
+       if(data.receivingAmount) {
+        //total processing amout = processing amount * total qty if payment recevied 
+         this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
+         
+         this.totalReceivedAmt += data.receivingAmount;
+
+         //total gst = sgst + igst + cgst + gst
+         this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
+       } else  {
+         this.totalPendingAmt += Number(data.processing_amount) * data.qty;
+       }
+
+       //total mount = total processing maont + gst
+     this.totalAmt += Number(data.total_amount);
+       
+       
+     });
+
+     //total tds amount = total procesing amount - total recivings
+     this.totalTDSAmt = this.totalProcessingAmt - this.totalReceivedAmt;
   }
 
 }
