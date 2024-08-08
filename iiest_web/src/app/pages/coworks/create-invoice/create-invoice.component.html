@@ -1,5 +1,244 @@
+
+<!-- ********************************************************************cowork Invoice List********************************************************************** -->
+
+
+<div class="app-content pt-3" (click)="onBodyTab()">
+    <div class="container-xxl">
+        <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
+            <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
+                <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Tax'}"
+                    (click)="toogleTabs('Tax')">Tax</a>
+                <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Customer'}"
+                    (click)="toogleTabs('Customer')">Customer</a>
+                <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Service'}"
+                    (click)="toogleTabs('Service')">Service</a>
+            </li>
+        </ul>
+        <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
+            <div class="row g-3 mb-4 align-items-center justify-content-between">
+                <div class="col-auto">
+                    <h1 class="app-page-title mb-0"><span style="text-transform: capitalize;">Cowork {{activeTab}}</span>
+                        Invoice List
+                    </h1>
+                </div>
+                <div class="col-auto">
+                    <div class="page-utilities">
+                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center" style="flex-wrap: nowrap;">
+                            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
+                                <option value=10>10</option>
+                                <option value=25 selected>25</option>
+                                <option value=50>50</option>
+                                <option value=100>100</option>
+                            </select>
+                            <!-- <div class="col-auto">
+                                <form class="form">
+                                    <div class="input-group" title="Search Employee">
+                                        <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
+                                            style="position: absolute; padding: 9px 10px;"
+                                            [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
+                                    </div>
+                                    <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
+                                        class="form-control form-control-sm search-orders" (input)="onSearchChange()">
+                                </form>
+                            </div> -->
+                            <div style="width: 180px;">
+                                <app-multi-select #multiSelect (selectedArrayChange)="getSelectedMonths($event)"
+                                    [options]="allMonths" [forProducts]="true" [placeHolder]="'Select Months'"
+                                    class="cursor-pointer" [disabledArray]="disabledMonths"></app-multi-select>
+                                <!-- <select class="form-select form-select-sm w-auto cursor-pointer"
+                                    [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
+                                    <option value="byBusinessName">Search by Business Name</option>
+                                    <option value="byInvoiceCode">Search by Invoice Code</option>
+                                    <option value="byGstNum">Search by GST Number</option>
+                                    <option value="byProduct">Search by Product</option>
+                                    <option value="byPlaceOfSupply">Search by Place of Supply</option>
+                                    <option value="byInvoiceDate">Search by Invoice Date</option>
+                                </select> -->
+                            </div>
+                            <div class="col-auto">
+                                <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer"
+                                    style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"
+                                    title="Export as CSV"></fa-icon>
+                            </div>
+                        </div><!--//row-->
+                    </div><!--//table-utilities-->
+                </div><!--//col-auto-->
+            </div><!--//row-->
+
+
+            <div class="tab-content" id="orders-table-tab-content">
+                <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                    <div class="app-card app-card-orders-table shadow-sm mb-5">
+                        <div class="app-card-body">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                    <thead>
+                                        <tr>
+                                            <th class="cell">S.No</th>
+                                            <th class="cell">Invoice Code</th>
+                                            <th class="cell col-2">Buisness Name</th>
+                                            <th *ngIf="activeTab === 'Tax'" class="cell">GST Number</th>
+                                            <th class="cell">Product</th>
+                                            <th class="cell">Place of Supply</th>
+                                            <th class="cell">Income Amount</th>
+                                            <th *ngIf="activeTab === 'Customer'" class="cell">GST</th>
+                                            <th *ngIf="activeTab === 'Tax'" class="cell">SGST</th>
+                                            <th *ngIf="activeTab === 'Tax'" class="cell">CGST</th>
+                                            <th *ngIf="activeTab === 'Tax'" class="cell">IGST</th>
+                                            <th class="cell">Total Amount</th>
+                                            <th class="cell">Invoice Date</th>
+                                            <th class="cell">Action</th>
+                                            <!-- <th class="cell">Invoice</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngIf="filteredData">
+                                        <tr class="list-tr"
+                                            *ngFor="let invoice of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'sales-list' }; let i = index">
+                                            <ng-container>
+
+                                                <td class="cell"><span
+                                                        class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
+                                                </td>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitalize">{{invoice.invoice_code}}</span>
+                                                </td>
+                                                <td class="cell"><span class="truncate text-capitalize" style="white-space: nowrap;
+                                                        overflow: hidden;
+                                                        text-overflow: ellipsis;
+                                                        width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
+                                                </td>
+                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
+                                                        class="truncate text-capitalize">{{invoice.gst_number}}</span>
+                                                </td>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitalize">{{invoice.product}}</span>
+                                                </td>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitalize">{{invoice.state}}</span>
+                                                </td>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitlize">{{invoice.income_amount
+                                                        | inrAmount}}</span>
+                                                </td>
+                                                <td class="cell" *ngIf="invoice.invoice_type === 'Customer'"><span
+                                                        class="truncate text-capitlize">{{invoice.gst |
+                                                        inrAmount}}</span>
+                                                </td>
+                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
+                                                        class="truncate text-capitlize">{{invoice.sgst?(invoice.sgst
+                                                        |
+                                                        inrAmount):'Nil'}}</span>
+                                                </td>
+                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
+                                                        class="truncate text-capitlize">{{invoice.cgst?(invoice.cgst
+                                                        |
+                                                        inrAmount): 'Nil'}}</span>
+                                                </td>
+                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
+                                                        class="truncate text-capitlize">{{invoice.igst?(invoice.igst
+                                                        |
+                                                        inrAmount):'Nil'}}</span>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitlize">{{invoice.total_amount |
+                                                        inrAmount}}</span>
+                                                </td>
+                                                <td class="cell"><span
+                                                        class="truncate text-capitlize">{{invoice.invoice_date_converted}}</span>
+                                                </td>
+                                                <!-- <td class="cell"><span class="truncate text-capitlize">
+                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)" [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
+                                                            class="text-primary fa-xl cursor-pointer"></fa-icon>
+                                                    </span>
+                                                </td> -->
+                                                <td class="cell"><span class="truncate text-capitlize">
+                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)"
+                                                            [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
+                                                            class="text-primary fa-l cursor-pointer mx-1"
+                                                            title="Approve Sale"></fa-icon>
+                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
+                                                            class="fa-l cursor-pointer mx-1"
+                                                            [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
+                                                            title="View Invoice"></fa-icon>
+                                                        <fa-icon [icon]="faEye" (click)="viewDetail(invoice)"
+                                                            class="fa-l cursor-pointer mx-1 text-primary"
+                                                            title="View Details"></fa-icon>
+                                                    </span>
+                                                </td>
+
+                                            </ng-container>
+                                        </tr>
+
+                                        <tr class="list-result" *ngIf="filteredData.length">
+
+
+                                            <td class="cell" colspan="13">
+                                                <span class="text-capitlize mx-3">
+                                                    Total Pending Amount: - {{totalPendingAmt| inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-3">
+                                                    Total Receivings: - {{totalReceivedAmt| inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-3">Total Income :- {{totalProcessingAmt|
+                                                    inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-3" *ngIf="activeTab!=='Service'">
+                                                    Total GST<small *ngIf="activeTab==='Tax'">(Igst + Cgst +
+                                                        SGst)</small> :- {{totalGstAmt|inrAmount}},
+                                                </span>
+                                                <span class="text-capitlize mx-3">
+                                                    Total Amount :- {{totalAmt| inrAmount}}
+                                                </span>
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                    <tbody *ngIf="filteredData?.length==0">
+                                        <tr>
+                                            <td colspan="15" class="text-center fw-bold">----------------- No Data
+                                                Found ----------------
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div><!--//table-responsive-->
+
+                        </div><!--//app-card-body-->
+                    </div><!--//app-card-->
+
+                    <div class="d-flex" [ngClass]="invoiceList?'justify-content-between':'justify-content-end'">
+                        <div *ngIf="invoiceList" class="text-sm" style="font-size: 14px;">{{filteredData.length}}
+                            Invoice filtered from
+                            {{caseData.length}} {{activeTab}} Invoices</div>
+                        <pagination-controls previousLabel="Prev" nextLabel="Next" id="sales-list"
+                            (pageChange)="onTableDataChange($event)"></pagination-controls>
+                    </div>
+                    <ngx-loading [show]="loading"></ngx-loading>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xxl border border-1 rounded-3">
+        <app-fbolist (isEditRecord)="isEditRecord($event)" class="border" #fbolist></app-fbolist>
+
+    </div>
+</div> -->
+
+
+
+<!-- *********************************************************cowork invoice creation form ***************************************************************** -->
+
+
 <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xxl" class="mx-0 px-0">
+    <div class="form-check form-switch" style="margin-left: 60px; margin-bottom: 40px;" (change)="isFormVisible = !isFormVisible">
+        <input class="form-check-input cursor-pointer" type="checkbox" role="switch" 
+          id="flexSwitchCheckDefault" />
+        <label class="form-check-label" for="flexSwitchCheckDefault">Create New Invoice</label>
+      </div>
+    <div class="container-xxl" *ngIf="isFormVisible">
+        
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-md-6">
                 <h1 class="app-page-title mb-2">Cowork Invoice Creation Form</h1>
@@ -229,228 +468,3 @@
     </div>
     <ngx-loading [show]="loading"></ngx-loading>
 </div>
-
-
-
-
-
-
-<!-- ********************************************************************cowork Invoice List********************************************************************** -->
-
-
-<div class="app-content pt-3">
-    <div class="container-xxl">
-        <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
-            <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
-                <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Tax'}"
-                    (click)="toogleTabs('Tax')">Tax</a>
-                <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Customer'}"
-                    (click)="toogleTabs('Customer')">Customer</a>
-                <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Service'}"
-                    (click)="toogleTabs('Service')">Service</a>
-            </li>
-        </ul>
-        <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
-            <div class="row g-3 mb-4 align-items-center justify-content-between">
-                <div class="col-auto">
-                    <h1 class="app-page-title mb-0"><span style="text-transform: capitalize;">{{activeTab}}</span>
-                        Invoice List
-                    </h1>
-                </div>
-                <div class="col-auto">
-                    <div class="page-utilities">
-                        <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
-                            <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="itemsNumber">
-                                <option value=10>10</option>
-                                <option value=25 selected>25</option>
-                                <option value=50>50</option>
-                                <option value=100>100</option>
-                            </select>
-                            <div class="col-auto">
-                                <form class="form">
-                                    <div class="input-group" title="Search Employee">
-                                        <fa-icon [icon]="faMagnifyingGlass" class="fa-sm"
-                                            style="position: absolute; padding: 9px 10px;"
-                                            [ngClass]="isSearch === false ? 'd-block':'d-none'"></fa-icon>
-                                    </div>
-                                    <input type="text" id="search-orders" [(ngModel)]="searchQuery" name="searchorders"
-                                        class="form-control form-control-sm search-orders" (input)="onSearchChange()">
-                                </form>
-                            </div>
-                            <div class="col-auto">
-                                <select class="form-select form-select-sm w-auto cursor-pointer"
-                                    [(ngModel)]="selectedFilter" (change)="onItemNumChange()">
-                                    <option value="byBusinessName">Search by Business Name</option>
-                                    <option value="byInvoiceCode">Search by Invoice Code</option>
-                                    <option value="byGstNum">Search by GST Number</option>
-                                    <option value="byProduct">Search by Product</option>
-                                    <option value="byPlaceOfSupply">Search by Place of Supply</option>
-                                    <option value="byInvoiceDate">Search by Invoice Date</option>
-                                </select>
-                            </div>
-                            <div class="col-auto">
-                                <fa-icon (click)="exportToCsv()" class="fa-2xl cursor-pointer"
-                                    style="margin: 7px 7px; color: #1957a9;" [icon]="faFileCsv"
-                                    title="Export as CSV"></fa-icon>
-                            </div>
-                        </div><!--//row-->
-                    </div><!--//table-utilities-->
-                </div><!--//col-auto-->
-            </div><!--//row-->
-
-
-            <div class="tab-content" id="orders-table-tab-content">
-                <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-                    <div class="app-card app-card-orders-table shadow-sm mb-5">
-                        <div class="app-card-body">
-                            <div class="table-responsive">
-                                <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
-                                    <thead>
-                                        <tr>
-                                            <th class="cell">S.No</th>
-                                            <th class="cell">Invoice Code</th>
-                                            <th class="cell col-2">Buisness Name</th>
-                                            <th *ngIf="activeTab === 'Tax'" class="cell">GST Number</th>
-                                            <th class="cell">Product</th>
-                                            <th class="cell">Place of Supply</th>
-                                            <th class="cell">Income Amount</th>
-                                            <th *ngIf="activeTab === 'Customer'" class="cell">GST</th>
-                                            <th *ngIf="activeTab === 'Tax'" class="cell">SGST</th>
-                                            <th *ngIf="activeTab === 'Tax'" class="cell">CGST</th>
-                                            <th *ngIf="activeTab === 'Tax'" class="cell">IGST</th>
-                                            <th class="cell">Total Amount</th>
-                                            <th class="cell">Invoice Date</th>
-                                            <th class="cell">Action</th>
-                                            <!-- <th class="cell">Invoice</th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody *ngIf="filteredData">
-                                        <tr class="list-tr"
-                                            *ngFor="let invoice of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'sales-list' }; let i = index">
-                                            <ng-container>
-
-                                                <td class="cell"><span
-                                                        class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
-                                                </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitalize">{{invoice.invoice_code}}</span>
-                                                </td>
-                                                <td class="cell"><span class="truncate text-capitalize" style="white-space: nowrap;
-                                                        overflow: hidden;
-                                                        text-overflow: ellipsis;
-                                                        width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
-                                                </td>
-                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
-                                                        class="truncate text-capitalize">{{invoice.gst_number}}</span>
-                                                </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitalize">{{invoice.product}}</span>
-                                                </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitalize">{{invoice.state}}</span>
-                                                </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.income_amount
-                                                        | inrAmount}}</span>
-                                                </td>
-                                                <td class="cell" *ngIf="invoice.invoice_type === 'Customer'"><span
-                                                        class="truncate text-capitlize">{{invoice.gst |
-                                                        inrAmount}}</span>
-                                                </td>
-                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
-                                                        class="truncate text-capitlize">{{invoice.sgst?(invoice.sgst
-                                                        |
-                                                        inrAmount):'Nil'}}</span>
-                                                </td>
-                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
-                                                        class="truncate text-capitlize">{{invoice.cgst?(invoice.cgst
-                                                        |
-                                                        inrAmount): 'Nil'}}</span>
-                                                </td>
-                                                <td class="cell" *ngIf="invoice.invoice_type === 'Tax'"><span
-                                                        class="truncate text-capitlize">{{invoice.igst?(invoice.igst
-                                                        |
-                                                        inrAmount):'Nil'}}</span>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.total_amount |
-                                                        inrAmount}}</span>
-                                                </td>
-                                                <td class="cell"><span
-                                                        class="truncate text-capitlize">{{invoice.invoice_date}}</span>
-                                                </td>
-                                                <!-- <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)" [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
-                                                            class="text-primary fa-xl cursor-pointer"></fa-icon>
-                                                    </span>
-                                                </td> -->
-                                                <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)"
-                                                            [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
-                                                            class="text-primary fa-l cursor-pointer mx-1"
-                                                            title="Approve Sale"></fa-icon>
-                                                        <fa-icon [icon]="faFile" (click)="viewInvoice(invoice)"
-                                                            class="fa-l cursor-pointer mx-1"
-                                                            [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
-                                                            title="View Invoice"></fa-icon>
-                                                        <fa-icon [icon]="faEye" (click)="viewDetail(invoice)"
-                                                            class="fa-l cursor-pointer mx-1 text-primary"
-                                                            title="View Details"></fa-icon>
-                                                    </span>
-                                                </td>
-
-                                            </ng-container>
-                                        </tr>
-                                        
-                                        <tr class="list-result" *ngIf="filteredData.length">
-
-
-                                            <td class="cell" colspan="13">
-                                                <span class="text-capitlize mx-3">
-                                                    Total Receivings: - {{totalReceivedAmt}},
-                                                </span>
-                                                <span class="text-capitlize mx-3">Total Income :- {{totalProcessingAmt|
-                                                    inrAmount}},
-                                                </span>
-                                                <span class="text-capitlize mx-3" *ngIf="activeTab!=='Service'">
-                                                Total GST<small *ngIf="activeTab==='Tax'">(Igst + Cgst + SGst)</small> :- {{totalGstAmt|inrAmount}},
-                                                </span>
-                                                <span class="text-capitlize mx-3">
-                                                    Total Amount :- {{totalAmt| inrAmount}}
-                                                </span>
-                                            </td>
-
-
-                                        </tr>
-                                    </tbody>
-                                    <tbody *ngIf="filteredData?.length==0">
-                                        <tr>
-                                            <td colspan="15" class="text-center fw-bold">----------------- No Data
-                                                Found ----------------
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div><!--//table-responsive-->
-
-                        </div><!--//app-card-body-->
-                    </div><!--//app-card-->
-
-                    <div class="d-flex" [ngClass]="invoiceList?'justify-content-between':'justify-content-end'">
-                        <div *ngIf="invoiceList" class="text-sm" style="font-size: 14px;">{{filteredData.length}}
-                            Invoice filtered from
-                            {{caseData.length}} {{activeTab}} Invoices</div>
-                        <pagination-controls previousLabel="Prev" nextLabel="Next" id="sales-list"
-                            (pageChange)="onTableDataChange($event)"></pagination-controls>
-                    </div>
-                    <ngx-loading [show]="loading"></ngx-loading>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- <div class="app-content pt-3 p-md-3 p-lg-4">
-    <div class="container-xxl border border-1 rounded-3">
-        <app-fbolist (isEditRecord)="isEditRecord($event)" class="border" #fbolist></app-fbolist>
-
-    </div>
-</div> -->

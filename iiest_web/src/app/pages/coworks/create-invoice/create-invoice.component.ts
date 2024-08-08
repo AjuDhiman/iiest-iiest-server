@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IconDefinition, faEye, faFile, faFileCsv, faMagnifyingGlass, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -6,11 +6,12 @@ import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { stateName, processAmnt } from 'src/app/utils/config';
+import { stateName, processAmnt, Months, months } from 'src/app/utils/config';
 import { pincodeData } from 'src/app/utils/registerinterface';
 import { ViewDocumentComponent } from '../../modals/view-document/view-document.component';
 import { ApprovesaleModalComponent } from '../approvesale-modal/approvesale-modal.component';
 import { ViewCoworkSaleComponent } from '../view-cowork-sale/view-cowork-sale.component';
+import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { ViewCoworkSaleComponent } from '../view-cowork-sale/view-cowork-sale.co
   templateUrl: './create-invoice.component.html',
   styleUrls: ['./create-invoice.component.scss']
 })
-export class CreateInvoiceComponent implements OnInit {
+export class CreateInvoiceComponent implements OnInit, AfterViewInit {
 
   //vars
   submitted: boolean = false;
@@ -34,6 +35,8 @@ export class CreateInvoiceComponent implements OnInit {
 
   //boolean of decidingif other pincode exsists or not
   isOtherPincode: boolean = false;
+
+  isFormVisible: boolean = false;
 
 
   products: string[] = [
@@ -51,6 +54,8 @@ export class CreateInvoiceComponent implements OnInit {
     'Service'
   ];
 
+
+  @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
 
   //var for deciding is gst no visible or not
   isGstNoVisible: boolean = false;
@@ -99,8 +104,15 @@ export class CreateInvoiceComponent implements OnInit {
   //vars for showing total Aggregation
   totalProcessingAmt: number = 0;
   totalReceivedAmt: number = 0;
+  totalPendingAmt: number = 0;
   totalGstAmt: number = 0;
   totalAmt: number = 0;
+
+  //var related to month wise multi selevct filter
+  allMonths: string[] = Months;
+  disabledMonths: string[] = [];
+  selectedMonths: string[] = [];
+  monthsData: any = [];
 
 
 
@@ -118,7 +130,8 @@ export class CreateInvoiceComponent implements OnInit {
     private _registerService: RegisterService,
     private _toastrService: ToastrService,
     private exportAsService: ExportAsService,
-    private ngbModal: NgbModal
+    private ngbModal: NgbModal,
+    private cdr: ChangeDetectorRef
   ) {
 
   }
@@ -130,6 +143,21 @@ export class CreateInvoiceComponent implements OnInit {
 
     //geting invoice list
     this.getCoworkInvoiceList();
+
+    this.getDisabledMonths();
+  }
+
+  ngAfterViewInit(): void {
+    this.selectedMonths = [Months[new Date().getMonth()]];
+    this.multiSelect.selected = this.selectedMonths;
+    this.multiSelect.isDisplayEmpty = false;
+    this.multiSelect.all.forEach(option => {
+      if(option.value === Months[new Date().getMonth()]) {
+        option.checked = true;
+      }
+    })
+    this.filterMonthWise();
+    this.cdr.detectChanges();
   }
 
   //methords
@@ -348,7 +376,7 @@ export class CreateInvoiceComponent implements OnInit {
         this.invoiceList = res.invoiceList.map((invoice: any) => {
           return {
             ...invoice,
-            invoice_date: this.getFormattedDate(invoice.invoice_date),
+            invoice_date_converted: this.getFormattedDate(invoice.invoice_date),
             gst: invoice.invoice_type === 'Customer' ? (this.calculateGST('gst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             sgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('sgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('cgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
@@ -462,15 +490,22 @@ export class CreateInvoiceComponent implements OnInit {
     this.totalGstAmt = 0;
     this.totalAmt = 0;
 
+    //aggregating totals
     this.filteredData.forEach((data: any) => {
-      this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
+      
       if(data.receivingAmount) {
+        this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
         this.totalReceivedAmt += data.receivingAmount;
+      } else  {
+        this.totalPendingAmt += Number(data.processing_amount) * data.qty;
       }
       this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
     });
 
     this.totalAmt += (this.totalProcessingAmt + this.totalGstAmt);
+
+    this.filterMonthWise();
+    
   }
 
 
@@ -545,5 +580,69 @@ export class CreateInvoiceComponent implements OnInit {
     modalRef.componentInstance.data = Invoice;
   }
 
+  //methord for filtering data only for selected months
+  getSelectedMonths($event: any): void {
+    this.selectedMonths = $event;
+    console.log(this.selectedMonths);
+    this.filterMonthWise();
+  }
+
+  //methord for getting disabled months
+  getDisabledMonths(): void {
+    const today = new Date();
+    const currentMonthIndex = today.getMonth();
+
+    //adding months after current months in diabled months array
+    this.disabledMonths = Months.slice(currentMonthIndex + 1);
+    console.log(this.disabledMonths);
+  }
+
+  filterMonthWise(): void {
+    const today = new Date();
+
+    const monthsDurationArr = this.selectedMonths.map(month => {
+      const indexOfMonth = Months.indexOf(month);
+      return {
+        start: new Date(today.getFullYear(), indexOfMonth, 1).getTime(),
+        end: new Date(today.getFullYear(), indexOfMonth + 1, 1).getTime(),
+      }
+    });
+
+    //array of months with first three letter of each month only
+    const monthsToFilter = this.selectedMonths.map((month) => month.slice(0, 3));
+    // this.monthsData = this.caseData.filter((data: any) => {
+
+    //   let find = false;
+    //   monthsDurationArr.forEach((a) => {
+    //     const dateOfSale = new Date(data.invoice_date.toString());
+    //     if(a.start <= dateOfSale.getTime() && a.end >= dateOfSale.getTime() )  {
+    //        find = true;
+    //     } else {
+    //       find = false;
+    //     }
+    //   })
+
+    //   return find;
+      
+    // });
+
+    this.monthsData = this.caseData.filter((data: any) => {
+      let find = false;
+
+      for(let i = 0; i <= monthsToFilter.length; i++) {
+        if(data.invoice_date_converted.includes(monthsToFilter[i])){
+          find = true;
+          break;
+        }
+      }
+      return find;
+    })
+
+    this.filteredData = this.monthsData;
+  }
+
+  onBodyTab() {
+    this.multiSelect.isdropped = false;
+  }
 
 }

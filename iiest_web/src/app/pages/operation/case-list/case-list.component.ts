@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -46,6 +46,7 @@ export class CaseListComponent implements OnInit {
   faDownload: IconDefinition = faDownload;
   faEye: IconDefinition = faEye;
   faFile: IconDefinition = faFile;
+  faCheck: IconDefinition = faCheck;
 
   //var in case only recipient list to be shown
   isRecipientList: boolean = false;

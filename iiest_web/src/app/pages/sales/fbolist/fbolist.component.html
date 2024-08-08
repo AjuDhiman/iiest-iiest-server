@@ -137,7 +137,7 @@
                           <td *ngIf="activeTab==='Water Test Report'" class="cell text-center"><span
                               class="truncate">{{(fbo.waterTestInfo.water_test_total) | inrAmount}}</span></td>
                           <td class="cell" *ngIf="userData.designation === 'Director' || isVerifier"><span
-                              class="truncate">{{ fbo.employeeInfo.employee_name }}</span></td>
+                              class="truncate">{{ fbo.employeeInfo.employee_name.toString().split(' ')[0] }}</span></td>
                           <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>
                           <td class="cell" *ngIf="!isInvoiceList"><span class="truncate"
                               [ngClass]="{'text-danger': fbo.saleApprovel == 'Pending', 'text-success': fbo.saleApprovel == 'Approved'}">{{
