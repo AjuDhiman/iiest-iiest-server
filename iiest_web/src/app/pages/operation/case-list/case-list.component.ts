@@ -121,9 +121,11 @@ export class CaseListComponent implements OnInit {
     } else {
       this._getDataService.getCaseList().subscribe({
         next: res => {
+          console.log(res);
           this.loading = false;
           this.caseList = res.caseList;
-          this.caseData = this.caseList[this.productType];
+          this.caseData = this.caseList.filter((data: any) => data.product_name &&  data.product_name === this.productType);
+          console.log('case data', this.caseData)
           this.setListProductWise();
         },
         error: err => {
@@ -146,7 +148,7 @@ export class CaseListComponent implements OnInit {
     if (this.productType === 'Fostac' && this.isRecipientList) {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
     } else if (this.productType === 'Fostac' && !this.isRecipientList) {
-      this.typeData = this.caseData.filter((elem: any) => elem.fostacInfo && elem.fostacInfo.fostac_service_name === type);
+      this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fostacInfo && elem.salesInfo.fostacInfo.fostac_service_name === type);
     } else if (this.productType === 'Foscos') {
       this.typeData = this.caseData.filter((elem: any) => elem.salesInfo && elem.salesInfo.foscosInfo.foscos_service_name === type);
     }
@@ -306,7 +308,7 @@ export class CaseListComponent implements OnInit {
   //filter data according to tab changes
   toogleTabs(tab: string) {
     this.productType = tab;
-    this.caseData = this.caseList[this.productType]
+    this.caseData = this.caseList.filter((data: any) => data.product_name && data.product_name === this.productType);
     this.initializeServiceType();
     this.setListProductWise();
   }

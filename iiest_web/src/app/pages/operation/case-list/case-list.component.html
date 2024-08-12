@@ -201,33 +201,37 @@
                                                 class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}
                                             </span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                            (click)="doSale(data)" >{{data.fboInfo.boInfo.manager_name.toLowerCase()}}</span>
+                                            (click)="collectResData('Fostac', data._id)">
+                                            <!-- (click)="doSale(data)" > -->
+                                            <fa-icon class="fa-l mx-1 text-success cursor-pointer" [icon]="faCheck"></fa-icon>
+                                            {{data.salesInfo.fboInfo.boInfo.manager_name.toLowerCase()}}
+                                        </span>
                                     </td>
-                                        <td *ngIf="data.fboInfo else noData" class="cell"><span 
-                                                class="truncate text-capitalize ">{{data.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        <td *ngIf="data.salesInfo.fboInfo else noData" class="cell"><span 
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
                                         </td>
-                                        <td *ngIf="data.fboInfo; else noData" class="cell"><span
-                                                class="truncate text-capitalize ">{{data.fboInfo.owner_name.toLowerCase()}}</span>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
                                         </td>
-                                        <td *ngIf="data.fboInfo; else noData" class="cell"><span
-                                                class="truncate text-capitalize">{{data.fboInfo.boInfo.customer_id}}</span>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
                                         </td>
-                                        <td *ngIf="data.fboInfo; else noData" class="cell"><span
-                                                class="truncate text-capitalize">{{data.fboInfo.customer_id}}</span>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                class="truncate text-capitalize">{{data.salesInfo.fboInfo.customer_id}}</span>
                                         </td>
-                                        <td *ngIf="data.fboInfo" class="cell selector text-center"><span (click)="recipient(data, 'Fostac')"
-                                                class="truncate">{{data.fostacInfo.recipient_no}}</span>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell selector text-center"><span (click)="recipient(data, 'Fostac')"
+                                                class="truncate">{{data.salesInfo.fostacInfo.recipient_no}}</span>
                                         </td>
-                                        <td *ngIf="data.fboInfo" class="cell"><span
-                                                class="truncate">{{data.fostacInfo.fostac_total |
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fostacInfo.fostac_total |
                                                 inrAmount}}</span>
                                         </td>
                                         <td class="cell text-center"><span
                                                 class="truncate">{{getFormattedSalesDate(data.createdAt)}}</span>
                                         </td>
-                                        <td *ngIf="data.fboInfo && data.employeeInfo; else noData" class="cell">
+                                        <td *ngIf="data.salesInfo && data.salesInfo.employeeInfo; else noData" class="cell">
                                             <span
-                                                class="truncate text-capitalize">{{data.employeeInfo.employee_name.toLowerCase()}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split(' ')[0]}}</span>
                                         </td>
                                         <td class="cell text-center"><span class="truncate text-capitalize "
                                                 [ngClass]="data.checkStatus === 'Approved'?'text-success':'text-danger'">
@@ -313,7 +317,7 @@
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
                                             <span
-                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split(' ')[0]}}</span>
                                         </td>
                                         <td class="cell text-center"><span class="truncate text-capitalize "
                                                 [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
@@ -403,7 +407,7 @@
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell">
                                             <span
-                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase()}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split(' ')[0]}}</span>
                                         </td>
                                         <td class="cell text-center"><span class="truncate text-capitalize"
                                                 [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">

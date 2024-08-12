@@ -197,6 +197,7 @@ export class GetdataService {
 
   public getMoreCaseInfo(product: string, candidateId: string): Observable<any> {
     const url = `${this.url}/morecaseinfo/${product}/${candidateId}`;
+    console.log(url);
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
@@ -212,6 +213,12 @@ export class GetdataService {
 
   public getFoscosVerifedData(candidateId: string): Observable<any> {
     const url = `${this.url}/getfoscosverifieddata/${candidateId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
+  //route for getting shop verificatoon data
+  public getShopVerifedData(candidateId: string): Observable<any> {
+    const url = `${this.url}/getshopverifieddata/${candidateId}`;
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

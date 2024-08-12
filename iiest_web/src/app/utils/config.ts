@@ -190,7 +190,6 @@ export const caseList_roles = [
    'Project Coordinator',
    'Technical Coordinator',
    'Verifier',
-   ...master_roles
 ];
 
 //roles of directors
@@ -310,6 +309,60 @@ export const hraDocuments = [
       allowedFormats: ['pdf', 'jpg', 'jpeg'],
       mutipleDoc: true
    }
+];
+
+//array of all basic required docs for customer realtions form
+export const basicRequiredDocs = [
+   {
+      product_name: 'Fostac',
+      display_name: 'Fostac Certificate',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false,
+      isChecked: false,
+      isAlreadyAvilable: false,
+      isSelectedForSale:  false,
+      isPendingByCustomer: false
+   },
+   {
+      display_name: 'Water Test Report',
+      product_name: 'Water Test Report',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false,
+      isChecked: false,
+      isAlreadyAvilable: false,
+      isSelectedForSale:  false,
+      isPendingByCustomer: false
+   },
+   {
+      display_name: 'Medical Certificate',
+      product_name: 'Medical',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false,
+      isChecked: false,
+      isAlreadyAvilable: false,
+      isSelectedForSale:  false,
+      isPendingByCustomer: false
+   },
+   {
+      display_name: 'Foscos License',
+      product_name: 'Foscos',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false,
+      isChecked: false,
+      isAlreadyAvilable: false,
+      isSelectedForSale:  false,
+      isPendingByCustomer: false
+   },
+   {
+      display_name: 'HRA',
+      product_name: 'HRA',
+      allowedFormats: ['pdf', 'jpg', 'jpeg'],
+      mutipleDoc: false,
+      isChecked: false,
+      isAlreadyAvilable: false,
+      isSelectedForSale:  false ,
+      isPendingByCustomer: false
+   },
 ];
 
 export const hraRequiredDocs = [

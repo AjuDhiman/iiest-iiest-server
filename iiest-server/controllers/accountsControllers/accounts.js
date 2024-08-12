@@ -262,7 +262,7 @@ exports.reCreateInvoice = async (req, res) => {
         const invoice = await invoiceDataHandler(invoiceCode, sale.fboInfo.email, sale.fboInfo.fbo_name, sale.fboInfo.address, sale.fboInfo.state, sale.fboInfo.district,
             sale.fboInfo.pincode, sale.fboInfo.owner_contact, sale.fboInfo.email, processingAmt, extrafee, taxAmount, qty, sale.fboInfo.business_type,
             sale.fboInfo.gst_number, totalAmount, product, productInfo, sale.employeeInfo.signatureImage, uploadStream, sale.employeeInfo.employee_name,
-            sale.fboInfo.customer_id, sale.fboInfo.boInfo
+            sale.fboInfo.customer_id, sale.fboInfo.boInfo, sale.createdAt
         );
 
         if (!invoice) {

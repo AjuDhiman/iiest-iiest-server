@@ -1,14 +1,14 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeSale, getSalesBasicDocUploadURL } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeSale, getSalesBasicDocUploadURL, sendFboVerificationLink, verifyFbo, updateFboInfo } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
-const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel, uploadEbill, uploadOwnerPhoto, uploadShopPhoto, hygieneShopsList, uploadAadharPhoto } = require('../controllers/fboControllers/recipient');
+const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { foscosDocuments, hraDocuments, chequeImage } = require('../config/storage');
 const { createBusinessOwner, getAllBusinessOwners, getClientList } = require('../controllers/boControllers/bo');
 const { getTicketsDocs } = require('../controllers/employeeControllers/employeeRecord');
-const { fostacVerification } = require('../controllers/operationControllers/formSections');
+const { fostacRecpVerification } = require('../controllers/operationControllers/formSections');
 const { trainingBatch } = require('../controllers/trainingControllers/trainingBatch');
 const { uploadCheque } = require('../config/s3Bucket');
 
@@ -19,7 +19,6 @@ const router = express.Router();
 
 router.get('/salerecipients/:id', authMiddleware, recipientsList); //Router for recipients list for sale
 router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list for sale
-router.get('/hygienesaleshops/:id', authMiddleware, hygieneShopsList); //Router for shops list for hygiene sale
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
 router.get('/clientlist', getClientList); //Router for client list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
@@ -34,11 +33,7 @@ router.get('/getproductdata', authMiddleware, getProductData); //Router for prod
 // router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'eBill', maxCount: 1 }, { name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addShop); //Router for adding shop data
 router.post('/fbo/addshop/:id', authMiddleware, foscosDocuments.fields([{ name: 'ownerPhoto', maxCount: 1 }, { name: 'shopPhoto', maxCount: 1}, { name: 'aadharPhoto', maxCount: 5 }]), addShop); //Router for adding shop data
 router.post('/fbo/addshopbyexcel/:id', authMiddleware, addShopByExcel); 
-router.put('/fbo/uploadebill/:id', authMiddleware, foscosDocuments.fields([{name: 'eBill', maxCount: 1}]), uploadEbill); //Router for adding e bill to shop model
-router.put('/fbo/uploadownerphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'ownerPhoto', maxCount: 1}]), uploadOwnerPhoto); //Router for adding owner photo to shop model
-router.put('/fbo/uploadshophoto/:id', authMiddleware, foscosDocuments.fields([{name: 'shopPhoto', maxCount: 1}]), uploadShopPhoto); //Router for adding shop photo to shop model
-router.put('/fbo/uploadaadharphoto/:id', authMiddleware, foscosDocuments.fields([{name: 'aadharPhoto', maxCount: 5}]), uploadAadharPhoto); //Router for adding Aadhar photo to shop model
-router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient, fostacVerification, trainingBatch ); //Router for adding recipient data
+router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient, fostacRecpVerification, trainingBatch ); //Router for adding recipient data
 router.get('/getsalesbasicdocuploadurl/:name', authMiddleware, getSalesBasicDocUploadURL); //route for getting upload url for uploading basic sales docs to AWS S3
 // router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'fostacCertificate', maxCount: 1 }, { name: 'foscosLicense', maxCount: 1 }]), addHygieneShop); //Router for adding hygiene shop data
 router.get('/shop/ebill/:id', authMiddleware, showBill);
@@ -53,5 +48,9 @@ router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 
 router.put('/updatefbobasicdocstatus/:id', authMiddleware, updateFboBasicDocStatus); 
 router.get('/getticketdocs/:id', authMiddleware, getTicketsDocs); 
+
+router.put('/sendfboverificationlink/:fboid', authMiddleware, sendFboVerificationLink); //roure for sending verification link by mail and sms
+router.put('/verifyfbo/:fboid', verifyFbo); //route for updating verification info of a fbo
+router.put('/updatefboinfo/:id', authMiddleware, updateFboInfo); //route for updating fbo info
 
 module.exports = router;

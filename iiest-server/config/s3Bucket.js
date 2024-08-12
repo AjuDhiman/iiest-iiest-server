@@ -11,6 +11,7 @@ const invoicePath = 'invoices/';
 const coworkInvoicePath = 'coworkinvoices/';
 const employeeDocsPath = 'employee/';
 const fboBasicDocsPath = 'basicsalesdoc/';
+const requiredDocsPath = 'requireddocs/'
 const fostacDocPath = 'fostac/';
 const foscosDocPath = 'foscos/';
 const hraDocPath = 'hra/';
@@ -23,6 +24,7 @@ exports.foscosDocPath = foscosDocPath;
 exports.hraDocPath = hraDocPath;
 exports.chequePath = chequePath;
 exports.coworkInvoicePath = coworkInvoicePath;
+exports.requiredDocsPath = requiredDocsPath;
 
 //configuring S3 Client
 const s3Client = new S3Client({
@@ -172,6 +174,19 @@ exports.uploadHraDoc = multer({
         },
         key: function (req, file, cb) {
             cb(null, `${hraDocPath}${(Date.now().toString() + '-' + file.originalname.split(' ').join(''))}`);
+        }
+    })
+});
+
+exports.uploadRequiredDocs = multer({
+    storage: multerS3({
+        s3: s3Client,
+        bucket: AWS_S3.bucket,
+        metadata: function (req, file, cb) {
+            cb(null, { fieldName: file.fieldname });
+        },
+        key: function (req, file, cb) {
+            cb(null, `${requiredDocsPath}${(Date.now().toString() + '-' + file.originalname.split(' ').join(''))}`);
         }
     })
 });

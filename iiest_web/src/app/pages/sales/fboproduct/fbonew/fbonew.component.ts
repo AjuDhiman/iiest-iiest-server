@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { FostacComponent } from '../fostac/fostac.component';
@@ -200,6 +200,8 @@ export class FbonewComponent implements OnInit, OnChanges {
     cheque_image: new FormControl('')
   });
 
+  @Output() emitSaleDocNames: EventEmitter<string[]> = new EventEmitter<string[]>;
+
   constructor(
     private formBuilder: FormBuilder,
     private _getFboGeneralData: GetdataService,
@@ -280,11 +282,6 @@ export class FbonewComponent implements OnInit, OnChanges {
       existingUserBo: [''],
       searchUser: ['', Validators.required]
     })
-
-    // this.existingUserForm = this.existingFrom.group({
-    //   existingUser: [''],
-    //   searchUser: ['', Validators.required]
-    // })
 
     let allocated_state: string = '';
 
@@ -899,9 +896,11 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.multiSelect.onReset();
   }
 
-  getSelectedProduct($event: any) {
+  getSelectedProduct($event: string[]) {
 
     this.productName = $event;
+    //we are emittng the docs names fro her for using in for sale sec in verifier panel
+    this.emitSaleDocNames.emit(this.productName);
     this.fboForm.patchValue({ product_name: this.productName })
     var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key));
 

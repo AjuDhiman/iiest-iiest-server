@@ -9,13 +9,15 @@ const { ObjectId } = require('mongodb');
 const { createInvoiceBucket, empSignBucket } = require('../../config/buckets');
 const payRequest = require('../../fbo/phonePay');
 const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
-const { sendInvoiceMail, sendCheckMail } = require('../../fbo/sendMail');
+const { sendInvoiceMail, sendCheckMail, sendFboVerificationMail } = require('../../fbo/sendMail');
 const boModel = require('../../models/BoModels/boSchema');
 const sessionModel = require('../../models/generalModels/sessionDataSchema');
 const { shopModel } = require('../../models/fboModels/recipientSchema');
 const generalDataSchema = require('../../models/generalModels/generalDataSchema');
 const { getDocObject, invoicesPath, fboBasicDocsPath, uploadDocObject, doesFileExist, employeeDocsPath } = require('../../config/s3Bucket');
 const docsModel = require('../../models/operationModels/documentsSchema');
+const { default: mongoose } = require('mongoose');
+const { logAudit } = require('../generalControllers/auditLogsControllers');
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
@@ -336,7 +338,9 @@ exports.fboPayReturn = async (req, res) => {
           gst_number,
           boInfo,
           activeStatus: true,
-          isBasicDocUploaded: false
+          isBasicDocUploaded: false,
+          isFboVerified: false,
+          isVerificationLinkSend: false
         });
 
         if (!fboEntry) {
@@ -378,9 +382,7 @@ exports.fboPayReturn = async (req, res) => {
 
         //creating shop details obj in case of HRA and Foscos
         product_name.forEach(async (product) => {
-          if (product === 'Fostac' || product === 'HRA') {
-            const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
-          }
+          const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil, isVerificationLinkSend: false }); //create shop after sale for belongs  tohis sale
         })
 
         //lastly redirect user to fbo form
@@ -521,7 +523,7 @@ exports.fboRegister = async (req, res) => {
     }
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false, isFboVerified: false, isVerificationLinkSend: false
     });
 
     if (!fboEntry) {
@@ -615,7 +617,7 @@ exports.boByCheque = async (req, res) => {
     console.log(productName, product_name)
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false, isFboVerified: true
     });
 
     if (!fboEntry) {
@@ -631,9 +633,9 @@ exports.boByCheque = async (req, res) => {
     }
 
     productName.forEach(async (product) => {
-      if (product === 'Fostac' || product === 'HRA') {
-        const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil }); //create shop after sale for belongs  tohis sale
-      }
+      const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil, isVerificationLinkSend: false
+        
+       }); //create shop after sale for belongs  tohis sale
     })
 
     success = true;
@@ -883,7 +885,7 @@ exports.updateFboBasicDocStatus = async (req, res) => {
     // saving each doc to doc array
     docsObject.forEach(async (doc) => {
       let src = '';
-      if(doc.isMultiDoc) {
+      if (doc.isMultiDoc) {
         src = doc.src.map(a => `${fboBasicDocsPath}${a}`)
       } else {
         src = `${fboBasicDocsPath}${doc.src}`;
@@ -1143,5 +1145,155 @@ exports.getSalesBasicDocUploadURL = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+}
+
+//methord for sendinding verification link by mail and  sms
+exports.sendFboVerificationLink = async (req, res) => {
+  try {
+
+    let success = false;
+
+    const infoToVerify = req.body
+
+    const fboObjId = req.params.fboid;
+
+    infoToVerify.fboObjId = fboObjId;
+
+    //sending verification mail
+    sendFboVerificationMail(infoToVerify.manager_email, infoToVerify);
+
+    success = true;
+
+    // updating verification link send in fboobj
+    const dataUpdated = await fboModel.findByIdAndUpdate({_id: fboObjId}, {
+      $set: {
+        isVerificationLinkSend: true
+      }
+    })
+
+    return res.status(200).json({ success: success, mailSend: true });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
+
+//methord for updating verification of a fbo
+exports.verifyFbo = async (req, res) => {
+  try {
+
+    console.log(req.params)
+    const fboObjId = req.params.fboid
+    if (!mongoose.Types.ObjectId.isValid(fboObjId)) { //sending error message in case of wrong format of objet id send in parameter
+      return res.status(404).json({ success: false, message: "Not A Valid Request" }); //this message will be shown in verifing mail frontend
+    }
+
+
+
+    const idExsists = await fboModel.findOne({ _id: fboObjId });
+
+    if (idExsists) {//sending already verified mail case of mailor contact already verified 
+      if (idExsists.is_email_verified) {
+        return res.status(200).json({ success: true, message: 'Already Verified' })
+      }
+
+      const verifiedFbo = await fboModel.findByIdAndUpdate(//updates the bo obj by assigning is_verified mail and is_contact _verified true
+        { _id: fboObjId },
+        {
+          $set: {
+            isFboVerified: true
+          }
+        }
+      );
+
+      //in case of verification failed send verificatio  error
+      if (!verifiedFbo) {
+        return res.status(404).json({ success: false, message: "Verification Failed", emailSendingErr: true });
+      }
+
+
+      const mailInfo = { //aggregating mail info for sending mail to bo with his or her customer id
+        boName: idExsists.owner_name,
+        purpose: 'onboard',
+        customerId: verifiedFbo.customer_id,
+        email: idExsists.email,
+        contact_no: idExsists.contact_no,
+        managerName: idExsists.manager_name
+      }
+
+      return res.status(200).json({ success: true, message: "Email Verified" })
+    }
+
+    return res.status(404).json({ success: false, message: "Verification Failed" });
+  }
+  catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
+
+
+
+//methord for updating fbo info
+exports.updateFboInfo = async (req, res) => {
+  try {
+
+    let success = false;
+
+    const fboid = req.params.id;
+
+    const user = req.user;
+
+    const { manager_name, fbo_name, owner_name, business_entity, state, district, pincode, address, manager_email, manager_contact } = req.body;
+
+    const fboOldInfo = await fboModel.findOne({ _id: fboid });
+
+
+    //updating fbo info
+
+    const updatedFbo = await fboModel.findOneAndUpdate({ _id: fboid }, {
+      $set: {
+        state: state,
+        district: district,
+        pincode: pincode,
+        address: address,
+        email: manager_email,
+        owner_contact: manager_contact,
+        fbo_name: fbo_name,
+        owner_name: owner_name
+      }
+    });
+
+    if (!updatedFbo) {
+      return res.status(401).json({ success: success, updationErr: true })
+    }
+
+    //auditing log for both fbo and bo
+    const fboLog = await logAudit(user._id, 'fbo_registers', fboid, fboOldInfo, updatedFbo, 'FBO Info Updated');
+
+    const boOldInfo = await boModel.findOne({ _id: fboOldInfo.boInfo._id });
+
+    //updating bo info
+    const updatedBo = await boModel.findOneAndUpdate({ _id: fboOldInfo.boInfo._id }, {
+      $set: {
+        business_entity: business_entity,
+        email: manager_email,
+        contact_no: manager_contact,
+        manager_name: manager_name
+      }
+    });
+
+    if (!updatedBo) {
+      return res.status(401).json({ success: success, updationErr: true })
+    }
+
+    const boLog = await logAudit(user._id, 'bo_registers', fboOldInfo.boInfo, boOldInfo, updatedBo, 'Bo Info Updated');
+
+    return res.status(200).json({ success: success, updatedFbo: { ...updatedFbo, boInfo: updatedBo } });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" })
   }
 }

@@ -11,6 +11,7 @@ import { RegisterService } from 'src/app/services/register.service';
 export class OnboardVerificationComponent implements OnInit, AfterViewInit{
 
   id:string;//id for finding record in Bo database
+  type: string;
   //icons
   faCheckCircle: IconDefinition = faCheckCircle;
   faCircleExclamation: IconDefinition = faCircleExclamation;
@@ -31,6 +32,7 @@ export class OnboardVerificationComponent implements OnInit, AfterViewInit{
     const bodyElement = document.body;
     bodyElement.classList.remove('app'); //remove calss app from whole body for removing margins and padding related to it
     this.id = this.route.snapshot.params['id'];//getting id from route
+    this.type = this.route.snapshot.params['type'];//getting type from route
     this.verifyMail(); // verify mail api
   }
 
@@ -40,24 +42,85 @@ export class OnboardVerificationComponent implements OnInit, AfterViewInit{
   }
 
   verifyMail(): void{
-    this.loading = true; //turn on loading for while calling ap
-    this._registerService.verifyMail(this.id).subscribe({
-      next: res => {
-        this.loading = false; //setting loading off on success
-        this.status = 'verified';
-        this.message = res.message; //getting message from backend
-        const timeOut = setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 3000) //redirect after 3 sec of completion
-      },
-      error: err => {
-        this.loading = false;//setting loading off on error
-        this.status = 'not-verified';
-        this.message = err.error.message;//getting message from backend
-        const timeOut = setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 3000)//redirect after 3 sec of completion
-      }
-    });
+    this.loading = true; //turn on loading for while calling api
+
+    if(this.type === 'bo') {
+      this._registerService.verifyMail(this.id).subscribe({
+        next: res => {
+          this.loading = false; //setting loading off on success
+          this.status = 'verified';
+          this.message = res.message; //getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000) //redirect after 3 sec of completion
+        },
+        error: err => {
+          this.loading = false;//setting loading off on error
+          this.status = 'not-verified';
+          this.message = err.error.message;//getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000)//redirect after 3 sec of completion
+        }
+      });
+    } else if(this.type === 'fbo') {
+      this._registerService.updateFboVerification(this.id).subscribe({
+        next: res => {
+          this.loading = false; //setting loading off on success
+          this.status = 'verified';
+          this.message = res.message; //getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000) //redirect after 3 sec of completion
+        },
+        error: err => {
+          this.loading = false;//setting loading off on error
+          this.status = 'not-verified';
+          this.message = err.error.message;//getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000)//redirect after 3 sec of completion
+        }
+      });
+    } else if(this.type === 'product') {
+      this._registerService.verifyProductLink(this.id).subscribe({
+        next: res => {
+          this.loading = false; //setting loading off on success
+          this.status = 'verified';
+          this.message = res.message; //getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000) //redirect after 3 sec of completion
+        },
+        error: err => {
+          this.loading = false;//setting loading off on error
+          this.status = 'not-verified';
+          this.message = err.error.message;//getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000)//redirect after 3 sec of completion
+        }
+      });
+    }else if(this.type === 'doc') {
+      this._registerService.verifydocLink(this.id).subscribe({
+        next: res => {
+          this.loading = false; //setting loading off on success
+          this.status = 'verified';
+          this.message = res.message; //getting message from backend
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000) //redirect after 3 sec of completion
+        },
+        error: err => {
+          this.loading = false;//setting loading off on error
+          this.status = 'not-verified';
+          this.message = err.error.message;//getting message from backend
+          // const timeOut = setTimeout(() => {
+          //   this.router.navigate(['/']);
+          // }, 3000)//redirect after 3 sec of completion
+        }
+      });
+    }
+    
   }
 }

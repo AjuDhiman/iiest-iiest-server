@@ -1,9 +1,9 @@
 const { generatedBatchInfo, generatedAuditBatchInfo } = require("../../Training/generateCredential");
 const auditBatchModel = require("../../models/auditModels/auditBatchModel");
 const AuditBatchModel = require("../../models/auditModels/auditBatchModel");
-const { recipientModel, hygieneShopModel, shopModel } = require("../../models/fboModels/recipientSchema");
+const { recipientModel, shopModel } = require("../../models/fboModels/recipientSchema");
 const generalDataSchema = require("../../models/generalModels/generalDataSchema");
-const { fostacVerifyModel, hraVerifyModel } = require("../../models/operationModels/verificationSchema");
+const { fostacVerifyModel, hraVerifyModel, shopVerificationModel } = require("../../models/operationModels/verificationSchema");
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 const { sendVerificationMail } = require("../../operations/sendMail");
 const { logAudit } = require("../generalControllers/auditLogsControllers");
@@ -177,7 +177,7 @@ exports.auditBatch = async (req, res) => {
 
         let success = false;
 
-        const { state, district, pincode, food_handler_no } = req.body
+        const { food_handler_no } = req.body
 
         const verificationInfo = req.verificationInfo;
 
@@ -185,14 +185,20 @@ exports.auditBatch = async (req, res) => {
 
         const verificationDate = new Date(verificationInfo.createdAt);
 
-        const shopInfo = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo' }, { path: 'employeeInfo' }] });
+        const shopInfo = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', populate: { path: 'boInfo' } }, { path: 'employeeInfo' }] });
 
         const user = req.user;
+
+        //extracting state district and pincode fotr deciding location
+        const state = shopInfo.salesInfo.fboInfo.state;
+        const district = shopInfo.salesInfo.fboInfo.district;
+        const pincode = shopInfo.salesInfo.fboInfo.pincode;
 
         const ourHolidays = (await generalDataSchema.find({}))[0].our_holidays;
 
         let location;
 
+        //all of our location where we can do audit
         if (state === 'Delhi') {
             location = 'Delhi';
         } else if (district === 'Gurgaon') {
@@ -205,16 +211,14 @@ exports.auditBatch = async (req, res) => {
             location = 'Ghaziabad';
         }
 
+        //delete verification if location not exsists
         if (!location) {
-            await hraVerifyModel.findByIdAndDelete(verificationInfo._id);//delete verification if not exsists
+            await shopVerificationModel.findByIdAndDelete(verificationInfo._id);
             return res.status(401).json({ success: false, locationErr: true })
         }
 
-        const allAuditors = (await generalDataSchema.find({}))[0].auditors// get list of all auditors from general datas
-
-        // const allAuditors = [
-        //     'Umar Shakil',
-        // ]
+        // get list of all auditors from general datas
+        const allAuditors = (await generalDataSchema.find({}))[0].auditors
 
         const sessionsNo = Math.ceil(food_handler_no / 50);
 
@@ -345,9 +349,10 @@ exports.auditBatch = async (req, res) => {
                 // );
             }
         }
-
+        
         if (batchData) {
-            sendVerificationMail({ ...req.clientData, auditDate: getFormatedDateArr(batchData.auditDates) });
+            sendVerificationMail({ ...req.clientData, auditDate: getFormatedDateArr(batchData.auditDates), managerName: shopInfo.salesInfo.fboInfo.boInfo.manager_name, recipientEmail: shopInfo.salesInfo.fboInfo.boInfo.email });
+            console.log('DATA  .............');
             return res.status(200).json({ success: true, verificationData: verificationInfo })
         }
 

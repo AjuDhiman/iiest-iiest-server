@@ -226,6 +226,34 @@ export class RegisterService {
     return this.http.post<any>(url, '').pipe(catchError(this.handleError));
   }
 
+  //service for verifing product verification link
+  public verifyProductLink(OId: string) {
+    const url = `${this.url}/verifyproductlink/${OId}`;
+    return this.http.put<any>(url, '').pipe(catchError(this.handleError));
+  }
+
+  //service for verifing doc verification link
+  public verifydocLink(OId: string) {
+    const url = `${this.url}/verifydoclink/${OId}`;
+    return this.http.put<any>(url, '').pipe(catchError(this.handleError));
+  }
+
+  public sendFboVerificationLink(OId: string, verificationData: object) {
+    const url = `${this.url}/sendfboverificationlink/${OId}`;
+    return this.http.put<any>(url, verificationData).pipe(catchError(this.handleError));
+  }
+
+  //service for sending doc verification link
+  public verifyDoc(OId: string, checkedDocsName: string[]) {
+    const url = `${this.url}/verifydocs/${OId}`;
+    return this.http.post<any>(url, {checkedDocsName}).pipe(catchError(this.handleError));
+  }
+
+  public updateFboVerification(OId: string) {
+    const url = `${this.url}/verifyfbo/${OId}`;
+    return this.http.put<any>(url, {}).pipe(catchError(this.handleError));
+  }
+
   public closeTicket(recpId: string, certificate: any) {
     const url = `${this.url}/closeticket/${recpId}`;
     return this.http.post<any>(url, certificate).pipe(catchError(this.handleError));
@@ -239,8 +267,16 @@ export class RegisterService {
       ));
   }
 
-  public verifyFostac(recId: string, formInterface: fostacVerification) {
-    const url = `${this.url}/fostacverification/${recId}`
+  public verifyFostacRecp(recId: string, formInterface: fostacVerification) {
+    const url = `${this.url}/fostacrecpverification/${recId}`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
+  public verifyFostac(shopId: string, formInterface: fostacVerification) {
+    const url = `${this.url}/fostacverification/${shopId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
         this.handleError
@@ -313,6 +349,15 @@ export class RegisterService {
       ));
   }
 
+  //service for saving required docs
+  public saveRequiredDocument(formInterface: FormData) { // this service helps on posting data related to recipient attendance
+    const url = `${this.url}/saverequireddocuments`
+    return this.http.post<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   public saveFoscosDocument(formInterface: FormData) { // this service helps on posting data related to recipient attendance
     const url = `${this.url}/savefoscosdocuments`
     return this.http.post<any>(url, formInterface).pipe(
@@ -340,7 +385,7 @@ export class RegisterService {
   }
 
   //service for doing approving cheque request
-  public updateChequeApproval(objId: string) { 
+  public updateChequeApproval(objId: string) {
     const url = `${this.url}/approvechequesale/${objId}`
     return this.http.post<any>(url, {}).pipe(
       catchError(
@@ -349,7 +394,7 @@ export class RegisterService {
   }
 
   //service for creation of invoice by invoce creation form
-  public createInvoice(formInterface: invoiceCreation) { 
+  public createInvoice(formInterface: invoiceCreation) {
     const url = `${this.url}/createinvoice`;
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
@@ -358,7 +403,7 @@ export class RegisterService {
   }
 
   //service for updating receiving info for of a cowork sale
-  public updateReceivingInfo(invoiceId : string, formInterface: any) { 
+  public updateReceivingInfo(invoiceId: string, formInterface: any) {
     const url = `${this.url}/updatereceivinginfo/${invoiceId}`
     return this.http.post<any>(url, formInterface).pipe(
       catchError(
@@ -367,16 +412,25 @@ export class RegisterService {
   }
 
 
+  //service for updating fbo info
+  public updateFboInfo(objId: string, formInterface: any) {
+    const url = `${this.url}/updatefboinfo/${objId}`
+    return this.http.put<any>(url, formInterface).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   //service for recreating invoice 
   public recreateInvoice(salesId: string, product: string, invoiceSrc: string, invoiceCode: string) {
     const url = `${this.url}/recreateinvoice/${salesId}`;
-    return this.http.post<any>(url, { product: product, invoiceSrc: invoiceSrc , invoiceCode: invoiceCode}).pipe(catchError(this.handleError));
+    return this.http.post<any>(url, { product: product, invoiceSrc: invoiceSrc, invoiceCode: invoiceCode }).pipe(catchError(this.handleError));
   }
 
   //service for resending invoice 
   public reSenndInvoice(invoiceSrc: string, email: string) {
     const url = `${this.url}/resendinvoice`;
-    return this.http.post<any>(url, { invoiceSrc: invoiceSrc , email: email}).pipe(catchError(this.handleError));
+    return this.http.post<any>(url, { invoiceSrc: invoiceSrc, email: email }).pipe(catchError(this.handleError));
   }
 
   public deleteDocFromS3(key: string) { // this service approves the pending cheques

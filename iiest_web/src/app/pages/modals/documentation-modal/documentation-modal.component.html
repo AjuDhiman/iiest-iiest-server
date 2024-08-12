@@ -1,13 +1,26 @@
+<!-- Moda Header -->
 <div class="modal-header bg-secondary">
   <h6 class="modal-title text-white" id="modal-basic-title">Documents</h6>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
+
+
+<!-- Modal Body -->
 <div class="modal-body">
+
+  <!-- uploadd doc form -->
   <form (submit)="onUpload()" [formGroup]="documentsForm" enctype="multipart/form-data">
     <div class="row">
 
+      <!-- Heading -->
       <h6>Upload Documents<span *ngIf="selectedDoc.mutipleDoc" class="text-xs"> (Note<sup>*</sup>: Select multiple
-          document and upload at the same time)</span></h6>
+          document and upload at the same time)
+        </span>
+      </h6>
+
+
+
+      <!-- Document Drop down that conatins document lists -->
       <div class="col-md-4">
         <label for="food_category" class="form-label">Documents<sup>*</sup></label>
         <select class="form-select form-select-sm" (change)="getSelectedDoc($event)">
@@ -16,12 +29,14 @@
         </select>
       </div>
 
+      <!-- Specify name in case of ither document -->
       <div class="col-md-4" *ngIf="isOtherDoc">
         <label class="form-label" for="name">Name</label>
         <input type="text" class="form-control form-control-sm" id="name" placeholder="Name of The Doc"
           formControlName="name" />
       </div>
 
+      <!-- sected doc file input -->
       <div class="col-md-4" *ngIf="selectedDoc.name">
         <label class="form-label"
           [for]="changeNameFormat(selectedDoc.name)">{{isOtherDoc?'File':selectedDoc.name}}</label>
@@ -30,9 +45,23 @@
       </div>
 
       <div class="col-md-4" *ngIf="isEbill">
-        <label class="form-label"
-        >{{selectedDoc.name + ' Customer Id'}}</label>
-        <input class="form-control form-control-sm" formControlName="customer_id" [placeholder]="selectedDoc.name +' Customer Id'" />
+        <label class="form-label">{{selectedDoc.name + ' Customer Id'}}</label>
+        <input class="form-control form-control-sm" formControlName="customer_id"
+          [placeholder]="selectedDoc.name +' Customer Id'" />
+      </div>
+
+      <!-- Issue Date of Doc -->
+      <div class="col-md-4" *ngIf="selectedDoc.name">
+        <label class="form-label">{{selectedDoc.name + ' issue date'}}</label>
+        <input class="form-control form-control-sm" formControlName="issue_date" type="date"
+          [placeholder]="selectedDoc.name +' Customer Id'" />
+      </div>
+
+      <!-- Expeiry date of doc -->
+      <div class="col-md-4" *ngIf="selectedDoc.name">
+        <label class="form-label">{{selectedDoc.name + ' expiery date'}}</label>
+        <input class="form-control form-control-sm" formControlName="expiery_date" type="date"
+          [placeholder]="selectedDoc.name +' Customer Id'" />
       </div>
 
       <div [ngClass]="{'py-2': isOtherDoc}" class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
@@ -44,6 +73,9 @@
 
   <hr>
 
+
+
+  <!-- Document List Table -->
   <div class="tab-content " id="orders-table-tab-content">
     <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
       <div class="row g-3 mb-4 align-items-center justify-content-between">
@@ -103,8 +135,8 @@
                       <div *ngIf="doc.src.length == 1">
                         <fa-icon *ngIf="doc.format === 'pdf'" [icon]="faFilePdf"
                           class="fa-2xl text-success cursor-pointer"></fa-icon>
-                        <img class="cursor-pointers" *ngIf="doc.format === 'image'"
-                          [src]="doc.src" height="30" width="50" [alt]="doc.name">
+                        <img class="cursor-pointers" *ngIf="doc.format === 'image'" [src]="doc.src" height="30"
+                          width="50" [alt]="doc.name">
                       </div>
                       <div *ngIf="doc.src.length > 1">
                         <fa-icon *ngIf="doc.format === 'image'" [icon]="faFileImage"
@@ -149,24 +181,5 @@
       </div> -->
     </div>
   </div>
-
-  <!-- <form [formGroup]="documentsForm">
-    <div class="row">
-      <h6>Upload Documents</h6>
-
-      <div class="col-md-4" *ngFor="let doc of selectedDocs">
-       <label class="form-label">{{doc}}<sup>*</sup></label>
-       <input type="file" class="form-control form-control-sm" [placeholder]="'Upload' + doc"
-       [formControlName]="changeNameFormat(doc)" >
-      </div>
-
-      <div class="row mt-3">
-        <div class="col-6">
-            <button type="submit" class="btn btn-sm btn-primary">Upload
-            </button>
-        </div>
-    </div>
-    </div>
-  </form> -->
   <ngx-loading [show]="loading"></ngx-loading>
 </div>

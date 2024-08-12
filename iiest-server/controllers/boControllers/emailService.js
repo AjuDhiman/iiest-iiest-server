@@ -73,7 +73,7 @@ function getMailContent(mailInfo) {
         <p>Your Contact No.: ${mailInfo.contact_no}</p>
         <p>Please check email and contact number above and click button below for verifing your email.</p>
         <br/>
-        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/email/${mailInfo.id}'>
+        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/bo/${mailInfo.id}'>
             <button style="display: block;
             width: 100%;
             max-width: 300px;
@@ -96,7 +96,7 @@ function getMailContent(mailInfo) {
         <p>कृपया ऊपर ईमेल और संपर्क नंबर की जाँच करें और अपने ईमेल को सत्यापित करने के लिए नीचे बटन पर क्लिक करें।</p>
         <br/>
         <br/>
-        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/email/${mailInfo.id}'>
+        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/bo/${mailInfo.id}'>
             <button style="display: block;
             width: 100%;
             max-width: 300px;

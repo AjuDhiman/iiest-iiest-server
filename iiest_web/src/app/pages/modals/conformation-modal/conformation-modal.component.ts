@@ -18,6 +18,7 @@ export class ConformationModalComponent {
     
   }
 
+  //methord runs on input changes for echeck ing if input text matches the confirmation text
   onInputChange($event:any){
     console.log($event.target.value);
     if($event.target.value === this.confirmationText){
@@ -32,5 +33,12 @@ export class ConformationModalComponent {
       this.actionFunc.emit(this.isTextMatches);
       this.activeModal.close();
     }
+  }
+
+  //methord handles modal closure
+  closeModel(){
+    //returning false in case of closing the modal
+    this.actionFunc.emit(false);
+    this.activeModal.dismiss();
   }
 }

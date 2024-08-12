@@ -17,6 +17,7 @@ const { doesFileExist, employeeDocsPath } = require("../../config/s3Bucket");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
+//api for exsisting fbo by cash sale
 exports.existingFboCash = async (req, res) => {
   try {
 
@@ -221,9 +222,9 @@ exports.existingFboByCheque = async (req, res) => {
     }
 
     productName.forEach(async (product) => {
-      if (product === 'Foscos' || product === 'HRA') {
-        const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId: existingFboInfo.customer_id, product_name: product, village: existingFboInfo.village, tehsil: existingFboInfo.tehsil }); //create shop after sale for belongs to this sale
-      }
+
+      const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId: existingFboInfo.customer_id, product_name: product, village: existingFboInfo.village, tehsil: existingFboInfo.tehsil, isVerificationLinkSend: true }); //create shop after sale for belongs to this sale
+
     })
 
     success = true;
@@ -317,7 +318,7 @@ exports.existingFboPayPage = async (req, res) => {
 //API for sale i n case of pay page success
 
 
-exports.existingFboPayReturn = async (req, res) => { 
+exports.existingFboPayReturn = async (req, res) => {
   let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
 
   try {
@@ -421,7 +422,7 @@ exports.existingFboPayReturn = async (req, res) => {
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
-          notificationsArr.push({ isRead: false, product: 'Fostac',  purpose: 'Verification' });
+          notificationsArr.push({ isRead: false, product: 'Fostac', purpose: 'Verification' });
         }
 
         if (product_name.includes('Foscos')) {
@@ -441,7 +442,7 @@ exports.existingFboPayReturn = async (req, res) => {
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
-          notificationsArr.push({ isRead: false, product: 'Foscos',  purpose: 'Verification' });
+          notificationsArr.push({ isRead: false, product: 'Foscos', purpose: 'Verification' });
         }
 
         if (product_name.includes('HRA')) {
@@ -462,7 +463,7 @@ exports.existingFboPayReturn = async (req, res) => {
 
           //createg self notification data for our panel notifications
           //setting is read false for this particular product
-          notificationsArr.push({ isRead: false, product: 'HRA',  purpose: 'Verification' });
+          notificationsArr.push({ isRead: false, product: 'HRA', purpose: 'Verification' });
         }
 
         if (product_name.includes('Medical')) {
@@ -479,7 +480,7 @@ exports.existingFboPayReturn = async (req, res) => {
           const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, medical.medical_total, 'Medical', medical, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
 
           invoiceData.push(invoice);
-          
+
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Medical' });
         }
 
@@ -500,7 +501,7 @@ exports.existingFboPayReturn = async (req, res) => {
           const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, water_test_report.water_test_total, 'Water Test Report', water_test_report, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
 
           invoiceData.push(invoice);
-          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode , product: 'Water Test Report'});
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Water Test Report' });
         }
 
         const buyerData = await fboPaymentSchema.create({
@@ -538,23 +539,27 @@ exports.existingFboPayReturn = async (req, res) => {
         }
 
 
-        //add shops in shop details for Foscos and Hra
-        product_name.forEach(async (product) => {
-          if (product === 'Foscos' || product === 'HRA') {
-            const addShop = await shopModel.create({
-              salesInfo: selectedProductInfo._id,
-              managerName: boData.manager_name,
-              address: existingFboInfo.address,
-              state: existingFboInfo.state,
-              district: existingFboInfo.district,
-              pincode: existingFboInfo.pincode,
-              shopId: existingFboInfo.customer_id,
-              product_name: product,
-              village: existingFboInfo.village,
-              tehsil: existingFboInfo.tehsil
-            }); //create shop after sale for belongs  tohis sale
-          }
-        })
+        //add shop
+
+        product_name.forEach( async (product) => {
+          const addShop = await shopModel.create({
+            salesInfo: selectedProductInfo._id,
+            managerName: boData.manager_name,
+            address: existingFboInfo.address,
+            state: existingFboInfo.state,
+            district: existingFboInfo.district,
+            pincode: existingFboInfo.pincode,
+            shopId: existingFboInfo.customer_id,
+            product_name: product,
+            village: existingFboInfo.village,
+            tehsil: existingFboInfo.tehsil,
+            isVerificationLinkSend: true
+          }); //create shop after sale for belongs  tohis sale
+        });
+
+        if (!addShop) {
+          return res.status(401).json({ success: false, message: 'Shop creation Error', shopCreErr: true });
+        }
 
         // req.session.destroy((err) => {
         //   console.log(err);

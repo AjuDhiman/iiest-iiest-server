@@ -70,6 +70,10 @@ exports.getDocList = async (req, res) => { //gertting list of all docs relate to
 
         const docs = await docsModel.findOne({ handlerId: handlerId });
 
+        if(!docs){
+            return res.status(204).json({message: 'record no found', noDocErr: true})
+        }
+
         const promises = [];
 
         //generating presigned urls for each src

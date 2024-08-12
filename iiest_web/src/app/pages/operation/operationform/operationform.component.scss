@@ -34,3 +34,12 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr);
 }
+
+.switch-option {
+    margin-bottom: 10px;
+    margin-top: 20px ;
+    width: fit-content;
+    padding: 5;
+    padding: 5px 17px 5px 52px;
+    font-weight: 500;
+}

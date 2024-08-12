@@ -103,79 +103,14 @@ const shopSchema = new Schema({
         required: true,
         trim: true
     },
+    isVerificationLinkSend: {
+        type: Boolean,
+        required: true
+    }
 }, { timestamps: true });
 
-const hygieneShopSchema = new Schema({
-    salesInfo: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'employee_sales',
-        required: true
-    },
-    shopId: {
-        type: String,
-        required: true
-    },
-    managerName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    managerContact: {
-        type: String,
-        required: true
-    },
-    managerEmail: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    address: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    pincode: {
-        type: Number,
-        required: true,
-    },
-    state: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    // kob: {
-    //     type: String,
-    //     required: true,
-    //     trim: true
-    // },
-    // foodHandlersCount: {
-    //     type: Number,
-    //     required: true,
-    // },
-    district: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    // fostacCertificate: {
-    //     type: String,
-    // },
-    // foscosLicense: {
-    //     type: String,
-    // },
-    ownerPhoto: {
-        type: String,
-    },
-    shopPhoto: {
-        type: String,
-    },
-    aadharPhoto: {
-        type: [String],
-    }
-}, { timestamps: true })
 
 const recipientModel = mongoose.model('recipientDetails', recipientSchema);
 const shopModel = mongoose.model('shopDetails', shopSchema);
-const hygieneShopModel = mongoose.model('hygiene', hygieneShopSchema)
 
-module.exports = { recipientModel, shopModel, hygieneShopModel }
+module.exports = { recipientModel, shopModel }

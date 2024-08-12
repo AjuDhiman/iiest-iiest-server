@@ -4,6 +4,7 @@ const CONTACT_NUMBERS = JSON.parse(process.env.CONTACT_NUMBERS);
 const LANDLINES = JSON.parse(process.env.LANDLINES);
 const CB_ADDRESS = JSON.parse(process.env.CB_ADDRESS);
 const CB_BRAND_NAME = JSON.parse(process.env.CB_BRAND_NAME);
+const VIEW_URL = JSON.parse(process.env.FRONT_END).VIEW_URL
 
 const sendDocumentMail = (clientData) => {
   const transport = nodemailer.createTransport({
@@ -73,7 +74,7 @@ const sendVerificationMail = (clientData) => {
   let content;
   let subject;
 
-  if (clientData.product == 'fostac') {
+  if (clientData.product == 'fostac_recipient') {
 
     let todayDate = new Date();
     let nextMonth = new Date(todayDate);
@@ -135,29 +136,131 @@ const sendVerificationMail = (clientData) => {
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
+  } if (clientData.product == 'fostac') {
+
+    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    content = ` <p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.managerName},</p>
+    <p>Thanks for registering for the FoSTaC Training program by FSSAI Govt Of India.<br>
+    The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
+    <p>Kindly review the details you have provided below:</p>
+    Training Type -- ${clientData.service_name}<br>
+    No. Of Recps -- ${clientData.recipient_no}<br><br>
+
+    Data of Recipients:- <br><br>
+    ${clientData.recpDetails.map(recp => {
+      return(
+      "Trainee Name --" + recp.name + "<br>"
+      + "Trainee father Name --" + recp.fatherName + "<br>"
+      + "Trainee Contact No --" + recp.phoneNo + "<br>"
+      +  "Trainee DOB --" + new Date(recp.dob.toString()).getFullYear().toString() + "-" + (new Date(recp.dob.toString()).getMonth() + 1).toString() + "-" + new Date(recp.dob.toString()).getDate().toString() + "<br>"
+      + "Trainee Aadhar No --" + recp.aadharNo + "<br>")
+    }).join('<br><br>')}
+    <br>
+     <p>click button below for verifing your email.</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.fboObjId}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">Verify</button>
+        </a>
+        <br><br>
+    <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
+    <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Regards,<br>
+    ${CB_BRAND_NAME.english}</p>
+    <br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+    Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br><br>
+    <hr>
+    <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
+    <p>प्रिय ${clientData.managerName},</p>
+    <p>भारत सरकार के FSSAI द्वारा आयोजित FoSTaC प्रशिक्षण कार्यक्रम के लिए पंजीकरण के लिए धन्यवाद।<br>
+    आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
+    <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
+
+प्रशिक्षण प्रकार -- ${clientData.service_type}<br>
+प्राप्तकर्ताओं की संख्या -- ${clientData.recipinet_no}<br>
+    <br>
+    प्राप्तकर्ताओं का डेटा:- <br><br>
+    ${clientData.recpDetails.forEach(recp => {
+
+    `ट्रेनी का नाम -- ${recp.recipientName}<br>
+    ट्रेनी के पिता का नाम -- ${recp.fatherName}<br>
+    ट्रेनी का संपर्क नंबर -- ${recp.phoneNo}<br>
+    ट्रेनी का जन्मतिथि -- ${recp.dob}<br>
+    ट्रेनी का आधार नं -- ${recp.aadharNo}<br>`
+    })}
+
+    <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.id}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
+        </a>
+        <br><br>
+
+    <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
+    <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p>"धन्यवाद,<br>
+    ${CB_BRAND_NAME.hindi}</p>
+    <br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+
   } else if (clientData.product == 'foscos') {
 
     subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
     content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
     ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
-    <p>Dear ${clientData.operatorName},</p>
+    <p>Dear ${clientData.managerName},</p>
     <p>Thanks for registering for the FSSAI LICENSE(FoSCoS) program by FSSAI Govt Of India.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
     <p>Kindly review the details you have provided below:</p>
-    FBO Name -- ${clientData.fboName}<br>
-    Operator Name -- ${clientData.operatorName}<br>
-    Owner Name -- ${clientData.ownerName}<br>
-    Owner Contact No -- ${clientData.operatorContactNo}<br>
-    Address -- ${clientData.address}<br>
-    Pincode -- ${clientData.pincode}<br>
-    Tehsil -- ${clientData.tehsil}<br>
-    Village -- ${clientData.village}<br>
 
     <p>License Related Information</p>
     License Category -- ${clientData.licenseCategory}<br>
     License Duration -- ${clientData.licenseDuration}<br>
     Kind of Business -- ${clientData.kindOfBusiness}<br>
     Food Category -- ${clientData.foodCategory}<br>
+
+     <p>click button below for verifing your email.</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.fboObjId}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">Verify</button>
+        </a>
+        <br><br>
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
@@ -178,20 +281,27 @@ const sendVerificationMail = (clientData) => {
     <p>FSSAI भारत सरकार द्वारा FSSAI लाइसेंस (FOSCOS) कार्यक्रम के लिए पंजीकरण करने के लिए धन्यवाद।<br>
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
-    FBO का नाम -- ${clientData.fboName}<br>
-    ऑपरेटर का नाम -- ${clientData.operatorName}<br>
-    मालिक का नाम -- ${clientData.ownerName}<br>
-    मालिक का संपर्क नंबर -- ${clientData.operatorContactNo}<br>
-    पता -- ${clientData.address}<br>
-    पिन कोड -- ${clientData.pincode}<br>
-    तहसील -- ${clientData.tehsil}<br>
-    गाँव -- ${clientData.village}<br>
 
     <p>लाइसेंस संबंधी जानकारी</p>
     लाइसेंस श्रेणी -- ${clientData.licenseCategory}<br>
     लाइसेंस अवधि -- ${clientData.licenseDuration}<br>
     व्यवसाय का प्रकार -- ${clientData.kindOfBusiness}<br>
     खाद्य श्रेणी -- ${clientData.foodCategory}<br>
+
+     <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.id}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
+        </a>
+        <br><br>
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
@@ -346,22 +456,23 @@ const sendVerificationMail = (clientData) => {
     <p>Thanks for registering for the Hygiene Rating program by FSSAI Govt Of India.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
     <p>Kindly review the details you have provided below:</p>
-    Manager Name -- ${clientData.managerName}<br>
-    Manager's Contact No -- ${clientData.managerContactNo}<br>
-    FBO Name -- ${clientData.fboName}<br>
-    Owner Name -- ${clientData.ownerName}<br>
-    Address -- ${clientData.address}<br>
     No of Food Handler -- ${clientData.foodHandlerNo}<br>
     Kind Of Business -- ${clientData.kindOfBusiness}<br>
 
-    <p>You will receive a call to verify the details and supporting documents.</p>
-    <p>The tentative date of your inspection for Hygiene Rating Program Will be ${clientData.auditDate}, get Ready With the Undermentioned Documents<br>
-    1.FSSAI License<br>
-    2.FOSTAC Certificate<br>
-    3.Water test Report<br>
-    4.Medical Certificate of food handlers<br>
-    <br>
-    Also maintain a proper record of documents attached in mail on a daily basis</p>
+    <p>click button below for verifing your email.</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.fboObjId}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">Verify</button>
+        </a>
+        <br><br>
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
@@ -382,22 +493,23 @@ const sendVerificationMail = (clientData) => {
     <p>भारत सरकार के FSSAI द्वारा आयोजित HRA कार्यक्रम के लिए पंजीकरण के लिए धन्यवाद।<br>
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
-    प्रबंधक का नाम -- ${clientData.managerName}<br>
-    प्रबंधक का संपर्क नंबर -- ${clientData.managerContactNo}<br>
-    FBO का नाम -- ${clientData.fboName}<br>
-    Owner Name -- ${clientData.ownerName}<br>
-    मालिक का नाम -- ${clientData.address}<br>
     खाद्य संचालक की संख्या -- ${clientData.foodHandlerNo}<br>
     व्यवसाय का प्रकार -- ${clientData.kindOfBusiness}<br>
 
-    <p>आपको विवरण और सहायक दस्तावेजों को सत्यापित करने के लिए एक कॉल प्राप्त होगी।</p>
-    <p>स्वच्छता रेटिंग कार्यक्रम के लिए आपका निरीक्षण ${clientData.auditDate} को निर्धारित किया जाएगा, निम्नलिखित दस्तावेजों के साथ तैयार रहें<br>
-    1.FSSAI लाइसेंस<br>
-    2.FOSTAC प्रमाणपत्र<br>
-    3.जल परीक्षण रिपोर्ट<br>
-    4.खाद्य संचालकों का चिकित्सा प्रमाण पत्र<br>
-    <br>
-    दैनिक आधार पर मेल में संलग्न दस्तावेजों का उचित रिकॉर्ड भी रखें</p>
+     <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.id}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
+        </a>
+        <br><br>
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
@@ -410,7 +522,85 @@ const sendVerificationMail = (clientData) => {
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
 
-  } else if (clientData.product == 'hra schedule') {
+  } else if (clientData.product == 'doc') {
+
+    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
+    ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
+    <p>Dear ${clientData.managerName},</p>
+    <p>Thanks for registering for the compliances of - FSSAI GOI.<br>
+    The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
+    <p>The list docs you commited you have:-</p>
+     ${clientData.checkedDocsName.join('<br>')}
+     <p><b>Please mail these docs on customerrelations@iiest.org </b></p>
+
+    <p>click button below for verifing your email.</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/doc/${clientData.fboObjId}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">Verify</button>
+        </a>
+        <br><br>
+
+    <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
+    <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Regards,<br>
+    ${CB_BRAND_NAME.english}</p>
+    <br>
+    Brand Name - ${CB_BRAND_NAME.english},<br/>
+    Address - ${CB_ADDRESS.english}<br/>
+    Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
+    Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+    Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br><br>
+    <hr>
+    <br>
+    <p>${CB_BRAND_NAME.hindi} में आपका स्वागत है,<br>
+    ${CB_BRAND_NAME.hindi} पोर्टल व्यवसायों को आसानी से अनुपालन और कानूनी आवश्यकताओं को पूरा करने में सक्षम बनाता है।</p>
+    <p>प्रिय ${clientData.managerName},</p>
+    <p>भारत सरकार के तहत सेवाओं के लिए पंजीकरण करने के लिए धन्यवाद।<br>
+    आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
+    
+<p>आपके द्वारा प्रतिबद्ध किए गए दस्तावेज़ों की सूची:-</p>
+ ${clientData.checkedDocsName.join('<br>')}
+ <p><b>कृपया इन दस्तावेजों को customerrelations@iiest.org पर मेल करें।</b></p>
+
+
+     <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/doc/${clientData.id}'>
+            <button style="display: block;
+            width: 100%;
+            max-width: 300px;
+            background: #20DA9C;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
+        </a>
+        <br><br>
+
+    <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
+    <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p>"धन्यवाद,<br>
+    ${CB_BRAND_NAME.hindi}</p>
+    <br>
+    ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
+    पता - ${CB_ADDRESS.hindi}<br/>
+    संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
+    लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+
+  } 
+  else if (clientData.product == 'hra schedule') {
 
     subject = `${CB_BRAND_NAME.english} - HRA Scheduled`;
     content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>

@@ -6,8 +6,6 @@
           <h1 class="app-page-title mb-2">Operation {{productType}} Form
             <p *ngIf="customerId" class="Customer-id">({{customerId}})</p>
           </h1>
-
-        <!-- <img src="assets/images/logo-side.png" alt="" style="height: 100px;"> -->
         </div>
 
         <ul class="row nav nav-pills d-flex justify-content-start">
@@ -22,26 +20,84 @@
         <!-- <div class="">Customer ID</div> -->
         <div class="row gy-4 mb-3 border py-3 px-3 border-1 my-0 rounded-3 rounded-start-0 tabs"
           [ngClass]="{'d-grid': activeTab==='form'}">
-          <!-- verifiaction section: this section is for verifing the recipient where we takes the basic details of the recipient and verify it-->
+
+
+
+          <!-- Shop verifiaction section -->
           <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
-            [isTrainer]="isTrainer" [productType]="productType" (emitCustomerId)="getCustomerId($event)"
-            (emitVerifiedID)="getVerifiedDataId($event)" (emitVerifiedStatus)="getVerifiedStatus($event)"
-            (emitDocuments)="getDocuments($event)" (refreshAuditLog)="generalsec.getCaseNotes()"
-            (emitVerifiedData)="getVerifiedData($event)">
+            [isForShopVerification]="true" [isTrainer]="isTrainer" [productType]="productType" (emitCaseData)="getCaseData($event)"
+            (emitCustomerId)="getCustomerId($event)" (emitVerifiedID)="getVerifiedDataId($event)" (emitPrevSecVerifiedStatus)="getShopSecVerifiedStatus($event)"
+            (emitVerifiedStatus)="getVerifiedStatus($event)" (emitDocuments)="getDocuments($event)"
+            (refreshAuditLog)="generalsec.getCaseNotes()" (emitVerifiedData)="getVerifiedData($event)">
           </app-verification-section>
 
-          <app-documentation-section [shopId]="candidateId" [customerId]="customerId" *ngIf="productType !== 'Fostac'"
-          class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus" [productType]="productType"
-          [verifiedData]="verifiedData" (refreshAuditLog)="generalsec.getCaseNotes()"
-          (emitDocuments)="getDocuments($event)">
-        </app-documentation-section>
+
+
+
+
+           <!-- Product verifiaction section -->
+          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
+            [isForProductVerification]="true" [isTrainer]="isTrainer" [productType]="productType" [caseData]="caseData"
+            (emitCustomerId)="getCustomerId($event)" (emitVerifiedID)="getVerifiedDataId($event)"
+             [prevSecVerifiedStatus]="ShopSecVerifedStatus" (emitPrevSecVerifiedStatus2)="getProductSecVerifiedStatus($event)"
+            (emitVerifiedStatus)="getVerifiedStatus($event)" (emitDocuments)="getDocuments($event)"
+            (refreshAuditLog)="generalsec.getCaseNotes()" (emitVerifiedData)="getVerifiedData($event)">
+          </app-verification-section>
+
+
+
+
+
+          <!-- Docments Verification section -->
+          <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
+            [isForDocVerification]="true" [isTrainer]="isTrainer" [productType]="productType" [verifiedShopData]="verifiedData"
+            [caseData]="caseData" #docVerificationSec [prevSecVerifiedStatus]="productSecVerifedStatus"
+            (emitCustomerId)="getCustomerId($event)" (emitVerifiedID)="getVerifiedDataId($event)" (emitPrevSecVerifiedStatus3)="getDocSecVerifiedStatus($event)"
+            (emitVerifiedStatus)="getVerifiedStatus($event)" (emitDocuments)="getDocuments($event)"
+            (emitCheckedDocs)="getCheckedDocs($event)" [requiredDocs]="requiredDocs"
+            (refreshAuditLog)="generalsec.getCaseNotes()" (emitVerifiedData)="getVerifiedData($event)">
+          </app-verification-section> 
+
+
+
+
+          <!-- Document Upload Section(Documentation Section) -->
+          <app-documentation-section [isForDocCollection]="true" [shopId]="candidateId" [customerId]="customerId" 
+           [checkedDocs]="this.requiredDocs" [requiredDocs]="requiredDocs"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus" 
+            [productType]="productType" [verifiedData]="verifiedData" (refreshAuditLog)="generalsec.getCaseNotes()"
+            (emitDocuments)="getDocuments($event)">
+          </app-documentation-section>
+
+
+
+
+
+
+          <!-- Form Switch for deciding of opening sale form or not-->
+          <div class="form-check form-switch border border-2 rounded-5 border-secondary-subtle switch-option"
+            (change)="isSaleFormVisible = !isSaleFormVisible">
+            <input class="form-check-input cursor-pointer" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+            <label class="form-check-label" for="flexSwitchCheckDefault">Want To Sale</label>
+          </div>
+
+
+
+          <!-- Document Sale Section -->
+          <app-documentation-section [isForDocSale]="isSaleFormVisible" [shopId]="candidateId" [customerId]="customerId"
+            *ngIf="isSaleFormVisible" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" 
+            [requiredDocs]="requiredDocs" (emitDocForSaleNames)="getDocForSaleNames($event)"
+            [verifiedStatus]="verifiedStatus" [productType]="productType" [verifiedData]="verifiedData"
+            (refreshAuditLog)="generalsec.getCaseNotes()" (emitDocuments)="getDocuments($event)">
+          </app-documentation-section>
+
 
           <!-- enrollment section: this section is for enrolling and giving training date and enrollment number -->
-          <app-enrollment-section *ngIf="(productType === 'Fostac') && !isVerifier" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [verifiedStatus]="verifiedStatus" [verifiedDataId]="verifiedDataId" [verifiedData]="verifiedData"
+          <app-enrollment-section *ngIf="(productType === 'Fostac') && !isVerifier"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
+            [verifiedDataId]="verifiedDataId" [verifiedData]="verifiedData"
             (emitEnrolledStatus)="getEnrolledStatus($event)" (emitEnrolledDataId)="getEnrolledDataId($event)"
-            [isVerifier]="isVerifier"
-            (refreshAuditLog)="generalsec.getCaseNotes()">
+            [isVerifier]="isVerifier" (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-enrollment-section>
 
           <!-- Scheduling section: for scheduling audit -->
@@ -50,27 +106,29 @@
           [customerId]="customerId" (emitDocuments)="getDocuments($event)">
           </app-scheduling-section> -->
 
-          <app-audit-section *ngIf="(productType === 'HRA')  && !isVerifier" [shopId]="candidateId" [isVerifier]="isVerifier"
-          class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [verifiedStatus]="verifiedStatus"
-          [verifiedData]="verifiedData" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
+          <app-audit-section *ngIf="(productType === 'HRA')  && !isVerifier" [shopId]="candidateId"
+            [isVerifier]="isVerifier" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
+            [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3">
           </app-audit-section>
 
           <!-- Attendance section: trainers can mark attendance by the help of this section and this is also only visible to trainers -->
-          <app-attendance-section *ngIf="(productType === 'Fostac')  && !isVerifier" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [enrolledStatus]="enrolledStatus" [enrolledDataId]="enrolledDataId" [isVerifier]="isVerifier"
+          <app-attendance-section *ngIf="(productType === 'Fostac')  && !isVerifier"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [enrolledStatus]="enrolledStatus"
+            [enrolledDataId]="enrolledDataId" [isVerifier]="isVerifier"
             (emitAttenanceStatus)="getAttendanceStatus($event)" (emitAttenSecResult)="gePrevSecResult($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()">
           </app-attendance-section>
 
-          <app-revert-section *ngIf="(productType === 'Foscos')  && !isVerifier" class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3"
-            [customerId]="candidateId" [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData"
-             (emitFilingResult)="gePrevSecResult($event)" [isVerifier]="isVerifier" >
+          <app-revert-section *ngIf="(productType === 'Foscos')  && !isVerifier"
+            class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [customerId]="candidateId"
+            [verifiedStatus]="verifiedStatus" [verifiedData]="verifiedData" (emitFilingResult)="gePrevSecResult($event)"
+            [isVerifier]="isVerifier">
           </app-revert-section>
 
           <app-certification-section class="g-1 p-3 mt-2 border border-1 rounded-3 pb-3" [candidateID]="candidateId"
             [attendanceStatus]="attendanceStatus" [prevSecResult]="prevSecResult" [projectType]="productType"
-            [isVerifier]="isVerifier" *ngIf="!isVerifier"
-            (emitDocuments)="getDocuments($event)">
+            [isVerifier]="isVerifier" *ngIf="!isVerifier" (emitDocuments)="getDocuments($event)">
           </app-certification-section>
 
           <!-- general section: this section is for tracking recpients record like case notes and officer notes -->
@@ -91,12 +149,11 @@
           </div>
 
           <div class="row g-4 my-0">
-            <div class="col-6 col-md-3 col-xl-2 col-xxl-2" *ngFor="let doc of documents">
+            <div class="col-6 col-md-3 col-xl-2 col-xxl-2" *ngFor="let doc of docList">
               <div class="app-card app-card-doc shadow-sm h-100">
                 <div class="app-card-thumb-holder p-3">
                   <div class="app-card-thumb" *ngIf="doc.format.toLowerCase() === 'image' && doc.src.length == 1">
-                    <img class="thumb-image" [src]="doc.src" [alt]="doc.name"
-                      (click)="viewDocument(doc)">
+                    <img class="thumb-image" [src]="doc.src" [alt]="doc.name" (click)="viewDocument(doc)">
                   </div>
                   <span class="icon-holder" *ngIf="doc.format === 'pdf' && doc.src.length == 1">
                     <fa-icon class="fa-sm mx-2 text-success cursor-pointer" (click)="viewDocument(doc)"

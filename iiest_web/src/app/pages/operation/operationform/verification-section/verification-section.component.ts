@@ -1,11 +1,15 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IconDefinition, faCheck, faCircleCheck, faCircleExclamation, faL } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faCheck, faCircleCheck, faCircleExclamation, faExclamationCircle, faL, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
+import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.component';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
-import { hraKob, ownershipType } from 'src/app/utils/config';
+import { basicRequiredDocs, hraKob, ownershipType, stateName } from 'src/app/utils/config';
+import { pincodeData } from 'src/app/utils/registerinterface';
 
 @Component({
   selector: 'app-verification-section',
@@ -22,15 +26,39 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   // indexArr: number[] = []; //this var is used for converting ownersNum to array of increasing num till ownerNum because we are using this with ngFor and ngFor works only with array
   ownerType: string = '';
 
+  //var that decides verification section type
+
+
+  //status related vars
+  resultText: string = 'In-Progress';
+  resultTextClass: string = 'bg-warning';
+  resultIcon: IconDefinition = faExclamationCircle;
+
   //icons
   faCircleExclamation = faCircleExclamation;
   faCircleCheck = faCircleCheck;
+  faUsers: IconDefinition = faUsers;
 
   //var related to loader
   loading: boolean = false;
 
+  //var in case of recp verification
+  isRecpVerification: boolean = false;
+
+  isPendingByCustomer: boolean = false;
+
+
+  //doc verifiation related vars
+  @Input() requiredDocs: any = [];
+
   // input variables
   @Input() candidateId: string = '';
+
+  @Input() isForShopVerification: boolean = false;
+
+  @Input() isForProductVerification: boolean = false;
+
+  @Input() isForDocVerification: boolean = false;
 
   @Input() productType: string = '';
 
@@ -38,7 +66,15 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Input() isVerifier: boolean = false;
 
+  @Input() caseData: any;
+
+  @Input() verifiedShopData: any = [];
+
+  @Input() prevSecVerifiedStatus: boolean = false;
+
   //output variables
+  @Output() emitCaseData: EventEmitter<any> = new EventEmitter<any>;
+
   @Output() emitVerifiedID: EventEmitter<string> = new EventEmitter<string>;
 
   @Output() emitVerifiedData: EventEmitter<any> = new EventEmitter<any>;
@@ -51,9 +87,19 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   @Output() emitDocuments: EventEmitter<any> = new EventEmitter<any>
 
+  @Output() emitCheckedDocs: EventEmitter<any> = new EventEmitter<any>
+
+  @Output() emitPrevSecVerifiedStatus: EventEmitter<any> = new EventEmitter<any>
+  @Output() emitPrevSecVerifiedStatus2: EventEmitter<any> = new EventEmitter<any>
+  @Output() emitPrevSecVerifiedStatus3: EventEmitter<any> = new EventEmitter<any>
+
   @ViewChild(MultiSelectComponent) multiSelect: MultiSelectComponent;
 
   @ViewChildren('fieldVerification') fieldVerifications: QueryList<ElementRef>
+
+  @ViewChild('switch') switch: ElementRef;
+
+  @ViewChild('verification_check') verification_check: ElementRef;
 
   kobData: any;
 
@@ -65,39 +111,56 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   ownershipType = ownershipType;
 
+  checkedDocsName: string[] = [];
+
+  //this case will keep track of if arr recps are filled or not in case of products that includes recipients
+  isAllRecpsFilled: boolean = false;
+  noOfRecpLeft: number = 0;
+
   //icons
   faCheck: IconDefinition = faCheck;
+
+
+  //editing related vars
+  isEditMode: boolean = false;
+  states: string[] = stateName;
+  districtAndPincodes: pincodeData[];
+  districts: string[] = [];
+  pincodes: string[] = [];
+
+
+
+  //  ------------------------------------------------------------Form Groups-----------------------------------------------------------------------------------
+
 
   //Verification Reactive angular form
   verificationForm: FormGroup = new FormGroup({});
 
-  fostacVerificationForm: FormGroup = new FormGroup({
-    recipient_name: new FormControl(''),
+  //shop verification form
+  shopVerificationForm: FormGroup = new FormGroup({
+    manager_name: new FormControl(''),
     fbo_name: new FormControl(''),
+    business_entity: new FormControl(''),
     owner_name: new FormControl(''),
-    father_name: new FormControl(''),
-    dob: new FormControl(''),
+    manager_contact: new FormControl(''),
+    manager_email: new FormControl(''),
     address: new FormControl(''),
-    operator_contact_no: new FormControl(''),
-    email: new FormControl(''),
-    aadhar_no: new FormControl(''),
-    // pancard_no: new FormControl(''),
+    state: new FormControl(''),
+    district: new FormControl(''),
+    pincode: new FormControl('')
+  });
+
+  //fostac Verification form
+  fostacVerificationForm: FormGroup = new FormGroup({
+    recipient_no: new FormControl(''),
+    service_name: new FormControl(''),
     fostac_total: new FormControl(''),
+    sales_date: new FormControl(''),
     sales_person: new FormControl(''),
   });
 
+  //foscos verification form
   foscosVerificationForm: FormGroup = new FormGroup({
-    manager_name: new FormControl(''),
-    fbo_name: new FormControl(''),
-    owner_name: new FormControl(''),
-    operator_contact_no: new FormControl(''),
-    email: new FormControl(''),
-    address: new FormControl(''),
-    pincode: new FormControl(''),
-    state: new FormControl(''),
-    district: new FormControl(''),
-    village: new FormControl(''),
-    tehsil: new FormControl(''),
     license_category: new FormControl(''),
     license_duration: new FormControl(''),
     foscos_total: new FormControl(''),
@@ -109,16 +172,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     owners_num: new FormControl(this.minMembers)
   });
 
+  //hraverification form
   hraVerificationForm: FormGroup = new FormGroup({
-    manager_name: new FormControl(''),
-    fbo_name: new FormControl(''),
-    owner_name: new FormControl(''),
-    manager_contact_no: new FormControl(''),
-    email: new FormControl(''),
-    address: new FormControl(''),
-    pincode: new FormControl(''),
-    state: new FormControl(''),
-    district: new FormControl(''),
     hra_total: new FormControl(''),
     sales_date: new FormControl(''),
     sales_person: new FormControl(''),
@@ -126,40 +181,52 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     food_handler_no: new FormControl('')
   });
 
+  //document verification form
+  documentVerificationForm: FormGroup = new FormGroup({});
+
+
+
+
+
+
+  // -------------------------------------------------------------Constructor ---------------------------------------------------------------------
   constructor(private formBuilder: FormBuilder,
     private _registerService: RegisterService,
     private _getDataService: GetdataService,
-    private _toastrService: ToastrService) {
+    private _toastrService: ToastrService,
+    private modalService: NgbModal,
+    private cdr: ChangeDetectorRef) {
 
   }
 
+
+  // -----------------------------------------------------------Life cycle hooks -----------------------------------------------------------------------------
   ngOnInit(): void {
 
     this.setFormValidation();
 
     this.getMoreCaseInfo();
 
-    switch (this.productType) {
-      case 'Fostac':
-        this.verificationForm = this.fostacVerificationForm;
+    if (this.isForProductVerification) {
 
-        this.getFostacVerifiedData();
+      switch (this.productType) {
+        case 'Fostac':
+          this.verificationForm = this.fostacVerificationForm;
 
-        break;
+          break;
 
-      case 'Foscos':
+        case 'Foscos':
 
-        this.getKobData();
+          this.getKobData();
 
-        this.verificationForm = this.foscosVerificationForm;
+          this.verificationForm = this.foscosVerificationForm;
 
-        this.getFoscosVerifiedData()
-        break;
+          break;
 
-      case 'HRA':
-        this.verificationForm = this.hraVerificationForm;
-        this.getHraVerifiedData();
-        break;
+        case 'HRA':
+          this.verificationForm = this.hraVerificationForm;
+          break;
+      }
     }
 
   }
@@ -179,34 +246,75 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       }
     }
 
+    if (changes && changes['caseData'] && changes['caseData'].currentValue) {
+      this.getMoreCaseInfo();
+      if (this.isForProductVerification || this.isForDocVerification) {
+
+        //getting kob data
+        if (this.productType === 'Foscos') {
+          this.getKobData();
+        }
+
+        if(this.isForProductVerification){
+          this.getShopVerifiedData();
+        }
+        //getting shop verified data
+        
+      }
+    }
+
+    if (changes['isForDocVerification']) {
+      this.isForDocVerification = changes['isForDocVerification'].currentValue;
+    }
+  
+    // Check if 'verifiedShopData' has changed and 'isForDocVerification' is true
+    if (changes['verifiedShopData'] && changes['verifiedShopData'].currentValue && this.isForDocVerification) {
+      this.isPendingByCustomer = this.verifiedShopData.isReqDocVerificationLinkSend;
+      this.verifiedStatus = this.verifiedShopData.isReqDocsVerified;
+  
+      this.decideResult();
+      this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
+    }
+    
+   
   }
 
+  //---------------------------------------------------------------------- GET -----------------------------------------------------------------------------------------
   get verificationform(): { [key: string]: AbstractControl } {
     return this.verificationForm.controls;
   }
 
+  get shopverificationform(): { [key: string]: AbstractControl } {
+    return this.shopVerificationForm.controls;
+  }
 
+  // -------------------------------------------------------------------------methords------------------------------------------------------------------------------
   onVerify(): void {
     if (this.fieldVerifications.find((div: any) => div.nativeElement.getAttribute('valid') === 'false')) {
       this._toastrService.warning('Please verify all fields first')
       return
     }
     this.verified = true;
-    if (this.verificationForm.invalid) {
+
+    //return in case of loading or form invalid
+    if (this.verificationForm.invalid || this.loading) {
       return
     }
+
     this.loading = true;
     if (this.productType === 'Fostac') {
       this._registerService.verifyFostac(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
+          this.loading = false;
           if (res.success) {
+            this.loading = false;
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
-            this.emitVerifiedData.emit({ ...res.verificationInfo, batchData: res.batchData });
+            // this.emitVerifiedData.emit({ ...res.verificationInfo, batchData: res.batchData });
             this.refreshAuditLog.emit();
             this.loading = false;
-            this._toastrService.success('Recipient\'s Information is Verified', 'Verified');
+            this._toastrService.success('Email Sent For Fostac Verification');
           }
         },
         error: err => {
@@ -228,111 +336,237 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
-            this.emitVerifiedData.emit(res.verificationInfo);
+            // this.emitVerifiedData.emit(res.verificationInfo);
             this.refreshAuditLog.emit();
-            this._toastrService.success('Shop\'s Information is Verified', 'Verified');
+            this._toastrService.success('Email Sent For Foscos Verification');
           }
         }
       });
     } else if (this.productType === 'HRA') {
       this._registerService.verifyHra(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
+          this.loading = false;
           if (res.success) {
             this.loading = false;
             this.verifiedStatus = true;
             console.log(res);
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
-            this.emitVerifiedData.emit(res.verificationInfo);
+            // this.emitVerifiedData.emit(res.verificationInfo);
             this.refreshAuditLog.emit();
-            this._toastrService.success('Shop\'s Information is Verified', 'Verified');
+            this._toastrService.success('Email Sent For HRA Verification');
           }
         },
         error: err => {
           this.loading = false;
           if (err.error.locationErr) {
             this._toastrService.error('Location not avilable');
-          } 
+          }
         }
       });
     }
   }
 
+  //on shop verify
+  onShopVerify(): void {
+    if (this.fieldVerifications.find((div: any) => div.nativeElement.getAttribute('valid') === 'false')) {
+      this._toastrService.warning('Please verify all fields first')
+      return
+    }
+    this.verified = true;
+
+    if (this.shopVerificationForm.invalid) {
+      return
+    }
+
+    this.loading = true;
+
+    //sending verifaication link
+    this._registerService.sendFboVerificationLink(this.caseData.salesInfo.fboInfo._id, this.shopVerificationForm.value).subscribe({
+      next: res => {
+        this.loading = false;
+        if (res) {
+          this._toastrService.success('Please guide the customer for verifing link', 'Verification Link Send by Mail');
+          this.resultText = 'Pending on customer end';
+          this.resultTextClass = 'bg-orange';
+          this.resultIcon = faCircleExclamation;
+          this.isPendingByCustomer = true;
+
+        }
+      },
+      error: err => {
+        this.loading = false;
+      }
+    })
+  }
+
+  //methord is for action if verifing docs
+  onDocVerify() {
+
+    this.verified = true;
+    //return in case of loading  or invalid form field
+    if (this.loading) {
+      return;
+    }
+
+    //opening confirmation modal
+    const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.action = 'Verify checked docs and send confirmation link by sms and mail';
+    modalRef.componentInstance.confirmationText = 'confirm';
+    modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
+      if (confirmation) {
+        this.loading = true;
+        this.verified = false;
+        this.verifiedStatus = true;
+
+        this._registerService.verifyDoc(this.candidateId, this.checkedDocsName).subscribe({
+          next: res => {
+            this.loading = false;
+            console.log(res);
+            this.emitCheckedDocs.emit(this.checkedDocsName);
+          }
+        })
+
+      } else {
+        console.log(this.verification_check);
+      }
+    })
+  }
+
   //founction for fetching recipient data 
   getMoreCaseInfo(): void {
-    this._getDataService.getMoreCaseInfo(this.productType, this.candidateId).subscribe({
-      next: (res) => {
-        if (this.productType === 'Fostac') {
-          this.emitCustomerId.emit(res.populatedInfo.recipientId);
-          this.verificationForm.patchValue({ recipient_name: res.populatedInfo.name });
-          this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
-          this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
-          this.verificationForm.patchValue({ address: res.populatedInfo.address });
-          this.verificationForm.patchValue({ recipient_contact_no: res.populatedInfo.phoneNo });
-          this.verificationForm.patchValue({ aadhar_no: res.populatedInfo.aadharNo });
-          this.verificationForm.patchValue({ father_name: res.populatedInfo.fatherName });
-          this.verificationForm.patchValue({ dob: res.populatedInfo.dob });
-          this.verificationForm.patchValue({ email: res.populatedInfo.email });
-          this.verificationForm.patchValue({ fostac_total: res.populatedInfo.salesInfo.fostacInfo.fostac_total });
-          this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
-          this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
-          this._getDataService.getDocs(res.populatedInfo.recipientId).subscribe({
-            next: response => {
-              this.emitDocuments.emit(response.doc || []); //emit 
-              this.refreshAuditLog.emit();
-            }
-          });
-        } else if (this.productType === 'Foscos') {
-          this.emitCustomerId.emit(res.populatedInfo.salesInfo.fboInfo.customer_id);
-          this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
-          this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
-          this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
-          this.verificationForm.patchValue({ operator_contact_no: res.populatedInfo.salesInfo.fboInfo.owner_contact });
-          this.verificationForm.patchValue({ email: res.populatedInfo.salesInfo.fboInfo.email });
-          this.verificationForm.patchValue({ address: res.populatedInfo.address });
-          this.verificationForm.patchValue({ state: res.populatedInfo.state });
-          this.verificationForm.patchValue({ district: res.populatedInfo.district });
-          this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
-          this.verificationForm.patchValue({ village: res.populatedInfo.village });
-          this.verificationForm.patchValue({ tehsil: res.populatedInfo.tehsil });
-          this.verificationForm.patchValue({ license_category: res.populatedInfo.salesInfo.foscosInfo.license_category });
-          this.verificationForm.patchValue({ license_duration: res.populatedInfo.salesInfo.foscosInfo.license_duration });
-          this.verificationForm.patchValue({ foscos_total: res.populatedInfo.salesInfo.foscosInfo.foscos_total });
-          this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
-          this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
-        } else if (this.productType === 'HRA') {
-          this.emitCustomerId.emit(res.populatedInfo.salesInfo.fboInfo.customer_id);
-          this.verificationForm.patchValue({ manager_name: res.populatedInfo.managerName });
-          this.verificationForm.patchValue({ fbo_name: res.populatedInfo.salesInfo.fboInfo.fbo_name });
-          this.verificationForm.patchValue({ owner_name: res.populatedInfo.salesInfo.fboInfo.owner_name });
-          this.verificationForm.patchValue({ manager_contact_no: res.populatedInfo.salesInfo.fboInfo.owner_contact });
-          this.verificationForm.patchValue({ email: res.populatedInfo.salesInfo.fboInfo.email });
-          this.verificationForm.patchValue({ address: res.populatedInfo.address });
-          this.verificationForm.patchValue({ state: res.populatedInfo.state });
-          this.verificationForm.patchValue({ district: res.populatedInfo.district });
-          this.verificationForm.patchValue({ pincode: res.populatedInfo.pincode });
-          this.verificationForm.patchValue({ hra_total: res.populatedInfo.salesInfo.hraInfo.hra_total });
-          this.verificationForm.patchValue({ sales_date: this.getFormatedDate(res.populatedInfo.salesInfo.createdAt) });
-          this.verificationForm.patchValue({ sales_person: res.populatedInfo.salesInfo.employeeInfo.employee_name });
+    if (this.isForShopVerification) {
+      this._getDataService.getMoreCaseInfo(this.productType, this.candidateId).subscribe({
+        next: (res) => {
+          this.caseData = res.populatedInfo;
+
+          this.emitCaseData.emit(this.caseData);
+
+          this.shopVerificationForm.patchValue({ manager_name: this.caseData.salesInfo.fboInfo.boInfo.manager_name });
+          this.shopVerificationForm.patchValue({ business_entity: this.caseData.salesInfo.fboInfo.boInfo.business_entity });
+          this.shopVerificationForm.patchValue({ fbo_name: this.caseData.salesInfo.fboInfo.fbo_name });
+          this.shopVerificationForm.patchValue({ owner_name: this.caseData.salesInfo.fboInfo.boInfo.owner_name });
+          this.shopVerificationForm.patchValue({ manager_contact: this.caseData.salesInfo.fboInfo.boInfo.contact_no });
+          this.shopVerificationForm.patchValue({ manager_email: this.caseData.salesInfo.fboInfo.boInfo.email });
+          this.shopVerificationForm.patchValue({ address: this.caseData.salesInfo.fboInfo.address });
+          this.shopVerificationForm.patchValue({ state: this.caseData.salesInfo.fboInfo.state });
+          this.shopVerificationForm.patchValue({ district: this.caseData.salesInfo.fboInfo.district });
+          this.shopVerificationForm.patchValue({ pincode: this.caseData.salesInfo.fboInfo.pincode });
+
+          this.isPendingByCustomer = this.caseData.salesInfo.fboInfo.isVerificationLinkSend
+          this.verifiedStatus = this.caseData.salesInfo.fboInfo.isFboVerified;
+
+          this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
+
+          this.decideResult();
         }
+      });
+    } else if (this.isForProductVerification && this.caseData) {
+
+
+      if (this.productType === 'Fostac') {
+
+        //getting recipient data also in case of fostac
+        this._getDataService.getSaleRecipients(this.caseData.salesInfo._id).subscribe({
+          next: res => {
+            this.caseData.salesInfo.recipientInfo = res.recipientsList;
+
+            //setting is all recp filled true if all recps are filed that is if no of recp in recipient list array is equal to recipient no infostac info
+            this.isAllRecpsFilled = (this.caseData.salesInfo.fostacInfo.recipient_no == this.caseData.salesInfo.recipientInfo.length)
+            this.noOfRecpLeft = this.caseData.salesInfo.fostacInfo.recipient_no - this.caseData.salesInfo.recipientInfo.length;
+          }
+        })
+        this.verificationForm.patchValue({ fostac_total: this.caseData.salesInfo.fostacInfo.fostac_total });
+        this.verificationForm.patchValue({ recipient_no: this.caseData.salesInfo.fostacInfo.recipient_no })
+        this.verificationForm.patchValue({ service_name: this.caseData.salesInfo.fostacInfo.fostac_service_name })
+        this.verificationForm.patchValue({ sales_date: this.getFormatedDate(this.caseData.salesInfo.createdAt.toString()) })
+        this.verificationForm.patchValue({ sales_person: this.caseData.salesInfo.employeeInfo.employee_name })
+      } else if (this.productType === 'Foscos') {
+        this.verificationForm.patchValue({ foscos_total: this.caseData.salesInfo.foscosInfo.foscos_total });
+        this.verificationForm.patchValue({ license_category: this.caseData.salesInfo.foscosInfo.license_category })
+        this.verificationForm.patchValue({ license_duration: this.caseData.salesInfo.foscosInfo.license_duration })
+        this.verificationForm.patchValue({ sales_date: this.getFormatedDate(this.caseData.salesInfo.createdAt.toString()) })
+        this.verificationForm.patchValue({ sales_person: this.caseData.salesInfo.employeeInfo.employee_name })
       }
-    });
+      else if (this.productType === 'HRA') {
+        this.verificationForm.patchValue({ hra_total: this.caseData.salesInfo.hraInfo.hra_total });
+        this.verificationForm.patchValue({ sales_date: this.getFormatedDate(this.caseData.salesInfo.createdAt.toString()) })
+        this.verificationForm.patchValue({ sales_person: this.caseData.salesInfo.employeeInfo.employee_name })
+      }
+
+      
+
+      this.decideResult();
+
+
+
+      this.emitPrevSecVerifiedStatus2.emit(this.verifiedStatus);
+
+    }
+  }
+
+
+  //methord for getting shop verified data
+  getShopVerifiedData(): void {
+    this.loading = true;
+    this._getDataService.getShopVerifedData(this.candidateId).subscribe({
+      next: res => {
+        this.loading = false;
+        if (res.verifedData.isProdVerificationLinkSend && !res.verifedData.isProdVerified) {
+          this.isPendingByCustomer = true;
+        } else if (res.verifedData.isProdVerified) {
+          this.verifiedStatus = true;
+          this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
+        }
+        this.patchVerifiedData(res.verifedData);
+
+        this.verifiedShopData = res.verifedData
+        this.isPendingByCustomer = this.verifiedShopData.isProdVerificationLinkSend;
+        this.verifiedStatus = this.verifiedShopData.isProdVerified;
+        this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
+        this.decideResult();
+        this.emitVerifiedData.emit(this.verifiedShopData);
+        
+
+      },
+      error: err => {
+        this.loading = false;
+      }
+    })
+  }
+
+  //methord for patching verified data
+  patchVerifiedData(data: any): void {
+    switch (this.productType) {
+      case "Foscos":
+        this.verificationForm.patchValue({ kob: data.kob });
+        this.verificationForm.patchValue({ ownership_type: data.ownershipType });
+        this.verificationForm.patchValue({ food_category: data.foodCategory });
+        //sttung selected of mutiselect
+        if (this.multiSelect) {
+          this.multiSelect.selected = data.foodCategory;
+          this.multiSelect.isDisplayEmpty = false;
+        }
+        this.verificationForm.patchValue({ operator_address: data.operatorAddress });
+        break;
+
+      case "HRA":
+        this.verificationForm.patchValue({ kob: data.kob });
+        this.verificationForm.patchValue({ food_handler_no: data.foodHandlersCount });
+        break;
+
+    }
   }
 
   getFostacVerifiedData(): void {
     this._getDataService.getFostacVerifedData(this.candidateId).subscribe({
       next: res => {
         if (res) {
-          console.log(res);
           this.verifiedStatus = true;
           this.emitVerifiedStatus.emit(this.verifiedStatus);
           this.emitVerifiedID.emit(res.verifedData._id);
-          // this.verificationForm.patchValue({ father_name: res.verifedData.fatherName });
-          // this.verificationForm.patchValue({ dob: this.getFormatedDate(res.verifedData.dob) });
-          // this.verificationForm.patchValue({ email: res.verifedData.email });
-          // this.verificationForm.patchValue({ pancard_no: res.verifedData.pancardNo });
           this.fieldVerifications.forEach((div: any) => div.nativeElement.setAttribute('valid', 'true'));
-          this.emitVerifiedData.emit({ ...res.verifedData, batchData: res.batchData });
+          // this.emitVerifiedData.emit({ ...res.verifedData, batchData: res.batchData });
           this.loading = false;
         } else {
           this.verifiedStatus = false;
@@ -350,27 +584,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.verifiedStatus = true;
           this.multiSelect.isDisplayEmpty = false;
           this.multiSelect.selected = res.verifedData.foodCategory;
-          this.verificationForm.patchValue({ kob: res.verifedData.kob });
-          this.verificationForm.patchValue({ ownership_type: res.verifedData.ownershipType });
-          this.verificationForm.patchValue({ food_category: res.verifedData.foodCategory });
-          this.verificationForm.patchValue({ operator_address: res.verifedData.operatorAddress });
-          this.emitVerifiedData.emit(res.verifedData);
-          this.emitVerifiedStatus.emit(this.verifiedStatus);
-        } else {
-          this.verifiedStatus = false;
-        }
-      }
-    });
-  }
 
-  getHraVerifiedData() {
-    this._getDataService.getHraVerifedData(this.candidateId).subscribe({
-      next: res => {
-        if (res) {
-          this.verifiedStatus = true;
-          this.emitVerifiedData.emit(res.verifedData);
-          this.verificationForm.patchValue({ kob: res.verifedData.kob });
-          this.verificationForm.patchValue({ food_handler_no: res.verifedData.foodHandlersCount });
+          // this.emitVerifiedData.emit(res.verifedData);
           this.emitVerifiedStatus.emit(this.verifiedStatus);
         } else {
           this.verifiedStatus = false;
@@ -415,36 +630,28 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   setFormValidation(): void {
 
-    this.fostacVerificationForm = this.formBuilder.group({
-      recipient_name: ['', Validators.required],
-      fbo_name: ['', Validators.required],
-      owner_name: ['', Validators.required],
-      father_name: ['', Validators.required],
-      dob: ['', Validators.required],
-      address: ['', Validators.required],
-      recipient_contact_no: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      aadhar_no: ['', Validators.required],
-      // pancard_no: ['', Validators.pattern('/^[A-Z]{5}[0-9]{4}[A-Z]$/')],
-      fostac_total: ['', Validators.required],
-      sales_date: ['', Validators.required],
-      sales_person: ['', Validators.required],
-    });
-
-    this.foscosVerificationForm = this.formBuilder.group({
+    this.shopVerificationForm = this.formBuilder.group({
       manager_name: ['', Validators.required],
       fbo_name: ['', Validators.required],
+      business_entity: ['', Validators.required],
       owner_name: ['', Validators.required],
-      operator_contact_no: ['', Validators.required],
-      email: ['', Validators.required],
+      manager_contact: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      manager_email: ['', [Validators.required, Validators.email]],
       address: ['', Validators.required],
       state: ['', Validators.required],
       district: ['', Validators.required],
-      pincode: ['', Validators.required],
-      // village: ['', Validators.required],
-      // tehsil: ['', Validators.required],
-      village: [''],
-      tehsil: [''],
+      pincode: ['', Validators.required]
+    });
+
+    this.fostacVerificationForm = this.formBuilder.group({
+      recipient_no: ['', Validators.required],
+      service_name: ['', Validators.required],
+      fostac_total: ['', Validators.required],
+      sales_date: ['', Validators.required],
+      sales_person: ['', Validators.required]
+    });
+
+    this.foscosVerificationForm = this.formBuilder.group({
       license_category: ['', Validators.required],
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required],
@@ -457,21 +664,12 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     });
 
     this.hraVerificationForm = this.formBuilder.group({
-      manager_name: ['', Validators.required],
-      fbo_name: ['', Validators.required],
-      owner_name: ['', Validators.required],
-      manager_contact_no: ['', Validators.required],
-      email: ['', Validators.required],
-      address: ['', Validators.required],
-      state: ['', Validators.required],
-      district: ['', Validators.required],
-      pincode: ['', Validators.required],
       hra_total: ['', Validators.required],
       sales_date: ['', Validators.required],
       sales_person: ['', Validators.required],
       kob: ['', Validators.required],
       food_handler_no: ['', Validators.required]
-    })
+    });
 
   }
 
@@ -495,4 +693,155 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     this.verificationForm.patchValue({ 'owners_num': value });
   }
 
+
+  //Documents check Function
+  onDocCheck($event: any, name: any) {
+    //changing check check stsus recored of the required docs to keep track of records
+
+    // const checkedDocs = this.requiredDocs.filter((doc: any) => doc.isChecked);
+    this.checkedDocsName.push(name);
+
+    //emitting checked doc name
+    // this.emitCheckedDocs.emit({name, isChecked: $event.target.checked});
+  }
+
+  //methord for decing result asthetics 
+  decideResult(): void {
+
+    if (this.verifiedStatus) {
+      this.resultText = 'Verified';
+      this.resultTextClass = 'bg-success';
+      this.resultIcon = faCircleCheck;
+    } else if (this.isPendingByCustomer) {
+      this.resultText = 'Pending on customer end';
+      this.resultTextClass = 'bg-orange';
+      this.resultIcon = faCircleExclamation;
+    } else {
+      this.resultText = 'In-Progress';
+      this.resultTextClass = 'bg-warning';
+      this.resultIcon = faCircleExclamation;
+    }
+
+  }
+
+  //methord opens recipient list modal 
+  recipient(res: any, serviceType: string) {
+    {
+      if (res !== '' && serviceType === 'Fostac') {
+        const modalRef = this.modalService.open(RecipientComponent, { size: 'xl', backdrop: 'static' });
+        modalRef.componentInstance.fboData = res;
+        modalRef.componentInstance.serviceType = serviceType;
+        modalRef.componentInstance.isVerifier = true;
+      } else {
+        const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
+        modalRef.componentInstance.fboData = res;
+        modalRef.componentInstance.serviceType = serviceType;
+        modalRef.componentInstance.isVerifier = true;
+      }
+
+    }
+  }
+
+  //********************************************************editing rleted methords****************************************************************
+
+  //methord runs on edit mode change
+  async changeEditMode() {
+    this.isEditMode = !this.isEditMode;
+
+    //in case of edit mode is on
+    if (this.isEditMode) {
+      //saving old values of district and pincode in consts
+      const district: string = this.shopverificationform['district'].value;
+      const pincode: string = this.shopverificationform['pincode'].value;
+
+      console.log(pincode);
+
+      await this.onStateSelect()
+      //patching district
+      this.shopVerificationForm.patchValue({ district: district })
+
+      this.onDistrictChange()
+      //patching district
+      this.shopVerificationForm.patchValue({ pincode: pincode })
+    }
+  }
+
+  //methord run on state selection and fetch districts according to it
+  async onStateSelect() {
+    let state = this.shopverificationform['state'].value;
+
+    //re configuring districs and pincodes
+    this.districts = [];
+    this.pincodes = [];
+    this.shopverificationform['district'].setValue('');
+    this.shopverificationform['pincode'].setValue('');
+    this.loading = true;
+    return new Promise((resolve, reject) => {
+      this._getDataService.getPincodesData(state).subscribe({
+        next: (res) => {
+          resolve(true);
+          let pincodesData = res;
+          this.districtAndPincodes = res;
+          pincodesData.forEach((obj: pincodeData) => {
+            if (!this.districts.find((item: string) => item.toLowerCase() === obj.District.toLowerCase())) {
+              this.districts.push(obj.District);
+            }
+          });
+        },
+        error: (err) => {
+          reject(false);
+          let errorObj = err.error
+          if (errorObj.userError) {
+            this._registerService.signout();
+          }
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      }
+      )
+    })
+
+  }
+
+
+  //methord fetches pincode on the basis of district select
+  onDistrictChange(): void {
+    this.pincodes = [];
+    this.shopverificationform['pincode'].setValue('');
+    this.loading = true;
+    let pincodeArr: any = [];
+    this.districtAndPincodes.forEach((obj: any) => {
+      if (obj.District == this.shopverificationform['district'].value) {
+        pincodeArr.push(obj.Pincode);
+      }
+    });
+
+    pincodeArr = new Set(pincodeArr);
+    this.pincodes = [...pincodeArr];
+    this.loading = false;
+  }
+
+  //onfboupdate
+  onFboUpdate(): void {
+    this.verified = true;
+    if (this.shopVerificationForm.invalid || this.loading) {
+      return
+    }
+
+    this.loading = true;
+    this._registerService.updateFboInfo(this.caseData.salesInfo.fboInfo._id, this.shopVerificationForm.value).subscribe({
+      next: res => {
+        this.loading = false;
+        this.isEditMode = false;
+        this._toastrService.success('Updated Successfully')
+        this.getMoreCaseInfo();
+        this.switch.nativeElement.checked = false;
+      },
+      error: err => {
+        this.loading = false;
+        this._toastrService.error('Updation Error')
+      }
+    });
+  }
 }

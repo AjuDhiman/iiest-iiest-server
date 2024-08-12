@@ -1,6 +1,6 @@
 const salesModel = require('../models/employeeModels/employeeSalesSchema');
 const fboModel = require('../models/fboModels/fboSchema');
-const { recipientModel, shopModel, hygieneShopModel } = require('../models/fboModels/recipientSchema');
+const { recipientModel, shopModel } = require('../models/fboModels/recipientSchema');
 const boModel = require('../models/BoModels/boSchema');
 const generalDataSchema = require('../models/generalModels/generalDataSchema');
 

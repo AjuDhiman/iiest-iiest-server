@@ -7,89 +7,97 @@ const fboSchema = new Schema({
         ref: 'staff_registers',
         // required: true
     },
-    id_num: {
+    id_num: { //this field decides the customer id of the fbo
         type: Number,
         unique: true,
         required: true,
         min: 10000,
         max: 999999
     },
-    boInfo: {
+    boInfo: { //this field contains the refrence to business owner info from bo_regiters which contai info about the bo
         type: mongoose.Schema.Types.ObjectId,
         ref: 'bo_registers',
         required: true
     },
-    fbo_name: {
+    fbo_name: { //thie field contains the name of the fbo
         type: String,
         required: true
     },
-    owner_name: {
+    owner_name: { //this fielsd contains the name of the owner
         type: String,
         required: true
     },
-    owner_contact: {
+    owner_contact: { // this  field contains the conatact of the manager
         type: Number,
         required: true,
     },
-    email: {
+    email: { //this field contains the email of the manager
         type: String,
         required: true,
     },
-    state: {
+    state: { // this field conatins the state entry of the fbo
         type: String,
         required: true
     },
-    district: {
+    district: { // this field conatins the district entry of the fbo
         type: String,
         required: true
     },
-    address: {
+    address: {  // this field conatins the state address of the fbo
         type: String,
         required: true
     },
-    business_type:{
+    business_type:{ //business type b2b or b2c
         type: String,
         required: true
     },
-    customer_id: {
+    customer_id: { //ember id of the fbo
         type: String, 
         required: true,
     },
-    createdBy: {
+    createdBy: { //who created this fbo
         // type: mongoose.Schema.Types.ObjectId,
         // ref: 'staff_registers',
         // required: true
         type: String,
         required: true
     },
-    lastEdit: {
+    lastEdit: { //is last edited
         type: String,
         required: true,
         default: 'Not edited yet'
     },
-    village: {
+    village: {  // this field conatins the village entry of the fbo
         type: String
     },
-    tehsil: {
+    tehsil: {  // this field conatins the tehsil entry of the fbo
         type: String
     },
-    pincode: {
+    pincode: {  // this field conatins the pincode entry of the fbo
         type: Number,
         required: true
     },
-    gst_number: {
+    gst_number: { //gst number of the fbo
         type: String, 
         required: function(){
             return this.business_type === 'b2b'
         }
     },
-    activeStatus: {
+    activeStatus: { // is fbo active
         type: Boolean,
         required: true
     },
-    isBasicDocUploaded: {
+    isBasicDocUploaded: { //is all basic doc uploaded
         type: Boolean,
         required: true
+    },
+    isVerificationLinkSend: { //checkinh if verification link send or not
+        type: Boolean,
+        required: true,
+    },
+    isFboVerified: { //checkinh if verified my mail or sms or not
+        type: Boolean,
+        required: true,
     }
 }, {timestamps: true})
 

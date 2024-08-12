@@ -45,7 +45,7 @@ export class DocumentationModalComponent implements OnInit {
   pageNumber: number = 1;
   isSearch: boolean = false;
   selectedFilter: string = 'byName';
-  isEbill:boolean = false; //var for deciding entering customer id in case of e bill
+  isEbill: boolean = false; //var for deciding entering customer id in case of e bill
 
   //icons
   faEye: IconDefinition = faEye;
@@ -54,11 +54,13 @@ export class DocumentationModalComponent implements OnInit {
   @Output() reloadData: EventEmitter<void> = new EventEmitter<void>;
 
   documentsForm: FormGroup = new FormGroup({
+    expiery_date: new FormControl(''),
+    issue_date: new FormControl('')
   });
 
   @ViewChild(MultiSelectComponent) multiselect: MultiSelectComponent;
 
-  @ViewChild('uploadInput') uploadInput: ElementRef; 
+  @ViewChild('uploadInput') uploadInput: ElementRef;
 
   constructor(public activeModal: NgbActiveModal,
     private _registerService: RegisterService,
@@ -72,6 +74,8 @@ export class DocumentationModalComponent implements OnInit {
   ngOnInit(): void {
     this.getUserProductType();
     this.documentsForm = this.formBuilder.group({
+      expiery_date: ['', Validators.required],
+      issue_date: ['', Validators.required]
     });
     this.filteredData = this.docList;
   }
@@ -87,7 +91,7 @@ export class DocumentationModalComponent implements OnInit {
     this.clearInputCount++;
     this.lastSelectedDoc = this.selectedDoc;
     this.selectedDoc = JSON.parse($event.target.value);
-    if(this.selectedDoc.name === 'Electricity Bill'){
+    if (this.selectedDoc.name === 'Electricity Bill') {
       this.isEbill = true;
     } else {
       this.isEbill = false
@@ -101,12 +105,12 @@ export class DocumentationModalComponent implements OnInit {
       this.documentsForm.removeControl('name');
     }
 
-    if(this.isEbill){
+    if (this.isEbill) {
       this.documentsForm.addControl('customer_id', this.formBuilder.control(''));
     } else {
       this.documentsForm.removeControl('customer_id');
     }
-    
+
     this.documentsForm.addControl(this.changeNameFormat(this.selectedDoc.name.toString()), this.formBuilder.control(''));
     this.documentsForm.removeControl(this.changeNameFormat(this.lastSelectedDoc.name.toString()));
     console.log(this.uploadInput);
@@ -143,6 +147,7 @@ export class DocumentationModalComponent implements OnInit {
   }
 
 
+  //metjord runs on upload
   onUpload(): void {
     this.submitted = false;
     if (this.documentsForm.invalid) {
@@ -164,9 +169,9 @@ export class DocumentationModalComponent implements OnInit {
       formData.append('name', this.selectedDoc.name);
     }
 
-    if(this.isEbill){
+    if (this.isEbill) {
       const customer_id = this.documentsForm.value.customer_id;
-      const extraInfo = JSON.stringify({customer_id: customer_id});
+      const extraInfo = JSON.stringify({ customer_id: customer_id });
       formData.append('customer_id', customer_id);
     }
 
@@ -176,6 +181,7 @@ export class DocumentationModalComponent implements OnInit {
     formData.append('panelType', this.panelType);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
     formData.append('handlerId', this.handlerId)
+    formData.append('otherData', this.documentsForm.value)
 
     if (this.selectedDoc.mutipleDoc) {
       (this.docFile as any).forEach((element: File) => {
@@ -186,38 +192,28 @@ export class DocumentationModalComponent implements OnInit {
     }
 
     if (this.shopId) {
-      if(this.panelType === "Foscos Panel" || this.panelType === "Verifier Panel") {
-        this._registerService.saveFoscosDocument(formData).subscribe({
-          next: res => {
-            if (res) {
-              this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
-              this.reloadData.emit();
-              this.getDocList();
-              this.loading = false;
-            }
+      this._registerService.saveRequiredDocument(formData).subscribe({
+        next: res => {
+          if (res) {
+            this.loading = false;
+            this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
+            this.reloadData.emit();
+            this.getDocList();
+
           }
-        });
-      } else if(this.panelType === "HRA Panel"|| this.panelType === "Verifier Panel") {
-        this._registerService.saveHraDocument(formData).subscribe({
-          next: res => {
-            if (res) {
-              this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
-              this.reloadData.emit();
-              this.getDocList();
-              this.loading = false;
-            }
-          }
-        });
-      }
+        }
+      });
     }
 
   }
 
+  //methord for opening doc
   viewDocument(res: any): void { //opens the view doc modal
     const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.doc = res;
   }
 
+  //methord for deleting docs
   onDocDelete(doc: any) { // this methord opens the confirmation doc if you want to delecte some doc 
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.action = `Delete ${doc.name}`;
@@ -246,10 +242,12 @@ export class DocumentationModalComponent implements OnInit {
     }
   }
 
+  //getting list of all docs
   getDocList(): void {
     console.log(this.handlerId);
     this._getDataService.getDocs(this.handlerId).subscribe({
       next: res => {
+        this.loading = false;
         this.docList = res.docs;
         console.log(this.docList);
         this.filteredData = this.docList;

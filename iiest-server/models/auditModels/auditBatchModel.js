@@ -39,7 +39,7 @@ const auditBatchSchema = new Schema({
     candidateDetails: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'hra_verification',
+            ref: 'shop_verifications',
             // unique: true
         }],
         required: true

@@ -1,7 +1,7 @@
 const fboModel = require("../../models/fboModels/fboSchema");
 const { recipientModel, shopModel } = require("../../models/fboModels/recipientSchema");
 const fostacAttendanceModel = require("../../models/operationModels/attenSecSchema");
-const { fostacVerifyModel, foscosVerifyModel, hraVerifyModel } = require("../../models/operationModels/verificationSchema");
+const { fostacVerifyModel, foscosVerifyModel, hraVerifyModel, shopVerificationModel } = require("../../models/operationModels/verificationSchema");
 const fostacEnrollmentModel = require("../../models/operationModels/enrollmentSchema");
 const generalSectionModel = require("../../models/operationModels/generalSectionSchema");
 const ticketDeliveryModel = require("../../models/operationModels/ticketDeliverySchema");
@@ -11,8 +11,11 @@ const { generateFsms, generateSelfDecOProp } = require("../../operations/generat
 const TrainingBatchModel = require("../../models/trainingModels/trainingBatchModel");
 const revertModel = require("../../models/operationModels/revertSchema");
 const foscosFilingModel = require("../../models/operationModels/filingSecSchema");
+const { default: mongoose } = require("mongoose");
+const FRONT_END = process.env.FRONT_END;
+const {MongoClient, ObjectId} = require('mongodb')
 
-exports.fostacVerification = async (req, res, next) => {
+exports.fostacRecpVerification = async (req, res, next) => {
     try {
 
         let success = false;
@@ -26,7 +29,7 @@ exports.fostacVerification = async (req, res, next) => {
             const recipientId = recpArr[index]._id;
 
             let clientdata = {
-                product: 'fostac',
+                product: 'fostac_recipient',
                 recipientName: recpArr[index].name,
                 fboName: recpArr[index].name,
                 ownerName: recpArr[index].name,
@@ -60,13 +63,75 @@ exports.fostacVerification = async (req, res, next) => {
         if (verifiedRecpArr.length !== 0) {
             success = true
             // req.verificationInfo = basicFormAdd;
-             req.verifiedRecpArr = verifiedRecpArr;
+            req.verifiedRecpArr = verifiedRecpArr;
             // return res.status(200).json({ success: true })
             next();
         }
 
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+
+//methord for verifing fostac product
+exports.fostacVerification = async (req, res) => {
+    try {
+
+        let success = false;
+
+        const { recipient_no, service_name, fostac_total } = req.body;
+
+        const shopId = req.params.id;
+
+        const shopData = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', fboModel, populate: { path: 'boInfo' } }] });
+
+        //getting recps retted to this shop
+
+        const recpDetails = await recipientModel.find({ salesInfo: shopData.salesInfo._id });
+
+        //getting shopverification details
+        const fostacVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, product: 'Fostac', shopInfo: shopId, isProdVerificationLinkSend: true, isProdVerified: false, isReqDocVerificationLinkSend: false, isReqDocsVerified: true });
+
+        const clientData = {
+            fboObjId: shopId,
+            product: 'fostac',
+            managerName: shopData.salesInfo.fboInfo.boInfo.manager_name,
+            recipientEmail: shopData.salesInfo.fboInfo.boInfo.email,
+            recipient_no: recipient_no,
+            service_name: service_name,
+            fostac_total: fostac_total,
+            recpDetails: recpDetails
+        }
+
+        console.log(clientData);
+
+        //this code is for tracking the CRUD operation regarding to a shop
+
+        const prevVal = {}
+
+        const currentVal = fostacVerification;
+
+        logAudit(req.user._id, "shopDetails", shopId, prevVal, currentVal, "Fostac verified");
+
+        // code for tracking ends
+
+        // function to send mail to client after verification process
+        if (fostacVerification) {
+            sendVerificationMail(clientData);
+        }
+
+        if (!fostacVerification) {
+            success = false;
+            return res.status(204).json({ success });
+        }
+
+        success = true;
+        return res.status(200).json({ success });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
 
@@ -78,26 +143,24 @@ exports.foscosVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
-        const { operator_name, fbo_name, owner_name, operator_contact_no, email, address, pincode, village, tehsil, kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
+        const { kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
+
+        const shopData = await shopModel.findOne({ _id: shopID }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', fboModel, populate: { path: 'boInfo' } }] });
 
         let clientData = {
+            fboObjId: shopID,
             product: 'foscos',
-            operatorName: operator_name,
-            fboName: fbo_name,
-            ownerName: owner_name,
-            recipientEmail: email,
-            operatorContactNo: operator_contact_no,
-            address: address,
-            pincode: pincode,
-            village: village,
-            tehsil: tehsil,
+            managerName: shopData.salesInfo.fboInfo.boInfo.manager_name,
+            recipientEmail: shopData.salesInfo.fboInfo.boInfo.email,
             licenseCategory: license_category,
             licenseDuration: license_duration,
             kindOfBusiness: kob,
             foodCategory: food_category,
         }
 
-        const addVerification = await foscosVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num });
+        const addVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, product: 'Foscos', shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num
+            , isProdVerificationLinkSend: true, isProdVerified: false, isReqDocVerificationLinkSend: false, isReqDocsVerified: false
+         });
 
         //this code is for tracking the CRUD operation regarding to a shop
 
@@ -105,7 +168,7 @@ exports.foscosVerification = async (req, res) => {
 
         const currentVal = addVerification;
 
-        logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
+        logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Foscos verified");
 
         // function to send mail to client after verification process
         if (addVerification) {
@@ -126,6 +189,8 @@ exports.foscosVerification = async (req, res) => {
     }
 }
 
+
+//api for har product verifucation and performaing operations relate to it
 exports.hraVerification = async (req, res, next) => {
     try {
         let success = false;
@@ -134,9 +199,10 @@ exports.hraVerification = async (req, res, next) => {
 
         const verifiedData = req.body;
 
-        const { fbo_name, manager_name, owner_name, manager_contact_no, email, address, pincode, state, district, village, food_handler_no, tehsil, kob, hra_total, sales_date, sales_person } = verifiedData;
+        const { food_handler_no, kob, hra_total, sales_date, sales_person } = verifiedData;
 
-        const addVerification = await hraVerifyModel.create({ operatorInfo: req.user._id, shopInfo: shopID, kob: kob, foodHandlersCount: food_handler_no });
+
+        const addVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, shopInfo: shopID, product: 'HRA', kob: kob, foodHandlersCount: food_handler_no, isProdVerificationLinkSend: true, isProdVerified: false, isReqDocVerificationLinkSend: false, isReqDocsVerified: false });
 
         //this code is for tracking the CRUD operation regarding to a shop
 
@@ -147,23 +213,11 @@ exports.hraVerification = async (req, res, next) => {
         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
 
         let clientData = {
+            fboObjId: shopID,
             product: 'hra',
-            managerName: manager_name,
-            fboName: fbo_name,
-            ownerName: owner_name,
-            recipientEmail: email,
-            managerContactNo: manager_contact_no,
-            address: address,
             foodHandlerNo: food_handler_no,
-            pincode: pincode,
-            village: village,
-            tehsil: tehsil,
             kindOfBusiness: kob
         }
-
-        // if (addVerification) {
-        //     sendVerificationMail(clientData);
-        // }
 
         // code for tracking ends
         if (!addVerification) {
@@ -173,7 +227,8 @@ exports.hraVerification = async (req, res, next) => {
 
         req.verificationInfo = addVerification;
         req.clientData = clientData;
-        next();
+        return res.status(200).json({ success: true, verificationData: addVerification })
+        // next();
 
         // success = true;
         // return res.status(200).json({ success });
@@ -184,6 +239,7 @@ exports.hraVerification = async (req, res, next) => {
     }
 }
 
+//route for getting recp verified data
 exports.getFostacVerifiedData = async (req, res) => {
     try {
         let success = false;
@@ -214,33 +270,14 @@ exports.getFostacVerifiedData = async (req, res) => {
     }
 }
 
-exports.getFoscosVerifiedData = async (req, res) => {
+//methord for getting verification data of shop
+exports.getShopVerifiedData = async (req, res) => {
     try {
         let success = false;
 
         const shopId = req.params.shopid;
 
-        const verifedData = await foscosVerifyModel.findOne({ shopInfo: shopId });
-
-        if (verifedData) {
-            success = true;
-            return res.status(200).json({ success, message: 'Verified Shop', verifedData });
-        } else {
-            return res.status(204).json({ success, message: 'Shop is not verified' });
-        }
-
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error' });
-    }
-}
-
-exports.getHraVerifiedData = async (req, res) => {
-    try {
-        let success = false;
-
-        const shopId = req.params.shopid;
-
-        const verifedData = await hraVerifyModel.findOne({ shopInfo: shopId }).populate('shopInfo');
+        const verifedData = await shopVerificationModel.findOne({ shopInfo: shopId });
 
         if (verifedData) {
             success = true;
@@ -344,7 +381,7 @@ exports.foscosFiling = async (req, res) => {
 
         const filing = await foscosFilingModel.create({ operatorInfo: req.user.id, verificationInfo: verifiedDataId, paymentAmount: payment_amount, paymentDate: payment_date, paymentReceipt: receipt[0].filename, username, password });
 
-        const verifiedData = await foscosVerifyModel.findOne({ _id: verifiedDataId })
+        const verifiedData = await shopVerificationModel.findOne({ _id: verifiedDataId })
             .populate({
                 path: 'shopInfo',
             });
@@ -651,5 +688,151 @@ exports.getReverts = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+//methord for updating verification of a product
+exports.verifyProductLink = async (req, res) => {
+    try {
+
+        console.log(req.params)
+        const id = req.params.id.toString();
+        const objId = new ObjectId(id);
+        
+        if (!mongoose.Types.ObjectId.isValid(id)) { //sending error message in case of wrong format of objet id send in parameter
+            return res.status(404).json({ success: false, message: "Not A Valid Request" }); //this message will be shown in verifing mail frontend
+        }
+
+        const idExsists = await shopVerificationModel.findOne({ shopInfo:  objId});
+
+        console.log(idExsists);
+
+        if (idExsists) {//sending already verified mail case of mailor contact already verified 
+            if (idExsists.isProdVerified) {
+                return res.status(200).json({ success: true, message: 'Already Verified' })
+            }
+
+            const verifiedFbo = await shopVerificationModel.findOneAndUpdate(//updates the bo obj by assigning is_verified mail and is_contact _verified true
+                { shopInfo: objId },
+                {
+                    $set: {
+                        isProdVerified: true
+                    }
+                }
+            );
+
+            //in case of verification failed send verificatio  error
+            if (!verifiedFbo) {
+                return res.status(404).json({ success: false, message: "Verification Failed" });
+            }
+
+            return res.status(200).json({ success: true, message: "Email Verified" })
+        }
+
+        return res.status(404).json({ success: false, message: "Verification Failed" });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' })
+    }
+}
+
+//methord for updating verified docs name
+exports.verifyDoc = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const shopData = await shopModel.findOne({ _id: new ObjectId(id) }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', fboModel, populate: { path: 'boInfo' } }] });
+
+        const { checkedDocsName } = req.body;
+
+        console.log(req.body)
+
+        //setting is uploaded false for each docs
+        const checkedDocs = checkedDocsName.map((doc) => {
+            return {
+                name: doc,
+                isUploaded: false
+            }
+        })
+
+        const verify = await shopVerificationModel.findOneAndUpdate({shopInfo: new ObjectId (id)}, {
+            $set: {
+                checkedDocs : checkedDocs,
+                isReqDocVerificationLinkSend: true
+            }
+        });
+
+        if(!verify){
+            return res.status(401).json({message: 'Cant Verify', verificationErr: true})
+        }
+
+        const clientData = {
+            fboObjId: id,
+            managerName: shopData.salesInfo.fboInfo.boInfo.manager_name,
+            recipientEmail: shopData.salesInfo.fboInfo.boInfo.email,
+            product: 'doc',
+            checkedDocsName: checkedDocsName
+        }
+
+
+        //audit loging
+        const prevVal = {}
+
+        const currentVal = verify;
+
+        logAudit(req.user._id, "shop_verifications", id, prevVal, currentVal, "Documents Verified");
+
+        sendVerificationMail(clientData);
+        return res.status(200).json({success: true, isLinkSend: true})
+
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' })
+    }
+}
+
+
+exports.verifyDocLink = async (req, res) => {
+    try {
+
+        console.log(req.params)
+        const id = req.params.id.toString();
+        if (!mongoose.Types.ObjectId.isValid(id)) { //sending error message in case of wrong format of objet id send in parameter
+            return res.status(404).json({ success: false, message: "Not A Valid Request" }); //this message will be shown in verifing mail frontend
+        }
+
+        const objectId = new ObjectId(id);
+
+        const idExsists = await shopVerificationModel.findOne({ shopInfo: objectId });
+
+        if (idExsists) {//sending already verified mail case of mailor contact already verified 
+            if (idExsists.isReqDocsVerified) {
+                return res.status(200).json({ success: true, message: 'Already Verified' })
+            }
+
+            const verifiedFbo = await shopVerificationModel.findOneAndUpdate(//updates the bo obj by assigning is_verified mail and is_contact _verified true
+                { shopInfo: objectId },
+                {
+                    $set: {
+                        isReqDocsVerified: true
+                    }
+                }
+            );
+
+            //in case of verification failed send verificatio  error
+            if (!verifiedFbo) {
+                return res.status(404).json({ success: false, message: "Verification Failed" });
+            }
+
+            return res.status(200).json({ success: true, message: "Email Verified" })
+        }
+
+        return res.status(404).json({ success: false, message: "Verification Failed" });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' })
     }
 }

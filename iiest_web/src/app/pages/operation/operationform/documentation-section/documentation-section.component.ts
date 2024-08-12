@@ -21,11 +21,15 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
 
   //vars for deciding doc list in multiselect 
   allDocuments: any;
-  foscosDocuments: any;
-  foscosDocumentsName: string[];
+  @Input() requiredDocs: any;
+  requiredDocsName: string[];
 
   //product list will contain list if docs for sale
-  productList: string[] = ['Fostac', 'Foscos', 'HRA', "Water Test", "Medical"]
+  productList: string[] = ['Fostac', 'Foscos', 'HRA', "Water Test", "Medical"];
+
+  //var for deciding of opening sale form or not
+  @Input() isForDocSale: boolean = false;
+  @Input() isForDocCollection: boolean = false;
 
   @ViewChild(FbonewComponent) fboNew: FbonewComponent;
 
@@ -35,10 +39,12 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   @Input() customerId: string;
   @Input() verifiedStatus: boolean = false;
   @Input() verifiedData: any = {};
+  @Input() checkedDocs: any
 
   //output event emitters
   @Output() emitDocuments: EventEmitter<Array<{ name: string, format: string, src: string }>> = new EventEmitter<Array<{ name: string, format: string, src: string }>>;
   @Output() refreshAuditLog: EventEmitter<void> = new EventEmitter<void>
+  @Output() emitDocForSaleNames: EventEmitter<string[]> = new EventEmitter<string[]>
 
   // icons
   faCircleCheck = faCircleCheck;
@@ -81,7 +87,6 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
       this.getParticularDocs();
       this._getDataService.getCandidateAuditBatch(this.verifiedData._id).subscribe({
         next: res => {
-          console.log(res);
           this.schedulingForm.patchValue({ 'auditor': res.batchData.auditor });
           this.hraBookDateStr = this.getFormatedDate(res.batchData.auditDates);
         },
@@ -93,6 +98,10 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
     if (changes && changes['customerId'] && changes['customerId'].currentValue) {
       this.patchFbo();
       this.getDocs();
+    }
+    if (changes && changes['requiredDocs'] && changes['requiredDocs'].currentValue) {
+    
+      this.getParticularDocs();
     }
   }
 
@@ -127,36 +136,19 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
     this.selectedDocs = $event;
   }
 
+  //methord for getting docs to shop in dropdown
   getParticularDocs() { //This methord initailize foscos documents list the basis of verified data
-    if (this.productType === 'Foscos') {
-      const mandatoryDocsList = mandatoryDocs;
-      this.foscosDocuments = [...mandatoryDocsList];
-      switch (this.verifiedData.ownershipType) {
-        case 'Propraitorship':
-          this.foscosDocuments = [...this.foscosDocuments, ...propratitorDocs];
-          break;
-        case 'Partnership':
-          this.foscosDocuments = [...this.foscosDocuments, ...partnershipDocs];
-          break;
-        case 'Board of Directors':
-          this.foscosDocuments = [...this.foscosDocuments, ...boardODirectorDocs];
-          break;
+
+    this.requiredDocs = this.requiredDocs.map((doc: any) => {
+      return {
+        ...doc,
+        name: doc.display_name
       }
+    })
 
-      if (this.verifiedData.kob === 'Manufacturer') {
-        console.log(this.verifiedData.kob);
-        this.foscosDocuments = [...this.foscosDocuments, ...manufacturingDoc];
-      }
+    //getting only those docs whose ischecked is true
+    this.requiredDocsName = this.requiredDocs.filter((item: any) => item.isChecked || item.isPendingByCustomer).map((item: any) => item.name);
 
-      this.foscosDocuments = [...this.foscosDocuments, ...extraDoc];
-      this.foscosDocuments = [...this.foscosDocuments, ...otherDocs]
-    } else if (this.productType === 'Fostac') {
-      this.foscosDocuments = fostacDocs;
-    } else if (this.productType === 'HRA') {
-      this.foscosDocuments = hraRequiredDocs;
-    }
-
-    this.foscosDocumentsName = this.foscosDocuments.map((item: any) => item.name);
   }
 
   getDocs(): void { //methord for getting uploaed doc list from backend for passing it to doc modal and doc-tab
@@ -165,10 +157,12 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
         // this.docList = res.docs.map((item: any) => {
         //   return { ...item, src: item.src[0] }
         // });
-        this.docList = res.docs;
-        console.log(res);
-        this.emitDocuments.emit(this.docList); //emit 
-        this.refreshAuditLog.emit();
+        if(res) {
+          this.docList = res.docs;
+          this.emitDocuments.emit(this.docList); //emit 
+          this.refreshAuditLog.emit();
+        }
+       
       }
     });
   }
@@ -178,7 +172,7 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
     modalRef.componentInstance.docsNameArr = this.selectedDocs;
     modalRef.componentInstance.shopId = this.shopId;
     modalRef.componentInstance.handlerId = this.customerId;
-    modalRef.componentInstance.docsArr = this.foscosDocuments.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
+    modalRef.componentInstance.docsArr = this.requiredDocs.filter((item: any) => this.selectedDocs.includes(item.name.toString()));
     modalRef.componentInstance.docList = this.docList;
     modalRef.componentInstance.reloadData.subscribe(() => {
       this.getDocs();
@@ -187,35 +181,35 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   }
 
   patchFbo(): void {
-    this._getDataService.getMoreCaseInfo(this.productType, this.shopId).subscribe({ // we will patch fbo comming from sale to fbo of fbo form 
-      next: res => {
-        const fboInfo = res.populatedInfo.salesInfo.fboInfo //getting fbo info from api
-        this.fboNew.fboForm.patchValue({
-          boInfo: fboInfo.boInfo._id,
-          fbo_name: fboInfo.fbo_name,
-          owner_name: fboInfo.owner_name,
-          business_entity: fboInfo.boInfo.business_entity,
-          business_category: fboInfo.boInfo.business_category,// form control added by chandan for business_Owner
-          business_ownership_type: fboInfo.boInfo.business_ownership_type, // form control added for business_Owner
-          manager_name: fboInfo.boInfo.manager_name,
-          owner_contact: fboInfo.owner_contact,
-          email: fboInfo.boInfo.email,
-          state: fboInfo.state,
-          district: fboInfo.district,
-          village: fboInfo.village,
-          tehsil: fboInfo.tehsil,
-          address: fboInfo.address,
-          pincode: fboInfo.pincode,
-          business_type: fboInfo.business_type,
-        });
+    // this._getDataService.getMoreCaseInfo(this.productType, this.shopId).subscribe({ // we will patch fbo comming from sale to fbo of fbo form 
+    //   next: res => {
+    //     const fboInfo = res.populatedInfo.salesInfo.fboInfo //getting fbo info from api
+    //     this.fboNew.fboForm.patchValue({
+    //       boInfo: fboInfo.boInfo._id,
+    //       fbo_name: fboInfo.fbo_name,
+    //       owner_name: fboInfo.owner_name,
+    //       business_entity: fboInfo.boInfo.business_entity,
+    //       business_category: fboInfo.boInfo.business_category,// form control added by chandan for business_Owner
+    //       business_ownership_type: fboInfo.boInfo.business_ownership_type, // form control added for business_Owner
+    //       manager_name: fboInfo.boInfo.manager_name,
+    //       owner_contact: fboInfo.owner_contact,
+    //       email: fboInfo.boInfo.email,
+    //       state: fboInfo.state,
+    //       district: fboInfo.district,
+    //       village: fboInfo.village,
+    //       tehsil: fboInfo.tehsil,
+    //       address: fboInfo.address,
+    //       pincode: fboInfo.pincode,
+    //       business_type: fboInfo.business_type,
+    //     });
 
-        if (fboInfo.business_type === 'b2b') {//patch gst number in case of gst businesstype = b2b
-          this.fboNew.fboForm.patchValue({ gst_number: fboInfo.gst_number });
-        }
+    //     if (fboInfo.business_type === 'b2b') {//patch gst number in case of gst businesstype = b2b
+    //       this.fboNew.fboForm.patchValue({ gst_number: fboInfo.gst_number });
+    //     }
 
-        this.fboNew.existingFboId = fboInfo.customer_id;
-      }
-    });
+    //     this.fboNew.existingFboId = fboInfo.customer_id;
+    //   }
+    // });
 
   }
 
@@ -252,6 +246,16 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   checkHRADocs(): void {
     const uploadedDocName = this.docList.map((doc: any) => doc.name);
     const requiedDocName = hraRequiredDocs.map((doc: any) => doc.name);
+  }
+
+  //metord runs on form submit
+  onSubmit() : void {
+
+  }
+
+  //doc for traking which docs are for sale
+  getDocsForSale($event: string[]): void {
+    this.emitDocForSaleNames.emit($event);
   }
 
 }

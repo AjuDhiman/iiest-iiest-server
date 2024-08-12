@@ -1,5 +1,3 @@
-const sendInvoiceMail = require('./sendMail');
-const htmlToPdf = require('html-pdf-node');
 const PuppeteerHTMLPDF = require('puppeteer-html-pdf');
 const invoiceTemplate = require('../assets/invoiceTemplate');
 const generalDataSchema = require('../models/generalModels/generalDataSchema');
@@ -31,10 +29,16 @@ const generateInvoice = async (idNumber, clientEmail, fboObj) => {
 }
 
 
-const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, district, pincode, contact, email, processingAmount, extraFee, taxAmount, qty, business_Type, gst_number, totalAmount, serviceType, prodDetails, signatureName, uploadStream, officerName, shopId, boData) => {
+const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, district, pincode, contact, email, processingAmount, extraFee, taxAmount, qty, business_Type, gst_number, totalAmount, serviceType, prodDetails, signatureName, uploadStream, officerName, shopId, boData, invoice_date) => {
 
     //getting date fot the invoice
-    const date = new Date();
+    let date;
+    if(invoice_date) {
+        date = new Date(invoice_date.toString());
+    } else {
+        date = new Date();
+    }
+    
     const dateVal = date.getDate();
     const monthVal = date.getMonth() + 1;
     const yearVal = date.getFullYear();

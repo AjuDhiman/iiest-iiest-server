@@ -85,6 +85,8 @@ exports.updateRecivingInfo = async (req, res) => {
 
         const isExists = await doesFileExist(oldKey);
 
+        console.log(await doesFileExist(oldKey));
+
         if (isExists) {
             await deleteDocObject(oldKey);
         }
