@@ -255,7 +255,7 @@ const invoiceTemplate = async (fboInfo) => {
                                 <br/>
                                 Connect Bharat, a brand of IIEST Federation. Invoice issued by IIEST Federation.
                                 <br/>
-                                GST: 07AADCI29201Z2
+                                GST: 07AADCI2920D1Z2
                             </p>
                             <img src="${logoImg}" height=120 width=120 alt="iiest_logo"
                                 style="border: 2.5px solid black; border-radius: 60px; padding: 5px">
