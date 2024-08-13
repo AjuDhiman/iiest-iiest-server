@@ -11,12 +11,16 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
 
         const file = req.files['document'];
         const id = req.params.id;
-        const { name, format, multipleDoc, panelType, handlerId, customer_id } = req.body;
+        const { name, format, multipleDoc, panelType, handlerId, customer_id, otherData } = req.body;
         let ref = '';
 
-        console.log(file);
+        console.log(req.body);
 
         let uploadedDoc;
+
+        const { issue_date, expiery_date } = JSON.parse(otherData);
+
+        console.log(otherData)
 
         const src = file.map(item => item.key); //getting src of each file
         const docObject = await docsModel.findOne({ handlerId: handlerId });
@@ -29,7 +33,9 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
                         format: format,
                         multipleDoc: multipleDoc,
                         src: src,
-                        customer_id: customer_id
+                        customer_id: customer_id,
+                        issue_date: issue_date,
+                        expiery_date: expiery_date
                     }
                 }
             });
@@ -41,7 +47,9 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
                         format: format,
                         multipleDoc: multipleDoc,
                         src: src,
-                        customer_id: customer_id
+                        customer_id: customer_id,
+                        issue_date: issue_date,
+                        expiery_date: expiery_date
                     }
                 ]
             });

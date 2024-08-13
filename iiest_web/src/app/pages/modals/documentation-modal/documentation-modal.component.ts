@@ -181,7 +181,7 @@ export class DocumentationModalComponent implements OnInit {
     formData.append('panelType', this.panelType);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
     formData.append('handlerId', this.handlerId)
-    formData.append('otherData', this.documentsForm.value)
+    formData.append('otherData', JSON.stringify(this.documentsForm.value))
 
     if (this.selectedDoc.mutipleDoc) {
       (this.docFile as any).forEach((element: File) => {
