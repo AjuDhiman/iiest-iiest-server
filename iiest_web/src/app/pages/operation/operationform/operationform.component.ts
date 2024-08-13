@@ -78,7 +78,6 @@ export class OperationformComponent implements OnInit {
 
   //this methord for geting case data 
   getCaseData($event: any): void {
-    console.log($event);
     this.caseData = $event;
     this.customerId = this.caseData.salesInfo.fboInfo.customer_id;
     //gstting all doc list
@@ -88,19 +87,16 @@ export class OperationformComponent implements OnInit {
 
   //this methord catch sales date from verification section which we will pass in enrollment section
   getShopSecVerifiedStatus($event: boolean): void {
-    console.log('getShopSecVerifiedStatus', $event)
     this.ShopSecVerifedStatus = $event;
   }
 
   //this methord catch sales date from verification section which we will pass in enrollment section
   getProductSecVerifiedStatus($event: boolean): void {
-    console.log('getProductSecVerifiedStatus', $event)
     this.productSecVerifedStatus = $event;
   }
 
   //this methord catch sales date from verification section which we will pass in enrollment section
   getDocSecVerifiedStatus($event: boolean): void {
-    console.log('getDocSecVerifiedStatus', $event)
     this.docSecVerifedStatus = $event;
   }
 
@@ -130,12 +126,11 @@ export class OperationformComponent implements OnInit {
       })
 
       this.requiredDocs = this.requiredDocs.map(a => a)
-      console.log('docs', this.requiredDocs);
 
-      this.docVerificationSec.isPendingByCustomer = this.verifiedData.isReqDocVerificationLinkSend;
-      this.docVerificationSec.verifiedStatus = this.verifiedData.isReqDocsVerified;
+      // this.docVerificationSec.isPendingByCustomer = this.verifiedData.isReqDocVerificationLinkSend;
+      // this.docVerificationSec.verifiedStatus = this.verifiedData.isReqDocsVerified;
 
-      this.docVerificationSec.decideResult();
+      // this.docVerificationSec.decideResult();
      
     }
 
@@ -181,7 +176,7 @@ export class OperationformComponent implements OnInit {
 
   //methord for getting doc for sale names
   getDocForSaleNames($event: string[]): void {
-    console.log(11)
+
     this.requiredDocs.forEach((doc) => {
       if($event.includes(doc.product_name)) {
         doc.isSelectedForSale = true
@@ -263,7 +258,6 @@ export class OperationformComponent implements OnInit {
 
   //methord for getting all doc list of a shop or recps of whom ths form belongs to
   getDocList(): void {
-    console.log(this.customerId);
     if(this.customerId){
       this._getDataService.getDocs(this.customerId).subscribe({
         next: res => {

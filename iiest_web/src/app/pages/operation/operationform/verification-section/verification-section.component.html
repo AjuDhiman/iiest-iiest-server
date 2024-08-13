@@ -932,10 +932,10 @@
   <!-- Form Heading and Status -->
   <div class="d-flex justify-content-between align-items-center pb-2">
     <h6>Document Verification</h6>
-    <span [ngClass]="!isPendingByCustomer?(verifiedStatus?'bg-success':'bg-warning'):'bg-orange'" style="font-size: x-small;"
+    <span [ngClass]="resultTextClass" style="font-size: x-small;"
       class="badge align-self-baseline">
-      {{!isPendingByCustomer?(verifiedStatus?'Verified':'In-Progress'):'Pening on customer end'}}
-      <fa-icon [icon]="verifiedStatus?faCircleCheck:faCircleExclamation"></fa-icon>
+      {{resultText}}
+      <fa-icon [icon]="resultIcon"></fa-icon>
     </span>
   </div>
 

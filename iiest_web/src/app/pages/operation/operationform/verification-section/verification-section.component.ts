@@ -271,6 +271,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     if (changes['verifiedShopData'] && changes['verifiedShopData'].currentValue && this.isForDocVerification) {
       this.isPendingByCustomer = this.verifiedShopData.isReqDocVerificationLinkSend;
       this.verifiedStatus = this.verifiedShopData.isReqDocsVerified;
+
+      console.log('verified Status', this.isPendingByCustomer, this.verifiedStatus);
   
       this.decideResult();
       this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
