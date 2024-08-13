@@ -502,13 +502,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this.verificationForm.patchValue({ sales_person: this.caseData.salesInfo.employeeInfo.employee_name })
       }
 
-      
-
       this.decideResult();
 
-
-
-      this.emitPrevSecVerifiedStatus2.emit(this.verifiedStatus);
+      this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
 
     }
   }

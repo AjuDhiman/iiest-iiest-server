@@ -39,7 +39,7 @@
           <app-verification-section class="g-1 p-3 border border-1 rounded-3 pb-3" [candidateId]="candidateId"
             [isForProductVerification]="true" [isTrainer]="isTrainer" [productType]="productType" [caseData]="caseData"
             (emitCustomerId)="getCustomerId($event)" (emitVerifiedID)="getVerifiedDataId($event)"
-             [prevSecVerifiedStatus]="ShopSecVerifedStatus" (emitPrevSecVerifiedStatus2)="getProductSecVerifiedStatus($event)"
+             [prevSecVerifiedStatus]="ShopSecVerifedStatus" (emitPrevSecVerifiedStatus)="getProductSecVerifiedStatus($event)"
             (emitVerifiedStatus)="getVerifiedStatus($event)" (emitDocuments)="getDocuments($event)"
             (refreshAuditLog)="generalsec.getCaseNotes()" (emitVerifiedData)="getVerifiedData($event)">
           </app-verification-section>
