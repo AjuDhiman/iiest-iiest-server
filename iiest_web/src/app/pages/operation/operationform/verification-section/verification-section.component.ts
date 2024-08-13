@@ -308,7 +308,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.loading = false;
           if (res.success) {
             this.loading = false;
-            this.verifiedStatus = true;
+            this.isPendingByCustomer = true;
+            this.decideResult();
+            // this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiedId);
             // this.emitVerifiedData.emit({ ...res.verificationInfo, batchData: res.batchData });
@@ -333,7 +335,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         next: res => {
           if (res.success) {
             this.loading = false;
-            this.verifiedStatus = true;
+            this.isPendingByCustomer = true;
+            this.decideResult();
+            // this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
             // this.emitVerifiedData.emit(res.verificationInfo);
@@ -348,7 +352,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.loading = false;
           if (res.success) {
             this.loading = false;
-            this.verifiedStatus = true;
+            // this.verifiedStatus = true;
+            this.isPendingByCustomer = true;
+            this.decideResult();
             console.log(res);
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
@@ -391,6 +397,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.resultTextClass = 'bg-orange';
           this.resultIcon = faCircleExclamation;
           this.isPendingByCustomer = true;
+          this.decideResult();
 
         }
       },
@@ -422,7 +429,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this._registerService.verifyDoc(this.candidateId, this.checkedDocsName).subscribe({
           next: res => {
             this.loading = false;
-            console.log(res);
+            this.isPendingByCustomer = true;
+            this.decideResult();
             this.emitCheckedDocs.emit(this.checkedDocsName);
           }
         })
