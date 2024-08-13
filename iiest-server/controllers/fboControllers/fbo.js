@@ -43,7 +43,7 @@ exports.fboPayment = async (req, res) => {
 
     console.log(panIndiaAllowedIds);
 
-    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -69,7 +69,7 @@ exports.fboPayment = async (req, res) => {
       }
     });
 
-    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(formBody.pincode);
 
       if (!pincodeCheck) {
@@ -421,7 +421,7 @@ exports.fboRegister = async (req, res) => {
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
     const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -440,7 +440,7 @@ exports.fboRegister = async (req, res) => {
 
     const boData = await boModel.findOne({ _id: boInfo });
 
-    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {
@@ -574,7 +574,7 @@ exports.boByCheque = async (req, res) => {
     const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId });
     const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
 
-    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') {
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
 
       if (!areaAlloted) {
         success = false;
@@ -593,7 +593,7 @@ exports.boByCheque = async (req, res) => {
 
     const boData = await boModel.findOne({ _id: boInfo });
 
-    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'Verifier Panel') { //checking allocated areas
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') { //checking allocated areas
       const pincodeCheck = areaAlloted.pincodes.includes(pincode);
 
       if (!pincodeCheck) {

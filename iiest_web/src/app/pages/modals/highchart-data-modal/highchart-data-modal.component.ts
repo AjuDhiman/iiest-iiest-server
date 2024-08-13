@@ -298,6 +298,8 @@ export class HighchartDataModalComponent {
           break;
         case "IT Department": this.salesDeptfilter();
           break;
+          case "Management Department": this.salesDeptfilter();
+          break;
       }
     }
     else {
@@ -308,6 +310,8 @@ export class HighchartDataModalComponent {
         case "HR Department": this.filteredData = this.employeeList;
           break;
         case "IT Department": this.filteredData = this.specificDatas;
+          break;
+          case "Management Department": this.filteredData = this.specificDatas;
           break;
       }
     }

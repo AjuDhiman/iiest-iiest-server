@@ -189,7 +189,7 @@ export const caseList_roles = [
    'Project Associate',
    'Project Coordinator',
    'Technical Coordinator',
-   'Verifier',
+   'Technical Associate'
 ];
 
 //roles of directors

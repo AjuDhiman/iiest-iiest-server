@@ -336,11 +336,11 @@ export class CaseListComponent implements OnInit {
 
   //methord intialize product type on the selection of product
   initializeProductType(): void {
-    if (this.panelType === 'Fostac Panel' || this.panelType === 'Verifier Panel') {
+    if (this.panelType === 'Fostac Filing Panel' || this.panelType === 'FSSAI Relationship Panel') {
       this.productType = 'Fostac';
-    } else if (this.panelType === 'Foscos Panel') {
+    } else if (this.panelType === 'Fostac Filing Panel') {
       this.productType = 'Foscos';
-    } else if (this.panelType === 'HRA Panel') {
+    } else if (this.panelType === 'HRA Filing Panel') {
       this.productType = 'HRA'
     }
   }

@@ -375,7 +375,7 @@ export class FbolistComponent implements OnInit {
     this.userData = parsedUser;
 
     //set configuration for verifier in case user designation is lies in the roles of verifier
-    if (parsedUser.designation === 'Verifier') {
+    if (parsedUser.panel_type === 'FSSAI Relationship Panel') {
       this.isVerifier = true;
     }
 

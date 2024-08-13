@@ -9,7 +9,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
 
         let list = {}; //creating an empty object
 
-        // if (employeePanel === 'Foscos Panel' || employeePanel === 'Verifier Panel') { //assigning foscosdata to foscos property of list in case of foscos panel or verifer panel
+        // if (employeePanel === 'Fostac Filing Panel' || employeePanel === 'FSSAI Relationship Panel') { //assigning foscosdata to foscos property of list in case of Fostac Filing Panel or verifer panel
 
         //     list['Foscos'] = await shopModel.aggregate([
         //         {
@@ -134,7 +134,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
 
 
         // }
-        // if (employeePanel === 'Fostac Panel' || employeePanel === 'FSSAI Training Panel' || employeePanel === 'Verifier Panel') { //assigning fotacdata to fostac property of list in case of foscos panel or verifer panel or fssai training panel
+        // if (employeePanel === 'Fostac Filing Panel' || employeePanel === 'FSSAI Supervisor Panel' || employeePanel === 'FSSAI Relationship Panel') { //assigning fotacdata to fostac property of list in case of Fostac Filing Panel or verifer panel or FSSAI Supervisor Panel
 
         //     list['Fostac'] = await salesModel.aggregate([
         //         {
@@ -245,7 +245,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
         //     ]);
 
         // };
-        // if (employeePanel === 'HRA Panel' || employeePanel === 'Verifier Panel') {
+        // if (employeePanel === 'HRA Filing Panel' || employeePanel === 'FSSAI Relationship Panel') {
 
             list = await shopModel.aggregate([
                 {

@@ -1,4 +1,4 @@
-<div *ngIf="department === 'Sales Department' || department === 'IT Department' ||department === 'PR Department'">
+<div *ngIf="department === 'Sales Department' || department === 'Management Department' ||department === 'PR Department'">
     <div class="container-fluid px-0" *ngIf="salesData">
         <div class="row g-4 mb-4 px-0">
 
@@ -215,7 +215,7 @@
 
 <!-- this section will be showed only to hr department -->
 <div class="g-2 mb-4 department-card-container row"
-    *ngIf="department==='HR Department' || department === 'IT Department' ">
+    *ngIf="department==='HR Department' || department === 'IT Department' ||  department=='Management Department'  ">
     <div *ngFor="let obj of departmentAndCount" class="border-0" data-toggle="tooltip"
         data-bs-custom-class="department-tooltip" data-placement="bottom" [title]="obj.department">
         <div class="app-card app-card-stat shadow-sm justify-content-center department-card cursor-pointer"

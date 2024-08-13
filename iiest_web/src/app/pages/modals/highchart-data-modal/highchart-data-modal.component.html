@@ -24,7 +24,7 @@
           </div>
 
           <!-- Search Filters For Sales Graph Related Data-->
-          <div class="col-auto" *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
+          <div class="col-auto" *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department' || chartData.userDept==='Management department' ">
             <select class="form-select form-select-sm w-auto cursor-pointer" [(ngModel)]="selectedFilterSales">
               <option value="generalsearch">General Search</option>
               <option value="byFboName">Search by FBO Name</option>
@@ -60,7 +60,7 @@
             <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
 
               <!-- Headings for sales charts related datas -->
-              <thead *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
+              <thead *ngIf="chartData.userDept==='Sales Department' || chartData.userDept==='IT Department' || chartData.userDept==='Management department'">
                 <tr>
                   <th class="cell">S.No</th>
 
@@ -140,7 +140,7 @@
 
               <!-- table body -->
               <tbody
-                *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department'">
+                *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department' || chartData.userDept==='Management department'">
                 <tr (click)="viewCustomerSales(employee.fboInfo.customer_id)"
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber1, id: chartData.chartTitile.split(' ').join('-') }; let sr = index">
                   <td class="cell"><span class="truncate text-capitalize">{{sr+itemsNumber*(pageNumber1-1)+1}}</span>

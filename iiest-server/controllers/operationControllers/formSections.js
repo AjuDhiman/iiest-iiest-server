@@ -212,7 +212,7 @@ exports.hraVerification = async (req, res, next) => {
 
         logAudit(req.user._id, "shopDetails", shopID, prevVal, currentVal, "Shop verified");
 
-        let clientData = {
+        const clientData = {
             fboObjId: shopID,
             product: 'hra',
             foodHandlerNo: food_handler_no,
@@ -225,8 +225,12 @@ exports.hraVerification = async (req, res, next) => {
             return res.status(204).json({ success });
         }
 
+        const shopInfo = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', populate: { path: 'boInfo' } }, { path: 'employeeInfo' }] });
+
+        sendVerificationMail({ ...clientData, managerName: shopInfo.salesInfo.fboInfo.boInfo.manager_name, recipientEmail: shopInfo.salesInfo.fboInfo.boInfo.email });
         req.verificationInfo = addVerification;
         req.clientData = clientData;
+
         return res.status(200).json({ success: true, verificationData: addVerification })
         // next();
 

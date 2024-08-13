@@ -176,7 +176,7 @@ exports.employeeRecord = async (req, res) => {
     }
 };
 
-//function for getting data about all of the ticket completed(verified) by a verifier
+//function for getting data about all of the ticket completed(verified)
 exports.ticketVerificationData = async (req, res) => {
     try {
 
@@ -568,7 +568,7 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
             ]);
-        } else if (req.user.designation === 'Verifier') {
+        } else if (req.user.panel_type === 'FSSAI Relationship Panel') {
             salesInfo = await salesModel.aggregate([
                 {
                     $lookup: {

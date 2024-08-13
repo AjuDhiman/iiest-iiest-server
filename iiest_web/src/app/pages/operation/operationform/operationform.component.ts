@@ -221,23 +221,8 @@ export class OperationformComponent implements OnInit {
     let panelType = parsedUser.panel_type;
 
     switch (panelType) {
-      // case 'Fostac Panel':
-      //   this.productType = 'Fostac';
-      //   break;
-      // case 'Foscos Panel':
-      //   this.productType = 'Foscos';
-      //   break;
-      // case 'HRA Panel':
-      //   this.productType = 'HRA';
-      //   break;
-      // case 'FSSAI Training Panel':
-      //   this.productType = 'Fostac';
-      //   this.isTrainer = true;
-      //   break;
-
-      // default:
-      //   this.productType = 'Fostac';
-      case 'Verifier Panel':
+     
+      case 'FSSAI Relationship Panel':
         this.isVerifier = true;
         break;
     }

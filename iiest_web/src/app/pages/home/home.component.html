@@ -26,19 +26,19 @@
 		<div class="my-3 row">
 			<!-- <app-highcharts  [chartData]="salesChartData" class="col-12 col-lg-6 mb-3"></app-highcharts> -->
 			<div class="col-12 col-lg-6 mb-3"
-				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
+				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' || empDepartment=='Management Department' ">
 				<app-highcharts [chartData]="productSalesChartData"></app-highcharts>
 			</div>
 			<div class="col-12 col-lg-6 mb-3"
-				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
+				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ||  empDepartment=='Management Department'  ">
 				<app-highcharts [chartData]="areaSalesChartData"></app-highcharts>
 			</div>
 			<div class="col-12 col-lg-6 mb-3"
-				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
+				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ||  empDepartment=='Management Department' ">
 				<app-highcharts [chartData]="monthSalesChartData"></app-highcharts>
 			</div>
 			<div class="col-12 col-lg-6 mb-3"
-				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ">
+				*ngIf="empDepartment==='Sales Department' || empDepartment=='IT Department' ||  empDepartment=='Management Department' ">
 				<app-highcharts [chartData]="clientTypeChartData"></app-highcharts>
 			</div>
 			<div class="col-12 col-lg-6 mb-3" *ngIf="empDesigantion=='Director'">

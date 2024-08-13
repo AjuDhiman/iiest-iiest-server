@@ -2,7 +2,7 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <!-- Tabs for Filtering by Product -->
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0"
-        *ngIf="(panelType==='Verifier Panel') && !isRecipientList">
+        *ngIf="(panelType==='FSSAI Relationship Panel') && !isRecipientList">
         <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
             <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Fostac'}"
                 (click)="toogleTabs('Fostac')">Fostac</a>
@@ -103,7 +103,7 @@
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
-                            <table *ngIf="(panelType==='FSSAI Training Panel' && forTraining) || isRecipientList"
+                            <table *ngIf="(panelType==='FSSAI Supervisor Panel' && forTraining) || isRecipientList"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>
@@ -261,7 +261,7 @@
                                 </tbody>
                             </table>
 
-                            <table *ngIf="productType==='HRA' || (panelType==='FSSAI Training Panel' && forAudit)"
+                            <table *ngIf="productType==='HRA' || (panelType==='FSSAI Supervisor Panel' && forAudit)"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
                                     <tr>

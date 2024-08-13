@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     // functions for forming input for highcharts from data comming from backend
-    if (this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department') {
+    if (this.empDepartment === 'Sales Department' || this.empDepartment === 'IT Department'||  this.empDepartment=='Management Department' ) {
       this.getProductSaledata();
       this.getAreaWiseSaleData();
       this.getClientTypeSaleData();

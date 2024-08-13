@@ -477,10 +477,11 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.searchSuggestionsOnBo = this.existingbos.filter((obj: any) => obj.owner_name && obj.customer_id && (regex.test(obj.owner_name) || regex.test(obj.customer_id)));
   }
 
-
+test: string
   fetchExistingUser(fboObj: any) {
     this.isFboSelected = true;
     this.existingFboId = fboObj.customer_id
+
 
     //we will not have search query in case we are fetching fbo from case list
     if (!this.isForFostacSaleByCaseList) {
@@ -899,7 +900,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   getSelectedProduct($event: string[]) {
 
     this.productName = $event;
-    //we are emittng the docs names fro her for using in for sale sec in verifier panel
+    //we are emittng the docs names fro her for using in for sale sec in FSSAI Relationship Panel
     this.emitSaleDocNames.emit(this.productName);
     this.fboForm.patchValue({ product_name: this.productName })
     var filtered = this.fboGeneralData.filter((a: any) => this.productName.find((item: any) => item === a.key));

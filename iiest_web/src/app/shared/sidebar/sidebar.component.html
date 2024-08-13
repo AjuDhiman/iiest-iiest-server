@@ -169,7 +169,7 @@
                     </li>
 
                     <!-- Case List Button -->
-                    <li *ngIf="userData && (caseListRoles.includes(userData.designation) && userData.panel_type!=='FSSAI Training Panel')" class="nav-item"
+                    <li *ngIf="userData && (caseListRoles.includes(userData.designation) && userData.panel_type!=='FSSAI Supervisor Panel')" class="nav-item"
                         routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
@@ -204,7 +204,7 @@
                     </li>
 
                     <!-- Recipient List -->
-                    <li *ngIf="userData && userData.designation === 'Verifier'"
+                    <li *ngIf="userData && userData.panel_type=== 'FSSAI Realtionship Panel'"
                         class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
@@ -230,7 +230,7 @@
                     </li>
 
                     <!-- Training Calander Button -->
-                    <li *ngIf="userData && caseListRoles.includes(userData.designation) &&( userData.panel_type==='Fostac Panel' || userData.panel_type==='FSSAI Training Panel')"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation) &&( userData.panel_type==='Fostac Filing Panel' || userData.panel_type==='FSSAI Supervisor Panel')"
                         class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
@@ -245,7 +245,7 @@
                     </li>
 
                     <!-- Audit Calander Button -->
-                    <li *ngIf="userData && caseListRoles.includes(userData.designation) && (userData.panel_type==='HRA Panel' || userData.panel_type==='FSSAI Training Panel')"
+                    <li *ngIf="userData && caseListRoles.includes(userData.designation) && (userData.panel_type==='HRA Filing Panel' || userData.panel_type==='FSSAI Supervisor Panel')"
                         class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"
