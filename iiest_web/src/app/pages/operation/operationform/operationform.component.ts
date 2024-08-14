@@ -69,6 +69,7 @@ export class OperationformComponent implements OnInit {
     this.candidateId = this.activatedRoute.snapshot.params['id'];
     this.productType = this.activatedRoute.snapshot.params['product'];
     this.getUserProductType();
+    this.checkActiveProduct();
   }
 
   //this methord for geting recipient customer id 
@@ -263,5 +264,16 @@ export class OperationformComponent implements OnInit {
       })
     }
    
+  }
+
+  //this methord gets the active prodct of this form and set is checked to true in document verification section
+  checkActiveProduct() {
+    this.requiredDocs.forEach((doc) => {
+      if(doc.product_name === this.productType){
+        doc.isActiveProduct = true;
+      }
+    })
+
+    this.requiredDocs = this.requiredDocs.map(doc => doc);
   }
 }

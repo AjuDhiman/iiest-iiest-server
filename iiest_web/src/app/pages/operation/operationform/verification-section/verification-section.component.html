@@ -944,8 +944,8 @@
   <div *ngFor="let doc of requiredDocs" class="col-md-2">
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [id]="doc.display_name.split(' ').join('_')"
-        (change)="onDocCheck($event, doc.display_name)" [checked]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer" [disabled]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer">
-      <label class="form-label" [ngClass]="{'text-success':doc.isAlreadyAvilable}" [for]="doc.display_name.split(' ').join('_')">
+        (change)="onDocCheck($event, doc.display_name)" [checked]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer || doc.isActiveProduct" [disabled]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer || doc.isActiveProduct">
+      <label class="form-label" [ngClass]="{'text-success':doc.isAlreadyAvilable || doc.isActiveProduct}" [for]="doc.display_name.split(' ').join('_')">
         {{doc.display_name}}
       </label>
     </div>
