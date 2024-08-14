@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   empDesigantion: string;
   projectType: string;
   caseList_roles: string[] = caseList_roles;
+  empPanelType: string;
 
   //store related variables
   employees: Employee;
@@ -141,6 +142,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.empName = loggedInUserData.employee_name;
     this.empDepartment = loggedInUserData.department;
     this.empDesigantion = loggedInUserData.designation;
+    this.empPanelType = loggedInUserData.panel_type;
     const message = interval(2000);
     this.msg = message.subscribe((res) => {
       if (res >= 2) {

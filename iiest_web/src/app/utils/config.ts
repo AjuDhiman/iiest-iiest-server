@@ -321,7 +321,8 @@ export const basicRequiredDocs = [
       isChecked: false,
       isAlreadyAvilable: false,
       isSelectedForSale:  false,
-      isPendingByCustomer: false
+      isPendingByCustomer: false,
+      isActiveProduct: false
    },
    {
       display_name: 'Water Test Report',
@@ -331,7 +332,8 @@ export const basicRequiredDocs = [
       isChecked: false,
       isAlreadyAvilable: false,
       isSelectedForSale:  false,
-      isPendingByCustomer: false
+      isPendingByCustomer: false,
+      isActiveProduct: false
    },
    {
       display_name: 'Medical Certificate',
@@ -341,7 +343,8 @@ export const basicRequiredDocs = [
       isChecked: false,
       isAlreadyAvilable: false,
       isSelectedForSale:  false,
-      isPendingByCustomer: false
+      isPendingByCustomer: false,
+      isActiveProduct: false
    },
    {
       display_name: 'Foscos License',
@@ -351,7 +354,8 @@ export const basicRequiredDocs = [
       isChecked: false,
       isAlreadyAvilable: false,
       isSelectedForSale:  false,
-      isPendingByCustomer: false
+      isPendingByCustomer: false,
+      isActiveProduct: false
    },
    {
       display_name: 'HRA',
@@ -361,7 +365,8 @@ export const basicRequiredDocs = [
       isChecked: false,
       isAlreadyAvilable: false,
       isSelectedForSale:  false ,
-      isPendingByCustomer: false
+      isPendingByCustomer: false,
+      isActiveProduct: false
    },
 ];
 

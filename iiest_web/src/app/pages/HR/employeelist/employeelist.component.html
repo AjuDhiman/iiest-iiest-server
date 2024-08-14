@@ -113,7 +113,7 @@
                       <fa-icon class="fa-l selector" (click)="viewEmployeeDetails(employee)" data-bs-toggle='tooltip'
                         data-bs-placement='top' title='view employee' style="margin-right: 7px; color: #1957a9;"
                         [icon]="faEye"></fa-icon>
-                      <fa-icon *ngIf="employee.department === 'Sales Department' && employee.status === true" class="fa-l selector"
+                      <fa-icon *ngIf="employee.status === true" class="fa-l selector"
                         (click)="allocate(employee, 'area')" data-bs-toggle='tooltip' data-bs-placement='top'
                         title='allocate area' style="margin-right: 7px; color: #1957a9;"
                         [icon]="faLocationPin"></fa-icon>

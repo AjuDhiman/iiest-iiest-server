@@ -16,6 +16,7 @@ export class StatCardsComponent implements OnInit {
   departmentAndCount: Array<{ department: string, count: string, active: string, inactive: string }>
   department: string = '';
   designation: string = '';
+  panelType: string = '';
   salesData: any;
   ticketData: any;
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
@@ -43,6 +44,7 @@ export class StatCardsComponent implements OnInit {
     loggedInUserData = JSON.parse(loggedInUserData)
     this.department = loggedInUserData.department;
     this.designation = loggedInUserData.designation;
+    this.panelType = loggedInUserData.panel_type;
 
   }
 

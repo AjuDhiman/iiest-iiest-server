@@ -14,6 +14,11 @@ const sendDocumentMail = (clientData) => {
       pass: mailData.pass
     }
   });
+
+  //all name required docs
+  const requireddocs = ['Fostac Cerificate', 'Foscos License', 'HRA', 'Medical Cerificate', 'Water Test Report']
+
+
   const mailOptions = {
     from: mailData.email,
     to: clientData.clientMail,
@@ -530,12 +535,14 @@ const sendVerificationMail = (clientData) => {
     <p>Dear ${clientData.managerName},</p>
     <p>Thanks for registering for the compliances of - FSSAI GOI.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
-    <p>The list docs you commited you have:-</p>
-     ${clientData.checkedDocsName.join('<br>')}
+    <p>The following list of documents have been declared by you for the completion of fssai compliences:-</p>
+    ${clientData.checkedDocsName.join('<br>')}
+    <p>The following list of pending documents for the completion of fssai compliences:-</p>
+    ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('</br>')}
      <p><b>Please mail these docs on customerrelations@iiest.org </b></p>
 
-    <p>click button below for verifing your email.</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/doc/${clientData.fboObjId}'>
+    <p>click button below for sending documents.</p>
+        <a style="text-decoration: none;" href="mailto:customerrelations@iiest.org">
             <button style="display: block;
             width: 100%;
             max-width: 300px;
@@ -545,7 +552,7 @@ const sendVerificationMail = (clientData) => {
             font-size: 18px;
             padding: 12px 0;
             margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">Verify</button>
+            text-decoration: none; cursor: pointer;">Send</button>
         </a>
         <br><br>
 
@@ -568,13 +575,16 @@ const sendVerificationMail = (clientData) => {
     <p>भारत सरकार के तहत सेवाओं के लिए पंजीकरण करने के लिए धन्यवाद।<br>
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     
-<p>आपके द्वारा प्रतिबद्ध किए गए दस्तावेज़ों की सूची:-</p>
- ${clientData.checkedDocsName.join('<br>')}
+<p>आपके द्वारा FSSAI अनुपालन की पूर्ति के लिए निम्नलिखित दस्तावेज़ों की घोषणा की गई है:</p>
+${clientData.checkedDocsName.join('<br>')}
+<p>FSSAI अनुपालन की पूर्ति के लिए निम्नलिखित दस्तावेज़ लंबित हैं:</p>
+${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('</br>')}
+
  <p><b>कृपया इन दस्तावेजों को customerrelations@iiest.org पर मेल करें।</b></p>
 
 
      <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/doc/${clientData.id}'>
+        <a style="text-decoration: none;" href="mailto:customerrelations@iiest.org">
             <button style="display: block;
             width: 100%;
             max-width: 300px;

@@ -9,7 +9,7 @@ import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { basicRequiredDocs, hraKob, ownershipType, stateName } from 'src/app/utils/config';
-import { pincodeData } from 'src/app/utils/registerinterface';
+import { pincodeData, requireDocsInterface } from 'src/app/utils/registerinterface';
 
 @Component({
   selector: 'app-verification-section',
@@ -269,10 +269,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   
     // Check if 'verifiedShopData' has changed and 'isForDocVerification' is true
     if (changes['verifiedShopData'] && changes['verifiedShopData'].currentValue && this.isForDocVerification) {
+      // this.requiredDocs.forEach(a)
+      this.isPendingByCustomer = false;
+      
+      //check if every required docs stisfies the condition
+      this.verifiedStatus = this.requiredDocs.every((doc: requireDocsInterface) => (doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isActiveProduct));
       this.isPendingByCustomer = this.verifiedShopData.isReqDocVerificationLinkSend;
-      this.verifiedStatus = this.verifiedShopData.isReqDocsVerified;
-
-      console.log('verified Status', this.isPendingByCustomer, this.verifiedStatus);
+      // this.verifiedStatus = this.verifiedShopData.isReqDocsVerified;
   
       this.decideResult();
       this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);

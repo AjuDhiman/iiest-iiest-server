@@ -260,3 +260,15 @@ export interface invoiceCreation{
   invoice_date: Date,
   gst_amount: number
 }
+
+export interface requireDocsInterface {
+  product_name: String,
+  display_name: String,
+  allowedFormats: String[],
+  mutipleDoc: boolean,
+  isChecked: boolean,
+  isAlreadyAvilable: boolean,
+  isSelectedForSale:  boolean,
+  isPendingByCustomer: boolean,
+  isActiveProduct: boolean
+};
