@@ -1,5 +1,5 @@
-const testEnv = false;
-const prodEnv = true;
+const testEnv = true;
+const prodEnv = false;
 
 export const config = {
    API_URL: prodEnv?'https://connectonline.world:3001':(testEnv?'https://connectonline.world:3001/iiest':'http://localhost:3000/iiest'),
