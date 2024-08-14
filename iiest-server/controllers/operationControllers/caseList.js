@@ -100,100 +100,15 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                         as: 'verificationInfo'
                     }
                 },
+                // {
+                //     $unwind: "verificationInfo"
+                // },
                 {
                     $sort: {
                         'salesInfo.createdAt': -1
                     }
                 }
             ]).exec();
-
-
-        // }
-
-          //     list['HRA'] = await shopModel.aggregate([
-        //         {
-        //             $match: {
-        //                 product_name: 'HRA'
-        //             }
-        //         },
-        //         {
-        //             $lookup: {
-        //                 from: 'employee_sales',
-        //                 localField: 'salesInfo',
-        //                 foreignField: '_id',
-        //                 as: 'salesInfo'
-        //             }
-        //         },
-        //         {
-        //             $unwind: {
-        //                 path: '$salesInfo',
-        //                 preserveNullAndEmptyArrays: true
-        //             }
-        //         },
-        //         {
-        //             $lookup: {
-        //                 from: 'staff_registers',
-        //                 localField: 'salesInfo.employeeInfo',
-        //                 foreignField: '_id',
-        //                 as: 'salesInfo.employeeInfo'
-        //             }
-        //         },
-        //         {
-        //             $unwind: {
-        //                 path: '$salesInfo.employeeInfo',
-        //                 preserveNullAndEmptyArrays: true
-        //             }
-        //         },
-        //         {
-        //             $lookup: {
-        //                 from: 'fbo_registers',
-        //                 localField: 'salesInfo.fboInfo',
-        //                 foreignField: '_id',
-        //                 as: 'salesInfo.fboInfo'
-        //             }
-        //         },
-        //         {
-        //             $unwind: {
-        //                 path: '$salesInfo.fboInfo',
-        //                 preserveNullAndEmptyArrays: true
-        //             }
-        //         },
-        //         {
-        //             $lookup: {
-        //                 from: 'bo_registers',
-        //                 localField: 'salesInfo.fboInfo.boInfo',
-        //                 foreignField: '_id',
-        //                 as: 'salesInfo.fboInfo.boInfo'
-        //             }
-        //         },
-        //         {
-        //             $unwind: {
-        //                 path: '$salesInfo.fboInfo.boInfo',
-        //                 preserveNullAndEmptyArrays: true
-        //             }
-        //         },
-        //         {
-        //             $lookup: {
-        //                 from: 'documents',
-        //                 localField: 'salesInfo.fboInfo.customer_id',
-        //                 foreignField: 'handlerId',
-        //                 as: 'salesInfo.docs'
-        //             }
-        //         },
-        //         {
-        //             $lookup: {
-        //                 from: 'hra_verifications',
-        //                 localField: '_id',
-        //                 foreignField: 'shopInfo',
-        //                 as: 'verificationInfo'
-        //             }
-        //         },
-        //         {
-        //             $sort: {
-        //                 'salesInfo.createdAt': -1
-        //             }
-        //         }
-        //     ]).exec();
 
 
         return res.status(200).json({ caseList: list })

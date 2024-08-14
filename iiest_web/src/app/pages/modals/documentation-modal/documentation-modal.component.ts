@@ -175,8 +175,6 @@ export class DocumentationModalComponent implements OnInit {
       formData.append('customer_id', customer_id);
     }
 
-    console.log(this.handlerId);
-
     formData.append('format', this.format);
     formData.append('panelType', this.panelType);
     formData.append('multipleDoc', this.selectedDoc.mutipleDoc.toString());
@@ -213,7 +211,8 @@ export class DocumentationModalComponent implements OnInit {
     modalRef.componentInstance.doc = res;
   }
 
-  //methord for deleting docs
+  
+  //methord runs for confirmation of deleting the docs
   onDocDelete(doc: any) { // this methord opens the confirmation doc if you want to delecte some doc 
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.action = `Delete ${doc.name}`;
@@ -226,6 +225,7 @@ export class DocumentationModalComponent implements OnInit {
     });
   }
 
+  //methord for deleting docs
   deleteDoc(confirmation: boolean, doc: any) { // methord for deleting doc if confirmation comes true from confirmation modal this also creates audit log
     if (confirmation) {
       this.loading = true;
@@ -305,6 +305,42 @@ export class DocumentationModalComponent implements OnInit {
   changeNameFormat(name: string): string { // this methord replaces " " by "_" in a string
     const updatedString: string = name.split(' ').join('_');
     return updatedString;
+  }
+
+  //methord change the view format ofthe date in the table
+  getFormattedDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
+    let suffix = "";
+    if (day === 1 || day === 21 || day === 31) {
+      suffix = "st";
+    } else if (day === 2 || day === 22) {
+      suffix = "nd";
+    } else if (day === 3 || day === 23) {
+      suffix = "rd";
+    } else {
+      suffix = "th";
+    }
+    return `${day}${suffix} ${month} ${year}`;
+  }
+
+  //methord for calculating days left for a doc
+  calculateDaysLeft(doc: any): number{
+    let daysLeft: number = 0;
+
+    const today = new Date().getTime();
+    const expierydate = new Date(doc.expiery_date).getTime();
+
+    //caculating days with the help of micro seconds
+    daysLeft = Math.floor((expierydate - today)/(1000 * 60 * 60 * 24));
+
+    //setting days left 0 days remaining are negitive
+    if(daysLeft < 0) {
+      daysLeft = 0
+    }
+    return daysLeft;
   }
 
 

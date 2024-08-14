@@ -203,19 +203,19 @@ export class CaseListComponent implements OnInit {
         } else {
           switch (this.selectedFilter) {
 
-            case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo && elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
               break;
 
-            case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
               break;
 
-            case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
               break;
 
-            case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.fboInfo.owner_contact.toString().includes(this.searchQuery.toString()))
+            case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo.fboInfo.owner_contact.toString().includes(this.searchQuery.toString()))
               break;
 
-            case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem && elem.fboInfo.state && elem.fboInfo.district && (elem.fboInfo.state.toString().toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.district.toString().toLowerCase().includes(this.searchQuery.toLowerCase())));
+            case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem && elem.salesInfo.fboInfo.state && elem.fboInfo.district && (elem.fboInfo.state.toString().toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.fboInfo.district.toString().toLowerCase().includes(this.searchQuery.toLowerCase())));
               break;
           }
         }
@@ -223,7 +223,7 @@ export class CaseListComponent implements OnInit {
       }
       else if (this.productType === 'Foscos') { //search in case of foscos
         switch (this.selectedFilter) {
-          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.managerName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.boInfo.manager_name.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
           case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
@@ -244,7 +244,7 @@ export class CaseListComponent implements OnInit {
         switch (this.selectedFilter) {
           case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
-          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.managerName.toLowerCase().includes(this.searchQuery.toLowerCase()))
+          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
             break;
           case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo &&
             elem.salesInfo.fboInfo.fbo_name && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));

@@ -448,9 +448,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
   //founction for fetching recipient data 
   getMoreCaseInfo(): void {
+    this.loading = true;
     if (this.isForShopVerification) {
       this._getDataService.getMoreCaseInfo(this.productType, this.candidateId).subscribe({
         next: (res) => {
+          this.loading = false;
           this.caseData = res.populatedInfo;
 
           this.emitCaseData.emit(this.caseData);
@@ -472,6 +474,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
 
           this.decideResult();
+        },
+        error: err => {
+          this.loading = false;
         }
       });
     } else if (this.isForProductVerification && this.caseData) {

@@ -42,7 +42,63 @@ export class OperationformComponent implements OnInit {
   isSaleFormVisible: boolean = false;
   checkedDocs: any = [];
   caseData: any;
-  requiredDocs = basicRequiredDocs;
+  requiredDocs = [
+    {
+       product_name: 'Fostac',
+       display_name: 'Fostac Certificate',
+       allowedFormats: ['pdf', 'jpg', 'jpeg'],
+       mutipleDoc: false,
+       isChecked: false,
+       isAlreadyAvilable: false,
+       isSelectedForSale:  false,
+       isPendingByCustomer: false,
+       isActiveProduct: false
+    },
+    {
+       display_name: 'Water Test Report',
+       product_name: 'Water Test Report',
+       allowedFormats: ['pdf', 'jpg', 'jpeg'],
+       mutipleDoc: false,
+       isChecked: false,
+       isAlreadyAvilable: false,
+       isSelectedForSale:  false,
+       isPendingByCustomer: false,
+       isActiveProduct: false
+    },
+    {
+       display_name: 'Medical Certificate',
+       product_name: 'Medical',
+       allowedFormats: ['pdf', 'jpg', 'jpeg'],
+       mutipleDoc: false,
+       isChecked: false,
+       isAlreadyAvilable: false,
+       isSelectedForSale:  false,
+       isPendingByCustomer: false,
+       isActiveProduct: false
+    },
+    {
+       display_name: 'Foscos License',
+       product_name: 'Foscos',
+       allowedFormats: ['pdf', 'jpg', 'jpeg'],
+       mutipleDoc: false,
+       isChecked: false,
+       isAlreadyAvilable: false,
+       isSelectedForSale:  false,
+       isPendingByCustomer: false,
+       isActiveProduct: false
+    },
+    {
+       display_name: 'HRA',
+       product_name: 'HRA',
+       allowedFormats: ['pdf', 'jpg', 'jpeg'],
+       mutipleDoc: false,
+       isChecked: false,
+       isAlreadyAvilable: false,
+       isSelectedForSale:  false ,
+       isPendingByCustomer: false,
+       isActiveProduct: false
+    },
+ ];
   ShopSecVerifedStatus: boolean = false;
   productSecVerifedStatus: boolean = false;
   docSecVerifedStatus: boolean = false;

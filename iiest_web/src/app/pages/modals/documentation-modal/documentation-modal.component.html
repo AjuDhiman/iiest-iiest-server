@@ -119,10 +119,13 @@
             <table class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
               <thead>
                 <tr>
-                  <th class="cell col-2">S.No</th>
-                  <th class="cell col-4">Document Name</th>
-                  <th class="cell col-3">Doc</th>
-                  <th class="cell col-3">Action</th>
+                  <th class="cell">S.No</th>
+                  <th class="cell">Document Name</th>
+                  <th class="cell">Doc</th>
+                  <th class="cell">Issue Date</th>
+                  <th class="cell">Expiery Date</th>
+                  <th class="cell">Days Left</th>
+                  <th class="cell">Action</th>
                   <!-- <th class="cell col-2">Action</th> -->
                 </tr>
               </thead>
@@ -144,12 +147,15 @@
                       </div>
                     </span>
                   </td>
+                  <td class="cell"><span class="truncate">{{getFormattedDate(doc.issue_date)}}</span></td>
+                  <td class="cell"><span class="truncate">{{getFormattedDate(doc.expiery_date)}}</span></td>
+                  <td class="cell"><span class="truncate">{{calculateDaysLeft(doc)}}</span></td>
                   <td class="cell"><span class="truncate">
-                      <!-- <fa-icon [icon]="faTrash" class="text-danger fa-lg cursor-pointer" title="Delete"
-                        (click)="onDocDelete(doc)"></fa-icon> -->
-                      <fa-icon [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
+                      <fa-icon *ngIf="calculateDaysLeft(doc) === 0" [icon]="faTrash" class="text-danger fa-lg cursor-pointer" title="Delete"
+                        (click)="onDocDelete(doc)"></fa-icon>
+                      <fa-icon  [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
                         (click)="viewDocument(doc)"></fa-icon>
-                      <!--  <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
+                       <!-- <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
                       ></fa-icon> -->
                     </span>
                   </td>

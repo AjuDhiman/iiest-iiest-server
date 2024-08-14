@@ -20,7 +20,11 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
 
         const { issue_date, expiery_date } = JSON.parse(otherData);
 
-        console.log(otherData)
+        //converting to iso string
+        const issueDateIso = getIsoDate(issue_date);
+        const expiryDateIso = getIsoDate(expiery_date);
+
+        console.log(issueDateIso, expiryDateIso);
 
         const src = file.map(item => item.key); //getting src of each file
         const docObject = await docsModel.findOne({ handlerId: handlerId });
@@ -34,8 +38,8 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
                         multipleDoc: multipleDoc,
                         src: src,
                         customer_id: customer_id,
-                        issue_date: issue_date,
-                        expiery_date: expiery_date
+                        issue_date: issueDateIso,
+                        expiery_date: expiryDateIso
                     }
                 }
             });
@@ -227,4 +231,16 @@ exports.generateHRADocUploadURL = async (req, res) => {
         console.log(error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
+}
+
+//methord for getting iso date
+function getIsoDate(dateStr){
+    // Split the input string into parts (assuming it's in the format DD-MM-YYYY)
+    const [year, month, day] = dateStr.split('-');
+    
+    // Create a new Date object using the parts
+    const dateObj = new Date(`${year}-${month}-${day}`);
+    
+    // Convert the date object to an ISO string
+    return dateObj.toISOString();
 }
