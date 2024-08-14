@@ -192,7 +192,7 @@ export class DocumentationModalComponent implements OnInit {
     }
 
     if (this.shopId) {
-      this._registerService.saveRequiredDocument(formData).subscribe({
+      this._registerService.saveFostacDocument(formData).subscribe({
         next: res => {
           if (res) {
             this.loading = false;
