@@ -382,7 +382,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
             sgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('sgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             cgst: ((invoice.invoice_type === 'Tax') && invoice.state === 'Delhi') ? (this.calculateGST('cgst', invoice.processing_amount) * Number(invoice.qty)) : 0,
             igst: ((invoice.invoice_type === 'Tax') && invoice.state !== 'Delhi') ? (this.calculateGST('igst', invoice.processing_amount) * Number(invoice.qty)) : 0,
-            income_amount: invoice.processing_amount * invoice.qty
+            income_amount: (invoice.processing_amount * invoice.qty)
           }
         }).sort((a: any, b: any) => {
           if (a.invoice_code) {
@@ -618,16 +618,17 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
      //aggregating totals
      this.filteredData.forEach((data: any) => {
        
-       if(data.receivingAmount) {
+       if(data.isAmountReceived) {
         //total processing amout = processing amount * total qty if payment recevied 
-         this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
+         this.totalProcessingAmt += Number(data.income_amount);
          
          this.totalReceivedAmt += data.receivingAmount;
 
          //total gst = sgst + igst + cgst + gst
          this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
        } else  {
-         this.totalPendingAmt += Number(data.processing_amount) * data.qty;
+        //total pending amount is amount the sum of all incomes amount of those whose payment is not recived
+         this.totalPendingAmt += Number(data.income_amount);
        }
 
        //total mount = total processing maont + gst
