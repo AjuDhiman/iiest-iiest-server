@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition, faCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -384,22 +384,22 @@ export class CaseListComponent implements OnInit {
   }
 
   //methord opens recipient list modal 
-  recipient(res: any, serviceType: string) {
-    {
-      if (res !== '' && serviceType === 'Fostac') {
-        const modalRef = this.modalService.open(RecipientComponent, { size: 'xl', backdrop: 'static' });
-        modalRef.componentInstance.fboData = res;
-        modalRef.componentInstance.serviceType = serviceType;
-        modalRef.componentInstance.isVerifier = true;
-      } else {
-        const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
-        modalRef.componentInstance.fboData = res;
-        modalRef.componentInstance.serviceType = serviceType;
-        modalRef.componentInstance.isVerifier = true;
-      }
+  // recipient(res: any, serviceType: string) {
+  //   {
+  //     if (res !== '' && serviceType === 'Fostac') {
+  //       const modalRef = this.modalService.open(RecipientComponent, { size: 'xl', backdrop: 'static' });
+  //       modalRef.componentInstance.fboData = res;
+  //       modalRef.componentInstance.serviceType = serviceType;
+  //       modalRef.componentInstance.isVerifier = true;
+  //     } else {
+  //       const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
+  //       modalRef.componentInstance.fboData = res;
+  //       modalRef.componentInstance.serviceType = serviceType;
+  //       modalRef.componentInstance.isVerifier = true;
+  //     }
 
-    }
-  }
+  //   }
+  // }
 
   //Methord opens fbo form in case of fostac
   doSale(fbo: any): void {
@@ -415,5 +415,21 @@ export class CaseListComponent implements OnInit {
     // modalRef.componentInstance.fboForm.patchValue({'onwer_name': 22})
 
 
+  }
+
+  //methord for calculating verification status and color of status of each case
+  calculateDaysLeft(entry: any): { resultText: string, resultTextClass: string, resultIcon: IconDefinition}{
+    const verificationData = entry.verificationInfo[0];
+
+    let resultText: string = '';
+    let resultTextClass: string = '';
+    let resultIcon: IconDefinition = faCircleExclamation;
+
+    // if(verificationInfo){
+
+    // }
+    
+
+    return { resultText, resultTextClass, resultIcon}
   }
 }
