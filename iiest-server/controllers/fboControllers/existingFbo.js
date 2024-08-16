@@ -557,9 +557,9 @@ exports.existingFboPayReturn = async (req, res) => {
           }); //create shop after sale for belongs  tohis sale
         });
 
-        if (!addShop) {
-          return res.status(401).json({ success: false, message: 'Shop creation Error', shopCreErr: true });
-        }
+        // if (!addShop) {
+        //   return res.status(401).json({ success: false, message: 'Shop creation Error', shopCreErr: true });
+        // }
 
         // req.session.destroy((err) => {
         //   console.log(err);
