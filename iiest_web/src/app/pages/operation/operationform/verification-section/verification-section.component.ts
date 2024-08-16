@@ -276,6 +276,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       this.verifiedStatus = this.requiredDocs.every((doc: requireDocsInterface) => (doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isActiveProduct));
       this.isPendingByCustomer = this.verifiedShopData.isReqDocVerificationLinkSend;
       // this.verifiedStatus = this.verifiedShopData.isReqDocsVerified;
+      this.loading = false;
   
       this.decideResult();
       this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
@@ -416,6 +417,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   onDocVerify() {
 
     this.verified = true;
+    console.log(this.loading)
     //return in case of loading  or invalid form field
     if (this.loading) {
       return;
