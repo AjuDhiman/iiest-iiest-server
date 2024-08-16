@@ -33,6 +33,7 @@ export class RecipientComponent implements OnInit {
   recipientCount: number = 0;
   shopsCount: number;
   listCount: number;
+  onlyRecpList: boolean = false;
   loading: boolean = false;
 
   hraKobs = hraKob;

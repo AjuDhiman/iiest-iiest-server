@@ -142,7 +142,7 @@ const shopVerification = new Schema({
         type: Boolean,
         required: true
     }
-})
+},{timestamps: true});
 
 const shopVerificationModel = mongoose.model('shop_verifications', shopVerification)
 

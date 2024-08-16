@@ -527,9 +527,10 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
 
   //methord for viewing invoice
   viewInvoice(invoice: any): void {
+    this.loading = true;
     this._getDataService.getCoworkInvoice(invoice.invoice_src).subscribe({
       next: res => {
-        console.log(res)
+        this.loading = false;
         const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'xl', backdrop: 'static' });
         modalRef.componentInstance.doc = {
           name: `Invoice of ${invoice.business_name}`,
@@ -537,6 +538,9 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
           src: res.invoiceConverted,
           multipleDoc: false
         }
+      },
+      error: err => {
+        this.loading = false;
       }
     })
   }
@@ -547,12 +551,16 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
       this._toastrService.info('Already Approved')
       return
     }
+    this.loading = true;
     this._getDataService.getCoworkInvoice(invoice.invoice_src).subscribe({
       next: res => {
-        console.log(res)
+        this.loading = false;
         const modalRef = this.ngbModal.open(ApprovesaleModalComponent, { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.saleInfo = invoice;
         modalRef.componentInstance.refreshCoworkInvoiceList = this.getCoworkInvoiceList;
+      },
+      error: err => {
+        this.loading = false;
       }
     })
   }
@@ -566,7 +574,6 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
   //methord for filtering data only for selected months
   getSelectedMonths($event: any): void {
     this.selectedMonths = $event;
-    console.log(this.selectedMonths);
     this.filterMonthWise();
   }
 
@@ -601,6 +608,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     this.filter();
   }
 
+  //methord for closing muti select on 
   onBodyTab() {
     this.multiSelect.isdropped = false;
   }

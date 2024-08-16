@@ -115,9 +115,9 @@ export class OnboardVerificationComponent implements OnInit, AfterViewInit{
           this.loading = false;//setting loading off on error
           this.status = 'not-verified';
           this.message = err.error.message;//getting message from backend
-          // const timeOut = setTimeout(() => {
-          //   this.router.navigate(['/']);
-          // }, 3000)//redirect after 3 sec of completion
+          const timeOut = setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000)//redirect after 3 sec of completion
         }
       });
     }

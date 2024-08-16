@@ -15,10 +15,6 @@ const sendDocumentMail = (clientData) => {
     }
   });
 
-  //all name required docs
-  const requireddocs = ['Fostac Cerificate', 'Foscos License', 'HRA', 'Medical Cerificate', 'Water Test Report']
-
-
   const mailOptions = {
     from: mailData.email,
     to: clientData.clientMail,
@@ -78,6 +74,9 @@ const sendVerificationMail = (clientData) => {
 
   let content;
   let subject;
+
+    //all name required docs
+    const requireddocs = ['Fostac Cerificate', 'Foscos License', 'HRA', 'Medical Cerificate', 'Water Test Report']
 
   if (clientData.product == 'fostac_recipient') {
 

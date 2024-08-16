@@ -7,7 +7,7 @@
 </div>
 <!-- *ngIf="recipientData?.length==0" -->
 
-<div class="border-top border-dark-subtle" *ngIf="recipientCount!==listCount && shopsCount!==listCount">
+<div class="border-top border-dark-subtle" *ngIf="(recipientCount!==listCount && shopsCount!==listCount) && !onlyRecpList">
   <div *ngIf="serviceType !== 'HRA'" class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
     <div class="form-check form-switch">
       <input class="form-check-input cursor-pointer" type="checkbox" role="switch" (change)="ChangeFormType($event)"
