@@ -96,7 +96,9 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
       })
     }
     if (changes && changes['customerId'] && changes['customerId'].currentValue) {
-      this.patchFbo();
+      if(this.isForDocSale) {
+        this.patchFbo();
+      }
       this.getDocs();
     }
     if (changes && changes['requiredDocs'] && changes['requiredDocs'].currentValue) {
@@ -181,35 +183,35 @@ export class DocumentationSectionComponent implements OnInit, OnChanges {
   }
 
   patchFbo(): void {
-    // this._getDataService.getMoreCaseInfo(this.productType, this.shopId).subscribe({ // we will patch fbo comming from sale to fbo of fbo form 
-    //   next: res => {
-    //     const fboInfo = res.populatedInfo.salesInfo.fboInfo //getting fbo info from api
-    //     this.fboNew.fboForm.patchValue({
-    //       boInfo: fboInfo.boInfo._id,
-    //       fbo_name: fboInfo.fbo_name,
-    //       owner_name: fboInfo.owner_name,
-    //       business_entity: fboInfo.boInfo.business_entity,
-    //       business_category: fboInfo.boInfo.business_category,// form control added by chandan for business_Owner
-    //       business_ownership_type: fboInfo.boInfo.business_ownership_type, // form control added for business_Owner
-    //       manager_name: fboInfo.boInfo.manager_name,
-    //       owner_contact: fboInfo.owner_contact,
-    //       email: fboInfo.boInfo.email,
-    //       state: fboInfo.state,
-    //       district: fboInfo.district,
-    //       village: fboInfo.village,
-    //       tehsil: fboInfo.tehsil,
-    //       address: fboInfo.address,
-    //       pincode: fboInfo.pincode,
-    //       business_type: fboInfo.business_type,
-    //     });
+    this._getDataService.getMoreCaseInfo(this.productType, this.shopId).subscribe({ // we will patch fbo comming from sale to fbo of fbo form 
+      next: res => {
+        const fboInfo = res.populatedInfo.salesInfo.fboInfo //getting fbo info from api
+        this.fboNew.fboForm.patchValue({
+          boInfo: fboInfo.boInfo._id,
+          fbo_name: fboInfo.fbo_name,
+          owner_name: fboInfo.owner_name,
+          business_entity: fboInfo.boInfo.business_entity,
+          business_category: fboInfo.boInfo.business_category,// form control added by chandan for business_Owner
+          business_ownership_type: fboInfo.boInfo.business_ownership_type, // form control added for business_Owner
+          manager_name: fboInfo.boInfo.manager_name,
+          owner_contact: fboInfo.owner_contact,
+          email: fboInfo.boInfo.email,
+          state: fboInfo.state,
+          district: fboInfo.district,
+          village: fboInfo.village,
+          tehsil: fboInfo.tehsil,
+          address: fboInfo.address,
+          pincode: fboInfo.pincode,
+          business_type: fboInfo.business_type,
+        });
 
-    //     if (fboInfo.business_type === 'b2b') {//patch gst number in case of gst businesstype = b2b
-    //       this.fboNew.fboForm.patchValue({ gst_number: fboInfo.gst_number });
-    //     }
+        if (fboInfo.business_type === 'b2b') {//patch gst number in case of gst businesstype = b2b
+          this.fboNew.fboForm.patchValue({ gst_number: fboInfo.gst_number });
+        }
 
-    //     this.fboNew.existingFboId = fboInfo.customer_id;
-    //   }
-    // });
+        this.fboNew.existingFboId = fboInfo.customer_id;
+      }
+    });
 
   }
 

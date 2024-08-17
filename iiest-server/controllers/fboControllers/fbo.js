@@ -1170,7 +1170,7 @@ exports.sendFboVerificationLink = async (req, res) => {
     success = true;
 
     // updating verification link send in fboobj
-    const dataUpdated = await fboModel.findByIdAndUpdate({_id: fboObjId}, {
+    const dataUpdated = await fboModel.findOneAndUpdate({_id: fboObjId}, {
       $set: {
         isVerificationLinkSend: true
       }
@@ -1188,7 +1188,7 @@ exports.sendFboVerificationLink = async (req, res) => {
 exports.verifyFbo = async (req, res) => {
   try {
 
-    console.log(req.params)
+    
     const fboObjId = req.params.fboid
     if (!mongoose.Types.ObjectId.isValid(fboObjId)) { //sending error message in case of wrong format of objet id send in parameter
       return res.status(404).json({ success: false, message: "Not A Valid Request" }); //this message will be shown in verifing mail frontend
@@ -1203,9 +1203,10 @@ exports.verifyFbo = async (req, res) => {
         return res.status(200).json({ success: true, message: 'Already Verified' })
       }
 
-      const verifiedFbo = await fboModel.findByIdAndUpdate(//updates the bo obj by assigning is_verified mail and is_contact _verified true
+      const verifiedFbo = await fboModel.findOneAndUpdate(
         { _id: fboObjId },
         {
+          // isFboVerified: true
           $set: {
             isFboVerified: true
           }
