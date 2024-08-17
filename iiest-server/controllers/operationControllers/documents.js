@@ -18,13 +18,20 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
 
         let uploadedDoc;
 
-        const { issue_date, expiery_date } = JSON.parse(otherData);
+        let issue_date;
+        let expiery_date;
+        let issueDateIso;
+        let expiryDateIso;
 
-        //converting to iso string
-        const issueDateIso = getIsoDate(issue_date);
-        const expiryDateIso = getIsoDate(expiery_date);
+        if (otherData) {
+            const dataParsed = JSON.parse(otherData);
+            issue_date = dataParsed.issue_date;
+            expiery_date = dataParsed.expiery_date;
+            //converting to iso string
+            issueDateIso = getIsoDate(issue_date);
+            expiryDateIso = getIsoDate(expiery_date);
+        }
 
-        console.log(issueDateIso, expiryDateIso);
 
         const src = file.map(item => item.key); //getting src of each file
         const docObject = await docsModel.findOne({ handlerId: handlerId });
@@ -82,8 +89,8 @@ exports.getDocList = async (req, res) => { //gertting list of all docs relate to
 
         const docs = await docsModel.findOne({ handlerId: handlerId });
 
-        if(!docs){
-            return res.status(204).json({message: 'record no found', noDocErr: true})
+        if (!docs) {
+            return res.status(204).json({ message: 'record no found', noDocErr: true })
         }
 
         const promises = [];
@@ -234,13 +241,13 @@ exports.generateHRADocUploadURL = async (req, res) => {
 }
 
 //methord for getting iso date
-function getIsoDate(dateStr){
+function getIsoDate(dateStr) {
     // Split the input string into parts (assuming it's in the format DD-MM-YYYY)
     const [year, month, day] = dateStr.split('-');
-    
+
     // Create a new Date object using the parts
     const dateObj = new Date(`${year}-${month}-${day}`);
-    
+
     // Convert the date object to an ISO string
     return dateObj.toISOString();
 }

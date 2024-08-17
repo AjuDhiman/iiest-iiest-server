@@ -103,10 +103,10 @@ const shopSchema = new Schema({
         required: true,
         trim: true
     },
-    isVerificationLinkSend: {
-        type: Boolean,
-        required: true
-    }
+    // isVerificationLinkSend: {
+    //     type: Boolean,
+    //     required: true
+    // }
 }, { timestamps: true });
 
 
