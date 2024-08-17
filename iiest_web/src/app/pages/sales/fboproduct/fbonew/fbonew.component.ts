@@ -565,6 +565,8 @@ test: string
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
 
+    console.log(this.fboForm);
+
     if (this.fboForm.invalid || this.loading) {
       return;
     }

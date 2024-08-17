@@ -453,9 +453,6 @@ export class CaseListComponent implements OnInit {
         } else if (verificationData.isProdVerified) {
           resultText = 'Product-Verified';
           resultTextClass = 'bg-success'
-        } else if (verificationData.isProdVerificationLinkSend) {
-          resultText = 'Document-Verification-pending-on-customer-end';
-          resultTextClass = 'bg-orange'
         }
       }
       

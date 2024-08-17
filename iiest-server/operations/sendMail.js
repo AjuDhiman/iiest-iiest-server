@@ -162,20 +162,6 @@ const sendVerificationMail = (clientData) => {
       + "Trainee Aadhar No --" + recp.aadharNo + "<br>")
     }).join('<br><br>')}
     <br>
-     <p>click button below for verifing your email.</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.fboObjId}'>
-            <button style="display: block;
-            width: 100%;
-            max-width: 300px;
-            background: #20DA9C;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 18px;
-            padding: 12px 0;
-            margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">Verify</button>
-        </a>
-        <br><br>
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
@@ -209,21 +195,6 @@ const sendVerificationMail = (clientData) => {
     ट्रेनी का आधार नं -- ${recp.aadharNo}<br>`
     })}
 
-    <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.id}'>
-            <button style="display: block;
-            width: 100%;
-            max-width: 300px;
-            background: #20DA9C;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 18px;
-            padding: 12px 0;
-            margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
-        </a>
-        <br><br>
-
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
     <p>"धन्यवाद,<br>
@@ -251,21 +222,6 @@ const sendVerificationMail = (clientData) => {
     Kind of Business -- ${clientData.kindOfBusiness}<br>
     Food Category -- ${clientData.foodCategory}<br>
 
-     <p>click button below for verifing your email.</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.fboObjId}'>
-            <button style="display: block;
-            width: 100%;
-            max-width: 300px;
-            background: #20DA9C;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 18px;
-            padding: 12px 0;
-            margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">Verify</button>
-        </a>
-        <br><br>
-
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
@@ -291,21 +247,6 @@ const sendVerificationMail = (clientData) => {
     लाइसेंस अवधि -- ${clientData.licenseDuration}<br>
     व्यवसाय का प्रकार -- ${clientData.kindOfBusiness}<br>
     खाद्य श्रेणी -- ${clientData.foodCategory}<br>
-
-     <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.id}'>
-            <button style="display: block;
-            width: 100%;
-            max-width: 300px;
-            background: #20DA9C;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 18px;
-            padding: 12px 0;
-            margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
-        </a>
-        <br><br>
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
@@ -463,21 +404,6 @@ const sendVerificationMail = (clientData) => {
     No of Food Handler -- ${clientData.foodHandlerNo}<br>
     Kind Of Business -- ${clientData.kindOfBusiness}<br>
 
-    <p>click button below for verifing your email.</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.fboObjId}'>
-            <button style="display: block;
-            width: 100%;
-            max-width: 300px;
-            background: #20DA9C;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 18px;
-            padding: 12px 0;
-            margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">Verify</button>
-        </a>
-        <br><br>
-
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Regards,<br>
@@ -499,21 +425,6 @@ const sendVerificationMail = (clientData) => {
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
     खाद्य संचालक की संख्या -- ${clientData.foodHandlerNo}<br>
     व्यवसाय का प्रकार -- ${clientData.kindOfBusiness}<br>
-
-     <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
-        <a style="text-decoration: none;" href='${VIEW_URL}#/verifyonboard/product/${clientData.id}'>
-            <button style="display: block;
-            width: 100%;
-            max-width: 300px;
-            background: #20DA9C;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 18px;
-            padding: 12px 0;
-            margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
-        </a>
-        <br><br>
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
@@ -593,7 +504,7 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('</
             font-size: 18px;
             padding: 12px 0;
             margin: 30px auto 0;
-            text-decoration: none; cursor: pointer;">सत्यापित करें</button>
+            text-decoration: none; cursor: pointer;">भेजें</button>
         </a>
         <br><br>
 

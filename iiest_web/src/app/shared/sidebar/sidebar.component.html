@@ -80,7 +80,7 @@
                     </li>
 
                     <!-- My orders Button -->
-                    <li *ngIf="userData && (fboRoles.includes(userData.designation))" class="nav-item"
+                    <li *ngIf="userData && ((fboRoles.includes(userData.designation) || userData.panel_type === 'FSSAI Supervisor Panel'))" class="nav-item"
                         routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
                         [attr.data-bs-placement]="!isSidebarVisible && largeDisplay?'top':null"

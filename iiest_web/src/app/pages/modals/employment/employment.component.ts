@@ -89,13 +89,17 @@ export class EmploymentComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+    this.loading = true;
     this.registerService.registerArea(this.employee._id, this.areaAllocationForm.value).subscribe({
+   
       next: (res) => {
+        this.loading = false;
         if (res.success) {
           this.toasterService.success('', 'Area Allocated Successfully');
         }
       },
       error: (err) => {
+        this.loading = false;
         let errorObj = err.error;
         if (errorObj.userError) {
           this.registerService.signout();

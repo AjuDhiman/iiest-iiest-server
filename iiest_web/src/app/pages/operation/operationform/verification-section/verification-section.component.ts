@@ -314,7 +314,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.loading = false;
           if (res.success) {
             this.loading = false;
-            this.isPendingByCustomer = true;
+            this.verifiedStatus = true;
             this.decideResult();
             // this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
@@ -341,7 +341,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         next: res => {
           if (res.success) {
             this.loading = false;
-            this.isPendingByCustomer = true;
+            this.verifiedStatus = true;
             this.decideResult();
             // this.verifiedStatus = true;
             this.emitVerifiedStatus.emit(this.verifiedStatus);
@@ -359,7 +359,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           if (res.success) {
             this.loading = false;
             // this.verifiedStatus = true;
-            this.isPendingByCustomer = true;
+            this.verifiedStatus = true;
             this.decideResult();
             console.log(res);
             this.emitVerifiedStatus.emit(this.verifiedStatus);
@@ -398,7 +398,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       next: res => {
         this.loading = false;
         if (res) {
-          this._toastrService.success('Please guide the customer for verifing link', 'Verification Link Send by Mail');
+          this._toastrService.success('Verification Link Send by Mail');
           this.resultText = 'Pending on customer end';
           this.resultTextClass = 'bg-orange';
           this.resultIcon = faCircleExclamation;
@@ -425,13 +425,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
     //opening confirmation modal
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.action = 'Verify checked docs and send confirmation link by sms and mail';
-    modalRef.componentInstance.confirmationText = 'confirm';
+    modalRef.componentInstance.action = 'verify checked docs and verification SMS and E-mail';
+    modalRef.componentInstance.confirmationText = 'Confirm';
     modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
       if (confirmation) {
         this.loading = true;
         this.verified = false;
-        this.verifiedStatus = true;
+        this.isPendingByCustomer = true;
 
         this._registerService.verifyDoc(this.candidateId, this.checkedDocsName).subscribe({
           next: res => {
@@ -528,16 +528,16 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     this._getDataService.getShopVerifedData(this.candidateId).subscribe({
       next: res => {
         this.loading = false;
-        if (res.verifedData.isProdVerificationLinkSend && !res.verifedData.isProdVerified) {
-          this.isPendingByCustomer = true;
-        } else if (res.verifedData.isProdVerified) {
-          this.verifiedStatus = true;
-          this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
-        }
+        // if (res.verifedData.isProdVerificationLinkSend && !res.verifedData.isProdVerified) {
+        //   this.isPendingByCustomer = true;
+        // } else if (res.verifedData.isProdVerified) {
+        //   this.verifiedStatus = true;
+        //   this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
+        // }
         this.patchVerifiedData(res.verifedData);
 
         this.verifiedShopData = res.verifedData
-        this.isPendingByCustomer = this.verifiedShopData.isProdVerificationLinkSend;
+        // this.isPendingByCustomer = this.verifiedShopData.isProdVerificationLinkSend;
         this.verifiedStatus = this.verifiedShopData.isProdVerified;
         this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
         this.decideResult();

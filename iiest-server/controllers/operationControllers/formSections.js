@@ -91,7 +91,7 @@ exports.fostacVerification = async (req, res) => {
         const recpDetails = await recipientModel.find({ salesInfo: shopData.salesInfo._id });
 
         //getting shopverification details
-        const fostacVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, product: 'Fostac', shopInfo: shopId, isProdVerificationLinkSend: true, isProdVerified: false, isReqDocVerificationLinkSend: false, isReqDocsVerified: true });
+        const fostacVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, product: 'Fostac', shopInfo: shopId, isProdVerified: true, isReqDocVerificationLinkSend: false, isReqDocsVerified: true });
 
         const clientData = {
             fboObjId: shopId,
@@ -159,7 +159,7 @@ exports.foscosVerification = async (req, res) => {
         }
 
         const addVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, product: 'Foscos', shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num
-            , isProdVerificationLinkSend: true, isProdVerified: false, isReqDocVerificationLinkSend: false, isReqDocsVerified: false
+            ,  isProdVerified: true, isReqDocVerificationLinkSend: false, isReqDocsVerified: false
          });
 
         //this code is for tracking the CRUD operation regarding to a shop
@@ -202,7 +202,8 @@ exports.hraVerification = async (req, res, next) => {
         const { food_handler_no, kob, hra_total, sales_date, sales_person } = verifiedData;
 
 
-        const addVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, shopInfo: shopID, product: 'HRA', kob: kob, foodHandlersCount: food_handler_no, isProdVerificationLinkSend: true, isProdVerified: false, isReqDocVerificationLinkSend: false, isReqDocsVerified: false });
+        const addVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, shopInfo: shopID, product: 'HRA', kob: kob, foodHandlersCount: food_handler_no, isProdVerified: true
+            , isReqDocVerificationLinkSend: false, isReqDocsVerified: false });
 
         //this code is for tracking the CRUD operation regarding to a shop
 
@@ -225,7 +226,7 @@ exports.hraVerification = async (req, res, next) => {
             return res.status(204).json({ success });
         }
 
-        const shopInfo = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', populate: { path: 'boInfo' } }, { path: 'employeeInfo' }] });
+        const shopInfo = await shopModel.findOne({ _id: shopID }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', populate: { path: 'boInfo' } }, { path: 'employeeInfo' }] });
 
         sendVerificationMail({ ...clientData, managerName: shopInfo.salesInfo.fboInfo.boInfo.manager_name, recipientEmail: shopInfo.salesInfo.fboInfo.boInfo.email });
         req.verificationInfo = addVerification;

@@ -122,10 +122,6 @@ const shopVerification = new Schema({
             return this.product === 'Foscos'
         },
     },
-    isProdVerificationLinkSend: {
-        type: Boolean,
-        required: true,
-    },
     isProdVerified: {
         type: Boolean,
         required: true
