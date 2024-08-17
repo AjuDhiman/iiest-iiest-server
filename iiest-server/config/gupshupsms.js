@@ -1,4 +1,4 @@
-//---------------------------------------------------This  File contains the all the gupshup SMS related vars and methords ------------------------------------------
+//-------This  File contains the all the gupshup SMS related vars and methords --------
 
 const GUPSHUP_CONFIG = JSON.parse(process.env.GUPSHUP_CONFIG);
 const DLT_CONFIG = JSON.parse(process.env.DLT_CONFIG);
@@ -73,11 +73,6 @@ exports.SendFoscosVerificationSMS = async (owner_name, manager_name, manager_con
 
 }
 
-
-
-
-
-
 // methord for sending verification sms for hra
 exports.SendHraVerificationSMS = async (owner_name, manager_name, manager_contact, email, phoneNo) => {
 
@@ -89,10 +84,6 @@ exports.SendHraVerificationSMS = async (owner_name, manager_name, manager_contac
     await sendSMS(dltTempletID, message, phoneNo);
 
 }
-
-
-
-
 
 // methord for sending document reminder sms
 exports.sendDocumentReminder = async (owner_name, manager_name, manager_contact, email, phoneNo) => {
@@ -106,24 +97,14 @@ exports.sendDocumentReminder = async (owner_name, manager_name, manager_contact,
 
 }
 
-
-
-
 // methord for sending verification sms for foscos
 exports.foscosVerificationSMS = async (owner_name, manager_name, manager_contact, email, phnoneNo) => {
 
     const dltTempletID = '';
-
     const message = ``;
-
     //sending sms
     await sendSMS(dltTempletID, message, phoneNo);
-
 }
-
-
-
-
 
 async function sendSMS(dltTempletID, message, phoneNo) {
     const params = new URLSearchParams()
