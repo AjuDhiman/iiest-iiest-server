@@ -51,6 +51,8 @@ export class EmployeelistComponent implements OnInit {
   faLocationPin = faLocationPin;
   faCopy = faCopy;
 
+  loading: boolean = false;
+
   //output event emitters
   // @Output() isEditRecord = new EventEmitter();
 
@@ -75,7 +77,9 @@ export class EmployeelistComponent implements OnInit {
     this.filter();
     if (this.allEmployees.length === 0) {
       this.getEmployees();
+      this.loading = true;
       this.employees$.subscribe(res => {
+        // this.loading = false
         this.allEmployees = res;
         this.totalEmp = this.allEmployees.length;
         this.filter();
@@ -151,9 +155,13 @@ export class EmployeelistComponent implements OnInit {
 
   //this methord manages the state of ngrx store
   getEmployees(): void {
+    
     this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
+      
       if (!loadedEmployee) {
         this.store.dispatch(new GetEmployee());
+      } else {
+        this.loading = false;
       }
     })
   }

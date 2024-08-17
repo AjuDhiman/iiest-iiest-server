@@ -42,8 +42,8 @@ const routes: Routes = [
   { path: 'caselist/operationform/:product/:id', component: OperationformComponent, canActivate:[authGuard,routeGuard], data: {allowedRoles:caseList_roles}},
   { path: 'empregister', component: SignupComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'fbo', component: FbonewComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:bookSaleRoles}},
-  { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles}},
-  //client list route opens client list component only alowed to director Roles
+  { path: 'fbolist', component: FbolistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:fbo_roles, allowedPanels: ['FSSAI Supervisor Panel']}},
+  //client list route opens client list component only alowed to director Roles 
   { path: 'clientlist', component: ClientListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:director_roles}},
   { path: 'invoicelist', component: InvoiceListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
   { path: 'createinvoice', component: CreateInvoiceComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},

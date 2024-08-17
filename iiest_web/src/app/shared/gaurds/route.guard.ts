@@ -7,8 +7,10 @@ export const routeGuard: CanActivateFn = (route, state) => {
     let user: any = sessionStorage.getItem('LoggedInUser');
     user = JSON.parse(user);
     let role = user.designation;
+    let panelType = user.panel_type;
     let allowedRoles:string[] = route.data['allowedRoles'];
-    if (allowedRoles.includes(role)) {
+    let allowedPanels:string[] = route.data['allowedPanels']
+    if ( (allowedRoles && allowedRoles.includes(role)) || (allowedPanels && allowedPanels.includes(panelType))) {
         //alert('Not logged in ');
         return true;
     } else {

@@ -148,7 +148,6 @@ const sendFboVerificationMail = (clientMail, clientData) => {
   });
   const mailOptions = {
     from: mailData.email,
-    cc: process.env.DIRECTOR_MAIL,
     to: clientMail,
     subject: `${CB_BRAND_NAME.english} -- Shop Verification`,
     html: `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
@@ -183,7 +182,7 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         <br><br>
         The company has zero tolerance towards any bribery, corruption & fraud in business activities.</p>
         <p>Thank You</p>
-        <p>Relationship Officer: ${clientData.verifier}</p>
+        <p>Technical Officer: ${clientData.verifier}</p>
         <br><br>
         Brand Name - ${CB_BRAND_NAME.english},<br/>
         Address - ${CB_ADDRESS.english}<br/>
@@ -225,7 +224,8 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         <br><br>
         कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</p>
         <p>धन्यवाद</p>
-        <br>
+        <p>तकनीकी अधिकारी: ${clientData.verifier}</p>
+        <br><br>
         ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
         पता - ${CB_ADDRESS.hindi}<br/>
         संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>

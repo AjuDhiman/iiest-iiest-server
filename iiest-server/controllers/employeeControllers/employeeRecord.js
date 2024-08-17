@@ -477,8 +477,11 @@ exports.ticketVerificationData = async (req, res) => {
 //function for getting sales data
 exports.employeeSalesData = async (req, res) => {
     try {
+
+        const panelType = req.user.panel_type;
+
         let salesInfo;
-        if (req.user.designation === 'Director') {
+        if (req.user.designation === 'Director' || panelType === 'FSSAI Supervisor Panel') {
             salesInfo = await salesModel.aggregate([
                 // {
                 //     $sort: {
