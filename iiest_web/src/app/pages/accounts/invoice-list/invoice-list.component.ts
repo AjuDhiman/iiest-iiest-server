@@ -387,36 +387,6 @@ export class InvoiceListComponent implements OnInit, AfterViewInit {
     this.multiSelect.isdropped = false;
   }
 
-  //methord for aggreagting results 
-  // aggregateResults(): void {
-  //    //setting total aggregation to 0
-  //    this.totalProcessingAmt = 0;
-  //    this.totalGstAmt = 0;
-  //    this.totalAmt = 0;
- 
-  //    //aggregating totals
-  //    this.filteredData.forEach((data: any) => {
-       
-  //      if(data.receivingAmount) {
-  //       //total processing amout = processing amount * total qty if payment recevied 
-  //        this.totalProcessingAmt += Number(data.processing_amount) * data.qty;
-        
-
-  //        //total gst = sgst + igst + cgst + gst
-  //        this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
-  //      } else  {
-        
-  //      }
-
-  //      //total mount = total processing maont + gst
-  //    this.totalAmt += Number(data.total_amount);
-       
-       
-  //    });
-
-  //    //total tds amount = total procesing amount - total recivings
-  //    this.totalTDSAmt = this.totalProcessingAmt - this.totalReceivedAmt;
-  // }
 
 
 }

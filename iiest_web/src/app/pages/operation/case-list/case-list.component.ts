@@ -8,6 +8,7 @@ import { ViewFboComponent } from '../../modals/view-fbo/view-fbo.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecipientComponent } from '../../modals/recipient/recipient.component';
 import { FbonewComponent } from '../../sales/fboproduct/fbonew/fbonew.component';
+import { basicRequiredDocs } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-case-list',
@@ -106,7 +107,7 @@ export class CaseListComponent implements OnInit {
       this._getDataService.getRecipientList().subscribe({
         next: res => {
           this.loading = false;
-          this.caseData = res.recpList;
+          this.caseData = res.recpList
           this.setListProductWise();
           this.filter()
         },
@@ -121,11 +122,17 @@ export class CaseListComponent implements OnInit {
     } else {
       this._getDataService.getCaseList().subscribe({
         next: res => {
-          console.log(res);
           this.loading = false;
-          this.caseList = res.caseList;
-          this.caseData = this.caseList.filter((data: any) => data.product_name &&  data.product_name === this.productType);
-          console.log('case data', this.caseData)
+          this.caseList = res.caseList.map((data: any) => {
+            const { resultText, resultTextClass, resultIcon } = this.decideResult(data);
+            return {
+              ...data,
+              resultText: resultText,
+              resultIcon: resultIcon,
+              resultTextClass: resultTextClass
+            }
+          });
+          this.caseData = this.caseList.filter((data: any) => data.product_name && data.product_name === this.productType);
           this.setListProductWise();
         },
         error: err => {
@@ -383,23 +390,24 @@ export class CaseListComponent implements OnInit {
     modalRef.componentInstance.product = this.productType;
   }
 
-  //methord opens recipient list modal 
-  // recipient(res: any, serviceType: string) {
-  //   {
-  //     if (res !== '' && serviceType === 'Fostac') {
-  //       const modalRef = this.modalService.open(RecipientComponent, { size: 'xl', backdrop: 'static' });
-  //       modalRef.componentInstance.fboData = res;
-  //       modalRef.componentInstance.serviceType = serviceType;
-  //       modalRef.componentInstance.isVerifier = true;
-  //     } else {
-  //       const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
-  //       modalRef.componentInstance.fboData = res;
-  //       modalRef.componentInstance.serviceType = serviceType;
-  //       modalRef.componentInstance.isVerifier = true;
-  //     }
+  // methord opens recipient list modal 
+  recipient(res: any, serviceType: string) {
+    {
+      if (res !== '' && serviceType === 'Fostac') {
+        const modalRef = this.modalService.open(RecipientComponent, { size: 'xl', backdrop: 'static' });
+        modalRef.componentInstance.fboData = res;
+        modalRef.componentInstance.onlyRecpList = true;
+        modalRef.componentInstance.serviceType = serviceType;
+        modalRef.componentInstance.isVerifier = true;
+      } else {
+        const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
+        modalRef.componentInstance.fboData = res;
+        modalRef.componentInstance.serviceType = serviceType;
+        modalRef.componentInstance.isVerifier = true;
+      }
 
-  //   }
-  // }
+    }
+  }
 
   //Methord opens fbo form in case of fostac
   doSale(fbo: any): void {
@@ -418,18 +426,43 @@ export class CaseListComponent implements OnInit {
   }
 
   //methord for calculating verification status and color of status of each case
-  calculateDaysLeft(entry: any): { resultText: string, resultTextClass: string, resultIcon: IconDefinition}{
+  decideResult(entry: any): { resultText: string, resultTextClass: string, resultIcon: IconDefinition } {
     const verificationData = entry.verificationInfo[0];
 
-    let resultText: string = '';
-    let resultTextClass: string = '';
+    let resultText: string = 'Un-Assigned';
+    let resultTextClass: string = 'bg-warning';
     let resultIcon: IconDefinition = faCircleExclamation;
 
-    // if(verificationInfo){
+    if (entry.salesInfo.fboInfo.isFboVerified) {
+      resultText = 'Shop-Verified',
+        resultTextClass = 'bg-success'
+    } else if (entry.salesInfo.fboInfo.isVerificationLinkSend) {
+      resultText = 'Shop-Verification-pending-on-customer-end';
+      resultTextClass = 'bg-orange'
+    }
 
-    // }
-    
+    if (verificationData) {
 
-    return { resultText, resultTextClass, resultIcon}
+      if (verificationData) {
+        if (verificationData.isReqDocsVerified) {
+          resultText = 'Documents-Verified';
+          resultTextClass = 'bg-success'
+        } else if (verificationData.isReqDocVerificationLinkSend) {
+          resultText = 'Document-Verification-pending-on-customer-end';
+          resultTextClass = 'bg-orange'
+        } else if (verificationData.isProdVerified) {
+          resultText = 'Product-Verified';
+          resultTextClass = 'bg-success'
+        } else if (verificationData.isProdVerificationLinkSend) {
+          resultText = 'Document-Verification-pending-on-customer-end';
+          resultTextClass = 'bg-orange'
+        }
+      }
+      
+
+    }
+
+
+    return { resultText, resultTextClass, resultIcon }
   }
 }

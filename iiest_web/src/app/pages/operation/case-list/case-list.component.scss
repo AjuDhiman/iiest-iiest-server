@@ -1,0 +1,7 @@
+.make-short {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: fit-content;
+    max-width: 125px;
+}

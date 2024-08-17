@@ -102,10 +102,7 @@
                                                 <td class="cell"><span
                                                         class="truncate text-capitalize">{{invoice.code}}</span>
                                                 </td>
-                                                <td class="cell"><span class="truncate text-capitalize" style="white-space: nowrap;
-                                                        overflow: hidden;
-                                                        text-overflow: ellipsis;
-                                                        width: 150px;">{{invoice.business_name.toLowerCase()}}</span>
+                                                <td class="cell"><span class="truncate text-capitalize make-short">{{invoice.business_name.toLowerCase()}}</span>
                                                 </td>
                                                 <td class="cell" *ngIf="invoice.business_type === 'b2b'"><span
                                                         class="truncate text-capitalize">{{invoice.gst_number}}</span>
