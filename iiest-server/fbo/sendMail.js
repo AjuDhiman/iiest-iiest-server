@@ -183,7 +183,8 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         <br><br>
         The company has zero tolerance towards any bribery, corruption & fraud in business activities.</p>
         <p>Thank You</p>
-        <br>
+        <p>Relationship Officer: ${clientData.verifier}</p>
+        <br><br>
         Brand Name - ${CB_BRAND_NAME.english},<br/>
         Address - ${CB_ADDRESS.english}<br/>
         Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>

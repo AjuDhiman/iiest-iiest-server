@@ -1156,9 +1156,13 @@ exports.sendFboVerificationLink = async (req, res) => {
 
     const infoToVerify = req.body
 
+    const userName = req.user.employee_name;
+
     const fboObjId = req.params.fboid;
 
     infoToVerify.fboObjId = fboObjId;
+
+    infoToVerify.verifier = userName;
 
     //sending verification mail
     sendFboVerificationMail(infoToVerify.manager_email, infoToVerify);
