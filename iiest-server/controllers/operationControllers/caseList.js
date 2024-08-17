@@ -20,9 +20,8 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
 
         const district = allocatedArea.district;
 
-        let list = {}; //creating an empty object
-
-            list = await shopModel.aggregate([
+        //aggregating data for getting results we need
+         let list = await shopModel.aggregate([
                 {
                     $lookup: {
                         from: 'employee_sales',
@@ -35,6 +34,11 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                     $unwind: {
                         path: '$salesInfo',
                         preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $sort: {
+                        'salesInfo.createdAt': -1
                     }
                 },
                 {
@@ -98,14 +102,6 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                         localField: '_id',
                         foreignField: 'shopInfo',
                         as: 'verificationInfo'
-                    }
-                },
-                // {
-                //     $unwind: "verificationInfo"
-                // },
-                {
-                    $sort: {
-                        'salesInfo.createdAt': -1
                     }
                 }
             ]).exec();
