@@ -235,7 +235,7 @@ export class RecipientComponent implements OnInit {
     }
   }
 
-  getSaleRecipientsList(saleId: string): void {
+  getSaleRecipientsList(saleId: string) {
     this.loading = true;
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
@@ -245,6 +245,17 @@ export class RecipientComponent implements OnInit {
           this.showPagination = true;
           this.recipientData = res.recipientsList;
           this.recipientCount = res.recipientsList.length;
+          
+          // getting doocs of all recps
+          this.recipientData.forEach((recp: any) => {
+             this.getDataServices.getDocs(recp.recipientId).subscribe({
+              next: response => {
+                console.log(response)
+                recp.documents = response.docs;
+                
+              }
+             })
+          })
         }
       },
       error: err => {

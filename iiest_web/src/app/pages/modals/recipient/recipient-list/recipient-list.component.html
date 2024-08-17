@@ -31,8 +31,8 @@
                 <td *ngIf="isfostac" class="text-center cell">
                   <span class="truncate">
                     <a target="_blank">
-                      <fa-icon *ngIf="recipients.docs[0].documents != 0" class="fa-2xl text-success cursor-pointer"
-                      (click)="viewDocument('Aadhar', recipients.docs[0].documents[0].src, 'image', true)"
+                      <fa-icon *ngIf="recipients.documents" class="fa-2xl text-success cursor-pointer"
+                      (click)="viewDocument('Aadhar', recipients.documents[0].src, 'image', true)"
                         [icon]="faFile"></fa-icon>
                     </a>
                     <!-- <label [for]="'uploadAadharPhoto' + sr"> <fa-icon *ngIf="shops.aadharPhoto.length == 0" class="fa-2xl text-danger"

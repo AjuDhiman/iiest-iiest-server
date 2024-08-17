@@ -86,4 +86,6 @@ export class RecipientListComponent {
     const modalRef = this.modalService.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.doc = obj;
   }
+
+  
 }
