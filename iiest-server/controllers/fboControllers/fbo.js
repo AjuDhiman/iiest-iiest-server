@@ -78,7 +78,7 @@ exports.fboPayment = async (req, res) => {
       }
     }
 
-    payRequest(formBody.grand_total, res, `${BACK_END}/fbo-pay-return/${fboFormData._id}`);
+    payRequest(formBody.grand_total, req, res, `${BACK_END}/fbo-pay-return/${fboFormData._id}`);
 
   } catch (error) {
     console.log(error);

@@ -306,7 +306,7 @@ exports.existingFboPayPage = async (req, res) => {
     }
 
     // Call the payment request function
-    payRequest(formBody.grand_total, res, `${BACK_END}/existingfbo-pay-return/${fboFormData._id}`);
+    payRequest(formBody.grand_total,req , res, `${BACK_END}/existingfbo-pay-return/${fboFormData._id}`);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
