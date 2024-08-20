@@ -46,7 +46,7 @@ const routes: Routes = [
   //client list route opens client list component only alowed to director Roles 
   { path: 'clientlist', component: ClientListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:director_roles}},
   { path: 'invoicelist', component: InvoiceListComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
-  { path: 'createinvoice', component: CreateInvoiceComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles}},
+  { path: 'createinvoice', component: CreateInvoiceComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles: director_roles, allowedPanels: ['DPIIT Sales Panel']}},
   { path: 'emplist', component: EmployeelistComponent, canActivate:[authGuard, routeGuard], data: {allowedRoles:empRegister_roles}},
   { path: 'lms', component: LmsComponent, canActivate:[authGuard]},
 ];

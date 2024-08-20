@@ -155,7 +155,7 @@
                                                     </span>
                                                 </td> -->
                                                 <td class="cell"><span class="truncate text-capitlize">
-                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)"
+                                                        <fa-icon [icon]="faThumbsUp" (click)="approveSale(invoice)" *ngIf="userData.panel_type !== 'DPIIT Sales Panel'"
                                                             [ngClass]="{'text-success': invoice.isAmountReceived, 'text-primary': !invoice.isAmountReceived}"
                                                             class="text-primary fa-l cursor-pointer mx-1"
                                                             title="Approve Sale"></fa-icon>
@@ -245,7 +245,7 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
 
     <!-- Form Switch -->
-    <div class="form-check form-switch border border-2 rounded-5 border-secondary-subtle switch-option"
+    <div *ngIf="userData.panel_type !== 'DPIIT Sales Panel'" class="form-check form-switch border border-2 rounded-5 border-secondary-subtle switch-option"
         (change)="isFormVisible = !isFormVisible">
         <input class="form-check-input cursor-pointer" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
         <label class="form-check-label" for="flexSwitchCheckDefault">Create New Invoice</label>

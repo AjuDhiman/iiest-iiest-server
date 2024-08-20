@@ -115,6 +115,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
   selectedMonths: string[] = [];
   monthsData: any = [];
 
+  userData: any = {};
+
 
 
   //icons
@@ -140,6 +142,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
 
   //life cycle hooks
   ngOnInit(): void {
+    const userdata: any = this._registerService.LoggedInUserData();
+    this.userData = JSON.parse(userdata);
     this.setformValidation();
 
     //geting invoice list
