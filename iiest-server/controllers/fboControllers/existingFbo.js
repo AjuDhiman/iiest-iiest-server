@@ -244,6 +244,9 @@ exports.existingFboByCheque = async (req, res) => {
 
 
 exports.existingFboPayPage = async (req, res) => {
+  //console.log('req User',req.user);
+  //console.log('req Body',req.body);
+  //console.log('req Param Id',req.params.id);
   try {
     let success = false;
 
@@ -287,11 +290,10 @@ exports.existingFboPayPage = async (req, res) => {
       return res.status(404).json({ success, fboMissing: true });
     }
 
-    // Ensure that fboFormData is created only if the required data is valid
     const fboFormData = await sessionModel.create({
       data: {
         ...formBody,
-        createrObjId: new ObjectId(createrId), // Ensure createrId is converted to ObjectId
+        createrObjId: new ObjectId(createrId),
         signatureFile,
         existingFboInfo,
         officerName
@@ -306,9 +308,10 @@ exports.existingFboPayPage = async (req, res) => {
     }
 
     // Call the payment request function
-    payRequest(formBody.grand_total,req , res, `${BACK_END}/existingfbo-pay-return/${fboFormData._id}`);
+    await payRequest(formBody.grand_total, req.user, res, `${BACK_END}/existingfbo-pay-return/${fboFormData._id}`);
   } catch (error) {
     console.error(error);
+    console.log('hi')
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
