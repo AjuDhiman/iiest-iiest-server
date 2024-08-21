@@ -94,10 +94,12 @@ const fboSchema = new Schema({
     isVerificationLinkSend: { //checkinh if verification link send or not
         type: Boolean,
         required: true,
+        default:false
     },
     isFboVerified: { //checkinh if verified my mail or sms or not
         type: Boolean,
         required: true,
+        default: false
     }
 }, {timestamps: true})
 
