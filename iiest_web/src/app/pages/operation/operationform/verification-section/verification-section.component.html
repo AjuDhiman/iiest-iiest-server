@@ -232,7 +232,7 @@
             class="form-check form-switch border border-2 rounded-5 border-secondary-subtle switch-option d-inline-block"
             (change)="changeEditMode()">
             <input class="form-check-input cursor-pointer" type="checkbox" role="switch" id="flexSwitchCheckDefault"
-              #switch [disabled]="verifiedStatus || isPendingByCustomer" />
+              #switch />
             <label class="form-check-label" for="flexSwitchCheckDefault">Want To Edit</label>
           </div>
         </span>
@@ -517,8 +517,7 @@
   <!-- Submit Button -->
   <div class="row mt-3">
     <div class="col-12">
-      <button type="submit" class="btn btn-sm btn-primary"
-        [disabled]="(verifiedStatus || isPendingByCustomer)">{{isEditMode?'Update':'Verify'}}</button>
+      <button type="submit" class="btn btn-sm btn-primary">{{isEditMode?'Update':'Verify'}}</button>
       <span *ngIf="!isEditMode" class="text-sm"> (Note<sup>*</sup>: Please
         verify all the
         fields before submitting for sending verification link by SMS and E-Mail.)</span>

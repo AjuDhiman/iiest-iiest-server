@@ -76,7 +76,7 @@ const sendVerificationMail = (clientData) => {
   let subject;
 
     //all name required docs
-    const requireddocs = ['Fostac Cerificate', 'Foscos License', 'HRA', 'Medical Cerificate', 'Water Test Report']
+    const requireddocs = ['Fostac Certificate', 'Foscos License', 'HRA', 'Medical Certificate', 'Water Test Report']
 
   if (clientData.product == 'fostac_recipient') {
 
@@ -142,7 +142,7 @@ const sendVerificationMail = (clientData) => {
 
   } if (clientData.product == 'fostac') {
 
-    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    subject = `${CB_BRAND_NAME.english} - Fostac Information Verified Successfuly`;
     content = ` <p>Welcome to the ${CB_BRAND_NAME.english},<br>
     ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
     <p>Dear ${clientData.managerName},</p>
@@ -208,7 +208,7 @@ const sendVerificationMail = (clientData) => {
 
   } else if (clientData.product == 'foscos') {
 
-    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    subject = `${CB_BRAND_NAME.english} - Foscos Information Verified Successfuly`;
     content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
     ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
     <p>Dear ${clientData.managerName},</p>
@@ -394,7 +394,7 @@ const sendVerificationMail = (clientData) => {
   }
   else if (clientData.product == 'hra') {
 
-    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    subject = `${CB_BRAND_NAME.english} - HRA Information Verified Successfuly`;
     content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
     ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
     <p>Dear ${clientData.managerName},</p>
@@ -439,7 +439,7 @@ const sendVerificationMail = (clientData) => {
 
   } else if (clientData.product == 'doc') {
 
-    subject = `${CB_BRAND_NAME.english} - Information Verified Successfuly`;
+    subject = `${CB_BRAND_NAME.english} - Document Information Verified Successfuly`;
     content = `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
     ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
     <p>Dear ${clientData.managerName},</p>
@@ -448,7 +448,7 @@ const sendVerificationMail = (clientData) => {
     <p>The following list of documents have been declared by you for the completion of fssai compliences:-</p>
     ${clientData.checkedDocsName.join('<br>')}
     <p>The following list of pending documents for the completion of fssai compliences:-</p>
-    ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('</br>')}
+    ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<br>')}
      <p><b>Please mail these docs on customerrelations@iiest.org </b></p>
 
     <p>click button below for sending documents.</p>
@@ -488,7 +488,7 @@ const sendVerificationMail = (clientData) => {
 <p>आपके द्वारा FSSAI अनुपालन की पूर्ति के लिए निम्नलिखित दस्तावेज़ों की घोषणा की गई है:</p>
 ${clientData.checkedDocsName.join('<br>')}
 <p>FSSAI अनुपालन की पूर्ति के लिए निम्नलिखित दस्तावेज़ लंबित हैं:</p>
-${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('</br>')}
+${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<br>')}
 
  <p><b>कृपया इन दस्तावेजों को customerrelations@iiest.org पर मेल करें।</b></p>
 

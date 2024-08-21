@@ -244,7 +244,9 @@ export class RegisterService {
   }
 
   //service for sending doc verification link
-  public verifyDoc(OId: string, checkedDocsName: string[]) {
+  public verifyDoc(OId: string, docArr: string[]) {
+    const docSet = new Set(docArr);
+    const checkedDocsName = [...docSet];
     const url = `${this.url}/verifydocs/${OId}`;
     return this.http.post<any>(url, {checkedDocsName}).pipe(catchError(this.handleError));
   }
