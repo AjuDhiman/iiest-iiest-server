@@ -1,3 +1,4 @@
+const { limitAdminSalePipeline } = require("../../config/pipeline");
 const { doesFileExist, invoicesPath, deleteDocObject, uploadBuffer, coworkInvoicePath, getFileStream } = require("../../config/s3Bucket");
 const invoiceDataHandler = require("../../fbo/generateInvoice");
 const { sendInvoiceMail } = require("../../fbo/sendMail");
@@ -22,6 +23,32 @@ exports.getInvoiceList = async (req, res) => {
                     createdAt: { $gte: startOfNewPanel },
                 }
             },
+            {
+                $lookup: {
+                    from: 'staff_registers',
+                    let: { employeeId: '$employeeInfo' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ['$_id', '$$employeeId']
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                employee_name: 1, // Only include the employee_name field
+                                _id: 0 // Optionally exclude the _id field
+                            }
+                        }
+                    ],
+                    as: 'employeeInfo'
+                }
+            },
+            {
+                $unwind: "$employeeInfo" //unwinding fboInfo because data comes in array format
+            },
+            ...limitAdminSalePipeline,
             {
                 $sort: {
                     "createdAt": -1 //sorting on the basis of creation date

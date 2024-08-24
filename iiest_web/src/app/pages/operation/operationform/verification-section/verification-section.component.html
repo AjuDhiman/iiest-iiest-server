@@ -1,11 +1,13 @@
 <!--------------------------------------------------------------------------- Recp verifiaction Form ------------------------------------------------------------>
+
 <form *ngIf="isRecpVerification" [formGroup]="verificationForm" autocomplete="off" class="row" (ngSubmit)="onVerify()">
 
   <!-- form heading and status -->
   <div class="d-flex justify-content-between align-items-center">
-    <h6>Verification of Shop</h6>
-    <span [ngClass]="resultTextClass" style="font-size: x-small;"
-      class="badge align-self-baseline">
+    <h6>Verification of Shop
+      <!-- <fa-icon [icon]="faArrowRotateForward"></fa-icon> -->
+    </h6>
+    <span [ngClass]="resultTextClass" class="badge align-self-baseline text-xs">
       {{resultText}}
       <fa-icon [icon]="resultIcon" class="fa-lg ml-2"></fa-icon>
     </span>
@@ -138,7 +140,7 @@
   </div>
 
   <div class="col-md-3">
-    
+
     <label valid="false" for="email" class="form-label">E-mail</label><sup>*</sup>
     <input #email type="email" placeholder="E-mail" formControlName="email" class="form-control form-control-sm"
       id="email"
@@ -208,7 +210,8 @@
 
   <div class="row mt-3">
     <div class="col-12">
-      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isTrainer || isPendingByCustomer">Verify</button>
+      <button type="submit" class="btn btn-sm btn-primary"
+        [disabled]="verifiedStatus || isTrainer || isPendingByCustomer">Verify</button>
       <span class="text-sm"> (Note<sup>*</sup>: Please verify all the
         fields before submitting and sending the verification link by SMS and E-Mail.)</span>
     </div>
@@ -237,11 +240,13 @@
           </div>
         </span>
       </h6>
-      <span [ngClass]="resultTextClass" style="font-size: x-small;"
-        class="badge align-self-baseline">
-        {{resultText}}
-        <fa-icon [icon]="resultIcon" class="fa-lg ml-2"></fa-icon>
-      </span>
+      <div class="align-self-baseline">
+        <fa-icon [icon]="faArrowRotateForward" (click)="refreshApi()" class="mx-2 my-1 fa-sm selector"></fa-icon>
+        <span [ngClass]="resultTextClass" class="badge text-xs">
+          {{resultText}}
+          <fa-icon [icon]="resultIcon" class="fa-lg ml-2"></fa-icon>
+        </span>
+      </div>
     </div>
 
     <!-- form input fields -->
@@ -257,7 +262,8 @@
 
       <!-- For Perticular field verification -->
       <div *ngIf="!isEditMode" class="verify-icon text-secondary" #fieldVerification
-        [attr.valid]="manager_name.getAttribute('valid')" (click)="manager_name.setAttribute('valid', 'true')"
+        [attr.refrence]="manager_name | json" [attr.valid]="manager_name.getAttribute('valid')"
+        (click)="manager_name.setAttribute('valid', 'true')"
         [ngClass]="{'verified-check':manager_name.getAttribute('valid') === 'true' || verifiedStatus}">
         <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
       </div>
@@ -517,7 +523,8 @@
   <!-- Submit Button -->
   <div class="row mt-3">
     <div class="col-12">
-      <button type="submit" class="btn btn-sm btn-primary">{{isEditMode?'Update':'Verify'}}</button>
+      <button type="submit" class="btn btn-sm btn-primary"
+        [disabled]="(!isEditMode && (verifiedStatus))">{{isEditMode?'Update':'Verify'}}</button>
       <span *ngIf="!isEditMode" class="text-sm"> (Note<sup>*</sup>: Please
         verify all the
         fields before submitting for sending verification link by SMS and E-Mail.)</span>
@@ -539,9 +546,10 @@
     <div class="row">
       <!-- form heading and status -->
       <div class="d-flex justify-content-between">
-        <h6>Fostac Verification</h6>
-        <span [ngClass]="resultTextClass" style="font-size: x-small;"
-          class="badge align-self-baseline">
+        <h6>Fostac Verification
+          
+        </h6>
+        <span [ngClass]="resultTextClass" style="font-size: x-small;" class="badge align-self-baseline">
           {{resultText}}
           <fa-icon [icon]="resultIcon" class="fa-lg ml-2"></fa-icon>
         </span>
@@ -558,7 +566,7 @@
         <div *ngIf="verified && verificationform['service_name'].errors" class="invalid-feedback">
           <div *ngIf="verificationform['service_name'].errors['required']">Service Name is required</div>
         </div>
-  
+
         <!-- For Perticular field verification -->
         <div *ngIf="!isEditMode" class="verify-icon text-secondary" #fieldVerification
           [attr.valid]="service_name.getAttribute('valid')" (click)="service_name.setAttribute('valid', 'true')"
@@ -567,23 +575,23 @@
         </div>
       </div>
 
-     <!-- Recipient No. -->
-     <div class="col-md-3 position-relative">
-      <label for="recipient_no" class="form-label">Recipinet No.</label><sup>*</sup>
-      <input #recipient_no type="number" placeholder="Recipinet No." formControlName="recipient_no"
-        class="form-control form-control-sm" id="recipient_no" [readOnly]="!isEditMode" valid="false"
-        [ngClass]="{ 'is-invalid': verified && verificationform['recipient_no'].errors , 'is-verified': (recipient_no.getAttribute('valid') === 'true' || verifiedStatus) && !isEditMode}">
-      <div *ngIf="verified && verificationform['recipient_no'].errors" class="invalid-feedback">
-        <div *ngIf="verificationform['recipient_no'].errors['required']">Recipinet No. is required</div>
-      </div>
+      <!-- Recipient No. -->
+      <div class="col-md-3 position-relative">
+        <label for="recipient_no" class="form-label">Recipinet No.</label><sup>*</sup>
+        <input #recipient_no type="number" placeholder="Recipinet No." formControlName="recipient_no"
+          class="form-control form-control-sm" id="recipient_no" [readOnly]="!isEditMode" valid="false"
+          [ngClass]="{ 'is-invalid': verified && verificationform['recipient_no'].errors , 'is-verified': (recipient_no.getAttribute('valid') === 'true' || verifiedStatus) && !isEditMode}">
+        <div *ngIf="verified && verificationform['recipient_no'].errors" class="invalid-feedback">
+          <div *ngIf="verificationform['recipient_no'].errors['required']">Recipinet No. is required</div>
+        </div>
 
-      <!-- For Perticular field verification -->
-      <div *ngIf="!isEditMode" class="verify-icon text-secondary" #fieldVerification
-        [attr.valid]="recipient_no.getAttribute('valid')" (click)="recipient_no.setAttribute('valid', 'true')"
-        [ngClass]="{'verified-check':recipient_no.getAttribute('valid') === 'true' || verifiedStatus}">
-        <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+        <!-- For Perticular field verification -->
+        <div *ngIf="!isEditMode" class="verify-icon text-secondary" #fieldVerification
+          [attr.valid]="recipient_no.getAttribute('valid')" (click)="recipient_no.setAttribute('valid', 'true')"
+          [ngClass]="{'verified-check':recipient_no.getAttribute('valid') === 'true' || verifiedStatus}">
+          <fa-icon [icon]="faCheck" class="fa-md"></fa-icon>
+        </div>
       </div>
-    </div>
 
       <!-- Fostac Total -->
       <div class="col-md-3 position-relative">
@@ -606,10 +614,12 @@
       <div class="col-md-3">
         <label for="payment_date" class="form-label">Add Recps Details</label><sup>*</sup>
         <br>
-        <fa-icon [icon]="faUsers" class="fa-xl cursor-pointer" [ngClass]="isAllRecpsFilled?'text-success':'text-primary'" (click)="recipient(caseData.salesInfo, 'Fostac')"
-            ></fa-icon> 
-        <small class="mx-3 text-small">({{noOfRecpLeft}} Recps Left out of {{verificationform['recipient_no'].value}})</small>
-    </div>
+        <fa-icon [icon]="faUsers" class="fa-xl cursor-pointer"
+          [ngClass]="isAllRecpsFilled?'text-success':'text-primary'"
+          (click)="recipient(caseData.salesInfo, 'Fostac')"></fa-icon>
+        <small class="mx-3 text-small">({{noOfRecpLeft}} Recps Left out of
+          {{verificationform['recipient_no'].value}})</small>
+      </div>
 
 
       <div class="col-md-3">
@@ -636,9 +646,11 @@
 
     <div class="row mt-3">
       <div class="col-12">
-        <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || !isAllRecpsFilled || isPendingByCustomer || !prevSecVerifiedStatus">Verify</button>
+        <button type="submit" class="btn btn-sm btn-primary"
+          [disabled]="verifiedStatus || !isAllRecpsFilled || isPendingByCustomer || !prevSecVerifiedStatus">Verify</button>
         <span class="text-sm"> (Note<sup>*</sup>: Please verify all the
-          fields and add all the recipients detail before verfing and sending verification link by SMS and E-Mail.)</span>
+          fields and add all the recipients detail before verfing and sending verification link by SMS and
+          E-Mail.)</span>
       </div>
     </div>
     <ngx-loading [show]="loading"></ngx-loading>
@@ -650,9 +662,10 @@
     <div class="row">
       <!-- form heading and status -->
       <div class="d-flex justify-content-between">
-        <h6>Foscos Verification</h6>
-        <span [ngClass]="resultTextClass" style="font-size: x-small;"
-          class="badge align-self-baseline">
+        <h6>Foscos Verification
+          
+        </h6>
+        <span [ngClass]="resultTextClass" style="font-size: x-small;" class="badge align-self-baseline">
           {{resultText}}
           <fa-icon [icon]="resultIcon" class="fa-lg ml-2"></fa-icon>
         </span>
@@ -803,7 +816,8 @@
 
     <div class="row mt-3">
       <div class="col-12">
-        <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isPendingByCustomer || !prevSecVerifiedStatus">Verify</button>
+        <button type="submit" class="btn btn-sm btn-primary"
+          [disabled]="verifiedStatus || isPendingByCustomer || !prevSecVerifiedStatus">Verify</button>
         <span class="text-sm"> (Note<sup>*</sup>: Please verify all the
           fields before verifing and sending verification link by SMS and E-Mail.)</span>
       </div>
@@ -817,9 +831,10 @@
 
     <!-- form heading and status -->
     <div class="d-flex justify-content-between align-items-center">
-      <h6>HRA Verification</h6>
-      <span [ngClass]="resultTextClass" style="font-size: x-small;"
-        class="badge align-self-baseline">
+      <h6>HRA Verification
+
+      </h6>
+      <span [ngClass]="resultTextClass" style="font-size: x-small;" class="badge align-self-baseline">
         {{resultText}}
         <fa-icon [icon]="resultIcon" class="fa-lg ml-2"></fa-icon>
       </span>
@@ -908,7 +923,8 @@
 
     <div class="row mt-3">
       <div class="col-12">
-        <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isTrainer || isPendingByCustomer || !prevSecVerifiedStatus">Verify</button>
+        <button type="submit" class="btn btn-sm btn-primary"
+          [disabled]="verifiedStatus || isTrainer || isPendingByCustomer || !prevSecVerifiedStatus">Verify</button>
         <span class="text-sm"> (Note<sup>*</sup>: Please verify all the
           fields before verifing and sending verfication link by SMS and E-mail.)</span>
       </div>
@@ -925,14 +941,24 @@
 <!------------------------------------------------------------------- Document Verification Form ------------------------------------------------------------------->
 
 
-<form *ngIf="isForDocVerification" [formGroup]="documentVerificationForm" autocomplete="off" class="row"
-  >
+<form *ngIf="isForDocVerification" [formGroup]="documentVerificationForm" autocomplete="off" class="row">
 
   <!-- Form Heading and Status -->
   <div class="d-flex justify-content-between align-items-center pb-2">
-    <h6>Document Verification</h6>
-    <span [ngClass]="resultTextClass" style="font-size: x-small;"
-      class="badge align-self-baseline">
+    <h6>Document Verification
+      <!-- <span class=""> -->
+      <!-- Form Switch for deciding of opening sale form or not-->
+      <!-- <div
+          class="form-check form-switch border border-2 rounded-5 border-secondary-subtle switch-option d-inline-block"
+          (change)="changeEditMode()">
+          <input class="form-check-input cursor-pointer" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+            #switch />
+          <label class="form-check-label" for="flexSwitchCheckDefault">Want To Edit</label>
+        </div>
+      </span> -->
+      <!-- <fa-icon [icon]="faArrowRotateForward" (click)="refreshApi()" class="mx-2 fa-sm selector"></fa-icon> -->
+    </h6>
+    <span [ngClass]="resultTextClass" style="font-size: x-small;" class="badge align-self-baseline">
       {{resultText}}
       <fa-icon [icon]="resultIcon"></fa-icon>
     </span>
@@ -943,8 +969,12 @@
   <div *ngFor="let doc of requiredDocs" class="col-md-2">
     <div class="form-check">
       <input class="form-check-input" type="checkbox" [id]="doc.display_name.split(' ').join('_')"
-        (change)="onDocCheck($event, doc.display_name)" [checked]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer || doc.isActiveProduct" [disabled]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer || doc.isActiveProduct">
-      <label class="form-label" [ngClass]="{'doc-have-text':doc.isAlreadyAvilable, 'active-doc-text': doc.isActiveProduct}" [for]="doc.display_name.split(' ').join('_')">
+        (change)="onDocCheck($event, doc.display_name)"
+        [checked]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer || doc.isActiveProduct"
+        [disabled]="doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isPendingByCustomer || doc.isActiveProduct">
+      <label class="form-label"
+        [ngClass]="{'doc-have-text':doc.isAlreadyAvilable, 'active-doc-text': doc.isActiveProduct}"
+        [for]="doc.display_name.split(' ').join('_')">
         {{doc.display_name}}
       </label>
     </div>
@@ -952,11 +982,12 @@
 
   <div class="row mt-3">
     <div class="col-12">
-      <button type="submit" class="btn btn-sm btn-primary" [disabled]="verifiedStatus || isPendingByCustomer" (click)="onDocVerify()">Verify</button>
+      <button type="submit" class="btn btn-sm btn-primary"
+        [disabled]="(verifiedStatus || isPendingByCustomer) && !isEditMode" (click)="onDocVerify()">Verify</button>
       <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please verify all the
         fields before verifing and sending document verification link by SMS and E-Mail.)</span>
     </div>
   </div>
- 
+
 
 </form>

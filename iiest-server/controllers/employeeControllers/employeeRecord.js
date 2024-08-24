@@ -1,4 +1,4 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require('../../config/pipeline');
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, limitAdminSalePipeline } = require('../../config/pipeline');
 const { uploadDocObject, getDocObject } = require('../../config/s3Bucket');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
@@ -11,6 +11,13 @@ const { recipientsList } = require('../fboControllers/recipient');
 exports.employeeRecord = async (req, res) => {
     try {
 
+        const user = req.user;
+
+        console.log(user);
+
+        //checking is is admin or not
+        const isAdmin = user.employee_name.toLowerCase().includes('admin');
+
         //var for timelines usually used in getting for a particular time Interval
         const todayDate = new Date(); // getting today's date string
         const startOfToday = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate()); //getting time of start of the day
@@ -19,91 +26,207 @@ exports.employeeRecord = async (req, res) => {
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);//getting time of start of this month
         const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
 
-        const pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
-            {
-                $lookup: { //getting info about fbo from fbo registetrs by the help of foreign key match 
-                    from: 'fbo_registers', // The collection name where fboInfo is stored
-                    localField: 'fboInfo',
-                    foreignField: '_id',
-                    as: 'fboInfo'
-                }
-            },
-            {
-                $unwind: "$fboInfo" //unwinding fboInfo because data comes in array format
-            },
-            {
-                $group: { //grouping data for total, approved and pending sales ammount
-                    _id: 3,
-                    totalProcessingAmount: { //aggregating total sales amount
-                        $sum: {
-                            $sum: [  //getting revenue formulas pipeline from pipeline.js
-                                ...fostacRevenue,
-                                ...foscosRevenue,
-                                ...hraRevenue,
-                                ...medicalRevenue,
-                                ...waterTestRevenue,
-                            ]
-                        }
-                    },
-                    pending: { //grouping data pending sales ammount 
-                        $sum: {
-                            $cond: { //filtering only those data which contain cheque data and cheque_data.status is equal to Pending
-                                if: {
-                                    $or: [
-                                        // Condition 1: cheque_data exists and cheque_data.status is "Pending"
-                                        {
-                                            $and: [
-                                                { $ne: ["$cheque_data", null] }, // cheque_data exists
-                                                { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
-                                            ]
-                                        },
-                                        // Condition 2: isBasicDocUploaded is false
-                                        { $eq: ["$fboInfo.isBasicDocUploaded", false] }
-                                    ]
-                                }, then: {
-                                    $sum: [ //the sum is same as for total sale only the filtering condition is changed 
-                                        //getting revenue formulas pipeline from pipeline.js
-                                        ...fostacRevenue,
-                                        ...foscosRevenue,
-                                        ...hraRevenue,
-                                        ...medicalRevenue,
-                                        ...waterTestRevenue,
-                                    ]
-                                }, else: 0
-                            }
-                        }
-                    },
-                    approved: { //grouping data approved sales ammount 
-                        $sum: {
-                            $cond: { //filtering only those data which does not contains cheque data and if contains it's status should be approved and the basic doc uploaded var should be true 
-                                if: {
-                                    $and: [
-                                        {
-                                            $or: [
-                                                { $eq: [{ $ifNull: ["$cheque_data", null] }, null] }, // Check if cheque_data is null or doesn't exist
-                                                { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
-                                            ]
-                                        },
-                                        { $eq: ["$fboInfo.isBasicDocUploaded", true] }
-                                    ]
-                                }, then: {
-                                    $sum: [ //the some is same as for total sale only the filtering condition is changed 
-                                        //getting revenue formulas pipeline from pipeline.js
-                                        ...fostacRevenue,
-                                        ...foscosRevenue,
-                                        ...hraRevenue,
-                                        ...medicalRevenue,
-                                        ...waterTestRevenue,
-                                    ]
-                                }, else: 0
-                            }
-                        }
+        let pipeLineArr
+        
+        if(user.designation == 'Director'){
+            pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
+                {
+                    $lookup: { //getting info about fbo from fbo registetrs by the help of foreign key match 
+                        from: 'fbo_registers', // The collection name where fboInfo is stored
+                        localField: 'fboInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo'
                     }
-
+                },
+                {
+                    $unwind: "$fboInfo" //unwinding fboInfo because data comes in array format
+                },
+                {
+                    $lookup: {
+                        from: 'staff_registers',
+                        let: { employeeId: '$employeeInfo' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$_id', '$$employeeId']
+                                    }
+                                }
+                            },
+                            {
+                                $project: {
+                                    employee_name: 1, // Only include the employee_name field
+                                    _id: 0 // Optionally exclude the _id field
+                                }
+                            }
+                        ],
+                        as: 'employeeInfo'
+                    }
+                },
+                {
+                    $unwind: "$employeeInfo" //unwinding fboInfo because data comes in array format
+                },
+                ...limitAdminSalePipeline,
+                {
+                    $group: { //grouping data for total, approved and pending sales ammount
+                        _id: 3,
+                        totalProcessingAmount: { //aggregating total sales amount
+                            $sum: {
+                                $sum: [  //getting revenue formulas pipeline from pipeline.js
+                                    ...fostacRevenue,
+                                    ...foscosRevenue,
+                                    ...hraRevenue,
+                                    ...medicalRevenue,
+                                    ...waterTestRevenue,
+                                ]
+                            }
+                        },
+                        pending: { //grouping data pending sales ammount 
+                            $sum: {
+                                $cond: { //filtering only those data which contain cheque data and cheque_data.status is equal to Pending
+                                    if: {
+                                        $or: [
+                                            // Condition 1: cheque_data exists and cheque_data.status is "Pending"
+                                            {
+                                                $and: [
+                                                    { $ne: ["$cheque_data", null] }, // cheque_data exists
+                                                    { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
+                                                ]
+                                            },
+                                            // Condition 2: isBasicDocUploaded is false
+                                            { $eq: ["$fboInfo.isBasicDocUploaded", false] }
+                                        ]
+                                    }, then: {
+                                        $sum: [ //the sum is same as for total sale only the filtering condition is changed 
+                                            //getting revenue formulas pipeline from pipeline.js
+                                            ...fostacRevenue,
+                                            ...foscosRevenue,
+                                            ...hraRevenue,
+                                            ...medicalRevenue,
+                                            ...waterTestRevenue,
+                                        ]
+                                    }, else: 0
+                                }
+                            }
+                        },
+                        approved: { //grouping data approved sales ammount 
+                            $sum: {
+                                $cond: { //filtering only those data which does not contains cheque data and if contains it's status should be approved and the basic doc uploaded var should be true 
+                                    if: {
+                                        $and: [
+                                            {
+                                                $or: [
+                                                    { $eq: [{ $ifNull: ["$cheque_data", null] }, null] }, // Check if cheque_data is null or doesn't exist
+                                                    { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
+                                                ]
+                                            },
+                                            { $eq: ["$fboInfo.isBasicDocUploaded", true] }
+                                        ]
+                                    }, then: {
+                                        $sum: [ //the some is same as for total sale only the filtering condition is changed 
+                                            //getting revenue formulas pipeline from pipeline.js
+                                            ...fostacRevenue,
+                                            ...foscosRevenue,
+                                            ...hraRevenue,
+                                            ...medicalRevenue,
+                                            ...waterTestRevenue,
+                                        ]
+                                    }, else: 0
+                                }
+                            }
+                        }
+    
+                    }
                 }
-            }
-        ];
-
+            ];
+    
+        } else {
+            pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
+                {
+                    $lookup: { //getting info about fbo from fbo registetrs by the help of foreign key match 
+                        from: 'fbo_registers', // The collection name where fboInfo is stored
+                        localField: 'fboInfo',
+                        foreignField: '_id',
+                        as: 'fboInfo'
+                    }
+                },
+                {
+                    $unwind: "$fboInfo" //unwinding fboInfo because data comes in array format
+                },
+                {
+                    $group: { //grouping data for total, approved and pending sales ammount
+                        _id: 3,
+                        totalProcessingAmount: { //aggregating total sales amount
+                            $sum: {
+                                $sum: [  //getting revenue formulas pipeline from pipeline.js
+                                    ...fostacRevenue,
+                                    ...foscosRevenue,
+                                    ...hraRevenue,
+                                    ...medicalRevenue,
+                                    ...waterTestRevenue,
+                                ]
+                            }
+                        },
+                        pending: { //grouping data pending sales ammount 
+                            $sum: {
+                                $cond: { //filtering only those data which contain cheque data and cheque_data.status is equal to Pending
+                                    if: {
+                                        $or: [
+                                            // Condition 1: cheque_data exists and cheque_data.status is "Pending"
+                                            {
+                                                $and: [
+                                                    { $ne: ["$cheque_data", null] }, // cheque_data exists
+                                                    { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
+                                                ]
+                                            },
+                                            // Condition 2: isBasicDocUploaded is false
+                                            { $eq: ["$fboInfo.isBasicDocUploaded", false] }
+                                        ]
+                                    }, then: {
+                                        $sum: [ //the sum is same as for total sale only the filtering condition is changed 
+                                            //getting revenue formulas pipeline from pipeline.js
+                                            ...fostacRevenue,
+                                            ...foscosRevenue,
+                                            ...hraRevenue,
+                                            ...medicalRevenue,
+                                            ...waterTestRevenue,
+                                        ]
+                                    }, else: 0
+                                }
+                            }
+                        },
+                        approved: { //grouping data approved sales ammount 
+                            $sum: {
+                                $cond: { //filtering only those data which does not contains cheque data and if contains it's status should be approved and the basic doc uploaded var should be true 
+                                    if: {
+                                        $and: [
+                                            {
+                                                $or: [
+                                                    { $eq: [{ $ifNull: ["$cheque_data", null] }, null] }, // Check if cheque_data is null or doesn't exist
+                                                    { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
+                                                ]
+                                            },
+                                            { $eq: ["$fboInfo.isBasicDocUploaded", true] }
+                                        ]
+                                    }, then: {
+                                        $sum: [ //the some is same as for total sale only the filtering condition is changed 
+                                            //getting revenue formulas pipeline from pipeline.js
+                                            ...fostacRevenue,
+                                            ...foscosRevenue,
+                                            ...hraRevenue,
+                                            ...medicalRevenue,
+                                            ...waterTestRevenue,
+                                        ]
+                                    }, else: 0
+                                }
+                            }
+                        }
+    
+                    }
+                }
+            ];
+        }
+        
 
         const pipeline = [ //pipeline for aggregating data according to time periods
             {
@@ -155,10 +278,10 @@ exports.employeeRecord = async (req, res) => {
             }
         ];
 
-        if (req.user.designation !== 'Director') { //getting only data related only related to user in case of user is not director
+        if (user.designation !== 'Director') { //getting only data related only related to user in case of user is not director
             pipeline.unshift({
                 $match: {
-                    employeeInfo: req.user._id,
+                    employeeInfo: user._id,
                 }
             });
         }
@@ -166,8 +289,8 @@ exports.employeeRecord = async (req, res) => {
         const data = await salesModel.aggregate(pipeline); //performing aggregation
 
 
-        console.log('dataaaaaaaaaaaaaaaaaaa: ------------------',data)
-        console.log('today: ------------------',todayDate)
+        console.log('dataaaaaaaaaaaaaaaaaaa: ------------------', data)
+        console.log('today: ------------------', todayDate)
 
         res.status(200).json(data);
     } catch (error) {
@@ -185,11 +308,11 @@ exports.ticketVerificationData = async (req, res) => {
         const startOfThisWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() - todayDate.getDay());//getting time of start of this weeek
         const startOfPrevMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() - 1, 1);//getting time of start of prev month
         const startOfThisMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1);//getting time of start of this month
-        
+
         let startOfThisFinancialYear;
 
         //getting start of this financial year
-        if(todayDate.getMonth() < 3) {
+        if (todayDate.getMonth() < 3) {
             startOfThisFinancialYear = new Date((todayDate.getFullYear() - 1), 3, 1);
         } else {
             startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1);
@@ -531,6 +654,7 @@ exports.employeeSalesData = async (req, res) => {
                         preserveNullAndEmptyArrays: true
                     }
                 },
+                ...limitAdminSalePipeline,
                 {
                     $project: {
                         "_id": 1,
@@ -571,93 +695,7 @@ exports.employeeSalesData = async (req, res) => {
                     }
                 },
             ]);
-        } else if (req.user.panel_type === 'FSSAI Relationship Panel') {
-            salesInfo = await salesModel.aggregate([
-                {
-                    $lookup: {
-                        from: 'fbo_registers', // The collection name where fboInfo is stored
-                        localField: 'fboInfo',
-                        foreignField: '_id',
-                        as: 'fboInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$fboInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'bo_registers', // The collection name where boInfo is stored
-                        localField: 'fboInfo.boInfo',
-                        foreignField: '_id',
-                        as: 'fboInfo.boInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$fboInfo.boInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-
-                {
-                    $lookup: {
-                        from: 'staff_registers', // The collection name where employeeInfo is stored
-                        localField: 'employeeInfo',
-                        foreignField: '_id',
-                        as: 'employeeInfo'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$employeeInfo',
-                        preserveNullAndEmptyArrays: true
-                    }
-                },
-                {
-                    $project: {
-                        "_id": 1,
-                        "grand_total": 1,
-                        "checkStatus": 1,
-                        "fboInfo.fbo_name": 1,
-                        "fboInfo.owner_name": 1,
-                        "fboInfo.email": 1,
-                        "fboInfo._id": 1,
-                        "fboInfo.owner_contact": 1,
-                        "fboInfo.customer_id": 1,
-                        "fboInfo.boInfo.customer_id": 1,
-                        "fboInfo.boInfo.business_entity": 1,
-                        "fboInfo.boInfo.manager_name": 1,
-                        "fboInfo.boInfo.business_category": 1,
-                        "fboInfo.boInfo.business_ownership_type": 1,
-                        "product_name": 1,
-                        "fboInfo.state": 1,
-                        "fboInfo.address": 1,
-                        "fboInfo.pincode": 1,
-                        "fboInfo.village": 1,
-                        "fboInfo.tehsil": 1,
-                        "fboInfo.district": 1,
-                        "fboInfo.business_type": 1,
-                        "fboInfo.gst_number": 1,
-                        "fboInfo.isBasicDocUploaded": 1,
-                        "fboInfo.activeStatus": 1,
-                        "employeeInfo.employee_name": 1,
-                        "fostacInfo": 1,
-                        "foscosInfo": 1,
-                        "hraInfo": 1,
-                        "medicalInfo": 1,
-                        "waterTestInfo": 1,
-                        "createdAt": 1,
-                        "cheque_data": 1,
-                        "invoiceId": 1,
-                        "payment_mode": 1,
-                    }
-                }
-
-            ]);
-        }
+        } 
         else {
             salesInfo = await salesModel.aggregate([
                 {
@@ -813,6 +851,16 @@ exports.employeeDepartmentCount = async (req, res) => {
         let success = false;
 
         const employeeGroupCount = await employeeSchema.aggregate([
+            {
+                $match: {
+                    "employee_name": {
+                        $not: {
+                            $regex: "admin",
+                            $options: "i"
+                        }
+                    }
+                }
+            },
             {
                 $group: {
                     _id: {

@@ -156,3 +156,22 @@
   text-overflow: ellipsis;
   width: 150px;
 }
+
+.text-w-150 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
+}
+
+.active-selection:hover {
+  padding: 0px 4.5px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  background-color: #007bff;
+}
+
+.font-small{
+  font-size: small;
+}

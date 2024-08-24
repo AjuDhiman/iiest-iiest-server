@@ -100,8 +100,8 @@
                         <ng-container>
 
                           <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                          <td class="cell"><span
-                              class="truncate text-capitlize">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span></td>
+                          <td class="cell"><span [title]="fbo.fboInfo.fbo_name.toLowerCase()"
+                              class="truncate text-capitlize text-w-150">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span></td>
                           <td class="cell"><span
                               class="truncate text-capitlize">{{fbo.fboInfo.owner_name.toLowerCase()}}</span></td>
                           <td class="cell"><span class="truncate">{{fbo.fboInfo.boInfo.customer_id}}</span></td>

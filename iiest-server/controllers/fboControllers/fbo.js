@@ -159,7 +159,7 @@ exports.fboPayReturn = async (req, res) => {
         //generating customer id or rather say ShopId
         const { idNumber, generatedCustomerId } = await generatedInfo();
 
-        console.log(signatureFile);
+        console.log('foscosFixedCharge', foscosFixedCharge);
 
         //getting boInfo
         const boData = await boModel.findOne({ _id: boInfo });
@@ -241,12 +241,13 @@ exports.fboPayReturn = async (req, res) => {
           // fileName = `${Date.now()}_${idNumber}.pdf`;
           // invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
 
-          total_processing_amount = Number(foscos_training.foscos_processing_amount);
-          totalGST = foscosGST;
           extraFee = foscosFixedCharge;
+          total_processing_amount = Number(foscos_training.foscos_processing_amount);
+          const foscos_total = Number(foscos_training.foscos_total) - foscosFixedCharge - Number(foscos_training.water_test_fee);
+          totalGST = foscosGST;
 
           const qty = foscos_training.shops_no;
-          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData)
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData)
           invoiceData.push(invoice);
 
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Foscos' });
@@ -499,10 +500,11 @@ exports.fboRegister = async (req, res) => {
       total_processing_amount = Number(foscos_training.foscos_processing_amount);
       totalGST = foscosGST;
       extraFee = foscosFixedCharge;
+      const foscos_total = Number(foscos_training.foscos_total) - foscosFixedCharge - Number(foscos_training.water_test_fee);
 
       const qty = foscos_training.shops_no;
 
-      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_training.foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
+      invoiceData.push(await invoiceDataHandler(idNumber, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, foscos_total, 'Foscos', foscos_training, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData));
 
       invoiceIdArr.push(invoiceUploadStream.id);
     }
@@ -1033,10 +1035,10 @@ exports.approveChequeSale = async (req, res) => {
         extraFee += Number(foscosInfo.water_test_fee)
       }
 
-      console.log(extraFee);
+      const foscos_total = Number(foscosInfo.foscos_total) - extraFee - water_test_fee;
 
       const qty = foscosInfo.shops_no;
-      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscosInfo.foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
 
       invoiceData.push(invoice)
       invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Foscos' });
@@ -1158,6 +1160,8 @@ exports.sendFboVerificationLink = async (req, res) => {
 
     const userName = req.user.employee_name;
 
+    const userId = req.user._id;
+
     const fboObjId = req.params.fboid;
 
     infoToVerify.fboObjId = fboObjId;
@@ -1169,12 +1173,17 @@ exports.sendFboVerificationLink = async (req, res) => {
 
     success = true;
 
+    const oldData = await fboModel.findOne({_id: fboObjId});
+
     // updating verification link send in fboobj
     const dataUpdated = await fboModel.findOneAndUpdate({_id: fboObjId}, {
       $set: {
         isVerificationLinkSend: true
       }
     })
+
+    //auditing log for fbo
+    const fboLog = await logAudit(userId, 'fbo_registers', dataUpdated, oldData, dataUpdated, 'Shop Verification Link Send');
 
     return res.status(200).json({ success: success, mailSend: true });
 
@@ -1267,7 +1276,9 @@ exports.updateFboInfo = async (req, res) => {
         email: manager_email,
         owner_contact: manager_contact,
         fbo_name: fbo_name,
-        owner_name: owner_name
+        owner_name: owner_name,
+        isVerificationLinkSend: false,
+        isFboVerified: false
       }
     });
 

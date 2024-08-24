@@ -27,9 +27,11 @@ exports.saveDocument = async (req, res) => { //function for saving documents and
             const dataParsed = JSON.parse(otherData);
             issue_date = dataParsed.issue_date;
             expiery_date = dataParsed.expiery_date;
-            //converting to iso string
-            issueDateIso = getIsoDate(issue_date);
-            expiryDateIso = getIsoDate(expiery_date);
+            if(issue_date && expiery_date){
+                //converting to iso string
+                issueDateIso = getIsoDate(issue_date);
+                expiryDateIso = getIsoDate(expiery_date);
+            }
         }
 
 

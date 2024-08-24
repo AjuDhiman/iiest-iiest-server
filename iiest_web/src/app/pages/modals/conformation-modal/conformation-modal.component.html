@@ -1,10 +1,10 @@
 <div class="modal-header bg-secondary">
-    <h6 class="modal-title text-white" id="modal-basic-title">Warning</h6>
+    <h6 class="modal-title text-white" id="modal-basic-title"></h6>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeModel()"></button>
 </div>
 <div class="modal-body">
     <p>Are you sure, you really want to {{action}}?</p>
     <label class="text-danger">Type "{{confirmationText}}" for confirm your action</label>
     <input type="text" class="form-control form-control-sm my-2" (input)="onInputChange($event)"/>
-    <button class="btn btn-sm btn-danger" [disabled]="!isTextMatches" (click)="onSubmit()">confirm</button>
+    <button class="btn btn-sm" [ngClass]="isTextMatches?'btn-success':'btn-danger'" [disabled]="!isTextMatches" (click)="onSubmit()">confirm</button>
 </div>

@@ -209,7 +209,7 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         पिनकोड: ${clientData.pincode}<br>
         <br>
         <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
-        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/fbo/${clientData.id}'>
+        <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/fbo/${clientData.fboObjId}'>
             <button style="display: block;
             width: 100%;
             max-width: 300px;

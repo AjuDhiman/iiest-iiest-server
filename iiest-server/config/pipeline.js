@@ -135,6 +135,19 @@ const waterTestRevenue = [
 ]
 
 
+//pipeline for limiting the admin sales data
+const limitAdminSalePipeline = [
+    {
+        $match: {
+            "employeeInfo.employee_name": {
+                $not: {
+                    $regex: "admin",
+                    $options: "i"
+                }
+            }
+        }
+    }
+]
 
 
 //------------------------------------------------------Conditionl Pipelines----------------------------------------------------------------------
@@ -173,4 +186,4 @@ const salesApprovalCond = [
     }
 ]
 
-module.exports = { startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear, fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, salesPendingCond, salesApprovalCond }
+module.exports = { startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear, fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, salesPendingCond, salesApprovalCond, limitAdminSalePipeline }

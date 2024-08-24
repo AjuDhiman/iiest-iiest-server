@@ -8,6 +8,7 @@ import { RegisterService } from 'src/app/services/register.service';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
 import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
 import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
+import { otherDocs } from 'src/app/utils/config';
 
 @Component({
   selector: 'app-documentation-modal',
@@ -23,6 +24,7 @@ export class DocumentationModalComponent implements OnInit {
   handlerId: string;
 
   docsArr: any = [];
+  otherDocs = otherDocs;
   submitted: boolean = false;
   clearInputCount: number = 1;
   docList: any = []; //list of uploaded docs
@@ -99,10 +101,14 @@ export class DocumentationModalComponent implements OnInit {
 
     if (this.selectedDoc.name === 'Others') {
       this.documentsForm.addControl('name', this.formBuilder.control(''));
+      this.documentsForm.removeControl('issue_date');
+      this.documentsForm.removeControl('expiery_date');
       this.isOtherDoc = true;
     } else if (this.lastSelectedDoc && this.lastSelectedDoc.name === 'Others') {
       this.isOtherDoc = false;
       this.documentsForm.removeControl('name');
+      this.documentsForm.addControl('issue_date', this.formBuilder.control(''));
+      this.documentsForm.addControl('expiery_date', this.formBuilder.control(''));
     }
 
     if (this.isEbill) {
@@ -197,8 +203,12 @@ export class DocumentationModalComponent implements OnInit {
             this._toastrService.success(`${this.selectedDoc.name} Uploaded`);
             this.reloadData.emit();
             this.getDocList();
-
+            this.documentsForm.reset();
+            this.activeModal.close();
           }
+        },
+        error: err => {
+
         }
       });
     }

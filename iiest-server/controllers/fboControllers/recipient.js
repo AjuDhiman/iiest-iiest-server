@@ -6,6 +6,7 @@ const { generateRecipientInfo } = require('../../fbo/generateCredentials');
 const fs = require('fs');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 
+//methord for adding recipient
 exports.addRecipient = async (req, res, next) => {
 
     try {
@@ -212,39 +213,6 @@ exports.shopsList = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
-
-exports.showBill = async (req, res) => {
-    try {
-
-        const shopID = req.params.id;
-
-        const billBucket = fboEbillBucket();
-
-        const billDownloadStream = billBucket.openDownloadStream(new ObjectId(shopID));
-
-        let chunks = [];
-
-        billDownloadStream.on('data', (chunk) => {
-            chunks.push(chunk);
-        })
-
-        billDownloadStream.on('end', () => {
-            const billBuffer = Buffer.concat(chunks);
-            const billPrefix = 'data:image/png;base64,';
-            const billBase64 = billBuffer.toString('base64');
-            const billConverted = `${billPrefix}${billBase64}`;
-
-            success = true;
-
-            return res.status(200).json({ success, billConverted })
-        })
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
-}
-
 
 //function for reading pincode file and extracting state and district from that file
 async function readPincodeFile(pincode) {

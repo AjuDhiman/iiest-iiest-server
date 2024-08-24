@@ -15,6 +15,9 @@ import { SalesModule } from '../sales/sales.module';
   ],
   exports: [
     OperationformModule
+  ],
+  providers: [
+    
   ]
 })
 export class OperationModule { }

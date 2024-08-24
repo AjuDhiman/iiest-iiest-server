@@ -28,6 +28,7 @@ import { BatchListComponent } from 'src/app/pages/Training/batch-list/batch-list
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CoreModule } from 'src/app/core/core.module';
 import { PagesModule } from 'src/app/pages/pages.module';
+import { ShopState } from './store/state/shop.state';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { PagesModule } from 'src/app/pages/pages.module';
     QrCodeModule,
     FileSaverModule,
     //ngxs Modlues
-    NgxsModule.forRoot([EmployeeState, SalesState]),
+    NgxsModule.forRoot([EmployeeState, SalesState, ShopState]),
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgSelectModule,

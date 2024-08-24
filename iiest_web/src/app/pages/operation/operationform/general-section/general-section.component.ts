@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -10,13 +10,17 @@ import { days, months } from 'src/app/utils/config';
   templateUrl: './general-section.component.html',
   styleUrls: ['./general-section.component.scss']
 })
-export class GeneralSectionComponent implements OnInit {
+export class GeneralSectionComponent implements OnInit, OnChanges {
 
   @Input() candidateId: string = '';
+
+  @Input() caseData: any;
 
   @Input() productType: string = '';
 
   caseNote: string[] = [];
+
+  unformatedLogsArr: any = [];
 
   officerComments: string[] = [];
 
@@ -39,7 +43,14 @@ export class GeneralSectionComponent implements OnInit {
     });
 
     this.getGenSecData();
-    this.getCaseNotes();
+  
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes['caseData'] && changes['caseData'].currentValue){
+      console.log('case data', this.caseData);
+      this.getCaseNotes();
+    }
   }
 
   get generalform(): { [key: string]: AbstractControl } {
@@ -85,7 +96,20 @@ export class GeneralSectionComponent implements OnInit {
   getCaseNotes() {
     this._getDataService.getAuditLogs(this.candidateId).subscribe({
       next: res => {
-        this.formatLogs(res.logs);
+        console.log(res);
+        // this.formatLogs(res.logs);
+        this.unformatedLogsArr = [...this.unformatedLogsArr,...res.logs];
+
+        this._getDataService.getAuditLogs(this.caseData.salesInfo.fboInfo._id).subscribe({
+          next: response => {
+            console.log(response);
+            this.unformatedLogsArr = [...this.unformatedLogsArr,...response.logs];
+            this.unformatedLogsArr.sort((a:any, b:any) => {
+              return( new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+            })
+            this.formatLogs(this.unformatedLogsArr);
+          }
+        })
       }
     })
   }
@@ -103,12 +127,12 @@ export class GeneralSectionComponent implements OnInit {
   getFormatedDate(date: string): string {
     const originalDate = new Date(date);
     const year = originalDate.getFullYear();
+    const month = months[originalDate.getMonth()];
+    const day = String(originalDate.getDate()).padStart(2, '0');
     let formattedDate;
     if(Math.floor((new Date().getTime() - originalDate.getTime())/(24*60*60*1000)) < 7){
-      formattedDate = days[originalDate.getDay()];
+      formattedDate = `${day}-${month}-${year} ${days[originalDate.getDay()]}`;
     } else {
-      const month = months[originalDate.getMonth()];
-      const day = String(originalDate.getDate()).padStart(2, '0');
       formattedDate = `${day}-${month}-${year}`;
     }  
     return formattedDate;

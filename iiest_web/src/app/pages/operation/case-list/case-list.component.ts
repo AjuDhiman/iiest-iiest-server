@@ -9,6 +9,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecipientComponent } from '../../modals/recipient/recipient.component';
 import { FbonewComponent } from '../../sales/fboproduct/fbonew/fbonew.component';
 import { basicRequiredDocs } from 'src/app/utils/config';
+import { Select, Store } from '@ngxs/store';
+import { Observable, Subscription } from 'rxjs';
+import { ShopState } from 'src/app/store/state/shop.state';
+import { UtilitiesService } from 'src/app/services/utilities.service';
+import { GetShops } from 'src/app/store/actions/shop.action';
 
 @Component({
   selector: 'app-case-list',
@@ -16,6 +21,12 @@ import { basicRequiredDocs } from 'src/app/utils/config';
   styleUrls: ['./case-list.component.scss']
 })
 export class CaseListComponent implements OnInit {
+
+  //store related vars
+  @Select(ShopState.GetShopList) shops$: Observable<any>;
+  @Select(ShopState.shopsLoaded) shopsLoaded$: Observable<boolean>
+  shopLoadedSub: Subscription;
+
   filteredData: any = [];
   isSearch: boolean = false;
   searchQuery: string;
@@ -55,6 +66,8 @@ export class CaseListComponent implements OnInit {
   constructor(private exportAsService: ExportAsService,
     private _getDataService: GetdataService,
     private _registerService: RegisterService,
+    private _utililitesService: UtilitiesService,
+    private store: Store,
     private modalService: NgbModal,
     private router: Router) {
   }
@@ -120,29 +133,56 @@ export class CaseListComponent implements OnInit {
         }
       })
     } else {
-      this._getDataService.getCaseList().subscribe({
-        next: res => {
-          this.loading = false;
-          this.caseList = res.caseList.map((data: any) => {
-            const { resultText, resultTextClass, resultIcon } = this.decideResult(data);
-            return {
-              ...data,
-              resultText: resultText,
-              resultIcon: resultIcon,
-              resultTextClass: resultTextClass
-            }
-          });
-          this.caseData = this.caseList.filter((data: any) => data.product_name && data.product_name === this.productType);
-          this.setListProductWise();
-        },
-        error: err => {
-          let errorObj = err.error;
-          this.loading = false;
-          if (errorObj.userError) {
-            this._registerService.signout();
+      this.caseList = this._utililitesService.getShopListdata();
+      this.caseData = this.caseList.filter((data: any) => data.product_name && data.product_name === this.productType);
+      this.setListProductWise();
+      if(this.caseList.length){
+        this.loading = false;
+      }
+      //if shop list is not saved in stae the get it from backend
+      if(this.caseList.length === 0) {
+
+        this.shopLoadedSub = this.shopsLoaded$.subscribe(loadedShops => {
+          if (!loadedShops) {
+            this.loading = true;
+            this.store.dispatch(new GetShops());
+          } else {
+            // this.loading = false;
           }
-        }
-      })
+        })
+
+        this.loading = true;
+        this.shops$.subscribe({
+          next: res => {
+            if(res.length){
+              console.log(res);
+              this.loading = false;
+              this.caseList = res.map((data: any) => {
+                const { resultText, resultTextClass, resultIcon, isForDocumentsNum, pendingDocs, approvedDocs } = this.decideResult(data);
+                return {
+                  ...data,
+                  resultText: resultText,
+                  resultIcon: resultIcon,
+                  resultTextClass: resultTextClass,
+                  pendingDocs: pendingDocs,
+                  approvedDocs: approvedDocs,
+                  isForDocumentsNum: isForDocumentsNum
+                }
+              });
+              this._utililitesService.setShopListData(this.caseList);
+              this.caseData = this.caseList.filter((data: any) => data.product_name && data.product_name === this.productType);
+              this.setListProductWise();
+            }
+          },
+          error: err => {
+                let errorObj = err.error;
+                this.loading = false;
+                if (errorObj.userError) {
+                  this._registerService.signout();
+                }
+              }
+        });
+      }
     }
 
   }
@@ -306,7 +346,7 @@ export class CaseListComponent implements OnInit {
     }
 
     //if comming on this page from notification
-    if (state && state.byNotifications) {
+    if (state && (state.byNotifications || state.byInnerPage)) {
       this.productType = state.product;
     }
   }
@@ -426,12 +466,16 @@ export class CaseListComponent implements OnInit {
   }
 
   //methord for calculating verification status and color of status of each case
-  decideResult(entry: any): { resultText: string, resultTextClass: string, resultIcon: IconDefinition } {
+  decideResult(entry: any): { resultText: string, resultTextClass: string, resultIcon: IconDefinition , isForDocumentsNum: boolean, pendingDocs: number, approvedDocs: number} {
     const verificationData = entry.verificationInfo[0];
+
+    let pendingDocs = 5; //pending docs number
+    let approvedDocs = 0; //approved docs number
 
     let resultText: string = 'Un-Assigned';
     let resultTextClass: string = 'bg-warning';
     let resultIcon: IconDefinition = faCircleExclamation;
+    let isForDocumentsNum: boolean = false;
 
     if (entry.salesInfo.fboInfo.isFboVerified) {
       resultText = 'Shop-Verified',
@@ -443,23 +487,47 @@ export class CaseListComponent implements OnInit {
 
     if (verificationData) {
 
-      if (verificationData) {
-        if (verificationData.isReqDocsVerified) {
-          resultText = 'Documents-Verified';
-          resultTextClass = 'bg-success'
-        } else if (verificationData.isReqDocVerificationLinkSend) {
-          resultText = 'Document-Verification-pending-on-customer-end';
-          resultTextClass = 'bg-orange'
-        } else if (verificationData.isProdVerified) {
-          resultText = 'Product-Verified';
-          resultTextClass = 'bg-success'
+      if (verificationData.isReqDocsVerified) {
+        resultText = 'Documents-Verified';
+        resultTextClass = 'bg-success'
+      } else if (verificationData.isReqDocVerificationLinkSend) {
+        resultText = 'Document-Verification-pending-on-customer-end';
+        resultTextClass = 'bg-orange'
+
+        //in case req doc verification link send we want to check how many docs one have
+        //getting distinct list of documents from each entry
+        let documents: Set<string> | string[] = [];
+        if (entry.salesInfo.docs[0] && entry.salesInfo.docs[0].documents) {
+          let reqDocs = basicRequiredDocs.map(doc => doc.display_name);
+          documents = entry.salesInfo.docs[0].documents.map((a: any) => a.name);
+          console.log(documents);
+          documents = new Set(documents);
+          documents = [...documents];
+          documents.forEach(doc => {
+            if (reqDocs.includes(doc)) {
+              pendingDocs--;
+              approvedDocs++;
+            }
+          });
+          isForDocumentsNum = true;
+          console.log('pending docs', pendingDocs)
+          console.log('approved docs', approvedDocs)
         }
+
+      } else if (verificationData.isProdVerified) {
+        resultText = 'Product-Verified';
+        resultTextClass = 'bg-success'
       }
-      
+
+      if (entry.salesInfo.fboInfo.isVerificationLinkSend && !entry.salesInfo.fboInfo.isFboVerified) {
+        resultText = 'Shop-Verification-pending-on-customer-end';
+        resultTextClass = 'bg-orange'
+      }
+
 
     }
 
 
-    return { resultText, resultTextClass, resultIcon }
+    return { resultText, resultTextClass,  resultIcon, isForDocumentsNum, pendingDocs, approvedDocs }
   }
 }

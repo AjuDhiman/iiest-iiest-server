@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralSectionComponent } from 'src/app/pages/operation/operationform/general-section/general-section.component';
 import { RegisterService } from 'src/app/services/register.service';
-import { IconDefinition, faFilePdf, faFileImage, faDownload, faFileZipper, faCircleCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faFilePdf, faFileImage, faDownload, faFileZipper, faCircleCheck, faCircleExclamation, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { ViewDocumentComponent } from 'src/app/pages/modals/view-document/view-document.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { basicRequiredDocs, config } from 'src/app/utils/config';
 import { GetdataService } from 'src/app/services/getdata.service';
+import { Location } from '@angular/common'
 import { VerificationSectionComponent } from './verification-section/verification-section.component';
 
 @Component({
@@ -102,6 +103,7 @@ export class OperationformComponent implements OnInit {
   ShopSecVerifedStatus: boolean = false;
   productSecVerifedStatus: boolean = false;
   docSecVerifedStatus: boolean = false;
+  faArrowLeft: IconDefinition = faArrowLeft;
 
   //doc list
   docList: any = [];
@@ -118,7 +120,9 @@ export class OperationformComponent implements OnInit {
     private _getDataService: GetdataService,
     private modalService: NgbModal,
     private _utilService: UtilitiesService,
-    private cdr: ChangeDetectorRef) {
+    private cdr: ChangeDetectorRef,
+    private location: Location,
+    private router: Router) {
   }
 
   ngOnInit(): void {
@@ -331,5 +335,10 @@ export class OperationformComponent implements OnInit {
     })
 
     this.requiredDocs = this.requiredDocs.map(doc => doc);
+  }
+
+  goBack(){
+    // this.location.back()//
+    this.router.navigate(['/caselist'], { state: { byInnerPage: true, product: this.productType } })
   }
 }

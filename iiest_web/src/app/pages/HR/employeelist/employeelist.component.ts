@@ -74,12 +74,14 @@ export class EmployeelistComponent implements OnInit {
   // this methord fetches the list of all employees from ngrx store
   fetchAllEmployees(): void {
     this.allEmployees = this._utililitesService.getData();
+    //setting loading false initially
+    this.loading = false;
     this.filter();
     if (this.allEmployees.length === 0) {
       this.getEmployees();
       this.loading = true;
       this.employees$.subscribe(res => {
-        // this.loading = false
+        this.loading = false
         this.allEmployees = res;
         this.totalEmp = this.allEmployees.length;
         this.filter();

@@ -2,26 +2,128 @@ const { recipientModel, shopModel } = require('../../models/fboModels/recipientS
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const areaAllocationModel = require('../../models/employeeModels/employeeAreaSchema');
-const {MongoClient, ObjectId} = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 
 exports.caseList = async (req, res) => {  //api for getting case list data to be shown for opeartion wing
     try {
 
         const employeePanel = req.user.panel_type; //getting panel type of user by the help of middleware
-        
+
         const employeeOId = new ObjectId(req.user._id.toString());
 
         //getting allocated area
-        const allocatedArea = await areaAllocationModel.findOne({employeeInfo: employeeOId});
+        const allocatedArea = await areaAllocationModel.findOne({ employeeInfo: employeeOId });
 
-        if(!allocatedArea){
-            return res.status(404).json({success: false, message: 'Area not allocated', locationArr: true});
+        if (!allocatedArea) {
+            return res.status(404).json({ success: false, message: 'Area not allocated', locationArr: true });
         }
 
         const district = allocatedArea.district;
 
+        const user = req.user;
+
+        const isAdmin = user.employee_name.toLowerCase().includes('admin');
+
+        let list
+
         //aggregating data for getting results we need
-         let list = await shopModel.aggregate([
+        if (!isAdmin) {
+            list = await shopModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'employee_sales',
+                        localField: 'salesInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $sort: {
+                        'salesInfo.createdAt': -1
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'staff_registers',
+                        localField: 'salesInfo.employeeInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $match: {
+                        "salesInfo.employeeInfo.employee_name": {
+                            $not: {
+                                $regex: "admin",
+                                $options: "i"
+                            }
+                        }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'fbo_registers',
+                        localField: 'salesInfo.fboInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.fboInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $match: {
+                        district: { $in: district }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers',
+                        localField: 'salesInfo.fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents',
+                        localField: 'salesInfo.fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'salesInfo.docs'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'shop_verifications',
+                        localField: '_id',
+                        foreignField: 'shopInfo',
+                        as: 'verificationInfo'
+                    }
+                }
+            ]).exec();
+        } else {
+            list = await shopModel.aggregate([
                 {
                     $lookup: {
                         from: 'employee_sales',
@@ -105,7 +207,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                     }
                 }
             ]).exec();
-
+        }
 
         return res.status(200).json({ caseList: list })
 
@@ -115,13 +217,42 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
     }
 }
 
-exports.getRecpList = async (req, res) => {
+//methords for getting particular case for case list 
+exports.getUpdatedCase = async (req, res) => { //api for getting updated case for case list that we will use in state
     try {
 
-        const recpList = await recipientModel.aggregate([
+        const id = req.id;
+
+        const employeePanel = req.user.panel_type; //getting panel type of user by the help of middleware
+
+        const employeeOId = new ObjectId(req.user._id.toString());
+
+        //getting allocated area
+        const allocatedArea = await areaAllocationModel.findOne({ employeeInfo: employeeOId });
+
+        if (!allocatedArea) {
+            return res.status(404).json({ success: false, message: 'Area not allocated', locationArr: true });
+        }
+
+        const district = allocatedArea.district;
+
+        const user = req.user;
+
+        const isAdmin = user.employee_name.toLowerCase().includes('admin');
+
+        let list
+
+        //aggregating data for getting results we need
+        if (!isAdmin) {
+            list = await shopModel.aggregate([
+                {
+                    $match: {
+                        "_id": id
+                    }
+                },
                 {
                     $lookup: {
-                        from: 'employee_sales',  // The name of the salesInfo collection
+                        from: 'employee_sales',
                         localField: 'salesInfo',
                         foreignField: '_id',
                         as: 'salesInfo'
@@ -134,8 +265,13 @@ exports.getRecpList = async (req, res) => {
                     }
                 },
                 {
+                    $sort: {
+                        'salesInfo.createdAt': -1
+                    }
+                },
+                {
                     $lookup: {
-                        from: 'staff_registers',  // The name of the employee collection
+                        from: 'staff_registers',
                         localField: 'salesInfo.employeeInfo',
                         foreignField: '_id',
                         as: 'salesInfo.employeeInfo'
@@ -148,8 +284,18 @@ exports.getRecpList = async (req, res) => {
                     }
                 },
                 {
+                    $match: {
+                        "salesInfo.employeeInfo.employee_name": {
+                            $not: {
+                                $regex: "admin",
+                                $options: "i"
+                            }
+                        }
+                    }
+                },
+                {
                     $lookup: {
-                        from: 'fbo_registers', // The name of the fbo collection
+                        from: 'fbo_registers',
                         localField: 'salesInfo.fboInfo',
                         foreignField: '_id',
                         as: 'salesInfo.fboInfo'
@@ -162,8 +308,13 @@ exports.getRecpList = async (req, res) => {
                     }
                 },
                 {
+                    $match: {
+                        district: { $in: district }
+                    }
+                },
+                {
                     $lookup: {
-                        from: 'bo_registers', // The name of the boInfo collection
+                        from: 'bo_registers',
                         localField: 'salesInfo.fboInfo.boInfo',
                         foreignField: '_id',
                         as: 'salesInfo.fboInfo.boInfo'
@@ -177,7 +328,7 @@ exports.getRecpList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'documents', // The name of the documents collection
+                        from: 'documents',
                         localField: 'salesInfo.fboInfo.customer_id',
                         foreignField: 'handlerId',
                         as: 'salesInfo.docs'
@@ -185,10 +336,27 @@ exports.getRecpList = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: 'fostac_verifications', // The name of the verification collection
+                        from: 'shop_verifications',
                         localField: '_id',
-                        foreignField: 'recipientInfo',
+                        foreignField: 'shopInfo',
                         as: 'verificationInfo'
+                    }
+                }
+            ]).exec();
+        } else {
+            list = await shopModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'employee_sales',
+                        localField: 'salesInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo',
+                        preserveNullAndEmptyArrays: true
                     }
                 },
                 {
@@ -197,38 +365,194 @@ exports.getRecpList = async (req, res) => {
                     }
                 },
                 {
-                    $project: { //only showing nessesory fields
-                        "_id": 1,
-                        "name": 1,
-                        "phoneNo": 1,
-                        "recipientId": 1,
-                        "createdAt": 1,
-                        "aadharNo": 1,
-                        "updatedAt": 1,
-                        "verificationInfo": 1,
-                        "salesInfo._id": 1,
-                        "salesInfo.fboInfo._id": 1,
-                        "salesInfo.fboInfo.fbo_name": 1,
-                        "salesInfo.fboInfo.owner_name": 1,
-                        "salesInfo.fboInfo.customer_id": 1,
-                        "salesInfo.fboInfo.state": 1,
-                        "salesInfo.fboInfo.district": 1,
-                        "salesInfo.fboInfo.boInfo._id": 1,
-                        "salesInfo.fboInfo.boInfo.customer_id": 1,
-                        "salesInfo.employeeInfo.employee_name": 1,
-                        "salesInfo.product_name": 1,
-                        "salesInfo.InvoiceId": 1,
-                        "salesInfo.fostacInfo": 1,
-                        "salesInfo.createdAt": 1,
-                        "salesInfo.updatedAt": 1,
+                    $lookup: {
+                        from: 'staff_registers',
+                        localField: 'salesInfo.employeeInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.employeeInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.employeeInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'fbo_registers',
+                        localField: 'salesInfo.fboInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.fboInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.fboInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $match: {
+                        district: { $in: district }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'bo_registers',
+                        localField: 'salesInfo.fboInfo.boInfo',
+                        foreignField: '_id',
+                        as: 'salesInfo.fboInfo.boInfo'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$salesInfo.fboInfo.boInfo',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'documents',
+                        localField: 'salesInfo.fboInfo.customer_id',
+                        foreignField: 'handlerId',
+                        as: 'salesInfo.docs'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'shop_verifications',
+                        localField: '_id',
+                        foreignField: 'shopInfo',
+                        as: 'verificationInfo'
                     }
                 }
             ]).exec();
+        }
 
-        res.status(200).json({recpList: recpList})
+        return res.status(200).json({ caseList: list })
 
-    } catch(error) {
-        res.status(500).json({message: 'Inter Server Error'})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+}
+
+exports.getRecpList = async (req, res) => {
+    try {
+
+        const recpList = await recipientModel.aggregate([
+            {
+                $lookup: {
+                    from: 'employee_sales',  // The name of the salesInfo collection
+                    localField: 'salesInfo',
+                    foreignField: '_id',
+                    as: 'salesInfo'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$salesInfo',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'staff_registers',  // The name of the employee collection
+                    localField: 'salesInfo.employeeInfo',
+                    foreignField: '_id',
+                    as: 'salesInfo.employeeInfo'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$salesInfo.employeeInfo',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'fbo_registers', // The name of the fbo collection
+                    localField: 'salesInfo.fboInfo',
+                    foreignField: '_id',
+                    as: 'salesInfo.fboInfo'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$salesInfo.fboInfo',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'bo_registers', // The name of the boInfo collection
+                    localField: 'salesInfo.fboInfo.boInfo',
+                    foreignField: '_id',
+                    as: 'salesInfo.fboInfo.boInfo'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$salesInfo.fboInfo.boInfo',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'documents', // The name of the documents collection
+                    localField: 'salesInfo.fboInfo.customer_id',
+                    foreignField: 'handlerId',
+                    as: 'salesInfo.docs'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'fostac_verifications', // The name of the verification collection
+                    localField: '_id',
+                    foreignField: 'recipientInfo',
+                    as: 'verificationInfo'
+                }
+            },
+            {
+                $sort: {
+                    'salesInfo.createdAt': -1
+                }
+            },
+            {
+                $project: { //only showing nessesory fields
+                    "_id": 1,
+                    "name": 1,
+                    "phoneNo": 1,
+                    "recipientId": 1,
+                    "createdAt": 1,
+                    "aadharNo": 1,
+                    "updatedAt": 1,
+                    "verificationInfo": 1,
+                    "salesInfo._id": 1,
+                    "salesInfo.fboInfo._id": 1,
+                    "salesInfo.fboInfo.fbo_name": 1,
+                    "salesInfo.fboInfo.owner_name": 1,
+                    "salesInfo.fboInfo.customer_id": 1,
+                    "salesInfo.fboInfo.state": 1,
+                    "salesInfo.fboInfo.district": 1,
+                    "salesInfo.fboInfo.boInfo._id": 1,
+                    "salesInfo.fboInfo.boInfo.customer_id": 1,
+                    "salesInfo.employeeInfo.employee_name": 1,
+                    "salesInfo.product_name": 1,
+                    "salesInfo.InvoiceId": 1,
+                    "salesInfo.fostacInfo": 1,
+                    "salesInfo.createdAt": 1,
+                    "salesInfo.updatedAt": 1,
+                }
+            }
+        ]).exec();
+
+        res.status(200).json({ recpList: recpList })
+
+    } catch (error) {
+        res.status(500).json({ message: 'Inter Server Error' })
     }
 }
 
@@ -242,15 +566,7 @@ exports.caseInfo = async (req, res) => {
 
         const product = req.params.product;
 
-        const recipientInfo = await shopModel.findOne({_id: candidateId});
-
-        // if (product === 'Fostac') {
-        //     recipientInfo = await recipientModel.findById(recipientId);
-        // } else if (product === 'Foscos') {
-        //     recipientInfo = await shopModel.findById(recipientId);
-        // } else if (product === 'HRA') {
-        //     recipientInfo = await shopModel.findById(recipientId);
-        // }
+        const recipientInfo = await shopModel.findOne({ _id: candidateId });
 
         const moreInfo = await (await (await recipientInfo.populate('salesInfo')).populate(['salesInfo.employeeInfo', 'salesInfo.fboInfo'])).populate('salesInfo.fboInfo.boInfo');
 
@@ -271,7 +587,14 @@ exports.employeeCountDeptWise = async (req, res) => {
 
         const departmentName = req.params.dept;
 
-        const employeeList = await employeeSchema.find({ department: departmentName });
+        const employeeList = await employeeSchema.find({
+            department: departmentName, employee_name: {
+                $not: {
+                    $regex: "admin",
+                    $options: "i" // Case-insensitive match
+                }
+            }
+        });
 
         if (!employeeList) {
             success = false;

@@ -1,4 +1,4 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue } = require("../../config/pipeline");
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, limitAdminSalePipeline } = require("../../config/pipeline");
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 const reportingManagerModel = require("../../models/employeeModels/reportingManagerSchema");
 const fboModel = require("../../models/fboModels/fboSchema");
@@ -30,25 +30,7 @@ exports.getTopSalesPersons = async (req, res) => {
             {
                 $unwind: "$employeeInfo"
             },
-            // {
-            //     $lookup: {
-            //         from: "allocated_area",
-            //         localField: "employeeInfo._id",
-            //         foreignField: "employeeInfo",
-            //         as: "allocated_area"
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         path: "$allocated_area",
-            //         preserveNullAndEmptyArrays: true // Preserve documents with empty foreign fields
-            //     }
-            // },
-            // {
-            //     $match: {
-            //         allocated_area: { $exists: true } // Filter out documents with empty foreign fields
-            //     }
-            // },
+            ...limitAdminSalePipeline,
             {
                 $group: {
                     _id: { person: "$employeeInfo.employee_name" },
@@ -135,6 +117,32 @@ exports.getTopProducts = async (req, res) => {
         }
 
         topProducts = await salesModel.aggregate([
+            {
+                $lookup: {
+                    from: 'staff_registers',
+                    let: { employeeId: '$employeeInfo' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ['$_id', '$$employeeId']
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                employee_name: 1, // Only include the employee_name field
+                                _id: 0 // Optionally exclude the _id field
+                            }
+                        }
+                    ],
+                    as: 'employeeInfo'
+                }
+            },
+            {
+                $unwind: "$employeeInfo" 
+            },
+            ...limitAdminSalePipeline,
             {
                 $unwind: "$product_name"
             },
@@ -292,6 +300,7 @@ exports.getEmpUnderManager = async (req, res) => {
             {
                 $unwind: "$employeeInfo",
             },
+            ...limitAdminSalePipeline, //limiting admin from showing in sale
             {
                 $lookup: {
                     from: "employee_sales",
@@ -368,6 +377,32 @@ exports.mostRepeatedCustomer = async(req, res) => {
                 {
                     $unwind: "$fbo"
                 },
+                {
+                $lookup: {
+                    from: 'staff_registers',
+                    let: { employeeId: '$employeeInfo' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ['$_id', '$$employeeId']
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                employee_name: 1, // Only include the employee_name field
+                                _id: 0 // Optionally exclude the _id field
+                            }
+                        }
+                    ],
+                    as: 'employeeInfo'
+                }
+            },
+            {
+                $unwind: "$employeeInfo" 
+            },
+            ...limitAdminSalePipeline,
                 {
                     $group: {
                         _id: {

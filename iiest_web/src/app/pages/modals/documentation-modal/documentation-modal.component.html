@@ -26,6 +26,7 @@
         <select class="form-select form-select-sm" (change)="getSelectedDoc($event)">
           <option value="" disabled selected>Select Doc to Upload</option>
           <Option *ngFor="let doc of docsArr" [value]="doc | json">{{doc.name}}</Option>
+          <Option [value]="otherDocs[0] | json">{{otherDocs[0].name}}</Option>
         </select>
       </div>
 
@@ -50,19 +51,21 @@
           [placeholder]="selectedDoc.name +' Customer Id'" />
       </div>
 
-      <!-- Issue Date of Doc -->
-      <div class="col-md-4" *ngIf="selectedDoc.name">
-        <label class="form-label">{{selectedDoc.name + ' issue date'}}</label>
-        <input class="form-control form-control-sm" formControlName="issue_date" type="date"
-          [placeholder]="selectedDoc.name +' Customer Id'" />
-      </div>
+      <ng-container *ngIf="!isOtherDoc">
+        <!-- Issue Date of Doc -->
+        <div class="col-md-4" *ngIf="selectedDoc.name">
+          <label class="form-label">{{selectedDoc.name + ' issue date'}}</label>
+          <input class="form-control form-control-sm" formControlName="issue_date" type="date"
+            [placeholder]="selectedDoc.name +' Customer Id'" />
+        </div>
 
-      <!-- Expeiry date of doc -->
-      <div class="col-md-4" *ngIf="selectedDoc.name">
-        <label class="form-label">{{selectedDoc.name + ' expiery date'}}</label>
-        <input class="form-control form-control-sm" formControlName="expiery_date" type="date"
-          [placeholder]="selectedDoc.name +' Customer Id'" />
-      </div>
+        <!-- Expeiry date of doc -->
+        <div class="col-md-4" *ngIf="selectedDoc.name">
+          <label class="form-label">{{selectedDoc.name + ' expiery date'}}</label>
+          <input class="form-control form-control-sm" formControlName="expiery_date" type="date"
+            [placeholder]="selectedDoc.name +' Customer Id'" />
+        </div>
+      </ng-container>
 
       <div [ngClass]="{'py-2': isOtherDoc}" class="col-md-4 d-flex align-items-end" *ngIf="selectedDoc.name">
         <button type="submit" class="btn btn-sm btn-primary">Upload
@@ -147,15 +150,17 @@
                       </div>
                     </span>
                   </td>
-                  <td class="cell"><span class="truncate">{{getFormattedDate(doc.issue_date)}}</span></td>
-                  <td class="cell"><span class="truncate">{{getFormattedDate(doc.expiery_date)}}</span></td>
-                  <td class="cell"><span class="truncate">{{calculateDaysLeft(doc)}}</span></td>
+                  <td class="cell text-center"><span class="truncate">{{doc.issue_date?getFormattedDate(doc.issue_date):'-'}}</span>
+                  </td>
+                  <td class="cell text-center"><span
+                      class="truncate">{{doc.expiery_date?getFormattedDate(doc.expiery_date):'-'}}</span></td>
+                  <td class="cell text-center"><span class="truncate">{{doc.expiery_date?calculateDaysLeft(doc):'-'}}</span></td>
                   <td class="cell"><span class="truncate">
-                      <fa-icon *ngIf="calculateDaysLeft(doc) === 0" [icon]="faTrash" class="text-danger fa-lg cursor-pointer" title="Delete"
-                        (click)="onDocDelete(doc)"></fa-icon>
-                      <fa-icon  [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
+                      <!-- <fa-icon *ngIf="calculateDaysLeft(doc) === 0" [icon]="faTrash"
+                        class="text-danger fa-lg cursor-pointer" title="Delete" (click)="onDocDelete(doc)"></fa-icon> -->
+                      <fa-icon [icon]="faEye" class="text-primary mx-2 fa-md cursor-pointer selector" title="View"
                         (click)="viewDocument(doc)"></fa-icon>
-                       <!-- <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
+                      <!-- <fa-icon [icon]="faDownload" class="text-primary fa-lg cursor-pointer selector" title="Download"
                       ></fa-icon> -->
                     </span>
                   </td>

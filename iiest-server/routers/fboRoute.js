@@ -1,7 +1,7 @@
 const express = require('express');
 const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeSale, getSalesBasicDocUploadURL, sendFboVerificationLink, verifyFbo, updateFboInfo } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
-const { addRecipient, addShop, recipientsList, shopsList, showBill, addShopByExcel } = require('../controllers/fboControllers/recipient');
+const { addRecipient, addShop, recipientsList, shopsList, addShopByExcel } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
@@ -36,7 +36,6 @@ router.post('/fbo/addshopbyexcel/:id', authMiddleware, addShopByExcel);
 router.post('/fbo/addrecipient/:id', authMiddleware, addRecipient, fostacRecpVerification, trainingBatch ); //Router for adding recipient data
 router.get('/getsalesbasicdocuploadurl/:name', authMiddleware, getSalesBasicDocUploadURL); //route for getting upload url for uploading basic sales docs to AWS S3
 // router.post('/fbo/addhygieneshop/:id', authMiddleware, hraDocuments.fields([{ name: 'fostacCertificate', maxCount: 1 }, { name: 'foscosLicense', maxCount: 1 }]), addHygieneShop); //Router for adding hygiene shop data
-router.get('/shop/ebill/:id', authMiddleware, showBill);
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)

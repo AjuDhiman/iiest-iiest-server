@@ -164,6 +164,7 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Technical Officer: ${clientData.technicalOfficer}</p>
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -182,8 +183,8 @@ const sendVerificationMail = (clientData) => {
     आपके द्वारा प्रदान की गई जानकारी सफलतापूर्वक सत्यापित कर दी गई है। हम सत्यापन प्रक्रिया के दौरान आपके सहयोग और समय पर प्रतिक्रिया की सराहना करते हैं।</p>
     <p>कृपया नीचे दिए गए विवरण की समीक्षा करें:</p>
 
-प्रशिक्षण प्रकार -- ${clientData.service_type}<br>
-प्राप्तकर्ताओं की संख्या -- ${clientData.recipinet_no}<br>
+प्रशिक्षण प्रकार -- ${clientData.service_name}<br>
+प्राप्तकर्ताओं की संख्या -- ${clientData.recipient_no}<br>
     <br>
     प्राप्तकर्ताओं का डेटा:- <br><br>
     ${clientData.recpDetails.forEach(recp => {
@@ -197,8 +198,9 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
-    <p>"धन्यवाद,<br>
-    ${CB_BRAND_NAME.hindi}</p>
+    <p>"धन्यवाद,</p>
+    <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
+    <p>${CB_BRAND_NAME.hindi}</p>
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
@@ -224,6 +226,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Technical Officer: ${clientData.technicalOfficer}</p>
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -250,8 +253,9 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
-    <p>"धन्यवाद,<br>
-    ${CB_BRAND_NAME.hindi}</p>
+    <p>"धन्यवाद,</p>
+     <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
+    <p>${CB_BRAND_NAME.hindi}</p>
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
@@ -292,8 +296,9 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
-    <p>"धन्यवाद,<br>
-    ${CB_BRAND_NAME.hindi}</p>
+    <p>"धन्यवाद,</p>
+    <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
+    <p>${CB_BRAND_NAME.hindi}</p>
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
@@ -406,6 +411,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Technical Officer: ${clientData.technicalOfficer}</p>
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -428,8 +434,9 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
-    <p>"धन्यवाद,<br>
-    ${CB_BRAND_NAME.hindi}</p>
+    <p>"धन्यवाद,</p>
+     <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
+    <p>${CB_BRAND_NAME.hindi}</p>
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
@@ -468,6 +475,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p>Technical Officer: ${clientData.technicalOfficer}</p>
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -510,8 +518,9 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
-    <p>"धन्यवाद,<br>
-    ${CB_BRAND_NAME.hindi}</p>
+    <p>"धन्यवाद,</p>
+     <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
+    <p>${CB_BRAND_NAME.hindi}</p>
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>

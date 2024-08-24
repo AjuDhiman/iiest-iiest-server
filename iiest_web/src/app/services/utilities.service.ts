@@ -25,6 +25,17 @@ export class UtilitiesService {
     return this.employeeData;
   }
 
+  //store reated vars for shops
+  shopListData: any = [];
+
+  public setShopListData(data: any){ //methord for settig shop list 
+    this.shopListData = data;
+  }
+
+  public getShopListdata() { // call this method from the component to get the already set data
+    return this.shopListData;
+  }
+
   // this method makes https post request for contact us data
   public contactiiest(data: Object): Observable<any> {
     const url = `${this.url}/contact-us`;

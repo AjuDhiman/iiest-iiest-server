@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IconDefinition, faCheck, faCircleCheck, faCircleExclamation, faExclamationCircle, faL, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faCheck, faCircleCheck, faCircleExclamation, faExclamationCircle, faL, faUsers, faArrowRotateForward, faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ConformationModalComponent } from 'src/app/pages/modals/conformation-modal/conformation-modal.component';
@@ -35,9 +35,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   resultIcon: IconDefinition = faExclamationCircle;
 
   //icons
-  faCircleExclamation = faCircleExclamation;
-  faCircleCheck = faCircleCheck;
+  faCircleExclamation: IconDefinition = faCircleExclamation;
+  faCircleCheck: IconDefinition = faCircleCheck;
   faUsers: IconDefinition = faUsers;
+  faArrowRotateForward: IconDefinition = faArrowRotateForward;
+  faArrowLeft: IconDefinition = faArrowLeft;
 
   //var related to loader
   loading: boolean = false;
@@ -255,34 +257,34 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           this.getKobData();
         }
 
-        if(this.isForProductVerification){
+        if (this.isForProductVerification) {
           this.getShopVerifiedData();
         }
         //getting shop verified data
-        
+
       }
     }
 
     if (changes['isForDocVerification']) {
       this.isForDocVerification = changes['isForDocVerification'].currentValue;
     }
-  
+
     // Check if 'verifiedShopData' has changed and 'isForDocVerification' is true
     if (changes['verifiedShopData'] && changes['verifiedShopData'].currentValue && this.isForDocVerification) {
+      this.loading = false;
       // this.requiredDocs.forEach(a)
       this.isPendingByCustomer = false;
-      
+
       //check if every required docs stisfies the condition
       this.verifiedStatus = this.requiredDocs.every((doc: requireDocsInterface) => (doc.isAlreadyAvilable || doc.isSelectedForSale || doc.isActiveProduct));
       this.isPendingByCustomer = this.verifiedShopData.isReqDocVerificationLinkSend;
       // this.verifiedStatus = this.verifiedShopData.isReqDocsVerified;
-      this.loading = false;
-  
+
       this.decideResult();
       this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
     }
-    
-   
+
+
   }
 
   //---------------------------------------------------------------------- GET -----------------------------------------------------------------------------------------
@@ -339,8 +341,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
     } else if (this.productType === 'Foscos') {
       this._registerService.verifyFoscos(this.candidateId, this.verificationForm.value).subscribe({
         next: res => {
+          this.loading = false;
           if (res.success) {
-            this.loading = false;
             this.verifiedStatus = true;
             this.decideResult();
             // this.verifiedStatus = true;
@@ -350,6 +352,9 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             this.refreshAuditLog.emit();
             this._toastrService.success('Email Sent For Foscos Verification');
           }
+        } ,
+        error: err => {
+          this.loading = false;
         }
       });
     } else if (this.productType === 'HRA') {
@@ -361,7 +366,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
             // this.verifiedStatus = true;
             this.verifiedStatus = true;
             this.decideResult();
-            console.log(res);
             this.emitVerifiedStatus.emit(this.verifiedStatus);
             this.emitVerifiedID.emit(res.verifiiedId);
             // this.emitVerifiedData.emit(res.verificationInfo);
@@ -376,6 +380,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
           }
         }
       });
+    } else {
+      this.loading = false;
     }
   }
 
@@ -399,7 +405,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this.loading = false;
         if (res) {
           this._toastrService.success('Verification Link Send by Mail');
-          this.resultText = 'Pending on customer end';
+          this.resultText = 'Pending at customer end';
           this.resultTextClass = 'bg-orange';
           this.resultIcon = faCircleExclamation;
           this.isPendingByCustomer = true;
@@ -417,11 +423,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
   onDocVerify() {
 
     this.verified = true;
-    console.log(this.loading)
-    //return in case of loading  or invalid form field
-    if (this.loading) {
-      return;
-    }
 
     //opening confirmation modal
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
@@ -456,6 +457,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         next: (res) => {
           this.loading = false;
           this.caseData = res.populatedInfo;
+          // this.fieldVerifications.forEach((div: any) => {
+          //   div.nativeElement.setAttribute('valid', 'true');
+          //   console.log(div.nativeElement.attributes.refrence);
+          // })
+
+          
+          // this.fieldVerifications = (this.fieldVerifications.map(div => div) as any);
 
           this.emitCaseData.emit(this.caseData);
 
@@ -483,12 +491,13 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       });
     } else if (this.isForProductVerification && this.caseData) {
 
+      this.loading = false;
 
       if (this.productType === 'Fostac') {
-
         //getting recipient data also in case of fostac
         this._getDataService.getSaleRecipients(this.caseData.salesInfo._id).subscribe({
           next: res => {
+            
             this.caseData.salesInfo.recipientInfo = res.recipientsList;
 
             //setting is all recp filled true if all recps are filed that is if no of recp in recipient list array is equal to recipient no infostac info
@@ -534,6 +543,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         //   this.verifiedStatus = true;
         //   this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
         // }
+        
         this.patchVerifiedData(res.verifedData);
 
         this.verifiedShopData = res.verifedData
@@ -542,7 +552,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
         this.decideResult();
         this.emitVerifiedData.emit(this.verifiedShopData);
-        
+
 
       },
       error: err => {
@@ -729,7 +739,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       this.resultTextClass = 'bg-success';
       this.resultIcon = faCircleCheck;
     } else if (this.isPendingByCustomer) {
-      this.resultText = 'Pending on customer end';
+      this.resultText = 'Pending at customer end';
       this.resultTextClass = 'bg-orange';
       this.resultIcon = faCircleExclamation;
     } else {
@@ -748,6 +758,11 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         modalRef.componentInstance.fboData = res;
         modalRef.componentInstance.serviceType = serviceType;
         modalRef.componentInstance.isVerifier = true;
+        modalRef.componentInstance.actionComplete.subscribe((confirmation: boolean) => {
+          if(confirmation){
+            this.getMoreCaseInfo();
+          }
+        })
       } else {
         const modalRef = this.modalService.open(RecipientComponent, { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.fboData = res;
@@ -769,8 +784,6 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
       //saving old values of district and pincode in consts
       const district: string = this.shopverificationform['district'].value;
       const pincode: string = this.shopverificationform['pincode'].value;
-
-      console.log(pincode);
 
       await this.onStateSelect()
       //patching district
@@ -852,6 +865,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this.isEditMode = false;
         this._toastrService.success('Updated Successfully')
         this.getMoreCaseInfo();
+     
         this.switch.nativeElement.checked = false;
       },
       error: err => {
@@ -859,5 +873,15 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         this._toastrService.error('Updation Error')
       }
     });
+  }
+
+  //methord for re calling api
+  refreshApi(){
+    this.getMoreCaseInfo();
+    this.getShopVerifiedData();
+  }
+
+  goBack(){
+    
   }
 }

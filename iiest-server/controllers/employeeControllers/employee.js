@@ -311,7 +311,16 @@ exports.editEmployee = async (req, res) => {
 
 //api for getting all employees data
 exports.allEmployeesData = async (req, res) => {
-    const employeesData = await employeeSchema.find({ _id: { $ne: req.user.id } });
+    const employeesData = await employeeSchema.find({
+        _id: { $ne: req.user.id },
+        employee_name: {
+          $not: {
+            $regex: "admin",
+            $options: "i" // Case-insensitive match
+          }
+        }
+      });
+      
     try {
         return res.status(200).json({ employeesData })
     } catch (error) {

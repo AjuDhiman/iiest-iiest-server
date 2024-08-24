@@ -156,29 +156,6 @@ exports.verifyEmail = async (req, res) => {
 exports.getClientList = async (req, res) => {
 
     try {
-        // const clientList = await boModel.aggregate([
-        //     {
-        //         $lookup: { //lookup with fbo collection for getting all the fbo related to this bo in array
-        //             from: 'fbo_registers',
-        //             localField: '_id',
-        //             foreignField: 'boInfo',
-        //             as: 'fbo'
-        //         },
-        //     },
-        //     {
-        //         $unwind: "$fbo"
-        //     },
-        //     {
-        //         $project: {
-        //             "_id": 1,
-        //             "cusomer_id": 1,
-        //             "manager_name": 1,
-        //             "owner_name": 1,
-        //             "business_category": 1,
-        //             "fbo._id": 1
-        //         }
-        //     }
-        // ]);
 
          const clientList = await fboModel.aggregate([
             {
@@ -188,6 +165,16 @@ exports.getClientList = async (req, res) => {
                     foreignField: '_id',
                     as: 'boInfo'
                 },
+            },
+            {
+                $match: {
+                    "created_by": {
+                        $not: {
+                            $regex: "admin",
+                            $options: "i"
+                        }
+                    }
+                }
             },
             {
                 $unwind: "$boInfo"

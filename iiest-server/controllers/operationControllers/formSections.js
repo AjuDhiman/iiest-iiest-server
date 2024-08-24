@@ -84,6 +84,8 @@ exports.fostacVerification = async (req, res) => {
 
         const shopId = req.params.id;
 
+        const user = req.user;
+
         const shopData = await shopModel.findOne({ _id: shopId }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', fboModel, populate: { path: 'boInfo' } }] });
 
         //getting recps retted to this shop
@@ -101,7 +103,8 @@ exports.fostacVerification = async (req, res) => {
             recipient_no: recipient_no,
             service_name: service_name,
             fostac_total: fostac_total,
-            recpDetails: recpDetails
+            recpDetails: recpDetails,
+            technicalOfficer: user.employee_name
         }
 
         console.log(clientData);
@@ -143,6 +146,8 @@ exports.foscosVerification = async (req, res) => {
 
         const verifiedData = req.body;
 
+        const user = req.user;
+
         const { kob, food_category, ownership_type, owners_num, license_category, license_duration, foscos_total, sales_date, sales_person } = verifiedData;
 
         const shopData = await shopModel.findOne({ _id: shopID }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', fboModel, populate: { path: 'boInfo' } }] });
@@ -156,6 +161,7 @@ exports.foscosVerification = async (req, res) => {
             licenseDuration: license_duration,
             kindOfBusiness: kob,
             foodCategory: food_category,
+            technicalOfficer: user.employee_name
         }
 
         const addVerification = await shopVerificationModel.create({ operatorInfo: req.user._id, product: 'Foscos', shopInfo: shopID, kob: kob, foodCategory: food_category, ownershipType: ownership_type, OwnersNum: owners_num
@@ -197,6 +203,8 @@ exports.hraVerification = async (req, res, next) => {
 
         const shopID = req.params.shopid;
 
+        const user = req.user;
+
         const verifiedData = req.body;
 
         const { food_handler_no, kob, hra_total, sales_date, sales_person } = verifiedData;
@@ -217,7 +225,8 @@ exports.hraVerification = async (req, res, next) => {
             fboObjId: shopID,
             product: 'hra',
             foodHandlerNo: food_handler_no,
-            kindOfBusiness: kob
+            kindOfBusiness: kob,
+            technicalOfficer: user.employee_name
         }
 
         // code for tracking ends
@@ -747,6 +756,8 @@ exports.verifyDoc = async (req, res) => {
     try {
         const id = req.params.id;
 
+        const user = req.user;
+
         const shopData = await shopModel.findOne({ _id: new ObjectId(id) }).populate({ path: 'salesInfo', populate: [{ path: 'fboInfo', fboModel, populate: { path: 'boInfo' } }] });
 
         const { checkedDocsName } = req.body;
@@ -777,7 +788,8 @@ exports.verifyDoc = async (req, res) => {
             managerName: shopData.salesInfo.fboInfo.boInfo.manager_name,
             recipientEmail: shopData.salesInfo.fboInfo.boInfo.email,
             product: 'doc',
-            checkedDocsName: checkedDocsName
+            checkedDocsName: checkedDocsName,
+            technicalOfficer: user.employee_name
         }
 
 

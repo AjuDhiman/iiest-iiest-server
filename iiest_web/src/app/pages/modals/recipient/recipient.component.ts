@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from '@angular/forms';
 import { RegisterService } from 'src/app/services/register.service';
@@ -19,6 +19,7 @@ export class RecipientComponent implements OnInit {
   @Input() public fboData: any;
   @Input() public serviceType: string;
   @Input() public isVerifier: string;
+  actionComplete: EventEmitter<boolean> = new EventEmitter<boolean>;
   fboID: any;
   recipientData: any;
   shopData: any;
@@ -175,16 +176,24 @@ export class RecipientComponent implements OnInit {
             this._registerService.saveFostacDocument(formData).subscribe({
               next: res => {
                 this._toastrService.success('', 'Record Added Successfully.');
+                this.closeModal();
+                this.loading = false;
+                this.actionComplete.emit(true)
+              },
+              error: err => {
+                this.loading = false;
+                this.activeModal.close();
+                this.actionComplete.emit(false)
               }
             });
            
-            this.closeModal();
-            this.loading = false;
+           
           }
         },
         error: (err) => {
           let errorObj = err.error;
           this.loading = false;
+          this.activeModal.close();
           if (errorObj.userError) {
             this._registerService.signout();
           } else if (errorObj.aadharErr) {
