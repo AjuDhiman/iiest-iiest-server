@@ -52,6 +52,12 @@ const salesSchema = new Schema({ //creating sales schema
             return this.product_name.includes('Water Test Report'); //required if water test present in product_name array
         }
     },
+    khadyaPaalnInfo: {  // object that contacin all info about khadsya palan
+        type: Object, 
+        required: function() {
+            return this.product_name.includes('Khadya paaln'); 
+        }
+    },
     payment_mode: { //property that contain info about which payment payemnt mode is used in this sale
         type: String, 
         required: true

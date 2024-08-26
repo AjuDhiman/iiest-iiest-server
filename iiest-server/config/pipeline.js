@@ -134,6 +134,9 @@ const waterTestRevenue = [
     }
 ]
 
+const khadyaPaalnRevenue = [
+    { $toInt: { $ifNull: ["$khadyaPaalnInfo.khadya_paaln_processing_amount", 0] } },
+]
 
 //pipeline for limiting the admin sales data
 const limitAdminSalePipeline = [
@@ -186,4 +189,4 @@ const salesApprovalCond = [
     }
 ]
 
-module.exports = { startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear, fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, salesPendingCond, salesApprovalCond, limitAdminSalePipeline }
+module.exports = { startOfToday, startOfThisWeek, startOfThisMonth, startOfPrevMonth, startOfThisFinancialYear, fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, salesPendingCond, salesApprovalCond, limitAdminSalePipeline, khadyaPaalnRevenue }

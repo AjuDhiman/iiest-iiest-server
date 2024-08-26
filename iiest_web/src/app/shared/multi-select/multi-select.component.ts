@@ -14,19 +14,19 @@ export class MultiSelectComponent implements OnChanges {
   isdropped = false;
   @Input() invalid: boolean = false;
   isDisplayEmpty: boolean = true;
-  popedElement: string|number = '';
+  popedElement: string | number = '';
 
   @Input()
-  options: string[]|number[];
+  options: string[] | number[];
 
   @Input()
   placeHolder: string = '';
 
-  @Input() forProducts:boolean=false;
+  @Input() forProducts: boolean = false;
 
   @Input() isDisabled: boolean = false;
 
-  @Input() disabledArray: string[]|number[] = []; // this array will contain all the value to be diabled from all options
+  @Input() disabledArray: string[] | number[] = []; // this array will contain all the value to be diabled from all options
 
   @ViewChild('display') display: ElementRef;
 
@@ -41,6 +41,18 @@ export class MultiSelectComponent implements OnChanges {
       // 'options' has changed
       this.initializeAll();
     }
+
+    if (changes['disabledArray'] && changes['disabledArray'].currentValue) {
+      // 'disabledArray' has changed
+      this.all = this.all.map((item) => {
+        if ((this.disabledArray as any).includes((item.value))) {
+          item.isDisabled = true;
+        } else {
+          item.isDisabled = false;
+        }
+        return item;
+      });
+    }
   }
 
   initializeAll(): void {
@@ -48,7 +60,7 @@ export class MultiSelectComponent implements OnChanges {
     //we are associating a checked boolean with every value for keepig track of check boxes 
     //associated with them
     for (let option of this.options) {
-      this.all.push({ value: option, checked: false, isDisabled: this.disabledArray.includes((option) as never)?true:false }); // we are setting basic initial condition for array of all check boxes , value for value , checked for selecting checked or not and isDisbled for deciding disbled or not
+      this.all.push({ value: option, checked: false, isDisabled: this.disabledArray.includes((option) as never) ? true : false }); // we are setting basic initial condition for array of all check boxes , value for value , checked for selecting checked or not and isDisbled for deciding disbled or not
     }
   }
 
@@ -66,7 +78,7 @@ export class MultiSelectComponent implements OnChanges {
 
     //we want to emit the array of all selected elements
     this.selectedArrayChange.emit(this.selected);
-    
+
     this.checkIfEmpty()
 
     event.stopPropagation();
@@ -82,7 +94,7 @@ export class MultiSelectComponent implements OnChanges {
     event.stopPropagation();
   }
 
-  onReset() : void {
+  onReset(): void {
     this.selected = [];
     this.isDisplayEmpty = true;
     this.isdropped = false;
@@ -90,7 +102,7 @@ export class MultiSelectComponent implements OnChanges {
     this.all.forEach(item => item.checked = false);
   }
 
-  checkIfEmpty(){
+  checkIfEmpty() {
     if (this.selected.length === 0) {
       this.isDisplayEmpty = true;
     }

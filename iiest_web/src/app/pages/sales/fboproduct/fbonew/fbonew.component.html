@@ -410,7 +410,41 @@
                     </div>
                 </div>
 
-                <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest">
+                <div *ngIf="isKhadyaPaaln" [formGroup]="khadya_paaln">
+                    <div class="row">
+                        <h6 class="">Khadya Paaln</h6>
+                        <div class="col-md-3">
+                            <label for="khadya_paaln_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+                            <input type="number" 
+                                placeholder="Processing Amount"
+                                [readonly]="isReadOnly" formControlName="khadya_paaln_processing_amount"
+                                class="form-control form-control-sm"
+                                 [readOnly]="true"
+                                [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_processing_amount')?.errors}"
+                                id="khadya_paaln_processing_amount" group='khadya_paaln' />
+                            <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_processing_amount')?.errors" class="invalid-feedback">
+                                <div *ngIf="khadya_paaln.get('khadya_paaln_processing_amount')?.errors?.['required']">Processing Amount is
+                                    required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="khadya_paaln_total" class="form-label">Khadya Paaln Total<sup>*</sup>
+                                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+                            <input type="number"
+                                placeholder="Khadya Paaln Total"
+                                [readonly]="isReadOnly" formControlName="khadya_paaln_total"
+                                class="form-control form-control-sm" [readOnly]="true"
+                                [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_total')?.errors}"
+                                id="khadya_paaln_total" group='fostac' />
+                            <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_total')?.errors" class="invalid-feedback">
+                                <div *ngIf="khadya_paaln.get('khadya_paaln_total')?.errors?.['required']">Khadya Paaln Total is
+                                    required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest || isKhadyaPaaln">
                     <div class="col-md-3">
                         <label for="grand_total" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
                             <span style="font-size: x-small;">(18% GST Inc.)</span></label>

@@ -188,7 +188,7 @@ exports.existingFboByCheque = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, water_test_report, cheque_data, isFostac, isFoscos, isHygiene, isMedical, isWaterTest, existingFboId } = req.body;
+    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, cheque_data, isFostac, isFoscos, isHygiene, isMedical, isKhadyaPaaln, isWaterTest, existingFboId } = req.body;
 
     const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate('boInfo');
 
@@ -210,13 +210,14 @@ exports.existingFboByCheque = async (req, res) => {
     let foscosTraining = isFoscos === 'true' ? JSON.parse(foscos_training) : undefined;
     let hygieneAudit = isHygiene === 'true' ? JSON.parse(hygiene_audit) : undefined;
     let Medical = isMedical === 'true' ? JSON.parse(medical) : undefined;
+    let KhadyaPaaln = isKhadyaPaaln === 'true' ? JSON.parse(khadya_paaln) : undefined;
     let waterTestReport = isWaterTest === 'true' ? JSON.parse(water_test_report) : undefined;
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
     chequeData.status = 'Pending';
     chequeData.cheque_image = chequeImage.key
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, khadyaPaalnInfo: KhadyaPaaln, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -328,8 +329,6 @@ exports.existingFboPayReturn = async (req, res) => {
 
   try {
 
-    console.log(req);
-
     if (req.body.code === 'PAYMENT_SUCCESS' && req.body.merchantId && req.body.transactionId && req.body.providerReferenceId) {
       if (req.body.transactionId) {
 
@@ -361,6 +360,7 @@ exports.existingFboPayReturn = async (req, res) => {
           foscos_training,
           hygiene_audit,
           medical,
+          khadya_paaln,
           water_test_report,
           createrObjId,
           signatureFile,
@@ -368,6 +368,7 @@ exports.existingFboPayReturn = async (req, res) => {
           foscosGST,
           hygieneGST,
           medicalGST,
+          khadyaPaalnGST,
           waterTestGST,
           foscosFixedCharge,
           medicalFixedCharges,
@@ -392,6 +393,10 @@ exports.existingFboPayReturn = async (req, res) => {
 
         if (medical) { //push medical in  case of medical
           serviceArr.push('Medical');
+        }
+
+        if (khadya_paaln) { 
+          serviceArr.push('Khadya Paaln');
         }
 
         if (water_test_report) { //push medical in  case of water test
@@ -493,6 +498,25 @@ exports.existingFboPayReturn = async (req, res) => {
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Medical' });
         }
 
+        if (product_name.includes('Khadya Paaln')) {
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
+
+          fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
+          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+          total_processing_amount = Number(khadya_paaln.khadya_paaln_processing_amount);
+          totalGST = khadyaPaalnGST;
+          
+
+          const qty = 1;
+
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, khadya_paaln.khadya_paaln_total, 'Khadya Paaln', khadya_paaln, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
+
+          invoiceData.push(invoice);
+
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Khadya Paaln' });
+        }
+
         if (product_name.includes('Water Test Report')) {
           const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
 
@@ -531,6 +555,7 @@ exports.existingFboPayReturn = async (req, res) => {
           foscosInfo: foscos_training,
           hraInfo: hygiene_audit,
           medicalInfo: medical,
+          khadyaPaalnInfo: khadya_paaln,
           waterTestInfo: water_test_report,
           payment_mode,
           grand_total,

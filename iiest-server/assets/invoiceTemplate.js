@@ -67,6 +67,8 @@ const invoiceTemplate = async (fboInfo) => {
     const amountInWords = toWords.convert(fboInfo.totalAmount, { currency: true, ignoreZeroCurrency: true });
 
     //getting signature stream from s3
+    console.log('signature  -----------------------------------------------------------$$$$$', `${employeeDocsPath}${signatureName}`)
+    console.log(signatureName)
     const signatureDownloadStream = await getFileStream((`${employeeDocsPath}${signatureName}`));
 
     signatureDownloadStream.on('error', () => {
@@ -331,7 +333,7 @@ const invoiceTemplate = async (fboInfo) => {
             
                         <div>
                             <p>
-            
+                              ${fboInfo.chosenService === 'Khadya Paaln'?'<b>T&C:<br>1. Total Amount does not incl. any govt. charges. Incurred govt. fee is to be paid directly to govt during filing by customer. <br>2. Service includes auto renewal filling of Fostac Certificate(1) + Foscos License(1) + Medical Certificate(1) + Water Test Report(2) per shop. <br>3. Food Technical Expert visit (3) per shop per annum. </b>':''}
                             </p>
                         </div>
             <div style="display: flex; justify-content: space-between;">

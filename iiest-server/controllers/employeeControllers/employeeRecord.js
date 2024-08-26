@@ -1,4 +1,4 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, limitAdminSalePipeline } = require('../../config/pipeline');
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, limitAdminSalePipeline, khadyaPaalnRevenue } = require('../../config/pipeline');
 const { uploadDocObject, getDocObject } = require('../../config/s3Bucket');
 const salesModel = require('../../models/employeeModels/employeeSalesSchema');
 const employeeSchema = require('../../models/employeeModels/employeeSchema');
@@ -78,6 +78,7 @@ exports.employeeRecord = async (req, res) => {
                                     ...hraRevenue,
                                     ...medicalRevenue,
                                     ...waterTestRevenue,
+                                    ...khadyaPaalnRevenue
                                 ]
                             }
                         },
@@ -104,6 +105,7 @@ exports.employeeRecord = async (req, res) => {
                                             ...hraRevenue,
                                             ...medicalRevenue,
                                             ...waterTestRevenue,
+                                            ...khadyaPaalnRevenue
                                         ]
                                     }, else: 0
                                 }
@@ -130,6 +132,7 @@ exports.employeeRecord = async (req, res) => {
                                             ...hraRevenue,
                                             ...medicalRevenue,
                                             ...waterTestRevenue,
+                                            ...khadyaPaalnRevenue
                                         ]
                                     }, else: 0
                                 }
@@ -164,6 +167,7 @@ exports.employeeRecord = async (req, res) => {
                                     ...hraRevenue,
                                     ...medicalRevenue,
                                     ...waterTestRevenue,
+                                    ...khadyaPaalnRevenue,
                                 ]
                             }
                         },
@@ -190,6 +194,7 @@ exports.employeeRecord = async (req, res) => {
                                             ...hraRevenue,
                                             ...medicalRevenue,
                                             ...waterTestRevenue,
+                                            ...khadyaPaalnRevenue,
                                         ]
                                     }, else: 0
                                 }
@@ -216,6 +221,7 @@ exports.employeeRecord = async (req, res) => {
                                             ...hraRevenue,
                                             ...medicalRevenue,
                                             ...waterTestRevenue,
+                                            ...khadyaPaalnRevenue
                                         ]
                                     }, else: 0
                                 }

@@ -33,12 +33,12 @@ const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, di
 
     //getting date fot the invoice
     let date;
-    if(invoice_date) {
+    if (invoice_date) {
         date = new Date(invoice_date.toString());
     } else {
         date = new Date();
     }
-    
+
     const dateVal = date.getDate();
     const monthVal = date.getMonth() + 1;
     const yearVal = date.getFullYear();
@@ -112,6 +112,11 @@ function getProductSpecificData(product, qty, prodDetails, extraFee) {
             description = `<b>Safe Food & Good Hygiene</b> <br>
                                 Water Test Report`
             code = `IS-WT`
+            break;
+        case 'Khadya Paaln':
+            description = `<b>Khadya Paaln Services</b> <br>
+                        Auto Renewal - Basic Food Safety Compliances`
+            code = `IS-KP`
             break;
     }
 

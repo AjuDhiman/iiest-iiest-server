@@ -143,6 +143,7 @@ exports.fboPayReturn = async (req, res) => {
           foscos_training,
           hygiene_audit,
           medical,
+          khadya_paaln,
           water_test_report,
           gst_number,
           createrObjId,
@@ -151,6 +152,7 @@ exports.fboPayReturn = async (req, res) => {
           foscosGST,
           hygieneGST,
           medicalGST,
+          khadyaPaalnGST,
           waterTestGST,
           foscosFixedCharge,
           boInfo,
@@ -181,6 +183,10 @@ exports.fboPayReturn = async (req, res) => {
 
         if (medical) {
           serviceArr.push('Medical');
+        }
+
+        if (khadya_paaln) {
+          serviceArr.push('Khadya Paaln');
         }
 
         if (water_test_report) {
@@ -317,6 +323,24 @@ exports.fboPayReturn = async (req, res) => {
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Water Test Report' });
         }
 
+         //sales operations in case it includes khadya paaln
+         if (product_name.includes('Khadya Paaln')) {
+          const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
+
+          fileName = `${Date.now()}_${idNumber}.pdf`;
+          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+          total_processing_amount = Number(khadya_paaln.khadya_paaln_processing_amount);
+          totalGST = khadyaPaalnGST;
+
+          const qty = 1;
+          //create invoice
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, khadya_paaln.khadya_paaln_total, 'Khadya Paaln', khadya_paaln, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData);
+
+          invoiceData.push(invoice)
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Kadya Paaln' });
+        }
+
         //creating new fbo entry
         const fboEntry = await fboModel.create({
           employeeInfo: createrObjId,
@@ -370,6 +394,7 @@ exports.fboPayReturn = async (req, res) => {
           foscosInfo: foscos_training,
           hraInfo: hygiene_audit,
           medicalInfo: medical,
+          khadyaPaalnInfo: khadya_paaln,
           waterTestInfo: water_test_report,
           payment_mode,
           grand_total,
@@ -592,7 +617,7 @@ exports.boByCheque = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, medical, water_test_report, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene, isMedical, isWaterTest } = req.body;//getting data from req body
+    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene, isMedical, isKhadyaPaaln, isWaterTest } = req.body;//getting data from req body
 
     const boData = await boModel.findOne({ _id: boInfo });
 
@@ -611,6 +636,7 @@ exports.boByCheque = async (req, res) => {
     let foscosTraining = isFoscos === 'true' ? JSON.parse(foscos_training) : undefined;
     let hygieneAudit = isHygiene === 'true' ? JSON.parse(hygiene_audit) : undefined;
     let Medical = isMedical === 'true' ? JSON.parse(medical) : undefined;
+    let khadyaPaaln = isKhadyaPaaln === 'true' ? JSON.parse(khadya_paaln) : undefined;
     let waterTestReport = isWaterTest === 'true' ? JSON.parse(water_test_report) : undefined;
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
@@ -627,7 +653,7 @@ exports.boByCheque = async (req, res) => {
       return res.status(401).json({ success, randomErr: true })
     }
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, khadyaPaalnInfo: khadyaPaaln, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -926,7 +952,7 @@ exports.approveChequeSale = async (req, res) => {
 
     const salesInfo = await salesModel.findOne({ _id: saleId }).populate([{ path: 'fboInfo', populate: { path: 'boInfo' } }, { path: 'employeeInfo' }]); // getting sales info related to sales Id
 
-    const { fboInfo, fostacInfo, foscosInfo, hraInfo, medicalInfo, waterTestInfo, employeeInfo, product_name, cheque_data } = salesInfo; //destructuring sales Info
+    const { fboInfo, fostacInfo, foscosInfo, hraInfo, medicalInfo, khadyaPaalnInfo, waterTestInfo, employeeInfo, product_name, cheque_data } = salesInfo; //destructuring sales Info
 
     const signatureFile = employeeInfo.signatureImage; //getting signature file
 
@@ -950,6 +976,11 @@ exports.approveChequeSale = async (req, res) => {
 
     if (medicalInfo) {
       serviceArr.push('Medical');
+    }
+
+
+    if (khadyaPaalnInfo) {
+      serviceArr.push('Khadya Paaln');
     }
 
     if (waterTestInfo) {
@@ -1088,6 +1119,23 @@ exports.approveChequeSale = async (req, res) => {
 
       invoiceData.push(invoice);
       invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Medical' });
+    }
+
+    if (product_name.includes('Khadya Paaln')) { //generating  Invoivce
+      const invoiceCode = await generateInvoiceCode(salesInfo.fboInfo.business_type);//generating new imvoice code
+
+      fileName = `${Date.now()}_${fboInfo.id_num}.pdf`;
+      invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+      total_processing_amount = Number(khadyaPaalnInfo.khadya_paaln_processing_amount);
+      const eachGSt = Math.round((khadyaPaalnInfo.khadya_paaln_processing_amount) * 18 / 100);
+      totalGST = eachGSt * 1;
+
+      const qty = 1;
+      const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, khadyaPaalnInfo.khadya_paaln_total, 'Khadya Paaln', khadyaPaalnInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
+
+      invoiceData.push(invoice);
+      invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Khadya Paaln' });
     }
 
     if (product_name.includes('Water Test Report')) { //generating fostac Invoivce in case of fostac sale

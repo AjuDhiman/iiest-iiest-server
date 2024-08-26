@@ -1,4 +1,4 @@
-const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, limitAdminSalePipeline } = require("../../config/pipeline");
+const { fostacRevenue, foscosRevenue, hraRevenue, medicalRevenue, waterTestRevenue, limitAdminSalePipeline, khadyaPaalnRevenue } = require("../../config/pipeline");
 const salesModel = require("../../models/employeeModels/employeeSalesSchema");
 const reportingManagerModel = require("../../models/employeeModels/reportingManagerSchema");
 const fboModel = require("../../models/fboModels/fboSchema");
@@ -50,6 +50,7 @@ exports.getTopSalesPersons = async (req, res) => {
                                         ...hraRevenue, 
                                         ...medicalRevenue, 
                                         ...waterTestRevenue, 
+                                        ...khadyaPaalnRevenue
                                     ]
                                 },
                                 else: 0
@@ -180,6 +181,12 @@ exports.getTopProducts = async (req, res) => {
                                         $eq: ["$product_name", "Water Test Report"]
                                     },
                                     then: waterTestRevenue
+                                },
+                                {
+                                    case: {
+                                        $eq: ["$product_name", "Khadya Paaln"]
+                                    },
+                                    then: khadyaPaalnRevenue
                                 }
                             ],
                             default: 0
