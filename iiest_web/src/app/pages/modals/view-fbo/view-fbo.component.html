@@ -466,6 +466,31 @@
                 </div>
             </div>
 
+            <!-- In Case of Khadya Paaln -->
+            <div *ngIf="(isForWholeSale && fboData.product_name.includes('Khadya Paaln')) || (product === 'Khadya Paaln')" class="row py-2">
+                <div class="col-md title d-flex justify-content-between" style="color: #1957a9;">
+                    <div class="product-title">Khadya Paaln Details</div>
+                </div>
+                <div class="row mt-2 ml-3">
+                    
+                    <!-- Show processing and total amount in case of sale data -->
+                    <div class="col-md-4 view-data-elem">
+                        <div class="row">
+                            <div class="col-md-6 title">Khadya Paaln Processing Amount</div>
+                            <div class="col-md-6 data">{{fboData.khadyaPaalnInfo.khadya_paaln_processing_amount| inrAmount}}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 view-data-elem">
+                        <div class="row">
+                            <div class="col-md-6 title">Khadya Paaln Total Amount</div>
+                            <div class="col-md-6 data">{{fboData.khadyaPaalnInfo.khadya_paaln_total | inrAmount}}</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <!-- Product Related Details Ends -->
 
 

@@ -20,7 +20,7 @@ export class HighchartDataModalComponent {
   allFBOEntries: any;
   searchQuery: string = '';
   filteredData: any;
- 
+
   filterValue: string;
   chartData: any;
   intervalType: string;
@@ -151,7 +151,10 @@ export class HighchartDataModalComponent {
             this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)));
           } else if (this.chartData.salesCategory === 'Water Test Report') {
             this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)) && (item.waterTestInfo.water_test_service_name === this.filterValue));
+          } else if (this.chartData.salesCategory === 'Khadya Paaln') {
+            this.specificDatas = res.filter((item: any) => (item.product_name.includes(this.chartData.salesCategory)));
           }
+          
           this.salesDeptfilter();
           this.loading = false;
         }
@@ -210,8 +213,8 @@ export class HighchartDataModalComponent {
                 elem.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 elem.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                 elem.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery) || 
-                elem.fboInfo.boInfo.customer_id.toLowerCase().includes(this.searchQuery) || 
+                elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery) ||
+                elem.fboInfo.boInfo.customer_id.toLowerCase().includes(this.searchQuery) ||
                 elem.product_name.join(" ").toLowerCase().includes(this.searchQuery.toLowerCase())
             );
           break;
@@ -223,7 +226,7 @@ export class HighchartDataModalComponent {
           break;
         case 'byShopID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery));
           break;
-          case 'byMemberID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.boInfo.customer_id.toLowerCase().includes(this.searchQuery));
+        case 'byMemberID': this.filteredData = this.specificDatas.filter((elem: any) => elem.fboInfo.boInfo.customer_id.toLowerCase().includes(this.searchQuery));
           break;
         case 'bySalesOfficer': this.filteredData = this.specificDatas.filter((elem: any) => elem.employeeInfo.employee_name.toLowerCase().includes(this.searchQuery));
           break;
@@ -298,7 +301,7 @@ export class HighchartDataModalComponent {
           break;
         case "IT Department": this.salesDeptfilter();
           break;
-          case "Management Department": this.salesDeptfilter();
+        case "Management Department": this.salesDeptfilter();
           break;
       }
     }
@@ -311,7 +314,7 @@ export class HighchartDataModalComponent {
           break;
         case "IT Department": this.filteredData = this.specificDatas;
           break;
-          case "Management Department": this.filteredData = this.specificDatas;
+        case "Management Department": this.filteredData = this.specificDatas;
           break;
       }
     }
@@ -351,9 +354,14 @@ export class HighchartDataModalComponent {
           processingAmount += employee.medicalInfo.medical_processing_amount * employee.medicalInfo.recipient_no;
         }
 
-         //add more processing amount in case sale contains Water Test report
-         if (product == "Water Test Report") {
+        //add more processing amount in case sale contains Water Test report
+        if (product == "Water Test Report") {
           processingAmount += employee.waterTestInfo.water_test_processing_amount;
+        }
+
+        //add more processing amount in case sale contains khadya paaln
+        if (product == "Khadya Paaln") {
+          processingAmount += employee.khadyaPaalnInfo.khadya_paaln_processing_amount;
         }
       });
     }

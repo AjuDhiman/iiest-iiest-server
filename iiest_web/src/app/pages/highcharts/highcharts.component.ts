@@ -696,18 +696,22 @@ export class HighchartsComponent implements OnChanges {
         this.salesCategory = "Medical";
       } else if ((e.point.options.name === "NABL") || (e.point.options.name === "Non NABL")) {
         this.salesCategory = "Water Test Report";
+      }else if (e.point.options.name === "Khadya Paaln") {
+        this.salesCategory = "Khadya Paaln";
       }
     } else if (e.point.category) {
       if (e.point.category === "Retail" || e.point.category === "Catering") {
         this.salesCategory = "Fostac";
-      } else if (e.point.category === "Registration" || e.point.options.name === "State") {
+      } else if (e.point.category === "Registration" || e.point.category === "State") {
         this.salesCategory = "Foscos";
       } else if (e.point.category === "HRA") {
         this.salesCategory = "HRA";
-      } else if (e.point.options.name === "HRA") {
-        this.salesCategory = "HRA";
-      } else if (e.point.options.name === "HRA") {
-        this.salesCategory = "HRA";
+      } else if (e.point.category === "Medical") {
+        this.salesCategory = "Medical";
+      } else if ((e.point.category === "NABL") || (e.point.category === "Non NABL")) {
+        this.salesCategory = "Water Test Report";
+      }else if (e.point.category === "Khadya Paaln") {
+        this.salesCategory = "Khadya Paaln";
       }
     }
     let chartData = {

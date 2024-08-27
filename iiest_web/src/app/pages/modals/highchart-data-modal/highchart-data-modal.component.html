@@ -154,7 +154,7 @@
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.customer_id}}</span></td>
                   <td class="cell"><span class="truncate text-capitalize">{{employee.fboInfo.owner_contact}}</span></td>
                   <td *ngIf="!isRepetCustData" class="cell"><span
-                      class="truncate text-capitalize">{{calculateProcessingAmount(employee)}}</span></td>
+                      class="truncate text-capitalize">{{calculateProcessingAmount(employee) | inrAmount}}</span></td>
                   <td *ngIf="isRepetCustData" class="cell text-center"><span
                       class="truncate text-capitalize col-2">{{employee.repetition_count}}</span></td>
                   <td class="cell"><span

@@ -300,6 +300,9 @@ export class FbolistComponent implements OnInit {
     else if (this.activeTab === 'Water Test Report') {
       processingAmount = employee.waterTestInfo.water_test_processing_amount;
     }
+    else if (this.activeTab === 'Khadya Paaln') {
+      processingAmount = employee.khadyaPaalnInfo.khadya_paaln_processing_amount;
+    }
 
     return processingAmount;
   }
