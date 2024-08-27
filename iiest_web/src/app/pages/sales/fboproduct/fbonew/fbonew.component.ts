@@ -579,6 +579,8 @@ export class FbonewComponent implements OnInit, OnChanges {
   //Form Submit Method
   onSubmit() {
 
+    console.log(this.fboForm);
+
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
     this.submitted = true;
@@ -1002,6 +1004,12 @@ export class FbonewComponent implements OnInit, OnChanges {
       this.resetHRAForm();
       this.resetMedicalForm();
       this.resetWaterTestForm();
+      this.fboForm.removeControl('fostac_training');
+      this.fboForm.removeControl('foscos_training');
+      this.fboForm.removeControl('hygiene_audit');
+      this.fboForm.removeControl('water_test_report');
+      this.fboForm.removeControl('medical');
+      this.fboForm.patchValue({'product_name': ['Khadya Paaln']});
 
       // disabling all orther option in case of khadya paaln select
       this.disabledOptions = this.productList.filter((item:String) => (item !== 'Khadya Paaln'));
