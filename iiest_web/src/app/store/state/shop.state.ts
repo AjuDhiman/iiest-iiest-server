@@ -1,4 +1,4 @@
-import { DeleteShop, GetShops, UpdateShop } from 'src/app/store/actions/shop.action';
+import { DeleteShop, GetShops, SetShopsLoadedFalse, UpdateShop } from 'src/app/store/actions/shop.action';
 import { Injectable } from "@angular/core";
 import { Selector,Action, StateContext, State } from "@ngxs/store";
 import { GetdataService } from "src/app/services/getdata.service";
@@ -6,14 +6,14 @@ import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
 
 //State Model
-export class SalesStateModel {
+export class ShopsStateModel {
     shops : any;
     shopsLoaded : boolean;
     pageNum: number;
 }
 
 //State
-@State<SalesStateModel>({
+@State<ShopsStateModel>({
     name : 'shops',
     defaults :{
         shops:[],
@@ -29,17 +29,17 @@ export class ShopState {
                 private _regitserService: RegisterService){}
 
     @Selector()
-    static GetShopList(state:SalesStateModel){
+    static GetShopList(state:ShopsStateModel){
         return state.shops;
     }
 
     //Get Loaded sales Info
     @Selector()
-    static shopsLoaded(state:SalesStateModel){
+    static shopsLoaded(state:ShopsStateModel){
         return state.shopsLoaded;
     }
     @Action(GetShops)
-    getShops({getState, setState}:StateContext<SalesStateModel>){
+    getShops({getState, setState}:StateContext<ShopsStateModel>){
          this._getDataService.getCaseList().pipe(tap(res => {
             const state = getState();
             setState({
@@ -58,8 +58,20 @@ export class ShopState {
         })
         
     }
+
+    @Action(SetShopsLoadedFalse)
+    SetSalesLoadedFalse({getState, setState}:StateContext<ShopsStateModel>){
+        
+        const state = getState();
+
+        setState({
+            ...state,
+            shopsLoaded: false
+        })
+    }
+
     @Action(UpdateShop)
-    updateShop({getState, setState}:StateContext<SalesStateModel>, {objId, payload}: UpdateShop){
+    updateShop({getState, setState}:StateContext<ShopsStateModel>, {objId, payload}: UpdateShop){
         
         const state = getState();
         const updatedShops = state.shops.map((shop: any)=>
@@ -73,7 +85,7 @@ export class ShopState {
     }
 
     @Action(DeleteShop)
-    deleteShop({getState, setState}:StateContext<SalesStateModel>, {objId}: DeleteShop){
+    deleteShop({getState, setState}:StateContext<ShopsStateModel>, {objId}: DeleteShop){
 
         const state = getState();
         const updatedSalesList = state.shops.filter((sale: any) => sale._id !== objId);

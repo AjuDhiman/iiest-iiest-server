@@ -18,6 +18,10 @@ export class GetSales {
     static readonly type = '[Sales] Get';
 }
 
+export class SetSalesLoadedFalse {
+    static readonly type = '[Sales] Get';
+}
+
 export class GeneralData {
     static readonly type = '[Sales] General Data';
 }

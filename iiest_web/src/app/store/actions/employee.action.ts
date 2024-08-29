@@ -19,6 +19,10 @@ export class GetEmployee {
     static readonly type = '[Employee] Get';
 }
 
+export class SetEmployeeLoadedFalse {
+    static readonly type = '[Employee] Get';
+}
+
 export class GeneralData {
     static readonly type = '[Employee] General Data';
 }
