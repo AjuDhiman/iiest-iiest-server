@@ -418,7 +418,7 @@ exports.fboPayReturn = async (req, res) => {
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
         const isPayLaterMail = false;
-        sendInvoiceMail(email, invoiceData, isPayLaterMail);
+        sendInvoiceMail(email, invoiceData, isPayLaterMail, {});
 
       }
     }
@@ -570,7 +570,7 @@ exports.fboRegister = async (req, res) => {
 
     success = true;
     const isPayLaterMail = false;
-    sendInvoiceMail(email, invoiceData, isPayLaterMail);
+    sendInvoiceMail(email, invoiceData, isPayLaterMail, {});
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -695,6 +695,8 @@ exports.boPayLater = async (req, res) => {
     const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode,
       fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, gst_number, boInfo } = req.body;
 
+      const formData = req.body;
+
     const user = req.user;
     const signatureFile = user.signatureImage;
 
@@ -779,7 +781,7 @@ exports.boPayLater = async (req, res) => {
 
 
     const isPayLaterMail = true;
-    sendInvoiceMail(email, invoiceData, isPayLaterMail);
+    sendInvoiceMail(email, invoiceData, isPayLaterMail, formData);
 
     success = true;
     return res.status(200).json({ success })
@@ -1283,7 +1285,7 @@ exports.approveChequeOrPaylaterSale = async (req, res) => {
     }
 
     const isPayLaterMail = false;
-    sendInvoiceMail(fboInfo.email, invoiceData, isPayLaterMail); //sending invoice by mail
+    sendInvoiceMail(fboInfo.email, invoiceData, isPayLaterMail, {}); //sending invoice by mail
     return res.status(200).json({ success: true })
 
   } catch (error) {

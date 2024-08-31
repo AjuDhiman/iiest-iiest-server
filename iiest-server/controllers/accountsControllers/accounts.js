@@ -383,7 +383,8 @@ exports.reSendInvoice = async(req, res) => {
             const invoiceBuffer = Buffer.concat(chunks);
 
             //resending mail with invoice
-            sendInvoiceMail(email, [{encodedString: invoiceBuffer, fileName: invoiceSrc}]); 
+            const isPayLaterMail = false;
+            sendInvoiceMail(email, [{encodedString: invoiceBuffer, fileName: invoiceSrc}], isPayLaterMail, {}); 
 
             success = true;
 

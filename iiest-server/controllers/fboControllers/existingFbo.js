@@ -144,7 +144,7 @@ exports.existingFboCash = async (req, res) => {
     success = true;
 
     const isPayLaterMail = false;
-    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail);
+    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail, {});
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -188,6 +188,7 @@ exports.existingFboPayLater = async (req, res) => {
     }
 
     const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, existingFboId } = req.body;
+    const formData = req.body;
 
     const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate('boInfo');
 
@@ -219,7 +220,7 @@ exports.existingFboPayLater = async (req, res) => {
 
     const invoiceData = [];
     const isPayLaterMail = true;
-    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail);
+    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail, formData);
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -673,7 +674,7 @@ exports.existingFboPayReturn = async (req, res) => {
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
         const isPayLaterMail = false;
-        sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail);
+        sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail, {});
 
       }
     }

@@ -6,7 +6,7 @@ const CB_ADDRESS = JSON.parse(process.env.CB_ADDRESS);
 const CB_BRAND_NAME = JSON.parse(process.env.CB_BRAND_NAME);
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 
-const sendInvoiceMail = (clientMail, files, isPayLaterMail) => {
+const sendInvoiceMail = (clientMail, files, isPayLaterMail, data) => {
   // console.log('files console ................', files, clientMail);
   const attachments = files.map(file => {
     // console.log(JSON.stringify(file));
@@ -16,6 +16,7 @@ const sendInvoiceMail = (clientMail, files, isPayLaterMail) => {
       encoding: 'base64'
     }
   });
+  console.log(data);
   const transport = nodemailer.createTransport({
     service: 'gmail',
     // host: 'email-smtp.us-east-1.amazonaws.com',
@@ -39,6 +40,11 @@ const sendInvoiceMail = (clientMail, files, isPayLaterMail) => {
         
         <p>Thank You</p>
         <br>
+         <p>
+        ${isPayLaterMail?'<b>Products:- </b>' + data.product_name.join(', '):''}
+        <br>
+        ${isPayLaterMail?'<b>Total Amount:- </b>' + data.grand_total:''}
+        </p>
          ${isPayLaterMail?
         '<p><b>Bank Details:-</b><br>Account Name:- IIEST FEDERATION<br>Bank Name:- HDFC Bank<br>Account No.:- 50200038814644<br>IFSC Code:- HDFC0000313<br>Branch Name:-Connaught Circle<br>Account Type:- Current</p>':''
         }
