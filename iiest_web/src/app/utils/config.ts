@@ -18,7 +18,7 @@ export const panIndiaAllowedEmpIds = [ //Employees with Pan India Employee Id
 export const waterTestFee = [0, 1500, 2000, 2500];
 //Fostac Process Amount
 export const processAmnt = [1200, 1500];
-export const khadyaPaalnProcessAmnt = 10999;
+export const khadyaPaalnProcessAmnt = 12999;
 //Client Type
 
 export const waterTestProcessAmnt = 2500;
