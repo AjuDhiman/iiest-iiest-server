@@ -1,10 +1,15 @@
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <!-- bread crumb -->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active font-small" aria-current="page"><a>Case List</a></li>
-        </ol>
-    </nav>
+    <div class="d-flex w-100 justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active font-small" aria-current="page"><a>Case List</a></li>
+            </ol>
+        </nav>
+        <fa-icon [icon]="faArrowRotateForward" class="selector" (click)="refresh()"></fa-icon>
+    </div>
+
+   
     <!-- Tabs for Filtering by Product -->
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0"
         *ngIf="(panelType==='FSSAI Relationship Panel') && !isRecipientList">
@@ -22,7 +27,7 @@
             <div class="col-auto">
                 <!-- List Type according to Product -->
                 <h1 class="app-page-title mb-0">{{isRecipientList?'Recipient List':'Case List'}} of {{productType}}
-                    <fa-icon [icon]="faArrowRotateForward" class="selector" (click)="refresh()"></fa-icon>
+                   
                 </h1>
             </div>
             <div class="col-auto">

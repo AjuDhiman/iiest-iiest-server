@@ -1,16 +1,20 @@
 <div class="app-content pt-3">
-    <nav aria-label="breadcrumb" class="mx-4">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item active font-small" aria-current="page"><a>Client List</a></li>
-        </ol>
-      </nav>
+    <div class="d-flex w-100 justify-content-between">
+        <nav aria-label="breadcrumb" class="mx-4">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active font-small" aria-current="page"><a>Client List</a></li>
+            </ol>
+          </nav>
+          <fa-icon [icon]="faArrowRotateForward" class="selector mx-4" (click)="refresh()"></fa-icon>
+    </div>
+   
     <div class="container-xxl">
 
         <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
             <div class="row g-3 mb-4 align-items-center justify-content-between">
                 <div class="col-auto">
                     <h1 class="app-page-title mb-0">Business Owner(BO) List
-                        <fa-icon [icon]="faArrowRotateForward" class="selector" (click)="refresh()"></fa-icon>
+                        
                     </h1>
                     <p style="font-size: small;" *ngIf="!loading">Showing Total {{totalShops}} Shops Aggregated in {{clientList.length}} BOs</p>
 
