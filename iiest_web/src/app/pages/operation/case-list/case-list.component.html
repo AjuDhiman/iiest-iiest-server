@@ -1,11 +1,10 @@
-
 <div class="app-content pt-3 p-md-3 p-lg-4">
     <!-- bread crumb -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item active font-small" aria-current="page"><a>Case List</a></li>
+            <li class="breadcrumb-item active font-small" aria-current="page"><a>Case List</a></li>
         </ol>
-      </nav>
+    </nav>
     <!-- Tabs for Filtering by Product -->
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0"
         *ngIf="(panelType==='FSSAI Relationship Panel') && !isRecipientList">
@@ -22,7 +21,9 @@
         <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
                 <!-- List Type according to Product -->
-                <h1 class="app-page-title mb-0">{{isRecipientList?'Recipient List':'Case List'}} of {{productType}}</h1>
+                <h1 class="app-page-title mb-0">{{isRecipientList?'Recipient List':'Case List'}} of {{productType}}
+                    <fa-icon [icon]="faArrowRotateForward" class="selector" (click)="refresh()"></fa-icon>
+                </h1>
             </div>
             <div class="col-auto">
                 <div class="page-utilities">
@@ -40,6 +41,11 @@
                                     (click)="setServiceType('Retail')">
                                     Retail
                                 </button>
+                                <!-- <button class="btn btn-sm mx-1"
+                                    [ngClass]="serviceType==='Others'?'btn-primary':'btn-secondary'" type="button"
+                                    (click)="setServiceType('Others')">
+                                    others
+                                </button> -->
                             </div>
                             <div *ngIf="productType==='Foscos'" class="col-auto">
                                 <button class="btn btn-sm mx-1"
@@ -82,7 +88,8 @@
                             <select class="form-select form-select-sm w-auto cursor-pointer"
                                 [(ngModel)]="selectedFilter">
                                 <option value="byShopId">Search by Shop Id</option>
-                                <option *ngIf="productType==='Fostac' && isRecipientList" value="byRecipientName" selected>Search by
+                                <option *ngIf="productType==='Fostac' && isRecipientList" value="byRecipientName"
+                                    selected>Search by
                                     Recipient Name</option>
                                 <option *ngIf="productType==='Foscos' || productType === 'HRA'" value="byManagerName"
                                     selected>Search by Manager Name</option>
@@ -139,8 +146,8 @@
                                                 (click)="collectResData('Fostac', data._id)"
                                                 title="View Case text-capitalize">{{data.name.toLowerCase()}}</span>
                                         </td>
-                                        
-                                        <td class="cell"><span  [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+
+                                        <td class="cell"><span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
                                                 class="truncate text-capitalize text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
                                         </td>
                                         <td class="cell"><span
@@ -201,20 +208,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                
+
                                     <tr
                                         *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id:'case-list' }; let i=index">
-                                        <td class="cell"><span 
-                                                class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}
+                                        <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}
                                             </span></td>
                                         <td class="cell"><span class="truncate text-capitalize selector"
-                                            (click)="collectResData('Fostac', data._id)">
-                                            <!-- (click)="doSale(data)" > -->
-                                           
-                                            {{data.salesInfo.fboInfo.boInfo.manager_name.toLowerCase()}}
-                                        </span>
-                                    </td>
-                                        <td *ngIf="data.salesInfo.fboInfo else noData" class="cell"><span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+                                                (click)="collectResData('Fostac', data._id)">
+                                                <!-- (click)="doSale(data)" > -->
+
+                                                {{data.salesInfo.fboInfo.boInfo.manager_name &&
+                                                data.salesInfo.fboInfo.boInfo.manager_name.toLowerCase()}}
+                                            </span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo else noData" class="cell"><span
+                                                [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
                                                 class="truncate text-capitalize text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
                                         </td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
@@ -226,7 +234,8 @@
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
                                                 class="truncate text-capitalize">{{data.salesInfo.fboInfo.customer_id}}</span>
                                         </td>
-                                        <td *ngIf="data.salesInfo.fboInfo" class="cell text-center"><span  (click)="recipient(data.salesInfo, 'Fostac')"
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell text-center"><span
+                                                (click)="recipient(data.salesInfo, 'Fostac')"
                                                 class="truncate active-selection">{{data.salesInfo.fostacInfo.recipient_no}}</span>
                                         </td>
                                         <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
@@ -236,31 +245,38 @@
                                         <td class="cell text-center"><span
                                                 class="truncate">{{getFormattedSalesDate(data.createdAt)}}</span>
                                         </td>
-                                        <td *ngIf="data.salesInfo && data.salesInfo.employeeInfo; else noData" class="cell text-center">
+                                        <td *ngIf="data.salesInfo && data.salesInfo.employeeInfo; else noData"
+                                            class="cell text-center">
                                             <span
-                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split(' ')[0]}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split('
+                                                ')[0]}}</span>
                                         </td>
                                         <!-- <td class="cell text-center"><span class="truncate text-capitalize "
                                                 [ngClass]="data.checkStatus === 'Approved'?'text-success':'text-danger'">
                                                 {{data.checkStatus === 'Approved'?'Verified':'Pending'}}
                                             </span>
                                         </td> -->
-                                        <td class="cell text-center"> 
-                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum" [ngClass]="data.resultTextClass" style="font-size: x-small;"
-                                            class="badge align-self-baseline make-short" [title]="data.resultText">
-                                            {{data.resultText}}
-                                          </span>
-                                          
-                                          <div class="">
-                                            <span *ngIf="data.resultTextClass && data.isForDocumentsNum" [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
-                                          class="badge align-self-baseline make-short" [title]="data.resultText">
-                                          {{data.approvedDocs}}
-                                        </span>
-                                        <span *ngIf="data.resultTextClass && data.isForDocumentsNum" [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
-                                          class="badge align-self-baseline make-short" [title]="data.resultText">
-                                          {{data.pendingDocs}}
-                                        </span>
-                                          </div>
+                                        <td class="cell text-center">
+                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum"
+                                                [ngClass]="data.resultTextClass" style="font-size: x-small;"
+                                                class="badge align-self-baseline make-short" [title]="data.resultText">
+                                                {{data.resultText}}
+                                            </span>
+
+                                            <div class="">
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.approvedDocs}}
+                                                </span>
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.pendingDocs}}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td class="cell"><span class="truncate text-capitalize">
                                                 <fa-icon class="fa-l selector mx-2"
@@ -315,7 +331,8 @@
                                                 (click)="collectResData('HRA', data._id)">{{data.managerName.toLowerCase()}}</span>
                                         </td>
 
-                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
+                                                [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
                                                 class="truncate text-capitalize text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
                                         </td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell"><span
@@ -341,29 +358,35 @@
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell text-center">
                                             <span
-                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split(' ')[0]}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split('
+                                                ')[0]}}</span>
                                         </td>
                                         <!-- <td class="cell text-center"><span class="truncate text-capitalize "
                                                 [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
                                                 {{data.verificationInfo.length?'Verified':'Pending'}}
                                             </span>
                                         </td> -->
-                                        <td class="cell text-center"> 
-                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum" [ngClass]="data.resultTextClass" style="font-size: x-small;"
-                                            class="badge align-self-baseline make-short" [title]="data.resultText">
-                                            {{data.resultText}}
-                                          </span>
-                                          
-                                          <div class="">
-                                            <span *ngIf="data.resultTextClass && data.isForDocumentsNum" [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
-                                          class="badge align-self-baseline make-short" [title]="data.resultText">
-                                          {{data.approvedDocs}}
-                                        </span>
-                                        <span *ngIf="data.resultTextClass && data.isForDocumentsNum" [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
-                                          class="badge align-self-baseline make-short" [title]="data.resultText">
-                                          {{data.pendingDocs}}
-                                        </span>
-                                          </div>
+                                        <td class="cell text-center">
+                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum"
+                                                [ngClass]="data.resultTextClass" style="font-size: x-small;"
+                                                class="badge align-self-baseline make-short" [title]="data.resultText">
+                                                {{data.resultText}}
+                                            </span>
+
+                                            <div class="">
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.approvedDocs}}
+                                                </span>
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.pendingDocs}}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td class="cell"><span class="truncate text-capitalize">
                                                 <fa-icon class="fa-l selector mx-2"
@@ -420,7 +443,7 @@
                                                 (click)="collectResData('Foscos', data._id)">{{data.managerName.toLowerCase()}}</span>
                                         </td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
-                                            <span  [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+                                            <span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
                                                 class="truncate text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
                                         </td>
                                         <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
@@ -448,30 +471,36 @@
                                         <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
                                             class="cell text-center">
                                             <span
-                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split(' ')[0]}}</span>
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split('
+                                                ')[0]}}</span>
                                         </td>
                                         <!-- <td class="cell text-center"><span class="truncate text-capitalize"
                                                 [ngClass]="data.verificationInfo.length?'text-success':'text-danger'">
                                                 {{data.verificationInfo.length?'Verified':'Pending'}}
                                             </span>
                                         </td> -->
-                                        <td class="cell text-center"> 
-                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum" [ngClass]="data.resultTextClass" style="font-size: x-small;"
-                                            class="badge align-self-baseline make-short" [title]="data.resultText">
-                                            {{data.resultText}}
-                                          </span>
-                                          
-                                          <div class="">
-                                            <span *ngIf="data.resultTextClass && data.isForDocumentsNum" [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
-                                          class="badge align-self-baseline make-short" [title]="data.resultText">
-                                          {{data.approvedDocs}}
-                                        </span>
-                                        <span *ngIf="data.resultTextClass && data.isForDocumentsNum" [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
-                                          class="badge align-self-baseline make-short" [title]="data.resultText">
-                                          {{data.pendingDocs}}
-                                        </span>
-                                          </div>
-                                          
+                                        <td class="cell text-center">
+                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum"
+                                                [ngClass]="data.resultTextClass" style="font-size: x-small;"
+                                                class="badge align-self-baseline make-short" [title]="data.resultText">
+                                                {{data.resultText}}
+                                            </span>
+
+                                            <div class="">
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.approvedDocs}}
+                                                </span>
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.pendingDocs}}
+                                                </span>
+                                            </div>
+
                                         </td>
                                         <td class="cell"><span class="truncate text-capitalize">
                                                 <fa-icon class="fa-l selector mx-2"

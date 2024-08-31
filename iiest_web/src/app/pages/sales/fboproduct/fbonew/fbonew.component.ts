@@ -667,8 +667,38 @@ export class FbonewComponent implements OnInit, OnChanges {
               }
             }
           })
-        }
-        else if (this.addFbo.payment_mode === 'By Cheque') {
+        } else if (this.addFbo.payment_mode === 'Pay Later') {
+          this._registerService.fboPaymentPayLater(this.objId, this.addFbo).subscribe({
+            next: (res) => {
+              this.loading = false;
+              if (res.success) {
+                this._toastrService.success('', 'Record Added Successfully');
+                this.backToRegister();
+              }
+            },
+            error: (err) => {
+              this.loading = false;
+              let errorObj = err.error;
+              if (errorObj.userError) {
+                this._registerService.signout();
+              } else if (errorObj.contactErr) {
+                this._toastrService.error('', 'This Contact Already Exists.');
+              } else if (errorObj.emailErr) {
+                this._toastrService.error('', 'This Email Already Exists.');
+              } else if (errorObj.signatureErr) {
+                this._toastrService.error('', 'Signature Not Found');
+              } else if (errorObj.registerErr) {
+                this._toastrService.error('', 'Some Error Occured. Please Try Again');
+              } else if (errorObj.areaAllocationErr) {
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              } else if (errorObj.wrongPincode) {
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              } else if (errorObj.noSignErr) {
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              }
+            }
+          })
+        } else if (this.addFbo.payment_mode === 'By Cheque') {
 
           let formData = new FormData();
 
@@ -747,6 +777,34 @@ export class FbonewComponent implements OnInit, OnChanges {
       } else {
         if (this.addFbo.payment_mode === 'Cash') {
           this._registerService.existingFboSale(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.khadyaPaalnGST, this.foscosFixedCharges, this.existingFboId).subscribe({
+            next: (res) => {
+              this.loading = false;
+              if (res.success) {
+                this._toastrService.success('', 'Record Added Successfully');
+                this.backToRegister();
+              }
+            },
+            error: (err) => {
+              this.loading = false;
+              let errorObj = err.error
+              if (errorObj.userError) {
+                this._registerService.signout();
+              } else if (errorObj.signatureErr) {
+                this._toastrService.error('', 'Signature Not Found');
+              } else if (errorObj.areaAllocationErr) {
+                this._toastrService.error('', 'Area has not been allocated to this employee.')
+              } else if (errorObj.wrongPincode) {
+                this._toastrService.error('', 'You cannot make sale outside your allocated area');
+              } else if (errorObj.noSignErr) {
+                this._toastrService.error('', 'Provide your signature first in account in settings');
+              } else if (errorObj.fboMissing) {
+                this._toastrService.error('', 'FBO not found');
+              }
+            }
+          })
+        }
+        if (this.addFbo.payment_mode === 'Pay Later') {
+          this._registerService.existingFboPayLater(this.objId, this.addFbo, this.existingFboId).subscribe({
             next: (res) => {
               this.loading = false;
               if (res.success) {

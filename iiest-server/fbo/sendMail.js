@@ -6,7 +6,7 @@ const CB_ADDRESS = JSON.parse(process.env.CB_ADDRESS);
 const CB_BRAND_NAME = JSON.parse(process.env.CB_BRAND_NAME);
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 
-const sendInvoiceMail = (clientMail, files) => {
+const sendInvoiceMail = (clientMail, files, isPayLaterMail) => {
   // console.log('files console ................', files, clientMail);
   const attachments = files.map(file => {
     // console.log(JSON.stringify(file));
@@ -30,15 +30,19 @@ const sendInvoiceMail = (clientMail, files) => {
     from: mailData.email,
     cc: process.env.DIRECTOR_MAIL,
     to: clientMail,
-    subject: `${CB_BRAND_NAME.english} -- INVOICE`,
+    subject: `${CB_BRAND_NAME.english} -- ${isPayLaterMail?'PERFORMA ADVICE':'INVOICE'}`,
     html: `<p>Welcome to the ${CB_BRAND_NAME.english},<br>
     ${CB_BRAND_NAME.english} Portal empowers businesses to meet compliance and legal requirements easily.</p>
         <p>Dear Valued Customer</p>
-        <p>Thanks for registering for the services under compliances of - FSSAI GOI. Your invoice is generated and sent to you via this mail.<br> You will receive a call within 7 days to verify your details. Kindly do the needful.<br><br>
+        <p>Thanks for registering for the services under compliances of - FSSAI GOI. ${!isPayLaterMail?'Your invoice is generated and sent to you via this mail.':'<b>Kindly pay the fee on the given bank details within 2 days</b>'}<br> You will receive a call within 7 days to verify your details. Kindly do the needful.<br><br>
         The company has zero tolerance towards any bribery, corruption & fraud in business activities.</p>
         
         <p>Thank You</p>
         <br>
+         ${isPayLaterMail?
+        '<p><b>Bank Details:-</b><br>Account Name:- IIEST FEDERATION<br>Bank Name:- HDFC Bank<br>Account No.:- 50200038814644<br>IFSC Code:- HDFC0000313<br>Branch Name:-Connaught Circle<br>Account Type:- Current</p>':''
+        }
+
         Brand Name - ${CB_BRAND_NAME.english},<br/>
         Address - ${CB_ADDRESS.english}<br/>
         Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>

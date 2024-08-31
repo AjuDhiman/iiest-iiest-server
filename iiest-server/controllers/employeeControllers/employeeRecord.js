@@ -27,8 +27,8 @@ exports.employeeRecord = async (req, res) => {
         const startOfThisFinancialYear = new Date(todayDate.getFullYear(), 3, 1); //getting time of start of this year
 
         let pipeLineArr
-        
-        if(user.designation == 'Director'){
+
+        if (user.designation == 'Director') {
             pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
                 {
                     $lookup: { //getting info about fbo from fbo registetrs by the help of foreign key match 
@@ -94,6 +94,12 @@ exports.employeeRecord = async (req, res) => {
                                                     { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
                                                 ]
                                             },
+                                            {
+                                                $and: [
+                                                    { $eq: ["$payment_mode", "Pay Later"] }, // payment mode = pay later
+                                                    { $eq: ["$pay_later_status", "Pending"] }
+                                                ]
+                                            },
                                             // Condition 2: isBasicDocUploaded is false
                                             { $eq: ["$fboInfo.isBasicDocUploaded", false] }
                                         ]
@@ -122,8 +128,22 @@ exports.employeeRecord = async (req, res) => {
                                                     { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
                                                 ]
                                             },
+                                            {
+                                                $or: [
+                                                    {
+                                                        $and: [
+                                                            { $eq: ["$payment_mode", "Pay Later"] }, // payment mode = pay later
+                                                            { $eq: ["$pay_later_status", "Approved"] } // pay_later_status is "Approved"
+                                                        ]
+                                                    },
+                                                    {
+                                                        $ne: ["$payment_mode", "Pay Later"] // If payment mode is not "Pay Later", skip the check
+                                                    }
+                                                ]
+                                            },
                                             { $eq: ["$fboInfo.isBasicDocUploaded", true] }
                                         ]
+
                                     }, then: {
                                         $sum: [ //the some is same as for total sale only the filtering condition is changed 
                                             //getting revenue formulas pipeline from pipeline.js
@@ -138,11 +158,11 @@ exports.employeeRecord = async (req, res) => {
                                 }
                             }
                         }
-    
+
                     }
                 }
             ];
-    
+
         } else {
             pipeLineArr = [ // creating pipeline array for performing aggregation on sales model and getting data in required format
                 {
@@ -183,6 +203,12 @@ exports.employeeRecord = async (req, res) => {
                                                     { $eq: ["$cheque_data.status", "Pending"] } // cheque_data.status is "Pending"
                                                 ]
                                             },
+                                            {
+                                                $and: [
+                                                    { $eq: ["$payment_mode", "Pay Later"] }, // payment mode = pay later
+                                                    { $eq: ["$pay_later_status", "Pending"] }
+                                                ]
+                                            },
                                             // Condition 2: isBasicDocUploaded is false
                                             { $eq: ["$fboInfo.isBasicDocUploaded", false] }
                                         ]
@@ -211,8 +237,22 @@ exports.employeeRecord = async (req, res) => {
                                                     { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
                                                 ]
                                             },
+                                            {
+                                                $or: [
+                                                    {
+                                                        $and: [
+                                                            { $eq: ["$payment_mode", "Pay Later"] }, // payment mode = pay later
+                                                            { $eq: ["$pay_later_status", "Approved"] } // pay_later_status is "Approved"
+                                                        ]
+                                                    },
+                                                    {
+                                                        $ne: ["$payment_mode", "Pay Later"] // If payment mode is not "Pay Later", skip the check
+                                                    }
+                                                ]
+                                            },
                                             { $eq: ["$fboInfo.isBasicDocUploaded", true] }
                                         ]
+
                                     }, then: {
                                         $sum: [ //the some is same as for total sale only the filtering condition is changed 
                                             //getting revenue formulas pipeline from pipeline.js
@@ -227,12 +267,12 @@ exports.employeeRecord = async (req, res) => {
                                 }
                             }
                         }
-    
+
                     }
                 }
             ];
         }
-        
+
 
         const pipeline = [ //pipeline for aggregating data according to time periods
             {
@@ -699,10 +739,11 @@ exports.employeeSalesData = async (req, res) => {
                         "cheque_data": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
+                        "pay_later_status": 1
                     }
                 },
             ]);
-        } 
+        }
         else {
             salesInfo = await salesModel.aggregate([
                 {
@@ -791,6 +832,7 @@ exports.employeeSalesData = async (req, res) => {
                         "cheque_data": 1,
                         "invoiceId": 1,
                         "payment_mode": 1,
+                        "pay_later_status": 1
                     }
                 }
 

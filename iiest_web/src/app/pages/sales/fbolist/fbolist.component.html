@@ -1,6 +1,11 @@
 <div class="app-content pt-3">
+  <nav aria-label="breadcrumb" class="mx-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active font-small" aria-current="page"><a>{{(userData.panel_type === 'FSSAI Supervisor Panel' || userData.panel_type === 'Director Panel')?'Company Order':'My Order'}}</a></li>
+    </ol>
+  </nav>
   <div class="container-xxl">
-    <ul *ngIf="!isVerifier" class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
+    <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
       <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
         <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Fostac'}"
           (click)="toogleTabs('Fostac')">Fostac</a>
@@ -19,11 +24,10 @@
     <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
       <div class="row g-3 mb-4 align-items-center justify-content-between">
         <div class="col-auto">
-          <h1 *ngIf="!isVerifier" class="app-page-title mb-0">Sales List Of <span
-              style="text-transform: capitalize;">{{activeTab}} </span>
-          </h1>
-          <h1 *ngIf="isVerifier" class="app-page-title mb-0">Pending Recipient List Of <span
-              style="text-transform: capitalize;">{{activeTab}} </span>
+          <h1 class="app-page-title mb-0">Sales List Of <span
+              style="text-transform: capitalize;">{{activeTab}} 
+              <fa-icon [icon]="faArrowRotateForward" class="fa-sm selector" (click)="refresh()"></fa-icon>
+            </span>
           </h1>
         </div>
         <div class="col-auto">
@@ -92,7 +96,7 @@
                         <th class="cell text-center">{{isVerifier?'Fostac Amount':'Total Amount'}}<span
                             style="font-size: x-small;">{{'18% GST Included' + isInvoiceList?'+ Govt. Fee':''}}</span>
                         </th>
-                        <th *ngIf="userData.designation === 'Director' || isVerifier" class="cell">Sales Officer</th>
+                        <th *ngIf="userData.designation === 'Director' || userData.panel_type === 'FSSAI Supervisor Panel'" class="cell">Sales Officer</th>
                         <th class="cell">Sales Date</th>
                         <th class="cell" *ngIf="!isInvoiceList">{{isVerifier?'Recipient':'Sales'}} Status</th>
                         <th class="cell text-center">Action</th>
@@ -147,7 +151,7 @@
                               class="truncate">{{(fbo.waterTestInfo.water_test_total) | inrAmount}}</span></td>
                           <td *ngIf="activeTab==='Khadya Paaln'" class="cell text-center"><span
                               class="truncate">{{(fbo.khadyaPaalnInfo.khadya_paaln_total) | inrAmount}}</span></td>
-                          <td class="cell" *ngIf="userData.designation === 'Director' || isVerifier"><span
+                          <td class="cell" *ngIf="userData.designation === 'Director' || userData.panel_type === 'FSSAI Supervisor Panel'"><span
                               class="truncate">{{ fbo.employeeInfo.employee_name.toString().split(' ')[0] }}</span></td>
                           <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>
                           <td class="cell" *ngIf="!isInvoiceList"><span class="truncate"
@@ -158,11 +162,11 @@
                               (click)="viewFboDetails($event, fbo)" [icon]="faEye" title="View Detail"></fa-icon>
                             <!-- Open fbo sale Model by clicking the button only avilable to  the verifier -->
 
-                            <!-- show approve button in case of approving cheque for director -->
+                            <!-- show approve button in case of approving cheque or pay later for director -->
                             <button
-                              *ngIf="userData.designation === 'Director' && (fbo.cheque_data && (fbo.cheque_data.status === 'Pending'))"
+                              *ngIf="userData.designation === 'Director' && ((fbo.cheque_data && (fbo.cheque_data.status === 'Pending')) || (fbo.payment_mode === 'Pay Later' && (fbo.pay_later_status !== 'Approved')) )"
                               class="btn mx-2 btn-primary btn-xs"
-                              (click)="approveCheque($event, fbo._id, fbo)">Approve</button>
+                              (click)="approveChequeOrPayLater($event, fbo._id, fbo)">Approve</button>
 
                             <!-- <fa-icon class="fa-l" (click)="editRecord(fbo)"style="margin-right: 7px; color: #1957a9;" [icon]="faPencil"></fa-icon> -->
                             <!-- <fa-icon class="fa-l" style="color: #c64115;" [icon]="faTrash" (click)="deleteFBO(fbo)"></fa-icon> -->

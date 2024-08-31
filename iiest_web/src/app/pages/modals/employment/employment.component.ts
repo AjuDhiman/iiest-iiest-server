@@ -95,11 +95,13 @@ export class EmploymentComponent implements OnInit {
       next: (res) => {
         this.loading = false;
         if (res.success) {
+          this.activeModal.close();
           this.toasterService.success('', 'Area Allocated Successfully');
         }
       },
       error: (err) => {
         this.loading = false;
+        this.activeModal.close();
         let errorObj = err.error;
         if (errorObj.userError) {
           this.registerService.signout();

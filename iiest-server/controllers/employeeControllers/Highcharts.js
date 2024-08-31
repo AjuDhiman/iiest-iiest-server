@@ -590,7 +590,16 @@ exports.getPersonWiseSalesData = async (req, res) => {
                     personCount: { $sum: 1 }
                 }
             },
-            ...limitAdminSalePipeline,
+            {
+                $match: {
+                    "_id.person": {
+                        $not: {
+                            $regex: "admin",
+                            $options: "i"
+                        }
+                    }
+                }
+            },
             {
                 $project: {
                     _id: 0,

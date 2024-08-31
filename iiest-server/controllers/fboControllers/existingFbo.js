@@ -143,7 +143,8 @@ exports.existingFboCash = async (req, res) => {
 
     success = true;
 
-    sendInvoiceMail(existingFboInfo.email, invoiceData);
+    const isPayLaterMail = false;
+    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail);
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -152,6 +153,80 @@ exports.existingFboCash = async (req, res) => {
   }
 }
 
+
+//exsisting fbo sales operations is sales done by pay later
+exports.existingFboPayLater = async (req, res) => {
+  try {
+
+    const createrObjId = req.params.id; //getting employee info
+
+    let success = false;
+
+    const userInfo = await employeeSchema.findById(createrObjId);
+    const signatureFile = userInfo.signatureImage;
+    const panelType = userInfo.panel_type;
+
+    if (!signatureFile) {
+      return res.status(404).json({ success, signatureErr: true })
+    }
+
+    const areaAlloted = await areaAllocationModel.findOne({ employeeInfo: createrObjId }); //cjecking for allocated area
+    const panIndiaAllowedIds = (await generalDataSchema.find({}))[0].pan_india_allowed_ids;
+
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
+      if (!areaAlloted) {
+        success = false;
+        return res.status(404).json({ success, areaAllocationErr: true })
+      }
+    }
+
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
+
+    if (!signExists) {
+      return res.status(404).json({ success, noSignErr: true })
+    }
+
+    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, existingFboId } = req.body;
+
+    const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate('boInfo');
+
+    if (!existingFboInfo) {
+      success = false;
+      return res.status(404).json({ success, fboMissing: true });
+    }
+
+    if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
+      const pincodeCheck = areaAlloted.pincodes.includes(pincode);
+      if (!pincodeCheck) {
+        success = false;
+        return res.status(404).json({ success, wrongPincode: true });
+      }
+    }
+
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln, waterTestInfo: water_test_report, payment_mode, grand_total, invoiceId: [], notificationInfo: [],  pay_later_status: 'Pending', });
+
+    if (!selectedProductInfo) {
+      success = false;
+      return res.status(401).json({ success, randomErr: true });
+    }
+
+    product_name.forEach(async (product) => {
+      const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId: existingFboInfo.customer_id, product_name: product, village: existingFboInfo.village, tehsil: existingFboInfo.tehsil, isVerificationLinkSend: true }); //create shop after sale for belongs to this sale
+    })
+
+    success = true;
+
+    const invoiceData = [];
+    const isPayLaterMail = true;
+    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail);
+    return res.status(200).json({ success })
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 //exsisting fbo sales operations is sales done by cheque
 exports.existingFboByCheque = async (req, res) => {
@@ -232,7 +307,6 @@ exports.existingFboByCheque = async (req, res) => {
 
     success = true;
 
-    // sendInvoiceMail(existingFboInfo.email, invoiceData);
     let clientData = {
       cheque_data: chequeData
     }
@@ -247,9 +321,6 @@ exports.existingFboByCheque = async (req, res) => {
 
 
 exports.existingFboPayPage = async (req, res) => {
-  //console.log('req User',req.user);
-  //console.log('req Body',req.body);
-  //console.log('req Param Id',req.params.id);
   try {
     let success = false;
 
@@ -601,7 +672,8 @@ exports.existingFboPayReturn = async (req, res) => {
 
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
-        sendInvoiceMail(existingFboInfo.email, invoiceData);
+        const isPayLaterMail = false;
+        sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail);
 
       }
     }

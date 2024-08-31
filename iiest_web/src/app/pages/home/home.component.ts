@@ -321,6 +321,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.deptData = new chartData(chartType, department, chartTitle, seriesName, yAxisTitle, data, showIntervalSelection, isDrillDown,selectedInterval );
   }
 
+  //methord for ticket delivery chart
   getTicketDeliveryChartData() {
     this._getDataService.getTicketDeliveryChartData().subscribe({
       next: res => {
@@ -389,8 +390,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.empLoadedSub.unsubscribe();
-    this.salesLoadedSub.unsubscribe();
+    if(this.empLoadedSub && this.salesLoadedSub){
+      this.empLoadedSub.unsubscribe();
+      this.salesLoadedSub.unsubscribe();
+    }
   }
 
 

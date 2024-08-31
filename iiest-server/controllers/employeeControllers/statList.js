@@ -30,6 +30,17 @@ exports.getTopSalesPersons = async (req, res) => {
             {
                 $unwind: "$employeeInfo"
             },
+            {
+                $lookup: { //getting employee name realted to eachs sales 
+                    from: "fbo_registers",
+                    localField: "fboInfo",
+                    foreignField: "_id",
+                    as: "fboInfo"
+                }
+            },
+            {
+                $unwind: "$fboInfo"
+            },
             ...limitAdminSalePipeline,
             {
                 $group: {
@@ -40,7 +51,27 @@ exports.getTopSalesPersons = async (req, res) => {
                                 if: {
                                     $and: [
                                         { $gte: ["$createdAt", startOfLastMonth] },
-                                        { $lte: ["$createdAt", endOflastMonth] }
+                                        { $lte: ["$createdAt", endOflastMonth] },
+                                        {
+                                            $or: [
+                                                { $eq: [{ $ifNull: ["$cheque_data", null] }, null] }, // Check if cheque_data is null or doesn't exist
+                                                { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
+                                            ]
+                                        },
+                                        {
+                                            $or: [
+                                                {
+                                                    $and: [
+                                                        { $eq: ["$payment_mode", "Pay Later"] }, // payment mode = pay later
+                                                        { $eq: ["$pay_later_status", "Approved"] } // pay_later_status is "Approved"
+                                                    ]
+                                                },
+                                                {
+                                                    $ne: ["$payment_mode", "Pay Later"] // If payment mode is not "Pay Later", skip the check
+                                                }
+                                            ]
+                                        },
+                                        { $eq: ["$fboInfo.isBasicDocUploaded", true] }
                                     ]
                                 },
                                 then: {
@@ -143,6 +174,17 @@ exports.getTopProducts = async (req, res) => {
             {
                 $unwind: "$employeeInfo" 
             },
+            {
+                $lookup: { //getting employee name realted to eachs sales 
+                    from: "fbo_registers",
+                    localField: "fboInfo",
+                    foreignField: "_id",
+                    as: "fboInfo"
+                }
+            },
+            {
+                $unwind: "$fboInfo"
+            },
             ...limitAdminSalePipeline,
             {
                 $unwind: "$product_name"
@@ -206,7 +248,27 @@ exports.getTopProducts = async (req, res) => {
                                 if: {
                                     $and: [
                                         { $gte: ["$createdAt", startOfLastMonth] },
-                                        { $lte: ["$createdAt", endOflastMonth] }
+                                        { $lte: ["$createdAt", endOflastMonth] },
+                                        {
+                                            $or: [
+                                                { $eq: [{ $ifNull: ["$cheque_data", null] }, null] }, // Check if cheque_data is null or doesn't exist
+                                                { $eq: [{ $ifNull: ["$cheque_data.status", null] }, "Approved"] } // Check if cheque_data.status is "Approved"
+                                            ]
+                                        },
+                                        {
+                                            $or: [
+                                                {
+                                                    $and: [
+                                                        { $eq: ["$payment_mode", "Pay Later"] }, // payment mode = pay later
+                                                        { $eq: ["$pay_later_status", "Approved"] } // pay_later_status is "Approved"
+                                                    ]
+                                                },
+                                                {
+                                                    $ne: ["$payment_mode", "Pay Later"] // If payment mode is not "Pay Later", skip the check
+                                                }
+                                            ]
+                                        },
+                                        { $eq: ["$fboInfo.isBasicDocUploaded", true] }
                                     ]
                                 },
                                 then: "$product_amount",

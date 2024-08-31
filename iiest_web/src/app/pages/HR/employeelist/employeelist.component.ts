@@ -1,11 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { faEye, faPencil, faTrash, faEnvelope, faXmark, faCheck, faFileCsv, faFilePdf, faMagnifyingGlass, faLocationPin, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { faEye, faPencil, faTrash, faEnvelope, faXmark, faCheck, faFileCsv, faFilePdf, faMagnifyingGlass, faLocationPin, faCopy, faArrowRotateForward, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { UtilitiesService } from 'src/app/services/utilities.service'
 import { EmployeeState } from 'src/app/store/state/employee.state';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { Employee } from 'src/app/utils/registerinterface';
-import { DeleteEmployee, GetEmployee } from 'src/app/store/actions/employee.action';
+import { DeleteEmployee, GetEmployee, SetEmployeeLoadedFalse } from 'src/app/store/actions/employee.action';
 import { RegisterService } from 'src/app/services/register.service';
 import { ToastrService } from 'ngx-toastr';
 import { Papa } from 'ngx-papaparse';
@@ -13,13 +13,14 @@ import { FileSaverService } from 'ngx-filesaver'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ViewEmployeeComponent } from 'src/app/pages/modals/view-employee/view-employee.component';
 import { EmploymentComponent } from 'src/app/pages/modals/employment/employment.component';
+import { SetSalesLoadedFalse } from 'src/app/store/actions/sales.action';
 
 @Component({
   selector: 'app-employeelist',
   templateUrl: './employeelist.component.html',
   styleUrls: ['./employeelist.component.scss']
 })
-export class EmployeelistComponent implements OnInit {
+export class EmployeelistComponent implements OnInit, OnDestroy {
   @Output() isEditRecord = new EventEmitter();
   @Select(EmployeeState.GetEmployeeList) employees$: Observable<Employee>;
   @Select(EmployeeState.employeeLoaded) employeeLoaded$: Observable<boolean>
@@ -39,17 +40,18 @@ export class EmployeelistComponent implements OnInit {
   itemsNumber: number = 25;
 
   //icons
-  faEye = faEye;
-  faPencil = faPencil;
-  faTrash = faTrash;
-  faEnvelope = faEnvelope;
-  faXmark = faXmark;
-  faCheck = faCheck;
-  faFileCsv = faFileCsv;
-  faFilePdf = faFilePdf;
-  faMagnifyingGlass = faMagnifyingGlass;
-  faLocationPin = faLocationPin;
-  faCopy = faCopy;
+  faEye: IconDefinition = faEye;
+  faPencil: IconDefinition = faPencil;
+  faTrash: IconDefinition = faTrash;
+  faEnvelope: IconDefinition  = faEnvelope;
+  faXmark: IconDefinition = faXmark;
+  faCheck: IconDefinition = faCheck;
+  faFileCsv: IconDefinition = faFileCsv;
+  faFilePdf: IconDefinition = faFilePdf;
+  faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faLocationPin: IconDefinition = faLocationPin;
+  faCopy: IconDefinition = faCopy;
+  faArrowRotateForward: IconDefinition = faArrowRotateForward;
 
   loading: boolean = false;
 
@@ -232,5 +234,18 @@ export class EmployeelistComponent implements OnInit {
   viewEmployeeDetails(res: any): void {
     const modalRef = this.modalService.open(ViewEmployeeComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.employee = res;
+  }
+
+  refresh(): void {
+    this.filteredEmployees = [];
+    this.allEmployees = [];
+    this.store.dispatch(new SetEmployeeLoadedFalse());
+    this.loading = true;
+  }
+
+  ngOnDestroy(): void {
+    if(this.empLoadedSub){
+      this.empLoadedSub.unsubscribe();
+    }
   }
 }

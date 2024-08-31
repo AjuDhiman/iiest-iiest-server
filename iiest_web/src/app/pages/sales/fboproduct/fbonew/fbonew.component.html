@@ -1,4 +1,5 @@
 <!-- We want to show modal hedaer in case of fostac sae  -->
+
 <div class="modal-header bg-secondary" *ngIf="isForFostacSaleByCaseList">
     <h6 class="modal-title text-white" id="modal-basic-title">FBO Register</h6>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.close()"></button>
@@ -6,7 +7,15 @@
 
 <!-- We want margins and paddings only in case of not called as child -->
 <div [ngClass]="{'app-content pt-3 p-md-3 p-lg-4':!isCalledAsChild}" (click)="closeMultiSelect()">
+     <!-- Bread crumb -->
+     <nav aria-label="breadcrumb" *ngIf="!isCalledAsChild">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active font-small" aria-current="page"><a>Book Sale</a></li>
+        </ol>
+      </nav>
     <div class="container-xxl" [ngClass]="{'mx-0 px-0':isCalledAsChild}">
+       
+
         <!-- We want to show main fbo form in case of called as child like in documentation section of operation form -->
         <div class="row g-3 mb-4 align-items-center justify-content-between" *ngIf="!isCalledAsChild">
             <div class="col-md-6">

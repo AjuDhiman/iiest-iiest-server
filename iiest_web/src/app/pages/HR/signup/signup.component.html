@@ -1,5 +1,11 @@
 <div>
+  
   <div class="app-content pt-3 p-md-3 p-lg-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active font-small" aria-current="page"><a>Employee Register</a></li>
+      </ol>
+    </nav>
     <div class="container-xxl">
       <div class="row g-3 mb-4 align-items-center justify-content-between">
         <div class="col-auto">
@@ -176,6 +182,7 @@
                 [ngClass]="{ 'is-invalid': submitted && f['contact_no'].errors }">
               <div *ngIf="submitted && f['contact_no'].errors" class="invalid-feedback">
                 <div *ngIf="f['contact_no'].errors['required']">Contact is required</div>
+                <div *ngIf="f['contact_no'].errors['pattern']">Contact is invalid</div>
               </div>
             </div>
             <div class="col-md-3">
@@ -184,7 +191,8 @@
                 autocomplete="off" class="form-control form-control-sm" id="alternate_contact"
                 [ngClass]="{ 'is-invalid': submitted && f['alternate_contact'].errors }">
               <div *ngIf="submitted && f['alternate_contact'].errors" class="invalid-feedback">
-                <div *ngIf="f['alternate_contact'].errors['required']">Address is required</div>
+                <div *ngIf="f['alternate_contact'].errors['required']">Alternate Contact is required</div>
+                <div *ngIf="f['alternate_contact'].errors['pattern']">Alternate Contact is invalid</div>
               </div>
             </div>
             <div class="col-md-3">

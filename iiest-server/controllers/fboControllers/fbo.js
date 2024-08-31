@@ -323,8 +323,8 @@ exports.fboPayReturn = async (req, res) => {
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Water Test Report' });
         }
 
-         //sales operations in case it includes khadya paaln
-         if (product_name.includes('Khadya Paaln')) {
+        //sales operations in case it includes khadya paaln
+        if (product_name.includes('Khadya Paaln')) {
           const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
 
           fileName = `${Date.now()}_${idNumber}.pdf`;
@@ -408,15 +408,17 @@ exports.fboPayReturn = async (req, res) => {
 
         //creating shop details obj in case of HRA and Foscos
         product_name.forEach(async (product) => {
-          const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, 
-            tehsil: tehsil, isVerificationLinkSend: false }); //create shop after sale for belongs  tohis sale
+          const addShop = await shopModel.create({
+            salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village,
+            tehsil: tehsil, isVerificationLinkSend: false
+          }); //create shop after sale for belongs  tohis sale
         })
 
         //lastly redirect user to fbo form
         res.redirect(`${FRONT_END.VIEW_URL}/#/fbo`);
 
-
-        sendInvoiceMail(email, invoiceData);
+        const isPayLaterMail = false;
+        sendInvoiceMail(email, invoiceData, isPayLaterMail);
 
       }
     }
@@ -567,7 +569,8 @@ exports.fboRegister = async (req, res) => {
     }
 
     success = true;
-    sendInvoiceMail(email, invoiceData);
+    const isPayLaterMail = false;
+    sendInvoiceMail(email, invoiceData, isPayLaterMail);
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -646,7 +649,8 @@ exports.boByCheque = async (req, res) => {
     console.log(productName, product_name)
 
     const fboEntry = await fboModel.create({
-      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false, isFboVerified: true, isVerificationLinkSend: false });
+      employeeInfo: createrObjId, boInfo, id_num: idNumber, fbo_name, owner_name, owner_contact, email, state, district, address, customer_id: generatedCustomerId, payment_mode, createdBy, village, tehsil, pincode, business_type, gst_number, activeStatus: true, isBasicDocUploaded: false, isFboVerified: true, isVerificationLinkSend: false
+    });
 
     if (!fboEntry) {
       success = false;
@@ -661,9 +665,10 @@ exports.boByCheque = async (req, res) => {
     }
 
     productName.forEach(async (product) => {
-      const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil, isVerificationLinkSend: false
-        
-       }); //create shop after sale for belongs  tohis sale
+      const addShop = await shopModel.create({
+        salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil, isVerificationLinkSend: false
+
+      }); //create shop after sale for belongs  tohis sale
     })
 
     success = true;
@@ -675,6 +680,113 @@ exports.boByCheque = async (req, res) => {
 
   } catch (error) {
     console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+//methord for paylater sale
+exports.boPayLater = async (req, res) => {
+
+  try {
+
+    let success = false;
+
+    //destructuring data
+    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode,
+      fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, gst_number, boInfo } = req.body;
+
+    const user = req.user;
+    const signatureFile = user.signatureImage;
+
+    const signExists = await doesFileExist(`${employeeDocsPath}${signatureFile}`);
+    console.log('sign Exsists:', signExists)
+
+    if (!signExists) {
+      return res.status(404).json({ success: false, noSignErr: true })
+    }
+
+    //generating customer id or rather say ShopId
+    const { idNumber, generatedCustomerId } = await generatedInfo();
+
+    //getting boInfo
+    const boData = await boModel.findOne({ _id: boInfo });
+
+    //array for saving invoices datas
+    const invoiceData = [];
+
+    //creating new fbo entry
+    const fboEntry = await fboModel.create({
+      employeeInfo: user._id,
+      id_num: idNumber,
+      fbo_name,
+      owner_name,
+      owner_contact,
+      email,
+      state,
+      district,
+      address,
+      product_name,
+      customer_id: generatedCustomerId,
+      payment_mode,
+      createdBy,
+      village,
+      tehsil,
+      pincode,
+      business_type,
+      gst_number,
+      boInfo,
+      activeStatus: true,
+      isBasicDocUploaded: false,
+      isFboVerified: false,
+      isVerificationLinkSend: false
+    });
+
+    if (!fboEntry) {
+      return res.status(401).json({ success, message: "FBO entry not successful" })
+    }
+
+    //creating new sale object
+    const selectedProductInfo = await salesModel.create({
+      employeeInfo: user._id,
+      fboInfo: fboEntry._id,
+      product_name,
+      fostacInfo: fostac_training,
+      foscosInfo: foscos_training,
+      hraInfo: hygiene_audit,
+      medicalInfo: medical,
+      khadyaPaalnInfo: khadya_paaln,
+      waterTestInfo: water_test_report,
+      payment_mode,
+      grand_total,
+      invoiceId: invoiceData,
+      pay_later_status: 'Pending',
+      notificationInfo: []
+    });
+
+    if (!selectedProductInfo) {
+      return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
+    }
+
+    //creating shop details obj in case of HRA and Foscos
+    product_name.forEach(async (product) => {
+      const addShop = await shopModel.create({
+        salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village,
+        tehsil: tehsil, isVerificationLinkSend: false
+      }); //create shop after sale for belongs  tohis sale
+    })
+
+    //lastly redirect user to fbo form
+
+
+    const isPayLaterMail = true;
+    sendInvoiceMail(email, invoiceData, isPayLaterMail);
+
+    success = true;
+    return res.status(200).json({ success })
+
+
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
@@ -945,14 +1057,14 @@ exports.updateFboBasicDocStatus = async (req, res) => {
 }
 
 //this methord approves the sale for a pending cheque and send invoice after approval
-exports.approveChequeSale = async (req, res) => {
+exports.approveChequeOrPaylaterSale = async (req, res) => {
   try {
 
     const saleId = req.params.id; //gettimg sales id from route
 
     const salesInfo = await salesModel.findOne({ _id: saleId }).populate([{ path: 'fboInfo', populate: { path: 'boInfo' } }, { path: 'employeeInfo' }]); // getting sales info related to sales Id
 
-    const { fboInfo, fostacInfo, foscosInfo, hraInfo, medicalInfo, khadyaPaalnInfo, waterTestInfo, employeeInfo, product_name, cheque_data } = salesInfo; //destructuring sales Info
+    const { fboInfo, fostacInfo, foscosInfo, hraInfo, medicalInfo, khadyaPaalnInfo, waterTestInfo, employeeInfo, product_name, cheque_data, payment_mode } = salesInfo; //destructuring sales Info
 
     const signatureFile = employeeInfo.signatureImage; //getting signature file
 
@@ -1066,7 +1178,7 @@ exports.approveChequeSale = async (req, res) => {
         extraFee += Number(foscosInfo.water_test_fee)
       }
 
-      const foscos_total = Number(foscosInfo.foscos_total) - extraFee - water_test_fee;
+      const foscos_total = Number(foscosInfo.foscos_total) - extraFee - foscosInfo.water_test_fee;
 
       const qty = foscosInfo.shops_no;
       const invoice = await invoiceDataHandler(invoiceCode, fboInfo.email, fboInfo.fbo_name, fboInfo.address, fboInfo.state, fboInfo.district, fboInfo.pincode, fboInfo.owner_contact, fboInfo.email, total_processing_amount, extraFee, totalGST, qty, fboInfo.business_type, fboInfo.gst_number, foscos_total, 'Foscos', foscosInfo, signatureFile, invoiceUploadStream, employeeInfo.employee_name, fboInfo.customer_id, fboInfo.boInfo);
@@ -1155,9 +1267,13 @@ exports.approveChequeSale = async (req, res) => {
       invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Water Test Report' });
     }
 
-
-    if (cheque_data) {
-      await salesInfo.updateOne({ cheque_data: { ...cheque_data, status: 'Approved' }, invoiceId: invoiceIdArr, notificationInfo: notificationsArr });
+    if(payment_mode === 'By Cheque'){
+      if (cheque_data) {
+        await salesInfo.updateOne({ cheque_data: { ...cheque_data, status: 'Approved' }, invoiceId: invoiceIdArr, notificationInfo: notificationsArr });
+      }
+    } else if(payment_mode === 'Pay Later') {
+      console.log('pay later')
+      await salesInfo.updateOne({ $set: {pay_later_status: 'Approved', invoiceId: invoiceIdArr, notificationInfo: notificationsArr }});
     }
 
     await salesInfo.save();
@@ -1166,7 +1282,8 @@ exports.approveChequeSale = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Sale Approving Error' })
     }
 
-    sendInvoiceMail(fboInfo.email, invoiceData); //sending invoice by mail
+    const isPayLaterMail = false;
+    sendInvoiceMail(fboInfo.email, invoiceData, isPayLaterMail); //sending invoice by mail
     return res.status(200).json({ success: true })
 
   } catch (error) {
@@ -1221,10 +1338,10 @@ exports.sendFboVerificationLink = async (req, res) => {
 
     success = true;
 
-    const oldData = await fboModel.findOne({_id: fboObjId});
+    const oldData = await fboModel.findOne({ _id: fboObjId });
 
     // updating verification link send in fboobj
-    const dataUpdated = await fboModel.findOneAndUpdate({_id: fboObjId}, {
+    const dataUpdated = await fboModel.findOneAndUpdate({ _id: fboObjId }, {
       $set: {
         isVerificationLinkSend: true
       }
@@ -1245,7 +1362,7 @@ exports.sendFboVerificationLink = async (req, res) => {
 exports.verifyFbo = async (req, res) => {
   try {
 
-    
+
     const fboObjId = req.params.fboid
     if (!mongoose.Types.ObjectId.isValid(fboObjId)) { //sending error message in case of wrong format of objet id send in parameter
       return res.status(404).json({ success: false, message: "Not A Valid Request" }); //this message will be shown in verifing mail frontend
@@ -1345,7 +1462,8 @@ exports.updateFboInfo = async (req, res) => {
         business_entity: business_entity,
         email: manager_email,
         contact_no: manager_contact,
-        manager_name: manager_name
+        manager_name: manager_name,
+        owner_name: owner_name
       }
     });
 

@@ -29,6 +29,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { CoreModule } from 'src/app/core/core.module';
 import { PagesModule } from 'src/app/pages/pages.module';
 import { ShopState } from './store/state/shop.state';
+import { BosState } from './store/state/bo.state';
+import { GSTListState } from './store/state/gstlist.state';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,7 @@ import { ShopState } from './store/state/shop.state';
     QrCodeModule,
     FileSaverModule,
     //ngxs Modlues
-    NgxsModule.forRoot([EmployeeState, SalesState, ShopState]),
+    NgxsModule.forRoot([EmployeeState, SalesState, ShopState, BosState, GSTListState]),
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgSelectModule,

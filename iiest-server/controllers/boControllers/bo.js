@@ -4,6 +4,7 @@ const { sendMailToBo } = require('./emailService');
 const { generateUniqueId } = require('../../fbo/generateCredentials');
 const { default: mongoose } = require('mongoose');
 const fboModel = require('../../models/fboModels/fboSchema');
+const { sendBOVerificationSMS, sendBOOnBoardSMS } = require('../../config/gupshupsms');
 
 //methord for creating business owners
 exports.createBusinessOwner = async (req, res) => {
@@ -140,9 +141,22 @@ exports.verifyEmail = async (req, res) => {
                 managerName: idExsists.manager_name
             }
 
-            await sendMailToBo(verifiedMail.email, mailInfo);//sending onboard mail when bo verifies mail and contact by clicking on verify mail button 
+            const employee = await employeeSchema.findOne({_id: idExsists.onboard_by});
 
-            return res.status(200).json({ success: true, message: "Email Verified" })
+            //checking for is admin or not
+            const isAdmin = employee.employee_name.toLowerCase().includes('admin');
+
+            console.log('isAdmin', isAdmin);
+
+            if(verifiedMail){
+                if(isAdmin){
+                    await sendBOOnBoardSMS(idExsists.owner_name, idExsists.manager_name, idExsists.customer_id, idExsists.contact_no)
+                }
+    
+                await sendMailToBo(verifiedMail.email, mailInfo);//sending onboard mail when bo verifies mail and contact by clicking on verify mail button 
+
+                return res.status(200).json({ success: true, message: "Email Verified" });
+            }
         }
 
         return res.status(404).json({ success: false, message: "Verification Failed" });
@@ -217,7 +231,6 @@ exports.getClientList = async (req, res) => {
             }
         ]);
 
-        console.log(clientList[0])
 
         return res.status(200).json({ clientList: clientList });
 

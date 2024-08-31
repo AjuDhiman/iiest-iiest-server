@@ -29,7 +29,7 @@ export const hraProcessingAmnt = 5000;
 export const clientType = ['Single Recipient', 'Multiple Recipient'];
 
 //Payment Mode
-export const paymentMode = ['Pay Page', 'By Cheque'];
+export const paymentMode = ['Pay Page', 'By Cheque', 'Pay Later'];
 
 export const auditers = [
    'Aditi',

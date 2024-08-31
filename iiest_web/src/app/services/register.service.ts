@@ -32,6 +32,15 @@ export class RegisterService {
       ));
   }
 
+    //service for fbo payment and creation by paylater
+    public fboPaymentPayLater(objId: string, addFbo: fbo): Observable<any> {
+      const url = `${this.url}/fbopaylater/${objId}`;
+      return this.http.post<any>(url, { ...addFbo }).pipe(
+        catchError(
+          this.handleError
+        ));
+    }
+
   //service for adding new fbo
   public addFbo(objId: string, addFbo: fbo, foscosGST: number, fostacGST: number, hygieneGST: number, medicalGST: number, waterTestGST: number, khadyaPaalnGST: number, foscosFixedCharge: number): Observable<any> {
     const url = `${this.url}/fboregister/${objId}`
@@ -269,6 +278,15 @@ export class RegisterService {
       ));
   }
 
+//service for exsisting fbo pay later
+  public existingFboPayLater(objId: string, addFbo: fbo, existingFboId: string): Observable<any> {
+    const url = `${this.url}/existingfbo-paylater/${objId}`
+    return this.http.post<any>(url, { ...addFbo, existingFboId: existingFboId }).pipe(
+      catchError(
+        this.handleError
+      ));
+  }
+
   public verifyFostacRecp(recId: string, formInterface: fostacVerification) {
     const url = `${this.url}/fostacrecpverification/${recId}`
     return this.http.post<any>(url, formInterface).pipe(
@@ -387,8 +405,8 @@ export class RegisterService {
   }
 
   //service for doing approving cheque request
-  public updateChequeApproval(objId: string) {
-    const url = `${this.url}/approvechequesale/${objId}`
+  public updateChequeOrPayLaterApproval(objId: string) {
+    const url = `${this.url}/approvechequeorpaylaterSale/${objId}`
     return this.http.post<any>(url, {}).pipe(
       catchError(
         this.handleError

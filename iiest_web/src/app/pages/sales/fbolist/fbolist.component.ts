@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
-import { faEye, faPencil, faTrash, faEnvelope, faXmark, faMagnifyingGlass, faFileCsv, faFilePdf, faIndianRupeeSign, faArrowUp, faArrowDown, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPencil, faTrash, faEnvelope, faXmark, faMagnifyingGlass, faFileCsv, faFilePdf, faIndianRupeeSign, faArrowUp, faArrowDown, IconDefinition, faArrowRotateForward } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsService, ExportAsConfig } from 'ngx-export-as';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RecipientComponent } from 'src/app/pages/modals/recipient/recipient.component';
@@ -9,7 +9,7 @@ import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.compone
 import { Select, Store } from '@ngxs/store';
 import { SalesState } from 'src/app/store/state/sales.state';
 import { Observable, Subscription } from 'rxjs';
-import { GetSales } from 'src/app/store/actions/sales.action';
+import { GetSales, SetSalesLoadedFalse } from 'src/app/store/actions/sales.action';
 import { SaleDocModalComponent } from '../../modals/sale-doc-modal/sale-doc-modal.component';
 import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
 import { ToastrService } from 'ngx-toastr';
@@ -34,6 +34,11 @@ export class FbolistComponent implements OnInit {
   pageNumber: number = 1;
   itemsNumber: number = 25;
 
+  //store related vars
+  @Select(SalesState.GetSalesList) sales$: Observable<any>;
+  @Select(SalesState.salesLoaded) salesLoaded$: Observable<boolean>
+  salesLoadedSub: Subscription;
+
 
   selectedSaleId: string // this var will contain sale id of sale of whichj we want to update sale cheque status
 
@@ -53,6 +58,7 @@ export class FbolistComponent implements OnInit {
   faArrowDown: IconDefinition = faArrowDown;
   faIndianRupeeSign: IconDefinition = faIndianRupeeSign;
   faMagnifyingGlass: IconDefinition = faMagnifyingGlass;
+  faArrowRotateForward: IconDefinition = faArrowRotateForward;
 
 
   //Booleans
@@ -83,22 +89,24 @@ export class FbolistComponent implements OnInit {
 
   fetchAllFboData(): void {
 
+    this.salesLoadedSub = this.salesLoaded$.subscribe(loadedSales => {
+      if (!loadedSales) {
+        this.store.dispatch(new GetSales());
+      }
+    })
     this.loading = true
-    this.getDataService.getSalesList().subscribe({
+    this.sales$.subscribe({
       next: (res) => {
-        this.loading = false;
-        if (res.salesInfo) {
-         
-          this.allFBOEntries = res.salesInfo.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        
+        if (res.length) {
+          this.loading = false;
+          this.allFBOEntries = res.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
             .map((elem: any, index: number) => ({ ...elem, serialNumber: index + 1, saleApprovel: this.getSalesStatus(elem) }));
           this.filteredFBOEntries = this.allFBOEntries.filter((item: any) => {
             if (item.product_name.includes(this.activeTab)) {
               return item;
             }
           });
-          // if (this.isVerifier) { // filter pending in case of verifer
-          //   this.filteredFBOEntries = this.filteredFBOEntries.filter((entry: any) => entry.checkStatus === 'Pending');
-          // }
           this.filter();
           this.loading = false;
         }
@@ -109,7 +117,7 @@ export class FbolistComponent implements OnInit {
           this.registerService.signout();
         }
       }
-    })
+    });
   }
 
   //metord for filter according to search
@@ -334,8 +342,7 @@ export class FbolistComponent implements OnInit {
     if (this.isVerifier) {
       return sale.checkStatus
     } else {
-
-      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved') && sale.fboInfo.isBasicDocUploaded) {
+      if ((!sale.cheque_data || sale.cheque_data.status === 'Approved') && sale.fboInfo.isBasicDocUploaded && !(sale.payment_mode == 'Pay Later' && sale.pay_later_status !== 'Approved')) {
         return 'Approved'
       } else {
         return 'Pending'
@@ -344,12 +351,16 @@ export class FbolistComponent implements OnInit {
   }
 
   //methord for opeining confirmation modal in case approving cheque
-  approveCheque($event: Event, saleId: string, sale: any): void { //methord for approving cheque in only avilable to director
+  approveChequeOrPayLater($event: Event, saleId: string, sale: any): void { //methord for approving cheque in only avilable to director
     $event.stopPropagation()
     this.selectedSaleId = saleId;
     const modalRef = this.modalService.open(ConformationModalComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.action = 'Approve Cheque';
-    modalRef.componentInstance.confirmationText = sale.cheque_data.cheque_number;
+    if(sale.cheque_data){
+      modalRef.componentInstance.confirmationText = sale.cheque_data.cheque_number;
+    } else {
+      modalRef.componentInstance.confirmationText = 'Approve';
+    }
     modalRef.componentInstance.actionFunc.subscribe((confirmation: boolean) => {
       this.connformationFunc(confirmation);
     });
@@ -359,7 +370,7 @@ export class FbolistComponent implements OnInit {
   connformationFunc = (confirmation: boolean) => { //this func will reun after confirmation comes from confirmation modal in case like cheque approval
     if (confirmation) {
       this.loading = true;
-      this.registerService.updateChequeApproval(this.selectedSaleId).subscribe({
+      this.registerService.updateChequeOrPayLaterApproval(this.selectedSaleId).subscribe({
         next: res => {
           this.loading = false;
           location.reload();
@@ -418,6 +429,16 @@ export class FbolistComponent implements OnInit {
 
     modalRef.componentInstance.existingFboId = fbo.fboInfo.customer_id;
 
+  }
+
+  //methord for refreshing api of sales list
+  refresh(): void{
+    // setting sales loaded to false
+    this.filteredFBOEntries = [];
+    this.allFBOEntries = [];
+    this.filteredData = [];
+    this.store.dispatch(new SetSalesLoadedFalse());
+    this.loading = true;
   }
 
 }

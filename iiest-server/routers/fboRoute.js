@@ -1,8 +1,8 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeSale, getSalesBasicDocUploadURL, sendFboVerificationLink, verifyFbo, updateFboInfo } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeOrPaylaterSale, getSalesBasicDocUploadURL, sendFboVerificationLink, verifyFbo, updateFboInfo, boPayLater } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, addShopByExcel } = require('../controllers/fboControllers/recipient');
-const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque } = require('../controllers/fboControllers/existingFbo');
+const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque, existingFboPayLater } = require('../controllers/fboControllers/existingFbo');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const { foscosDocuments, hraDocuments, chequeImage } = require('../config/storage');
@@ -22,6 +22,7 @@ router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
 router.get('/clientlist', getClientList); //Router for client list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
+router.post('/fbopaylater/:id', authMiddleware, boPayLater); //Router for FBO registration (Pay Later)
 router.post('/fbobycheque/:id', authMiddleware, uploadCheque.fields([{name: 'cheque_image', maxCount: 1}]), existingFboByCheque);
 router.post('/bobycheque/:id', authMiddleware, uploadCheque.fields([{name: 'cheque_image', maxCount: 1}]), boByCheque);
 router.post('/fbo-pay-return/:id', fboPayReturn); //To check payment status
@@ -39,8 +40,9 @@ router.get('/getsalesbasicdocuploadurl/:name', authMiddleware, getSalesBasicDocU
 router.get('/fbo/invoice/:id', authMiddleware, saleInvoice);
 router.post('/existingfbosale/:id', authMiddleware, existingFboCash);
 router.post('/existingfbo-paypage/:id', authMiddleware, existingFboPayPage)
+router.post('/existingfbo-paylater/:id', authMiddleware, existingFboPayLater)
 router.post('/existingfbo-pay-return/:id', existingFboPayReturn);
-router.post('/approvechequesale/:id', authMiddleware, approveChequeSale);//this api will approve cheque and send invoice for this sale after approving
+router.post('/approvechequeorpaylatersale/:id', authMiddleware, approveChequeOrPaylaterSale);//this api will approve cheque and send invoice for this sale after approving
 router.get('/getclientlist', authMiddleware, getClientList)
 router.post('/boregister', createBusinessOwner );
 router.get('/getbodata', authMiddleware, getAllBusinessOwners);

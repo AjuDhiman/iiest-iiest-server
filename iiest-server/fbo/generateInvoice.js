@@ -76,6 +76,8 @@ const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, di
         boData: boData,
         stateCode: stateCode
     }
+
+    console.log('infoObj',infoObj)
     const invoiceData = await generateInvoice(invoiceCode, mail, infoObj);
 
     return invoiceData;

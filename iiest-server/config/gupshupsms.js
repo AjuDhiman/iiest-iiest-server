@@ -24,7 +24,9 @@ exports.sendBOVerificationSMS = async (manager_contact, email, verificationtion_
 
 
 // methord for sending bo Onboard sms
-exports.sendBOOnBoardSMS = async (owner_name, manager_name, bo_id, email, phoneNo) => {
+exports.sendBOOnBoardSMS = async (owner_name, manager_name, bo_id, phoneNo) => {
+
+    console.log(owner_name, manager_name, bo_id, phoneNo);
 
     const dltTempletID = '1007928778645796672';
 
@@ -108,7 +110,7 @@ exports.foscosVerificationSMS = async (owner_name, manager_name, manager_contact
 
 async function sendSMS(dltTempletID, message, phoneNo) {
     const params = new URLSearchParams()
-    params.append('destination', phone);
+    params.append('destination', phoneNo);
     params.append('message', message);
 
     var options = {

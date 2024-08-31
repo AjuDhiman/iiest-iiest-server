@@ -77,6 +77,12 @@ const salesSchema = new Schema({ //creating sales schema
             return (this.payment_mode === 'By Cheque'); // required in case of payment mode is by cheque
         }
     },
+    pay_later_status: { //property contains info about pay later status 
+        type: String,
+        required: function() {
+            return (this.payment_mode === 'Pay Later'); // required in case of payment mode is by paylater
+        }
+    },
     invoiceId: { // array that contains object id of invoices of all product sold in this sale
         type: Array,
         required: true

@@ -1,5 +1,5 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faShare, faPlusCircle, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { IconDefinition, faFile, faFileCsv, faMagnifyingGlass, faShare, faPlusCircle, faFileCirclePlus, faArrowRotateForward } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
@@ -9,13 +9,17 @@ import { ToastrService } from 'ngx-toastr';
 import { ConformationModalComponent } from '../../modals/conformation-modal/conformation-modal.component';
 import { Months } from 'src/app/utils/config';
 import { MultiSelectComponent } from 'src/app/shared/multi-select/multi-select.component';
+import { Select, Store } from '@ngxs/store';
+import { GSTListState } from 'src/app/store/state/gstlist.state';
+import { Observable, Subscription } from 'rxjs';
+import { GetGSTList, SetGSTListLoadedFalse } from 'src/app/store/actions/gstlist.action';
 
 @Component({
   selector: 'app-invoice-list',
   templateUrl: './invoice-list.component.html',
   styleUrls: ['./invoice-list.component.scss']
 })
-export class InvoiceListComponent implements OnInit, AfterViewInit {
+export class InvoiceListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //data related vars
   invoiceList: any = [];
@@ -23,6 +27,11 @@ export class InvoiceListComponent implements OnInit, AfterViewInit {
 
   //variables
   activeTab: string = 'tax'; //var for configuring tab
+
+   //store related vars
+   @Select(GSTListState.GetGSTList) gstList$: Observable<any>;
+   @Select(GSTListState.GSTListLoaded) gstListLoaded$: Observable<boolean>
+   gstListLoadedSub: Subscription;
 
 
   //table related vars
@@ -50,6 +59,7 @@ export class InvoiceListComponent implements OnInit, AfterViewInit {
   faShare: IconDefinition = faShare;
   faPlusCircle: IconDefinition = faPlusCircle;
   faFileCirclePlus: IconDefinition = faFileCirclePlus;
+  faArrowRotateForward: IconDefinition = faArrowRotateForward;
 
   // motnth wise data related vars
   allMonths: string[] = Months;
@@ -69,7 +79,8 @@ export class InvoiceListComponent implements OnInit, AfterViewInit {
     private _toastrService: ToastrService,
     private modalService: NgbModal,
     private ngbModal: NgbModal,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private store: Store
   ) {
 
   }
@@ -151,41 +162,80 @@ export class InvoiceListComponent implements OnInit, AfterViewInit {
 
   //methord for getting invoice list by the invoice list service and converting it to according to our need by performind diffrent operations
   getInvoiceList(): void {
+    this.gstListLoadedSub = this.gstListLoaded$.subscribe(listLoaded => {
+      if (!listLoaded) {
+        this.store.dispatch(new GetGSTList());
+      }
+    })
     this.loading = true;
-    this._getDataService.getInvoiceList().subscribe({
+    this.gstList$.subscribe({
       next: res => {
-
-        this.invoiceList = res.invoiceList.map((entry: any) => {
-          return {
-            ...entry,
-            invoice_date: this.getFormattedDate(entry.createdAt),
-            gst: entry.business_type === 'b2c' ? this.calculateGST('gst', entry.processing_amount) : 0,
-            sgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('sgst', entry.processing_amount) : 0,
-            cgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('cgst', entry.processing_amount) : 0,
-            igst: ((entry.business_type === 'b2b') && entry.state !== 'Delhi') ? this.calculateGST('igst', entry.processing_amount) : 0,
-          }
-        }).sort((a: any, b: any) => {
-          if (a.code) {
-            const codeA = a.code;
-            const codeB = b.code;
-
-            const codeArrA = codeA.split('/');
-            const codeArrB = codeB.split('/');
-
-            const codeNumA = codeArrA[codeArrA.length - 1];
-            const codeNumB = codeArrB[codeArrB.length - 1];
-
-            return (codeNumB - codeNumA);
-          } else {
-            return 0;
-          }
-
-        });
-        this.loading = false;
-        this.filterByBusinessType();
-
+        if(res.length){
+          this.invoiceList = res.map((entry: any) => {
+            return {
+              ...entry,
+              invoice_date: this.getFormattedDate(entry.createdAt),
+              gst: entry.business_type === 'b2c' ? this.calculateGST('gst', entry.processing_amount) : 0,
+              sgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('sgst', entry.processing_amount) : 0,
+              cgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('cgst', entry.processing_amount) : 0,
+              igst: ((entry.business_type === 'b2b') && entry.state !== 'Delhi') ? this.calculateGST('igst', entry.processing_amount) : 0,
+            }
+          }).sort((a: any, b: any) => {
+            if (a.code) {
+              const codeA = a.code;
+              const codeB = b.code;
+  
+              const codeArrA = codeA.split('/');
+              const codeArrB = codeB.split('/');
+  
+              const codeNumA = codeArrA[codeArrA.length - 1];
+              const codeNumB = codeArrB[codeArrB.length - 1];
+  
+              return (codeNumB - codeNumA);
+            } else {
+              return 0;
+            }
+  
+          });
+          this.loading = false;
+          this.filterByBusinessType();
+        }
       }
     });
+    // this._getDataService.getInvoiceList().subscribe({
+    //   next: res => {
+
+    //     this.invoiceList = res.invoiceList.map((entry: any) => {
+    //       return {
+    //         ...entry,
+    //         invoice_date: this.getFormattedDate(entry.createdAt),
+    //         gst: entry.business_type === 'b2c' ? this.calculateGST('gst', entry.processing_amount) : 0,
+    //         sgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('sgst', entry.processing_amount) : 0,
+    //         cgst: ((entry.business_type === 'b2b') && entry.state === 'Delhi') ? this.calculateGST('cgst', entry.processing_amount) : 0,
+    //         igst: ((entry.business_type === 'b2b') && entry.state !== 'Delhi') ? this.calculateGST('igst', entry.processing_amount) : 0,
+    //       }
+    //     }).sort((a: any, b: any) => {
+    //       if (a.code) {
+    //         const codeA = a.code;
+    //         const codeB = b.code;
+
+    //         const codeArrA = codeA.split('/');
+    //         const codeArrB = codeB.split('/');
+
+    //         const codeNumA = codeArrA[codeArrA.length - 1];
+    //         const codeNumB = codeArrB[codeArrB.length - 1];
+
+    //         return (codeNumB - codeNumA);
+    //       } else {
+    //         return 0;
+    //       }
+
+    //     });
+    //     this.loading = false;
+    //     this.filterByBusinessType();
+
+    //   }
+    // });
 
 
   }
@@ -387,6 +437,20 @@ export class InvoiceListComponent implements OnInit, AfterViewInit {
     this.multiSelect.isdropped = false;
   }
 
+  refresh(): void {
+    this.filteredData = [];
+    this.caseData = [];
+    this.invoiceList = [];
+    this.totalAmt = 0;
+    this.totalGstAmt = 0;
+    this.totalProcessingAmt = 0;
+    this.store.dispatch(new SetGSTListLoadedFalse());
+    this.loading = true;
+  }
 
+
+  ngOnDestroy(): void {
+    this.gstListLoadedSub.unsubscribe();
+  }
 
 }

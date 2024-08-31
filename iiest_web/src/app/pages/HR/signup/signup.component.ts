@@ -235,6 +235,7 @@ export class SignupComponent implements OnInit {
           }
         },
         error: (err) => {
+          this.loading = false;
           let errorObj = err.error
           switch (true) {
             case errorObj.userError: this._registerService.signout();
@@ -461,7 +462,7 @@ export class SignupComponent implements OnInit {
             next: res => {
               resolve(res);
               // this.form.patchValue({'empSignature': this.empSignature});
-              this._toastrService.success('Done')
+              // this._toastrService.success('Done')
             },
             error: err => {
               this.loading = false;
@@ -483,7 +484,7 @@ export class SignupComponent implements OnInit {
             next: res => {
               // this.form.patchValue({'employeeImage': this.empImage});
               resolve(res);
-              this._toastrService.success('Done')
+              // this._toastrService.success('Done')
             },
             error: err => {
               this.loading = false;

@@ -26,6 +26,9 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
 
         let list
 
+
+        console.log(district);
+
         //aggregating data for getting results we need
         if (!isAdmin) {
             list = await shopModel.aggregate([
@@ -88,7 +91,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                 },
                 {
                     $match: {
-                        district: { $in: district }
+                        "salesInfo.fboInfo.district": { $in: district }
                     }
                 },
                 {
@@ -173,7 +176,7 @@ exports.caseList = async (req, res) => {  //api for getting case list data to be
                 },
                 {
                     $match: {
-                        district: { $in: district }
+                        "salesInfo.fboInfo.district": { $in: district }
                     }
                 },
                 {

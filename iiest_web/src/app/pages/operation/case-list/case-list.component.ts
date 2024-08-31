@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
-import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition, faCheck, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faMagnifyingGlass, faUpload, faDownload, faEye, faFile, IconDefinition, faCheck, faCircleExclamation, faArrowRotateForward } from '@fortawesome/free-solid-svg-icons';
 import { ExportAsConfig, ExportAsService } from 'ngx-export-as';
 import { GetdataService } from 'src/app/services/getdata.service';
 import { RegisterService } from 'src/app/services/register.service';
@@ -13,14 +13,14 @@ import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { ShopState } from 'src/app/store/state/shop.state';
 import { UtilitiesService } from 'src/app/services/utilities.service';
-import { GetShops } from 'src/app/store/actions/shop.action';
+import { GetShops, SetShopsLoadedFalse } from 'src/app/store/actions/shop.action';
 
 @Component({
   selector: 'app-case-list',
   templateUrl: './case-list.component.html',
   styleUrls: ['./case-list.component.scss']
 })
-export class CaseListComponent implements OnInit {
+export class CaseListComponent implements OnInit, OnDestroy {
 
   //store related vars
   @Select(ShopState.GetShopList) shops$: Observable<any>;
@@ -59,6 +59,7 @@ export class CaseListComponent implements OnInit {
   faEye: IconDefinition = faEye;
   faFile: IconDefinition = faFile;
   faCheck: IconDefinition = faCheck;
+  faArrowRotateForward: IconDefinition = faArrowRotateForward;
 
   //var in case only recipient list to be shown
   isRecipientList: boolean = false;
@@ -250,7 +251,7 @@ export class CaseListComponent implements OnInit {
         } else {
           switch (this.selectedFilter) {
 
-            case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
               break;
 
             case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
@@ -529,5 +530,23 @@ export class CaseListComponent implements OnInit {
 
 
     return { resultText, resultTextClass,  resultIcon, isForDocumentsNum, pendingDocs, approvedDocs }
+  }
+
+  //methord for refreshing case list
+  refresh(): void {
+    this.caseList = [];
+    this.caseData = [];
+    this.typeData = [];
+    this.filteredData = [];
+    this.totalCase = 0;
+    this.totalCount = 0;
+    this.store.dispatch(new SetShopsLoadedFalse());
+    this.loading = true;
+  }
+
+  ngOnDestroy(): void {
+    if(this.shopLoadedSub){
+      this.shopLoadedSub.unsubscribe();
+    }
   }
 }
