@@ -14,23 +14,28 @@ const coworkInvoiceTemplate = async (data) => {
     const rate = data.amount;
     const subTotal = quantity * rate;
 
-    let invoiceType = data.invoiceType === "Customer" ? "C U S T O M E R" : "T A X";
+    let invoiceType;
 
     //getting invoic type
-    switch (data.invoiceType) {
-        case 'Customer':
-            invoiceType = "C U S T O M E R";
-            break;
-        case 'Tax':
-            invoiceType = "T A X";
-            break;
-        case 'Service':
-            invoiceType = "S E R V I C E";
-            break;
-        default:
-            invoiceType = ""
-            break;
+    if(data.receiptNo !== 'Performa'){
+        switch (data.invoiceType) {
+            case 'Customer':
+                invoiceType = "C U S T O M E R";
+                break;
+            case 'Tax':
+                invoiceType = "T A X";
+                break;
+            case 'Service':
+                invoiceType = "S E R V I C E";
+                break;
+            default:
+                invoiceType = ""
+                break;
+        }
+    } else {
+        invoiceType = 'P E R F O R M A'
     }
+  
 
     let calculateTax = function (invoiceType, state) {
         if (invoiceType === 'TAX') {
@@ -54,6 +59,8 @@ const coworkInvoiceTemplate = async (data) => {
     // }
 
     const signatureName = data.signatureName;
+
+    console.log('signaturename', signatureName);
 
     const toWords = new ToWords({
         localeCode: 'en-IN',

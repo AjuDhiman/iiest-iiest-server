@@ -16,16 +16,20 @@ exports.createInvoie = async (req, res) => {
 
         success = true;
 
+        const user = req.user;
+
+        const emailLowerCase = email.toLowerCase();
+
         //initially we want to send performa invoice
         const invoiceCode = 'Performa';
         // const invoiceCode = await generateCoworksInvoiceCode(invoice_type);
         const invoiceData = await bcInvoiceDataHandler(invoiceCode, business_name, address, state, district,
-            pincode, contact_no, email, processing_amount, invoice_type, gst_number, gst_amount, qty, total_amount,
-            product, product_code, narration, invoice_date, behalf_of);
+            pincode, contact_no, emailLowerCase, processing_amount, invoice_type, gst_number, gst_amount, qty, total_amount,
+            product, product_code, narration, invoice_date, behalf_of, user.signatuteImage);
 
         const dataSaved = await coworkInvoiceModel.create({
             business_name: business_name, address: address, state: state, district: district, pincode: pincode, contact_no: contact_no,
-            email: email, processing_amount: processing_amount, invoice_type: invoice_type, gst_number: gst_number, gst_amount: gst_amount, qty: qty,
+            email: emailLowerCase, processing_amount: processing_amount, invoice_type: invoice_type, gst_number: gst_number, gst_amount: gst_amount, qty: qty,
             total_amount: total_amount, product: product, product_code: product_code, narration: narration, invoice_date: invoice_date, behalf_of: behalf_of,
             invoice_code: invoiceCode, invoice_src: invoiceData.fileName, isAmountReceived: false
         });
@@ -34,7 +38,7 @@ exports.createInvoie = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Data Saving Error', dataSavingErr: true })
         }
 
-        sendCoworkInvoiceMail(email, [invoiceData]);
+        sendCoworkInvoiceMail(emailLowerCase, [invoiceData]);
 
         return res.status(200).json({ success: success, invouceSend: true });
 
@@ -71,6 +75,8 @@ exports.updateRecivingInfo = async (req, res) => {
 
         const invoiceId = req.params.id;
 
+        const user = req.user;
+
         const { receviedAmount, receivedDate, receivedNarration } = req.body;
 
         console.log(req.body)
@@ -97,7 +103,7 @@ exports.updateRecivingInfo = async (req, res) => {
         const invoiceData = await bcInvoiceDataHandler(invoiceCode, oldInvoice.business_name, oldInvoice.address, oldInvoice.state, oldInvoice.district,
             oldInvoice.pincode, oldInvoice.contact_no, oldInvoice.email, oldInvoice.processing_amount, oldInvoice.invoice_type, oldInvoice.gst_number,
             oldInvoice.gst_amount, oldInvoice.qty, oldInvoice.total_amount,
-            oldInvoice.product, oldInvoice.product_code, oldInvoice.narration, oldInvoice.invoice_date, oldInvoice.behalf_of);
+            oldInvoice.product, oldInvoice.product_code, oldInvoice.narration, oldInvoice.invoice_date, oldInvoice.behalf_of, user.signatuteImage);
 
         if (!invoiceData) {
             return res.status(401).json({ success: success, invoiceCreationErr: true, message: 'Erroe while creating invoice' })

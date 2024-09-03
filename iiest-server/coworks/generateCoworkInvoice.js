@@ -30,7 +30,7 @@ const generateInvoice = async (idNumber, clientEmail, data) => {
 }
 
 
-const bcInvoiceDataHandler = async (invoiceCode, business_name, address, state, district, pincode, contact, email, processingAmount, invoiceType, gstNumber, gstAmount, qty, totalAmount, product, product_code, narration, invoice_date, behalf_of) => {
+const bcInvoiceDataHandler = async (invoiceCode, business_name, address, state, district, pincode, contact, email, processingAmount, invoiceType, gstNumber, gstAmount, qty, totalAmount, product, product_code, narration, invoice_date, behalf_of, signatureName) => {
 
     //getting date fot the invoice
     const date = new Date(invoice_date.toString());
@@ -42,7 +42,7 @@ const bcInvoiceDataHandler = async (invoiceCode, business_name, address, state, 
 
     const infoObj = {
         date: `${dateVal}-${monthVal}-${yearVal}`,
-        receiptNo: invoiceCode,
+        receiptNo: invoiceCode, 
         transactionId: invoiceCode,
         business_name: business_name,
         address: address,
@@ -63,7 +63,8 @@ const bcInvoiceDataHandler = async (invoiceCode, business_name, address, state, 
         gstDescription: getgstDescription(state, invoiceType, gstAmount),
         stateCode: stateCode,
         forCoworks: true,
-        behalf_of: behalf_of
+        behalf_of: behalf_of,
+        signatureName: signatureName
     }
     const invoiceData = await generateInvoice(invoiceCode, email, infoObj);
 
