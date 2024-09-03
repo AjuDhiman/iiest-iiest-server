@@ -22,7 +22,7 @@
                 *ngFor="let recipients of recipientData | paginate: { itemsPerPage: 5, currentPage: pageNumber , id: 'recipient-list'}; let sr = index">
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{sr+5*(pageNumber-1)+1}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.name.toLowerCase()}}</span></td>
-                <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.fatherName.toLowerCase()}}</span></td>
+                <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.fatherName?recipients.fatherName.toLowerCase():''}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.phoneNo}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate text-capitalize">{{recipients.email}}</span></td>
                 <td *ngIf="isfostac" class="cell text-center"><span class="truncate">{{recipients.address}}</span></td>

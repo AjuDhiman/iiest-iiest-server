@@ -20,7 +20,7 @@
           (click)="toogleTabs('Medical')">Medical</a>
         <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Water Test Report'}"
           (click)="toogleTabs('Water Test Report')">Water Test</a>
-        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Khadya Paaln'}"
+        <a *ngIf="userData.panel_type !== 'FSSAI Sales Panel' " class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Khadya Paaln'}"
           (click)="toogleTabs('Khadya Paaln')">Khadya Paaln</a>
       </li>
     </ul>
@@ -110,12 +110,12 @@
                         <ng-container>
 
                           <td class="cell"><span class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span></td>
-                          <td class="cell"><span [title]="fbo.fboInfo.fbo_name.toLowerCase()"
-                              class="truncate text-capitlize text-w-150">{{fbo.fboInfo.fbo_name.toLowerCase()}}</span>
+                          <td class="cell"><span [title]="fbo.fboInfo && fbo.fboInfo.fbo_name && checkString(fbo.fboInfo.fbo_name) && fbo.fboInfo.fbo_name.toLowerCase()"
+                              class="truncate text-capitlize text-w-150">{{fbo.fboInfo && fbo.fboInfo.fbo_name && fbo.fboInfo.fbo_name.toLowerCase()}}</span>
                           </td>
                           <td class="cell"><span
                               class="truncate text-capitlize">{{fbo.fboInfo.owner_name.toLowerCase()}}</span></td>
-                          <td class="cell"><span class="truncate">{{fbo.fboInfo.boInfo.customer_id}}</span></td>
+                          <td class="cell"><span class="truncate">{{fbo.fboInfo.boInfo && fbo.fboInfo.boInfo.customer_id}}</span></td>
                           <td class="cell selector" (click)="uploadSaleDoc(fbo, activeTab)"><span
                               class="truncate">{{fbo.fboInfo.customer_id}}</span></td>
                           <td class="cell"><span class="truncate text-capitlize">{{fbo.fboInfo.state}}</span></td>

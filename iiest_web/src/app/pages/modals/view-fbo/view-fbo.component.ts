@@ -93,15 +93,18 @@ export class ViewFboComponent implements OnInit {
       let basicDocs = this.basicDocs;
       this.getDataServices.getDocs(this.fboData.fboInfo.customer_id).subscribe({
         next: res => {
-          this.docList = res.docs.filter((doc: any) => {
-            if(basicDocs.includes(doc.name)){
-              //removing doc name from basic docsso we will get all docs distintively
-              basicDocs = basicDocs.filter(a => a !== doc.name);
-              return true;
-            } else {
-              return false;
-            }
-          });
+          if(res){
+            this.docList = res.docs.filter((doc: any) => {
+              if(basicDocs.includes(doc.name)){
+                //removing doc name from basic docsso we will get all docs distintively
+                basicDocs = basicDocs.filter(a => a !== doc.name);
+                return true;
+              } else {
+                return false;
+              }
+            });
+          }
+          
         }
       });
       // this.docList = this.fboData.docs[0].documents.filter((doc: any) => this.basicDocs.includes(doc.name));

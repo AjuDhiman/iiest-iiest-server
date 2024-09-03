@@ -11516,3 +11516,16 @@ header.masthead .post-heading .meta a {
 .social-link-list li p {
   margin: 10px;
 }
+
+@media(max-width: 996px){
+  .nsws-text-large{
+    display: none;
+  }
+  
+}
+
+@media(min-width: 996px){
+.nsws-text-small{
+  display: none;
+}
+}

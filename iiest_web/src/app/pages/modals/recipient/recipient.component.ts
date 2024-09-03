@@ -149,7 +149,6 @@ export class RecipientComponent implements OnInit {
   //Form Submit Methode
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.recipientform);
 
     if (this.recipientform.invalid || this.loading) { //can't submit while loading and in case of invalid recp form
       return;
@@ -248,7 +247,6 @@ export class RecipientComponent implements OnInit {
     this.loading = true;
     this.getDataServices.getSaleRecipients(saleId).subscribe({
       next: (res) => {
-        console.log(res);
         this.loading = false;
         if (res.recipientsList.length) {
           this.showPagination = true;
@@ -259,8 +257,12 @@ export class RecipientComponent implements OnInit {
           this.recipientData.forEach((recp: any) => {
              this.getDataServices.getDocs(recp.recipientId).subscribe({
               next: response => {
-                console.log(response)
-                recp.documents = response.docs;
+                if(response &&  response.docs){
+                  recp.documents = response.docs;
+                } else {
+                  recp.documents = [];
+                }
+                
                 
               }
              })

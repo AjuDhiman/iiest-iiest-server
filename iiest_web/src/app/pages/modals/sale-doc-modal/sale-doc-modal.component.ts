@@ -98,8 +98,11 @@ export class SaleDocModalComponent implements OnInit {
     // await this.uploadDoc('Manager Aadhar', 'Image', true, this.fboData.fboInfo.customer_id, this.aadharFile);
     await this.uploadShopImage();
     await this.uploadManagerAddharFront();
-    await this.uploadManagerAddharBack();
     await this.uploadManagerImage();
+    if (this.aadhar[1]) {
+      await this.uploadManagerAddharBack();
+    }
+    // await this.uploadManagerImage();
 
     this.activeModal.close()
     //update basic doc upload for the fbo in case all there basic doc uploaed
@@ -149,7 +152,9 @@ export class SaleDocModalComponent implements OnInit {
           case 'aadharPhoto':
             this.aadharFile = $event.target.files;
             this.aadhar[0] = `aadharfront${new Date().getTime()}.${this._utilServives.getExtention((this.aadharFile as any)[0].name)}`;
-            this.aadhar[1] = `aadharback${new Date().getTime()}.${this._utilServives.getExtention((this.aadharFile as any)[1].name)}`;
+            if ((this.aadharFile as any)[1]) {
+              this.aadhar[1] = `aadharback${new Date().getTime()}.${this._utilServives.getExtention((this.aadharFile as any)[1].name)}`;
+            }
             break;
         }
       }
@@ -204,7 +209,6 @@ export class SaleDocModalComponent implements OnInit {
     this._getdataService.getDocs(this.fboData.fboInfo.customer_id).subscribe({
       next: res => {
         let docs = res.docs;
-        console.log(docs);
         this.managerPhotoObj = docs.find((doc: any) => doc.name === 'Manager Photo');
         this.managerAadharObj = docs.find((doc: any) => doc.name === 'Manager Aadhar');
         this.shopPhotoObj = docs.find((doc: any) => doc.name === 'Shop Photo');
@@ -251,7 +255,7 @@ export class SaleDocModalComponent implements OnInit {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const files = control.value;
       if (files && files.length > maxFiles) {
-        return { invalidFileNumber: true};
+        return { invalidFileNumber: true };
       }
       return null;
     };
@@ -260,7 +264,7 @@ export class SaleDocModalComponent implements OnInit {
   //methord for uploading shop image
   uploadShopImage(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._getdataService.getSalesBasicDocUploadURL(this.shopPhoto, this.shopPhotoFile.type ).subscribe({
+      this._getdataService.getSalesBasicDocUploadURL(this.shopPhoto, this.shopPhotoFile.type).subscribe({
         next: res => {
           this._registerService.uplaodDocstoS3(res.uploadUrl, this.shopPhotoFile).subscribe({
             next: res => {
@@ -287,6 +291,9 @@ export class SaleDocModalComponent implements OnInit {
         next: res => {
           this._registerService.uplaodDocstoS3(res.uploadUrl, (this.aadharFile as any)[0]).subscribe({
             next: res => {
+              if(!this.aadhar[1]){
+                this.docObjects.push({ name: 'Manager Aadhar', format: 'Image', isMultiDoc: false, src: this.aadhar });
+              }
 
               resolve(res);
               // this._toastrService.success('Done')
@@ -302,8 +309,8 @@ export class SaleDocModalComponent implements OnInit {
     })
   }
 
-   //methord for uploading manager aadhar Back
-   uploadManagerAddharBack(): Promise<any> {
+  //methord for uploading manager aadhar Back
+  uploadManagerAddharBack(): Promise<any> {
     return new Promise((resolve, reject) => {
       this._getdataService.getSalesBasicDocUploadURL(this.aadhar[1], (this.aadharFile as any)[1].type).subscribe({
         next: res => {
@@ -327,7 +334,7 @@ export class SaleDocModalComponent implements OnInit {
   //methord for uploading manager image
   uploadManagerImage(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this._getdataService.getSalesBasicDocUploadURL(this.managerPhoto, this.managerPhotoFile.type ).subscribe({
+      this._getdataService.getSalesBasicDocUploadURL(this.managerPhoto, this.managerPhotoFile.type).subscribe({
         next: res => {
           this._registerService.uplaodDocstoS3(res.uploadUrl, this.managerPhotoFile).subscribe({
             next: res => {

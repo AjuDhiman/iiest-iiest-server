@@ -187,7 +187,7 @@ export class HeaderComponent implements OnInit {
   getNotifications(): void {
 
     let purpose: string = 'Verification';
-    if (this.userData.panel_type === 'FSSAI Relationship Panel') {
+    if (this.userData && (this.userData.panel_type === 'FSSAI Relationship Panel')) {
       this.getDataService.getNotifications(purpose).subscribe({
         next: res => {
           console.log(res);

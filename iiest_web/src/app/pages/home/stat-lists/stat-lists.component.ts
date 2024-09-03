@@ -92,4 +92,8 @@ export class StatListsComponent implements OnInit {
   onPageChange($event: number){
     this.pageNumber = $event;
   }
+
+  checkString(str: any): boolean{
+    return typeof str === 'string';
+  }
 }

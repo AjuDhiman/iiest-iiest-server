@@ -441,4 +441,8 @@ export class FbolistComponent implements OnInit {
     this.loading = true;
   }
 
+  checkString(str: any): boolean{
+    return typeof str === 'string';
+  }
+
 }

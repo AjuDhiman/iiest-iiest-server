@@ -141,7 +141,7 @@
               <!-- table body -->
               <tbody
                 *ngIf="filteredData?.length>0 && chartData.userDept==='Sales Department' || chartData.userDept==='IT Department' || chartData.userDept==='Management department'">
-                <tr (click)="viewCustomerSales(employee.fboInfo.customer_id)"
+                <tr 
                   *ngFor="let employee of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber1, id: chartData.chartTitile.split(' ').join('-') }; let sr = index">
                   <td class="cell"><span class="truncate text-capitalize">{{sr+itemsNumber*(pageNumber1-1)+1}}</span>
                   </td>
@@ -169,7 +169,7 @@
                       class="truncate">{{employee.employeeInfo.employee_name }}</span></td>
                   <td class="cell text-center"><span class="truncate text-capitalize selector">
                       <fa-icon [icon]="faEye" style="color: #1957a9;"
-                        (click)="viewSaleDetails($event, employee)"></fa-icon>
+                        (click)="!isRepetCustData?viewSaleDetails($event, employee):viewCustomerSales(employee.fboInfo.customer_id)"></fa-icon>
                     </span>
                   </td>
 

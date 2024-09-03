@@ -137,7 +137,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let cust of mostRepeatedCust | paginate: { itemsPerPage: 4, currentPage: pageNumber }">
-                                <td class="row-name text-capitalize"><span class="cursor-pointer">{{cust.name.toLowerCase()}}</span></td>
+                                <td class="row-name text-capitalize"><span class="cursor-pointer">{{checkString(cust.name) && cust.name.toLowerCase()}}</span></td>
                                 <td class="stat-cell">{{cust.repetition_count}}</td>
                             </tr>
                         </tbody>
