@@ -30,3 +30,7 @@ export class GeneralData {
 // export class PincodesData {
 //     static readonly type = '[pincodes] General Data';
 // }
+
+export class ClearEmployees {
+    static readonly type = '[Bo] Delete';
+}

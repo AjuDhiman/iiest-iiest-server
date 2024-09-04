@@ -3,7 +3,7 @@ import { Selector,Action, StateContext, State } from "@ngxs/store";
 import { GetdataService } from "src/app/services/getdata.service";
 import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
-import { DeleteSales, GetSales, SetSalesLoadedFalse, UpdateSales } from "src/app/store/actions/sales.action";
+import { ClearSales, DeleteSales, GetSales, SetSalesLoadedFalse, UpdateSales } from "src/app/store/actions/sales.action";
 
 //State Model
 export class SalesStateModel {
@@ -92,6 +92,16 @@ export class SalesState {
         setState({
             ...state,
             sales: updatedSalesList
+        })
+    }
+
+    @Action(ClearSales)
+    clearSales({getState, setState}:StateContext<SalesStateModel>){
+
+        setState({
+            salesLoaded: false,
+            sales: [],
+            pageNum: 1
         })
     }
 }

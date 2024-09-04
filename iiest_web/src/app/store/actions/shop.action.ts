@@ -25,3 +25,7 @@ export class SetShopsLoadedFalse {
 export class GeneralData {
     static readonly type = '[Shop] General Data';
 }
+
+export class ClearShops {
+    static readonly type = '[Bo] Delete';
+}

@@ -6,6 +6,13 @@ import { FormGroup, Validators, FormControl, FormBuilder, AbstractControl } from
 import { Router } from '@angular/router';
 import { faLock, faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
+import { UtilitiesService } from 'src/app/services/utilities.service';
+import { Store } from '@ngxs/store';
+import { ClearBos } from 'src/app/store/actions/bo.action';
+import { ClearEmployees } from 'src/app/store/actions/employee.action';
+import { ClearGSTList } from 'src/app/store/actions/gstlist.action';
+import { ClearSales } from 'src/app/store/actions/sales.action';
+import { ClearShops } from 'src/app/store/actions/shop.action';
 
 @Component({
   selector: 'app-login',
@@ -37,7 +44,6 @@ export class LoginComponent implements OnInit {
     temporaryPassword: new FormControl(''),
     newPassword: new FormControl(''),
     confirmPassword: new FormControl('')
-
   });
 
   submitted = false;
@@ -53,7 +59,9 @@ export class LoginComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private modalService: NgbModal,
     private route: Router,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private _utilServices: UtilitiesService,
+    private store: Store
   ) { }
 
   ngOnInit(): void {
@@ -105,6 +113,14 @@ export class LoginComponent implements OnInit {
           this.activeModal.close();
           const bodyElement = document.body;
           bodyElement.classList.add('app');
+          //clearing the store on login
+          this.store.dispatch(ClearBos);
+          this.store.dispatch(ClearEmployees);
+          this.store.dispatch(ClearGSTList);
+          this.store.dispatch(ClearSales);
+          this.store.dispatch(ClearShops);
+          this._utilServices.setShopListData([]);
+          this._utilServices.setData([]);
           this.route.navigateByUrl('/home')
         },
         error: (err) => {
@@ -135,6 +151,7 @@ export class LoginComponent implements OnInit {
 
     this._registerService.forgotPassword(email).subscribe({
       next: (res: any) => {
+        console.log(res);
         this.temporaryPassword = res.temporaryPassword; // Capture temporary password from the API response
         this.toastrService.success(res.message); // Display success message
         this.openNewPasswordModal(newPasswordModal); // Open the new password modal

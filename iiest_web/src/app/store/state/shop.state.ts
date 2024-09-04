@@ -1,4 +1,4 @@
-import { DeleteShop, GetShops, SetShopsLoadedFalse, UpdateShop } from 'src/app/store/actions/shop.action';
+import { ClearShops, DeleteShop, GetShops, SetShopsLoadedFalse, UpdateShop } from 'src/app/store/actions/shop.action';
 import { Injectable } from "@angular/core";
 import { Selector,Action, StateContext, State } from "@ngxs/store";
 import { GetdataService } from "src/app/services/getdata.service";
@@ -93,6 +93,17 @@ export class ShopState {
         setState({
             ...state,
             shops: updatedSalesList
+        })
+    }
+
+    
+    @Action(ClearShops)
+    clearShops({getState, setState}:StateContext<ShopsStateModel>){
+
+        setState({
+            shopsLoaded: false,
+            shops: [],
+            pageNum: 1
         })
     }
 }

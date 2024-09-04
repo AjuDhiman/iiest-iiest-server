@@ -181,6 +181,9 @@ exports.getClientList = async (req, res) => {
                 },
             },
             {
+                $unwind: "$boInfo"
+            },
+            {
                 $match: {
                     "created_by": {
                         $not: {
@@ -188,10 +191,7 @@ exports.getClientList = async (req, res) => {
                             $options: "i"
                         }
                     }
-                }
-            },
-            {
-                $unwind: "$boInfo"
+                } 
             },
             {
                 $group: {

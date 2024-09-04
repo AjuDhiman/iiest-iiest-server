@@ -3,7 +3,7 @@ import { Selector,Action, StateContext, State } from "@ngxs/store";
 import { GetdataService } from "src/app/services/getdata.service";
 import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
-import { DeleteBo, GetBos, SetBosLoadedFalse, UpdateBos } from "../actions/bo.action";
+import { ClearBos, DeleteBo, GetBos, SetBosLoadedFalse, UpdateBos } from "../actions/bo.action";
 
 //State Model
 export class BosStateModel {
@@ -90,6 +90,15 @@ export class BosState {
         setState({
             ...state,
             bos: updatedSalesList
+        })
+    }
+
+    @Action(ClearBos)
+    clearBos({getState, setState}:StateContext<BosStateModel>){
+
+        setState({
+            bosLoaded: false,
+            bos: []
         })
     }
 }

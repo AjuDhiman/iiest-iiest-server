@@ -4,7 +4,7 @@ import { GetdataService } from "src/app/services/getdata.service";
 import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
 import { DeleteBo, GetBos, SetBosLoadedFalse, UpdateBos } from "../actions/bo.action";
-import { GetGSTList, SetGSTListLoadedFalse } from "../actions/gstlist.action";
+import { ClearGSTList, GetGSTList, SetGSTListLoadedFalse } from "../actions/gstlist.action";
 
 //State Model
 export class GSTListStateModel {
@@ -72,5 +72,14 @@ export class GSTListState {
     updateBos({getState, setState}:StateContext<GSTListStateModel>, {objId, payload}: UpdateBos){
         
         
+    }
+
+    @Action(ClearGSTList)
+    clearGSTList({getState, setState}:StateContext<GSTListStateModel>){
+
+        setState({
+            gstlistLoaded: false,
+            gstList: []
+        })
     }
 }

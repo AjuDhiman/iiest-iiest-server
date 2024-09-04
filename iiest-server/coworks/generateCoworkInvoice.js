@@ -6,7 +6,7 @@ const coworkInvoiceTemplate = require('../assets/coworkInvoiceTemplet');
 
 const generateInvoice = async (idNumber, clientEmail, data) => {
     const fileName = `invoice_${Date.now()}.pdf`;
-    const invoiceHTML = await coworkInvoiceTemplate(data);
+    const invoiceHTML = coworkInvoiceTemplate(data);
     let file = { content: invoiceHTML };
     let options = { format: 'A4', omitBackground: true, pageRanges: '1', printBackground: false };
 

@@ -21,3 +21,8 @@ export class GetBos {
 export class SetBosLoadedFalse {
     static readonly type = '[Bo] Get';
 }
+
+
+export class ClearBos {
+    static readonly type = '[Bo] Delete';
+}

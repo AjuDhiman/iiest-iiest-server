@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Selector,Action, StateContext, State } from "@ngxs/store";
 
 import { Employee } from "src/app/utils/registerinterface";
-import { DeleteEmployee, GetEmployee, SetEmployeeLoadedFalse, UpdateEmployee } from "../actions/employee.action";
+import { ClearEmployees, DeleteEmployee, GetEmployee, SetEmployeeLoadedFalse, UpdateEmployee } from "../actions/employee.action";
 import { GetdataService } from "src/app/services/getdata.service";
 import { tap } from "rxjs";
 import { RegisterService } from "src/app/services/register.service";
@@ -93,6 +93,15 @@ export class EmployeeState {
         setState({
             ...state,
             employees: updatedEmployeeList
+        })
+    }
+
+    @Action(ClearEmployees)
+    clearEmployees({getState, setState}:StateContext<EmployeeStateModel>){
+
+        setState({
+            employeeLoaded: false,
+            employees: []
         })
     }
 }
