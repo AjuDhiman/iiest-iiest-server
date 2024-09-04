@@ -8,7 +8,7 @@ const coworksLogo = require("./coworksLogo");
 const coworksStamp = require('./coworkStamp');
 
 
-const coworkInvoiceTemplate = async (data) => {
+const coworkInvoiceTemplate = (data) => {
 
     const quantity = data.qty;
     const rate = data.amount;
@@ -91,26 +91,7 @@ const coworkInvoiceTemplate = async (data) => {
 
     const amountInWords = toWords.convert(data.totalAmount, { currency: true, ignoreZeroCurrency: true });
 
-    //getting signature stream from s3
-    const signatureDownloadStream = await getFileStream((`${employeeDocsPath}${signatureName}`));
-
-    signatureDownloadStream.on('error', () => {
-        success = false;
-        return res.status(200).json({ success, randomErr: true });
-    })
-
-    return new Promise((resolve, reject) => {
-        signatureDownloadStream.on('data', (chunk) => {
-            chunks.push(chunk);
-        });
-
-        signatureDownloadStream.on('end', () => {
-            const signatureBuffer = Buffer.concat(chunks);
-            const signaturePrefix = 'data:image/png;base64,';
-            const signaturebase64 = signatureBuffer.toString('base64');
-            const signatureConverted = `${signaturePrefix}${signaturebase64}`;
-
-            resolve(`<!DOCTYPE html>
+    return `<!DOCTYPE html>
             <html lang="en">
             
             <head>
@@ -376,13 +357,7 @@ const coworkInvoiceTemplate = async (data) => {
                 </div>
             </body>
             
-            </html>`);
-        });
-
-        signatureDownloadStream.on('error', (error) => {
-            reject(error);
-        });
-    });
+            </html>`
 }
 
 module.exports = coworkInvoiceTemplate;

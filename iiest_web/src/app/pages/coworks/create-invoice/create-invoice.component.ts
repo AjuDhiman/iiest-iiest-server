@@ -193,6 +193,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
         this.invoiceForm.reset();
         this.isOtherPincode = false;
         this.invoiceForm.removeControl('other_pincode')
+        this.isGstNoVisible = true;
         this.getCoworkInvoiceList();
       },
       error: err => {
