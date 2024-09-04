@@ -47,7 +47,7 @@ exports.createBusinessOwner = async (req, res) => {
             business_category,
             business_ownership_type,
             contact_no,
-            email,
+            email: email.toLowerCase(),
             manager_name,
             onboard_by: employeeInfo._id,
             is_contact_verified: false,

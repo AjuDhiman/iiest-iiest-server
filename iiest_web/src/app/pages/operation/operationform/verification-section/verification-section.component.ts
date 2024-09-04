@@ -267,6 +267,8 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
 
     if (changes['isForDocVerification']) {
       this.isForDocVerification = changes['isForDocVerification'].currentValue;
+      const activeProduct: requireDocsInterface = this.requiredDocs.find((doc: requireDocsInterface) => doc.isActiveProduct);
+      this.checkedDocsName.push(activeProduct.display_name.toString());
     }
 
     // Check if 'verifiedShopData' has changed and 'isForDocVerification' is true
@@ -444,7 +446,7 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         })
 
       } else {
-        console.log(this.verification_check);
+      
       }
     })
   }
@@ -543,16 +545,17 @@ export class VerificationSectionComponent implements OnInit, OnChanges {
         //   this.verifiedStatus = true;
         //   this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
         // }
-        
-        this.patchVerifiedData(res.verifedData);
+        if(res){
+          this.patchVerifiedData(res.verifedData);
 
-        this.verifiedShopData = res.verifedData
-        // this.isPendingByCustomer = this.verifiedShopData.isProdVerificationLinkSend;
-        this.verifiedStatus = this.verifiedShopData.isProdVerified;
-        this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
-        this.decideResult();
-        this.emitVerifiedData.emit(this.verifiedShopData);
-
+          this.verifiedShopData = res.verifedData
+          // this.isPendingByCustomer = this.verifiedShopData.isProdVerificationLinkSend;
+          this.verifiedStatus = this.verifiedShopData.isProdVerified;
+          this.emitPrevSecVerifiedStatus.emit(this.verifiedStatus);
+          this.decideResult();
+          this.emitVerifiedData.emit(this.verifiedShopData);
+        }
+      
 
       },
       error: err => {

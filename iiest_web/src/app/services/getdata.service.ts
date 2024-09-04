@@ -197,7 +197,6 @@ export class GetdataService {
 
   public getMoreCaseInfo(product: string, candidateId: string): Observable<any> {
     const url = `${this.url}/morecaseinfo/${product}/${candidateId}`;
-    console.log(url);
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
@@ -345,9 +344,7 @@ export class GetdataService {
 
   public getDocs(oid: string): Observable<any> { // for getting batchlist data from training
     oid = oid.replace(/\//g, 'slash'); // replace '/' by word slash so we can pass it to as api endpoint
-    console.log(oid);
     const url: string = `${this.url}/getdocs/${oid}`;
-    console.log(url);
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 

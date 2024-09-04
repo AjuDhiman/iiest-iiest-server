@@ -156,7 +156,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
         this.shops$.subscribe({
           next: res => {
             if(res.length){
-              console.log(res);
               this.loading = false;
               this.caseList = res.map((data: any) => {
                 const { resultText, resultTextClass, resultIcon, isForDocumentsNum, pendingDocs, approvedDocs } = this.decideResult(data);
@@ -357,7 +356,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
   toogleTabs(tab: string) {
     this.productType = tab;
     this.caseData = this.caseList.filter((data: any) => data.product_name && (data.product_name === this.productType));
-    // console.log('kkkkkkkkkkkkkkk',this.caseList.filter((data: any) => data.product_name && data.product_name === 'Foscos'))
     this.initializeServiceType();
     this.setListProductWise();
   }
@@ -501,7 +499,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
         if (entry.salesInfo.docs[0] && entry.salesInfo.docs[0].documents) {
           let reqDocs = basicRequiredDocs.map(doc => doc.display_name);
           documents = entry.salesInfo.docs[0].documents.map((a: any) => a.name);
-          console.log(documents);
           documents = new Set(documents);
           documents = [...documents];
           documents.forEach(doc => {
@@ -511,8 +508,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
             }
           });
           isForDocumentsNum = true;
-          console.log('pending docs', pendingDocs)
-          console.log('approved docs', approvedDocs)
         }
 
       } else if (verificationData.isProdVerified) {

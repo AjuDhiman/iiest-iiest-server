@@ -190,7 +190,6 @@ export class HeaderComponent implements OnInit {
     if (this.userData && (this.userData.panel_type === 'FSSAI Relationship Panel')) {
       this.getDataService.getNotifications(purpose).subscribe({
         next: res => {
-          console.log(res);
           this.notifications = res.notifications.filter((a: any) => !a.isRead);
           this.unreadMessageNum = this.notifications.filter(a => !a.isRead).length;
         }

@@ -20,7 +20,7 @@ const sendCoworkInvoiceMail = (clientMail, files) => {
   });
   const mailOptions = {
     from: mailData.email,
-    cc: process.env.DIRECTOR_MAIL,
+    cc: [process.env.DIRECTOR_MAIL, 'incubation.iiest@gmail.com'],
     to: clientMail,
     subject: 'IIEST Incubation And Business Centre -- INVOICE',
     html: `<p>Welcome to the IIEST Incubation And Business Centre<br></p>

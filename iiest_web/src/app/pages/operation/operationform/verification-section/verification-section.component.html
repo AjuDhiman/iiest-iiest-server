@@ -985,7 +985,9 @@
       <button type="submit" class="btn btn-sm btn-primary"
         [disabled]="(verifiedStatus || isPendingByCustomer) && !isEditMode" (click)="onDocVerify()">Verify</button>
       <span style="font-size: small; vertical-align: bottom;" class=""> (Note<sup>*</sup>: Please verify all the
-        fields before verifing and sending document verification link by SMS and E-Mail.)</span>
+        fields before verifing and sending document verification link by SMS and E-Mail.)</span><br>
+        <span style="font-size: small; vertical-align: bottom;" class=""><b> Color Coding:<br> 1. Purple and Ticked: Active product.<br>
+          2. Green and Unticked: Customer declared he have but didn't gave us yet.<br>3. Green and Ticked: Document submitted.</b></span>
     </div>
   </div>
 

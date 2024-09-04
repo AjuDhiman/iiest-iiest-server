@@ -48,7 +48,6 @@ export class GeneralSectionComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes && changes['caseData'] && changes['caseData'].currentValue){
-      console.log('case data', this.caseData);
       this.getCaseNotes();
     }
   }
@@ -62,8 +61,6 @@ export class GeneralSectionComponent implements OnInit, OnChanges {
     if (this.generalForm.invalid) {
       return;
     }
-
-    console.log(this.generalForm.value);
 
     this._registerService.postOperGenData(this.candidateId, this.generalForm.value).subscribe({
       next: res => {
@@ -96,13 +93,11 @@ export class GeneralSectionComponent implements OnInit, OnChanges {
   getCaseNotes() {
     this._getDataService.getAuditLogs(this.candidateId).subscribe({
       next: res => {
-        console.log(res);
         // this.formatLogs(res.logs);
         this.unformatedLogsArr = [...this.unformatedLogsArr,...res.logs];
 
         this._getDataService.getAuditLogs(this.caseData.salesInfo.fboInfo._id).subscribe({
           next: response => {
-            console.log(response);
             this.unformatedLogsArr = [...this.unformatedLogsArr,...response.logs];
             this.unformatedLogsArr.sort((a:any, b:any) => {
               return( new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
