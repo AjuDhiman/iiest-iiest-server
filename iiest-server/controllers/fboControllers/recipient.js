@@ -39,6 +39,8 @@ exports.addRecipient = async (req, res, next) => {
 
                 console.log(idNumber, recipientId);
 
+                recipient.email = recipient.email.toLowerCase();
+
                 const addRecipient = await recipientModel.create({ salesInfo: req.params.id, id_num: idNumber, name: recipient.name, phoneNo: recipient.phoneNo, recipientId: recipientId, aadharNo: recipient.aadharNo, fatherName: recipient.fatherName, dob: recipient.dob, email: recipient.email, address: recipient.recp_address });
 
                 // this code is for tracking the the record related action of a recipient
