@@ -229,7 +229,9 @@ exports.getClientList = async (req, res) => {
                     "createdAt": -1
                 }
             }
-        ]);
+        ],{
+            allowDiskUse: true
+        });
 
 
         return res.status(200).json({ clientList: clientList });
