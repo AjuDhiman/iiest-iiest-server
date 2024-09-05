@@ -540,8 +540,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
         modalRef.componentInstance.doc = {
           name: `Invoice of ${invoice.business_name}`,
           format: 'pdf',
-          src: res.invoiceConverted,
-          multipleDoc: false
+          src: [res.invoiceConverted],
+          multipleDoc: true
         }
       },
       error: err => {
