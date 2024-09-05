@@ -323,8 +323,8 @@ export class InvoiceListComponent implements OnInit, AfterViewInit, OnDestroy {
         modalRef.componentInstance.doc = {
           name: `Invoice of ${invoice.business_name}`,
           format: 'pdf',
-          src: res.invoiceConverted,
-          multipleDoc: false
+          src: [res.invoiceConverted],
+          multipleDoc: true
         }
       }
     })
