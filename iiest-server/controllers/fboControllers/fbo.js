@@ -92,7 +92,7 @@ exports.fboPayReturn = async (req, res) => {
 
   let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
 
-  // await new Promise(resolve => setTimeout(resolve, 500)); //wait fot 0.5 sec brfore proceeding for beating db update threshold for updating api called proprty of session data in case api call backed more than one time in amount of ms 
+  await new Promise(resolve => setTimeout(resolve, 500)); //wait fot 0.5 sec brfore proceeding for beating db update threshold for updating api called proprty of session data in case api call backed more than one time in amount of ms 
 
   try {
 
