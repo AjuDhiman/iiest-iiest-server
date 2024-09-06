@@ -32,9 +32,12 @@ const sendDocumentMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
             Address - ${CB_ADDRESS.english}<br/>
+            Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+            Email = customerrelations@iiest.org<br>
             Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
             Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
             Contact time 10 :00 a.m to 7:00 p.m<br>
+            <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -51,9 +54,12 @@ const sendDocumentMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`,
     attachments: [
       {
         filename: 'fostacCertificate.pdf',
@@ -108,9 +114,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -136,9 +145,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   } if (clientData.product == 'fostac') {
 
@@ -170,9 +182,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -204,9 +219,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   } else if (clientData.product == 'foscos') {
 
@@ -232,9 +250,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -258,10 +279,13 @@ const sendVerificationMail = (clientData) => {
     <p>${CB_BRAND_NAME.hindi}</p>
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
-    पता - ${CB_ADDRESS.hindi}<br/>
+    पता - ${CB_ADDRESS.hindi}<br/>'
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   } else if (clientData.product == 'training_date_allotment') {
 
@@ -280,9 +304,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -302,9 +329,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   }
   else if (clientData.product == 'fostac_enrollment') {
@@ -325,9 +355,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -348,9 +381,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   }
   else if (clientData.product == 'fostac_attendance') {
@@ -371,9 +407,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -392,9 +431,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   }
   else if (clientData.product == 'hra') {
@@ -417,9 +459,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -440,9 +485,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   } else if (clientData.product == 'doc') {
 
@@ -481,9 +529,12 @@ const sendVerificationMail = (clientData) => {
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -524,9 +575,12 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
     <br>
     ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
     पता - ${CB_ADDRESS.hindi}<br/>
+    वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+     ईमेल - customerrelations@iiest.org</br>
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+    संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   } 
   else if (clientData.product == 'hra schedule') {
@@ -547,9 +601,12 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
     <br>
     Brand Name - ${CB_BRAND_NAME.english},<br/>
     Address - ${CB_ADDRESS.english}<br/>
+    Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+    Email = customerrelations@iiest.org<br>
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
+    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -565,9 +622,12 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
 <br>
 ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
 पता - ${CB_ADDRESS.hindi}<br/>
+वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+ ईमेल - customerrelations@iiest.org</br>
 संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
 लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`;
+संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+<br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
 
   }
 

@@ -51,9 +51,12 @@ const sendInvoiceMail = (clientMail, files, isPayLaterMail, data) => {
 
         Brand Name - ${CB_BRAND_NAME.english},<br/>
         Address - ${CB_ADDRESS.english}<br/>
+        Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+        Email - customerrelations@iiest.org<br>
         Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
         Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
         Contact time 10 :00 a.m to 7:00 p.m<br>
+        <br>This mail is system generated, please do not replay on it.
         <br><br>
         <hr>
         <br>
@@ -66,9 +69,12 @@ const sendInvoiceMail = (clientMail, files, isPayLaterMail, data) => {
         <br>
         ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
         पता - ${CB_ADDRESS.hindi}<br/>
+        वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+        ईमेल - customerrelations@iiest.org<br>
         संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
         लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br> 
-        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
+        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+        <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`,
     attachments: attachments
   }
   transport.sendMail(mailOptions, function (error, response) {
@@ -111,8 +117,11 @@ const sendCheckMail = (clientMail, clientData) => {
         <br>
         Brand Name - ${CB_BRAND_NAME.english},<br/>
         Address - ${CB_ADDRESS.english}<br/>
+        Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+        Email - customerrelations@iiest.org<br>
         Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
         Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+        <br>This mail is system generated, please do not replay on it.
         Contact time 10 :00 a.m to 7:00 p.m<br>
         <br><br>
         <hr>
@@ -133,9 +142,12 @@ const sendCheckMail = (clientMail, clientData) => {
         <br>
         ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
         पता - ${CB_ADDRESS.hindi}<br/>
+        वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+         ईमेल - customerrelations@iiest.org</br>
         संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
         लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
+        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+        <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`,
   }
   transport.sendMail(mailOptions, function (error, response) {
     if (error) {
@@ -193,12 +205,16 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         The company has zero tolerance towards any bribery, corruption & fraud in business activities.</p>
         <p>Thank You</p>
         <p>Technical Officer: ${clientData.verifier}</p>
+        The information provided will be verified by our food technical officer on-site , the date and time will be provided in advance.
         <br><br>
         Brand Name - ${CB_BRAND_NAME.english},<br/>
         Address - ${CB_ADDRESS.english}<br/>
+        Website - <a href='https://connectonline.world'>connectonline.world</a><br> 
+        Email - customerrelations@iiest.org<br>
         Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
         Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
         Contact time 10 :00 a.m to 7:00 p.m<br>
+        <br>This mail is system generated, please do not replay on it.
         <br><br>
         <hr>
         <br>
@@ -214,9 +230,11 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         प्रबंधक का संपर्क: ${clientData.manager_contact}<br>
         प्रबंधक का ईमेल: ${clientData.manager_email}<br>
         पता: ${clientData.address}<br>
+        वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
         राज्य: ${clientData.state}<br>
         जिला: ${clientData.district}<br>
         पिनकोड: ${clientData.pincode}<br>
+        <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।
         <br>
         <p>अपना ईमेल सत्यापित करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
         <a style="text-decoration: none;" href='${FRONT_END.VIEW_URL}#/verifyonboard/fbo/${clientData.fboObjId}'>
@@ -238,9 +256,12 @@ const sendFboVerificationMail = (clientMail, clientData) => {
         <br><br>
         ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
         पता - ${CB_ADDRESS.hindi}<br/>
+        वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a><br>
+         ईमेल - customerrelations@iiest.org</br>
         संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
         लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>`,
+        संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+        <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`,
   }
   transport.sendMail(mailOptions, function (error, response) {
     if (error) {

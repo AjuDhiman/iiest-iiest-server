@@ -17,7 +17,9 @@ const sendEmployeeInfo = (username, password, empId, clientMail) => {
               <p><strong>Employee ID:</strong> ${empId}</p>
               <p><strong>Username:</strong> ${username}</p>
               <p><strong>Password:</strong> ${password}</p>
-              <p>We look forward to your contributions to the company.</p>`
+              <p>We look forward to your contributions to the company.</p>
+              
+              This mail is system generated, please do not replay on it`
               // <p>Best regards,<br>
               // [Your Name]<br>
               // [Your Position]<br>
@@ -47,7 +49,9 @@ const sendTemporaryPass = ( temppass, clientMail) => {
     subject: "Connect Bharat - Temporary Password",
     html: `<p>Please Use this temprary password for setting new password</p>
               <p><strong>Temprary Password:</strong> ${temppass}</p>
-              <p>We look forward to your contributions to the company.</p>`
+              <p>We look forward to your contributions to the company.</p>
+              
+               This mail is system generated, please do not replay on it.`
   }
   transport.sendMail(mailOptions, function (error, response) {
     if (error) {

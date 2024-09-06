@@ -33,10 +33,14 @@ exports.sendMailToBo = async (boMail, mailInfo) => {
 
             Brand Name - ${CB_BRAND_NAME.english},<br/>
             Address - ${CB_ADDRESS.english}<br/>
+            Email = customerrelations@iiest.org<br>
             Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
             Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
-            Contact time 10 :00 a.m to 7:00 p.m<br>
+            Website - <a href='https://connectonline.world'>connectonline.world</a><br>
+            Contact time 10 :00 a.m to 7:00 p.m<br>'
+            This mail is system generated, please do not replay on this mail.
             <br><br>
+           
             <hr>
             <br>
 
@@ -47,9 +51,13 @@ exports.sendMailToBo = async (boMail, mailInfo) => {
             
             ब्रांड नाम = ${CB_BRAND_NAME.hindi}<br>
         पता - ${CB_ADDRESS.hindi}<br/>
+        ईमेल - customerrelations@iiest.org<br>
         संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
         लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
+वेबसाइट - <a href='https://connectonline.world'>connectonline.world</a>
         संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
+        <br>
+        यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।
         <hr> <br>`,
         });
 
