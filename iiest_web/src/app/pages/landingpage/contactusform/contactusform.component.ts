@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { UtilitiesService } from 'src/app/services/utilities.service';
-import { faLocationDot, faPhone, faPaperPlane, faGlobe, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot, faPhone, faPaperPlane, faGlobe, faClose, faMailBulk, faEnvelopeSquare } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -20,6 +20,8 @@ export class ContactusformComponent implements OnInit {
   faPaperPlane = faPaperPlane;
   faGlobe = faGlobe;
   faClose = faClose;
+  faMailBulk = faMailBulk;
+  faEnvelopeSquare= faEnvelopeSquare;
 
   ContactUsForm: FormGroup = new FormGroup({
     contact_ft_name: new FormControl(''),
