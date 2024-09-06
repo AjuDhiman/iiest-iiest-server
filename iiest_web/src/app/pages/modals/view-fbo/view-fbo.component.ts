@@ -219,7 +219,6 @@ export class ViewFboComponent implements OnInit {
 
   //methord opens view document modal in case of shop identification documents
   viewDocument(name: string, res: any, format: string, isMultiDoc: boolean): void { // methord for calling viewdoc component for a particucar doc
-
     let obj = {
       name: name,
       src: isMultiDoc ? res : [res.toString()], // we will put single src in array because our component needs array of src for showing docs
@@ -228,6 +227,25 @@ export class ViewFboComponent implements OnInit {
     }
     const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.doc = obj;
+  }
+
+  viewCheque(name: string, res: any, format: string, isMultiDoc: boolean, salesId: any): void { // methord for calling viewdoc component for a particucar doc
+
+    this.getDataServices.getChequeImage(salesId).subscribe({
+      next: Response => {
+        let obj = {
+          name: name,
+          src: isMultiDoc ? [Response.presignedUrl]:Response.presignedUrl, // we will put single src in array because our component needs array of src for showing docs
+          format: format,
+          multipleDoc: isMultiDoc
+        }
+        const modalRef = this.ngbModal.open(ViewDocumentComponent, { size: 'lg', backdrop: 'static' });
+        modalRef.componentInstance.doc = obj;
+        
+      }
+    })
+
+   
   }
 
   sendInvoiceManually(): void {

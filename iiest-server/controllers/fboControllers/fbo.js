@@ -92,6 +92,8 @@ exports.fboPayReturn = async (req, res) => {
 
   let sessionId = req.params.id; //Disclaimer: This sessionId here is used to get stored data from sessionData Model from mongoose this used in place of session because of unaviliblity of session in case of redirect in pm2 server so do not take it as express-session
 
+  // await new Promise(resolve => setTimeout(resolve, 500)); //wait fot 0.5 sec brfore proceeding for beating db update threshold for updating api called proprty of session data in case api call backed more than one time in amount of ms 
+
   try {
 
     //Do further process in case of Payment Success from phone pe
@@ -1479,5 +1481,28 @@ exports.updateFboInfo = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" })
+  }
+}
+
+exports.getChequeImagePresignedUrl = async(req, res) => {
+  try {
+
+    const id = req.params.id;
+
+    const sale = await salesModel.findOne({_id: id});
+
+    const cheque_data = sale.cheque_data;
+
+    const presignedUrl = await getDocObject(cheque_data.cheque_image)
+
+    if(!presignedUrl){
+      return res.status(404).json({success: false, message: 'can find cheque image'})
+    }else {
+      return res.status(200).json({success: true, presignedUrl})
+    }
+
+  } catch(error){
+    console.log(error)
+    return res.status(500).json({message: 'Internal Server Error', success: false})
   }
 }

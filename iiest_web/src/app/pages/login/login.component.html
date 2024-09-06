@@ -86,7 +86,7 @@
 
 <!-- New Password Modal -->
 <ng-template #newPasswordModal let-modal>
-    <form [formGroup]="formNewPassword" (ngSubmit)="setNewPassword()">
+    <form [formGroup]="formNewPassword" (ngSubmit)="setNewPassword()" autocomplete="off">
         <div class="modal-content">
             <div class="modal-header bg-secondary">
                 <h5 class="modal-title text-white" id="modal-basic-title">Set New Password</h5>
@@ -113,7 +113,7 @@
                 <div class="mb-3">
                     <label for="temporaryPassword">Temporary Password</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" id="temporaryPassword"
+                        <input type="password" class="form-control" id="temporaryPassword" autocomplete="off"
                             placeholder="Temporary Password" formControlName="temporaryPassword"
                             [ngClass]="{ 'is-invalid': submittedFP && fnp['temporaryPassword'].errors }" />
                     </div>

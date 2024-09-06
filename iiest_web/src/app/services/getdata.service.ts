@@ -37,6 +37,12 @@ export class GetdataService {
     return this.http.get<any>(url).pipe(catchError(this.handleError));
   }
 
+   //api for getting user sign
+   public getChequeImage(objId: string): Observable<any> {
+    const url = `${this.url}/getchequepresignedurl/${objId}`;
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+  }
+
   //api for getting upload url forn uploading dos to s3 bucket
   public getEmployeeDocUploadURL(name: string, format: string): Observable<any> {
     //convering image/jpg to image_jpg because "/" can effect route

@@ -192,7 +192,7 @@
                             <div class="col-md-6 title">Cheque Image</div>
                             <div class="col-md-6 data">
                                 <fa-icon class="fa-2xl text-success cursor-pointer"
-                                    (click)="viewDocument('Cheque Of' + fboData.cheque_data.payee_name , fboData.cheque_data.cheque_image, 'image', false)"
+                                    (click)="viewCheque('Cheque Of' + fboData.cheque_data.payee_name , fboData.cheque_data.cheque_image, 'image', false, fboData._id)"
                                     [icon]="faFile"></fa-icon>
                             </div>
                         </div>

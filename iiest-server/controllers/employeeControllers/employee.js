@@ -4,7 +4,7 @@ const areaAllocationModel = require('../../models/employeeModels/employeeAreaSch
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { generateUsername, generatePassword, generateEmployeeID } = require('../../employee/generateCredentials');
-const sendEmployeeInfo = require('../../employee/sendMail');
+const {sendEmployeeInfo, sendTemporaryPass} = require('../../employee/sendMail');
 const { empSignBucket, empImageBucket } = require('../../config/buckets');
 const { ObjectId } = require('mongodb');
 const reportingManagerModel = require('../../models/employeeModels/reportingManagerSchema');
@@ -157,7 +157,9 @@ exports.forgotPassword = async (req, res) => {
 
         await user.save();
 
-        console.log('Temporary password sent successfully:', temporaryPassword);
+        sendTemporaryPass(temporaryPassword, user.email)
+
+        // console.log('Temporary password sent successfully:', temporaryPassword);
 
         // Set timeout to clear temporary password after 10 minutes
         setTimeout(async () => {

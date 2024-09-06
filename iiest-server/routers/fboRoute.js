@@ -1,5 +1,5 @@
 const express = require('express');
-const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeOrPaylaterSale, getSalesBasicDocUploadURL, sendFboVerificationLink, verifyFbo, updateFboInfo, boPayLater } = require('../controllers/fboControllers/fbo');
+const { fboRegister, deleteFbo, editFbo, fboPayment, fboPayReturn, registerdFBOList, saleInvoice, registerdBOList, boByCheque, updateFboBasicDocStatus, approveChequeOrPaylaterSale, getSalesBasicDocUploadURL, sendFboVerificationLink, verifyFbo, updateFboInfo, boPayLater, getChequeImagePresignedUrl } = require('../controllers/fboControllers/fbo');
 const { fboFormData, getProductData } = require('../controllers/generalControllers/generalData');
 const { addRecipient, addShop, recipientsList, shopsList, addShopByExcel } = require('../controllers/fboControllers/recipient');
 const { existingFboCash, existingFboPayReturn, existingFboPayPage, existingFboByCheque, existingFboPayLater } = require('../controllers/fboControllers/existingFbo');
@@ -49,6 +49,8 @@ router.get('/getbodata', authMiddleware, getAllBusinessOwners);
 router.get('/allbolist', authMiddleware, registerdBOList); 
 router.put('/updatefbobasicdocstatus/:id', authMiddleware, updateFboBasicDocStatus); 
 router.get('/getticketdocs/:id', authMiddleware, getTicketsDocs); 
+router.get('/getchequepresignedurl/:id', authMiddleware, getChequeImagePresignedUrl); 
+
 
 router.put('/sendfboverificationlink/:fboid', authMiddleware, sendFboVerificationLink); //roure for sending verification link by mail and sms
 router.put('/verifyfbo/:fboid', verifyFbo); //route for updating verification info of a fbo

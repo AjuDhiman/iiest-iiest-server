@@ -64,11 +64,17 @@ export class UtilitiesService {
     if (documentIds.length <= 1) {
       const documentId = documentIds;
       this.http.get(documentId[0], { responseType: 'blob' }).subscribe((data: Blob) => {
-        console.log(data)
+        
         const a = document.createElement('a');
         const objectUrl = URL.createObjectURL(data);
         a.href = objectUrl;
-        a.download = `${new Date().getTime()}.pdf`; 
+
+        if(contentTypes == 'image'){
+          a.download = `${new Date().getTime()}.jpeg`; 
+        } else {
+          a.download = `${new Date().getTime()}.pdf`; 
+        }
+       
         a.click();
         URL.revokeObjectURL(objectUrl);
       }, error => {

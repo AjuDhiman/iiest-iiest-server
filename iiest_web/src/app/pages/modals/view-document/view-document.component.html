@@ -2,7 +2,7 @@
     <h6 class="modal-title text-white" id="modal-basic-title">{{doc.name}}</h6>
     <a class="download-icon">
         <fa-icon class="fa-md cursor-pointer" [icon]="faDownload" title="Download"
-          (click)="downloadDoc(doc.src, '')"></fa-icon>
+          (click)="downloadDoc(doc.src, doc.format)"></fa-icon>
       </a>
       <a class="navigate-icon" *ngIf="doc.multipleDoc">
         <fa-icon class="fa-md cursor-pointer m-1" [icon]="faArrowAltCircleLeft" title="Previous"

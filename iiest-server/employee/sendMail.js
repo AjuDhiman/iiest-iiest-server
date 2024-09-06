@@ -33,4 +33,29 @@ const sendEmployeeInfo = (username, password, empId, clientMail) => {
   })
 }
 
-module.exports = sendEmployeeInfo
+const sendTemporaryPass = ( temppass, clientMail) => {
+  const transport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: mailData.email,
+      pass: mailData.pass
+    }
+  });
+  const mailOptions = {
+    from: mailData.email,
+    to: clientMail,
+    subject: "Connect Bharat - Temporary Password",
+    html: `<p>Please Use this temprary password for setting new password</p>
+              <p><strong>Temprary Password:</strong> ${temppass}</p>
+              <p>We look forward to your contributions to the company.</p>`
+  }
+  transport.sendMail(mailOptions, function (error, response) {
+    if (error) {
+      console.error(error)
+    } else {
+      console.log(response);
+    }
+  })
+}
+
+module.exports = {sendEmployeeInfo, sendTemporaryPass}

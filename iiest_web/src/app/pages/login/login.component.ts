@@ -151,15 +151,17 @@ export class LoginComponent implements OnInit {
 
     this._registerService.forgotPassword(email).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.temporaryPassword = res.temporaryPassword; // Capture temporary password from the API response
         this.toastrService.success(res.message); // Display success message
         this.openNewPasswordModal(newPasswordModal); // Open the new password modal
+        this.submittedFP = false;
+        
       },
       error: (err) => {
         this.toastrService.error('Reset Password Error!', err.error.message);
         this.error = true;
         this.errorMgs = err.error.message;
+        this.submittedFP = false;
       }
     });
   }
@@ -168,6 +170,7 @@ export class LoginComponent implements OnInit {
   openNewPasswordModal(newPasswordModal: any): void {
     this.modalService.dismissAll();
     this.modalService.open(newPasswordModal, { size: 'md', backdrop: 'static' }); // Use the template variable name
+    this.formNewPassword.patchValue({'temporaryPassword': ''})
   }
 
   /* Set New Password */
@@ -186,10 +189,11 @@ export class LoginComponent implements OnInit {
 
     this._registerService.resetPassword(username, email, temporaryPassword, newPassword).subscribe({
       next: (res: any) => {
+        this.modalService.dismissAll();
         this.toastrService.success(res.message);
-        this.activeModal.close();
       },
       error: (err) => {
+        // this.modalService.dismissAllc
         if (err.status === 401 && err.error.message === 'Temporary password is incorrect') {
           this.toastrService.error('Temporary password is incorrect');
         } else if (err.status === 404 && err.error.message === 'User not found') {
