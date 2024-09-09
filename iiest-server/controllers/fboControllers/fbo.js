@@ -767,6 +767,44 @@ exports.boPayLater = async (req, res) => {
       notificationInfo: []
     });
 
+    let extraFee;
+
+    //gettig foscos extra fee in case of foscos in product
+    if (product_name.includes('Foscos')) {//generating foscos Invoivce in case of foscos sale
+
+      let fixedCharges = 0;
+
+      const category = foscos_training.license_category;
+      const duration = foscos_training.license_duration;
+
+      //getting government and processing fes on the basis of serice choose
+      if (foscos_training.foscos_service_name === 'Registration') { //calculating foscos goverment fees
+        fixedCharges = 100;
+        if (category == 'New Licence' || category === 'Renewal') {
+          extraFee = fixedCharges * duration;
+        }
+        if (category === 'Modified') {
+          extraFee = fixedCharges;
+        }
+      }
+      if (foscos_training.foscos_service_name === 'State') {
+        if (category == 'New Licence' || category === 'Renewal') {
+          fixedCharges = 2000;
+          extraFee = fixedCharges * duration;
+
+        }
+        if (category === 'Modified') {
+          fixedCharges = 1000;
+          extraFee = fixedCharges;
+        }
+      }
+
+      if (Number(foscos_training.water_test_fee) !== 0) { //getting extra fee in case of water test fee
+        extraFee += Number(foscos_training.water_test_fee)
+      }
+
+    }
+
     if (!selectedProductInfo) {
       return res.status(401).json({ success, message: "Data not entered in employee_sales collection" });
     }
@@ -783,7 +821,7 @@ exports.boPayLater = async (req, res) => {
 
 
     const isPayLaterMail = true;
-    sendInvoiceMail(email, invoiceData, isPayLaterMail, formData);
+    sendInvoiceMail(email, invoiceData, isPayLaterMail, {...formData, extraFee, foscosInfo: foscos_training, fostacInfo: fostac_training, hraInfo: hygiene_audit, waterTestInfo: water_test_report, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln});
 
     success = true;
     return res.status(200).json({ success })

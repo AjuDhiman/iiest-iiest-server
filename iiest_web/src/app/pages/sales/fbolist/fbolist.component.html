@@ -154,7 +154,7 @@
                           <td *ngIf="activeTab==='Khadya Paaln'" class="cell text-center"><span
                               class="truncate">{{(fbo.khadyaPaalnInfo.khadya_paaln_total) | inrAmount}}</span></td>
                           <td class="cell" *ngIf="userData.designation === 'Director' || userData.panel_type === 'FSSAI Supervisor Panel'"><span
-                              class="truncate">{{ fbo.employeeInfo.employee_name.toString().split(' ')[0] }}</span></td>
+                              class="truncate">{{ fbo.employeeInfo.employee_name }}</span></td>
                           <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>
                           <td class="cell" *ngIf="!isInvoiceList"><span class="truncate"
                               [ngClass]="{'text-danger': fbo.saleApprovel == 'Pending', 'text-success': fbo.saleApprovel == 'Approved'}">{{

@@ -309,6 +309,7 @@ const coworkInvoiceTemplate = (data) => {
                                 <th>Rate</th>
                                 <th>Total</th>
                             </tr>
+                            
                             <tr>
                                 <td> <b>${data.chosenService} Services </b><br/>
                                 ${data.description}</td>
@@ -316,7 +317,7 @@ const coworkInvoiceTemplate = (data) => {
                                 <td>₹${rate}</td>
                                 <td>₹${subTotal}</td>
                             </tr>
-                            <tr>
+                             ${'<tr><td style="border-top: 0;"></td><th colspan="2">Security</th><td>₹' + data.security + '</td></tr><tr>'}
                                 <td style="border-top: 0; border-bottom: 0;">Amount in Words: <br><br> ${amountInWords}</td>
                                 <th colspan="2">Subtotal</th>
                                 <td>₹${subTotal}</td>
@@ -336,15 +337,7 @@ const coworkInvoiceTemplate = (data) => {
                         </div>
             <div style="display: flex; justify-content: space-between;">
                 <div>
-                <p><b>Invoice is payable within 2 days *</b><br/>
-                <b>Please make invoice payment in our following bank account</b></p>
-                <br/>
-                <p><b>Account Name: </b>IIEST Incubation and Business Centre</p>
-                <p><b>Bank Name: </b>IndusInd Bank</p>
-                <p><b>Account No.: </b>250359359359</p>
-                <p><b>IFSC Code: </b>INDB0000005</p>
-                <p><b>Account Type: </b>Current</p>
-                </div>
+                
                 <section style="position: relative; margin-top: 40px;">
                     <img src="${stampImg}" height=100 width=100 alt="iiest_stamp"> <br>
                     

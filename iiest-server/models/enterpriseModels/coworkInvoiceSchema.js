@@ -85,6 +85,10 @@ const cowworkInvoice = new Schema({
         type: String,
         required: true
     },
+    security: {
+        type: Number,
+        required: true
+    },
     isAmountReceived: {
         type: Boolean,
         require: true

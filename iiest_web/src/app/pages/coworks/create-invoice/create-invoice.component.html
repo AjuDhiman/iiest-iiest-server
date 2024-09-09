@@ -448,6 +448,7 @@
                         </div>
                     </div>
 
+                    
 
 
                     <div class="col-md-3">
@@ -457,6 +458,17 @@
                             [ngClass]="{ 'is-invalid': submitted && invoiceform['total_amount'].errors }" readOnly>
                         <div *ngIf="submitted && invoiceform['total_amount'].errors" class="invalid-feedback">
                             <div *ngIf="invoiceform['total_amount'].errors['required']">Total Amount is required</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="security" class="form-label">Security Amount<sup>*</sup></label>
+                        <input type="number" placeholder="Security Amount" formControlName="security"
+                            class="form-control form-control-sm" id="security"
+                            [ngClass]="{ 'is-invalid': submitted && invoiceform['security'].errors }">
+                        <div *ngIf="submitted && invoiceform['security'].errors" class="invalid-feedback">
+                            <div *ngIf="invoiceform['security'].errors['required']">Security Amount is
+                                required</div>
                         </div>
                     </div>
 

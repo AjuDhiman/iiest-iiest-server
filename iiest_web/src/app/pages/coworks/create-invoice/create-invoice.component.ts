@@ -46,7 +46,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     'Cabin',
     'Flexi Seat',
     'Confrence Room',
-    'Meeting Room'
+    'Meeting Room',
+    'Others'
   ];
   invoiceTypes: string[] = [
     'Customer',
@@ -79,8 +80,10 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     narration: new FormControl(''),
     processing_amount: new FormControl(''),
     invoice_date: new FormControl(''),
-    gst_amount: new FormControl('')
+    gst_amount: new FormControl(''),
+    security: new FormControl('')
   })
+  
 
   get invoiceform(): { [key: string]: AbstractControl } {
     return this.invoiceForm.controls;
@@ -157,7 +160,7 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     this.multiSelect.selected = this.selectedMonths;
     this.multiSelect.isDisplayEmpty = false;
     this.multiSelect.all.forEach(option => {
-      if(option.value === Months[new Date().getMonth()]) {
+      if (option.value === Months[new Date().getMonth()]) {
         option.checked = true;
       }
     })
@@ -223,8 +226,10 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
       narration: ['', Validators.required],
       processing_amount: ['', Validators.required],
       invoice_date: ['', Validators.required],
-      gst_amount: ['', Validators.required]
+      gst_amount: ['', Validators.required],
+      security: ['', Validators.required]
     })
+    
   }
 
   //methord run on state selection and fetch districts according to it
@@ -358,6 +363,9 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
       case 'Confrence Room':
         ext = 'CR'
         break;
+      case 'Others':
+        ext = 'OTH'
+        break;
     }
 
     const invoiceCode = `SW/IS-${ext}`;
@@ -490,9 +498,9 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
       }
     }
 
-   this.aggregateResults();
+    this.aggregateResults();
 
-    
+
   }
 
 
@@ -600,8 +608,8 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
     this.monthsData = this.caseData.filter((data: any) => {
       let find = false;
 
-      for(let i = 0; i <= monthsToFilter.length; i++) {
-        if(data.invoice_date_converted.includes(monthsToFilter[i])){
+      for (let i = 0; i <= monthsToFilter.length; i++) {
+        if (data.invoice_date_converted.includes(monthsToFilter[i])) {
           find = true;
           break;
         }
@@ -620,38 +628,38 @@ export class CreateInvoiceComponent implements OnInit, AfterViewInit {
 
   //methord for aggreagting results 
   aggregateResults(): void {
-     //setting total aggregation to 0
-     this.totalProcessingAmt = 0;
-     this.totalReceivedAmt = 0;
-     this.totalPendingAmt= 0;
-     this.totalGstAmt = 0;
-     this.totalTDSAmt = 0;
-     this.totalAmt = 0;
- 
-     //aggregating totals
-     this.filteredData.forEach((data: any) => {
-       
-       if(data.isAmountReceived) {
+    //setting total aggregation to 0
+    this.totalProcessingAmt = 0;
+    this.totalReceivedAmt = 0;
+    this.totalPendingAmt = 0;
+    this.totalGstAmt = 0;
+    this.totalTDSAmt = 0;
+    this.totalAmt = 0;
+
+    //aggregating totals
+    this.filteredData.forEach((data: any) => {
+
+      if (data.isAmountReceived) {
         //total processing amout = processing amount * total qty if payment recevied 
-         this.totalProcessingAmt += Number(data.income_amount);
-         
-         this.totalReceivedAmt += data.receivingAmount;
+        this.totalProcessingAmt += Number(data.income_amount);
 
-         //total gst = sgst + igst + cgst + gst
-         this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
-       } else  {
+        this.totalReceivedAmt += data.receivingAmount;
+
+        //total gst = sgst + igst + cgst + gst
+        this.totalGstAmt = this.totalGstAmt + ((Number(data.gst) + Number(data.igst) + Number(data.sgst) + Number(data.cgst)));
+      } else {
         //total pending amount is amount the sum of all incomes amount of those whose payment is not recived
-         this.totalPendingAmt += Number(data.income_amount);
-       }
+        this.totalPendingAmt += Number(data.income_amount);
+      }
 
-       //total mount = total processing maont + gst
-     this.totalAmt += Number(data.total_amount);
-       
-       
-     });
+      //total mount = total processing maont + gst
+      this.totalAmt += Number(data.total_amount);
 
-     //total tds amount = total procesing amount - total recivings
-     this.totalTDSAmt = this.totalProcessingAmt - this.totalReceivedAmt;
+
+    });
+
+    //total tds amount = total procesing amount - total recivings
+    this.totalTDSAmt = this.totalProcessingAmt - this.totalReceivedAmt;
   }
 
 }
