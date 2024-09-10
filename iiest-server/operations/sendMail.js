@@ -27,6 +27,9 @@ const sendDocumentMail = (clientData) => {
     <p>We are pleased to inform you that your ${clientData.ticketType} has been generated and is attached to this email.</p>
     <br>
     <p>If you have any questions or require further information, please do not hesitate to contact us.</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards, ${CB_BRAND_NAME.english}<br>
     </p>
     <br>
@@ -37,7 +40,6 @@ const sendDocumentMail = (clientData) => {
             Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
             Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
             Contact time 10 :00 a.m to 7:00 p.m<br>
-            <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -49,6 +51,7 @@ const sendDocumentMail = (clientData) => {
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,<br>
     ${CB_BRAND_NAME.hindi}</p>
     <br>
@@ -59,7 +62,7 @@ const sendDocumentMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`,
+    `,
     attachments: [
       {
         filename: 'fostacCertificate.pdf',
@@ -109,6 +112,9 @@ const sendVerificationMail = (clientData) => {
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -119,7 +125,6 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -140,6 +145,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,<br>
     ${CB_BRAND_NAME.hindi}</p>
     <br>
@@ -150,7 +156,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+    `;
 
   } if (clientData.product == 'fostac') {
 
@@ -177,6 +183,9 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Technical Officer: ${clientData.technicalOfficer}</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -187,7 +196,6 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -213,6 +221,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,</p>
     <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
     <p>${CB_BRAND_NAME.hindi}</p>
@@ -224,7 +233,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+   `;
 
   } else if (clientData.product == 'foscos') {
 
@@ -245,6 +254,9 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Technical Officer: ${clientData.technicalOfficer}</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -255,7 +267,6 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -274,6 +285,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,</p>
      <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
     <p>${CB_BRAND_NAME.hindi}</p>
@@ -285,7 +297,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+    `;
 
   } else if (clientData.product == 'training_date_allotment') {
 
@@ -299,6 +311,9 @@ const sendVerificationMail = (clientData) => {
     Venue -- ${clientData.venue}
     <br>
     <p>Should you have any questions or require further information, please do not hesitate to contact us.</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -309,7 +324,6 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -323,6 +337,7 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,</p>
     <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
     <p>${CB_BRAND_NAME.hindi}</p>
@@ -334,7 +349,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+    `;
 
   }
   else if (clientData.product == 'fostac_enrollment') {
@@ -350,6 +365,9 @@ const sendVerificationMail = (clientData) => {
     Venue -- ${clientData.venue}
     <br>
     <p>Should you have any questions or require further information, please do not hesitate to contact us.</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -360,7 +378,6 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
     <br><br>
     <hr>
     <br>
@@ -376,6 +393,7 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,<br>
     ${CB_BRAND_NAME.hindi}</p>
     <br>
@@ -386,7 +404,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+   `;
 
   }
   else if (clientData.product == 'fostac_attendance') {
@@ -402,6 +420,9 @@ const sendVerificationMail = (clientData) => {
     Your Certificate will we sent in few days(If Passed)
     <br>
     <p>If you have any questions or require further information, please do not hesitate to contact us.</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -412,7 +433,7 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
+    
     <br><br>
     <hr>
     <br>
@@ -426,6 +447,7 @@ const sendVerificationMail = (clientData) => {
     <br>
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,<br>
     ${CB_BRAND_NAME.hindi}</p>
     <br>
@@ -436,7 +458,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+    `;
 
   }
   else if (clientData.product == 'hra') {
@@ -454,6 +476,9 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Technical Officer: ${clientData.technicalOfficer}</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -464,7 +489,7 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
+   
     <br><br>
     <hr>
     <br>
@@ -479,6 +504,7 @@ const sendVerificationMail = (clientData) => {
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,</p>
      <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
     <p>${CB_BRAND_NAME.hindi}</p>
@@ -490,7 +516,7 @@ const sendVerificationMail = (clientData) => {
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+   `;
 
   } else if (clientData.product == 'doc') {
 
@@ -504,7 +530,7 @@ const sendVerificationMail = (clientData) => {
     ${clientData.checkedDocsName.join('<br>')}
     <p>The following list of pending documents for the completion of fssai compliences:-</p>
     ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<br>')}
-     <p><b>Please mail these docs on customerrelations@iiest.org </b></p>
+     <p><b>Please mail these documents on customerrelations@iiest.org </b></p>
 
     <p>click button below for sending documents.</p>
         <a style="text-decoration: none;" href="mailto:customerrelations@iiest.org">
@@ -524,6 +550,9 @@ const sendVerificationMail = (clientData) => {
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
     <p>Technical Officer: ${clientData.technicalOfficer}</p>
+     <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -534,7 +563,7 @@ const sendVerificationMail = (clientData) => {
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
+    
     <br><br>
     <hr>
     <br>
@@ -569,6 +598,7 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
 
     <p>यदि आपके कोई और प्रश्न हैं या सहायता की आवश्यकता है, तो कृपया बेझिझक हमसे संपर्क करें</p>
     <p><strong>कंपनी व्यावसायिक गतिविधियों में किसी भी रिश्वतखोरी, भ्रष्टाचार और धोखाधड़ी के प्रति शून्य सहिष्णुता रखती है।</strong></p>
+    <p><b>अस्वीकृति: यह मेल सिस्टम द्वारा उत्पन्न किया गया है, कृपया इस मेल का जवाब न दें</b></p>
     <p>"धन्यवाद,</p>
      <p>तकनीकी अधिकारी: ${clientData.technicalOfficer}</p>
     <p>${CB_BRAND_NAME.hindi}</p>
@@ -580,7 +610,7 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
     संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
     लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-    <br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+    `;
 
   } 
   else if (clientData.product == 'hra schedule') {
@@ -596,6 +626,9 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
 
     <p>If you have any further questions or need assistance, please feel free to reach out to us</p>
     <p><strong>The company has zero tolerance towards any bribery, corruption & fraud in business activities.</strong></p>
+    <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>
+     <br>
+     Thank You
     <p>Regards,<br>
     ${CB_BRAND_NAME.english}</p>
     <br>
@@ -606,7 +639,7 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
     Contact no - ${CONTACT_NUMBERS.connect_bharat}<br>
     Landline - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
     Contact time 10 :00 a.m to 7:00 p.m<br>
-    <br>This mail is system generated, please do not replay on this mail. 
+    
     <br><br>
     <hr>
     <br>
@@ -627,7 +660,7 @@ ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<b
 संपर्क नंबर- ${CONTACT_NUMBERS.connect_bharat}<br>
 लैंडलाइन - ${LANDLINES.landline1}, ${LANDLINES.landline2}<br>
 संपर्क समय प्रातः 10:00 बजे से सायं 7:00 बजे तक<br>
-<br>यह ईमेल प्रणाली द्वारा उत्पन्न किया गया है, कृपया इस ईमेल का उत्तर न दें।`;
+`;
 
   }
 

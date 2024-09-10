@@ -19,7 +19,7 @@ const sendEmployeeInfo = (username, password, empId, clientMail) => {
               <p><strong>Password:</strong> ${password}</p>
               <p>We look forward to your contributions to the company.</p>
               
-              This mail is system generated, please do not replay on it`
+               <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>`
               // <p>Best regards,<br>
               // [Your Name]<br>
               // [Your Position]<br>
@@ -51,7 +51,7 @@ const sendTemporaryPass = ( temppass, clientMail) => {
               <p><strong>Temprary Password:</strong> ${temppass}</p>
               <p>We look forward to your contributions to the company.</p>
               
-               This mail is system generated, please do not replay on it.`
+                <p><b>Disclaimer: This mail is system generated please do not replay on this mail</b></p>`
   }
   transport.sendMail(mailOptions, function (error, response) {
     if (error) {

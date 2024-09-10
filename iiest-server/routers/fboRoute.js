@@ -20,7 +20,7 @@ const router = express.Router();
 router.get('/salerecipients/:id', authMiddleware, recipientsList); //Router for recipients list for sale
 router.get('/saleshops/:id', authMiddleware, shopsList); //Router for shops list for sale
 router.get('/allfbolist', authMiddleware, registerdFBOList); //Router for fbo list
-router.get('/clientlist', getClientList); //Router for client list
+router.get('/clientlist', authMiddleware, getClientList); //Router for client list
 router.post('/fboregister/:id', authMiddleware, fboRegister); //Router for FBO registration (cash)
 router.post('/fbopaylater/:id', authMiddleware, boPayLater); //Router for FBO registration (Pay Later)
 router.post('/fbobycheque/:id', authMiddleware, uploadCheque.fields([{name: 'cheque_image', maxCount: 1}]), existingFboByCheque);

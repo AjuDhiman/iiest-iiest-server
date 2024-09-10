@@ -173,6 +173,16 @@ exports.getClientList = async (req, res) => {
 
          const clientList = await fboModel.aggregate([
             {
+                $match: {
+                    "created_by": {
+                        $not: {
+                            $regex: "admin",
+                            $options: "i"
+                        }
+                    }
+                } 
+            },
+            {
                 $lookup: { //lookup with fbo collection for getting all the fbo related to this bo in array
                     from: 'bo_registers',
                     localField: 'boInfo',
@@ -182,16 +192,6 @@ exports.getClientList = async (req, res) => {
             },
             {
                 $unwind: "$boInfo"
-            },
-            {
-                $match: {
-                    "created_by": {
-                        $not: {
-                            $regex: "admin",
-                            $options: "i"
-                        }
-                    }
-                } 
             },
             {
                 $group: {
@@ -230,7 +230,7 @@ exports.getClientList = async (req, res) => {
                 }
             }
         ],{
-            allowDiskUse: true
+           allowDiskUse: true
         });
 
 

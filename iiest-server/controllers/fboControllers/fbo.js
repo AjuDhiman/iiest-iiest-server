@@ -414,6 +414,8 @@ exports.fboPayReturn = async (req, res) => {
             salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village,
             tehsil: tehsil, isVerificationLinkSend: false
           }); //create shop after sale for belongs  tohis sale
+
+          await logAudit(createrObjId, "fbo_registers", fboEntry._id, {}, fboEntry, `${product} sold by paypage`);
         })
 
         //lastly redirect user to fbo form
@@ -671,6 +673,7 @@ exports.boByCheque = async (req, res) => {
         salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village, tehsil: tehsil, isVerificationLinkSend: false
 
       }); //create shop after sale for belongs  tohis sale
+      await logAudit(createrObjId, "fbo_registers", fboEntry._id, {}, fboEntry, `${product} sold by cheque`);
     })
 
     success = true;
@@ -815,6 +818,7 @@ exports.boPayLater = async (req, res) => {
         salesInfo: selectedProductInfo._id, managerName: boData.manager_name, address: address, state: state, district: district, pincode: pincode, shopId: generatedCustomerId, product_name: product, village: village,
         tehsil: tehsil, isVerificationLinkSend: false
       }); //create shop after sale for belongs  tohis sale
+      await logAudit(user._id, "fbo_registers", fboEntry._id, {}, fboEntry, `${product} sold by paylater`);
     })
 
     //lastly redirect user to fbo form

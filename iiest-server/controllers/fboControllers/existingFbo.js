@@ -14,6 +14,7 @@ const { shopModel } = require("../../models/fboModels/recipientSchema");
 const { generateInvoiceCode } = require("../../fbo/generateCredentials");
 const generalDataSchema = require("../../models/generalModels/generalDataSchema");
 const { doesFileExist, employeeDocsPath } = require("../../config/s3Bucket");
+const { logAudit } = require("../generalControllers/auditLogsControllers");
 const FRONT_END = JSON.parse(process.env.FRONT_END);
 const BACK_END = process.env.BACK_END;
 
@@ -251,6 +252,7 @@ exports.existingFboPayLater = async (req, res) => {
 
     product_name.forEach(async (product) => {
       const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId: existingFboInfo.customer_id, product_name: product, village: existingFboInfo.village, tehsil: existingFboInfo.tehsil, isVerificationLinkSend: true }); //create shop after sale for belongs to this sale
+      await logAudit(createrObjId, "fbo_registers", existingFboInfo._id, {}, existingFboInfo, `${product} sold by paylater`);
     })
 
     success = true;
@@ -340,7 +342,7 @@ exports.existingFboByCheque = async (req, res) => {
     productName.forEach(async (product) => {
 
       const addShop = await shopModel.create({ salesInfo: selectedProductInfo._id, managerName: existingFboInfo.boInfo.manager_name, address: existingFboInfo.address, state: existingFboInfo.state, district: existingFboInfo.district, pincode: existingFboInfo.pincode, shopId: existingFboInfo.customer_id, product_name: product, village: existingFboInfo.village, tehsil: existingFboInfo.tehsil, isVerificationLinkSend: true }); //create shop after sale for belongs to this sale
-
+      await logAudit(createrObjId, "fbo_registers", existingFboInfo._id, {}, existingFboInfo, `${product} sold by cheque`);
     })
 
     success = true;
@@ -699,6 +701,8 @@ exports.existingFboPayReturn = async (req, res) => {
             tehsil: existingFboInfo.tehsil,
             isVerificationLinkSend: true
           }); //create shop after sale for belongs  tohis sale
+
+          await logAudit(createrObjId, "fbo_registers", existingFboInfo._id, {}, existingFboInfo, `${product} sold by paypage`);
         });
 
         // if (!addShop) {
