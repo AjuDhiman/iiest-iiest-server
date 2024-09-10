@@ -526,9 +526,9 @@ const sendVerificationMail = (clientData) => {
     <p>Dear ${clientData.managerName},</p>
     <p>Thanks for registering for the compliances of - FSSAI GOI.<br>
     The information you have provided has been successfully verified. We appreciate your cooperation and timely response during the verification process.</p>
-    <p>The following list of documents have been declared by you for the completion of fssai compliences:-</p>
+    <p>The following list of documents has been declared by you for the completion of fssai compliences as per FSS Act 2006 and Regulation 2011:-</p>
     ${clientData.checkedDocsName.join('<br>')}
-    <p>The following list of pending documents for the completion of fssai compliences:-</p>
+    <p>The following documents are pending for the completion of fssai compliences as per FSS Act 2006 and Regulation 2011:-</p>
     ${requireddocs.filter(doc => !clientData.checkedDocsName.includes(doc)).join('<br>')}
      <p><b>Please mail these documents on customerrelations@iiest.org </b></p>
 
