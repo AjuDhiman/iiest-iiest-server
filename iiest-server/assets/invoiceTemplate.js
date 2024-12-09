@@ -7,7 +7,7 @@ const { getFileStream, employeeDocsPath } = require("../config/s3Bucket");
 
 
 const invoiceTemplate = async (fboInfo) => {
-
+console.log(fboInfo)
     const quantity = fboInfo.qty;
     const rate = fboInfo.amount;
     const subTotal = quantity * rate;
@@ -333,9 +333,21 @@ const invoiceTemplate = async (fboInfo) => {
             
                         <div>
                             <p>
-                              ${fboInfo.chosenService === 'Khadya Paaln'?'<b>T&C:<br>1. Total Amount does not incl. any govt. charges. Incurred govt. fee is to be paid directly to govt during filing by customer. <br>2. Service includes auto renewal filling of Fostac Certificate(1) + Foscos License(1) + Medical Certificate(1) + Water Test Report(2) per shop. <br>3. Food Technical Expert visit (3) per shop per annum. </b>':''}
+                                ${fboInfo.chosenService === 'Khadya Paaln' ? 
+                                    `<b>T&C:<br>
+                                    1. Total Amount does not include any government charges. Incurred government fee is to be paid directly to the government during filing by the customer.<br>
+                                    2. Service includes auto renewal filing of ${
+                                        fboInfo.totalAmount > 20000 
+                                        ? 'Fostac Certificate (2) + Foscos License (1) + Health Trade License (1) + Shop and Establishment Certificate (1) + Medical Certificate (2) + Water Test Report (2) + HRA + On-Site Staff Training (1) per shop.<br>'
+                                        : 'Fostac Certificate (1) + Foscos License (1) + Health Trade License (1) + Shop and Establishment Certificate (1) + Medical Certificate (1) + Water Test Report (2) per shop.<br>'
+                                    }
+                                    3. Food technical visit (${fboInfo.totalAmount > 20000 ? '3' : '1'}) per shop per annum.
+                                    </b>`
+                                    : ''
+                                }
                             </p>
                         </div>
+
             <div style="display: flex; justify-content: space-between;">
                 <div>
                 </div>

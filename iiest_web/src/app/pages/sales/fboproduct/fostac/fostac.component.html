@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" *ngIf="customSale == false">
         <label for="fostac_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
         <select id="fostac_processing_amount" formControlName="fostac_processing_amount" group='fostac'
         [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_processing_amount')?.errors}"
@@ -28,6 +28,23 @@
             </option>
         </select>
         <div *ngIf="submitted && fostac_training.get('fostac_processing_amount')?.errors"
+            class="invalid-feedback">
+            <div *ngIf="fostac_training.get('fostac_processing_amount')?.errors?.['required']">
+                Processing amount is required
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3" *ngIf="customSale == true">
+        <label for="fostac_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+        <input type="number" placeholder="Processing Amount" 
+            id="fostac_processing_amount"
+            formControlName="fostac_processing_amount" 
+            (input)="processAmount()"
+            class="form-control form-control-sm"
+            [ngClass]="{ 'is-invalid': submitted && fostac_training.get('fostac_processing_amount')?.errors}"
+             />
+            <!--(ngModelChange)="onProcessingAmountChange($event)" -->
+            <div *ngIf="submitted && fostac_training.get('fostac_processing_amount')?.errors"
             class="invalid-feedback">
             <div *ngIf="fostac_training.get('fostac_processing_amount')?.errors?.['required']">
                 Processing amount is required

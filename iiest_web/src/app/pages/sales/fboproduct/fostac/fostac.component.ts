@@ -9,6 +9,7 @@ import { clientType, processAmnt, serviceNames } from 'src/app/utils/config';
 export class FostacComponent implements OnInit {
   @Input() formGroupName: string;
   @Input() submitted: boolean;
+  @Input() customSale: boolean;
   @Output() fostacTotal = new EventEmitter<number>();
   @Output() fostacGSTAmount = new EventEmitter<number>();
   serviceNames = serviceNames
@@ -36,17 +37,27 @@ export class FostacComponent implements OnInit {
     if ($event.target.value === 'Single Recipient') {
       this.isReadOnly = true;
       this.minValue = 1;
-      let TotalAmnt = this.GSTandTotalAmnt(this.minValue)
+    } else {
+      this.isReadOnly = false;
+      this.minValue = 2;
+    }
+
+    console.log('Recipient type selected:', $event.target.value);
+    console.log('minValue set to:', this.minValue);
+
+    // Ensure `GSTandTotalAmnt` returns a number
+    const TotalAmnt: number = this.GSTandTotalAmnt(this.minValue);
+    console.log('Calculated Total Amount:', TotalAmnt);
+
+    // Ensure TotalAmnt is numeric before patching the value
+    if (typeof TotalAmnt === 'number' && !isNaN(TotalAmnt)) {
       this.fostac_training.patchValue({ 'recipient_no': this.minValue });
       this.fostacTotalAmount(TotalAmnt);
     } else {
-      this.isReadOnly = false;
-      this.minValue = 2
-      let TotalAmnt = this.GSTandTotalAmnt(this.minValue)
-      this.fostac_training.patchValue({ 'recipient_no': this.minValue });
-      this.fostacTotalAmount(TotalAmnt);
+      console.error('Invalid TotalAmnt:', TotalAmnt);
     }
-  }
+}
+
 
   //This methord caculates gst and total in case of service change
   onServiceSelect(): void {
@@ -58,22 +69,25 @@ export class FostacComponent implements OnInit {
 
   //Recipient Count Function passing the recipient no. to GST Calculation function.
   recipientCount($event: any) {
+    //console.log($event.target.value);
     let val = Number($event.target.value);
     this.GSTandTotalAmnt(val)
   }
 
   // GST Calculation on Processing Amount and No.of recipient basis.
   GSTandTotalAmnt(param: number) {
-    let fostac_processAmnt = this.fostac_training.value.fostac_processing_amount * param
+    let fostac_processAmnt = Number(this.fostac_training.value.fostac_processing_amount) * param
     let GST_amount = fostac_processAmnt * 18 / 100;
     this.fostacGSTAmount.emit(GST_amount);
     this.fostacTotalAmnt = Number(GST_amount) + fostac_processAmnt;
     this.fostacTotalAmount(this.fostacTotalAmnt);
+    console.log(this.fostacTotalAmnt);
     return this.fostacTotalAmnt;
   }
 
   //Set Fostac Total and Emit Fostac Total to Parent Component FBO. 
-  fostacTotalAmount(amnt: number) {
+  fostacTotalAmount(amnt: number):void {
+    //console.log(amnt);
     this.fostac_training.patchValue({ 'fostac_total': amnt });
     this.fostacTotal.emit(amnt);
   }

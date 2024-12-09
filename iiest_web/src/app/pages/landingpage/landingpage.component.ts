@@ -45,9 +45,11 @@ export class LandingpageComponent implements OnInit, AfterViewInit {
     this.isToken = this._resiterService.isLoggedIn();
   }
 
-  openModal() {
+  openModal(type:string) {
+    console.log(type);
     if (!this.isToken) {
-      this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });
+      const modalRef = this.modalService.open(LoginComponent, { size: 'md', backdrop: 'static' });
+      modalRef.componentInstance.userType = { userType: type }; 
     } else {
       const bodyElement = document.body;
       bodyElement.classList.add('app');

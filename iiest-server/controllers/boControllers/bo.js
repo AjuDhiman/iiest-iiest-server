@@ -166,8 +166,8 @@ exports.verifyEmail = async (req, res) => {
     }
 }
 
-//methord for getting list of all bo and their associated shop(or fbo)
-exports.getClientList = async (req, res) => {
+//methoed for getting list of all bo and their associated shop(or fbo)
+/*exports.getClientList = async (req, res) => {
 
     try {
 
@@ -232,13 +232,104 @@ exports.getClientList = async (req, res) => {
         ],{
            allowDiskUse: true
         });
-
-
         return res.status(200).json({ clientList: clientList });
 
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+}*/
+exports.getClientList = async (req, res) => {
+    try {
+        const { page = 1, limit = 2000 } = req.query; // Defaults to page 1 with 10 records per page
+
+        const clientList = await fboModel.aggregate([
+            {
+                $match: {
+                    "created_by": {
+                        $not: {
+                            $regex: "admin",
+                            $options: "i"
+                        }
+                    }
+                } 
+            },
+            {
+                $lookup: {
+                    from: 'bo_registers',
+                    localField: 'boInfo',
+                    foreignField: '_id',
+                    as: 'boInfo'
+                }
+            },
+            { 
+                $unwind: "$boInfo" 
+            },
+            {
+                $group: {
+                    "_id": "$boInfo._id",
+                    "contact_no": { $first: "$boInfo.contact_no" },
+                    "email": { $first: "$boInfo.email" },
+                    "customer_id": { $first: "$boInfo.customer_id" },
+                    "owner_name": { $first: "$boInfo.owner_name" },
+                    "business_entity": { $first: "$boInfo.business_entity" },
+                    "business_ownership_type": { $first: "$boInfo.business_ownership_type" },
+                    "business_category": { $first: "$boInfo.business_category" },
+                    "manager_name": { $first: "$boInfo.manager_name" },
+                    "createdAt": { $first: "$boInfo.createdAt" },
+                    "fbo": {
+                        $push: {
+                            "_id": "$_id",
+                            "fbo_name": "$fbo_name",
+                            "owner_name": "$owner_name",
+                            "customer_id": "$customer_id",
+                            "createdAt": "$createdAt",
+                            "state": "$state",
+                            "district": "$district",
+                            "address": "$address",
+                            "pincode": "$pincode",
+                            "business_type": "$business_type",
+                            "gst_number": "$gst_number",
+                            "owner_contact": "$owner_contact",
+                            "email": "$email"
+                        }
+                    }
+                }
+            },
+            {
+                $sort: { "createdAt": -1 }
+            },
+            { 
+                $skip: (page - 1) * limit 
+            },
+            { 
+                $limit: parseInt(limit) 
+            }
+        ], {
+            allowDiskUse: true
+        });
+
+        // Get total count for pagination
+        const totalRecords = await fboModel.countDocuments({
+            "created_by": {
+                $not: {
+                    $regex: "admin",
+                    $options: "i"
+                }
+            }
+        });
+
+        return res.status(200).json({ 
+            clientList, 
+            totalRecords,
+            totalPages: Math.ceil(totalRecords / limit),
+            currentPage: page
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 

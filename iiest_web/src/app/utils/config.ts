@@ -10,7 +10,7 @@ export const config = {
 export const panIndiaAllowedEmpIds = [ //Employees with Pan India Employee Id
    'IIEST/FD/0176', //Chetan Kapoor Emp Id
    'IIEST/FD/5187', //Sales test Emp Id
-   'IIEST/FD/8234' //Rohit Kulshrestha Emp Id
+   'IIEST/FD/8234', //Rohit Kulshrestha Emp Id
 ]
 // export const chetanKapoorEmpId: string = 'IIEST/FD/0176';
 
@@ -18,7 +18,7 @@ export const panIndiaAllowedEmpIds = [ //Employees with Pan India Employee Id
 export const waterTestFee = [0, 1500, 2000, 2500];
 //Fostac Process Amount
 export const processAmnt = [1200, 1500];
-export const khadyaPaalnProcessAmnt = 12999;
+//export const khadyaPaalnProcessAmnt = 12999;
 //Client Type
 
 export const waterTestProcessAmnt = 2500;
@@ -97,7 +97,7 @@ export const licenceType = {
 };
 export const serviceNames = {
    "fostac": ["Retail", "Catering", "Others"],
-   "foscos": ["Registration", "State"],
+   "foscos": ["Registration", "State", "Central"],
    "HRA": ["HRA"],
    "water_test_report": ["NABL", "Non NABL"],
 }
@@ -155,6 +155,7 @@ export const fbo_roles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
+   'Sales Agent',
    ...master_roles
 ];
 
@@ -167,6 +168,7 @@ export const bookSaleRoles = [
    'Senior Area Officer',
    'Area Associate Officer',
    'Area Officer',
+   'Sales Agent'
 ]
 
 export const empRegister_roles = [

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { loginEmployee, forgotPassword, } from 'src/app/utils/registerinterface'
 import { RegisterService } from 'src/app/services/register.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     newPassword: new FormControl(''),
     confirmPassword: new FormControl('')
   });
-
+  @Input() userType:any ;
   submitted = false;
   submittedFP = false;
   error: boolean = false;
@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    
     this.form = this.formBuilder.group(
       {
         username: ['', Validators.required],
@@ -121,7 +122,12 @@ export class LoginComponent implements OnInit {
           this.store.dispatch(ClearShops);
           this._utilServices.setShopListData([]);
           this._utilServices.setData([]);
-          this.route.navigateByUrl('/home')
+          console.log(this.userType);
+          if(this.userType.userType === 'company'){
+            this.route.navigateByUrl('/home')
+          }else{
+            
+          }
         },
         error: (err) => {
           let errorObj = err.error
@@ -152,6 +158,7 @@ export class LoginComponent implements OnInit {
     this._registerService.forgotPassword(email).subscribe({
       next: (res: any) => {
         this.temporaryPassword = res.temporaryPassword; // Capture temporary password from the API response
+        console.log(this.temporaryPassword);
         this.toastrService.success(res.message); // Display success message
         this.openNewPasswordModal(newPasswordModal); // Open the new password modal
         this.submittedFP = false;

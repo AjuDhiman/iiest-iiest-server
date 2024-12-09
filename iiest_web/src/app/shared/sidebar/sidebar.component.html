@@ -6,8 +6,7 @@
         <div class="app-branding">
             <a class="app-logo">
                 <img class="logo-icon me-2" [src]="userImage" alt="logo">
-                <span *ngIf="userData;" class="logo-text">{{ userData.employee_name
-                    }}<span>{{userData.designation}}</span></span>
+                <span *ngIf="userData;" class="logo-text">{{ userData.employee_name}}<span>{{userData.designation}}</span></span>
             </a>
         </div>
 
@@ -78,8 +77,9 @@
                          <span class="nav-link-text">Employee List</span>
                      </a>
                  </li>
-
-                    <!-- Book Sale Button -->
+                 <!-- Book Sale Button 
+                  {{userData|json}}
+                  {{userData.designation}}-->
                     <li *ngIf=" userData && bookSaleRoles.includes(userData.designation)" class="nav-item"
                         routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
                         [attr.data-bs-toggle]="!isSidebarVisible && largeDisplay?'tooltip':null"
@@ -103,7 +103,7 @@
                             <span class="nav-link-text">Book Sale</span>
                         </a>
                     </li>
-
+                    
                     <!-- My orders Button -->
                     <li *ngIf="userData && ((fboRoles.includes(userData.designation) || userData.panel_type === 'FSSAI Supervisor Panel'))"
                         class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"

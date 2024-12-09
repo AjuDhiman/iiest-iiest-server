@@ -7,14 +7,14 @@
 
 <!-- We want margins and paddings only in case of not called as child -->
 <div [ngClass]="{'app-content pt-3 p-md-3 p-lg-4':!isCalledAsChild}" (click)="closeMultiSelect()">
-     <!-- Bread crumb -->
-     <nav aria-label="breadcrumb" *ngIf="!isCalledAsChild">
+    <!-- Bread crumb -->
+    <nav aria-label="breadcrumb" *ngIf="!isCalledAsChild">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item active font-small" aria-current="page"><a>Book Sale</a></li>
+            <li class="breadcrumb-item active font-small" aria-current="page"><a>Book Sale</a></li>
         </ol>
-      </nav>
+    </nav>
     <div class="container-xxl" [ngClass]="{'mx-0 px-0':isCalledAsChild}">
-       
+
 
         <!-- We want to show main fbo form in case of called as child like in documentation section of operation form -->
         <div class="row g-3 mb-4 align-items-center justify-content-between" *ngIf="!isCalledAsChild">
@@ -26,7 +26,8 @@
             <div class="col-md-6 text-end">
                 <div class="d-flex align-items-end flex-row-reverse">
 
-                    <form [formGroup]="existingUserFboForm" class="me-3 d-flex align-items-center" *ngIf="!isForFostacSaleByCaseList">
+                    <form [formGroup]="existingUserFboForm" class="me-3 d-flex align-items-center"
+                        *ngIf="!isForFostacSaleByCaseList">
                         <div class="col-auto p-1">
                             <label for="isExistingFbo" class="form-label m-0">Existing Shop:</label>
                         </div>
@@ -50,7 +51,8 @@
                         </div>
                     </form>
 
-                    <form [formGroup]="existingUserBoForm" class="me-3 d-flex align-items-center" *ngIf="!isForFostacSaleByCaseList">
+                    <form [formGroup]="existingUserBoForm" class="me-3 d-flex align-items-center"
+                        *ngIf="!isForFostacSaleByCaseList">
                         <div class="col-auto p-1">
                             <label for="isExistingBo" class="form-label m-0">Existing BO:</label>
                         </div>
@@ -145,7 +147,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                      
+
                         <label for="email" class="form-label">Email<sup>*</sup></label>
                         <input type="text" placeholder="Email" formControlName="email" id="email"
                             class="form-control form-control-sm" autocomplete="off" [readOnly]="true"
@@ -196,7 +198,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3" *ngIf="isPanIndiaAllowed == false; else allStates">
+                    <div class="col-md-3" *ngIf="isPanIndiaAllowed === false; else allStates">
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }" type="text"
                             placeholder="State" formControlName="state" [value]="allocated_state"
@@ -289,33 +291,57 @@
                             <div *ngIf="fbo['gst_number'].errors['required']">GST Number is required</div>
                         </div>
                     </div>
+                    <div class="text-end pull-right" [ngClass]="need_gst_number ? 'col-md-3' : 'col-md-6'" 
+                    *ngIf="userDesignation === 'Sales Agent' || userDesignation === 'Regional Deputy Manager(Sales)'">
+                        <label for="custom_sale" class="form-label"></label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" class="form-check-input" 
+                                    (change)="customSaleFunc($event)" name="custom_sale" id="custom_sale">
+                                <label class="form-label" for="custom_sale">Click the checkbox for custom sale.</label>
+                            </div>
+                            
+                        </div>
+                     </div>
                 </div>
-
+                
                 <!-- Product Multi Select -->
                 <div class="col-md-6">
                     <label for="product_name" class="form-label">Product Name<sup>*</sup></label>
                     <app-multi-select #multiSelect (selectedArrayChange)="getSelectedProduct($event)"
                         [options]="productList" [forProducts]="true" [placeHolder]="'Select Products'"
-                        [invalid]="(submitted && fbo['product_name'].errors)?true:false"
-                        class="cursor-pointer" [disabledArray]="disabledOptions"></app-multi-select>
+                        [invalid]="(submitted && fbo['product_name'].errors)?true:false" class="cursor-pointer"
+                        [disabledArray]="disabledOptions"></app-multi-select>
                     <!-- <div *ngIf="submitted && fbo['product_name'].errors" class="invalid-feedback d-block">
                         <div *ngIf="fbo['product_name'].errors">Product Name is required</div>
                     </div> -->
                 </div>
-                 <!-- Product Multi Select -->
+                <!-- Product Multi Select -->
+                
 
                 <!--Fostac Component -->
-                <app-fostac *ngIf="isFostac" formGroupName="fostac_training" [submitted]="submitted"
-                    (fostacTotal)="fostacTotalAmount($event)" (fostacGSTAmount)="fostacGSTAmount($event)"></app-fostac>
+                <app-fostac *ngIf="isFostac" 
+                    formGroupName="fostac_training" 
+                    [submitted]="submitted"
+                    [customSale]="customSale"
+                    (fostacTotal)="fostacTotalAmount($event)" 
+                    (fostacGSTAmount)="fostacGSTAmount($event)"></app-fostac>
 
                 <!--Foscos Component -->
-                <app-foscos *ngIf="isFoscos" formGroupName="foscos_training" [submitted]="submitted"
-                    (foscosTotal)="foscosTotalAmount($event)" (foscosFixedCharge)="foscosCharges($event)"
+                <app-foscos *ngIf="isFoscos" 
+                    formGroupName="foscos_training" 
+                    [submitted]="submitted"
+                    [customSale]="customSale"
+                    (foscosTotal)="foscosTotalAmount($event)" 
+                    (foscosFixedCharge)="foscosCharges($event)"
                     (foscosGSTAmount)="foscosGSTAmount($event)"></app-foscos>
 
                 <!-- Hyginene Audit Component -->
-                <app-hygiene-audit *ngIf="isHygiene" formGroupName="hygiene_audit"
-                    (hygieneTotal)="hygieneTotalAmount($event)" (hygieneGSTAmount)="hygieneGSTAmount($event)"
+                <app-hygiene-audit *ngIf="isHygiene" 
+                    formGroupName="hygiene_audit"
+                    [customSale]="customSale"
+                    (hygieneTotal)="hygieneTotalAmount($event)" 
+                    (hygieneGSTAmount)="hygieneGSTAmount($event)"
                     [submitted]="submitted"></app-hygiene-audit>
 
                 <!-- Medical Form -->
@@ -323,25 +349,26 @@
                     <div class="row">
                         <h6 class="">Medical</h6>
                         <div class="col-md-3">
-                            <label for="medical_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                            <input type="number" [attr.min]="minValue" step="1"
-                                placeholder="Processing Amount"
+                            <label for="medical_processing_amount" class="form-label">Processing
+                                Amount<sup>*</sup></label>
+                            <input type="number" [attr.min]="minValue" step="1" placeholder="Processing Amount"
                                 [readonly]="isReadOnly" formControlName="medical_processing_amount"
                                 class="form-control form-control-sm"
-                                (change)="medicalRecpChange($event)" [readOnly]="true"
+                                (input)="customMedical($event)"
+                                [readonly]="!customSale"
                                 [ngClass]="{ 'is-invalid': submitted && medical.get('medical_processing_amount')?.errors}"
                                 id="medical_processing_amount" group='fostac' />
-                            <div *ngIf="submitted && medical.get('medical_processing_amount')?.errors" class="invalid-feedback">
-                                <div *ngIf="medical.get('medical_processing_amount')?.errors?.['required']">Processing Amount is
+                            <div *ngIf="submitted && medical.get('medical_processing_amount')?.errors"
+                                class="invalid-feedback">
+                                <div *ngIf="medical.get('medical_processing_amount')?.errors?.['required']">Processing
+                                    Amount is
                                     required</div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label for="recipient_no" class="form-label">No. of Recipient<sup>*</sup></label>
-                            <input type="number" 
-                                placeholder="No. of Recipient"
-                                [readonly]="isReadOnly" formControlName="recipient_no"
-                                class="form-control form-control-sm"
+                            <input type="number" placeholder="No. of Recipient"
+                                formControlName="recipient_no" class="form-control form-control-sm"
                                 (change)="medicalRecpChange($event)"
                                 [ngClass]="{ 'is-invalid': submitted && medical.get('recipient_no')?.errors}"
                                 id="recipient_no" group='fostac' />
@@ -353,10 +380,8 @@
                         <div class="col-md-3">
                             <label for="medical_total" class="form-label">MedicalTotal Amount<sup>*</sup>
                                 <span style="font-size: x-small;">(18% GST Inc.)</span></label>
-                            <input type="number" 
-                                placeholder="MedicalTotal Amount"
-                                [readonly]="isReadOnly" formControlName="medical_total"
-                                class="form-control form-control-sm"
+                            <input type="number" placeholder="MedicalTotal Amount" [readonly]="isReadOnly"
+                                formControlName="medical_total" class="form-control form-control-sm"
                                 (change)="medicalRecpChange($event)" [readOnly]="true"
                                 [ngClass]="{ 'is-invalid': submitted && medical.get('medical_total')?.errors}"
                                 id="medical_total" group='fostac' />
@@ -368,6 +393,7 @@
                     </div>
                 </div>
 
+                 <!-- Water Test Form -->
                 <div *ngIf="isWaterTest" [formGroup]="water_test_report">
                     <div class="row">
                         <h6 class="">Water Test Report</h6>
@@ -375,85 +401,69 @@
                             <label for="water_test_service_name" class="form-label">Service Name<sup>*</sup></label>
                             <select id="water_test_service_name" class="form-select form-select-sm"
                                 [ngClass]="{ 'is-invalid': submitted && water_test_report.get('water_test_service_name')?.errors}"
-                                formControlName="water_test_service_name" 
-                                (change)="onWaterTestServiceChange($event)">
+                                formControlName="water_test_service_name" (change)="onWaterTestServiceChange($event)">
                                 <option value="" disabled selected>Select the Service</option>
-                                <option *ngFor="let servicename of waterTestServiceName" [value]="servicename">{{ servicename }}
+                                <option *ngFor="let servicename of waterTestServiceName" [value]="servicename">{{
+                                    servicename }}
                                 </option>
                             </select>
-                            <div *ngIf="submitted && water_test_report.get('water_test_service_name')?.errors" class="invalid-feedback">
-                                <div *ngIf="water_test_report.get('water_test_service_name')?.errors?.['required']">Service is
+                            <div *ngIf="submitted && water_test_report.get('water_test_service_name')?.errors"
+                                class="invalid-feedback">
+                                <div *ngIf="water_test_report.get('water_test_service_name')?.errors?.['required']">
+                                    Service is
                                     required
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <label for="water_test_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                            <input type="number" 
-                                placeholder="Processing Amount"
-                                [readonly]="isReadOnly" formControlName="water_test_processing_amount"
-                                class="form-control form-control-sm"
-                                 [readOnly]="true"
+                            <label for="water_test_processing_amount" class="form-label">Processing
+                                Amount<sup>*</sup></label>
+                            <input type="number" placeholder="Processing Amount" [readonly]="isReadOnly"
+                                formControlName="water_test_processing_amount" class="form-control form-control-sm"
+                                [readonly]="!customSale"
+                                (input)="waterProcessAmount($event)"
                                 [ngClass]="{ 'is-invalid': submitted && water_test_report.get('water_test_processing_amount')?.errors}"
                                 id="water_test_processing_amount" group='water_test_report' />
-                            <div *ngIf="submitted && water_test_report.get('water_test_processing_amount')?.errors" class="invalid-feedback">
-                                <div *ngIf="water_test_report.get('water_test_processing_amount')?.errors?.['required']">Processing Amount is
+                            <div *ngIf="submitted && water_test_report.get('water_test_processing_amount')?.errors"
+                                class="invalid-feedback">
+                                <div
+                                    *ngIf="water_test_report.get('water_test_processing_amount')?.errors?.['required']">
+                                    Processing Amount is
                                     required</div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label for="water_test_total" class="form-label">Water Test Total<sup>*</sup>
                                 <span style="font-size: x-small;">(18% GST Inc.)</span></label>
-                            <input type="number" [attr.min]="minValue" step="1"
-                                placeholder="Water Test Total"
+                            <input type="number" [attr.min]="minValue" step="1" placeholder="Water Test Total"
                                 [readonly]="isReadOnly" formControlName="water_test_total"
                                 class="form-control form-control-sm"
-                                (change)="medicalRecpChange($event)" [readOnly]="true"
+                                [readOnly]="true"
                                 [ngClass]="{ 'is-invalid': submitted && water_test_report.get('water_test_total')?.errors}"
                                 id="water_test_total" group='fostac' />
-                            <div *ngIf="submitted && water_test_report.get('water_test_total')?.errors" class="invalid-feedback">
-                                <div *ngIf="water_test_report.get('water_test_total')?.errors?.['required']">Water Test Total is
+                            <div *ngIf="submitted && water_test_report.get('water_test_total')?.errors"
+                                class="invalid-feedback">
+                                <div *ngIf="water_test_report.get('water_test_total')?.errors?.['required']">Water Test
+                                    Total is
                                     required</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div *ngIf="isKhadyaPaaln" [formGroup]="khadya_paaln">
-                    <div class="row">
-                        <h6 class="">Khadya Paaln</h6>
-                        <div class="col-md-3">
-                            <label for="khadya_paaln_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-                            <input type="number" 
-                                placeholder="Processing Amount"
-                                [readonly]="isReadOnly" formControlName="khadya_paaln_processing_amount"
-                                class="form-control form-control-sm"
-                                 [readOnly]="true"
-                                [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_processing_amount')?.errors}"
-                                id="khadya_paaln_processing_amount" group='khadya_paaln' />
-                            <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_processing_amount')?.errors" class="invalid-feedback">
-                                <div *ngIf="khadya_paaln.get('khadya_paaln_processing_amount')?.errors?.['required']">Processing Amount is
-                                    required</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="khadya_paaln_total" class="form-label">Khadya Paaln Total<sup>*</sup>
-                                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
-                            <input type="number"
-                                placeholder="Khadya Paaln Total"
-                                [readonly]="isReadOnly" formControlName="khadya_paaln_total"
-                                class="form-control form-control-sm" [readOnly]="true"
-                                [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_total')?.errors}"
-                                id="khadya_paaln_total" group='fostac' />
-                            <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_total')?.errors" class="invalid-feedback">
-                                <div *ngIf="khadya_paaln.get('khadya_paaln_total')?.errors?.['required']">Khadya Paaln Total is
-                                    required</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row mt-3" *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest || isKhadyaPaaln">
+                <!--*ngIf="isKhadyaPaaln"-->
+                <app-khadyapaaln *ngIf="isKhadyaPaaln"
+                    formGroupName="khadya_paaln" 
+                    [submitted]="submitted"
+                    [customSale]="customSale"
+                    [khadya_paaln_processAmnt]="khadya_paaln_processAmnt"
+                    [khadya_paaln_serviceName]="khadya_paaln_serviceName"
+                    (khadyaGSTAmount)="khadyaPaalnGSTAmount($event)">
+                </app-khadyapaaln>
+
+                <div class="row mt-3"
+                    *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest || isKhadyaPaaln">
                     <div class="col-md-3">
                         <label for="grand_total" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
                             <span style="font-size: x-small;">(18% GST Inc.)</span></label>
@@ -538,11 +548,14 @@
 
                 <div class="row mt-3">
                     <div class="col-6">
-                        <button *ngIf="isEditMode; else otherContent" type="submit"
-                            class="btn btn-sm btn-primary">Update</button>
+                        <button *ngIf="isEditMode; else otherContent" type="submit" class="btn btn-sm btn-primary">
+                            Update
+                        </button>
 
                         <ng-template #otherContent>
-                            <button type="submit" class="btn btn-sm btn-primary">{{byCheque?'Cheque Submit':'Pay Now'}}</button>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                {{byCheque?'Cheque Submit':'Pay Now'}}
+                            </button>
                         </ng-template>
                     </div>
                     <!-- <div class="col-6 d-grid gap-2 d-md-flex justify-content-md-end">
@@ -550,8 +563,6 @@
                     </div> -->
                 </div>
             </form>
-
-
         </ng-container>
 
     </div>

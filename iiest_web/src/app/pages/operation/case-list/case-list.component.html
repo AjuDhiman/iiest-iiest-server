@@ -8,8 +8,6 @@
         </nav>
         <fa-icon [icon]="faArrowRotateForward" class="selector" (click)="refresh()"></fa-icon>
     </div>
-
-   
     <!-- Tabs for Filtering by Product -->
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0"
         *ngIf="(panelType==='FSSAI Relationship Panel') && !isRecipientList">
@@ -20,6 +18,12 @@
                 (click)="toogleTabs('Foscos')">Foscos</a>
             <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='HRA'}"
                 (click)="toogleTabs('HRA')">HRA</a>
+            <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Medical'}"
+                (click)="toogleTabs('Medical')">Medical</a>
+            <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Water Test Report'}"
+                (click)="toogleTabs('Water Test Report')">Water Test</a>
+            <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': productType==='Khadya Paaln'}"
+                (click)="toogleTabs('Khadya Paaln')">Khadya Paaln</a>
         </li>
     </ul>
     <div class="container-xxl border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4 m-0">
@@ -27,7 +31,7 @@
             <div class="col-auto">
                 <!-- List Type according to Product -->
                 <h1 class="app-page-title mb-0">{{isRecipientList?'Recipient List':'Case List'}} of {{productType}}
-                   
+
                 </h1>
             </div>
             <div class="col-auto">
@@ -110,12 +114,13 @@
             </div><!--//col-auto-->
         </div><!--//row-->
 
-
         <div class="tab-content" id="orders-table-tab-content">
             <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
                 <div class="app-card app-card-orders-table shadow-sm mb-5">
                     <div class="app-card-body">
                         <div class="table-responsive">
+
+                            <!--panelType==='FSSAI Supervisor Panel' && forTraining -->
                             <table *ngIf="(panelType==='FSSAI Supervisor Panel' && forTraining) || isRecipientList"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
@@ -188,7 +193,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                            <!--FOSTAC Table -->
                             <table *ngIf="productType==='Fostac' && !isRecipientList"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
@@ -300,7 +305,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-
+                            <!--HRA Table -->
                             <table *ngIf="productType==='HRA' || (panelType==='FSSAI Supervisor Panel' && forAudit)"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
@@ -413,7 +418,7 @@
                                 </tbody>
                             </table>
 
-
+                            <!--FOSCOS Table -->
                             <table *ngIf="productType==='Foscos'"
                                 class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
                                 <thead>
@@ -523,6 +528,310 @@
                                     <tr>
                                         <td colspan="15" class="text-center fw-bold">----------------- No Data Found
                                             ----------------</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!--Khadya Paaln Table -->
+                            <table *ngIf="productType==='Khadya Paaln'"
+                                class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">S.No</th>
+                                        <th class="cell">Manager Name</th>
+                                        <th class="cell">Fbo Name</th>
+                                        <th class="cell">Owner Name</th>
+                                        <th class="cell">Bo Id</th>
+                                        <th class="cell">Shop Id</th>
+                                        <th class="cell">Khadya Total</th>
+                                        <th class="cell">Sales Date</th>
+                                        <th class="cell text-center">Sales Executive</th>
+                                        <th class="cell text-center">verification Status</th>
+                                        <th class="cell">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'case-list' }; let i=index">
+                                        <td class="cell"><span
+                                                class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
+                                                (click)="collectResData('Khadya Paaln', data._id)">{{data.managerName.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+                                                class="truncate text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span
+                                                class="truncate">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
+                                        </td>
+
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
+                                        </td>
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.customer_id}}</span>
+                                        </td>
+                                        
+                                        <td *ngIf="productType==='Khadya Paaln'" class="cell"><span
+                                                class="truncate">{{data.salesInfo.khadyaPaalnInfo.khadya_paaln_total
+                                                | inrAmount}}</span></td>
+                                        <td class="cell"><span
+                                                class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
+                                            class="cell text-center">
+                                            <span
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split('
+                                                ')[0]}}</span>
+                                        </td>
+                                        <td class="cell text-center">
+                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum"
+                                                [ngClass]="data.resultTextClass" style="font-size: x-small;"
+                                                class="badge align-self-baseline make-short" [title]="data.resultText">
+                                                {{data.resultText}}
+                                            </span>
+
+                                            <div class="">
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.approvedDocs}}
+                                                </span>
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.pendingDocs}}
+                                                </span>
+                                            </div>
+
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize">
+                                                <fa-icon class="fa-l selector mx-2"
+                                                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                    (click)="viewFboDetails($event, data.salesInfo)"
+                                                    title="View Detail"></fa-icon>
+
+                                            </span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
+                                        </td> -->
+                                        <ng-template #noData>
+                                            <td class="cell">
+                                                <span class="truncate">-</span>
+                                            </td>
+                                        </ng-template>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--Medical Table -->
+                            <table *ngIf="productType==='Medical'"
+                                class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">S.No</th>
+                                        <th class="cell">Manager Name</th>
+                                        <th class="cell">Fbo Name</th>
+                                        <th class="cell">Owner Name</th>
+                                        <th class="cell">Bo Id</th>
+                                        <th class="cell">Shop Id</th>
+                                        <th class="cell">Recipient No.</th>
+                                        <th class="cell">Medical Total</th>
+                                        <th class="cell">Sales Date</th>
+                                        <th class="cell text-center">Sales Executive</th>
+                                        <th class="cell text-center">verification Status</th>
+                                        <th class="cell">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'case-list' }; let i=index">
+                                        <td class="cell"><span
+                                                class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
+                                                (click)="collectResData('Medical', data._id)">{{data.managerName.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+                                                class="truncate text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span
+                                                class="truncate">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
+                                        </td>
+
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
+                                        </td>
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.customer_id}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo" class="cell text-center"><span
+                                            (click)="recipient(data.salesInfo, 'Medical')"
+                                            class="truncate active-selection">{{data.salesInfo.medicalInfo.recipient_no}}</span>
+                                        </td>
+                                        
+                                        <td *ngIf="productType==='Medical'" class="cell"><span
+                                                class="truncate">{{data.salesInfo.medicalInfo.medical_total
+                                                | inrAmount}}</span></td>
+                                        <td class="cell"><span
+                                                class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
+                                            class="cell text-center">
+                                            <span
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split('
+                                                ')[0]}}</span>
+                                        </td>
+                                        <td class="cell text-center">
+                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum"
+                                                [ngClass]="data.resultTextClass" style="font-size: x-small;"
+                                                class="badge align-self-baseline make-short" [title]="data.resultText">
+                                                {{data.resultText}}
+                                            </span>
+
+                                            <div class="">
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.approvedDocs}}
+                                                </span>
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.pendingDocs}}
+                                                </span>
+                                            </div>
+
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize">
+                                                <fa-icon class="fa-l selector mx-2"
+                                                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                    (click)="viewFboDetails($event, data.salesInfo)"
+                                                    title="View Detail"></fa-icon>
+
+                                            </span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
+                                        </td> -->
+                                        <ng-template #noData>
+                                            <td class="cell">
+                                                <span class="truncate">-</span>
+                                            </td>
+                                        </ng-template>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--Water Test Report Table -->
+                            <table *ngIf="productType==='Water Test Report'"
+                                class="table app-table-hover table-striped mb-0 text-left" id="data-to-export">
+                                <thead>
+                                    <tr>
+                                        <th class="cell">S.No</th>
+                                        <th class="cell">Manager Name</th>
+                                        <th class="cell">Fbo Name</th>
+                                        <th class="cell">Owner Name</th>
+                                        <th class="cell">Bo Id</th>
+                                        <th class="cell">Shop Id</th>
+                                        <th class="cell">Water Service Name</th>
+                                        <th class="cell">Water Test Total</th>
+                                        <th class="cell">Sales Date</th>
+                                        <th class="cell text-center">Sales Executive</th>
+                                        <th class="cell text-center">verification Status</th>
+                                        <th class="cell">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let data of filteredData | paginate: { itemsPerPage: itemsNumber, currentPage: pageNumber, id: 'case-list' }; let i=index">
+                                        <td class="cell"><span
+                                                class="truncate">{{i+itemsNumber*(pageNumber-1)+1}}</span>
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize selector text-capitalize"
+                                                (click)="collectResData('Water Test Report', data._id)">{{data.managerName.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span [title]="data.salesInfo.fboInfo.fbo_name.toLowerCase()"
+                                                class="truncate text-w-150">{{data.salesInfo.fboInfo.fbo_name.toLowerCase()}}</span>
+                                        </td>
+                                        <td *ngIf="data.salesInfo.fboInfo; else noData" class="cell text-capitalize">
+                                            <span
+                                                class="truncate">{{data.salesInfo.fboInfo.owner_name.toLowerCase()}}</span>
+                                        </td>
+
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.boInfo.customer_id}}</span>
+                                        </td>
+                                        <td class="cell text-capitalize">
+                                            <span class="truncate">{{data.salesInfo.fboInfo.customer_id}}</span>
+                                        </td>
+                                        <td class="cell text-center text-capitalize"><span
+                                            class="truncate">{{data.salesInfo.waterTestInfo.water_test_service_name}}</span>
+                                        </td>
+                                        
+                                        <td *ngIf="productType==='Water Test Report'" class="cell"><span
+                                                class="truncate">{{data.salesInfo.waterTestInfo.water_test_total
+                                                | inrAmount}}</span></td>
+                                        <td class="cell"><span
+                                                class="truncate">{{getFormattedSalesDate(data.salesInfo.createdAt)}}</span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span
+                                                class="truncate">{{data.salesInfo.fboInfo.state}}</span></td> -->
+                                        <td *ngIf="data.salesInfo.fboInfo && data.salesInfo.employeeInfo; else noData"
+                                            class="cell text-center">
+                                            <span
+                                                class="truncate text-capitalize">{{data.salesInfo.employeeInfo.employee_name.toLowerCase().split('
+                                                ')[0]}}</span>
+                                        </td>
+                                        <td class="cell text-center">
+                                            <span *ngIf="data.resultTextClass && !data.isForDocumentsNum"
+                                                [ngClass]="data.resultTextClass" style="font-size: x-small;"
+                                                class="badge align-self-baseline make-short" [title]="data.resultText">
+                                                {{data.resultText}}
+                                            </span>
+
+                                            <div class="">
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-success mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.approvedDocs}}
+                                                </span>
+                                                <span *ngIf="data.resultTextClass && data.isForDocumentsNum"
+                                                    [ngClass]="'bg-danger mx-1'" style="font-size: x-small;"
+                                                    class="badge align-self-baseline make-short"
+                                                    [title]="data.resultText">
+                                                    {{data.pendingDocs}}
+                                                </span>
+                                            </div>
+
+                                        </td>
+                                        <td class="cell"><span class="truncate text-capitalize">
+                                                <fa-icon class="fa-l selector mx-2"
+                                                    style="margin-right: 7px; color: #1957a9;" [icon]="faEye"
+                                                    (click)="viewFboDetails($event, data.salesInfo)"
+                                                    title="View Detail"></fa-icon>
+
+                                            </span>
+                                        </td>
+                                        <!-- <td *ngIf="data.salesInfo.fboInfo" class="cell"><span class="truncate">-</span>
+                                        </td> -->
+                                        <ng-template #noData>
+                                            <td class="cell">
+                                                <span class="truncate">-</span>
+                                            </td>
+                                        </ng-template>
                                     </tr>
                                 </tbody>
                             </table>

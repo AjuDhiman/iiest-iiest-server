@@ -10,7 +10,8 @@
 
          <div class="col-md-3">
             <label for="hra_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
-            <input id="hra_processing_amount" formControlName="hra_processing_amount" type="text" readonly
+            <input id="hra_processing_amount" formControlName="hra_processing_amount" type="text" [readonly]="!customSale"
+            (input)="processAmount()"
                 class="form-control form-control-sm" value="5000" />
          </div>
 <!-- 

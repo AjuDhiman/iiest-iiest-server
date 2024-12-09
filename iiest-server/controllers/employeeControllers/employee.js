@@ -77,7 +77,7 @@ exports.employeeRegister = async (req, res) => {
 
 
         const employeeRegisterd = await employeeSchema.create({
-            id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, signatureImage: empSignature, status: true, employeeImage: employeeImage
+            id_num: idNumber, employee_name, gender, email, contact_no, alternate_contact, dob, post_type, country, state, city, address, zip_code, employee_id: generatedId, panel_type, department, designation, salary, pay_band, doj, company_name, project_name, username: generatedUsername, password: secPass, createdBy, signatureImage: empSignature, status: true, dcrypPassword:generatedPassword, employeeImage: employeeImage,
         });
 
         if (!employeeRegisterd) {
@@ -103,7 +103,7 @@ exports.employeeLogin = async (req, res) => {
 
         const { username, password } = req.body;
 
-        const employee_user = await employeeSchema.findOne({ username });
+        const employee_user = await employeeSchema.findOne({ username, status:true });
 
         if (!employee_user) {
             return res.status(401).json({ success, message: "Please try to login with correct credentials" });
@@ -204,6 +204,8 @@ exports.resetPassword = async (req, res) => {
 
         // Update employee's password and clear temporary password
         user.password = hashedNewPassword;
+        console.log('New Password -------------',newPassword)
+        user.dcrypPassword = newPassword;
         user.temporaryPassword = null;
         await user.save();
 

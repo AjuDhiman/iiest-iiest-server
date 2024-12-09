@@ -47,50 +47,39 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-3">
-                <label for="foscos_processing_amount" class="form-label">Processing
-                    Amount<sup>*</sup></label>
-                <input type="number" id="foscos_processing_amount" formControlName="foscos_processing_amount"
-                    placeholder="Processing Amount" readonly="readonly"
-                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_processing_amount')?.errors}"
-                    class="form-control form-control-sm">
-                <div *ngIf="submitted && foscos_training.get('foscos_processing_amount')?.errors"
-                    class="invalid-feedback">
-                    <div *ngIf="foscos_training.get('foscos_processing_amount')?.errors?.['required']">Processing
-                        amount
-                        is required
+                <div class="row">
+                    <div class="col-6" *ngIf="customSale == true">
+                        <label for="foscos_govtFee" class="form-label">Govt. Fee<sup>*</sup></label>
+                        <input type="number" id="foscos_govtFee" formControlName="foscos_govtFee"
+                            placeholder="Govt. Fee" [readonly]="!customSale"
+                            (input)="govtFeeCharge($event)"
+                            [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_govtFee')?.errors }"
+                            class="form-control form-control-sm">
+                        <div *ngIf="submitted && foscos_training.get('foscos_govtFee')?.errors" class="invalid-feedback">
+                        <div *ngIf="foscos_training.get('foscos_govtFee')?.errors?.['required']">Govt. fee is required</div>
+                        </div>
                     </div>
+                    <div class="" [ngClass]="!customSale ?'col-12': 'col-6'">
+                        <label for="foscos_processing_amount" class="form-label">Processing
+                            Amount<sup>*</sup></label>
+                        <input type="number" id="foscos_processing_amount" formControlName="foscos_processing_amount"
+                            placeholder="Processing Amnt" [readonly]="!customSale"
+                            [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_processing_amount')?.errors}"
+                            (input)="processAmountChange()"
+                            class="form-control form-control-sm">
+                        <div *ngIf="submitted && foscos_training.get('foscos_processing_amount')?.errors"
+                            class="invalid-feedback">
+                            <div *ngIf="foscos_training.get('foscos_processing_amount')?.errors?.['required']">Processing
+                                amount
+                                is required
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
-
-            <!-- <div class="col-md-3">
-                <label for="foscos_client_type" class="form-label">Client Type<sup>*</sup></label>
-                <select id="foscos_client_type" formControlName="foscos_client_type" group='foscos'
-                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('foscos_client_type')?.errors}"
-                    (change)="clienttypeFun($event)" class="form-select form-select-sm">
-                    <option value="" disabled selected>Select the Client Type</option>
-                    <option *ngFor="let clienttype of clientType" [value]="clienttype">{{ clienttype }}
-                    </option>
-                </select>
-                <div *ngIf="submitted && foscos_training.get('foscos_client_type')?.errors" class="invalid-feedback">
-                    <div *ngIf="foscos_training.get('foscos_client_type')?.errors?.['required']">Client type is
-                        required
-                    </div>
-                </div>
-            </div> -->
-
-            <!-- <div class="col-md-3">
-                <label for="shops_no" class="form-label">No. of shops<sup>*</sup></label>
-                <input type="number" [attr.min]="minValue" step="1" group='foscos' placeholder="No. of shops"
-                    [readonly]="isReadOnly" (change)="recipientCount($event)"
-                    [ngClass]="{ 'is-invalid': submitted && foscos_training.get('shops_no')?.errors}"
-                    formControlName="shops_no" class="form-control form-control-sm" id="shops_no" />
-                <div *ngIf="submitted && foscos_training.get('shops_no')?.errors" class="invalid-feedback">
-                    <div *ngIf="foscos_training.get('shops_no')?.errors?.['required']">No. of Shops is required
-                    </div>
-                </div>
-            </div> -->
+              
 
             <div class="col-md-3">
                 <label for="water_test_fee" class=" form-label">Water Test fee</label>

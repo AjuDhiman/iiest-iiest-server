@@ -11,6 +11,7 @@ import { RecipientListComponent } from 'src/app/pages/modals/recipient/recipient
 import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.component';
 import { ClientListComponent } from './client-list/client-list.component';
 import { NgbActiveModal, NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { KhadyapaalnComponent } from './fboproduct/khadyapaaln/khadyapaaln.component';
 
 
 
@@ -24,7 +25,8 @@ import { NgbActiveModal, NgbModalModule, NgbModule } from '@ng-bootstrap/ng-boot
     RecipientComponent,
     RecipientListComponent,
     ViewFboComponent,
-    ClientListComponent
+    ClientListComponent,
+    KhadyapaalnComponent
   ],
   imports: [
     CommonModule,

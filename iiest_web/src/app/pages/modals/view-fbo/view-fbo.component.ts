@@ -272,6 +272,9 @@ export class ViewFboComponent implements OnInit {
       case 'Water Test Report':
         this.productTotalAmt = this.fboData.waterTestInfo.water_test_total;
         break;
+      case 'Khadya Paaln':
+        this.productTotalAmt = this.fboData.khadyaPaalnInfo.khadya_paaln_total;
+        break;
     }
   }
 }

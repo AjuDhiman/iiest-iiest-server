@@ -16,7 +16,7 @@ exports.sendBOVerificationSMS = async (manager_contact, email, verificationtion_
                      on 9289310979 - Connect Bharat (IIEST)`;
 
     //sending sms
-    await sendSMS(dltTempletID, message, phoneNo);
+    await sendSMS(message, phoneNo);
 
 }
 
@@ -37,7 +37,7 @@ exports.sendBOOnBoardSMS = async (owner_name, manager_name, bo_id, phoneNo) => {
                      on 9289310979 - Connect Bharat (IIESTF)`;
 
     //sending sms
-    const messageSent =  await sendSMS(dltTempletID, message, phoneNo);
+    const messageSent =  await sendSMS(message, phoneNo);
 
     return messageSent
 
@@ -55,7 +55,7 @@ exports.sendFostacVerificationSMS = async (owner_name, manager_name, manager_con
     const message = ``;
 
     //sending sms
-    await sendSMS(dltTempletID, message), phoneNo;
+    await sendSMS(message, phoneNo);
 
 }
 
@@ -108,7 +108,8 @@ exports.foscosVerificationSMS = async (owner_name, manager_name, manager_contact
     await sendSMS(dltTempletID, message, phoneNo);
 }
 
-async function sendSMS(dltTempletID, message, phoneNo) {
+//async function sendSMS(dltTempletID, message, phoneNo)
+async function sendSMS(message, phoneNo) {
     const params = new URLSearchParams()
     params.append('destination', phoneNo);
     params.append('message', message);
@@ -121,12 +122,13 @@ async function sendSMS(dltTempletID, message, phoneNo) {
             method: 'sendMessage',
             send_to: phoneNo,
             msg: message,
-            msg_type: 'TEXT',
-            userid: GUPSHUP_CONFIG.userid, auth_scheme: 'PLAIN',
+            msg_type: 'text',
+            userid: GUPSHUP_CONFIG.userid, auth_scheme: 'plain',
             password: GUPSHUP_CONFIG.password,
-            format: 'JSON',
-            principalEntityId: DLT_CONFIG.principalEntityId,
-            dltTempletID: dltTempletID
+            v:1.1,
+            format: 'text',
+           // principalEntityId: DLT_CONFIG.principalEntityId,
+            //dltTempletID: dltTempletID
         }
     };
 

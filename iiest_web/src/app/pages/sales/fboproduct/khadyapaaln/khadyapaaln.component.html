@@ -1,0 +1,56 @@
+<form [formGroup]="khadya_paaln">
+    <div class="row">
+        <h6 class="">Khadya Paaln</h6>
+        <div *ngIf="showDiscountCheckbox" style="display: flex; align-items: center; justify-content: flex-end;">
+            <input type="checkbox" (change)="onDiscountCheckboxChange($event)" name="discount" />
+            <span style="font-size: 9px; color:#000; padding-left: 5px;">Click the checkbox for
+                discount.</span>
+        </div>
+        
+        <div class="col-md-3">
+            <label for="khadya_paaln_service_name" class="form-label">Service Name<sup>*</sup></label>
+            <select id="khadya_paaln_service_name" formControlName="khadya_paaln_service_name" [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_service_name')?.errors}"
+                class="form-select form-select-sm" (change)="onServiceSelect()">
+                <option value="" disabled selected>Select the Service</option>                               
+                <option *ngFor="let servicename of khadya_paaln_serviceName | keyvalue"
+                    [value]="servicename.key">{{servicename.value}}
+                </option>
+            </select>
+             <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_service_name')?.errors"
+                class="invalid-feedback">
+                <div *ngIf="khadya_paaln.get('khadya_paaln_service_name')?.errors?.['required']">Service is
+                    required
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label for="khadya_paaln_processing_amount" class="form-label">Processing
+                Amount<sup>*</sup></label>
+            <input type="number" placeholder="Processing Amount"  [readonly]="!customSale"
+                formControlName="khadya_paaln_processing_amount" class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_processing_amount')?.errors}"
+                id="khadya_paaln_processing_amount" group='khadya_paaln' (ngModelChange)="onProcessingAmountChange($event)"  />
+            <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_processing_amount')?.errors"
+                class="invalid-feedback">
+                <div *ngIf="khadya_paaln.get('khadya_paaln_processing_amount')?.errors?.['required']">
+                    Processing Amount is
+                    required</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="khadya_paaln_total" class="form-label">Khadya Paaln Total<sup>*</sup>
+                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+            <input type="number" placeholder="Khadya Paaln Total" [readonly]="isReadOnly"
+                formControlName="khadya_paaln_total" class="form-control form-control-sm"
+                [readOnly]="true"
+                [ngClass]="{ 'is-invalid': submitted && khadya_paaln.get('khadya_paaln_total')?.errors}"
+                id="khadya_paaln_total" group='fostac' />
+            <div *ngIf="submitted && khadya_paaln.get('khadya_paaln_total')?.errors"
+                class="invalid-feedback">
+                <div *ngIf="khadya_paaln.get('khadya_paaln_total')?.errors?.['required']">Khadya Paaln
+                    Total is required</div>
+            </div>
+        </div>
+    </div>
+</form>

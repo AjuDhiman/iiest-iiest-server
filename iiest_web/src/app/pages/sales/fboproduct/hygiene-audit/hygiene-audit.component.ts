@@ -9,6 +9,7 @@ import { clientType, processAmnt, serviceNames } from 'src/app/utils/config';
 })
 export class HygieneAuditComponent implements OnInit {
   @Input() formGroupName: string;
+  @Input() customSale: boolean;
   @Input() submitted: boolean;
   @Output() hygieneTotal = new EventEmitter<number>();
   @Output() hygieneGSTAmount = new EventEmitter<number>();

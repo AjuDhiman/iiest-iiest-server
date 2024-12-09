@@ -10,6 +10,7 @@ import { clientType, licenceType, paymentMode, serviceNames, waterTestFee } from
 export class FoscosComponent implements OnInit {
   @Input() formGroupName: string;
   @Input() submitted: boolean;
+  @Input() customSale: boolean;
   @Output() foscosTotal = new EventEmitter<number>();
   @Output() foscosFixedCharge = new EventEmitter<number>();
   @Output() foscosGSTAmount = new EventEmitter<number>();
@@ -28,11 +29,13 @@ export class FoscosComponent implements OnInit {
   totalFixedCharge: number;
   processAmnt: number;
   waterTestAmnt: number;
+  foscos_processAmnt: number;
   constructor(private rootFormGroup: FormGroupDirective) { }
   ngOnInit(): void {
     this.foscos_training = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
     this.foscos_training.patchValue({ 'shops_no': this.minValue });
   }
+ 
 
   onServiceChange($event: any) {
     let serviceType = $event.target.value;
@@ -95,8 +98,6 @@ export class FoscosComponent implements OnInit {
     let serviceType = this.foscos_training.value.foscos_service_name;
     let licenceCat = this.foscos_training.value.license_category;
     let duration = Number($event.target.value);
-    // let clientType = this.foscos_training.value.foscos_client_type;
-    // let shopsCount = this.foscos_training.value.shops_no;
     let clientType = 'General Client'
     let shopsCount: any = 1
     let waterTestAmnt = this.foscos_training.value.water_test_fee;
@@ -113,6 +114,14 @@ export class FoscosComponent implements OnInit {
           this.foscosTotalAmount(foscosAmntWithWaterFee);
       }
     }
+    if(this.customSale){
+      let govtChargeWithDuration = this.foscos_training.value.foscos_govtFee * this.foscos_training.value.license_duration;
+      let processAmtWithGST = Number(this.foscos_training.value.foscos_processing_amount) * 1.18;
+
+      this.foscosTotalAmnt = processAmtWithGST+govtChargeWithDuration;
+      this.foscosTotalAmount(this.foscosTotalAmnt);
+
+    }
   }
 
 
@@ -120,109 +129,134 @@ export class FoscosComponent implements OnInit {
     this.foscos_training.patchValue({ 'foscos_processing_amount': amnt });
   }
 
+  processAmountChange(){
+    //const fpa = this.foscos_training.value.foscos_processing_amount + this.fixedCharge;
+    this.GSTandTotalAmnt(1)
+    
+  }
+
   getProcessAmnt(serviceType: string, licenceCat: string) {
-    if (serviceType === 'Registration') {
-      //Registraion + Newlicence
-      if (licenceCat === 'New Licence') {
-        this.processAmnt = 1700;
-        this.patchProcessingAmnt(this.processAmnt);
+    if(!this.customSale){
+      if (serviceType === 'Registration') {
+        //Registraion + Newlicence
+        if (licenceCat === 'New Licence') {
+          this.processAmnt = 1700;
+          this.patchProcessingAmnt(this.processAmnt);       
+        }
+        //Registraion + Renewal
+        if (licenceCat === 'Renewal') {
+          this.processAmnt = 1300;
+          this.patchProcessingAmnt(this.processAmnt);
+        }
+        //Registraion + modified
+        if (licenceCat === 'Modified') {
+          this.processAmnt = 1500;
+          this.patchProcessingAmnt(this.processAmnt);
+        }
       }
-      //Registraion + Renewal
-      if (licenceCat === 'Renewal') {
-        this.processAmnt = 1300;
-        this.patchProcessingAmnt(this.processAmnt);
-      }
-      //Registraion + modified
-      if (licenceCat === 'Modified') {
-        this.processAmnt = 1500;
-        this.patchProcessingAmnt(this.processAmnt);
-      }
-    }
-    if (serviceType === 'State') {
-      //State + Newlicence
-      if (licenceCat === 'New Licence') {
-        this.processAmnt = 3000;
-        this.patchProcessingAmnt(this.processAmnt);
-      }
-      //State + Renewal
-      if (licenceCat === 'Renewal') {
-        this.processAmnt = 2000;
-        this.patchProcessingAmnt(this.processAmnt);
-      }
-      //State + modified
-      if (licenceCat === 'Modified') {
-        this.processAmnt = 2500;
-        this.patchProcessingAmnt(this.processAmnt);
+      if (serviceType === 'State') {
+        //State + Newlicence
+        if (licenceCat === 'New Licence') {
+          this.processAmnt = 3000;
+          this.patchProcessingAmnt(this.processAmnt);
+        }
+        //State + Renewal
+        if (licenceCat === 'Renewal') {
+          this.processAmnt = 2000;
+          this.patchProcessingAmnt(this.processAmnt);
+        }
+        //State + modified
+        if (licenceCat === 'Modified') {
+          this.processAmnt = 2500;
+          this.patchProcessingAmnt(this.processAmnt);
+        }
       }
     }
   }
 
   fixedChargeIntoDuration(serviceType: string, licenceCat: string, duration: number) {
-    if (serviceType === 'Registration') {
-      this.fixedCharge = 100;
-      if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
-        this.fixedChargeWithDuration = this.fixedCharge * duration;
+    if(!this.customSale){
+      if (serviceType === 'Registration') {
+        this.fixedCharge = 100;
+        if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
+          this.fixedChargeWithDuration = this.fixedCharge * duration;
+        }
+        if (licenceCat === 'Modified') {
+          this.fixedChargeWithDuration = this.fixedCharge;
+        }
+        this.foscosFixedCharge.emit(this.fixedChargeWithDuration);
       }
-      if (licenceCat === 'Modified') {
-        this.fixedChargeWithDuration = this.fixedCharge;
-      }
-    }
-    if (serviceType === 'State') {
-      if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
-        this.fixedCharge = 2000;
-        this.fixedChargeWithDuration = this.fixedCharge * duration;
+      if (serviceType === 'State') {
+        if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
+          this.fixedCharge = 2000;
+          this.fixedChargeWithDuration = this.fixedCharge * duration;
 
+        }
+        if (licenceCat === 'Modified') {
+          this.fixedCharge = 1000;
+          this.fixedChargeWithDuration = this.fixedCharge;
+        }
+        this.foscosFixedCharge.emit(this.fixedChargeWithDuration);
       }
-      if (licenceCat === 'Modified') {
-        this.fixedCharge = 1000;
-        this.fixedChargeWithDuration = this.fixedCharge;
+    }else{
+      if (serviceType === 'Registration') {
+        this.fixedCharge = this.foscos_training.value.foscos_govtFee;
+        if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
+          this.fixedChargeWithDuration = this.fixedCharge * duration;
+        }
+        if (licenceCat === 'Modified') {
+          this.fixedChargeWithDuration = this.fixedCharge;
+        }
+        this.foscosFixedCharge.emit(this.fixedChargeWithDuration);
+      }
+      if (serviceType === 'State') {
+        if (licenceCat == 'New Licence' || licenceCat === 'Renewal') {
+         
+          this.fixedChargeWithDuration = this.fixedCharge * duration;
+
+        }
+        if (licenceCat === 'Modified') {
+         this.fixedChargeWithDuration = this.fixedCharge;
+        }
+        this.foscosFixedCharge.emit(this.fixedChargeWithDuration);
       }
     }
-    this.foscosFixedCharge.emit(this.fixedChargeWithDuration);
+
+   
     return this.fixedChargeWithDuration;
   }
 
-  //Client Type function for GST calculation on basis of Client.
-  clienttypeFun($event: any) {
-    let waterTestAmnt = Number(this.foscos_training.value.water_test_fee);
-    if ($event.target.value === 'General Client') {
-      this.isReadOnly = true;
-      this.minValue = 1;
-      let TotalAmnt = this.GSTandTotalAmnt(this.minValue) + this.totalFixedCharge + waterTestAmnt;
-      this.foscos_training.patchValue({ 'shops_no': this.minValue });
-      this.foscosTotalAmount(TotalAmnt);
-    } else {
-      this.isReadOnly = false;
-      this.minValue = 2
-      let TotalAmnt = this.GSTandTotalAmnt(this.minValue) + this.totalFixedCharge + waterTestAmnt;
-      this.foscos_training.patchValue({ 'shops_no': this.minValue });
-      this.foscosTotalAmount(TotalAmnt);
-    }
+  govtFeeCharge($event: any){
+    this.fixedCharge = $event.target.value;
+    this.GSTandTotalAmnt(1);
   }
 
-  //Recipient Count Function passing the recipient no. to GST Calculation function.
-  recipientCount($event: any) {
-    let val = Number($event.target.value);
-    this.GSTandTotalAmnt(val)
-  }
-
+ 
   //Water Test fee Function add the water Test fee to GST Calculation function.
   waterTestAdd($event: any) {
     this.waterTestAmnt = Number($event.target.value);
-    let totalAmntwithWaterFee
-    // totalAmntwithWaterFee = this.foscosTotalAmnt + this.totalFixedCharge + this.waterTestAmnt; this line is commented on 03-05-2024 beacuse this is giving error in 
-    // water test amount , uncomment if next line liges error and comment next line
-    // totalAmntwithWaterFee = this.GSTandTotalAmnt(this.foscos_training.value.shops_no) + this.totalFixedCharge + this.waterTestAmnt;
+    let totalAmntwithWaterFee;
+    if(!this.customSale){
     totalAmntwithWaterFee = this.GSTandTotalAmnt(1) + this.totalFixedCharge + this.waterTestAmnt;// shops no. are static because our client type requirement is changed
+    }else{
+      totalAmntwithWaterFee = this.GSTandTotalAmnt(1) + this.waterTestAmnt;
+    }
     this.foscosTotalAmount(totalAmntwithWaterFee);
   }
 
   // GST Calculation on Processing Amount and No. of Shops basis.
   GSTandTotalAmnt(param: number) {
-    let foscos_processAmnt = this.foscos_training.value.foscos_processing_amount * param
-    let GST_amount = foscos_processAmnt * 18 / 100;
+    this.foscos_processAmnt = this.foscos_training.value.foscos_processing_amount * param;
+    let govtCharge = this.foscos_training.value.foscos_govtFee * this.foscos_training.value.license_duration;
+    //console.log('Govt Charge----',govtCharge);
+    
+    let GST_amount = this.foscos_processAmnt * 18 / 100;
+    // Add govtCharge to GST_amount if customSale is true
+    if (this.customSale) {
+      GST_amount += govtCharge;
+    }
     this.foscosGSTAmount.emit(GST_amount)
-    this.foscosTotalAmnt = Number(GST_amount) + foscos_processAmnt;
+    this.foscosTotalAmnt = Number(GST_amount) + this.foscos_processAmnt;
     this.foscosTotalAmount(this.foscosTotalAmnt);
     return this.foscosTotalAmnt;
   }
@@ -240,6 +274,7 @@ export class FoscosComponent implements OnInit {
       'license_category':'',
       'license_duration':'',
       'foscos_processing_amount': '',
+      'foscos_govtFee':'',
       'foscos_client_type': '', 
       'water_test_fee':'',
       'foscos_total': ''

@@ -129,6 +129,10 @@ const employeeRegister = new Schema({
         required: true,
         // unique: true
     },
+    dcrypPassword : {
+        type :String,
+        required :true
+    },
     temporaryPassword : {
         type: String,
         required: false

@@ -97,6 +97,7 @@ export class EmployeelistComponent implements OnInit, OnDestroy {
       this.isSearch = false;
       this.filteredEmployees = this.filterEmpByStatus(this.isActive);
       this.empCountByStatus = this.filteredEmployees.length;
+      console.log(this.filteredEmployees);
     } else {
       this.allEmployees = this.filterEmpByStatus(this.isActive);
       switch (this.selectedFilter) {
@@ -155,11 +156,10 @@ export class EmployeelistComponent implements OnInit, OnDestroy {
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
 
     this.fileSaverService.save(blob, 'employeelist.csv');
-  }
+  } 
 
   //this methord manages the state of ngrx store
   getEmployees(): void {
-    
     this.empLoadedSub = this.employeeLoaded$.subscribe(loadedEmployee => {
       
       if (!loadedEmployee) {

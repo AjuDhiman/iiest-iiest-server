@@ -362,8 +362,8 @@ exports.existingFboByCheque = async (req, res) => {
 
 exports.existingFboPayPage = async (req, res) => {
   try {
+    console.log(req);
     let success = false;
-
     const panelType = req.user.panel_type;
     const formBody = req.body;
     const createrId = req.params.id;
@@ -382,6 +382,7 @@ exports.existingFboPayPage = async (req, res) => {
     const officerName = userInfo.employee_name;
 
     if (!signatureFile) {
+      console.log('signatureFile is Missing.....');
       return res.status(404).json({ success, signatureErr: true });
     }
 
@@ -390,6 +391,7 @@ exports.existingFboPayPage = async (req, res) => {
 
     if (!panIndiaAllowedIds.includes(req.user.employee_id) && panelType !== 'FSSAI Relationship Panel') {
       if (!areaAlloted) {
+        console.log('Area is not allocated.....');
         return res.status(404).json({ success, areaAllocationErr: true });
       }
     }

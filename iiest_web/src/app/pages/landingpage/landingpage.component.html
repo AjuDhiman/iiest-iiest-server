@@ -49,7 +49,7 @@
                </a> -->
                     </li>
                     <li class="nav-item navLinks">
-                        <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal()">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal('company')">
                             <fa-icon class="fa-2x fa-beat" [icon]="faBuilding" style="color: #9d151d;"></fa-icon>
                             Company
                         </a>
@@ -66,7 +66,7 @@
               </a>
           </li> -->
                     <li class="nav-item navLinks">
-                        <a class="nav-link px-lg-3 py-3 py-lg-4">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4" (click)="openModal('consumer')">
                             <fa-icon class="fa-2x fa-beat" [icon]="faPeopleGroup" style="color: #9d151d;"></fa-icon>
                             Consumer
                         </a>
@@ -98,14 +98,14 @@
             </li>
 
             <li>
-                <a class="" (click)="openModal()">
+                <a class="" (click)="openModal('company')">
                     <fa-icon class="fa-x fa-beat" [icon]="faBuilding" style="color: #9d151d;"></fa-icon>
                     Company
                 </a>
             </li>
 
             <li>
-                <a class="">
+                <a class="" (click)="openModal('consumer')">
                     <fa-icon class="fa-x fa-beat" [icon]="faPeopleGroup" style="color: #9d151d;"></fa-icon>
                     Consumer
                 </a>

@@ -45,6 +45,7 @@ export class SidebarComponent {
 
   ngOnInit(): void {
     this.getUserData();
+    console.log(this.userData);
   }
 
   toggelStyle: object = {

@@ -45,7 +45,7 @@ const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, di
 
     const stateCode = (await generalDataSchema.find({}))[0].state_gst_code.find(obj => obj.state_name === state).code; //var for setting place of supply in invoice
 
-    const { description, code } = getProductSpecificData(serviceType, qty, prodDetails, extraFee);
+    const { description, code } = getProductSpecificData(serviceType, qty, prodDetails, extraFee, processingAmount);
 
     const infoObj = {
         date: `${dateVal}-${monthVal}-${yearVal}`,
@@ -83,7 +83,7 @@ const invoiceDataHandler = async (invoiceCode, mail, fboName, address, state, di
     return invoiceData;
 }
 
-function getProductSpecificData(product, qty, prodDetails, extraFee) {
+function getProductSpecificData(product, qty, prodDetails, extraFee, processingAmount) {
     let description = '';
     let code = '';
     switch (product) {
@@ -93,8 +93,11 @@ function getProductSpecificData(product, qty, prodDetails, extraFee) {
             code = `TR-CB`;
             break;
         case 'Foscos':
+            if(prodDetails.foscos_govtFee !== ''){
+                extraFee = prodDetails.foscos_govtFee; 
+            }
             description = `<b>Licensing Services</b> <br>
-                            ${prodDetails.license_category} Fee Services Charges (Received Govt Charge of Rs ${extraFee}/- for 
+                            ${prodDetails.license_category} Fee Services Charges (Received Govt. Charge of Rs ${extraFee}/- for 
                             ${prodDetails.foscos_service_name} license for ${prodDetails.license_duration}yr`;
             if (prodDetails.water_test_fee != 0) {
                 description += ` + water test of rs ${prodDetails.water_test_fee})`
@@ -116,10 +119,15 @@ function getProductSpecificData(product, qty, prodDetails, extraFee) {
             code = `IS-WT`
             break;
         case 'Khadya Paaln':
-            description = `<b>Khadya Paaln Services</b> <br>
+            description = `<b>Khadya Paalan Services</b> <br>
                         Auto Renewal - Basic Food Safety Compliances`
             code = `IS-KP`
             break;
+    }
+     // Update description based on processingAmount for 'Khadya Paaln'
+     if (product === 'Khadya Paaln' && processingAmount > 20000) {
+        description = `<b>Khadya Paalan Services</b> <br> 
+                        Auto Renewal - Standard Food Safety Compliances`;
     }
 
     return { description, code }

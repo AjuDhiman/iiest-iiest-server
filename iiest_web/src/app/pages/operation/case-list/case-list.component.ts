@@ -306,6 +306,25 @@ export class CaseListComponent implements OnInit, OnDestroy {
           case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && (elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.salesInfo.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase())));
             break;
         }
+      }else if (this.productType === 'Khadya Paaln') {  //search in case of Khadya Paaln
+        switch (this.selectedFilter) {
+          case 'byShopId': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            break;
+          case 'byManagerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.customer_id.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            break;
+          case 'byFboName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo &&
+            elem.salesInfo.fboInfo.fbo_name && elem.salesInfo.fboInfo.fbo_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+          case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo && elem.salesInfo.fboInfo.owner_contact.toString().includes(this.searchQuery.toString()))
+            break;
+          case 'byOwnerName': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && elem.salesInfo.fboInfo.owner_name.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            break;
+          // case 'byContact': this.filteredData = this.typeData.filter((elem: any) => elem.phoneNo.toString().includes(this.searchQuery.toString()))
+          // break;
+
+          case 'byLocation': this.filteredData = this.typeData.filter((elem: any) => elem.salesInfo && (elem.salesInfo.fboInfo.state.toLowerCase().includes(this.searchQuery.toLowerCase()) || elem.salesInfo.fboInfo.district.toLowerCase().includes(this.searchQuery.toLowerCase())));
+            break;
+        }
       }
     }
     this.filteredData.length ? this.showPagination = true : this.showPagination = false;
@@ -362,12 +381,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
 
   //set the list type on the basis of product type
-  setListProductWise() {
+ /* setListProductWise() {
     this.totalCase = this.caseData.length;
     if (this.productType === 'Fostac') {
       this.setServiceType('Catering');
-      // this.typeData = this.caseData;
-      // this.totalCount = this.typeData.length;
       this.filter();
     }
     else if (this.productType === 'Foscos') {
@@ -378,7 +395,41 @@ export class CaseListComponent implements OnInit, OnDestroy {
       this.typeData = this.caseData;
       this.filter();
     }
-  }
+    else if (this.productType === 'Khadya Paaln') {
+      this.typeData = this.caseData;
+      this.filter();
+    }
+  }*/
+    setListProductWise() {
+      this.totalCase = this.caseData.length;
+    
+      switch (this.productType) {
+        case 'Fostac':
+          this.setServiceType('Catering');
+          this.filter();
+          break;
+    
+        case 'Foscos':
+          this.setServiceType('Registration');
+          this.filter();
+          break;
+    
+        case 'HRA':
+        case 'Medical':
+        case 'Water Test Report':
+        case 'Khadya Paaln':
+          this.typeData = this.caseData;
+          console.log(this.typeData);
+          this.filter();
+          break;
+    
+        default:
+          // Handle unexpected product types, if necessary
+          console.warn(`Unknown product type: ${this.productType}`);
+          break;
+      }
+    }
+    
 
 
   //methord intialize product type on the selection of product
