@@ -111,7 +111,6 @@ export class GeneralSectionComponent implements OnInit, OnChanges {
 
   //this methord formats the logs in a better presentational form from a object form
   formatLogs(logs: any) {
-
     logs.forEach((log: any) => {
       let caseNote: string = `${log.action} by ${log.operatorInfo.employee_name} (${log.operatorInfo.employee_id}) on ${this.getFormatedDate(log.createdAt.toString())} at ${this.getFormattedTime(log.createdAt)}`;
 

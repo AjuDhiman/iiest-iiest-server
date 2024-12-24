@@ -7,7 +7,7 @@ const { getFileStream, employeeDocsPath } = require("../config/s3Bucket");
 
 
 const invoiceTemplate = async (fboInfo) => {
-console.log(fboInfo)
+console.log('**************8FboDATA*************',fboInfo)
     const quantity = fboInfo.qty;
     const rate = fboInfo.amount;
     const subTotal = quantity * rate;

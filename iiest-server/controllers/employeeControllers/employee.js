@@ -103,7 +103,7 @@ exports.employeeLogin = async (req, res) => {
 
         const { username, password } = req.body;
 
-        const employee_user = await employeeSchema.findOne({ username, status:true });
+        const employee_user = await employeeSchema.findOne({ username, status: true });
 
         if (!employee_user) {
             return res.status(401).json({ success, message: "Please try to login with correct credentials" });
@@ -138,7 +138,7 @@ function generateTemporaryPassword() {
 }
 
 //api for forgot password
-exports.forgotPassword = async (req, res) => {
+/*exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
@@ -146,7 +146,10 @@ exports.forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
-
+       // Check if the user's status is true (active)
+        if (!user.status) {
+            return res.status(403).json({ success: false, message: 'You are not a valid user' });
+        }
         // Generate temporary password
         const temporaryPassword = generateTemporaryPassword();
 
@@ -175,7 +178,46 @@ exports.forgotPassword = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
+*/
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
 
+        const user = await employeeSchema.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        if (!user.status) {
+            return res.status(403).json({ success: false, message: 'You are not a valid user' });
+        }
+
+        const temporaryPassword = generateTemporaryPassword();
+        const hashedTemporaryPassword = await bcrypt.hash(temporaryPassword, 12);
+
+        user.temporaryPassword = hashedTemporaryPassword;
+        user.dcrypPassword = temporaryPassword;
+        user.temporaryPasswordExpiry = Date.now() + 10 * 60 * 1000; // Set expiry time
+        await user.save();
+
+        sendTemporaryPass(temporaryPassword, user.email);
+
+        setTimeout(async () => {
+            const currentTime = Date.now();
+            if (currentTime > user.temporaryPasswordExpiry) {
+                user.temporaryPassword = null;
+                user.temporaryPasswordExpiry = null;
+                await user.save();
+                console.log('Temporary password cleared after 10 minutes for user:', user.email);
+            }
+        }, 10 * 60 * 1000);
+
+        return res.status(200).json({ success: true, message: 'Temporary password sent successfully' });
+    } catch (error) {
+        console.error('Error in forgotPassword API:', error.message);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
 //api for reseting password
 exports.resetPassword = async (req, res) => {
     try {
@@ -640,3 +682,4 @@ exports.generatePresignedGetUrl = async(req, res) => {
         return res.status(500).json({success: false, message: 'Internal Server Error'});
     }
 }
+

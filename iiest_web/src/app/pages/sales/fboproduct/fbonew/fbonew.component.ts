@@ -37,6 +37,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   foscosGST: number;
   fostacGST: number;
   hygieneGST: number;
+  foodLableGST: number;
   editedData: any;
   parsedUserData: any;
   submitted = false;
@@ -55,6 +56,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   isMedical: boolean = false;  //var for mediacal certificate
   isWaterTest: boolean = false;  //var for water test
   isKhadyaPaaln: boolean = false;  //var for water test
+  isFoodLabeling: boolean = false;
   showDiscountCheckbox: boolean = false;
   isEditMode: boolean = false;
   formType: string = "Registration";
@@ -67,8 +69,11 @@ export class FbonewComponent implements OnInit, OnChanges {
   hra_processAmnt: number = 0;
   medical_processAmnt: number = 0;
   water_test_processAmnt: number = 0;
+  food_label_processAmnt: number = 0;
   khadya_paaln_processAmnt: { [key: string]: string } = {};
   khadya_paaln_serviceName: { [key: string]: string } = {};
+  foodLabelData:any;
+  productData: any;
   @ViewChild(MultiSelectComponent) multiSelect !: MultiSelectComponent;
   isExisting: boolean;
   isExistingFbo: boolean;
@@ -80,7 +85,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   fboPlaceholder: string = "FBO Name";
   formName: string = "BO";
   //Discount Check Box 
-  isCheckboxChecked:boolean = false;
+  isCheckboxChecked: boolean = false;
   //New Variables by vansh on 5-01-23 for exsisting 
   searchSuggestions: any;
   searchSuggestionsOnBo: any;
@@ -117,8 +122,6 @@ export class FbonewComponent implements OnInit, OnChanges {
   //var for khadya paaln
   khadyaPaalnGST: number = 0;
   khadyaPaalnFixedCharges: number = 0;
-
-
   loading: boolean = false;
   // new varable by chandan
   existingbos: Object[];
@@ -132,7 +135,7 @@ export class FbonewComponent implements OnInit, OnChanges {
 
   @ViewChild(FbolistComponent) fboList: FbolistComponent;
 
-
+  //Fostac Form
   fostac_training: FormGroup = new FormGroup({
     fostac_processing_amount: new FormControl(hraProcessingAmnt),
     fostac_service_name: new FormControl(''),
@@ -141,6 +144,7 @@ export class FbonewComponent implements OnInit, OnChanges {
     fostac_total: new FormControl('')
   });
 
+  // Foscos Form
   foscos_training: FormGroup = new FormGroup({
     foscos_processing_amount: new FormControl(''),
     foscos_govtFee: this.customSale ? new FormControl('') : new FormControl({ value: '', disabled: true }),
@@ -153,6 +157,7 @@ export class FbonewComponent implements OnInit, OnChanges {
     foscos_total: new FormControl(''),
   });
 
+  //Hygiene Form
   hygiene_audit: FormGroup = new FormGroup({
     hra_service_name: new FormControl(serviceNames['HRA'][0]),
     hra_processing_amount: new FormControl(''),
@@ -161,23 +166,33 @@ export class FbonewComponent implements OnInit, OnChanges {
     hra_total: new FormControl('')
   });
 
-  //medical logial Form
+  //medical Form
   medical: FormGroup = new FormGroup({
     medical_total: new FormControl(''),
     medical_processing_amount: new FormControl(''),
     recipient_no: new FormControl('')
   });
 
+  //Water test Form 
   water_test_report: FormGroup = new FormGroup({
     water_test_total: new FormControl(''),
     water_test_service_name: new FormControl(''),
     water_test_processing_amount: new FormControl(''),
   });
 
+  //Khadya Paaln Form
   khadya_paaln: FormGroup = new FormGroup({
     khadya_paaln_service_name: new FormControl(''),
     khadya_paaln_processing_amount: new FormControl(''),
     khadya_paaln_total: new FormControl('')
+  });
+
+  //Food labeling Form
+  food_labeling: FormGroup = new FormGroup({
+    food_labeling_service_name: new FormControl(''),
+    food_labeling_processing_amount: new FormControl(''),
+    product_no: new FormControl(''),
+    food_labeling_total: new FormControl('')
   });
 
   fboForm: FormGroup = new FormGroup({
@@ -213,7 +228,7 @@ export class FbonewComponent implements OnInit, OnChanges {
   });
 
   @Output() emitSaleDocNames: EventEmitter<string[]> = new EventEmitter<string[]>;
-  
+
   constructor(
     private formBuilder: FormBuilder,
     private _getFboGeneralData: GetdataService,
@@ -230,12 +245,14 @@ export class FbonewComponent implements OnInit, OnChanges {
     const item = localStorage.getItem('LoggedInUser');
   }
   ngOnInit(): void {
-    
+
     this.userData = this._registerService.LoggedInUserData();
     this.parsedUserData = JSON.parse(this.userData)
     this.userName = this.parsedUserData.employee_name;
     this.userDesignation = this.parsedUserData.designation;
     this.checkEmpId();
+
+    //fostac Form Builder
     this.fostac_training = this.formBuilder.group({
       fostac_processing_amount: ['', Validators.required],
       fostac_service_name: ['', Validators.required],
@@ -244,9 +261,10 @@ export class FbonewComponent implements OnInit, OnChanges {
       fostac_total: ['', Validators.required]
     });
 
+    //Foscos Form Builder
     this.foscos_training = this.formBuilder.group({
       foscos_processing_amount: ['', Validators.required],
-      foscos_govtFee: this.customSale  ? ['', Validators.required] : [''], 
+      foscos_govtFee: this.customSale ? ['', Validators.required] : [''],
       foscos_service_name: ['', Validators.required],
       foscos_client_type: ['General Client', Validators.required],
       shops_no: [1, Validators.required],
@@ -255,7 +273,7 @@ export class FbonewComponent implements OnInit, OnChanges {
       license_duration: ['', Validators.required],
       foscos_total: ['', Validators.required]
     });
-
+    // Hygine Form Builder
     this.hygiene_audit = this.formBuilder.group({
       hra_service_name: [serviceNames['HRA'][0], Validators.required],
       hra_processing_amount: [hraProcessingAmnt, Validators.required],
@@ -263,7 +281,7 @@ export class FbonewComponent implements OnInit, OnChanges {
       shops_no: [1, Validators.required],
       hra_total: ['', Validators.required]
     });
-
+    // Cheque Data
     this.cheque_data = this.formBuilder.group({
       payee_name: ['', Validators.required],
       bank_name: ['', Validators.required],
@@ -286,12 +304,20 @@ export class FbonewComponent implements OnInit, OnChanges {
       medical_processing_amount: [medicalProcessAmnt, Validators.required],
     })
 
+    // Khadya Paaln Validation
     this.khadya_paaln = this.formBuilder.group({
       khadya_paaln_service_name: ['', Validators.required],
       khadya_paaln_processing_amount: ['', Validators.required],
       khadya_paaln_total: ['', Validators.required],
     })
 
+    // Food Labeling Validation
+    this.food_labeling = this.formBuilder.group({
+      food_labeling_service_name: ['', Validators.required],
+      food_labeling_processing_amount: ['', Validators.required],
+      product_no: ['', Validators.required],
+      food_labeling_total: ['', Validators.required],
+    })
     this.existingUserFboForm = this.existingFboFrom.group({
       existingUserFbo: [''],
       searchUser: ['', Validators.required]
@@ -354,7 +380,6 @@ export class FbonewComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes['isCalledAsChild'] && changes['isCalledAsChild'].currentValue && this.isCalledAsChild) {
       this.isExistingFbo = true;
-
     }
   }
 
@@ -430,7 +455,7 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.isWaterTest = false;
     this.isMedical = false;
     this.isKhadyaPaaln = false;
-    this.byCheque = false;
+    this.isFoodLabeling = false;
     this.cheque_data.reset();
     this.fbo['district'].setValue('');
     this.fbo['pincode'].setValue('');
@@ -569,7 +594,7 @@ export class FbonewComponent implements OnInit, OnChanges {
 
   //Form Submit Method
   onSubmit() {
-    console.log(this.fboForm);
+   // console.log(this.fboForm);
     //return;
     this.loggedUser = this._registerService.LoggedInUserData();
     this.objId = JSON.parse(this.loggedUser)._id;
@@ -716,6 +741,7 @@ export class FbonewComponent implements OnInit, OnChanges {
           formData.append('hygiene_audit', JSON.stringify(this.hygiene_audit.value));
           formData.append('medical', JSON.stringify(this.medical.value));
           formData.append('khadya_paaln', JSON.stringify(this.khadya_paaln.value));
+          formData.append('food_labeling', JSON.stringify(this.food_labeling.value));
           formData.append('water_test_report', JSON.stringify(this.water_test_report.value));
           let chequeData = {
             payee_name: this.cheque_data.value.payee_name,
@@ -832,6 +858,7 @@ export class FbonewComponent implements OnInit, OnChanges {
           formData.append('existingFboId', this.existingFboId);
           formData.append('fostac_training', JSON.stringify(this.fostac_training.value));
           formData.append('foscos_training', JSON.stringify(this.foscos_training.value));
+          formData.append('food_labeling', JSON.stringify(this.food_labeling.value));
           formData.append('hygiene_audit', JSON.stringify(this.hygiene_audit.value));
           formData.append('medical', JSON.stringify(this.medical.value));
           formData.append('khadya_paaln', JSON.stringify(this.khadya_paaln.value));
@@ -849,6 +876,7 @@ export class FbonewComponent implements OnInit, OnChanges {
           formData.append('isHygiene', this.isHygiene.toString());
           formData.append('isMedical', this.isMedical.toString());
           formData.append('isKhadyaPaaln', this.isKhadyaPaaln.toString());
+          formData.append('isFoodLabeling', this.isFoodLabeling.toString());
           formData.append('isWaterTest', this.isWaterTest.toString());
 
           if (this.fboForm.value.business_type == 'b2b') {//append gst number in case of b2b business type
@@ -880,7 +908,7 @@ export class FbonewComponent implements OnInit, OnChanges {
 
         }
         else if (this.addFbo.payment_mode === 'Pay Page') {
-          
+
           this._registerService.existingFboPayPage(this.objId, this.addFbo, this.foscosGST, this.fostacGST, this.hygieneGST, this.medicalGST, this.waterTestGST, this.khadyaPaalnGST, this.foscosFixedCharges, this.existingFboId).subscribe({
             next: (res) => {
               window.location.href = res.message
@@ -896,34 +924,34 @@ export class FbonewComponent implements OnInit, OnChanges {
     this._getFboGeneralData.getFboGeneralData().subscribe({
       next: (res) => {
         this.fboGeneralData = res.product_name;
-        if(this.parsedUserData.panel_type === 'FSSAI Relationship Panel'){
+        if (this.parsedUserData.panel_type === 'FSSAI Relationship Panel') {
           this.fboGeneralData['Khadya Paaln'].enabled = true;
         }
         this.fboGeneralData = Object.entries(this.fboGeneralData).map(([key, value]) => ({ key, value }))
           .sort((item: any) => item.value.enabled ? -1 : 1); //convertimg object to arr of type [{key, value}]
         this.productList = this.fboGeneralData.map((item: any) => item.key);
-       
+
         //this.disabledOptions = this.fboGeneralData.filter((item: any) => !item.value.enabled).map((item: any) => item.key);
         this.disabledOptions = this.fboGeneralData
-  .filter((item: any) => {
-    // Check if the user is a sales agent
-    console.log(this.userDesignation );
-    if (this.userDesignation === 'Sales Agent') {
-      // Enable only the "Khadya Paaln" option, disable others
-      //return item.key !== 'Khadya Paaln';
-      return !item.value.enabled;
-    } 
-    // For Area Officer: disable "Khadya Paaln" specifically
-    else if (this.userDesignation === 'Area Officer(District Head)') {
-      return item.key === 'Khadya Paaln' || !item.value.enabled;
-    }
-    else {
-      // If the user is not a sales agent, apply the existing filter condition
-      return !item.value.enabled;
-    }
-  })
-  .map((item: any) => item.key);
-        console.log(this.disabledOptions)
+          .filter((item: any) => {
+            // Check if the user is a sales agent
+           // console.log(this.userDesignation);
+            if (this.userDesignation === 'Sales Agent') {
+              // Enable only the "Khadya Paaln" option, disable others
+              //return item.key !== 'Khadya Paaln';
+              return !item.value.enabled;
+            }
+            // For Area Officer: disable "Khadya Paaln" specifically
+            else if (this.userDesignation === 'Area Officer(District Head)') {
+              return item.key === 'Khadya Paaln' || !item.value.enabled;
+            }
+            else {
+              // If the user is not a sales agent, apply the existing filter condition
+              return !item.value.enabled;
+            }
+          })
+          .map((item: any) => item.key);
+        //console.log(this.disabledOptions)
         for (let productName in res.product_name) {
           let product = res.product_name[productName];
           this.processAmnts[productName] = product['processing_amount'];
@@ -976,6 +1004,7 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.isHygiene = false;
     this.isMedical = false;
     this.isKhadyaPaaln = false;
+    this.isFoodLabeling = false;
     this.isWaterTest = false;
     this.fboForm.removeControl('gst_number')// this will remove gst number form control on form reset 
     //remove products form control from fbo form in case of reset
@@ -985,102 +1014,121 @@ export class FbonewComponent implements OnInit, OnChanges {
     this.fboForm.removeControl('water_test_report');
     this.fboForm.removeControl('medical');
     this.fboForm.removeControl('khadya_paaln');
+    this.fboForm.removeControl('food_labeling');
     this.multiSelect.onReset();
   }
 
- 
-    getSelectedProduct($event: string[]) {
-      this.productName = $event;
-      this.emitSaleDocNames.emit(this.productName);
-      this.fboForm.patchValue({ product_name: this.productName });
-      
-      const filtered = this.fboGeneralData.filter((a: any) => this.productName.includes(a.key));
-      
-      // Resetting flags
-      this.isFostac = false;
-      this.isFoscos = false;
-      this.isHygiene = false;
-      this.isMedical = false;
-      this.isKhadyaPaaln = false;
-      this.isWaterTest = false;
-    
-      // Remove controls if not selected
-      this.fboForm.removeControl('fostac_training');
-      this.fboForm.removeControl('foscos_training');
-      this.fboForm.removeControl('hygiene_audit');
-      this.fboForm.removeControl('water_test_report');
-      this.fboForm.removeControl('medical');
-      this.fboForm.removeControl('khadya_paaln');
-    
-      // Loop through selected products
-      for (let product of this.productName) {
-        switch (product) {
-          case 'Fostac':
-            this.isFostac = true;
-            this.fboForm.addControl('fostac_training', this.fostac_training);
-            break;
-          
-          case 'Foscos':
-            this.isFoscos = true;
-            this.fboForm.addControl('foscos_training', this.foscos_training);
-            break;
-    
-          case 'HRA':
-            this.isHygiene = true;
-            this.fboForm.addControl('hygiene_audit', this.hygiene_audit);
-            break;
-    
-          case 'Water Test Report':
-            this.isWaterTest = true;
-            this.fboForm.addControl('water_test_report', this.water_test_report);
-            break;
-    
-          case 'Medical':
-            this.isMedical = true;
-            this.medical.patchValue({ medical_processing_amount: medicalProcessAmnt });
-            this.fboForm.addControl('medical', this.medical);
-            break;
-    
-          case 'Khadya Paaln':
-            this.isKhadyaPaaln = true;
-            this.fboForm.addControl('khadya_paaln', this.khadya_paaln);
-            if (filtered[0]) {
-              this.khadya_paaln_processAmnt = filtered[0].value.processing_amount;
-              this.khadya_paaln_serviceName = filtered[0].value.service_name;
-            }
-            break;
-          
-          default:
-            break;
-        }
+
+  getSelectedProduct($event: string[]) {
+    this.productName = $event;
+    this.emitSaleDocNames.emit(this.productName);
+    this.fboForm.patchValue({ product_name: this.productName });
+    //console.log(this.productName);
+    //this.foodLabelData = [];
+    const filtered = this.fboGeneralData.filter((a: any) =>{
+      if (a.key === 'Food Labeling' && this.productName.includes(a.key)) {
+        // Perform your logical operations here
+        this.foodLabelData = a.value;
+        //console.log(this.foodLabelData.service);       
       }
-    
-      // Handle deselected cases for each control
-      if (!this.isFostac) {
-        this.fostacTotalAmount(0);
-        this.resetFostacForm();
-      }
-      if (!this.isFoscos) {
-        this.foscosTotalAmount(0);
-        this.resetFoscosForm();
-      }
-      if (!this.isHygiene) {
-        this.hygieneTotalAmount(0);
-        this.resetHRAForm();
-      }
-      if (!this.isWaterTest) {
-        this.watertestTotalAmount(0);
-        this.resetWaterTestForm();
-      }
-      if (!this.isMedical) {
-        this.medicalTotalAmount(0);
-        this.resetMedicalForm();
-      }
-      if (!this.isKhadyaPaaln) {
-        // Handle any additional reset logic if needed
-        this.resetKhadyaPaaln();
+      // Include the item in the filtered array if it matches any key in productName
+      return this.productName.includes(a.key);
+    });
+
+    // Resetting flags
+    this.isFostac = false;
+    this.isFoscos = false;
+    this.isHygiene = false;
+    this.isMedical = false;
+    this.isKhadyaPaaln = false;
+    this.isWaterTest = false;
+    this.isFoodLabeling = false;
+    // Remove controls if not selected
+    this.fboForm.removeControl('fostac_training');
+    this.fboForm.removeControl('foscos_training');
+    this.fboForm.removeControl('hygiene_audit');
+    this.fboForm.removeControl('water_test_report');
+    this.fboForm.removeControl('medical');
+    this.fboForm.removeControl('khadya_paaln');
+    this.fboForm.removeControl('food_labeling');
+    // Loop through selected products
+    for (let product of this.productName) {
+      switch (product) {
+        case 'Fostac':
+          this.isFostac = true;
+          this.fboForm.addControl('fostac_training', this.fostac_training);
+          break;
+
+        case 'Foscos':
+          this.isFoscos = true;
+          this.fboForm.addControl('foscos_training', this.foscos_training);
+          break;
+
+        case 'HRA':
+          this.isHygiene = true;
+          this.fboForm.addControl('hygiene_audit', this.hygiene_audit);
+          break;
+
+        case 'Water Test Report':
+          this.isWaterTest = true;
+          this.fboForm.addControl('water_test_report', this.water_test_report);
+          break;
+
+        case 'Medical':
+          this.isMedical = true;
+          this.medical.patchValue({ medical_processing_amount: medicalProcessAmnt });
+          this.fboForm.addControl('medical', this.medical);
+          break;
+
+        case 'Food Labeling':
+          this.isFoodLabeling = true;
+          this.fboForm.addControl('food_labeling', this.food_labeling);
+          if (this.foodLabelData) {
+           // let data = filtered[0].value;
+            this.productData = this.foodLabelData.service
+          }
+          break;
+
+        case 'Khadya Paaln':
+          this.isKhadyaPaaln = true;
+          this.fboForm.addControl('khadya_paaln', this.khadya_paaln);
+          if (filtered[0]) {
+            this.khadya_paaln_processAmnt = filtered[0].value.processing_amount;
+            this.khadya_paaln_serviceName = filtered[0].value.service_name;
+          }
+          break;
+
+        default:
+          break;
       }
     }
+
+    // Handle deselected cases for each control
+    if (!this.isFostac) {
+      this.fostacTotalAmount(0);
+      this.resetFostacForm();
+    }
+    if (!this.isFoscos) {
+      this.foscosTotalAmount(0);
+      this.resetFoscosForm();
+    }
+    if (!this.isHygiene) {
+      this.hygieneTotalAmount(0);
+      this.resetHRAForm();
+    }
+    if (!this.isWaterTest) {
+      this.watertestTotalAmount(0);
+      this.resetWaterTestForm();
+    }
+    if (!this.isMedical) {
+      this.medicalTotalAmount(0);
+      this.resetMedicalForm();
+    }
+    if (!this.isKhadyaPaaln) {
+      // Handle any additional reset logic if needed
+      this.resetKhadyaPaaln();
+    }
+  }
 
   backToRegister() {
     location.reload();
@@ -1167,41 +1215,47 @@ export class FbonewComponent implements OnInit, OnChanges {
     // Ensure `TotalAmnt` is a number
     this.fostac_processAmnt = typeof TotalAmnt === 'number' ? TotalAmnt : 0;
     this.updateGrandTotal();
-}
+  }
 
-foscosTotalAmount(TotalAmnt: any) {
+  foscosTotalAmount(TotalAmnt: any) {
     this.foscos_processAmnt = typeof TotalAmnt === 'number' ? TotalAmnt : 0;
     this.updateGrandTotal();
-}
+  }
 
-hygieneTotalAmount(TotalAmnt: any) {
+  hygieneTotalAmount(TotalAmnt: any) {
     this.hra_processAmnt = typeof TotalAmnt === 'number' ? TotalAmnt : 0;
     this.updateGrandTotal();
-}
+  }
 
-watertestTotalAmount(TotalAmnt: any) {
+  watertestTotalAmount(TotalAmnt: any) {
     this.water_test_processAmnt = typeof TotalAmnt === 'number' ? TotalAmnt : 0;
     this.updateGrandTotal();
-}
+  }
 
-medicalTotalAmount(TotalAmnt: any) {
+  medicalTotalAmount(TotalAmnt: any) {
     this.medical_processAmnt = typeof TotalAmnt === 'number' ? TotalAmnt : 0;
     this.updateGrandTotal();
-}
+  }
 
-// Function to update the grand total
-updateGrandTotal() {
-    const grandTotal = 
-        (typeof this.fostac_processAmnt === 'number' ? this.fostac_processAmnt : 0) +
-        (typeof this.foscos_processAmnt === 'number' ? this.foscos_processAmnt : 0) +
-        (typeof this.hra_processAmnt === 'number' ? this.hra_processAmnt : 0) +
-        (typeof this.water_test_processAmnt === 'number' ? this.water_test_processAmnt : 0) +
-        (typeof this.medical_processAmnt === 'number' ? this.medical_processAmnt : 0) +
-        (typeof this.khadya_paaln_processAmnt === 'number' ? this.khadya_paaln_processAmnt : 0);
+  foodLabelingTotalAmount(TotalAmnt: any) {
+    //console.log(TotalAmnt);
+    this.food_label_processAmnt = typeof TotalAmnt === 'number' ? TotalAmnt : 0;
+    this.updateGrandTotal();
+  }
 
+  // Function to update the grand total
+  updateGrandTotal() {
+    const grandTotal =
+      (typeof this.fostac_processAmnt === 'number' ? this.fostac_processAmnt : 0) +
+      (typeof this.foscos_processAmnt === 'number' ? this.foscos_processAmnt : 0) +
+      (typeof this.hra_processAmnt === 'number' ? this.hra_processAmnt : 0) +
+      (typeof this.water_test_processAmnt === 'number' ? this.water_test_processAmnt : 0) +
+      (typeof this.medical_processAmnt === 'number' ? this.medical_processAmnt : 0) +
+      (typeof this.khadya_paaln_processAmnt === 'number' ? this.khadya_paaln_processAmnt : 0) +
+      (typeof this.food_label_processAmnt === 'number' ? this.food_label_processAmnt : 0);
     // Patch the calculated grand total to the form
     this.fboForm.patchValue({ 'grand_total': grandTotal });
-}
+  }
 
 
   foscosCharges(charges: any) {
@@ -1216,8 +1270,11 @@ updateGrandTotal() {
   hygieneGSTAmount(gstAmount: any) {
     this.hygieneGST = gstAmount
   }
-  khadyaPaalnGSTAmount(gstAmount: any){
-    this.fboForm.patchValue({ 'grand_total': gstAmount})
+  khadyaPaalnGSTAmount(gstAmount: any) {
+    this.fboForm.patchValue({ 'grand_total': gstAmount })
+  }
+  foodLabelingGSTAmount(gstAmount: any) {
+    this.foodLableGST = gstAmount 
   }
 
   getAllocatedArea() {
@@ -1291,9 +1348,9 @@ updateGrandTotal() {
     this.allocated_pincodes = [...pincodeArr];
     this.loading = false;
   }
-  customSaleFunc($event: any){
+  customSaleFunc($event: any) {
     this.customSale = $event.target.checked;
-    console.log($event.target.checked)
+    //console.log($event.target.checked)
   }
 
   resetFostacForm(): void {
@@ -1335,9 +1392,9 @@ updateGrandTotal() {
   }
 
   resetKhadyaPaaln(): void {
-    this.khadya_paaln.patchValue({ khadya_paaln_service_name: ''});
-    this.khadya_paaln.patchValue({ khadya_paaln_processing_amount: ''});
-    this.khadya_paaln.patchValue({ khadya_paaln_total: ''});
+    this.khadya_paaln.patchValue({ khadya_paaln_service_name: '' });
+    this.khadya_paaln.patchValue({ khadya_paaln_processing_amount: '' });
+    this.khadya_paaln.patchValue({ khadya_paaln_total: '' });
     this.showDiscountCheckbox = false;
   }
 
@@ -1345,7 +1402,6 @@ updateGrandTotal() {
     this.userEmployeeId = this.parsedUserData.employee_id;
     if (panIndiaAllowedEmpIds.includes(this.userEmployeeId) || this.parsedUserData.designation === 'Sales Agent') {
       this.isPanIndiaAllowed = true;
-      // this.fboForm.patchValue({state: ""});
       this.allocated_state = stateName;
     }
   }
@@ -1367,25 +1423,25 @@ updateGrandTotal() {
     if ($event.target.value <= 0) {
       this.medical.patchValue({ recipient_no: 1 });
     }
-   
-   if(!this.customSale){
-    const perMedicalAmount = medicalProcessAmnt;
-    const GSTPerMedical = Math.round(medicalProcessAmnt * 18 / 100);
-    this.medicalGST = GSTPerMedical * $event.target.value;
-    console.log(this.medicalGST)
-    const perMedicalWithGST = perMedicalAmount + GSTPerMedical;
-    const medicalTotal = perMedicalWithGST * $event.target.value;
-    this.medical.patchValue({ medical_total: medicalTotal });
-    this.medicalTotalAmount(medicalTotal);
-   }else{
-    const perMedicalAmount = Number(this.medical.value.medical_processing_amount);
-    const medicalTotal = Math.round((perMedicalAmount * $event.target.value) * 1.18);
-    this.medical.patchValue({ medical_total: medicalTotal });
-    this.medicalTotalAmount(medicalTotal);
-   }
-    
+
+    if (!this.customSale) {
+      const perMedicalAmount = medicalProcessAmnt;
+      const GSTPerMedical = Math.round(medicalProcessAmnt * 18 / 100);
+      this.medicalGST = GSTPerMedical * $event.target.value;
+      //console.log(this.medicalGST)
+      const perMedicalWithGST = perMedicalAmount + GSTPerMedical;
+      const medicalTotal = perMedicalWithGST * $event.target.value;
+      this.medical.patchValue({ medical_total: medicalTotal });
+      this.medicalTotalAmount(medicalTotal);
+    } else {
+      const perMedicalAmount = Number(this.medical.value.medical_processing_amount);
+      const medicalTotal = Math.round((perMedicalAmount * $event.target.value) * 1.18);
+      this.medical.patchValue({ medical_total: medicalTotal });
+      this.medicalTotalAmount(medicalTotal);
+    }
+
   }
-  customMedical($event:any){
+  customMedical($event: any) {
     const perMedicalAmount = Number($event.target.value);
     const medicalTotal = Math.round((perMedicalAmount * this.medical.value.recipient_no) * 1.18);
     this.medical.patchValue({ medical_total: medicalTotal });
@@ -1410,8 +1466,8 @@ updateGrandTotal() {
       this.water_test_report.patchValue({ water_test_processing_amount: 2119 });
     }
   }
-  waterProcessAmount($event:any){
-    const waterTestWithGst: number = Math.round(Number($event.target.value)* 1.18);
+  waterProcessAmount($event: any) {
+    const waterTestWithGst: number = Math.round(Number($event.target.value) * 1.18);
     this.water_test_report.patchValue({ water_test_total: waterTestWithGst }) //patch total to total amount
     this.watertestTotalAmount(waterTestWithGst);
   }
@@ -1420,5 +1476,5 @@ updateGrandTotal() {
     this.fetchExistingUser(data)
   }
 
- 
+
 }

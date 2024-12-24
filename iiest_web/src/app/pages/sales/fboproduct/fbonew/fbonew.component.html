@@ -197,7 +197,7 @@
                             <div *ngIf="fbo['tehsil'].errors['required']">Tehsil is required</div>
                         </div>
                     </div>
-
+                    
                     <div class="col-md-3" *ngIf="isPanIndiaAllowed === false; else allStates">
                         <label for="state" class="form-label">State<sup>*</sup></label>
                         <input id="state" [ngClass]="{ 'is-invalid': submitted && fbo['state'].errors }" type="text"
@@ -325,7 +325,8 @@
                     [submitted]="submitted"
                     [customSale]="customSale"
                     (fostacTotal)="fostacTotalAmount($event)" 
-                    (fostacGSTAmount)="fostacGSTAmount($event)"></app-fostac>
+                    (fostacGSTAmount)="fostacGSTAmount($event)">
+                </app-fostac>
 
                 <!--Foscos Component -->
                 <app-foscos *ngIf="isFoscos" 
@@ -461,9 +462,17 @@
                     [khadya_paaln_serviceName]="khadya_paaln_serviceName"
                     (khadyaGSTAmount)="khadyaPaalnGSTAmount($event)">
                 </app-khadyapaaln>
-
+                <!--Food Labeling -->
+                <app-foodlabeling *ngIf="isFoodLabeling"
+                    formGroupName="food_labeling"                    
+                    [submitted]="submitted"
+                    [customSale]="customSale"
+                    [productData]="productData"
+                    (foodLabelingTotal)="foodLabelingTotalAmount($event)"               
+                    (foodLabelingGSTAmount)="foodLabelingGSTAmount($event)">
+                </app-foodlabeling>
                 <div class="row mt-3"
-                    *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest || isKhadyaPaaln">
+                    *ngIf="isFoscos || isFostac || isHygiene || isMedical || isWaterTest || isKhadyaPaaln || isFoodLabeling">
                     <div class="col-md-3">
                         <label for="grand_total" class=" form-label"><b>Grand Total Amount</b><sup>*</sup>
                             <span style="font-size: x-small;">(18% GST Inc.)</span></label>

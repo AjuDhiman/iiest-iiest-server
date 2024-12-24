@@ -22,40 +22,46 @@ const salesSchema = new Schema({ //creating sales schema
         },
         required: true
     },
-    fostacInfo: { // object that contacin all info about fostac if fostac sold in this sale
+    fostacInfo: { // object that contain all info about fostac if fostac sold in this sale
         type: Object,
         required: function(){
             return this.product_name.includes('Fostac') //required if fostac present in product_name array
         }
     },
-    foscosInfo: { // object that contacin all info about foscos if foscos sold in this sale
+    foscosInfo: { // object that contain all info about foscos if foscos sold in this sale
         type: Object,
         required: function(){
             return this.product_name.includes('Foscos') //required if foscos present in product_name array
         }
     },
-    hraInfo: { // object that contacin all info about hra if hra sold in this sale
+    hraInfo: { // object that contain all info about hra if hra sold in this sale
         type: Object,
         required: function() {
             return this.product_name.includes('HRA'); //required if hra present in product_name array
         }
     },
-    medicalInfo: { // object that contacin all info about medical if medical sold in this sale
+    medicalInfo: { // object that contain all info about medical if medical sold in this sale
         type: Object,
         required: function() {
             return this.product_name.includes('Medical'); //required if medical present in product_name array
         }
     },
-    waterTestInfo: {  // object that contacin all info about water test if water tset sold in this sale
+    waterTestInfo: {  // object that contain all info about water test if water tset sold in this sale
         type: Object, 
         required: function() {
             return this.product_name.includes('Water Test Report'); //required if water test present in product_name array
         }
     },
-    khadyaPaalnInfo: {  // object that contacin all info about khadsya palan
+    khadyaPaalnInfo: {  // object that contain all info about khadsya palan
         type: Object, 
         required: function() {
             return this.product_name.includes('Khadya paaln'); 
+        }
+    },
+    foodLabelingInfo: {  // object that contain all info about Food Labeling Info
+        type: Object, 
+        required: function() {
+            return this.product_name.includes('Food Labeling'); 
         }
     },
     payment_mode: { //property that contain info about which payment payemnt mode is used in this sale

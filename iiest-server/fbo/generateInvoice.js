@@ -123,6 +123,11 @@ function getProductSpecificData(product, qty, prodDetails, extraFee, processingA
                         Auto Renewal - Basic Food Safety Compliances`
             code = `IS-KP`
             break;
+        case 'Food Labeling':
+            description = `<b>Food Label Development</b> <br>
+                       ${prodDetails.food_labeling_service_name} service for ${prodDetails.product_no} product.`
+            code = `IS-KP`
+            break;
     }
      // Update description based on processingAmount for 'Khadya Paaln'
      if (product === 'Khadya Paaln' && processingAmount > 20000) {

@@ -12,6 +12,7 @@ import { ViewFboComponent } from 'src/app/pages/modals/view-fbo/view-fbo.compone
 import { ClientListComponent } from './client-list/client-list.component';
 import { NgbActiveModal, NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { KhadyapaalnComponent } from './fboproduct/khadyapaaln/khadyapaaln.component';
+import { FoodlabelingComponent } from './fboproduct/foodlabeling/foodlabeling.component';
 
 
 
@@ -26,7 +27,8 @@ import { KhadyapaalnComponent } from './fboproduct/khadyapaaln/khadyapaaln.compo
     RecipientListComponent,
     ViewFboComponent,
     ClientListComponent,
-    KhadyapaalnComponent
+    KhadyapaalnComponent,
+    FoodlabelingComponent
   ],
   imports: [
     CommonModule,

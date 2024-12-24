@@ -275,6 +275,9 @@ export class ViewFboComponent implements OnInit {
       case 'Khadya Paaln':
         this.productTotalAmt = this.fboData.khadyaPaalnInfo.khadya_paaln_total;
         break;
+      case 'Food Labeling':
+        this.productTotalAmt = this.fboData.foodLabelingInfo.food_labeling_total;
+        break;
     }
   }
 }

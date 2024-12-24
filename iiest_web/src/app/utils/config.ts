@@ -1,4 +1,4 @@
-const testEnv = true;
+const testEnv = false;
 const prodEnv = false;
 
 export const config = {

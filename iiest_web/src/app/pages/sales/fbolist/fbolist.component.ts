@@ -123,6 +123,7 @@ export class FbolistComponent implements OnInit {
   //metord for filter according to search
   filter(): void {
     if (!this.searchQuery) {
+      console.log(this.filteredFBOEntries);
       this.filteredData = this.filteredFBOEntries;
     } else {
       switch (this.selectedFilter) {
@@ -310,6 +311,9 @@ export class FbolistComponent implements OnInit {
     }
     else if (this.activeTab === 'Khadya Paaln') {
       processingAmount = employee.khadyaPaalnInfo.khadya_paaln_processing_amount;
+    }
+    else if (this.activeTab === 'Food Labeling') {
+      processingAmount = employee.foodLabelingInfo.food_labeling_processing_amount;
     }
 
     return processingAmount;

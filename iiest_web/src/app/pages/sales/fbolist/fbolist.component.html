@@ -7,6 +7,7 @@
     </nav>
     <fa-icon [icon]="faArrowRotateForward" class="fa-sm selector mx-4" (click)="refresh()"></fa-icon>
   </div>
+  
   <div class="container-xxl">
     <ul class="nav nav-pills w-100 d-flex justify-content-start m-0 p-0">
       <li class="nav-item d-flex border border-1 rounded-top-3 py-2 px-2">
@@ -20,8 +21,10 @@
           (click)="toogleTabs('Medical')">Medical</a>
         <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Water Test Report'}"
           (click)="toogleTabs('Water Test Report')">Water Test</a>
-        <a *ngIf="userData.panel_type !== 'FSSAI Sales Panel' " class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Khadya Paaln'}"
+        <a *ngIf="userData.username !== 'chetankapoor_iiest_3' " class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Khadya Paaln'}"
           (click)="toogleTabs('Khadya Paaln')">Khadya Paaln</a>
+        <a class="nav-link mx-1" style="cursor: pointer;" [ngClass]="{'active': activeTab==='Food Labeling'}"
+          (click)="toogleTabs('Food Labeling')">Food Labeling</a>
       </li>
     </ul>
     <div class="border border-1 rounded-3 rounded-start-0 pt-3 p-md-3 p-lg-4">
@@ -88,6 +91,7 @@
                         <th class="cell">State</th>
                         <th class="cell">District</th>
                         <th class="cell text-center" *ngIf="activeTab==='Fostac' && !isInvoiceList">Recipient No.</th>
+                        <th class="cell text-center" *ngIf="activeTab==='Food Labeling' && !isInvoiceList">Product No.</th>
                         <th class="cell text-center"
                           *ngIf="(activeTab === 'Foscos' || activeTab === 'HRA') && !isInvoiceList">Shop No.</th>
                         <th class="cell text-center" *ngIf="!isVerifier">Processing Amount</th>
@@ -125,6 +129,11 @@
                             <span class="truncate" [ngClass]="{'selector': isVerifier}">{{!fbo.fostacInfo ? '-' :
                               fbo.fostacInfo.recipient_no}}</span>
                           </td>
+                          <td *ngIf="activeTab==='Food Labeling' && !isInvoiceList"
+                            class="cell text-center">
+                            <span class="truncate" [ngClass]="{'selector': isVerifier}">{{!fbo.foodLabelingInfo ? '-' :
+                              fbo.foodLabelingInfo.product_no}}</span>
+                          </td>
                           <td *ngIf="activeTab === 'Foscos' && !isInvoiceList" (click)="recipient(fbo, activeTab)"
                             class="cell text-center"><span class="truncate selector">{{!fbo.foscosInfo ? '-' :
                               fbo.foscosInfo.shops_no}}</span></td>
@@ -153,6 +162,8 @@
                               class="truncate">{{(fbo.waterTestInfo.water_test_total) | inrAmount}}</span></td>
                           <td *ngIf="activeTab==='Khadya Paaln'" class="cell text-center"><span
                               class="truncate">{{(fbo.khadyaPaalnInfo.khadya_paaln_total) | inrAmount}}</span></td>
+                          <td *ngIf="activeTab==='Food Labeling'" class="cell text-center"><span
+                                class="truncate">{{(fbo.foodLabelingInfo.food_labeling_total) | inrAmount}}</span></td>
                           <td class="cell" *ngIf="userData.designation === 'Director' || userData.panel_type === 'FSSAI Supervisor Panel'"><span
                               class="truncate">{{ fbo.employeeInfo.employee_name }}</span></td>
                           <td class="cell"><span class="truncate">{{ getFormattedSalesDate(fbo.createdAt) }}</span></td>

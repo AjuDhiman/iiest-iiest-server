@@ -1,0 +1,91 @@
+<form [formGroup]="food_labeling">
+    <div class="row" >
+        <h6 class="pull-left">Food Labeling</h6>
+         <div class="col-md-3">
+            <label for="food_labeling_service_name" class="form-label">Service Name<sup>*</sup></label>
+            <select id="food_labeling_service_name" formControlName="food_labeling_service_name" [ngClass]="{ 'is-invalid': submitted && food_labeling.get('food_labeling_service_name')?.errors}"
+                class="form-select form-select-sm" (change)="onServiceSelect()">
+                <option value="" disabled selected>Select the Service</option>
+                <option *ngFor="let servicename of serviceNames"
+                    [value]="servicename">{{servicename}}
+                </option>
+            </select>
+             <div *ngIf="submitted && food_labeling.get('food_labeling_service_name')?.errors"
+                class="invalid-feedback">
+                <div *ngIf="food_labeling.get('food_labeling_service_name')?.errors?.['required']">Service is
+                    required
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="customSale == false">
+            <label for="food_labeling_processing_amount" class="form-label">Processing Amt<sup>*</sup>
+                <!--<span style="font-size: xx-small;" *ngIf="selected_serviceName!==''">
+                    (Price range min price {{ minPrice }} to max price {{ maxPrice }})
+                </span>-->
+            </label>
+            <!--<select id="food_labeling_processing_amount" formControlName="food_labeling_processing_amount" group='fostac'
+            [ngClass]="{ 'is-invalid': submitted && food_labeling.get('food_labeling_processing_amount')?.errors}"
+                (change)="processAmount()" class="form-select form-select-sm">
+                <option value="" disabled selected>Select the Processing Fee</option>
+                <option *ngFor="let processamnt of processAmnts"
+                    [value]="processamnt">{{processamnt}}
+        </option>
+            </select>-->
+            <input type="number" placeholder="Processing Amount" 
+                id="food_labeling_processing_amount"
+                formControlName="food_labeling_processing_amount" 
+                (input)="processAmount()"
+                [readonly]="!customSale"
+                class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && food_labeling.get('food_labeling_processing_amount')?.errors}"
+                 />
+            <div *ngIf="submitted && food_labeling.get('food_labeling_processing_amount')?.errors"
+                class="invalid-feedback">
+                <div *ngIf="food_labeling.get('food_labeling_processing_amount')?.errors?.['required']">
+                    Processing amount is required
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="customSale == true">
+            <label for="food_labeling_processing_amount" class="form-label">Processing Amount<sup>*</sup></label>
+            <input type="number" placeholder="Processing Amount" 
+                id="food_labeling_processing_amount"
+                formControlName="food_labeling_processing_amount" 
+                (input)="processAmount()"
+                class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && food_labeling.get('food_labeling_processing_amount')?.errors}"
+                 />
+                <div *ngIf="submitted && food_labeling.get('food_labeling_processing_amount')?.errors"
+                class="invalid-feedback">
+                    <div *ngIf="food_labeling.get('food_labeling_processing_amount')?.errors?.['required']">
+                        Processing amount is required
+                    </div>
+                </div>
+        </div>
+        <div class="col-md-3">
+            <label for="product_no" class="form-label">No. of Product<sup>*</sup></label>
+            <input type="number" [attr.min]="minValue" step="1"
+                (change)="productCount($event)" placeholder="No. of Product"
+                 formControlName="product_no"
+                class="form-control form-control-sm"
+                [ngClass]="{ 'is-invalid': submitted && food_labeling.get('product_no')?.errors}"
+                id="product_no" group='fostac' />
+            <div *ngIf="submitted && food_labeling.get('product_no')?.errors" class="invalid-feedback">
+                <div *ngIf="food_labeling.get('product_no')?.errors?.['required']">No. of Product is
+                    required</div>
+            </div>
+        </div>
+        <div class="col-md-3"> 
+            <label for="food_labeling_total" class=" form-label">Food Labeling Total Amount<sup>*</sup>
+                <span style="font-size: x-small;">(18% GST Inc.)</span></label>
+            <input type="number" placeholder="Food Labeling Total Amount" formControlName="food_labeling_total"
+                [ngClass]="{ 'is-invalid': submitted && food_labeling.get('food_labeling_total')?.errors}"
+                class="form-control form-control-sm" id="food_labeling_total" readonly />
+            <div *ngIf="submitted && food_labeling.get('food_labeling_total')?.errors" class="invalid-feedback">
+                <div *ngIf="food_labeling.get('food_labeling_total')?.errors?.['required']">Food Labeling Total Amount
+                    Required
+                </div>
+            </div>
+        </div> 
+    </div>
+    </form>

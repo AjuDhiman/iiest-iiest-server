@@ -188,7 +188,7 @@ exports.existingFboPayLater = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, existingFboId } = req.body;
+    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, food_labeling, water_test_report, existingFboId } = req.body;
     const formData = req.body;
 
     const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate('boInfo');
@@ -243,7 +243,7 @@ exports.existingFboPayLater = async (req, res) => {
       }
     }
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln, waterTestInfo: water_test_report, payment_mode, grand_total, invoiceId: [], notificationInfo: [],  pay_later_status: 'Pending', });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: product_name, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln, waterTestInfo: water_test_report, foodLabelingInfo: food_labeling, payment_mode, grand_total, invoiceId: [], notificationInfo: [],  pay_later_status: 'Pending', });
 
     if (!selectedProductInfo) {
       success = false;
@@ -259,7 +259,7 @@ exports.existingFboPayLater = async (req, res) => {
 
     const invoiceData = [];
     const isPayLaterMail = true;
-    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail, {...formData, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, waterTestInfo: water_test_report, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln, extraFee});
+    sendInvoiceMail(existingFboInfo.email, invoiceData, isPayLaterMail, {...formData, fostacInfo: fostac_training, foscosInfo: foscos_training, hraInfo: hygiene_audit, waterTestInfo: water_test_report, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln,foodLabelingInfo:food_labeling, extraFee});
     return res.status(200).json({ success })
 
   } catch (error) {
@@ -303,7 +303,7 @@ exports.existingFboByCheque = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, cheque_data, isFostac, isFoscos, isHygiene, isMedical, isKhadyaPaaln, isWaterTest, existingFboId } = req.body;
+    const { product_name, payment_mode, grand_total, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, food_labeling, cheque_data, isFostac, isFoscos, isHygiene, isMedical, isKhadyaPaaln, isWaterTest, isFoodLabeling, existingFboId } = req.body;
 
     const existingFboInfo = await fboModel.findOne({ customer_id: existingFboId }).populate('boInfo');
 
@@ -327,12 +327,13 @@ exports.existingFboByCheque = async (req, res) => {
     let Medical = isMedical === 'true' ? JSON.parse(medical) : undefined;
     let KhadyaPaaln = isKhadyaPaaln === 'true' ? JSON.parse(khadya_paaln) : undefined;
     let waterTestReport = isWaterTest === 'true' ? JSON.parse(water_test_report) : undefined;
+    let foodLabeling = isFoodLabeling === 'true' ? JSON.parse(food_labeling) : undefined;
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
     chequeData.status = 'Pending';
     chequeData.cheque_image = chequeImage.key
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, khadyaPaalnInfo: KhadyaPaaln, waterTestInfo: waterTestReport, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: existingFboInfo._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, khadyaPaalnInfo: KhadyaPaaln, waterTestInfo: waterTestReport, foodLabelingInfo: foodLabeling, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -475,6 +476,7 @@ exports.existingFboPayReturn = async (req, res) => {
           hygiene_audit,
           medical,
           khadya_paaln,
+          food_labeling,
           water_test_report,
           createrObjId,
           signatureFile,
@@ -483,6 +485,7 @@ exports.existingFboPayReturn = async (req, res) => {
           hygieneGST,
           medicalGST,
           khadyaPaalnGST,
+          foodLabelingGST,
           waterTestGST,
           foscosFixedCharge,
           medicalFixedCharges,
@@ -500,7 +503,9 @@ exports.existingFboPayReturn = async (req, res) => {
         if (foscos_training) {
           serviceArr.push(foscos_training.foscos_service_name);
         }
-
+        if(food_labeling){
+          serviceArr.push(food_labeling.food_labeling_service_name)
+        }
         if (hygiene_audit) {
           serviceArr.push(hygiene_audit.hra_service_name);
         }
@@ -511,6 +516,9 @@ exports.existingFboPayReturn = async (req, res) => {
 
         if (khadya_paaln) { 
           serviceArr.push('Khadya Paaln');
+        }
+        if (food_labeling) { 
+          serviceArr.push('Food Labeling');
         }
 
         if (water_test_report) { //push medical in  case of water test
@@ -631,6 +639,27 @@ exports.existingFboPayReturn = async (req, res) => {
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Khadya Paaln' });
         }
 
+        //Food Labeling 
+        if (product_name.includes('Food Labeling')) {
+          const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
+
+          fileName = `${Date.now()}_${existingFboInfo.id_num}.pdf`;
+          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+          total_processing_amount = Number(food_labeling.food_labeling_processing_amount);
+          let foodLabelingGST = Number(food_labeling.food_labeling_total) - Number(food_labeling.food_labeling_processing_amount);
+          totalGST = foodLabelingGST;
+          
+
+          const qty = food_labeling.product_no;
+
+          const invoice = await invoiceDataHandler(invoiceCode, existingFboInfo.email, existingFboInfo.fbo_name, existingFboInfo.address, existingFboInfo.state, existingFboInfo.district, existingFboInfo.pincode, existingFboInfo.owner_contact, existingFboInfo.email, total_processing_amount, extraFee, totalGST, qty, existingFboInfo.business_type, existingFboInfo.gst_number, food_labeling.food_labeling_total, 'Food Labeling', food_labeling, signatureFile, invoiceUploadStream, officerName, existingFboInfo.customer_id, boData);
+
+          invoiceData.push(invoice);
+
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Food Labeling' });
+        }
+
         if (product_name.includes('Water Test Report')) {
           const invoiceCode = await generateInvoiceCode(existingFboInfo.business_type);//generating new invoice code
 
@@ -670,6 +699,7 @@ exports.existingFboPayReturn = async (req, res) => {
           hraInfo: hygiene_audit,
           medicalInfo: medical,
           khadyaPaalnInfo: khadya_paaln,
+          foodLabelingInfo: food_labeling,
           waterTestInfo: water_test_report,
           payment_mode,
           grand_total,

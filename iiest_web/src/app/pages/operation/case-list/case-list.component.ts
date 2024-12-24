@@ -379,27 +379,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.setListProductWise();
   }
 
-
-  //set the list type on the basis of product type
- /* setListProductWise() {
-    this.totalCase = this.caseData.length;
-    if (this.productType === 'Fostac') {
-      this.setServiceType('Catering');
-      this.filter();
-    }
-    else if (this.productType === 'Foscos') {
-      this.setServiceType("Registration");
-      this.filter();
-    }
-    else if (this.productType === 'HRA') {
-      this.typeData = this.caseData;
-      this.filter();
-    }
-    else if (this.productType === 'Khadya Paaln') {
-      this.typeData = this.caseData;
-      this.filter();
-    }
-  }*/
     setListProductWise() {
       this.totalCase = this.caseData.length;
     
@@ -422,7 +401,11 @@ export class CaseListComponent implements OnInit, OnDestroy {
           console.log(this.typeData);
           this.filter();
           break;
-    
+        case 'Food Labeling':
+            this.typeData = this.caseData;
+            console.log(this.typeData);
+            this.filter();
+            break;
         default:
           // Handle unexpected product types, if necessary
           console.warn(`Unknown product type: ${this.productType}`);
@@ -475,6 +458,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   viewFboDetails($event: Event, res: any) {
     $event.stopPropagation();
     const modalRef = this.modalService.open(ViewFboComponent, { size: 'lg', backdrop: 'static' });
+    console.log(res)
     modalRef.componentInstance.fboData = res;
     modalRef.componentInstance.isVerifier = true;
     modalRef.componentInstance.product = this.productType;

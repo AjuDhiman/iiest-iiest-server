@@ -23,7 +23,7 @@ const BACK_END = process.env.BACK_END;
 
 let fboFormData = {};
 
-//methord for initiating payment with phone pe
+//method for initiating payment with phone pe
 exports.fboPayment = async (req, res) => {
   try {
     let success = false;
@@ -146,6 +146,7 @@ exports.fboPayReturn = async (req, res) => {
           hygiene_audit,
           medical,
           khadya_paaln,
+          food_labeling,
           water_test_report,
           gst_number,
           createrObjId,
@@ -155,6 +156,7 @@ exports.fboPayReturn = async (req, res) => {
           hygieneGST,
           medicalGST,
           khadyaPaalnGST,
+          foodLabelingGST,
           waterTestGST,
           foscosFixedCharge,
           boInfo,
@@ -189,6 +191,10 @@ exports.fboPayReturn = async (req, res) => {
 
         if (khadya_paaln) {
           serviceArr.push('Khadya Paaln');
+        }
+
+        if (food_labeling) { 
+          serviceArr.push('Food Labeling');
         }
 
         if (water_test_report) {
@@ -343,6 +349,26 @@ exports.fboPayReturn = async (req, res) => {
           invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Kadya Paaln' });
         }
 
+        //Food Labeling 
+        if (product_name.includes('Food Labeling')) {
+          const invoiceCode = await generateInvoiceCode(business_type);//generating new invoice code
+
+          fileName = `${Date.now()}_${idNumber}.pdf`;
+          invoiceUploadStream = invoiceBucket.openUploadStream(`${fileName}`);
+
+          total_processing_amount = Number(food_labeling.food_labeling_processing_amount);
+          let foodLabelingGST = Number(food_labeling.food_labeling_total) - Number(food_labeling.food_labeling_processing_amount);
+          totalGST = foodLabelingGST;
+          
+
+          const qty = food_labeling.product_no;
+
+          const invoice = await invoiceDataHandler(invoiceCode, email, fbo_name, address, state, district, pincode, owner_contact, email, total_processing_amount, extraFee, totalGST, qty, business_type, gst_number, food_labeling.food_labeling_total, 'Food Labeling', food_labeling, signatureFile, invoiceUploadStream, officerName, generatedCustomerId, boData);
+
+          invoiceData.push(invoice);
+
+          invoiceIdArr.push({ src: invoice.fileName, code: invoiceCode, product: 'Food Labeling' });
+        }
         //creating new fbo entry
         const fboEntry = await fboModel.create({
           employeeInfo: createrObjId,
@@ -397,6 +423,7 @@ exports.fboPayReturn = async (req, res) => {
           hraInfo: hygiene_audit,
           medicalInfo: medical,
           khadyaPaalnInfo: khadya_paaln,
+          foodLabelingInfo: food_labeling,
           waterTestInfo: water_test_report,
           payment_mode,
           grand_total,
@@ -624,7 +651,7 @@ exports.boByCheque = async (req, res) => {
       return res.status(404).json({ success, noSignErr: true })
     }
 
-    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene, isMedical, isKhadyaPaaln, isWaterTest } = req.body;//getting data from req body
+    const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode, fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, food_labeling, water_test_report, cheque_data, gst_number, boInfo, isFostac, isFoscos, isHygiene, isMedical, isKhadyaPaaln, isFoodLabeling, isWaterTest } = req.body;//getting data from req body
 
     const boData = await boModel.findOne({ _id: boInfo });
 
@@ -644,6 +671,7 @@ exports.boByCheque = async (req, res) => {
     let hygieneAudit = isHygiene === 'true' ? JSON.parse(hygiene_audit) : undefined;
     let Medical = isMedical === 'true' ? JSON.parse(medical) : undefined;
     let khadyaPaaln = isKhadyaPaaln === 'true' ? JSON.parse(khadya_paaln) : undefined;
+    let foodLabeling = isFoodLabeling === 'true' ? JSON.parse(food_labeling) : undefined;
     let waterTestReport = isWaterTest === 'true' ? JSON.parse(water_test_report) : undefined;
     let chequeData = JSON.parse(cheque_data);
     let productName = product_name.split(',');
@@ -661,7 +689,7 @@ exports.boByCheque = async (req, res) => {
       return res.status(401).json({ success, randomErr: true })
     }
 
-    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, khadyaPaalnInfo: khadyaPaaln, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
+    const selectedProductInfo = await salesModel.create({ employeeInfo: createrObjId, fboInfo: fboEntry._id, product_name: productName, fostacInfo: fostacTraining, foscosInfo: foscosTraining, hraInfo: hygieneAudit, medicalInfo: Medical, waterTestInfo: waterTestReport, khadyaPaalnInfo: khadyaPaaln, foodLabelingInfo:foodLabeling, payment_mode, grand_total, invoiceId: [], notificationInfo: [], cheque_data: chequeData });
 
     if (!selectedProductInfo) {
       success = false;
@@ -698,7 +726,7 @@ exports.boPayLater = async (req, res) => {
 
     //destructuring data
     const { fbo_name, owner_name, owner_contact, email, state, district, address, product_name, payment_mode, createdBy, grand_total, business_type, village, tehsil, pincode,
-      fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, water_test_report, gst_number, boInfo } = req.body;
+      fostac_training, foscos_training, hygiene_audit, medical, khadya_paaln, food_labeling, water_test_report, gst_number, boInfo } = req.body;
 
       const formData = req.body;
 
@@ -762,6 +790,7 @@ exports.boPayLater = async (req, res) => {
       hraInfo: hygiene_audit,
       medicalInfo: medical,
       khadyaPaalnInfo: khadya_paaln,
+      foodLabelingInfo: food_labeling,
       waterTestInfo: water_test_report,
       payment_mode,
       grand_total,
@@ -825,7 +854,7 @@ exports.boPayLater = async (req, res) => {
 
 
     const isPayLaterMail = true;
-    sendInvoiceMail(email, invoiceData, isPayLaterMail, {...formData, extraFee, foscosInfo: foscos_training, fostacInfo: fostac_training, hraInfo: hygiene_audit, waterTestInfo: water_test_report, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln});
+    sendInvoiceMail(email, invoiceData, isPayLaterMail, {...formData, extraFee, foscosInfo: foscos_training, fostacInfo: fostac_training, hraInfo: hygiene_audit, waterTestInfo: water_test_report, medicalInfo: medical, khadyaPaalnInfo: khadya_paaln, foodLabelingInfo: food_labeling});
 
     success = true;
     return res.status(200).json({ success })
